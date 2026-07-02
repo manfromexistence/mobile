@@ -11,7 +11,6 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  CircleSlash,
   Clock,
   Code,
   Cog,
@@ -25,8 +24,6 @@ import {
   Ghost,
   Grid3x3,
   Image,
-  Info,
-  Languages,
   Lightbulb,
   LogOut,
   Menu,
@@ -34,13 +31,11 @@ import {
   MessageSquarePlus,
   Mic,
   Moon,
-  MoreHorizontal,
   Paintbrush,
   Paperclip,
   Pencil,
   Pin,
   Plus,
-  RefreshCw,
   Rocket,
   Search,
   Settings,
@@ -49,8 +44,6 @@ import {
   Smile,
   Sparkles,
   Sun,
-  ThumbsDown,
-  ThumbsUp,
   Trash2,
   User,
   Volume2,
@@ -81,57 +74,27 @@ import {
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-function useLocalStorage<T>(
-  key: string,
-  initialValue: T
-): [T, React.Dispatch<React.SetStateAction<T>>] {
-  const getSnapshot = React.useCallback((): T => {
-    if (typeof window === "undefined") return initialValue
-    try {
-      const item = window.localStorage.getItem(key)
-      return item ? (JSON.parse(item) as T) : initialValue
-    } catch {
-      return initialValue
-    }
-  }, [key, initialValue])
-
-  const getServerSnapshot = React.useCallback(
-    (): T => initialValue,
-    [initialValue]
-  )
-
-  const store = React.useSyncExternalStore(
-    (callback) => {
-      window.addEventListener("storage", callback)
-      return () => window.removeEventListener("storage", callback)
-    },
-    getSnapshot,
-    getServerSnapshot
-  )
-
-  const setValue = React.useCallback(
-    (value: T | ((prev: T) => T)) => {
-      try {
-        const valueToStore =
-          value instanceof Function ? value(getSnapshot()) : value
-        window.localStorage.setItem(key, JSON.stringify(valueToStore))
-        window.dispatchEvent(new Event("storage"))
-      } catch (error) {
-        console.error(error)
-      }
-    },
-    [key, getSnapshot]
-  )
-
-  return [store, setValue]
-}
+import { useLocalStorage } from "./dx-chat-hooks"
+import {
+  ThoughtProcess,
+  SourceBadge,
+  BotMessageActions,
+} from "./dx-chat-message"
+import { VoiceBar } from "./dx-chat-voice"
+import { SidebarItem, SidebarSubItem, HistoryItem } from "./dx-chat-sidebar"
+import { SourceItem } from "./dx-chat-right-panel"
+import {
+  SettingsAccount,
+  SettingsAppearance,
+  SettingsCustomize,
+  SettingsPlaceholder,
+} from "./dx-chat-settings"
 
 type RightPanel = "thoughts" | "sources" | "files" | null
 
@@ -149,139 +112,6 @@ function LogoIcon({ className }: { className?: string }) {
       <circle cx="12" cy="12" r="8" />
       <path d="M5 19L19 5" />
     </svg>
-  )
-}
-
-function ThoughtProcess({
-  label,
-  onOpenThoughts,
-}: {
-  label: string
-  onOpenThoughts: () => void
-}) {
-  return (
-    <button
-      className="mb-1 -ml-2 flex w-max cursor-pointer items-center gap-1.5 rounded-lg px-2 py-1 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted active:scale-[0.98]"
-      onClick={onOpenThoughts}
-    >
-      <Lightbulb className="size-3.5" />
-      <span>Thought for {label}</span>
-    </button>
-  )
-}
-
-function SourceBadge({ label, domain }: { label: string; domain: string }) {
-  return (
-    <button className="ml-1 inline-flex items-center gap-1 rounded-md border border-border bg-white px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground shadow-xs transition-colors hover:bg-muted active:scale-[0.98] dark:bg-card">
-      <div className="flex h-3 w-3 items-center justify-center rounded-sm bg-muted text-[6px] font-bold">
-        {domain[0]}
-      </div>
-      {label}
-    </button>
-  )
-}
-
-function BotMessageActions() {
-  return (
-    <div className="relative mt-2 flex w-full flex-wrap items-center gap-1 pb-2 md:gap-2">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon-xs"
-            className="text-muted-foreground"
-          >
-            <Copy className="size-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="top">Copy</TooltipContent>
-      </Tooltip>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon-xs"
-            className="text-muted-foreground"
-          >
-            <Share2 className="size-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="top">Share</TooltipContent>
-      </Tooltip>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon-xs"
-            className="text-muted-foreground"
-          >
-            <ThumbsUp className="size-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="top">Good response</TooltipContent>
-      </Tooltip>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon-xs"
-            className="text-muted-foreground"
-          >
-            <ThumbsDown className="size-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="top">Bad response</TooltipContent>
-      </Tooltip>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon-xs"
-            className="text-muted-foreground"
-          >
-            <RefreshCw className="size-4" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="top">Regenerate</TooltipContent>
-      </Tooltip>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon-xs"
-            className="text-muted-foreground"
-          >
-            <MoreHorizontal className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuItem>Copy</DropdownMenuItem>
-          <DropdownMenuItem>Share</DropdownMenuItem>
-          <DropdownMenuItem>Report</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <div className="ml-auto flex size-7 cursor-pointer items-center justify-center rounded-full border border-border bg-muted/50 text-muted-foreground transition-colors hover:bg-muted">
-        <ChevronDown className="size-3" />
-      </div>
-    </div>
-  )
-}
-
-function VoiceBar({ delay, height }: { delay: string; height: number }) {
-  return (
-    <motion.div
-      className="w-[3px] rounded-full bg-blue-500"
-      style={{ height: `${height}%` }}
-      animate={{
-        scaleY: [0.4, 1, 0.4],
-      }}
-      transition={{
-        duration: 1.2,
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay: parseFloat(delay) * 0.01,
-      }}
-    />
   )
 }
 
@@ -1570,449 +1400,5 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
         </DialogContent>
       </Dialog>
     </div>
-  )
-}
-
-function SidebarItem({
-  icon: Icon,
-  label,
-  collapsed,
-  active,
-  badge,
-}: {
-  icon: React.ElementType
-  label: string
-  collapsed: boolean
-  active?: boolean
-  badge?: string
-}) {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <button
-          className={cn(
-            "group flex items-center gap-3 rounded-lg py-2.5 text-left text-[15px] font-medium transition-colors md:py-2 md:text-sm",
-            collapsed ? "w-auto justify-center px-0" : "w-full px-3",
-            active
-              ? "bg-muted text-foreground"
-              : "text-muted-foreground hover:bg-muted hover:text-foreground"
-          )}
-        >
-          <motion.span
-            className="flex"
-            whileHover={{ scale: 1.05, rotate: -2 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{
-              type: "spring",
-              stiffness: 400,
-              damping: 25,
-            }}
-          >
-            <Icon className="size-[18px] flex-shrink-0 text-muted-foreground md:size-4" />
-          </motion.span>
-          {!collapsed && (
-            <>
-              <span className="truncate">{label}</span>
-              {badge && (
-                <motion.span
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 500,
-                    damping: 28,
-                    delay: 0.1,
-                  }}
-                  className="flex-shrink-0 rounded-full border border-orange-200 bg-orange-50 px-1.5 py-0.5 text-[10px] font-semibold text-orange-600 dark:border-orange-800 dark:bg-orange-950"
-                >
-                  {badge}
-                </motion.span>
-              )}
-            </>
-          )}
-        </button>
-      </TooltipTrigger>
-    </Tooltip>
-  )
-}
-
-function SidebarSubItem({
-  icon: Icon,
-  label,
-  collapsed,
-}: {
-  icon: React.ElementType
-  label: string
-  collapsed: boolean
-}) {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <button
-          className={cn(
-            "group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-[15px] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:py-1.5 md:text-sm",
-            collapsed && "justify-center px-0"
-          )}
-        >
-          <motion.span
-            className="flex"
-            whileHover={{ scale: 1.05, rotate: -2 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{
-              type: "spring",
-              stiffness: 400,
-              damping: 25,
-            }}
-          >
-            <Icon className="size-[18px] flex-shrink-0 text-muted-foreground md:size-4" />
-          </motion.span>
-          {!collapsed && <span className="truncate">{label}</span>}
-        </button>
-      </TooltipTrigger>
-      {collapsed && <TooltipContent side="right">{label}</TooltipContent>}
-    </Tooltip>
-  )
-}
-
-function HistoryItem({
-  icon: Icon,
-  label,
-  collapsed,
-  active,
-}: {
-  icon?: React.ElementType
-  label: string
-  collapsed: boolean
-  active?: boolean
-}) {
-  return (
-    <button
-      className={cn(
-        "flex w-full items-center gap-3 truncate rounded-lg px-3 py-2 text-left text-[15px] transition-colors md:py-1.5 md:text-sm",
-        active
-          ? "bg-muted font-medium text-foreground"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground"
-      )}
-    >
-      {Icon && (
-        <motion.span
-          className="flex"
-          whileHover={{ scale: 1.15, rotate: -4 }}
-          whileTap={{ scale: 0.9 }}
-          transition={{ type: "spring", stiffness: 400, damping: 20 }}
-        >
-          <Icon className="size-[18px] flex-shrink-0 text-muted-foreground md:size-4" />
-        </motion.span>
-      )}
-      {!Icon && collapsed === false && <span className="pl-7" />}
-      <span className="truncate">{label}</span>
-    </button>
-  )
-}
-
-function SourceItem({
-  searched,
-  title,
-  score,
-}: {
-  searched: string
-  title: string
-  score: string
-}) {
-  return (
-    <div className="group flex cursor-pointer flex-col gap-1.5 transition-opacity active:opacity-70">
-      <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
-        <Search className="size-3" />
-        <span>{searched}</span>
-      </div>
-      <div className="flex items-start justify-between gap-3">
-        <span className="text-[13px] leading-snug font-medium text-foreground group-hover:underline">
-          {title}
-        </span>
-        <span className="flex-shrink-0 rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
-          {score}
-        </span>
-      </div>
-    </div>
-  )
-}
-
-function SettingsAccount() {
-  return (
-    <>
-      <h2 className="mb-4 text-lg font-bold text-foreground md:mb-6 md:text-xl">
-        Account
-      </h2>
-      <div className="space-y-2">
-        <div className="flex items-center justify-between border-b border-border py-3 md:py-4">
-          <div className="flex items-center gap-3 overflow-hidden md:gap-4">
-            <div className="flex size-10 flex-shrink-0 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
-              EF
-            </div>
-            <div className="truncate">
-              <div className="truncate text-[14px] font-medium text-foreground md:text-[15px]">
-                Essence From Existence
-              </div>
-              <div className="truncate text-[12px] text-muted-foreground md:text-[13px]">
-                essencefromexistence@gmail.com
-              </div>
-            </div>
-          </div>
-          <Button
-            variant="outline"
-            className="ml-2 flex-shrink-0 rounded-full text-xs md:text-sm"
-          >
-            Manage
-          </Button>
-        </div>
-
-        <div className="flex items-center justify-between border-b border-border py-3 md:py-4">
-          <div className="flex items-center gap-3">
-            <CircleSlash className="size-5 text-foreground/80 md:size-[22px]" />
-            <span className="text-[14px] text-foreground md:text-[15px]">
-              SuperGrok
-            </span>
-          </div>
-          <Button variant="outline" className="rounded-full text-xs md:text-sm">
-            Manage
-          </Button>
-        </div>
-
-        <div className="flex items-center justify-between border-b border-border py-3 md:py-4">
-          <div className="flex items-center gap-3">
-            <X className="size-5 text-foreground/80 md:size-[22px]" />
-            <span className="text-[14px] text-foreground md:text-[15px]">
-              X Account
-            </span>
-          </div>
-          <Button variant="outline" className="rounded-full text-xs md:text-sm">
-            Connect
-          </Button>
-        </div>
-
-        <div className="flex items-center justify-between pt-4 pb-2">
-          <div className="flex items-center gap-2">
-            <span className="text-[14px] text-foreground md:text-[15px]">
-              Language
-            </span>
-            <Languages className="size-4 text-muted-foreground" />
-          </div>
-          <Button variant="outline" className="rounded-full text-xs md:text-sm">
-            Change
-          </Button>
-        </div>
-
-        <div className="flex items-center gap-2 pt-2">
-          <span className="text-[14px] text-foreground md:text-[15px]">
-            Birth Year
-          </span>
-          <span className="ml-2 text-[14px] text-muted-foreground md:text-[15px]">
-            2000
-          </span>
-        </div>
-      </div>
-    </>
-  )
-}
-
-function SettingsAppearance({
-  darkMode,
-  onToggleDarkMode,
-}: {
-  darkMode: boolean
-  onToggleDarkMode: () => void
-}) {
-  return (
-    <>
-      <h2 className="mb-4 text-lg font-bold text-foreground md:mb-6 md:text-xl">
-        Appearance
-      </h2>
-      <div className="flex items-center justify-between border-b border-border py-3">
-        <div>
-          <div className="font-medium text-foreground">Dark mode</div>
-          <div className="text-sm text-muted-foreground">
-            Use dark theme across DX
-          </div>
-        </div>
-        <label className="relative inline-flex cursor-pointer items-center">
-          <input
-            type="checkbox"
-            checked={darkMode}
-            onChange={onToggleDarkMode}
-            className="peer sr-only"
-          />
-          <div className="peer h-6 w-11 rounded-full bg-muted-foreground/20 peer-checked:bg-foreground peer-focus:ring-2 peer-focus:ring-ring peer-focus:outline-none after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-border after:bg-background after:transition-all after:content-[''] peer-checked:after:translate-x-full" />
-        </label>
-      </div>
-    </>
-  )
-}
-
-const DORA_COLORS = [
-  "#f59e0b",
-  "#ef4444",
-  "#fbbf24",
-  "#84cc16",
-  "#22c55e",
-  "#ea580c",
-]
-const JARVIS_COLORS = [
-  "#3b82f6",
-  "#0ea5e9",
-  "#8b5cf6",
-  "#06b6d4",
-  "#10b981",
-  "#1d4ed8",
-]
-
-function PixelCanvas({ palette }: { palette: string[] }) {
-  const canvasRef = React.useRef<HTMLCanvasElement>(null)
-  const timeRef = React.useRef(0)
-
-  React.useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext("2d")!
-    const size = 32
-    const pixelSize = 4
-    const cols = size / pixelSize
-    const rows = size / pixelSize
-
-    let active = true
-    const grid = Array.from({ length: cols * rows }, (_, i) => ({
-      hue: (i * 360) / (cols * rows) + Math.random() * 60,
-      sat: 70 + Math.random() * 30,
-      light: 50 + Math.random() * 20,
-      speed: 0.5 + Math.random() * 1.5,
-    }))
-
-    function drawFrame(time: number) {
-      if (!active) return
-      const dt = time - timeRef.current
-      timeRef.current = time
-
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const idx = r * cols + c
-          const cell = grid[idx]
-          cell.hue = (cell.hue + cell.speed * (dt / 1000) * 30) % 360
-
-          const baseHue = palette === JARVIS_COLORS ? 220 : 30
-          const h = baseHue + cell.hue * 0.3
-          ctx.fillStyle = `hsl(${h}, ${cell.sat}%, ${cell.light}%)`
-          ctx.fillRect(c * pixelSize, r * pixelSize, pixelSize, pixelSize)
-        }
-      }
-
-      if (active) requestAnimationFrame(drawFrame)
-    }
-
-    requestAnimationFrame(drawFrame)
-
-    return () => {
-      active = false
-    }
-  }, [palette])
-
-  return <canvas ref={canvasRef} width={32} height={32} className="size-full" />
-}
-
-function SettingsCustomize() {
-  return (
-    <>
-      <h2 className="mb-4 text-lg font-bold text-foreground md:mb-6 md:text-xl">
-        Customize
-      </h2>
-      <div className="space-y-6 md:space-y-8">
-        <div>
-          <div className="mb-3 flex items-center gap-2 md:mb-4">
-            <span className="text-[14px] font-medium text-foreground/80 md:text-[15px]">
-              Customize Grok&apos;s Response
-            </span>
-            <Info className="size-4 text-muted-foreground" />
-          </div>
-          <div className="mb-3 flex flex-wrap gap-2 md:mb-4">
-            <span className="flex cursor-pointer items-center gap-1 rounded-full border border-border bg-muted px-3 py-1 text-[12px] font-medium text-foreground shadow-xs md:text-[13px]">
-              Custom <Check className="size-2.5" />
-            </span>
-            <span className="cursor-pointer rounded-full border border-border px-3 py-1 text-[12px] text-muted-foreground transition-all hover:bg-muted md:text-[13px]">
-              Concise
-            </span>
-            <span className="cursor-pointer rounded-full border border-border px-3 py-1 text-[12px] text-muted-foreground transition-all hover:bg-muted md:text-[13px]">
-              Formal
-            </span>
-            <span className="cursor-pointer rounded-full border border-border px-3 py-1 text-[12px] text-muted-foreground transition-all hover:bg-muted md:text-[13px]">
-              Tutor
-            </span>
-          </div>
-          <Textarea
-            className="h-28 w-full resize-none rounded-xl border border-border p-3 text-[14px] md:h-32 md:rounded-2xl md:p-4 md:text-[15px]"
-            placeholder="Instructions..."
-            defaultValue="You are friday - I am essencefromexistence(essence/sumon) your creator and you are my ai friday so please act like more friend like Jarvis - main like Doraemon!!!"
-          />
-        </div>
-
-        <div>
-          <div className="mb-3 flex items-center justify-between md:mb-4">
-            <div className="flex items-center gap-2">
-              <span className="text-[14px] font-medium text-foreground/80 md:text-[15px]">
-                Agent Library
-              </span>
-              <Info className="size-4 text-muted-foreground" />
-            </div>
-            <Button
-              variant="outline"
-              className="rounded-full text-[13px] md:text-[14px]"
-            >
-              <Plus className="mr-1.5 size-3" />
-              Create
-            </Button>
-          </div>
-          <div className="no-scrollbar flex snap-x gap-3 overflow-x-auto pb-3 md:gap-4">
-            <div className="flex w-[200px] flex-shrink-0 cursor-pointer snap-start items-center gap-3 rounded-xl border border-border p-3 transition-all hover:shadow-md md:w-[220px]">
-              <div className="size-8 flex-shrink-0 overflow-hidden rounded-full border border-border/50 bg-muted shadow-inner">
-                <PixelCanvas palette={DORA_COLORS} />
-              </div>
-              <div className="overflow-hidden">
-                <div className="truncate text-[13px] font-semibold text-foreground md:text-[14px]">
-                  doraemon
-                </div>
-                <div className="truncate text-[11px] text-muted-foreground md:text-[12px]">
-                  act like the famous Jap...
-                </div>
-              </div>
-            </div>
-            <div className="flex w-[200px] flex-shrink-0 cursor-pointer snap-start items-center gap-3 rounded-xl border border-border p-3 transition-all hover:shadow-md md:w-[220px]">
-              <div className="size-8 flex-shrink-0 overflow-hidden rounded-full border border-border/50 bg-muted shadow-inner">
-                <PixelCanvas palette={JARVIS_COLORS} />
-              </div>
-              <div className="overflow-hidden">
-                <div className="truncate text-[13px] font-semibold text-foreground md:text-[14px]">
-                  jarvis
-                </div>
-                <div className="truncate text-[11px] text-muted-foreground md:text-[12px]">
-                  Act like the A.I. that the...
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="mt-2 text-[12px] leading-relaxed text-muted-foreground md:mt-4 md:text-[13px]">
-            Changes will only apply to new conversations, not existing ones.
-          </div>
-        </div>
-      </div>
-    </>
-  )
-}
-
-function SettingsPlaceholder({ title }: { title: string }) {
-  return (
-    <>
-      <h2 className="mb-6 text-lg font-bold text-foreground md:text-xl">
-        {title}
-      </h2>
-      <p className="text-sm text-muted-foreground">{title} settings...</p>
-    </>
   )
 }
