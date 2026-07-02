@@ -31,6 +31,7 @@ import {
   MessageSquarePlus,
   Mic,
   Moon,
+  MoreHorizontal,
   Paintbrush,
   Paperclip,
   Pencil,
@@ -290,8 +291,8 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
         {/* Navigation */}
         <motion.div
           className={cn(
-            "space-y-0.5 pt-4 pb-4",
-            sidebarCollapsed ? "flex flex-col items-center" : "px-3"
+            "space-y-0.5 pt-0 pb-4",
+            sidebarCollapsed ? "flex flex-col items-center px-3" : "px-3"
           )}
           initial="hidden"
           animate="visible"
@@ -753,28 +754,19 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
         </div>
 
         {/* Top Right Actions */}
-        <div className="absolute top-2 right-2 z-40 flex items-center gap-0.5 rounded-xl bg-background/50 p-1 text-muted-foreground backdrop-blur-md md:top-3 md:right-4 md:bg-transparent md:p-0 md:backdrop-blur-none">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+        <div className="absolute top-2 right-1 z-40 flex items-center gap-0.5 rounded-xl bg-background/50 p-1 text-muted-foreground backdrop-blur-md md:top-3 md:right-2 md:bg-transparent md:p-0 md:backdrop-blur-none">
+          <Tooltip>
+            <TooltipTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon-xs"
                 className="text-muted-foreground"
               >
-                <Settings className="size-4" />
+                <Download className="size-4" />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem>
-                <Download className="mr-2 size-4" />
-                Export chat
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Trash2 className="mr-2 size-4" />
-                Delete chat
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">Export chat</TooltipContent>
+          </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -819,6 +811,23 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
             </TooltipTrigger>
             <TooltipContent side="bottom">Files</TooltipContent>
           </Tooltip>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                className="text-muted-foreground"
+              >
+                <MoreHorizontal className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem>
+                <Trash2 className="mr-2 size-4" />
+                Delete chat
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Chat Scroll Area */}
@@ -850,6 +859,13 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
                       className="text-muted-foreground"
                     >
                       <Copy className="size-3.5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon-xs"
+                      className="text-muted-foreground"
+                    >
+                      <Share2 className="size-3.5" />
                     </Button>
                   </div>
                 </div>

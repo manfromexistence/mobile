@@ -34,7 +34,6 @@ export const JARVIS_COLORS = [
 
 function PixelCanvas({ palette }: { palette: string[] }) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
-  const timeRef = React.useRef(0)
 
   React.useEffect(() => {
     const canvas = canvasRef.current
@@ -47,32 +46,47 @@ function PixelCanvas({ palette }: { palette: string[] }) {
     const rows = size / pixelSize
 
     let active = true
-    const grid = Array.from({ length: cols * rows }, (_, i) => ({
-      hue: (i * 360) / (cols * rows) + Math.random() * 60,
-      sat: 70 + Math.random() * 30,
-      light: 50 + Math.random() * 20,
-      speed: 0.5 + Math.random() * 1.5,
+    let prevTime = 0
+    const grid = Array.from({ length: cols * rows }, () => ({
+      color: palette[Math.floor(Math.random() * palette.length)],
+      speed: 1 + Math.random() * 2,
+      phase: Math.random() * Math.PI * 2,
     }))
 
     function drawFrame(time: number) {
       if (!active) return
-      const dt = time - timeRef.current
-      timeRef.current = time
+
+      if (prevTime === 0) {
+        prevTime = time
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const idx = r * cols + c
+            ctx.fillStyle = grid[idx].color
+            ctx.fillRect(c * pixelSize, r * pixelSize, pixelSize, pixelSize)
+          }
+        }
+
+        requestAnimationFrame(drawFrame)
+        return
+      }
+
+      const dt = (time - prevTime) / 1000
+      prevTime = time
 
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
           const idx = r * cols + c
           const cell = grid[idx]
-          cell.hue = (cell.hue + cell.speed * (dt / 1000) * 30) % 360
-
-          const baseHue = palette === JARVIS_COLORS ? 220 : 30
-          const h = baseHue + cell.hue * 0.3
-          ctx.fillStyle = `hsl(${h}, ${cell.sat}%, ${cell.light}%)`
+          const brightness = 0.6 + 0.4 * Math.sin(time * cell.speed * 0.003 + cell.phase)
+          ctx.globalAlpha = brightness
+          ctx.fillStyle = cell.color
           ctx.fillRect(c * pixelSize, r * pixelSize, pixelSize, pixelSize)
         }
       }
 
-      if (active) requestAnimationFrame(drawFrame)
+      ctx.globalAlpha = 1
+      requestAnimationFrame(drawFrame)
     }
 
     requestAnimationFrame(drawFrame)

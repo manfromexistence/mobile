@@ -2,26 +2,18 @@
 
 import { Button } from "@/components/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import {
-  ChevronDown,
   Copy,
   Lightbulb,
-  MoreHorizontal,
   RefreshCw,
   Share2,
   ThumbsDown,
   ThumbsUp,
+  Volume2,
 } from "lucide-react"
 
 export function ThoughtProcess({
@@ -87,6 +79,18 @@ export function BotMessageActions() {
             size="icon-xs"
             className="text-muted-foreground"
           >
+            <Volume2 className="size-4" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="top">Read aloud</TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon-xs"
+            className="text-muted-foreground"
+          >
             <ThumbsUp className="size-4" />
           </Button>
         </TooltipTrigger>
@@ -116,25 +120,6 @@ export function BotMessageActions() {
         </TooltipTrigger>
         <TooltipContent side="top">Regenerate</TooltipContent>
       </Tooltip>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon-xs"
-            className="text-muted-foreground"
-          >
-            <MoreHorizontal className="size-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuItem>Copy</DropdownMenuItem>
-          <DropdownMenuItem>Share</DropdownMenuItem>
-          <DropdownMenuItem>Report</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <div className="ml-auto flex size-7 cursor-pointer items-center justify-center rounded-full border border-border bg-muted/50 text-muted-foreground transition-colors hover:bg-muted">
-        <ChevronDown className="size-3" />
-      </div>
     </div>
   )
 }
