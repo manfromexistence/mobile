@@ -1,0 +1,13 @@
+{
+  "name": "@pierre/tree-test-data",
+  "version": "0.0.1",
+  "private": true,
+  "license": "apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    }
+  }
+}

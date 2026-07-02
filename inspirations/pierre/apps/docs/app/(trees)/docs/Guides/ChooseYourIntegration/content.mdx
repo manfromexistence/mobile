@@ -1,0 +1,38 @@
+`@pierre/trees` exposes one path-first model and two primary runtime entries: a
+thin React layer in [`@pierre/trees/react`](#get-started-with-react) and the
+vanilla class in [`@pierre/trees`](#get-started-with-vanilla).
+
+### Choose your integration
+
+#### 1. Path-first identity
+
+Treat canonical path strings as the public identity for every item in the tree.
+For example, `src/components/Button.tsx` is not just a label on screen. It is
+the value you read from selection state, the path you focus programmatically,
+and the target you rename or move later.
+
+For the shared vocabulary behind that rule, jump to
+[Shared concepts](#shared-concepts).
+
+#### 2. React vs Vanilla JS
+
+Pick the React entry point when the surrounding UI already lives in React. Jump
+to the [getting started with React](#get-started-with-react) guide for more
+info.
+
+<DocsCodeExample {...CHOOSE_INTEGRATION_REACT_EXAMPLE} />
+
+Pick the vanilla class when your app is not React-based, or when another
+framework will own lifecycle around an imperative model. Jump to the
+[getting started with vanilla JS](#get-started-with-vanilla) for more.
+
+<DocsCodeExample {...CHOOSE_INTEGRATION_VANILLA_EXAMPLE} />
+
+#### 3. Understand tree-shape
+
+Both runtimes consume the same tree data. Small examples can start with raw
+`paths`, but real application trees should move to prepared input before the
+client pays that shaping work on every load. Regardless of your runtime being
+React or vanilla JS, be sure to read
+[Shape tree data for fast rendering](#shape-tree-data-for-fast-rendering) after
+your runtime quickstart.

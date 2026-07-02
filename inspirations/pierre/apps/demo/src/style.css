@@ -1,0 +1,255 @@
+@font-face {
+  font-family: 'Berkeley Mono';
+  src: url('/fonts/BerkeleyMonoVariable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light dark;
+
+  --diffs-font-family:
+    'Berkeley Mono', 'JetBrains Mono', 'Fira Code', 'Source Code Pro',
+    'SF Mono', Monaco, Consolas, 'Ubuntu Mono', 'Liberation Mono',
+    'Courier New', monospace;
+
+  --diffs-font-size: 14px;
+  --diffs-line-height: 20px;
+
+  --fg: light-dark(#213547, #ffffff);
+  --bg: light-dark(#ffffff, #213547);
+
+  font-family: var(--diffs-font-family);
+  font-size: 14px;
+  line-height: 20px;
+
+  color: var(--fg);
+  background-color: var(--bg);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+html[data-theme-type='light'] {
+  color-scheme: light;
+}
+
+html[data-theme-type='dark'] {
+  color-scheme: dark;
+}
+
+html,
+body {
+  overflow-anchor: none;
+  background-color: light-dark(white, black);
+}
+
+html,
+body,
+#root {
+  display: block;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  touch-action: manipulation;
+  zoom: 1;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+input[type='text'],
+textarea {
+  font-family: inherit;
+  appearance: none;
+  border-radius: 0;
+  border: 1px solid var(--fg);
+  padding: 4px;
+  outline: none;
+  resize: none;
+  margin: 0;
+
+  &:focus {
+    border-color: blue;
+  }
+}
+
+#root {
+  margin: 0;
+  min-width: 320px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+}
+
+#root[data-code-view] {
+  height: 100vh;
+  height: 100dvh;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+
+  &:hover {
+    color: #747bff;
+  }
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding-block: 4px;
+  padding-inline: 8px;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--bg);
+  color: var(--fg);
+  cursor: pointer;
+
+  &:hover {
+    border-color: #646cff;
+  }
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+pre,
+code {
+  font-family: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+.tools-container {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: color-mix(in srgb, var(--bg) 90%, transparent);
+  min-width: 0;
+}
+
+.tools {
+  padding: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.wrapper {
+  /* display: grid; */
+  /* grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); */
+  min-width: 0;
+  min-height: 0;
+  overflow-anchor: none;
+  background-color: light-dark(white, black);
+}
+
+.wrapper[data-code-view] {
+  overflow: auto;
+  overscroll-behavior: contain;
+  contain: layout style paint;
+}
+
+.wrapper[data-diff] {
+  min-height: auto;
+  width: auto;
+  height: auto;
+  display: block;
+}
+
+[data-commit-metadata] {
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.files-input {
+  position: fixed;
+  z-index: 20;
+  inset: 50px 0 0;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr auto;
+  background-color: color-mix(in srgb, var(--bg) 80%, transparent);
+  gap: 10px;
+}
+
+.file {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 10px;
+}
+
+.file input {
+  font-size: 14px;
+}
+
+.buttons {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+diffs-container {
+  /* content-visibility: auto; */
+  margin-top: 2px;
+}
+
+.annotation-slot-wrapper {
+  background-color: rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.annotation-content {
+  display: block;
+  padding: 10px;
+  overflow: hidden;
+  word-break: break-all;
+  white-space: normal;
+}
+
+.comment {
+  margin: 8px;
+  padding: 8px;
+  border: 1px solid var(--diffs-fg);
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 600px;
+}
+
+.comment h6,
+.comment p {
+  margin: 0;
+  padding: 0;
+}
+
+.comment h6 {
+  font-size: 14px;
+}
+
+[data-collapser] {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

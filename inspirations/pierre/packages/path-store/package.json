@@ -1,0 +1,19 @@
+{
+  "name": "@pierre/path-store",
+  "version": "1.0.0-beta.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts"
+    }
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@pierre/tree-test-data": "workspace:*",
+    "@playwright/test": "catalog:",
+    "mitata": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

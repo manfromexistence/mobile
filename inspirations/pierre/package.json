@@ -1,0 +1,36 @@
+{
+  "name": "@pierre/js",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@pierre/vscode-icons": "catalog:"
+  },
+  "devDependencies": {
+    "@moonrepo/cli": "catalog:",
+    "@pierre/icons": "catalog:",
+    "@types/bun": "catalog:",
+    "@typescript/native-preview": "catalog:",
+    "lint-staged": "catalog:",
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:",
+    "oxlint-tsgolint": "catalog:",
+    "postcss-html": "catalog:",
+    "stylelint": "catalog:",
+    "stylelint-config-standard": "catalog:",
+    "svgo": "catalog:",
+    "typescript": "catalog:"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "oxfmt --write",
+      "oxlint --type-aware --tsconfig tsconfig.oxlint.json --fix"
+    ],
+    "**/*.{json,jsonc,yml,yaml}": [
+      "oxfmt --write"
+    ],
+    "**/*.{css,pcss,postcss}": [
+      "stylelint --fix"
+    ]
+  },
+  "packageManager": "pnpm@11.9.0"
+}

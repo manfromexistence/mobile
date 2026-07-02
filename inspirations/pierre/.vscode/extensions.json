@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "YoavBls.pretty-ts-errors",
+    "oxc.oxc-vscode",
+    "pierrecomputer.pierre-theme",
+    "esbenp.prettier-vscode",
+    "TypeScriptTeam.native-preview",
+    "bradlc.vscode-tailwindcss",
+    "stylelint.vscode-stylelint",
+    "csstools.postcss"
+  ]
+}

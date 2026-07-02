@@ -1,0 +1,172 @@
+'use client';
+
+import type { ColorMode } from '@pierre/theming';
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from 'react';
+
+import { themeController } from './themeController';
+
+type ResolvedTheme = 'light' | 'dark';
+
+interface ThemeProviderProps {
+  attribute?: 'class' | `data-${string}` | Array<'class' | `data-${string}`>;
+  children: ReactNode;
+  enableColorScheme?: boolean;
+  value?: Partial<Record<ResolvedTheme, string>>;
+}
+
+interface ThemeContextValue {
+  resolvedTheme?: ResolvedTheme;
+  setTheme: (theme: ColorMode) => void;
+  systemTheme?: ResolvedTheme;
+  theme?: ColorMode;
+  themes: ColorMode[];
+}
+
+const RESOLVED_THEMES: ResolvedTheme[] = ['light', 'dark'];
+const AVAILABLE_MODES: ColorMode[] = ['light', 'dark', 'system'];
+
+// Navbar tint (iOS Safari's <meta name="theme-color">) for each resolved
+// color mode. These match the global body `--background` (oklch(1)/oklch(0.145))
+// that iOS samples at the top of the page, so the navbar blends with the page
+// instead of contrasting it. Kept in sync with the same literals hardcoded in
+// the layout's pre-paint bootstrap script (which can't import this module).
+const MODE_THEME_COLOR: Record<ResolvedTheme, string> = {
+  light: '#ffffff',
+  dark: '#0a0a0a',
+};
+
+// Points the document's theme-color meta at `color` (the iOS Safari navbar
+// tint), creating the meta if it isn't there yet. The meta is intentionally
+// not authored in JSX: React 19 hoists head tags and would leave a duplicate
+// next to the one it manages. Creating it imperatively keeps exactly one,
+// owned entirely by this code.
+function setThemeColorMeta(color: string) {
+  let meta = document.querySelector('meta[name="theme-color"]');
+  if (meta == null) {
+    meta = document.createElement('meta');
+    meta.setAttribute('name', 'theme-color');
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute('content', color);
+}
+
+const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
+
+// Applies the already-resolved color mode to <html>: the class/data-attribute
+// contract, the native color-scheme, and the iOS navbar tint. The resolved
+// 'light'/'dark' comes straight from the theme controller, so this no longer
+// re-derives it from a raw mode + system preference.
+function applyTheme({
+  attribute,
+  enableColorScheme,
+  resolvedTheme,
+  value,
+}: {
+  attribute: ThemeProviderProps['attribute'];
+  enableColorScheme: boolean;
+  resolvedTheme: ResolvedTheme;
+  value: Partial<Record<ResolvedTheme, string>> | undefined;
+}) {
+  const root = document.documentElement;
+  const resolvedValue = value?.[resolvedTheme] ?? resolvedTheme;
+  const attributes = Array.isArray(attribute) ? attribute : [attribute];
+  const classValues = RESOLVED_THEMES.map((theme) => value?.[theme] ?? theme);
+
+  for (const currentAttribute of attributes) {
+    if (currentAttribute === 'class') {
+      root.classList.remove(...classValues);
+      root.classList.add(resolvedValue);
+      continue;
+    }
+    if (currentAttribute != null) {
+      root.setAttribute(currentAttribute, resolvedValue);
+    }
+  }
+
+  if (enableColorScheme) {
+    root.style.colorScheme = resolvedTheme;
+  }
+
+  // Keep the iOS navbar tint in step with the resolved color mode.
+  setThemeColorMeta(MODE_THEME_COLOR[resolvedTheme]);
+}
+
+// Thin React binding over the @pierre/theming controller (the single owner of
+// theming state). It subscribes to the controller for mode +
+// resolvedColorScheme, applies the resolved mode to the DOM, and exposes the
+// useTheme() API the app already depends on. Selection and persistence live in
+// the controller — this component holds no theming state of its own.
+export function ThemeProvider({
+  attribute = 'data-theme',
+  children,
+  enableColorScheme = true,
+  value,
+}: ThemeProviderProps) {
+  const state = useSyncExternalStore(
+    themeController.subscribe,
+    themeController.getState,
+    themeController.getState
+  );
+
+  // The controller reads persisted state synchronously on module load, so on
+  // the client useSyncExternalStore would surface the stored mode on the very
+  // first render — but the server rendered the defaults. Expose the resolved
+  // values to consumers only after mount, so any render output derived from
+  // useTheme() (e.g. diffshub's chrome) matches the SSR markup first, then
+  // flips. The DOM application below still uses the real resolved mode (the
+  // pre-paint bootstrap script already painted it), so this gate is invisible.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const theme = mounted ? state.mode : undefined;
+  const resolvedTheme = mounted ? state.resolvedColorScheme : undefined;
+
+  useEffect(() => {
+    applyTheme({
+      attribute,
+      enableColorScheme,
+      resolvedTheme: state.resolvedColorScheme,
+      value,
+    });
+  }, [attribute, enableColorScheme, state.resolvedColorScheme, value]);
+
+  const setTheme = useCallback((next: ColorMode) => {
+    themeController.setColorMode(next);
+  }, []);
+
+  const contextValue = useMemo<ThemeContextValue>(
+    () => ({
+      resolvedTheme,
+      setTheme,
+      theme,
+      themes: AVAILABLE_MODES,
+    }),
+    [resolvedTheme, setTheme, theme]
+  );
+
+  return (
+    <ThemeContext.Provider value={contextValue}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+export function useTheme(): ThemeContextValue {
+  return (
+    useContext(ThemeContext) ?? {
+      setTheme: () => {},
+      themes: [],
+    }
+  );
+}

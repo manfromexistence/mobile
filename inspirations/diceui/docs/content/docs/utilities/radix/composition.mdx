@@ -1,0 +1,91 @@
+---
+title: Composition
+description: A collection of utility functions for composing event handlers and refs in React components.
+links:
+  api: /docs/utilities/composition#api-reference
+---
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+
+<TabsContent value="cli">
+
+```package-install
+npx shadcn@latest add @diceui/composition
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ComponentSource name="compose-refs" />
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+### Composing Refs
+
+#### useComposedRefs
+
+```tsx
+import { useComposedRefs } from "@/lib/compose-refs"
+
+export function Input({ forwardedRef, ...props }) {
+  const localRef = React.useRef(null)
+  const composedRefs = useComposedRefs(forwardedRef, localRef)
+
+  return <input ref={composedRefs} {...props} />
+}
+```
+
+#### composeRefs
+
+```tsx
+import { composeRefs } from "@/lib/compose-refs"
+
+export function Input({ forwardedRef, ...props }) {
+  const localRef = React.useRef(null)
+  const composedRefs = composeRefs(forwardedRef, localRef)
+
+  return <input ref={composedRefs} {...props} />
+} 
+```
+
+## API Reference
+
+### composeRefs
+
+A utility function that composes multiple refs together.
+
+<AutoTypeTable
+  path="./types/radix/utilities.ts"
+  name="ComposeRefsProps"
+/>
+
+### useComposedRefs
+
+A React hook that composes multiple refs together.
+
+<AutoTypeTable
+  path="./types/radix/utilities.ts"
+  name="UseComposedRefsProps"
+/>
+
+## Credits
+
+- [Radix UI](https://github.com/radix-ui/primitives/blob/main/packages/react/compose-refs/src/compose-refs.tsx) - For the `composeRefs` and `useComposedRefs` utilities.

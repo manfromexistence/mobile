@@ -1,0 +1,86 @@
+---
+base: base
+title: Composition
+description: A collection of utility functions for composing event handlers and refs in React components.
+links:
+  api: /docs/utilities/base/composition#api-reference
+---
+
+## Installation
+
+<CodeTabs>
+
+<TabsList>
+  <TabsTrigger value="cli">Command</TabsTrigger>
+  <TabsTrigger value="manual">Manual</TabsTrigger>
+</TabsList>
+
+<TabsContent value="cli">
+
+```package-install
+npx shadcn@latest add @diceui/composition
+```
+
+</TabsContent>
+
+<TabsContent value="manual">
+
+<Steps className="pt-2">
+
+<Step>Copy and paste the following code into your project.</Step>
+
+<ComponentSource src="./lib/compose-refs.ts" />
+
+</Steps>
+
+</TabsContent>
+
+</CodeTabs>
+
+## Usage
+
+### composeRefs
+
+Merges multiple refs into a single ref callback.
+
+```tsx
+import { composeRefs } from "@/lib/compose-refs"
+
+function MyComponent() {
+  const localRef = useRef(null)
+  const forwardedRef = useForwardedRef()
+  
+  return <div ref={composeRefs(localRef, forwardedRef)} />
+}
+```
+
+### useComposedRefs
+
+React hook version of `composeRefs`.
+
+```tsx
+import { useComposedRefs } from "@/lib/compose-refs"
+
+function MyComponent({ ref }: { ref: React.Ref<HTMLDivElement> }) {
+  const localRef = useRef(null)
+  const composedRef = useComposedRefs(ref, localRef)
+  
+  return <div ref={composedRef} />
+}
+```
+
+## API Reference
+
+### composeRefs
+
+<AutoTypeTable
+  path="./types/base/utilities.ts"
+  name="ComposeRefsProps"
+/>
+
+### useComposedRefs
+
+<AutoTypeTable
+  path="./types/base/utilities.ts"
+  name="UseComposedRefsProps"
+/>
