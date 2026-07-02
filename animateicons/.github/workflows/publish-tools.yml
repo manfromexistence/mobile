@@ -1,0 +1,72 @@
+name: Publish CLI + MCP
+
+# Publishes the `animateicons` CLI and/or @animateicons/mcp.
+# Manual dispatch only - pick the package and dist-tag. Both packages bundle
+# the private @animateicons/core at build time, so there is no separate core
+# release to coordinate.
+#
+# Required secrets:
+#   NPM_TOKEN - npm automation token with publish rights for the `animateicons`
+#               name and the @animateicons scope.
+#
+# Before dispatching, bump the version:
+#   pnpm -F animateicons version 0.2.0   (or @animateicons/mcp)
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: "Which package to publish"
+        required: true
+        type: choice
+        options:
+          - "animateicons"
+          - "@animateicons/mcp"
+          - "both"
+      tag:
+        description: "npm dist-tag (latest, next, beta, ...)"
+        required: false
+        default: "latest"
+
+permissions:
+  contents: read
+  id-token: write # required for npm provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify core + CLI + MCP packages
+        run: pnpm run verify:packages
+
+      - name: Publish animateicons (CLI)
+        if: ${{ inputs.package == 'animateicons' || inputs.package == 'both' }}
+        working-directory: cli
+        run: npm publish --provenance --access public --tag ${{ inputs.tag || 'latest' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @animateicons/mcp
+        if: ${{ inputs.package == '@animateicons/mcp' || inputs.package == 'both' }}
+        working-directory: mcp
+        run: npm publish --provenance --access public --tag ${{ inputs.tag || 'latest' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content="0; url=https://chanhdai.com" />
+    <title>Chanhdai</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { background: #09090b; color: #fafafa; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+      .loader { text-align: center; }
+      .loader span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #a1a1aa; margin: 0 4px; animation: pulse 1.4s ease-in-out infinite both; }
+      .loader span:nth-child(1) { animation-delay: -0.32s; }
+      .loader span:nth-child(2) { animation-delay: -0.16s; }
+      @keyframes pulse { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+    </style>
+  </head>
+  <body>
+    <div class="loader">
+      <p style="margin-bottom: 16px; color: #a1a1aa; font-size: 14px;">Loading Chanhdai</p>
+      <span></span><span></span><span></span>
+    </div>
+    <script>
+      window.location.replace("https://chanhdai.com")
+    </script>
+  </body>
+</html>

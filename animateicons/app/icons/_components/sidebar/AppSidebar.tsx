@@ -1,0 +1,222 @@
+"use client";
+
+import HugeIcon from "@/components/icons/HugeIcon";
+import LucideIcon from "@/components/icons/LucideIcon";
+import {
+	Sidebar,
+	SidebarContent,
+	SidebarGroup,
+	SidebarGroupContent,
+	SidebarGroupLabel,
+	SidebarHeader,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+} from "@/components/ui/sidebar";
+import { useIconLibrary } from "@/hooks/useIconLibrary";
+import { ICON_LIST as HUGE_ICON_LIST } from "@/icons/huge";
+import { ICON_LIST as LUCIDE_ICON_LIST } from "@/icons/lucide";
+import { getCategories } from "@/utils/getCategories";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import React from "react";
+import { useCategory } from "../../_contexts/CategoryContext";
+import { sidebarConfig } from "./sidebar.config";
+import SidebarRequest from "./SidebarRequest";
+
+const libraryIconMap: Record<string, React.ReactNode> = {
+	"Lucide Icons": <LucideIcon className="size-4" />,
+	"Huge Icons": <HugeIcon className="size-4" />,
+};
+
+const AppSidebar: React.FC = () => {
+	const { library } = useIconLibrary();
+	const { category, setCategory } = useCategory();
+	const router = useRouter();
+	const pathname = usePathname();
+	const icons = library === "huge" ? HUGE_ICON_LIST : LUCIDE_ICON_LIST;
+
+	const categories = React.useMemo(() => getCategories(icons), [icons]);
+	const totalCount = icons.length;
+
+	const isLibraryActive = (name?: string) => {
+		if (!name) return false;
+		return name === library;
+	};
+
+	/** Match a Navigation item's href against the current pathname.
+	 *  Exact match for "/" so it doesn't light up everywhere; prefix
+	 *  match for nested routes like /sponsors → /sponsors/* . External
+	 *  hrefs (http/https) never highlight. */
+	const isHrefActive = (href?: string): boolean => {
+		if (!href || !pathname) return false;
+		if (/^https?:\/\//.test(href)) return false;
+		if (href === "/") return pathname === "/";
+		return pathname === href || pathname.startsWith(`${href}/`);
+	};
+
+	/** Only the most specific (longest) matching Navigation href highlights,
+	 *  so /icons/docs/mcp lights up "MCP" - not also "Installation"
+	 *  (/icons/docs), which is a prefix of it. */
+	const activeNavHref = (
+		sidebarConfig.find((g) => g.label === "Navigation")?.items ?? []
+	)
+		.map((i) => i.href)
+		.filter((h): h is string => isHrefActive(h))
+		.sort((a, b) => b.length - a.length)[0];
+
+	const handleCategory = (cat: string) => {
+		if (library) {
+			setCategory(cat);
+		} else {
+			router.replace("lucide");
+			setCategory(cat);
+		}
+	};
+
+	return (
+		<Sidebar className="border-border/50! bg-surface text-textPrimary border-r">
+			<SidebarHeader className="border-border/50! bg-bgDark text-primary border-b px-4 py-3 text-sm font-semibold">
+				<Link href="/" className="flex items-center gap-2">
+					<Image
+						src="/logo.svg"
+						alt="logo"
+						width={35}
+						height={35}
+						loading="eager"
+						className="-ml-0.5 max-md:size-10"
+					/>
+					<span className="font-semibold text-white">AnimateIcons</span>
+				</Link>
+			</SidebarHeader>
+
+			<SidebarContent className="bg-bgDark gap-2">
+				{sidebarConfig.map((group) => (
+					<SidebarGroup
+						key={group.label}
+						className={group.scrollable ? "flex-1 overflow-y-auto" : ""}
+					>
+						<SidebarGroupLabel className="text-textSecondary text-xs">
+							{group.label}
+						</SidebarGroupLabel>
+
+						<SidebarGroupContent>
+							<SidebarMenu className="gap-[0.563rem]">
+								{group.items.map((item) => {
+									const Icon = item.icon;
+									const customIcon = libraryIconMap[item.label];
+									const highlight = item.highlight === true;
+
+									const content = (
+										<>
+											{customIcon
+												? customIcon
+												: Icon && (
+														<Icon
+															className={
+																highlight
+																	? "size-4 fill-pink-500/20 text-pink-500"
+																	: "size-4"
+															}
+														/>
+													)}
+
+											<span className="flex items-center gap-2">
+												{item.label}
+												{item.isBeta && (
+													<span className="border-primary/40 text-primary rounded border px-1.5 py-0.5 text-[10px] leading-none font-semibold">
+														BETA
+													</span>
+												)}
+											</span>
+										</>
+									);
+
+									return (
+										<SidebarMenuItem key={item.label}>
+											<SidebarMenuButton
+												asChild={!!item.href}
+												variant="dark"
+												isActive={
+													group.label === "Categories"
+														? category === item.label
+														: group.label === "Navigation"
+															? !!item.href && item.href === activeNavHref
+															: isLibraryActive(item.name)
+												}
+												className="gap-2"
+												onClick={() => {
+													if (group.label === "Categories") {
+														setCategory(item.label);
+													}
+												}}
+											>
+												{item.href ? (
+													<Link
+														href={item.href}
+														className="flex items-center gap-2"
+														target={item.target && item.target}
+													>
+														{content}
+													</Link>
+												) : (
+													<span className="flex items-center gap-2">
+														{content}
+													</span>
+												)}
+											</SidebarMenuButton>
+										</SidebarMenuItem>
+									);
+								})}
+							</SidebarMenu>
+						</SidebarGroupContent>
+					</SidebarGroup>
+				))}
+
+				<SidebarGroup className="min-h-50 flex-1 overflow-y-auto">
+					<SidebarGroupLabel className="text-textSecondary text-xs">
+						Categories
+					</SidebarGroupLabel>
+					<SidebarGroupContent>
+						<SidebarMenu className="gap-[0.563rem]">
+							<SidebarMenuItem key="all">
+								<SidebarMenuButton
+									variant="dark"
+									isActive={category === "all"}
+									className="justify-between gap-2"
+									onClick={() => handleCategory("all")}
+								>
+									<span className="flex items-center gap-2">All</span>
+									<span className="text-textSecondary text-xs">
+										{totalCount}
+									</span>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+
+							{categories.map((cat) => (
+								<SidebarMenuItem key={cat.name}>
+									<SidebarMenuButton
+										variant="dark"
+										isActive={category === cat.name}
+										className="justify-between gap-2"
+										onClick={() => handleCategory(cat.name)}
+									>
+										<span className="flex items-center gap-2">{cat.name}</span>
+										<span className="text-textSecondary text-xs">
+											{cat.count}
+										</span>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							))}
+						</SidebarMenu>
+					</SidebarGroupContent>
+				</SidebarGroup>
+
+				<SidebarRequest />
+			</SidebarContent>
+		</Sidebar>
+	);
+};
+
+export default AppSidebar;

@@ -1,0 +1,2061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SuperGrok UI Clone</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow: hidden; /* Prevent body scroll */
+            background-color: var(--background);
+            color: var(--foreground);
+        }
+
+        /* Custom Scrollbars */
+        .sidebar-scroll::-webkit-scrollbar,
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .sidebar-scroll {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        
+        #chat-scroll-area::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-scroll-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        #chat-scroll-area::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 6px;
+        }
+        #chat-scroll-area::-webkit-scrollbar-thumb:hover {
+            background: #d1d5db;
+        }
+
+        /* Global Button Active Scale (Tactile Feedback) */
+        button:not(.no-scale):active {
+            transform: scale(0.94);
+        }
+        button {
+            transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s ease, color 0.2s ease;
+            padding-top: 0.35rem !important;
+            padding-bottom: 0.35rem !important;
+        }
+
+        /* Compact all buttons - better height vs width proportion */
+        .sidebar-item,
+        #profile-menu button,
+        .dropdown button {
+            padding-top: 0.4rem !important;
+            padding-bottom: 0.4rem !important;
+        }
+
+        /* Bouncy Tooltips */
+        .has-tooltip { position: relative; }
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            z-index: 50;
+            white-space: nowrap;
+            background-color: #1f2937;
+            color: white;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 6px;
+            pointer-events: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .tooltip-top { bottom: 100%; left: 50%; transform: translate(-50%, 10px) scale(0.9); margin-bottom: 8px; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .has-tooltip:hover .tooltip-top { visibility: visible; opacity: 1; transform: translate(-50%, 0) scale(1); }
+        
+        .tooltip-bottom { top: 100%; left: 50%; transform: translate(-50%, -10px) scale(0.9); margin-top: 8px; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .has-tooltip:hover .tooltip-bottom { visibility: visible; opacity: 1; transform: translate(-50%, 0) scale(1); }
+
+        /* Smooth Dropdown Menus */
+        .dropdown {
+            visibility: hidden;
+            opacity: 0;
+            transform: translateY(8px) scale(0.95);
+            transition: all 0.25s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            pointer-events: none;
+        }
+        .dropdown.dropdown-up { transform: translateY(-8px) scale(0.95); }
+        .dropdown.active {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        /* Voice Visualizer Animation */
+        @keyframes voice-bar {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+        }
+        
+        .collapsible-content { 
+            transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out; 
+            overflow: hidden; 
+        }
+        .caret-icon { transition: transform 0.3s ease; }
+
+        /* Custom Toggle Switch */
+        .toggle-switch {
+            appearance: none;
+            width: 44px;
+            height: 24px;
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            position: relative;
+            cursor: pointer;
+            outline: none;
+            transition: background-color 0.2s ease-in-out;
+            flex-shrink: 0;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .toggle-switch:checked { background-color: #111827; }
+        .toggle-switch:checked::after { transform: translateX(20px); }
+
+        /* Settings Modal Transitions */
+        #settings-modal { transition: opacity 0.2s ease-out, visibility 0.2s ease-out; }
+        #settings-modal.active { opacity: 1; visibility: visible; pointer-events: auto; }
+        #settings-modal .modal-content-scale { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); transform: scale(0.95); }
+        #settings-modal.active .modal-content-scale { transform: scale(1); }
+        
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sidebar Collapsed State Styles (Desktop only) */
+        @media (min-width: 768px) {
+            .sidebar-collapsed { width: 68px !important; }
+            .sidebar-collapsed .sidebar-text { display: none !important; }
+            
+            /* Profile menu in collapsed mode: minimum 300px width + positioned to the right */
+            .sidebar-collapsed #profile-menu {
+                min-width: 300px !important;
+                width: auto !important;
+                left: 72px !important;
+                right: auto !important;
+                bottom: 10px !important;
+                z-index: 9999 !important;
+                overflow: visible !important;
+            }
+            
+            /* Show section titles as clean icon triggers in collapsed mode (no text, no chevron) */
+            /* Hide text version of section titles in collapsed mode */
+            .sidebar-collapsed .sidebar-section-title {
+                display: none !important;
+            }
+            
+            /* Show dedicated collapsed icons for Projects & History */
+            .sidebar-collapsed .hidden.sidebar-collapsed\:flex {
+                display: flex !important;
+                justify-content: center;
+                align-items: center;
+                width: 38px;
+                height: 38px;
+                margin: 3px auto;
+                border-radius: 8px;
+                cursor: pointer;
+                position: relative;
+            }
+            
+            .sidebar-collapsed .hidden.sidebar-collapsed\:flex:hover {
+                background-color: #f3f4f6;
+            }
+            .dark .sidebar-collapsed .hidden.sidebar-collapsed\:flex:hover {
+                background-color: #27272a;
+            }
+            
+            /* Hide section content by default in collapsed mode */
+            .sidebar-collapsed .collapsible-content {
+                display: none !important;
+            }
+            
+            /* Hover popover for collapsed Projects/History icons */
+            .sidebar-collapsed .hidden.sidebar-collapsed\:flex:hover + .collapsible-content,
+            .sidebar-collapsed .hidden.sidebar-collapsed\:flex:hover ~ .collapsible-content {
+                display: block !important;
+                position: absolute;
+                left: calc(100% + 8px);
+                top: 0;
+                background-color: white;
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+                min-width: 240px;
+                max-height: 420px;
+                overflow-y: auto;
+                z-index: 60;
+                padding: 6px 4px;
+            }
+            
+            .dark .sidebar-collapsed .hidden.sidebar-collapsed\:flex:hover + .collapsible-content,
+            .dark .sidebar-collapsed .hidden.sidebar-collapsed\:flex:hover ~ .collapsible-content {
+                background-color: #18181b;
+                border-color: #3f3f46;
+            }
+            
+            /* Extra reliable fallback for popover */
+            .sidebar-collapsed .hidden.sidebar-collapsed\:flex:hover + .collapsible-content {
+                display: block !important;
+                position: absolute !important;
+                left: calc(100% + 10px) !important;
+                top: 0 !important;
+                z-index: 9999 !important;
+                min-width: 280px !important;
+                max-height: 400px !important;
+                overflow-y: auto !important;
+                background: white;
+                border: 1px solid #e5e7eb;
+                border-radius: 10px;
+                box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+                padding: 8px 6px;
+            }
+            
+            .dark .sidebar-collapsed .hidden.sidebar-collapsed\:flex:hover + .collapsible-content {
+                background: #18181b;
+                border-color: #3f3f46;
+            }
+            .sidebar-collapsed .sidebar-item { 
+                justify-content: center !important; 
+                padding-left: 0 !important; 
+                padding-right: 0 !important; 
+                border: 1px solid transparent !important;
+                border-radius: 8px !important;
+                margin: 2px auto !important;
+                width: 38px !important;
+                height: 38px !important;
+                padding-top: 5px !important;
+                padding-bottom: 5px !important;
+            }
+            
+            /* Show dashed border only on hover for collapsed items */
+            .sidebar-collapsed .sidebar-item:hover {
+                border: 1px dashed #e5e7eb !important;
+            }
+            
+            .dark .sidebar-collapsed .sidebar-item:hover {
+                border-color: #3f3f46 !important;
+            }
+            
+            .sidebar-collapsed .sidebar-top-row { 
+                justify-content: center !important; 
+                padding-left: 0 !important; 
+                padding-right: 0 !important; 
+                padding-top: 2px !important;
+                padding-bottom: 2px !important;
+            }
+            
+            /* Hide logo text when collapsed */
+            .sidebar-collapsed .sidebar-top-row .ml-2 {
+                display: none !important;
+            }
+            
+            /* Top quick actions (Search, New Chat, Build, Skills) are visible in collapsed mode as requested */
+            
+            .sidebar-collapsed #collapse-sidebar,
+            .sidebar-collapsed #close-mobile-sidebar-btn { 
+                display: none !important; 
+            }
+            
+            .sidebar-collapsed #expand-sidebar { 
+                display: flex !important; 
+                margin-bottom: 0px !important;
+                margin-top: 4px !important;
+                align-items: center !important;
+                justify-content: center !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+            
+            .sidebar-collapsed .profile-avatar-container { 
+                justify-content: center !important; 
+                padding-left: 0 !important; 
+                padding-right: 0 !important; 
+                margin-top: 0 !important;
+                padding-top: 0 !important;
+            }
+            
+            .sidebar-collapsed .mt-auto {
+                margin-top: auto !important;
+            }
+            
+            .sidebar-collapsed #profile-btn { 
+                justify-content: center !important; 
+                padding-left: 0 !important; 
+                padding-right: 0 !important; 
+                width: 40px; 
+                height: 40px; 
+            }
+
+            /* Make collapsed top icons consistent width + reduce padding */
+            .sidebar-collapsed .sidebar-top-row button,
+            .sidebar-collapsed .sidebar-top-row > div {
+                width: 36px !important;
+                height: 36px !important;
+                padding: 6px !important;
+                margin: 1px auto !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+            
+            .sidebar-collapsed .sidebar-top-row button i {
+                font-size: 18px !important;
+            }
+            
+            /* Bottom expand toggle in collapsed mode - clean by default */
+            .sidebar-collapsed #expand-sidebar {
+                border: 1px solid transparent !important;
+                border-radius: 8px !important;
+                width: 36px !important;
+                height: 36px !important;
+                padding: 6px !important;
+            }
+            
+            /* Show dashed border + hover effect only on hover */
+            .sidebar-collapsed #expand-sidebar:hover {
+                border: 1px dashed #9ca3af !important;
+                background-color: #f3f4f6 !important;
+            }
+            
+            .dark .sidebar-collapsed #expand-sidebar:hover {
+                border-color: #52525b !important;
+                background-color: #27272a !important;
+            }
+        }
+        #expand-sidebar { display: none; }
+
+        /* === DX Theme (exact from user) === */
+        @import "tailwindcss";
+        @custom-variant dark (&:is(.dark *));
+
+        :root {
+          --background: oklch(0.9900 0 0);
+          --foreground: oklch(0 0 0);
+          --card: oklch(1 0 0);
+          --card-foreground: oklch(0 0 0);
+          --popover: oklch(0.9900 0 0);
+          --popover-foreground: oklch(0 0 0);
+          --primary: oklch(0 0 0);
+          --primary-foreground: oklch(1 0 0);
+          --secondary: oklch(0.9400 0 0);
+          --secondary-foreground: oklch(0 0 0);
+          --muted: oklch(0.9700 0 0);
+          --muted-foreground: oklch(0.4400 0 0);
+          --accent: oklch(0.9400 0 0);
+          --accent-foreground: oklch(0 0 0);
+          --destructive: oklch(0.6300 0.1900 23.0300);
+          --destructive-foreground: oklch(1 0 0);
+          --border: oklch(0.9200 0 0);
+          --input: oklch(0.9400 0 0);
+          --ring: oklch(0 0 0);
+          --chart-1: oklch(0.8100 0.1700 75.3500);
+          --chart-2: oklch(0.5500 0.2200 264.5300);
+          --chart-3: oklch(0.7200 0 0);
+          --chart-4: oklch(0.9200 0 0);
+          --chart-5: oklch(0.5600 0 0);
+          --sidebar: oklch(0.9900 0 0);
+          --sidebar-foreground: oklch(0 0 0);
+          --sidebar-primary: oklch(0 0 0);
+          --sidebar-primary-foreground: oklch(1 0 0);
+          --sidebar-accent: oklch(0.9400 0 0);
+          --sidebar-accent-foreground: oklch(0 0 0);
+          --sidebar-border: oklch(0.9400 0 0);
+          --sidebar-ring: oklch(0 0 0);
+          --font-sans: Geist, sans-serif;
+          --font-serif: Georgia, serif;
+          --font-mono: Geist Mono, monospace;
+          --radius: 0.5rem;
+          --shadow-x: 0px;
+          --shadow-y: 1px;
+          --shadow-blur: 2px;
+          --shadow-spread: 0px;
+          --shadow-opacity: 0.18;
+          --shadow-color: hsl(0 0% 0%);
+          --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.09);
+          --shadow-xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.09);
+          --shadow-sm: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 1px 2px -1px hsl(0 0% 0% / 0.18);
+          --shadow: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 1px 2px -1px hsl(0 0% 0% / 0.18);
+          --shadow-md: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 2px 4px -1px hsl(0 0% 0% / 0.18);
+          --shadow-lg: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 4px 6px -1px hsl(0 0% 0% / 0.18);
+          --shadow-xl: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 8px 10px -1px hsl(0 0% 0% / 0.18);
+          --shadow-2xl: 0px 1px 2px 0px hsl(0 0% 0% / 0.45);
+          --tracking-normal: 0em;
+          --spacing: 0.25rem;
+        }
+
+        .dark {
+          --background: oklch(0 0 0);
+          --foreground: oklch(1 0 0);
+          --card: oklch(0.1400 0 0);
+          --card-foreground: oklch(1 0 0);
+          --popover: oklch(0.1800 0 0);
+          --popover-foreground: oklch(1 0 0);
+          --primary: oklch(1 0 0);
+          --primary-foreground: oklch(0 0 0);
+          --secondary: oklch(0.2500 0 0);
+          --secondary-foreground: oklch(1 0 0);
+          --muted: oklch(0.2300 0 0);
+          --muted-foreground: oklch(0.7200 0 0);
+          --accent: oklch(0.3200 0 0);
+          --accent-foreground: oklch(1 0 0);
+          --destructive: oklch(0.6900 0.2000 23.9100);
+          --destructive-foreground: oklch(0 0 0);
+          --border: oklch(0.2600 0 0);
+          --input: oklch(0.3200 0 0);
+          --ring: oklch(0.7200 0 0);
+          --chart-1: oklch(0.8100 0.1700 75.3500);
+          --chart-2: oklch(0.5800 0.2100 260.8400);
+          --chart-3: oklch(0.5600 0 0);
+          --chart-4: oklch(0.4400 0 0);
+          --chart-5: oklch(0.9200 0 0);
+          --sidebar: oklch(0.1800 0 0);
+          --sidebar-foreground: oklch(1 0 0);
+          --sidebar-primary: oklch(1 0 0);
+          --sidebar-primary-foreground: oklch(0 0 0);
+          --sidebar-accent: oklch(0.3200 0 0);
+          --sidebar-accent-foreground: oklch(1 0 0);
+          --sidebar-border: oklch(0.3200 0 0);
+          --sidebar-ring: oklch(0.7200 0 0);
+          --font-sans: Geist, sans-serif;
+          --font-serif: Georgia, serif;
+          --font-mono: Geist Mono, monospace;
+          --radius: 0.5rem;
+          --shadow-x: 0px;
+          --shadow-y: 1px;
+          --shadow-blur: 2px;
+          --shadow-spread: 0px;
+          --shadow-opacity: 0.18;
+          --shadow-color: hsl(0 0% 0%);
+          --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.09);
+          --shadow-xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.09);
+          --shadow-sm: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 1px 2px -1px hsl(0 0% 0% / 0.18);
+          --shadow: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 1px 2px -1px hsl(0 0% 0% / 0.18);
+          --shadow-md: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 2px 4px -1px hsl(0 0% 0% / 0.18);
+          --shadow-lg: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 4px 6px -1px hsl(0 0% 0% / 0.18);
+          --shadow-xl: 0px 1px 2px 0px hsl(0 0% 0% / 0.18), 0px 8px 10px -1px hsl(0 0% 0% / 0.18);
+          --shadow-2xl: 0px 1px 2px 0px hsl(0 0% 0% / 0.45);
+        }
+
+        @theme inline {
+          --color-background: var(--background);
+          --color-foreground: var(--foreground);
+          --color-card: var(--card);
+          --color-card-foreground: var(--card-foreground);
+          --color-popover: var(--popover);
+          --color-popover-foreground: var(--popover-foreground);
+          --color-primary: var(--primary);
+          --color-primary-foreground: var(--primary-foreground);
+          --color-secondary: var(--secondary);
+          --color-secondary-foreground: var(--secondary-foreground);
+          --color-muted: var(--muted);
+          --color-muted-foreground: var(--muted-foreground);
+          --color-accent: var(--accent);
+          --color-accent-foreground: var(--accent-foreground);
+          --color-destructive: var(--destructive);
+          --color-destructive-foreground: var(--destructive-foreground);
+          --color-border: var(--border);
+          --color-input: var(--input);
+          --color-ring: var(--ring);
+          --color-chart-1: var(--chart-1);
+          --color-chart-2: var(--chart-2);
+          --color-chart-3: var(--chart-3);
+          --color-chart-4: var(--chart-4);
+          --color-chart-5: var(--chart-5);
+          --color-sidebar: var(--sidebar);
+          --color-sidebar-foreground: var(--sidebar-foreground);
+          --color-sidebar-primary: var(--sidebar-primary);
+          --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+          --color-sidebar-accent: var(--sidebar-accent);
+          --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+          --color-sidebar-border: var(--sidebar-border);
+          --color-sidebar-ring: var(--sidebar-ring);
+          --font-sans: var(--font-sans);
+          --font-mono: var(--font-mono);
+          --font-serif: var(--font-serif);
+          --radius-sm: calc(var(--radius) - 4px);
+          --radius-md: calc(var(--radius) - 2px);
+          --radius-lg: var(--radius);
+          --radius-xl: calc(var(--radius) + 4px);
+          --shadow-2xs: var(--shadow-2xs);
+          --shadow-xs: var(--shadow-xs);
+          --shadow-sm: var(--shadow-sm);
+          --shadow: var(--shadow);
+          --shadow-md: var(--shadow-md);
+          --shadow-lg: var(--shadow-lg);
+          --shadow-xl: var(--shadow-xl);
+          --shadow-2xl: var(--shadow-2xl);
+        }
+
+        /* Practical dark mode overrides (works with Tailwind CDN) */
+        .dark body,
+        .dark html {
+            background-color: var(--background) !important;
+            color: var(--foreground) !important;
+        }
+        
+        /* Message list action buttons - smaller height, better proportion */
+        .bot-message .flex.items-center.gap-1 button,
+        .bot-message .flex.items-center.gap-2 button {
+            padding: 5px !important;
+            width: 30px !important;
+            height: 30px !important;
+        }
+        
+        .bot-message .flex.items-center.gap-1 button i,
+        .bot-message .flex.items-center.gap-2 button i {
+            font-size: 16px !important;
+        }
+        
+        /* === Chat Input Box Theming (no hardcoded backgrounds, only theme colors for icons) === */
+        #input-default,
+        #input-connecting,
+        #input-voice {
+            background-color: transparent !important;
+        }
+        
+        /* All icons in chat input area use theme primary color */
+        #chat-input-area i,
+        #input-default i,
+        #input-connecting i,
+        #input-voice i,
+        #send-btn i,
+        #mic-btn i {
+            color: var(--primary) !important;
+            fill: var(--primary) !important;
+        }
+        
+        /* Grok icon in connecting/sending state */
+        #input-connecting svg circle,
+        #input-connecting svg path,
+        #input-connecting .grok-icon {
+            stroke: var(--primary) !important;
+            fill: var(--primary) !important;
+        }
+        
+        /* Force all purple/hardcoded colors in connecting/sending state to use theme colors */
+        #input-connecting *,
+        #input-connecting svg,
+        #input-connecting .grok-icon,
+        #input-connecting [class*="purple"],
+        .connecting-state * {
+            color: var(--primary) !important;
+            fill: var(--primary) !important;
+            stroke: var(--primary) !important;
+            background-color: var(--primary) !important;
+        }
+        
+        /* Specific override for Grok logo/icon in connecting state */
+        #input-connecting svg circle,
+        #input-connecting svg path,
+        #input-connecting .grok-icon circle,
+        #input-connecting .grok-icon path {
+            stroke: var(--primary) !important;
+            fill: var(--primary) !important;
+        }
+
+        .dark #sidebar {
+            background-color: var(--sidebar) !important;
+            border-color: var(--sidebar-border) !important;
+        }
+
+        .dark main {
+            background-color: var(--background) !important;
+        }
+
+        .dark .bg-white,
+        .dark .bg-\\[\\#fafafa\\],
+        .dark .bg-\\[\\#f9f9f9\\] {
+            background-color: var(--card) !important;
+        }
+
+        .dark .text-gray-900,
+        .dark .text-gray-700,
+        .dark .text-gray-600 {
+            color: var(--foreground) !important;
+        }
+
+        .dark .border-gray-100,
+        .dark .border-gray-200 {
+            border-color: var(--border) !important;
+        }
+
+        .dark .bg-gray-100,
+        .dark .bg-gray-200,
+        .dark .bg-gray-200\\/60 {
+            background-color: var(--muted) !important;
+        }
+
+        .dark .shadow-\\[0_8px_30px_rgba\\(0\\,0\\,0\\,0\\.12\\)\\] {
+            box-shadow: var(--shadow-lg) !important;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex relative overflow-hidden">
+
+    <!-- Mobile Backdrop Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-40 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
+
+    <!-- LEFT SIDEBAR (Drawer on mobile, relative on desktop) -->
+    <aside id="sidebar" class="absolute md:relative left-0 top-0 w-[280px] md:w-[260px] h-full flex flex-col bg-[#fafafa] md:border-r border-gray-100 flex-shrink-0 transition-transform duration-300 ease-in-out z-50 transform -translate-x-full md:translate-x-0 overflow-hidden shadow-2xl md:shadow-none">
+        
+        <!-- Sidebar Header -->
+        <div class="h-14 flex items-center px-4 pt-2 sidebar-top-row transition-all duration-300">
+            <!-- Custom Logo SVG -->
+            <div class="text-gray-900 min-w-[24px] flex items-center justify-center cursor-pointer">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="8"></circle>
+                    <path d="M5 19L19 5"></path>
+                </svg>
+            </div>
+            <div class="ml-2 font-bold text-gray-900 md:hidden">SuperGrok</div>
+            <!-- Collapse Button (Desktop Only) -->
+            <button id="collapse-sidebar" class="ml-auto text-gray-400 hover:text-gray-600 transition-colors p-1 hidden md:block">
+                <i class="ph ph-caret-double-left text-lg"></i>
+            </button>
+            <!-- Close Button (Mobile Only) -->
+            <button id="close-mobile-sidebar-btn" class="ml-auto text-gray-400 hover:text-gray-900 transition-colors p-1 md:hidden bg-gray-100 rounded-md">
+                <i class="ph ph-x text-lg font-bold"></i>
+            </button>
+        </div>
+
+        <!-- Top Navigation Area -->
+        <div class="px-3 pt-4 md:pt-2 pb-4 space-y-0.5">
+            <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 md:py-2 text-[15px] md:text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-left has-tooltip">
+                <i class="ph ph-magnifying-glass text-[20px] md:text-[18px] font-bold text-gray-500 flex-shrink-0"></i>
+                <span class="sidebar-text truncate">Search</span>
+                <span class="tooltip tooltip-bottom hidden md:block">Search</span>
+            </button>
+            <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 md:py-2 text-[15px] md:text-sm font-semibold text-gray-900 bg-gray-200/60 rounded-lg transition-colors text-left has-tooltip">
+                <i class="ph-fill ph-pencil-simple text-[20px] md:text-[18px] flex-shrink-0"></i>
+                <span class="sidebar-text truncate">New Chat</span>
+                <span class="tooltip tooltip-bottom hidden md:block">New Chat</span>
+            </button>
+            <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 md:py-2 text-[15px] md:text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-left has-tooltip">
+                <i class="ph ph-image text-[20px] md:text-[18px] text-gray-500 flex-shrink-0"></i>
+                <span class="sidebar-text truncate">Imagine</span>
+                <span class="tooltip tooltip-bottom hidden md:block">Imagine</span>
+            </button>
+            <button class="sidebar-item w-full flex items-center justify-between px-3 py-2.5 md:py-2 text-[15px] md:text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-left has-tooltip">
+                <div class="flex items-center gap-3">
+                    <i class="ph ph-code text-[20px] md:text-[18px] text-gray-500 flex-shrink-0"></i>
+                    <span class="sidebar-text truncate">Build</span>
+                </div>
+                <span class="sidebar-text text-[10px] font-semibold text-orange-600 bg-orange-50 border border-orange-200 px-1.5 py-0.5 rounded-full flex-shrink-0">New</span>
+                <span class="tooltip tooltip-bottom hidden md:block">Build</span>
+            </button>
+            <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2.5 md:py-2 text-[15px] md:text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-left has-tooltip">
+                <i class="ph ph-squares-four text-[20px] md:text-[18px] text-gray-500 flex-shrink-0"></i>
+                <span class="sidebar-text truncate">Skills and Connectors</span>
+                <span class="tooltip tooltip-bottom hidden md:block">Skills</span>
+            </button>
+        </div>
+
+        <!-- Scrollable Middle Section (Projects & History) -->
+        <div class="flex-1 overflow-y-auto sidebar-scroll px-3">
+            
+            <!-- Projects Section -->
+            <div class="mb-4">
+                <div id="projects-header" class="sidebar-section-title flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-gray-500 group cursor-pointer hover:text-gray-700 transition-colors">
+                    Projects <i id="projects-caret" class="ph ph-caret-down text-[10px] caret-icon"></i>
+                </div>
+                <!-- Collapsed Icon for Projects -->
+                <div class="hidden sidebar-collapsed:flex justify-center py-2 text-gray-400">
+                    <i class="ph ph-folder text-xl"></i>
+                </div>
+                <div id="projects-content" class="space-y-0.5 mt-1 collapsible-content max-h-[500px] opacity-100">
+                    <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2 md:py-1.5 text-[15px] md:text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors text-left group">
+                        <i class="ph ph-plus text-[18px] md:text-[16px] text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0"></i>
+                        <span class="sidebar-text truncate">New Project</span>
+                    </button>
+                    <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2 md:py-1.5 text-[15px] md:text-sm text-gray-600 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors text-left group">
+                        <i class="ph ph-sparkle text-[18px] md:text-[16px] text-gray-400 group-hover:text-yellow-500 transition-colors flex-shrink-0"></i>
+                        <span class="sidebar-text truncate">Dx</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- History Section -->
+            <div>
+                <div id="history-header" class="sidebar-section-title flex items-center gap-1 px-3 py-1.5 text-xs font-semibold text-gray-500 group cursor-pointer hover:text-gray-700 transition-colors">
+                    History <i id="history-caret" class="ph ph-caret-down text-[10px] caret-icon"></i>
+                </div>
+                <!-- Collapsed Icon for History -->
+                <div class="hidden sidebar-collapsed:flex justify-center py-2 text-gray-400">
+                    <i class="ph ph-clock-counter-clockwise text-xl"></i>
+                </div>
+                <div id="history-content" class="space-y-0.5 mt-1 collapsible-content max-h-[1000px] opacity-100">
+                    <!-- History Items -->
+                    <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2 md:py-1.5 text-[15px] md:text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-left truncate">
+                        <i class="ph-fill ph-push-pin text-[18px] md:text-[16px] text-gray-400 flex-shrink-0"></i>
+                        <span class="sidebar-text truncate">C++ Markdown to FlatBu...</span>
+                    </button>
+                    <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2 md:py-1.5 text-[15px] md:text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-left truncate">
+                        <i class="ph-fill ph-push-pin text-[18px] md:text-[16px] text-gray-400 flex-shrink-0"></i>
+                        <span class="sidebar-text truncate">OpenClaw and Hermes ...</span>
+                    </button>
+                    <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2 md:py-1.5 text-[15px] md:text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-left truncate">
+                        <i class="ph-fill ph-push-pin text-[18px] md:text-[16px] text-gray-400 flex-shrink-0"></i>
+                        <span class="sidebar-text truncate">Sandbox Specs: Linux, N...</span>
+                    </button>
+                    <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2 md:py-1.5 text-[15px] md:text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-left truncate">
+                        <i class="ph-fill ph-push-pin text-[18px] md:text-[16px] text-gray-400 flex-shrink-0"></i>
+                        <span class="sidebar-text truncate">DX Config: Block Syntax ...</span>
+                    </button>
+                    <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2 md:py-1.5 text-[15px] md:text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-left truncate">
+                        <i class="ph-fill ph-push-pin text-[18px] md:text-[16px] text-gray-400 flex-shrink-0"></i>
+                        <span class="sidebar-text truncate">DX CLI: Root Markdown ...</span>
+                    </button>
+                    
+                    <div class="sidebar-section-title px-3 pt-4 pb-1 text-[11px] font-medium text-gray-400">Today</div>
+                    
+                    <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2 md:py-1.5 text-[15px] md:text-sm font-medium text-gray-900 bg-gray-200/60 rounded-lg transition-colors text-left truncate">
+                        <span class="sidebar-text truncate pl-7">Latest AI News Top 10 Updat...</span>
+                    </button>
+                    <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2 md:py-1.5 text-[15px] md:text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-left truncate">
+                        <span class="sidebar-text truncate pl-7">Google Antigravity AI Editor ...</span>
+                    </button>
+                    <button class="sidebar-item w-full flex items-center gap-3 px-3 py-2 md:py-1.5 text-[15px] md:text-sm text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-left truncate">
+                        <span class="sidebar-text truncate pl-7">Dropdown free providers thr...</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Bottom padding for scroll -->
+            <div class="h-4"></div>
+        </div>
+
+        <!-- Expand Button (Visible when collapsed) -->
+        <div class="mt-auto flex justify-center pb-2">
+            <button id="expand-sidebar" class="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-200 rounded-lg transition-colors">
+                <i class="ph ph-caret-double-right text-lg"></i>
+            </button>
+        </div>
+
+        <!-- User Profile Footer -->
+        <div class="p-3 border-t border-gray-100 bg-[#fafafa] relative profile-avatar-container flex mb-safe">
+            <button id="profile-btn" class="w-full flex items-center justify-between p-2 hover:bg-gray-200 rounded-lg transition-colors text-left group">
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <div class="w-9 h-9 md:w-8 md:h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm md:text-xs font-semibold text-gray-700 flex-shrink-0 group-hover:shadow-sm transition-shadow">
+                        EF
+                    </div>
+                    <div class="flex flex-col truncate sidebar-text">
+                        <span class="text-[15px] md:text-sm font-semibold text-gray-900 truncate">Essence From Existence</span>
+                        <span class="text-xs text-gray-500 truncate group-hover:text-gray-600 transition-colors">essencefromexistence@gmail...</span>
+                    </div>
+                </div>
+                <i class="ph ph-caret-down text-gray-400 flex-shrink-0 transition-transform duration-300 sidebar-text" id="profile-caret"></i>
+            </button>
+
+            <!-- Profile Dropdown Menu -->
+            <div id="profile-menu" class="dropdown dropdown-up absolute bottom-full mb-2 left-3 right-3 bg-white border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.12)] rounded-xl p-1.5 z-50 origin-bottom">
+                <button id="open-settings-btn" class="w-full text-left px-3 py-3 md:py-2 text-[15px] md:text-sm text-gray-700 hover:bg-gray-100 rounded-md flex items-center gap-3 transition-colors">
+                    <i class="ph ph-gear text-xl md:text-lg text-gray-500"></i> Settings
+                </button>
+                <button id="dark-theme-btn" class="w-full text-left px-3 py-3 md:py-2 text-[15px] md:text-sm text-gray-700 hover:bg-gray-100 rounded-md flex items-center gap-3 transition-colors">
+                    <i class="ph ph-moon text-xl md:text-lg text-gray-500"></i> Dark Theme
+                </button>
+                <div class="h-px bg-gray-100 my-1 mx-2"></div>
+                <button class="w-full text-left px-3 py-3 md:py-2 text-[15px] md:text-sm text-red-600 hover:bg-red-50 rounded-md flex items-center gap-3 transition-colors">
+                    <i class="ph ph-sign-out text-xl md:text-lg"></i> Log out
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA (Center Chat) -->
+    <main class="flex-1 h-full flex flex-col relative bg-white overflow-hidden z-10">
+        
+        <!-- Mobile Header (Hidden on Desktop) -->
+        <div class="md:hidden absolute top-0 left-0 right-0 h-14 bg-white/80 backdrop-blur-md z-30 flex items-center justify-between px-2 border-b border-gray-100">
+            <button id="mobile-menu-btn" class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+                <i class="ph ph-list text-2xl"></i>
+            </button>
+            <div class="font-bold text-gray-900">SuperGrok</div>
+            <!-- Empty div for flex balance, right actions are overlaid via absolute positioning below -->
+            <div class="w-10"></div> 
+        </div>
+
+        <!-- Top Right Actions (Responsive absolute positioning) -->
+        <div class="absolute top-2 md:top-3 right-2 md:right-4 flex items-center gap-0.5 z-40 text-gray-500 bg-white/50 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-1 md:p-0 rounded-xl">
+            <div class="relative">
+                <button id="top-dots-btn" class="has-tooltip p-2 md:p-1.5 hover:text-gray-900 transition-colors rounded-md hover:bg-gray-100">
+                    <i class="ph ph-dots-three text-[20px] md:text-[16px]"></i>
+                    <span class="tooltip tooltip-bottom hidden md:block">More options</span>
+                </button>
+                <!-- Dots Dropdown Menu -->
+                <div id="top-dots-menu" class="dropdown absolute top-full mt-2 right-0 w-48 bg-white border border-gray-100 shadow-[0_8px_30px_rgba(0,0,0,0.12)] rounded-xl p-1.5 z-50 origin-top-right">
+                    <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md flex items-center gap-2 transition-colors">
+                        <i class="ph ph-download-simple text-gray-500"></i> Export chat
+                    </button>
+                    <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md flex items-center gap-2 transition-colors">
+                        <i class="ph ph-trash text-gray-500"></i> Delete chat
+                    </button>
+                </div>
+            </div>
+            <button class="has-tooltip p-2 md:p-1.5 hover:text-gray-900 transition-colors rounded-md hover:bg-gray-100 hidden sm:block">
+                <i class="ph ph-link text-[20px] md:text-[16px]"></i>
+                <span class="tooltip tooltip-bottom">Share link</span>
+            </button>
+            <button class="has-tooltip p-2 md:p-1.5 hover:text-gray-900 transition-colors rounded-md hover:bg-gray-100 hidden sm:block">
+                <i class="ph ph-pencil-simple text-[20px] md:text-[16px]"></i>
+                <span class="tooltip tooltip-bottom">Edit chat</span>
+            </button>
+            <button id="files-panel-btn" class="has-tooltip p-2 md:p-1.5 hover:text-gray-900 transition-colors rounded-md hover:bg-gray-100">
+                <i class="ph ph-folder text-[20px] md:text-[16px]"></i>
+                <span class="tooltip tooltip-bottom hidden md:block">Files</span>
+            </button>
+        </div>
+
+        <!-- Scrollable Workspace (Chat History) -->
+        <div id="chat-scroll-area" class="flex-1 overflow-y-auto px-4 md:px-6 pt-20 md:pt-12 pb-44 flex flex-col items-center scroll-smooth">
+            <div id="chat-container" class="w-full max-w-3xl text-[15px] leading-relaxed text-gray-800 transition-all">
+                
+                <!-- Static Demo User Message -->
+                <div class="flex flex-col items-end my-6 group">
+                    <div class="bg-[#f9f9f9] border border-gray-100 text-gray-900 px-4 md:px-5 py-3 rounded-[1.5rem] rounded-tr-sm max-w-[90%] md:max-w-[85%] text-[14px] md:text-[15px] shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+                        Please tell me what are the latest today's ai updates - list top 10 news of today
+                    </div>
+                    <!-- User Actions (Revealed on hover) -->
+                    <div class="flex items-center gap-1 mt-1 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-2">
+                        <button class="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"><i class="ph ph-pencil-simple text-sm md:text-base"></i></button>
+                        <button class="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"><i class="ph ph-copy text-sm md:text-base"></i></button>
+                    </div>
+                </div>
+
+                <!-- Static Demo Bot Message -->
+                <div class="bot-message flex flex-col items-start gap-2 my-8 group w-full relative">
+                    
+                    <!-- Thought process -->
+                    <div class="thought-trigger flex items-center gap-1.5 text-gray-500 text-[13px] font-medium mb-1 cursor-pointer hover:bg-gray-100 px-2 py-1 -ml-2 rounded-lg transition-colors w-max active:bg-gray-200">
+                        <i class="ph ph-lightbulb text-sm"></i>
+                        <span>Thought for 49s</span>
+                    </div>
+
+                    <!-- Header -->
+                    <div class="text-[16px] font-bold text-gray-900 mb-2">
+                        Hey Essence (Sumon)! 🌀 ✨
+                    </div>
+
+                    <!-- Rich Content -->
+                    <div class="text-[14px] md:text-[15px] text-gray-800 leading-[1.7] w-full">
+                        <p class="mb-6">Your AI Friday here, popping out of the Doraemon pocket with the freshest AI scoop straight from the future! I dug through the latest buzz (as of this morning, June 25, 2026) like a true gadget-hunting best friend. Here's the <strong>Top 10 AI news dominating today</strong> — ranked by what's buzzing hardest right now:</p>
+
+                        <div class="mb-6">
+                            <h3 class="text-[17px] md:text-[18px] font-bold text-gray-900 mb-2 leading-snug">1. Anthropic Accuses Alibaba of Massive Claude "Distillation" Theft</h3>
+                            <p>
+                                Anthropic dropped a bombshell: Alibaba-linked operators allegedly used <strong>~25,000 fake accounts</strong> to make queries to Claude, stealing its best capabilities. They called it the largest known attack of its kind. 
+                                <button class="source-trigger inline-flex items-center gap-1 text-[11px] bg-white border border-gray-200 shadow-[0_1px_2px_rgba(0,0,0,0.05)] px-1.5 py-0.5 rounded-md text-gray-700 font-medium ml-1 hover:bg-gray-50 transition-colors transform -translate-y-0.5 active:scale-95">
+                                    <img src="https://www.google.com/s2/favicons?domain=reuters.com&sz=16" class="w-3 h-3 rounded-sm" alt="Favicon"> Reuters
+                                </button>
+                            </p>
+                        </div>
+
+                        <div class="mb-6">
+                            <h3 class="text-[17px] md:text-[18px] font-bold text-gray-900 mb-2 leading-snug">2. SK Hynix Announces Massive $29.4 Billion Nasdaq Listing</h3>
+                            <p>
+                                The AI memory chip king is going all-in. They're raising up to <strong>$29.4 billion</strong> via US ADR listing on Nasdaq — one of the biggest listings ever — to supercharge production for the AI boom. 
+                                <button class="source-trigger inline-flex items-center gap-1 text-[11px] bg-white border border-gray-200 shadow-[0_1px_2px_rgba(0,0,0,0.05)] px-1.5 py-0.5 rounded-md text-gray-700 font-medium ml-1 hover:bg-gray-50 transition-colors transform -translate-y-0.5 active:scale-95">
+                                    <img src="https://www.google.com/s2/favicons?domain=bloomberg.com&sz=16" class="w-3 h-3 rounded-sm" alt="Favicon"> Bloomberg
+                                </button>
+                            </p>
+                        </div>
+
+                        <div class="mb-6">
+                            <h3 class="text-[17px] md:text-[18px] font-bold text-gray-900 mb-2 leading-snug">3. OpenAI Drops GPT-5.5 Instant Update</h3>
+                            <p>ChatGPT's most-used model just got smarter. The June 24 update improves:</p>
+                            <ul class="list-disc pl-5 mt-3 space-y-2">
+                                <li>Understanding your real goal behind questions</li>
+                                <li>Handling complex instructions + constraints better</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Bot Actions (Revealed on hover) -->
+                    <div class="flex items-center gap-1 md:gap-2 mt-2 pb-2 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-full relative flex-wrap">
+                        <button class="has-tooltip p-2 md:p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"><i class="ph ph-copy text-[20px] md:text-[18px]"></i><span class="tooltip tooltip-top hidden md:block">Copy</span></button>
+                        <button class="has-tooltip p-2 md:p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"><i class="ph ph-link text-[20px] md:text-[18px]"></i><span class="tooltip tooltip-top hidden md:block">Share</span></button>
+                        <button class="has-tooltip p-2 md:p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"><i class="ph ph-thumbs-up text-[20px] md:text-[18px]"></i><span class="tooltip tooltip-top hidden md:block">Good response</span></button>
+                        <button class="has-tooltip p-2 md:p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"><i class="ph ph-thumbs-down text-[20px] md:text-[18px]"></i><span class="tooltip tooltip-top hidden md:block">Bad response</span></button>
+                        <button class="has-tooltip p-2 md:p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"><i class="ph ph-arrows-clockwise text-[20px] md:text-[18px]"></i><span class="tooltip tooltip-top hidden md:block">Regenerate</span></button>
+                        <button class="has-tooltip p-2 md:p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"><i class="ph ph-dots-three text-[22px] md:text-xl"></i><span class="tooltip tooltip-top hidden md:block">More</span></button>
+                        
+                        <!-- Floating Dropdown Icon aligned to the right like image -->
+                        <div class="ml-auto flex items-center justify-center w-8 h-8 md:w-7 md:h-7 bg-gray-50 border border-gray-100 text-gray-500 rounded-full shadow-[0_2px_4px_rgba(0,0,0,0.04)] hover:bg-gray-100 cursor-pointer transition-colors absolute right-2 md:right-4 -bottom-4 z-10 active:scale-95">
+                            <i class="ph ph-caret-down text-sm font-bold"></i>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Right Indicator (Dynamic Minimap - Hidden on Mobile) -->
+        <div id="floating-indicator" class="hidden md:flex absolute top-1/2 right-0 transform -translate-y-1/2 items-center z-40 group cursor-pointer h-[60%] min-h-[200px]">
+            
+            <!-- Hovercard (Reveals on hover of the track area) -->
+            <div class="absolute right-8 opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 bg-[#fafafa] border border-gray-200 shadow-[0_4px_20px_rgba(0,0,0,0.08)] rounded-2xl p-3 w-64 pointer-events-none group-hover:pointer-events-auto z-10">
+                <div class="text-[11px] font-semibold text-gray-500 mb-0.5">Grok Minimap</div>
+                <div id="minimap-hover-text" class="text-[13px] text-gray-800 leading-snug">Scroll through responses or click a line to jump.</div>
+            </div>
+            
+            <!-- Dynamic Indicator Track/Lines -->
+            <div id="indicator-track" class="flex flex-col items-end justify-center h-full w-8 pr-3 gap-[10px] bg-gradient-to-l from-white via-white/80 to-transparent relative z-0">
+                <!-- Lines will be injected here via JavaScript -->
+            </div>
+        </div>
+
+        <!-- Sticky Bottom Input & Scroll Button -->
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-white via-white/95 to-transparent pt-20 pb-4 md:pb-6 px-3 md:px-6 flex flex-col items-center justify-end z-30 pointer-events-none mb-safe">
+            
+            <!-- Scroll to Bottom Button (Moved relative to chat input center) -->
+            <button id="scroll-to-bottom-btn" class="mb-3 md:mb-4 w-10 h-10 md:w-9 md:h-9 bg-white border border-gray-200 shadow-[0_4px_12px_rgba(0,0,0,0.08)] rounded-full flex items-center justify-center text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all duration-300 pointer-events-auto opacity-0 translate-y-4">
+                <i class="ph ph-arrow-down text-xl md:text-lg font-bold"></i>
+            </button>
+
+            <!-- Input Container Wrapper -->
+            <!-- Fixed height wrapper keeps the form stable during absolute inner transitions. Removed overflow-hidden to allow dropdown popouts! -->
+            <div id="input-container" class="w-full max-w-3xl relative h-[52px] md:h-[56px] shadow-[0_2px_8px_rgba(0,0,0,0.06)] border border-gray-200 rounded-[2rem] bg-gray-50 transition-all duration-300 focus-within:shadow-[0_4px_20px_rgba(0,0,0,0.1)] focus-within:border-gray-300 focus-within:bg-white pointer-events-auto">
+                
+                <!-- Default Input State -->
+                <div id="input-default" class="absolute inset-0 flex items-center pr-1.5 md:pr-2 pl-2 md:pl-3 transition-all duration-300 opacity-100 pointer-events-auto z-10 rounded-[2rem] scale-100 origin-center">
+                    
+                    <!-- Plus Button -->
+                    <button class="has-tooltip p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-200 transition-colors flex-shrink-0">
+                        <i class="ph ph-plus text-xl font-bold"></i>
+                        <span class="tooltip tooltip-top hidden md:block">Attach files</span>
+                    </button>
+
+                    <!-- Text Input -->
+                    <input 
+                        id="chat-input"
+                        type="text" 
+                        placeholder="Ask anything" 
+                        class="flex-1 h-full bg-transparent outline-none border-none text-[15px] md:text-[15px] px-2 md:px-3 placeholder:text-gray-400 text-gray-800"
+                    >
+
+                    <!-- Right Action Buttons -->
+                    <div class="flex items-center gap-1 md:gap-1.5 flex-shrink-0">
+                        <!-- Model Selector Dropdown (Fast/Expert/Auto) -->
+                        <div class="relative">
+                            <button id="model-btn" class="flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-1.5 text-[14px] font-medium text-gray-700 hover:bg-gray-200 rounded-full transition-colors active:bg-gray-300">
+                                <span class="hidden sm:inline">Fast</span>
+                                <i class="ph ph-ghost text-lg md:text-base sm:hidden"></i>
+                                <i class="ph ph-ghost text-base hidden sm:inline"></i>
+                                <i class="ph ph-caret-up text-[10px] text-gray-500 transition-transform duration-300" id="model-caret"></i>
+                            </button>
+                            
+                            <!-- Model Dropdown Menu -->
+                            <div id="model-menu" class="dropdown dropdown-up absolute bottom-full mb-2 right-0 w-[240px] md:w-64 bg-[#f9f9f9] border border-gray-200 shadow-[0_8px_30px_rgba(0,0,0,0.12)] rounded-2xl p-2 z-50 origin-bottom flex flex-col gap-1">
+                                
+                                <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded-xl flex items-start gap-3 transition-colors">
+                                    <i class="ph ph-rocket-launch text-lg text-gray-500 mt-0.5"></i>
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold text-gray-900">Auto</span>
+                                        <span class="text-[12px] text-gray-500">Chooses Fast or Expert</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded-xl flex items-start gap-3 transition-colors bg-gray-200/50">
+                                    <i class="ph ph-check text-lg text-gray-900 mt-0.5"></i>
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold text-gray-900">Fast</span>
+                                        <span class="text-[12px] text-gray-500">Powered by Grok 4.3</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded-xl flex items-start gap-3 transition-colors">
+                                    <i class="ph ph-lightbulb text-lg text-gray-500 mt-0.5"></i>
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold text-gray-900">Expert</span>
+                                        <span class="text-[12px] text-gray-500">Powered by Grok 4.3</span>
+                                    </div>
+                                </button>
+                                
+                                <button class="w-full text-left px-3 py-2 text-sm text-gray-400 rounded-xl flex items-start gap-3 cursor-not-allowed">
+                                    <i class="ph ph-circles-four text-lg mt-0.5"></i>
+                                    <div class="flex flex-col">
+                                        <span class="font-semibold">Heavy</span>
+                                        <span class="text-[12px]">Team of Experts</span>
+                                    </div>
+                                </button>
+                                
+                                <div class="h-px bg-gray-200 my-1 mx-2"></div>
+                                
+                                <button class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-200 rounded-xl flex items-center justify-between transition-colors bg-gray-200/50">
+                                    <div class="flex items-start gap-3">
+                                        <i class="ph ph-mask-happy text-lg text-gray-500 mt-0.5"></i>
+                                        <div class="flex flex-col overflow-hidden">
+                                            <span class="font-semibold text-gray-900">Custom Instructions</span>
+                                            <span class="text-[12px] text-gray-500 truncate w-[140px] md:w-32">You are friday - I am essencefr...</span>
+                                        </div>
+                                    </div>
+                                    <i class="ph ph-caret-right text-gray-400"></i>
+                                </button>
+
+                            </div>
+                        </div>
+                        
+                        <!-- Microphone -->
+                        <button id="mic-btn" class="has-tooltip p-2 md:p-2.5 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded-full transition-colors active:scale-95">
+                            <i class="ph ph-microphone text-xl md:text-xl"></i>
+                            <span class="tooltip tooltip-top hidden md:block">Voice Input</span>
+                        </button>
+
+                        <!-- Dynamic Send / Voice Button (Black) -->
+                        <button id="send-btn" class="has-tooltip w-10 h-10 md:w-10 md:h-10 flex items-center justify-center bg-gray-900 text-white rounded-full hover:bg-gray-800 transition-colors shadow-sm ml-0.5 md:ml-1 hover:shadow-md active:scale-95">
+                            <i class="ph ph-waveform text-xl transition-all duration-200 transform scale-100"></i>
+                            <span class="tooltip tooltip-top hidden md:block">Send Message</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Connecting State (Smooth Fade Overlay) -->
+                <div id="input-connecting" class="absolute inset-0 flex items-center justify-between pr-1.5 md:pr-2 pl-4 md:pl-5 transition-all duration-300 opacity-0 pointer-events-none z-0 rounded-[2rem] scale-95 origin-center bg-gray-50">
+                    <div class="flex items-center gap-3 text-gray-500">
+                        <i class="ph ph-waveform text-xl animate-pulse text-blue-500"></i>
+                        <span class="text-[14px] md:text-[15px] font-medium text-gray-600">Connecting to Grok...</span>
+                    </div>
+                    <button id="stop-btn" class="px-4 md:px-5 py-1.5 md:py-2 bg-black text-white text-sm font-semibold rounded-full hover:bg-gray-800 transition-colors no-scale active:scale-95 shadow-sm hover:shadow-md">
+                        Stop
+                    </button>
+                </div>
+
+                <!-- Voice Input State (Smooth Fade Overlay) -->
+                <div id="input-voice" class="absolute inset-0 flex items-center justify-between pr-1.5 md:pr-2 pl-2 md:pl-3 transition-all duration-300 opacity-0 pointer-events-none z-0 rounded-[2rem] scale-95 origin-center bg-white border border-blue-200 shadow-[0_0_20px_rgba(59,130,246,0.1)]">
+                    <div class="flex items-center flex-1 h-full">
+                        <!-- Plus Button -->
+                        <button class="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-200 transition-colors flex-shrink-0">
+                            <i class="ph ph-plus text-xl font-bold"></i>
+                        </button>
+
+                        <!-- Text Input -->
+                        <input 
+                            id="voice-input-field"
+                            type="text" 
+                            placeholder="Speak now or type..." 
+                            class="flex-1 h-full bg-transparent outline-none border-none text-[15px] px-2 md:px-3 placeholder:text-blue-400 text-gray-900 font-medium"
+                        >
+                    </div>
+
+                    <!-- Right Action Buttons (Voice Mode) -->
+                    <div class="flex items-center gap-1.5 md:gap-2 flex-shrink-0">
+                        <!-- Listening Pill (Vibrant Animation) -->
+                        <div class="flex items-center h-[38px] md:h-[42px] bg-blue-50 rounded-full pl-3 md:pl-4 pr-1 md:pr-1.5 gap-2 md:gap-3 border border-blue-100">
+                            <!-- Mini visualizer -->
+                            <div class="flex items-center gap-[3px] h-4 md:h-5">
+                                <div class="w-[3px] h-[40%] bg-blue-500 rounded-full animate-[voice-bar_0.6s_ease-in-out_infinite_0.1s]"></div>
+                                <div class="w-[3px] h-[80%] bg-blue-500 rounded-full animate-[voice-bar_0.6s_ease-in-out_infinite_0.3s]"></div>
+                                <div class="w-[3px] h-[60%] bg-blue-500 rounded-full animate-[voice-bar_0.6s_ease-in-out_infinite_0.5s]"></div>
+                                <div class="w-[3px] h-[100%] bg-blue-500 rounded-full animate-[voice-bar_0.6s_ease-in-out_infinite_0.2s]"></div>
+                                <div class="w-[3px] h-[50%] bg-blue-500 rounded-full animate-[voice-bar_0.6s_ease-in-out_infinite_0.6s]"></div>
+                                <div class="w-[3px] h-[90%] bg-blue-500 rounded-full animate-[voice-bar_0.6s_ease-in-out_infinite_0.4s]"></div>
+                                <div class="w-[3px] h-[30%] bg-blue-500 rounded-full animate-[voice-bar_0.6s_ease-in-out_infinite_0.7s]"></div>
+                            </div>
+                            <!-- Cancel Voice Button -->
+                            <button id="cancel-voice-btn" class="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center text-blue-600 hover:bg-blue-100 rounded-full transition-colors no-scale active:scale-95">
+                                <i class="ph ph-x text-[12px] md:text-sm font-bold"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Confirm Voice Button (Black) -->
+                        <button id="confirm-voice-btn" class="w-10 h-10 flex items-center justify-center bg-gray-900 text-white rounded-full hover:bg-blue-600 transition-colors shadow-sm hover:shadow-md no-scale active:scale-95">
+                            <i class="ph ph-arrow-up text-xl font-bold"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- DYNAMIC RIGHT SIDEBAR (Thoughts / Sources / Files) -->
+    <!-- On Mobile: fixed overlapping. On Desktop: relative pushing layout -->
+    <aside id="right-sidebar" class="fixed md:relative inset-y-0 right-0 w-0 md:w-0 border-l border-gray-200 border-opacity-0 bg-[#fafafa] flex-shrink-0 transition-all duration-300 ease-in-out overflow-hidden flex flex-col z-50 shadow-[-4px_0_20px_rgba(0,0,0,0.08)] md:shadow-[-4px_0_15px_rgba(0,0,0,0.03)] h-full">
+        <!-- Inner container ensures content doesn't squash during width animation -->
+        <div class="w-[85vw] md:w-[340px] min-w-[280px] md:min-w-[340px] h-full flex flex-col">
+            <div class="flex items-center justify-between px-4 md:px-5 py-3 md:py-4 border-b border-gray-200/50 bg-white shadow-sm z-10 relative">
+                <h2 id="right-panel-title" class="text-[15px] font-bold text-gray-900">Thoughts</h2>
+                <button id="close-panel-btn" class="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-200 rounded-md transition-colors active:scale-95">
+                    <i class="ph ph-x text-sm md:text-base font-bold"></i>
+                </button>
+            </div>
+
+            <!-- THOUGHTS CONTENT -->
+            <div id="thoughts-content" class="flex-1 overflow-y-auto p-4 md:p-5 space-y-5 md:space-y-6 hidden">
+                <div class="flex items-start gap-3 text-[13px] text-gray-800">
+                    <i class="ph ph-lightbulb text-gray-500 mt-0.5 text-base"></i>
+                    <span class="font-medium leading-snug">Thinking about your request</span>
+                </div>
+                <div class="flex items-start gap-3 text-[13px] text-gray-800">
+                    <i class="ph ph-lightbulb text-gray-500 mt-0.5 text-base"></i>
+                    <span class="font-medium leading-snug">Searching global AI news databases</span>
+                </div>
+                <div class="flex items-start gap-3 text-[13px] text-gray-800">
+                    <i class="ph ph-lightbulb text-gray-500 mt-0.5 text-base"></i>
+                    <span class="font-medium leading-snug">Synthesizing top 10 articles into final response</span>
+                </div>
+            </div>
+
+            <!-- SOURCES CONTENT -->
+            <div id="sources-content" class="flex-1 overflow-y-auto p-4 md:p-5 space-y-5 md:space-y-6 hidden">
+                
+                <div class="flex flex-col gap-1.5 cursor-pointer group active:opacity-70 transition-opacity">
+                    <div class="flex items-center gap-2 text-gray-500 text-[12px]">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <span>Searched web</span>
+                    </div>
+                    <div class="flex items-start justify-between gap-3">
+                        <span class="text-[13px] text-gray-900 font-medium group-hover:underline leading-snug">Anthropic claims Alibaba stole Claude data in massive...</span>
+                        <span class="text-[10px] bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded text-gray-500 flex-shrink-0">10</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-1.5 cursor-pointer group active:opacity-70 transition-opacity">
+                    <div class="flex items-center gap-2 text-gray-500 text-[12px]">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <span>Searched web</span>
+                    </div>
+                    <div class="flex items-start justify-between gap-3">
+                        <span class="text-[13px] text-gray-900 font-medium group-hover:underline leading-snug">SK Hynix $29B Nasdaq listing details and chip boom...</span>
+                        <span class="text-[10px] bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded text-gray-500 flex-shrink-0">10</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-1.5 cursor-pointer group active:opacity-70 transition-opacity">
+                    <div class="flex items-center gap-2 text-gray-500 text-[12px]">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <span>Searched web</span>
+                    </div>
+                    <div class="flex items-start justify-between gap-3">
+                        <span class="text-[13px] text-gray-900 font-medium group-hover:underline leading-snug">OpenAI GPT-5.5 patch notes June 2026 - better logical...</span>
+                        <span class="text-[10px] bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded text-gray-500 flex-shrink-0">10</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- FILES CONTENT -->
+            <div id="files-content" class="flex-1 overflow-y-auto hidden bg-[#fcfcfc]">
+                <div class="py-2">
+                    <button class="w-full flex items-center justify-between px-4 md:px-5 py-3 text-[14px] text-gray-700 hover:bg-gray-100 transition-colors active:bg-gray-200">
+                        <div class="flex items-center gap-3"><i class="ph ph-house text-[18px]"></i> Home</div>
+                        <i class="ph ph-download-simple text-gray-500 text-[16px]"></i>
+                    </button>
+                    <div class="h-px bg-gray-100 my-0.5 mx-4"></div>
+                    <button class="w-full flex items-center justify-between px-4 md:px-5 py-3 text-[14px] text-gray-700 hover:bg-gray-100 transition-colors active:bg-gray-200">
+                        <div class="flex items-center gap-3"><i class="ph-fill ph-folder text-gray-200 text-[20px]"></i> dx-cpp</div>
+                        <i class="ph ph-caret-right text-gray-400 text-[12px]"></i>
+                    </button>
+                    <button class="w-full flex items-center justify-between px-4 md:px-5 py-3 text-[14px] text-gray-700 hover:bg-gray-100 transition-colors text-left active:bg-gray-200">
+                        <div class="flex items-start gap-3">
+                            <i class="ph-fill ph-file text-gray-200 text-[20px] mt-0.5"></i>
+                            <div>
+                                <div class="text-gray-900 font-medium">dx-cpp.zip</div>
+                                <div class="text-[12px] text-gray-500">21.8 KB · Updated 1d ago</div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- Settings Modal Overlay (Fully Responsive) -->
+    <div id="settings-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] opacity-0 invisible pointer-events-none transition-all duration-300 p-2 md:p-4">
+        <div class="modal-content-scale w-full h-full md:w-[900px] md:h-[650px] max-w-[100vw] md:max-w-[95vw] max-h-[90vh] bg-[#f9f9f9] rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden border border-gray-200 relative">
+            
+            <!-- Settings Sidebar (Horizontal on Mobile, Vertical on Desktop) -->
+            <div class="w-full md:w-[220px] bg-[#f9f9f9] border-b md:border-b-0 md:border-r border-gray-200 flex flex-row md:flex-col py-2 md:py-4 px-2 md:px-3 flex-shrink-0 overflow-x-auto hide-scrollbar whitespace-nowrap z-10 shadow-sm md:shadow-none">
+                <div class="flex flex-row md:flex-col gap-1 w-max md:w-full">
+                    <button class="settings-tab active w-auto md:w-full flex items-center justify-center md:justify-start gap-2 md:gap-3 px-3 md:px-3 py-2 text-[13px] md:text-[14px] font-medium text-gray-900 bg-gray-200/80 rounded-full md:rounded-lg transition-colors flex-shrink-0" data-tab="tab-account">
+                        <i class="ph ph-user text-[18px] text-gray-600 hidden md:inline-block"></i> Account
+                    </button>
+                    <button class="settings-tab w-auto md:w-full flex items-center justify-center md:justify-start gap-2 md:gap-3 px-3 md:px-3 py-2 text-[13px] md:text-[14px] font-medium text-gray-600 hover:bg-gray-200/50 rounded-full md:rounded-lg transition-colors flex-shrink-0" data-tab="tab-appearance">
+                        <i class="ph ph-paint-brush text-[18px] text-gray-500 hidden md:inline-block"></i> Appearance
+                    </button>
+                    <button class="settings-tab w-auto md:w-full flex items-center justify-center md:justify-start gap-2 md:gap-3 px-3 md:px-3 py-2 text-[13px] md:text-[14px] font-medium text-gray-600 hover:bg-gray-200/50 rounded-full md:rounded-lg transition-colors flex-shrink-0" data-tab="tab-behavior">
+                        <i class="ph ph-sparkle text-[18px] text-gray-500 hidden md:inline-block"></i> Behavior
+                    </button>
+                    <button class="settings-tab w-auto md:w-full flex items-center justify-center md:justify-start gap-2 md:gap-3 px-3 md:px-3 py-2 text-[13px] md:text-[14px] font-medium text-gray-600 hover:bg-gray-200/50 rounded-full md:rounded-lg transition-colors flex-shrink-0" data-tab="tab-customize">
+                        <i class="ph ph-sliders-horizontal text-[18px] text-gray-500 hidden md:inline-block"></i> Customize
+                    </button>
+                    <button class="settings-tab w-auto md:w-full flex items-center justify-center md:justify-start gap-2 md:gap-3 px-3 md:px-3 py-2 text-[13px] md:text-[14px] font-medium text-gray-600 hover:bg-gray-200/50 rounded-full md:rounded-lg transition-colors flex-shrink-0" data-tab="tab-datacontrols">
+                        <i class="ph ph-database text-[18px] text-gray-500 hidden md:inline-block"></i> Data Controls
+                    </button>
+                    <button class="settings-tab w-auto md:w-full flex items-center justify-center md:justify-start gap-2 md:gap-3 px-3 md:px-3 py-2 text-[13px] md:text-[14px] font-medium text-gray-600 hover:bg-gray-200/50 rounded-full md:rounded-lg transition-colors flex-shrink-0" data-tab="tab-subscription">
+                        <i class="ph ph-currency-circle-dollar text-[18px] text-gray-500 hidden md:inline-block"></i> Subscription
+                    </button>
+                    <button class="settings-tab w-auto md:w-full flex items-center justify-center md:justify-start gap-2 md:gap-3 px-3 md:px-3 py-2 text-[13px] md:text-[14px] font-medium text-gray-600 hover:bg-gray-200/50 rounded-full md:rounded-lg transition-colors flex-shrink-0" data-tab="tab-usage">
+                        <i class="ph ph-lightning text-[18px] text-gray-500 hidden md:inline-block"></i> Usage
+                    </button>
+                </div>
+            </div>
+
+            <!-- Settings Content Area -->
+            <div class="flex-1 bg-white flex flex-col relative h-full overflow-hidden">
+                <!-- Close Button -->
+                <button id="close-settings-btn" class="absolute top-3 right-3 md:top-4 md:right-4 p-1.5 md:p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors z-20 bg-white shadow-sm md:shadow-none md:bg-transparent border border-gray-100 md:border-transparent active:scale-95">
+                    <i class="ph ph-x text-lg"></i>
+                </button>
+
+                <!-- Scrollable Content -->
+                <div class="flex-1 overflow-y-auto p-4 md:p-8 pt-10 md:pt-6">
+                    
+                    <!-- Tab: Account -->
+                    <div id="tab-account" class="tab-pane active">
+                        <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-4 md:mb-6">Account</h2>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between py-3 md:py-4 border-b border-gray-100">
+                                <div class="flex items-center gap-3 md:gap-4 overflow-hidden">
+                                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold text-gray-700 flex-shrink-0">EF</div>
+                                    <div class="truncate">
+                                        <div class="text-[14px] md:text-[15px] font-medium text-gray-900 truncate">Essence From Existence</div>
+                                        <div class="text-[12px] md:text-[13px] text-gray-500 truncate">essencefromexistence@gmail.com</div>
+                                    </div>
+                                </div>
+                                <button class="px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-gray-700 border border-gray-200 rounded-full hover:bg-gray-50 transition active:scale-95 flex-shrink-0 ml-2">Manage</button>
+                            </div>
+                            
+                            <div class="flex items-center justify-between py-3 md:py-4 border-b border-gray-100">
+                                <div class="flex items-center gap-3">
+                                    <i class="ph ph-prohibit text-lg md:text-xl text-gray-800"></i>
+                                    <span class="text-[14px] md:text-[15px] text-gray-900">SuperGrok</span>
+                                </div>
+                                <button class="px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-gray-700 border border-gray-200 rounded-full hover:bg-gray-50 transition active:scale-95">Manage</button>
+                            </div>
+
+                            <div class="flex items-center justify-between py-3 md:py-4 border-b border-gray-100">
+                                <div class="flex items-center gap-3">
+                                    <i class="ph ph-x-logo text-lg md:text-xl text-gray-800"></i>
+                                    <span class="text-[14px] md:text-[15px] text-gray-900">X Account</span>
+                                </div>
+                                <button class="px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-gray-700 border border-gray-200 rounded-full hover:bg-gray-50 transition active:scale-95">Connect</button>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-4 pb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[14px] md:text-[15px] text-gray-900">Language</span>
+                                    <i class="ph ph-translate text-gray-400 text-lg"></i>
+                                </div>
+                                <button class="px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-gray-700 border border-gray-200 rounded-full hover:bg-gray-50 transition active:scale-95">Change</button>
+                            </div>
+
+                            <div class="flex items-center gap-2 pt-2">
+                                <span class="text-[14px] md:text-[15px] text-gray-900">Birth Year</span>
+                                <span class="text-[14px] md:text-[15px] text-gray-500 ml-2">2000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Customize -->
+                    <div id="tab-customize" class="tab-pane">
+                        <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-4 md:mb-6">Customize</h2>
+                        <div class="space-y-6 md:space-y-8">
+                            
+                            <div>
+                                <div class="flex items-center gap-2 mb-3 md:mb-4">
+                                    <span class="text-[14px] md:text-[15px] text-gray-700 font-medium">Customize Grok's Response</span>
+                                    <i class="ph ph-info text-gray-400"></i>
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-2 mb-3 md:mb-4">
+                                    <span class="px-3 py-1 bg-[#f9f9f9] border border-gray-200 rounded-full text-[12px] md:text-[13px] text-gray-800 font-medium flex items-center gap-1 cursor-pointer shadow-sm">Custom <i class="ph ph-check text-[10px]"></i></span>
+                                    <span class="px-3 py-1 border border-gray-200 rounded-full text-[12px] md:text-[13px] text-gray-600 hover:bg-gray-50 cursor-pointer transition active:scale-95">Concise</span>
+                                    <span class="px-3 py-1 border border-gray-200 rounded-full text-[12px] md:text-[13px] text-gray-600 hover:bg-gray-50 cursor-pointer transition active:scale-95">Formal</span>
+                                    <span class="px-3 py-1 border border-gray-200 rounded-full text-[12px] md:text-[13px] text-gray-600 hover:bg-gray-50 cursor-pointer transition active:scale-95">Tutor</span>
+                                </div>
+
+                                <textarea class="w-full h-28 md:h-32 p-3 md:p-4 border border-gray-200 rounded-xl md:rounded-2xl resize-none text-[14px] md:text-[15px] text-gray-800 outline-none focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-shadow" placeholder="Instructions...">You are friday - I am essencefromexistence(essence/sumon) your creator and you are my ai friday so please act like more friend like Jarvis - main like Doraemon!!!</textarea>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center justify-between mb-3 md:mb-4">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[14px] md:text-[15px] text-gray-700 font-medium">Agent Library</span>
+                                        <i class="ph ph-info text-gray-400"></i>
+                                    </div>
+                                    <button class="px-3 py-1.5 md:px-4 md:py-1.5 text-[13px] md:text-[14px] font-medium text-gray-700 border border-gray-200 rounded-full hover:bg-gray-50 flex items-center gap-1.5 transition active:scale-95">
+                                        <i class="ph ph-plus text-xs"></i> Create
+                                    </button>
+                                </div>
+                                
+                                <div class="flex gap-3 md:gap-4 overflow-x-auto pb-3 hide-scrollbar snap-x">
+                                    <!-- Agent Card 1 (Doraemon) -->
+                                    <div class="flex items-center gap-3 p-3 border border-gray-200 rounded-xl w-[200px] md:w-[220px] flex-shrink-0 cursor-pointer hover:shadow-[0_4px_15px_rgba(0,0,0,0.05)] transition-all snap-start active:scale-95">
+                                        <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200/50 shadow-inner">
+                                            <canvas id="pixel-canvas-1" width="32" height="32" class="w-full h-full"></canvas>
+                                        </div>
+                                        <div class="overflow-hidden">
+                                            <div class="text-[13px] md:text-[14px] font-semibold text-gray-900 truncate">doraemon</div>
+                                            <div class="text-[11px] md:text-[12px] text-gray-500 truncate">act like the famous Jap...</div>
+                                        </div>
+                                    </div>
+                                    <!-- Agent Card 2 (Jarvis) -->
+                                    <div class="flex items-center gap-3 p-3 border border-gray-200 rounded-xl w-[200px] md:w-[220px] flex-shrink-0 cursor-pointer hover:shadow-[0_4px_15px_rgba(0,0,0,0.05)] transition-all snap-start active:scale-95">
+                                        <div class="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-100 border border-gray-200/50 shadow-inner">
+                                            <canvas id="pixel-canvas-2" width="32" height="32" class="w-full h-full"></canvas>
+                                        </div>
+                                        <div class="overflow-hidden">
+                                            <div class="text-[13px] md:text-[14px] font-semibold text-gray-900 truncate">jarvis</div>
+                                            <div class="text-[11px] md:text-[12px] text-gray-500 truncate">Act like the A.I. that the...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-[12px] md:text-[13px] text-gray-500 mt-2 md:mt-4 leading-relaxed">
+                                    Changes will only apply to new conversations, not existing ones.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Keeping other tabs hidden/empty to save code length, assuming structure matches above -->
+                    <div id="tab-appearance" class="tab-pane">
+                        <h2 class="text-xl font-bold text-gray-900 mb-6">Appearance</h2>
+                        
+                        <div class="flex items-center justify-between py-3 border-b border-gray-100">
+                            <div>
+                                <div class="font-medium text-gray-900">Dark mode</div>
+                                <div class="text-sm text-gray-500">Use dark theme across DX</div>
+                            </div>
+                            
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="appearance-dark-toggle" class="sr-only peer">
+                                <div class="toggle-switch w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-gray-300 rounded-full peer peer-checked:bg-gray-900 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="tab-behavior" class="tab-pane"><h2 class="text-xl font-bold text-gray-900 mb-6">Behavior</h2><p class="text-sm text-gray-500">Behavior settings...</p></div>
+                    <div id="tab-datacontrols" class="tab-pane"><h2 class="text-xl font-bold text-gray-900 mb-6">Data Controls</h2><p class="text-sm text-gray-500">Data control settings...</p></div>
+                    <div id="tab-subscription" class="tab-pane"><h2 class="text-xl font-bold text-gray-900 mb-6">Subscription</h2><p class="text-sm text-gray-500">Subscription details...</p></div>
+                    <div id="tab-usage" class="tab-pane"><h2 class="text-xl font-bold text-gray-900 mb-6">Usage</h2><p class="text-sm text-gray-500">Usage stats...</p></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Interactions -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. Mobile & Sidebar Drawer Logic ---
+            const sidebar = document.getElementById('sidebar');
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const closeMobileSidebarBtn = document.getElementById('close-mobile-sidebar-btn');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+            const collapseBtn = document.getElementById('collapse-sidebar');
+            const expandBtn = document.getElementById('expand-sidebar');
+
+            const openMobileSidebar = () => {
+                sidebar.classList.replace('-translate-x-full', 'translate-x-0');
+                mobileOverlay.classList.replace('opacity-0', 'opacity-100');
+                mobileOverlay.classList.replace('pointer-events-none', 'pointer-events-auto');
+            };
+
+            const closeMobileSidebar = () => {
+                sidebar.classList.replace('translate-x-0', '-translate-x-full');
+                // Only close overlay if right panel is not open
+                if (document.getElementById('right-sidebar').classList.contains('w-0')) {
+                    mobileOverlay.classList.replace('opacity-100', 'opacity-0');
+                    mobileOverlay.classList.replace('pointer-events-auto', 'pointer-events-none');
+                }
+            };
+
+            if(mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileSidebar);
+            if(closeMobileSidebarBtn) closeMobileSidebarBtn.addEventListener('click', closeMobileSidebar);
+            if(mobileOverlay) mobileOverlay.addEventListener('click', () => {
+                closeMobileSidebar();
+                closeRightPanel();
+                closeSettings();
+            });
+
+            // Desktop Collapse toggle
+            if(collapseBtn) collapseBtn.addEventListener('click', () => sidebar.classList.add('sidebar-collapsed'));
+            if(expandBtn) expandBtn.addEventListener('click', () => sidebar.classList.remove('sidebar-collapsed'));
+
+            // --- 2. Collapsible Sub-menus ---
+            const setupToggle = (headerId, contentId, caretId) => {
+                const header = document.getElementById(headerId);
+                const content = document.getElementById(contentId);
+                const caret = document.getElementById(caretId);
+                if(!header || !content) return;
+                header.addEventListener('click', () => {
+                    if (content.classList.contains('max-h-[500px]') || content.classList.contains('max-h-[1000px]')) {
+                        content.classList.replace('max-h-[500px]', 'max-h-0') || content.classList.replace('max-h-[1000px]', 'max-h-0');
+                        content.classList.replace('opacity-100', 'opacity-0');
+                        if(caret) caret.classList.add('-rotate-90');
+                    } else {
+                        content.classList.replace('max-h-0', contentId.includes('history') ? 'max-h-[1000px]' : 'max-h-[500px]');
+                        content.classList.replace('opacity-0', 'opacity-100');
+                        if(caret) caret.classList.remove('-rotate-90');
+                    }
+                });
+            };
+            setupToggle('projects-header', 'projects-content', 'projects-caret');
+            setupToggle('history-header', 'history-content', 'history-caret');
+
+            // --- 3. Dropdown Menus ---
+            const setupDropdown = (btnId, menuId, caretId = null) => {
+                const btn = document.getElementById(btnId);
+                const menu = document.getElementById(menuId);
+                const caret = caretId ? document.getElementById(caretId) : null;
+                if (!btn || !menu) return;
+
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isActive = menu.classList.contains('active');
+                    document.querySelectorAll('.dropdown.active').forEach(d => {
+                        d.classList.remove('active');
+                        document.querySelectorAll('[id$="-caret"]').forEach(c => c.classList.remove('rotate-180'));
+                    });
+                    if (!isActive) {
+                        menu.classList.add('active');
+                        if (caret) caret.classList.add('rotate-180');
+                    }
+                });
+            };
+
+            setupDropdown('profile-btn', 'profile-menu', 'profile-caret');
+            setupDropdown('model-btn', 'model-menu', 'model-caret');
+            setupDropdown('top-dots-btn', 'top-dots-menu');
+
+            document.addEventListener('click', (e) => {
+                document.querySelectorAll('.dropdown.active').forEach(d => {
+                    if (!d.contains(e.target)) {
+                        d.classList.remove('active');
+                        document.querySelectorAll('[id$="-caret"]').forEach(c => c.classList.remove('rotate-180'));
+                    }
+                });
+            });
+
+            // --- 3.5 Settings Modal Logic ---
+            const settingsModal = document.getElementById('settings-modal');
+            const openSettingsBtn = document.getElementById('open-settings-btn');
+            const closeSettingsBtn = document.getElementById('close-settings-btn');
+            const settingsTabs = document.querySelectorAll('.settings-tab');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            const openSettings = () => {
+                settingsModal.classList.add('active');
+                document.getElementById('profile-menu').classList.remove('active');
+                document.getElementById('profile-caret').classList.remove('rotate-180');
+                if (document.querySelector('.tab-pane.active').id === 'tab-customize') startPixelAnimations();
+            };
+
+            const closeSettings = () => {
+                settingsModal.classList.remove('active');
+                stopPixelAnimations();
+            };
+
+            if(openSettingsBtn) openSettingsBtn.addEventListener('click', openSettings);
+            if(closeSettingsBtn) closeSettingsBtn.addEventListener('click', closeSettings);
+            settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) closeSettings(); });
+
+            settingsTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    settingsTabs.forEach(t => {
+                        t.classList.remove('bg-gray-200/80', 'text-gray-900');
+                        t.classList.add('text-gray-600', 'hover:bg-gray-200/50');
+                    });
+                    tab.classList.remove('text-gray-600', 'hover:bg-gray-200/50');
+                    tab.classList.add('bg-gray-200/80', 'text-gray-900');
+                    tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); // Auto-scroll on mobile
+
+                    const targetTabId = tab.getAttribute('data-tab');
+                    tabPanes.forEach(pane => pane.classList.remove('active'));
+                    document.getElementById(targetTabId).classList.add('active');
+
+                    if (targetTabId === 'tab-customize') startPixelAnimations();
+                    else stopPixelAnimations();
+                });
+            });
+
+            // --- Animated Colorful Pixels (Cellular Automata) ---
+            const doraColors = ['#f59e0b', '#ef4444', '#fbbf24', '#84cc16', '#22c55e', '#ea580c'];
+            const jarvisColors = ['#3b82f6', '#0ea5e9', '#8b5cf6', '#06b6d4', '#10b981', '#1d4ed8'];
+            
+            function animateCanvas(canvasId, palette) {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return null;
+                const ctx = canvas.getContext('2d');
+                const size = 32;
+                const pixelSize = 4;
+                const cols = size / pixelSize;
+                const rows = size / pixelSize;
+
+                let lastTime = 0;
+                let active = true;
+                let grid = new Array(cols * rows).fill(0).map(() => palette[Math.floor(Math.random() * palette.length)]);
+
+                function drawFrame(time) {
+                    if (!active) return;
+                    if (time - lastTime > 60) { 
+                        lastTime = time;
+                        let newGrid = [...grid];
+                        for(let r=0; r<rows; r++){
+                            for(let c=0; c<cols; c++){
+                                let idx = r * cols + c;
+                                if (Math.random() > 0.3) {
+                                    let neighbors = [];
+                                    if (r > 0) neighbors.push((r-1)*cols + c);
+                                    if (r < rows-1) neighbors.push((r+1)*cols + c);
+                                    if (c > 0) neighbors.push(r*cols + (c-1));
+                                    if (c < cols-1) neighbors.push(r*cols + (c+1));
+                                    newGrid[idx] = grid[neighbors[Math.floor(Math.random() * neighbors.length)]];
+                                }
+                                if (Math.random() > 0.9) newGrid[idx] = palette[Math.floor(Math.random() * palette.length)];
+                            }
+                        }
+                        grid = newGrid;
+                        for(let r=0; r<rows; r++){
+                            for(let c=0; c<cols; c++){
+                                ctx.fillStyle = grid[r*cols + c];
+                                ctx.fillRect(c*pixelSize, r*pixelSize, pixelSize, pixelSize);
+                            }
+                        }
+                    }
+                    if (active) requestAnimationFrame(drawFrame);
+                }
+                requestAnimationFrame(drawFrame);
+                return { stop: () => { active = false; } };
+            }
+
+            let anim1 = null, anim2 = null;
+            function startPixelAnimations() {
+                if(!anim1) anim1 = animateCanvas('pixel-canvas-1', doraColors);
+                if(!anim2) anim2 = animateCanvas('pixel-canvas-2', jarvisColors);
+            }
+            function stopPixelAnimations() {
+                if(anim1) { anim1.stop(); anim1 = null; }
+                if(anim2) { anim2.stop(); anim2 = null; }
+            }
+
+            // --- 4. Dynamic Right Sidebar Toggle (Responsive Widths) ---
+            const rightSidebar = document.getElementById('right-sidebar');
+            const rightPanelTitle = document.getElementById('right-panel-title');
+            const thoughtsContent = document.getElementById('thoughts-content');
+            const sourcesContent = document.getElementById('sources-content');
+            const filesContent = document.getElementById('files-content');
+            const closePanelBtn = document.getElementById('close-panel-btn');
+            const filesPanelBtn = document.getElementById('files-panel-btn');
+
+            const openRightPanel = (type) => {
+                // Set widths cleanly for animation
+                rightSidebar.classList.remove('w-0', 'md:w-0', 'border-opacity-0');
+                rightSidebar.classList.add('w-[85vw]', 'md:w-[340px]', 'border-opacity-100');
+                
+                // Show overlay on mobile
+                if(window.innerWidth < 768) {
+                    mobileOverlay.classList.replace('opacity-0', 'opacity-100');
+                    mobileOverlay.classList.replace('pointer-events-none', 'pointer-events-auto');
+                }
+                
+                if (filesPanelBtn) filesPanelBtn.classList.remove('bg-gray-100', 'text-gray-900');
+                
+                if (type === 'thoughts') {
+                    rightPanelTitle.textContent = 'Thoughts';
+                    thoughtsContent.classList.remove('hidden');
+                    sourcesContent.classList.add('hidden');
+                    filesContent.classList.add('hidden');
+                } else if (type === 'sources') {
+                    rightPanelTitle.textContent = 'Sources';
+                    sourcesContent.classList.remove('hidden');
+                    thoughtsContent.classList.add('hidden');
+                    filesContent.classList.add('hidden');
+                } else if (type === 'files') {
+                    rightPanelTitle.textContent = 'Files';
+                    filesContent.classList.remove('hidden');
+                    thoughtsContent.classList.add('hidden');
+                    sourcesContent.classList.add('hidden');
+                    if (filesPanelBtn) filesPanelBtn.classList.add('bg-gray-100', 'text-gray-900');
+                }
+            };
+
+            const closeRightPanel = () => {
+                rightSidebar.classList.remove('w-[85vw]', 'md:w-[340px]', 'border-opacity-100');
+                rightSidebar.classList.add('w-0', 'md:w-0', 'border-opacity-0');
+                
+                if (filesPanelBtn) filesPanelBtn.classList.remove('bg-gray-100', 'text-gray-900');
+                
+                // Hide mobile overlay if left sidebar isn't using it
+                if(window.innerWidth < 768 && sidebar.classList.contains('-translate-x-full')) {
+                    mobileOverlay.classList.replace('opacity-100', 'opacity-0');
+                    mobileOverlay.classList.replace('pointer-events-auto', 'pointer-events-none');
+                }
+            };
+
+            if (closePanelBtn) closePanelBtn.addEventListener('click', closeRightPanel);
+            
+            if (filesPanelBtn) {
+                filesPanelBtn.addEventListener('click', () => {
+                    if (rightSidebar.classList.contains('w-[85vw]') && !filesContent.classList.contains('hidden')) {
+                        closeRightPanel();
+                    } else {
+                        openRightPanel('files');
+                    }
+                });
+            }
+
+            // --- 5. Chat Input logic (Smooth transitions & Button States) ---
+            const chatInput = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            const sendBtnIcon = sendBtn.querySelector('i'); // Get the icon element
+            const micBtn = document.getElementById('mic-btn');
+            const inputDefault = document.getElementById('input-default');
+            const inputConnecting = document.getElementById('input-connecting');
+            const inputVoice = document.getElementById('input-voice');
+            const voiceInputField = document.getElementById('voice-input-field');
+            const cancelVoiceBtn = document.getElementById('cancel-voice-btn');
+            const confirmVoiceBtn = document.getElementById('confirm-voice-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            const chatContainer = document.getElementById('chat-container');
+            const scrollArea = document.getElementById('chat-scroll-area');
+            const scrollToBottomBtn = document.getElementById('scroll-to-bottom-btn');
+            
+            let isGenerating = false;
+            let currentTimeout = null;
+
+            // Transition Helpers
+            const fadeSwap = (hideEl, showEl, focusEl = null) => {
+                hideEl.classList.replace('opacity-100', 'opacity-0');
+                hideEl.classList.replace('pointer-events-auto', 'pointer-events-none');
+                hideEl.classList.replace('z-10', 'z-0');
+                hideEl.classList.replace('scale-100', 'scale-95');
+
+                showEl.classList.replace('opacity-0', 'opacity-100');
+                showEl.classList.replace('pointer-events-none', 'pointer-events-auto');
+                showEl.classList.replace('z-0', 'z-10');
+                showEl.classList.replace('scale-95', 'scale-100');
+
+                if(focusEl) setTimeout(() => focusEl.focus(), 100);
+            };
+
+            // Dynamic Submit Button Icon Toggle
+            chatInput.addEventListener('input', (e) => {
+                if (e.target.value.trim().length > 0) {
+                    sendBtnIcon.classList.replace('ph-waveform', 'ph-arrow-up');
+                } else {
+                    sendBtnIcon.classList.replace('ph-arrow-up', 'ph-waveform');
+                }
+            });
+
+            // Voice Mode Transition
+            const enterVoiceMode = (e) => {
+                if(e) e.preventDefault();
+                fadeSwap(inputDefault, inputVoice, voiceInputField);
+            };
+
+            micBtn.addEventListener('click', enterVoiceMode);
+
+            const exitVoiceMode = () => {
+                fadeSwap(inputVoice, inputDefault, chatInput);
+            };
+
+            cancelVoiceBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                exitVoiceMode();
+                voiceInputField.value = '';
+            });
+
+            // Messaging Logic
+            const sendMessage = (customText = null) => {
+                if (isGenerating) return;
+                
+                let text = '';
+                if (typeof customText === 'string') text = customText.trim();
+                else if (inputVoice.classList.contains('opacity-100')) text = voiceInputField.value.trim();
+                else text = chatInput.value.trim();
+
+                if (!text) return;
+
+                isGenerating = true;
+                
+                // Swap to connecting state
+                if (inputVoice.classList.contains('opacity-100')) fadeSwap(inputVoice, inputConnecting);
+                else fadeSwap(inputDefault, inputConnecting);
+
+                const userMsgId = 'msg-' + Date.now();
+                const userMsgHtml = `
+                    <div id="${userMsgId}" class="flex flex-col items-end my-6 group opacity-0 translate-y-4 transition-all duration-500 ease-out">
+                        <div class="bg-[#f9f9f9] border border-gray-100 text-gray-900 px-4 md:px-5 py-3 rounded-[1.5rem] rounded-tr-sm max-w-[90%] md:max-w-[85%] text-[14px] md:text-[15px] shadow-[0_2px_8px_rgba(0,0,0,0.02)]">
+                            ${text}
+                        </div>
+                        <div class="flex items-center gap-1 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-2">
+                            <button class="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors active:scale-95"><i class="ph ph-pencil-simple text-sm md:text-base"></i></button>
+                            <button class="p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors active:scale-95"><i class="ph ph-copy text-sm md:text-base"></i></button>
+                        </div>
+                    </div>
+                `;
+                
+                chatContainer.insertAdjacentHTML('beforeend', userMsgHtml);
+                chatInput.value = '';
+                voiceInputField.value = '';
+                
+                // Reset Submit Icon to Waveform
+                sendBtnIcon.classList.replace('ph-arrow-up', 'ph-waveform');
+                
+                setTimeout(() => {
+                    document.getElementById(userMsgId).classList.remove('opacity-0', 'translate-y-4');
+                    scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' });
+                }, 50);
+
+                const botMsgId = 'bot-' + Date.now();
+                currentTimeout = setTimeout(() => {
+                    if (!isGenerating) return;
+                    finishGeneration(botMsgId, text);
+                }, 2000); 
+            };
+            
+            const finishGeneration = (botMsgId, text) => {
+                isGenerating = false;
+                fadeSwap(inputConnecting, inputDefault, chatInput);
+
+                const botMsgHtml = `
+                    <div id="${botMsgId}" class="bot-message flex flex-col items-start gap-2 my-8 group w-full opacity-0 translate-y-4 transition-all duration-500 ease-out relative">
+                        <div class="thought-trigger flex items-center gap-1.5 text-gray-500 text-[13px] font-medium mb-1 cursor-pointer hover:bg-gray-100 px-2 py-1 -ml-2 rounded-lg transition-colors w-max active:bg-gray-200">
+                            <i class="ph ph-lightbulb text-sm"></i>
+                            <span>Thought for 7s</span>
+                        </div>
+                        <div class="flex items-center gap-3 mb-1 w-full">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-gray-900 flex-shrink-0"><circle cx="12" cy="12" r="9"></circle><path d="M5 19L19 5"></path></svg>
+                            <span class="font-bold text-gray-900 text-[15px]">SuperGrok</span>
+                        </div>
+                        <div class="text-[14px] md:text-[15px] text-gray-800 leading-[1.7] w-full bot-message-content">
+                            <p class="mb-4"><strong>Yes essence</strong>, good observation.</p>
+                            <p class="mb-6">macOS <strong>does</strong> have multiple versions, but the situation is <strong>very different</strong> from Linux.</p>
+                            <h3 class="text-[17px] md:text-[18px] font-bold text-gray-900 mb-3">Quick Comparison</h3>
+                            <div class="border border-gray-200 rounded-xl overflow-hidden mb-6 overflow-x-auto">
+                                <table class="w-full text-left border-collapse text-[13px] md:text-[14px] min-w-[500px]">
+                                    <thead class="bg-[#fcfcfc]">
+                                        <tr class="border-b border-gray-200">
+                                            <th class="py-3 px-3 md:px-4 font-semibold text-gray-900">Aspect</th>
+                                            <th class="py-3 px-3 md:px-4 font-semibold text-gray-900">Linux</th>
+                                            <th class="py-3 px-3 md:px-4 font-semibold text-gray-900">macOS</th>
+                                            <th class="py-3 px-3 md:px-4 font-semibold text-gray-900">Winner for easier distribution</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100 bg-white">
+                                        <tr>
+                                            <td class="py-3 px-3 md:px-4">Number of "distros"</td>
+                                            <td class="py-3 px-3 md:px-4 text-gray-600">Hundreds (Ubuntu, Fedora, Arch, etc.)</td>
+                                            <td class="py-3 px-3 md:px-4 text-gray-600">Basically 1 (Apple controls everything)</td>
+                                            <td class="py-3 px-3 md:px-4 text-gray-600">macOS</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-3 px-3 md:px-4">Version fragmentation</td>
+                                            <td class="py-3 px-3 md:px-4 text-gray-600">Very high</td>
+                                            <td class="py-3 px-3 md:px-4 text-gray-600">Low to Medium</td>
+                                            <td class="py-3 px-3 md:px-4 text-gray-600">macOS</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-3 px-3 md:px-4">Architecture split</td>
+                                            <td class="py-3 px-3 md:px-4 text-gray-600">Mostly x86_64 (aarch64 growing)</td>
+                                            <td class="py-3 px-3 md:px-4 text-gray-600">Big split: Intel vs Apple Silicon</td>
+                                            <td class="py-3 px-3 md:px-4 text-gray-600">Linux (easier)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h3 class="text-[17px] md:text-[18px] font-bold text-gray-900 mb-2">How macOS Versioning Actually Works</h3>
+                            <p class="mb-4">Apple releases one major macOS version per year (Sonoma, Sequoia, etc.). The fragmentation is much lower than Linux because:</p>
+                            <button class="source-trigger inline-flex items-center gap-1.5 text-[11px] bg-white border border-gray-200 px-2 py-0.5 rounded-full text-gray-700 font-medium shadow-sm hover:bg-gray-50 transition-colors transform -translate-y-0.5 mt-2 active:scale-95">
+                                <img src="https://www.google.com/s2/favicons?domain=apple.com&sz=16" class="w-3 h-3 rounded-sm" alt="Apple">
+                                Apple Documentation
+                            </button>
+                        </div>
+                        <div id="${botMsgId}-actions" class="flex items-center gap-1 md:gap-2 mt-2 pb-2 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-full relative flex-wrap">
+                            <button class="has-tooltip p-2 md:p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors active:scale-95"><i class="ph ph-copy text-[20px] md:text-[18px]"></i><span class="tooltip tooltip-top hidden md:block">Copy</span></button>
+                            <button class="has-tooltip p-2 md:p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors active:scale-95"><i class="ph ph-link text-[20px] md:text-[18px]"></i><span class="tooltip tooltip-top hidden md:block">Share</span></button>
+                            <button class="has-tooltip p-2 md:p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors active:scale-95"><i class="ph ph-thumbs-up text-[20px] md:text-[18px]"></i><span class="tooltip tooltip-top hidden md:block">Good response</span></button>
+                            <button class="has-tooltip p-2 md:p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors active:scale-95"><i class="ph ph-thumbs-down text-[20px] md:text-[18px]"></i><span class="tooltip tooltip-top hidden md:block">Bad response</span></button>
+                            <button class="has-tooltip p-2 md:p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors active:scale-95"><i class="ph ph-arrows-clockwise text-[20px] md:text-[18px]"></i><span class="tooltip tooltip-top hidden md:block">Regenerate</span></button>
+                            <button class="has-tooltip p-2 md:p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors active:scale-95"><i class="ph ph-dots-three text-[22px] md:text-xl"></i><span class="tooltip tooltip-top hidden md:block">More</span></button>
+                        </div>
+                    </div>
+                `;
+                chatContainer.insertAdjacentHTML('beforeend', botMsgHtml);
+                
+                setTimeout(() => {
+                    const el = document.getElementById(botMsgId);
+                    el.classList.remove('opacity-0', 'translate-y-4');
+                    scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' });
+                    
+                    setTimeout(() => {
+                        document.getElementById(`${botMsgId}-actions`).classList.remove('md:opacity-0');
+                    }, 400);
+
+                    updateIndicator();
+                }, 50);
+            };
+
+            stopBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                isGenerating = false;
+                clearTimeout(currentTimeout);
+                fadeSwap(inputConnecting, inputDefault, chatInput);
+            });
+
+            // If empty, open voice mode. If text, send message!
+            sendBtn.addEventListener('click', (e) => { 
+                e.preventDefault();
+                if (chatInput.value.trim().length === 0 && inputDefault.classList.contains('opacity-100')) {
+                    enterVoiceMode();
+                } else {
+                    sendMessage();
+                }
+            });
+            
+            confirmVoiceBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const text = voiceInputField.value.trim() || "What's the weather today?";
+                sendMessage(text);
+            });
+
+            chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
+            voiceInputField.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); sendMessage(voiceInputField.value.trim() || "What's the weather today?"); }
+            });
+
+            // --- 6. Minimap & Scrolling (Hover specific tracking!) ---
+            const indicatorTrack = document.getElementById('indicator-track');
+            const minimapHoverText = document.getElementById('minimap-hover-text');
+            let chatMessages = [];
+
+            // Function to strictly clean and update the text in the hovercard
+            const updateHoverCard = (index) => {
+                if (!chatMessages[index]) return;
+                // Grab the div containing the core text
+                const contentDiv = chatMessages[index].querySelector('.text-gray-800 p') || 
+                                   chatMessages[index].querySelector('p');
+                
+                if (contentDiv) {
+                    let text = contentDiv.innerText.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+                    minimapHoverText.innerText = text.length > 80 ? text.substring(0, 80) + '...' : text;
+                }
+            };
+
+            function updateIndicator() {
+                if(!indicatorTrack) return;
+                // Collect both AI (bot) and User messages for the minimap
+                chatMessages = Array.from(document.querySelectorAll('.bot-message, .flex.flex-col.items-end.my-6.group'));
+                indicatorTrack.innerHTML = ''; 
+
+                chatMessages.forEach((msg, index) => {
+                    const isLong = index % 2 !== 0; 
+                    const widthClass = isLong ? 'w-[18px]' : 'w-2.5';
+                    const line = document.createElement('div');
+                    // Added hover:scale-y-[2] for subtle line expansion on mouse hover!
+                    line.className = `h-[2px] transition-all duration-300 indicator-line rounded-full cursor-pointer hover:bg-gray-500 hover:scale-y-[2] bg-gray-300 ${widthClass}`;
+                    
+                    line.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    });
+
+                    // Update hovercard precisely to the message line being hovered
+                    line.addEventListener('mouseenter', () => {
+                        updateHoverCard(index);
+                    });
+
+                    indicatorTrack.appendChild(line);
+                });
+                updateActiveIndicator();
+            }
+
+            function updateActiveIndicator() {
+                if(chatMessages.length === 0) return;
+                let activeIdx = 0, minDistance = Infinity;
+                const scrollCenter = scrollArea.scrollTop + (scrollArea.clientHeight / 2);
+
+                chatMessages.forEach((msg, idx) => {
+                    const msgCenter = msg.offsetTop + (msg.offsetHeight / 2);
+                    const distance = Math.abs(scrollCenter - msgCenter);
+                    if (distance < minDistance) { minDistance = distance; activeIdx = idx; }
+                });
+
+                document.querySelectorAll('.indicator-line').forEach((line, idx) => {
+                    if (idx === activeIdx) { line.classList.replace('bg-gray-300', 'bg-gray-800'); } 
+                    else { line.classList.replace('bg-gray-800', 'bg-gray-300'); }
+                });
+
+                // Save globally
+                window.currentActiveMsgIdx = activeIdx;
+                
+                // If not physically hovering over the track, snap the text back to the currently active scrolled message
+                if (!indicatorTrack.matches(':hover')) {
+                    updateHoverCard(activeIdx);
+                }
+            }
+
+            // Snap text back to current view context when mouse leaves the minimap track
+            if (indicatorTrack) {
+                indicatorTrack.addEventListener('mouseleave', () => {
+                    if(window.currentActiveMsgIdx !== undefined) {
+                        updateHoverCard(window.currentActiveMsgIdx);
+                    }
+                });
+            }
+
+            scrollArea.addEventListener('scroll', () => {
+                updateActiveIndicator();
+                const distanceToBottom = scrollArea.scrollHeight - scrollArea.scrollTop - scrollArea.clientHeight;
+                if (distanceToBottom > 150) scrollToBottomBtn.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+                else scrollToBottomBtn.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+            });
+
+            scrollToBottomBtn.addEventListener('click', () => scrollArea.scrollTo({ top: scrollArea.scrollHeight, behavior: 'smooth' }));
+
+            // Panel Triggers
+            chatContainer.addEventListener('click', (e) => {
+                const thoughtTrigger = e.target.closest('.thought-trigger');
+                const sourceTrigger = e.target.closest('.source-trigger');
+                if (thoughtTrigger) openRightPanel('thoughts');
+                else if (sourceTrigger) openRightPanel('sources');
+            });
+
+            chatInput.focus();
+            if (typeof updateIndicator === 'function') updateIndicator();
+
+            // --- Dark Mode (simple & reliable) ---
+            const safeStorage = {
+                get: (key) => { try { return localStorage.getItem(key); } catch(e){ return null; } },
+                set: (key, value) => { try { localStorage.setItem(key, value); } catch(e){} }
+            };
+
+            const darkBtn = document.getElementById('dark-theme-btn');
+            const htmlEl = document.documentElement;
+            let darkModeState = false;
+
+            const applyDarkMode = (isDark) => {
+                darkModeState = isDark;
+                if (isDark) {
+                    htmlEl.classList.add('dark');
+                    safeStorage.set('dx-dark-mode', 'true');
+                    if (darkBtn) {
+                        const icon = darkBtn.querySelector('i');
+                        if (icon) icon.classList.replace('ph-moon', 'ph-sun'); // show sun when dark
+                        darkBtn.innerHTML = darkBtn.innerHTML.replace(/Dark Theme|Light Theme/, 'Light Theme');
+                    }
+                } else {
+                    htmlEl.classList.remove('dark');
+                    safeStorage.set('dx-dark-mode', 'false');
+                    if (darkBtn) {
+                        const icon = darkBtn.querySelector('i');
+                        if (icon) icon.classList.replace('ph-sun', 'ph-moon'); // show moon when light
+                        darkBtn.innerHTML = darkBtn.innerHTML.replace(/Light Theme|Dark Theme/, 'Dark Theme');
+                    }
+                }
+                // Sync the checkbox in Settings if it exists
+                const checkbox = document.getElementById('appearance-dark-toggle');
+                if (checkbox) checkbox.checked = isDark;
+            };
+
+            // Init - Light as default (user request)
+            const saved = safeStorage.get('dx-dark-mode');
+            applyDarkMode(saved === 'true');   // only dark if user explicitly chose it
+
+            // Profile menu quick toggle
+            if (darkBtn) {
+                darkBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    applyDarkMode(!darkModeState);
+                });
+            }
+
+            // Settings > Appearance checkbox
+            const appearanceToggle = document.getElementById('appearance-dark-toggle');
+            if (appearanceToggle) {
+                appearanceToggle.addEventListener('change', () => {
+                    applyDarkMode(appearanceToggle.checked);
+                });
+            }
+
+            // --- Collapsed Sidebar: Hover popover for Projects & History icons ---
+            function setupCollapsedSectionPopovers() {
+                const collapsedIcons = document.querySelectorAll('.sidebar-collapsed .hidden.sidebar-collapsed\\:flex');
+                
+                collapsedIcons.forEach(iconContainer => {
+                    const content = iconContainer.nextElementSibling;
+                    if (!content || !content.classList.contains('collapsible-content')) return;
+
+                    let hideTimeout;
+
+                    const showPopover = () => {
+                        clearTimeout(hideTimeout);
+                        // Hide any other open popovers first
+                        document.querySelectorAll('.sidebar-collapsed .collapsible-content[style*="display: block"]').forEach(el => {
+                            if (el !== content) el.style.display = 'none';
+                        });
+                        
+                        content.style.display = 'block';
+                        content.style.position = 'absolute';
+                        content.style.left = 'calc(100% + 10px)';
+                        content.style.top = '0';
+                        content.style.zIndex = '70';
+                        content.style.minWidth = '240px';
+                        content.style.maxHeight = '420px';
+                        content.style.overflowY = 'auto';
+                        content.style.backgroundColor = document.documentElement.classList.contains('dark') ? '#18181b' : 'white';
+                        content.style.border = document.documentElement.classList.contains('dark') ? '1px solid #3f3f46' : '1px solid #e5e7eb';
+                        content.style.borderRadius = '10px';
+                        content.style.boxShadow = '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)';
+                        content.style.padding = '6px 4px';
+                    };
+
+                    const hidePopover = () => {
+                        hideTimeout = setTimeout(() => {
+                            content.style.display = 'none';
+                        }, 180); // small delay for moving mouse into popover
+                    };
+
+                    iconContainer.addEventListener('mouseenter', showPopover);
+                    iconContainer.addEventListener('mouseleave', hidePopover);
+                    
+                    // Keep popover open when mouse is inside it
+                    content.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+                    content.addEventListener('mouseleave', hidePopover);
+                });
+            }
+
+            // Initialize collapsed popovers after DOM is ready
+            setTimeout(setupCollapsedSectionPopovers, 300);
+        });
+    </script>
+</body>
+</html>
