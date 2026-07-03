@@ -687,6 +687,7 @@ export async function handler(
   async function authenticate(modelInfo: ModelInfo, zenApiKey?: string) {
     if (!zenApiKey) {
       if (modelInfo.allowAnonymous) return
+      if ((modelInfo as any).cost?.input === 0) return
       throw new AuthError(t("zen.api.error.missingApiKey"))
     }
 
@@ -815,6 +816,9 @@ export async function handler(
     if (authInfo.provider?.credentials) return "byok"
     if (authInfo.isFree) return "free"
     if (modelInfo.allowAnonymous) return "free"
+    // Treat zero-cost models (e.g. big-pickle free models) as free even if a Zen key is configured.
+    // Prevents "Insufficient Balance" when a spending-limit plugin or other config sets an opencode key with $0 balance.
+    if ((modelInfo as any).cost?.input === 0) return "free"
 
     const formatRetryTime = (seconds: number) => {
       const days = Math.floor(seconds / 86400)
