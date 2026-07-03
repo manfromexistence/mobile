@@ -42,7 +42,7 @@
     "icons:build": "bun run ./src/scripts/build-icons.ts",
     "generate-libphonenumber-metadata": "libphonenumber-metadata-generator ./src/assets/libphonenumber.metadata.json --countries VN --extended",
     "upgrade:next": "npx @next/codemod@latest upgrade latest",
-    "upgrade:tailwind": "npx @tailwindcss/upgrade@latest",
+    "upgrade:tailwind": "npx @tailwindcss/upgrade@latest"
 
   },
   "dependencies": {
@@ -111,7 +111,9 @@
     "vaul": "^1.1.2",
     "vcard-creator": "^0.7.2",
     "web-haptics": "^0.0.6",
-    "zod": "^3.25.76"
+    "zod": "^3.25.76",
+    "@mlc-ai/web-llm": "^0.2.84",
+    "@wllama/wllama": "file:./inspirations/wllama"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
