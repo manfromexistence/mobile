@@ -31,7 +31,19 @@ const nextConfig: NextConfig = {
           },
         }
       : undefined,
-  // redirects and rewrites removed for static export
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        module: false,
+        perf_hooks: false,
+        fs: false,
+        path: false,
+      };
+    }
+    return config;
+  },
+  turbopack: {},
 }
 
 export default nextConfig
