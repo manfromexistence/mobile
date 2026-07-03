@@ -19,6 +19,16 @@ const MOCK_RESPONSES = [
   "Let me think about this carefully. There are several aspects to consider.",
 ]
 
+function formatPrompt(messages: { role: string; content: string }[]): string {
+  return messages
+    .map((m) => {
+      if (m.role === "system") return `system: ${m.content}`
+      if (m.role === "assistant") return `assistant: ${m.content}`
+      return `user: ${m.content}`
+    })
+    .join("\n")
+}
+
 function getMockResponse(userMessage: string): string {
   const base = MOCK_RESPONSES[Math.floor(Math.random() * MOCK_RESPONSES.length)]
   const extra = `\n\n(Simulated response because AI model could not be loaded)`

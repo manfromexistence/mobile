@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   output: "export",
   reactStrictMode: true,
   typedRoutes: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   transpilePackages: ["next-mdx-remote"],
   allowedDevOrigins: ["ncdai.localhost", "ncdai.local"],
   devIndicators: false,

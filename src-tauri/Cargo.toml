@@ -30,4 +30,5 @@ serde = { version = "1.0", features = ["derive"] }
 log = "0.4"
 tauri = { version = "2.11.3", features = [] }
 tauri-plugin-log = "2"
-flow = { package = "dx-flow", git = "https://github.com/essence-dx/flow" }
+tokio = { version = "1", features = ["sync"] }
+flow = { package = "dx-flow", path = "../../flow", default-features = false }
