@@ -1,6 +1,12 @@
 import type { ModelId, ModelOption } from "@/features/dx/types"
 
-export const MODEL_OPTIONS: Record<ModelId, ModelOption> = {
+export type ExtendedModelOption = ModelOption & {
+  wllamaRepo?: string;
+  wllamaFile?: string;
+  mlcModelId?: string;
+};
+
+export const MODEL_OPTIONS: Record<ModelId, ExtendedModelOption> = {
   "qwen-0.5b": {
     id: "qwen-0.5b",
     name: "Qwen3 0.6B",
@@ -14,6 +20,9 @@ export const MODEL_OPTIONS: Record<ModelId, ModelOption> = {
     topP: 0.9,
     repetitionPenalty: 1.05,
     status: "available",
+    mlcModelId: "Qwen2-0.5B-Instruct-q4f16_1-MLC",
+    wllamaRepo: "Qwen/Qwen2-0.5B-Instruct-GGUF",
+    wllamaFile: "qwen2-0_5b-instruct-q4_k_m.gguf",
   },
   "tinyllama-1.1b": {
     id: "tinyllama-1.1b",
@@ -28,25 +37,31 @@ export const MODEL_OPTIONS: Record<ModelId, ModelOption> = {
     topP: 0.9,
     repetitionPenalty: 1.1,
     status: "available",
+    mlcModelId: "TinyLlama-1.1B-Chat-v1.0-q4f16_1-MLC",
+    wllamaRepo: "TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF",
+    wllamaFile: "tinyllama-1.1b-chat-v1.0.Q4_K_M.gguf",
   },
   "minicpm-1b": {
     id: "minicpm-1b",
-    name: "MiniCPM 1.5B",
+    name: "MiniCPM 1B",
     provider: "huggingface",
-    modelName: "onnx-community/Qwen2.5-1.5B-Instruct",
+    modelName: "openbmb/MiniCPM-1B",
     quantization: "q4",
     contextLength: 4096,
-    description: "1.5B instruct model (needs sufficient RAM)",
+    description: "1B instruct model",
     maxTokens: 2048,
     temperature: 0.7,
     topP: 0.9,
     repetitionPenalty: 1.1,
     status: "available",
+    mlcModelId: "MiniCPM-2B-sft-fp32-q4f16_1-MLC", // fallback string, adjust if specific 1B model is in MLC
+    wllamaRepo: "openbmb/MiniCPM-1B-sft-gguf",
+    wllamaFile: "minicpm-1b-sft-q4_0.gguf",
   },
 }
 
-export const DEFAULT_MODEL_ID: ModelId = "qwen-0.5b"
+export const DEFAULT_MODEL_ID: ModelId = "minicpm-1b"
 
-export function getModelConfig(id: ModelId): ModelOption {
+export function getModelConfig(id: ModelId): ExtendedModelOption {
   return MODEL_OPTIONS[id]
 }

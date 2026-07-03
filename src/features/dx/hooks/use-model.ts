@@ -4,35 +4,7 @@ import * as React from "react"
 import type { ModelId } from "@/features/dx/types"
 import { getModelConfig } from "@/lib/ai/models-config"
 
-type PipelineInstance = any
-
-let cachedPipeline: { modelId: ModelId; instance: PipelineInstance } | null = null
-
-function formatPrompt(messages: { role: string; content: string }[]): string {
-  return (
-    messages
-      .map((m) => {
-        if (m.role === "system") return `System: ${m.content}`
-        if (m.role === "user") return `User: ${m.content}`
-        return `Assistant: ${m.content}`
-      })
-      .join("\n") + "\nAssistant:"
-  )
-}
-
-function getCacheKey(modelName: string): string {
-  return `dx-model-cached:${modelName}`
-}
-
-function isModelCached(modelName: string): boolean {
-  if (typeof localStorage === "undefined") return false
-  return localStorage.getItem(getCacheKey(modelName)) === "1"
-}
-
-function markModelCached(modelName: string) {
-  if (typeof localStorage === "undefined") return
-  localStorage.setItem(getCacheKey(modelName), "1")
-}
+let cachedEngine: { modelId: ModelId; instance: any; type: 'webgpu' | 'wllama' } | null = null
 
 export interface ModelProgress {
   percent: number
@@ -49,8 +21,7 @@ const MOCK_RESPONSES = [
 
 function getMockResponse(userMessage: string): string {
   const base = MOCK_RESPONSES[Math.floor(Math.random() * MOCK_RESPONSES.length)]
-  const words = userMessage.split(" ").length
-  const extra = `\n\nYou mentioned "${userMessage.slice(0, 60)}${userMessage.length > 60 ? "..." : ""}". This is a simulated response because the AI model could not be loaded in your browser. To use real AI, try:\n\n1. Switching to a smaller model in the model selector\n2. Using a browser with more memory (Chrome/Edge)\n3. Installing a local AI server`
+  const extra = `\n\n(Simulated response because AI model could not be loaded)`
   return base + extra
 }
 
@@ -59,14 +30,12 @@ export function useModelInference() {
   const [progress, setProgress] = React.useState<ModelProgress | null>(null)
   const [error, setError] = React.useState<string | null>(null)
   const [isMock, setIsMock] = React.useState(false)
-  const loadedRef = React.useRef<ModelId | null>(null)
   const mockRef = React.useRef(false)
 
   const loadModel = React.useCallback(
     async (modelId: ModelId, onProgress?: (p: ModelProgress) => void) => {
-      if (cachedPipeline && cachedPipeline.modelId === modelId) {
-        loadedRef.current = modelId
-        return cachedPipeline.instance
+      if (cachedEngine && cachedEngine.modelId === modelId) {
+        return cachedEngine.instance
       }
 
       setIsLoading(true)
@@ -75,13 +44,6 @@ export function useModelInference() {
       mockRef.current = false
 
       const config = getModelConfig(modelId)
-      const cached = isModelCached(config.modelName)
-
-      setProgress({
-        percent: 0,
-        stage: cached ? "Loading from cache..." : "Preparing model...",
-        file: null,
-      })
 
       function updateProgress(percent: number, stage: string, file: string | null = null) {
         const p: ModelProgress = { percent, stage, file }
@@ -90,89 +52,75 @@ export function useModelInference() {
       }
 
       try {
-        const { pipeline } = await import("@huggingface/transformers")
+        let instance: any = null
+        let engineType: 'webgpu' | 'wllama' | 'tauri' = 'wllama'
+        
+        // Detect if running inside Tauri (iOS/Android/Desktop)
+        const isTauri = typeof window !== 'undefined' && window.__TAURI_INTERNALS__ !== undefined;
 
-        let lastPercent = 0
-
-        const progress_callback = (data: any) => {
-          let percent = lastPercent
-          let stage = "Loading..."
-          let file: string | null = data?.file ?? null
-
-          if (data?.status === "download") {
-            stage = `Downloading ${data.file}...`
-            percent = Math.max(percent, 5)
-          } else if (data?.status === "progress" && typeof data.progress === "number") {
-            stage = data.file ? `Loading ${data.file}...` : "Loading..."
-            percent = data.progress
-            lastPercent = data.progress
-          } else if (data?.status === "done") {
-            stage = `Loaded ${data.file}`
-            percent = Math.max(percent, 90)
-          } else if (data?.status === "ready") {
-            stage = "Initializing..."
-            percent = 95
-          }
-
-          const p: ModelProgress = { percent, stage, file }
-          setProgress(p)
-          onProgress?.(p)
-        }
-
-        updateProgress(2, cached ? "Checking cache..." : "Connecting...")
-
-        let instance: PipelineInstance | null = null
-        let lastError: Error | null = null
-
-        const backends = ["webgl", "wasm"]
-        for (const device of backends) {
-          if (instance) break
+        if (isTauri) {
+          updateProgress(10, "Initializing dx-flow via Tauri...")
+          // We don't need to load a full browser instance, just pass a dummy one
+          instance = { isTauri: true }
+          engineType = 'tauri'
+        } else if (navigator.gpu) {
+          // Check for WebGPU support
           try {
-            updateProgress(cached ? 15 : 5, `Loading with ${device}...`)
-            instance = await pipeline("text-generation", config.modelName, {
-              dtype: "q4",
-              device,
-              progress_callback,
+            updateProgress(5, "Initializing WebGPU...")
+            const { CreateMLCEngine } = await import("@mlc-ai/web-llm")
+            
+            const mlcModelId = config.mlcModelId || "Llama-3-8B-Instruct-q4f32_1-MLC"
+            instance = await CreateMLCEngine(mlcModelId, {
+              initProgressCallback: (p: any) => {
+                updateProgress(Math.round(p.progress * 100), p.text)
+              }
             })
-          } catch (err) {
-            lastError = err as Error
-            updateProgress(
-              cached ? 15 : 5,
-              `${device} failed, trying next backend...`
-            )
+            engineType = 'webgpu'
+          } catch (e) {
+            console.warn("WebGPU initialization failed, falling back to Wllama (CPU)", e)
           }
         }
 
-        if (!instance) throw lastError ?? new Error("All backends failed")
+        if (!instance) {
+          updateProgress(5, "Initializing Wllama (CPU)...")
+          const { Wllama } = await import("@wllama/wllama")
+          
+          const CONFIG_PATHS = {
+            'single-thread/wllama.js': 'https://unpkg.com/@wllama/wllama/esm/wasm/single-thread/wllama.js',
+            'single-thread/wllama.wasm': 'https://unpkg.com/@wllama/wllama/esm/wasm/single-thread/wllama.wasm',
+            'multi-thread/wllama.js': 'https://unpkg.com/@wllama/wllama/esm/wasm/multi-thread/wllama.js',
+            'multi-thread/wllama.wasm': 'https://unpkg.com/@wllama/wllama/esm/wasm/multi-thread/wllama.wasm',
+            'multi-thread/wllama.worker.mjs': 'https://unpkg.com/@wllama/wllama/esm/wasm/multi-thread/wllama.worker.mjs',
+          };
+          
+          instance = new Wllama(CONFIG_PATHS)
+          
+          const repo = config.wllamaRepo || "openbmb/MiniCPM-1B-sft-gguf"
+          const file = config.wllamaFile || "minicpm-1b-sft-q4_0.gguf"
+          
+          await instance.loadModelFromHF(
+            { repo, file },
+            {
+              progressCallback: ({ loaded, total }: any) => {
+                const percent = Math.round((loaded / total) * 100)
+                updateProgress(percent, `Downloading model... ${percent}%`)
+              }
+            }
+          )
+          engineType = 'wllama'
+        }
 
         updateProgress(100, "Ready!")
-
-        cachedPipeline = { modelId, instance }
-        loadedRef.current = modelId
-        markModelCached(config.modelName)
+        cachedEngine = { modelId, instance, type: engineType }
 
         setIsLoading(false)
         setTimeout(() => setProgress(null), 500)
-
         return instance
       } catch (err) {
         const message = (err as Error).message
-        if (
-          message.includes("allocate a buffer") ||
-          message.includes("memory") ||
-          message.includes("bad_alloc") ||
-          message.includes("Create a session")
-        ) {
-          setError(
-            `Model too large for browser memory. Switching to fallback mode. Try the basic model.`
-          )
-          setIsMock(true)
-          mockRef.current = true
-        } else {
-          setError(`${message}. Using fallback mode.`)
-          setIsMock(true)
-          mockRef.current = true
-        }
+        setError(`${message}. Using fallback mode.`)
+        setIsMock(true)
+        mockRef.current = true
         setIsLoading(false)
         setProgress(null)
         throw err
@@ -194,7 +142,6 @@ export function useModelInference() {
         try {
           const lastUserMsg = [...messages].reverse().find((m) => m.role === "user")
           const fullResponse = getMockResponse(lastUserMsg?.content ?? "")
-
           const words = fullResponse.split(/(?<=\s)/)
           for (const word of words) {
             if (signal?.aborted) return
@@ -209,36 +156,62 @@ export function useModelInference() {
       }
 
       try {
-        const generator = cachedPipeline?.instance ?? (await loadModel(modelId))
+        const generator = cachedEngine?.instance ?? (await loadModel(modelId))
         if (signal?.aborted) return
 
         const config = getModelConfig(modelId)
-        const prompt = formatPrompt(messages)
-
-        const { TextStreamer } = await import("@huggingface/transformers")
-
-        const streamer = new TextStreamer(generator.tokenizer, {
-          skip_prompt: true,
-          skip_special_tokens: true,
-          callback_function: (text: string) => {
-            if (signal?.aborted) return
-            onToken(text)
-          },
-        })
-
-        await generator(prompt, {
-          max_new_tokens: config.maxTokens,
-          temperature: config.temperature,
-          top_p: config.topP,
-          repetition_penalty: config.repetitionPenalty,
-          do_sample: true,
-          streamer,
-        })
-
-        if (signal?.aborted) return
-        onDone()
+        
+        if (cachedEngine?.type === 'tauri') {
+          // Tauri (dx-flow via Rust)
+          const { invoke, Channel } = await import('@tauri-apps/api/core')
+          const prompt = formatPrompt(messages)
+          
+          const onTokenChannel = new Channel<string>()
+          onTokenChannel.onmessage = (token: string) => {
+             if (!signal?.aborted) {
+                 onToken(token)
+             }
+          }
+          
+          await invoke('flow_generate', { prompt, onToken: onTokenChannel })
+        } else if (cachedEngine?.type === 'webgpu') {
+          // Web-LLM (MLCEngine)
+          const reply = await generator.chat.completions.create({
+            messages,
+            temperature: config.temperature,
+            top_p: config.topP,
+            max_tokens: config.maxTokens,
+            stream: true,
+          })
+          
+          for await (const chunk of reply) {
+            if (signal?.aborted) {
+              break
+            }
+            const token = chunk.choices[0]?.delta.content || ""
+            if (token) onToken(token)
+          }
+        } else {
+          // Wllama
+          const response = await generator.createChatCompletion({
+            messages,
+            temperature: config.temperature,
+            top_p: config.topP,
+            max_tokens: config.maxTokens,
+            onNewToken: (seqId: number, word: string) => {
+              if (signal?.aborted) {
+                 throw new Error("AbortError")
+              }
+              onToken(word)
+            }
+          })
+        }
+        
+        if (!signal?.aborted) {
+          onDone()
+        }
       } catch (err) {
-        if ((err as Error).name === "AbortError") return
+        if ((err as Error).name === "AbortError" || (err as Error).message === "AbortError") return
         onError(err as Error)
       }
     },
@@ -254,3 +227,4 @@ export function useModelInference() {
     generate,
   }
 }
+
