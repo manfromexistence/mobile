@@ -183,6 +183,11 @@ export function useChat() {
         updatedAt: Date.now(),
       }))
 
+      if (abortRef.current) {
+        abortRef.current.abort()
+        abortRef.current = null
+      }
+
       setIsGenerating(true)
       const abortController = new AbortController()
       abortRef.current = abortController
@@ -190,11 +195,15 @@ export function useChat() {
       const previousMessages = [...(conv?.messages ?? []), userMessage]
       let fullContent = ""
 
+      const startTime = Date.now()
+      let tokenCount = 0
+
       try {
         await modelInference.generate(
           selectedModel,
           previousMessages,
           (token) => {
+            tokenCount++
             fullContent += token
             updateConversation(convId!, (c) => ({
               ...c,
@@ -205,10 +214,17 @@ export function useChat() {
             }))
           },
           () => {
+            const durationMs = Date.now() - startTime
+            const speed = durationMs > 0 ? Number(((tokenCount / durationMs) * 1000).toFixed(1)) : 0
+            
             updateConversation(convId!, (c) => ({
               ...c,
               messages: c.messages.map((m) =>
-                m.id === assistantMessage.id ? { ...m, content: fullContent } : m
+                m.id === assistantMessage.id ? { 
+                  ...m, 
+                  content: fullContent,
+                  metrics: { speed, durationMs, tokenCount }
+                } : m
               ),
               updatedAt: Date.now(),
             }))

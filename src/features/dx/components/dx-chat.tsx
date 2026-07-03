@@ -209,11 +209,11 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
   }, [])
 
   const handleSend = React.useCallback(() => {
-    if (!inputValue.trim() || isGenerating) return
+    if (!inputValue.trim()) return
     const content = inputValue.trim()
     setInputValue("")
     sendMessage(content)
-  }, [inputValue, isGenerating, sendMessage])
+  }, [inputValue, sendMessage])
 
   const openRightPanel = React.useCallback(
     (panel: RightPanel) => {
@@ -1019,7 +1019,7 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
             <div
               className={cn(
                 "absolute inset-0 flex items-center rounded-[2rem] pr-1.5 pl-2 transition-all duration-300 md:pr-2 md:pl-3",
-                isGenerating || isVoiceMode
+                isVoiceMode
                   ? "pointer-events-none z-0 scale-95 opacity-0"
                   : "pointer-events-auto z-10 scale-100 opacity-100"
               )}
@@ -1119,39 +1119,18 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
                 <Button
                   size="icon-sm"
                   className="ml-0.5 rounded-full bg-foreground text-background shadow-sm hover:bg-foreground/80 disabled:opacity-40 disabled:cursor-not-allowed md:ml-1"
-                  onClick={handleSend}
+                  onClick={isGenerating ? stopGeneration : handleSend}
                   disabled={!modelReady || modelLoading}
                 >
-                  {inputValue.trim() ? (
+                  {isGenerating ? (
+                    <div className="size-3.5 rounded-sm bg-background" />
+                  ) : inputValue.trim() ? (
                     <ArrowUp className="size-4" />
                   ) : (
                     <Volume2 className="size-4" />
                   )}
                 </Button>
               </div>
-            </div>
-
-            {/* Generating State */}
-            <div
-              className={cn(
-                "absolute inset-0 flex items-center justify-between rounded-[2rem] bg-muted/50 pr-1.5 pl-4 transition-all duration-300 md:pr-2 md:pl-5",
-                isGenerating
-                  ? "pointer-events-auto z-10 scale-100 opacity-100"
-                  : "pointer-events-none z-0 scale-95 opacity-0"
-              )}
-            >
-              <div className="flex items-center gap-3 text-muted-foreground">
-                <Zap className="size-5 animate-pulse text-blue-500" />
-                <span className="text-[14px] font-medium md:text-[15px]">
-                  Generating with {MODEL_OPTIONS[selectedModel].name}...
-                </span>
-              </div>
-              <Button
-                className="rounded-full bg-foreground px-4 py-1.5 text-sm font-semibold text-background shadow-sm md:px-5 md:py-2"
-                onClick={stopGeneration}
-              >
-                Stop
-              </Button>
             </div>
 
             {/* Voice State */}

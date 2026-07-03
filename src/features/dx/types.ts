@@ -5,6 +5,11 @@ export interface Message {
   role: MessageRole
   content: string
   createdAt: number
+  metrics?: {
+    speed: number
+    durationMs: number
+    tokenCount: number
+  }
 }
 
 export interface Conversation {
