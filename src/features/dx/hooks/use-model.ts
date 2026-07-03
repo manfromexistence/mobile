@@ -101,6 +101,14 @@ export function useModelInference() {
           await instance.loadModelFromHF(
             { repo, file },
             {
+              n_ctx: config.contextLength,
+              n_batch: config.contextLength,
+              n_gpu_layers: 99999,
+              n_threads: Math.max(1, (navigator as any).hardwareConcurrency - 1),
+              flash_attn: true,
+              cache_type_k: 'q8_0',
+              cache_type_v: 'q8_0',
+              warmup: true,
               progressCallback: ({ loaded, total }: any) => {
                 const percent = Math.round((loaded / total) * 100)
                 updateProgress(percent, `Downloading model... ${percent}%`)
@@ -198,6 +206,8 @@ export function useModelInference() {
             temperature: config.temperature,
             top_p: config.topP,
             max_tokens: config.maxTokens,
+            cache_prompt: true,
+            penalty_repeat: config.repetitionPenalty,
             onNewToken: (seqId: number, word: string) => {
               if (signal?.aborted) {
                  throw new Error("AbortError")
