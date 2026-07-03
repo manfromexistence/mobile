@@ -12,6 +12,7 @@ const fontSerif = IBM_Plex_Serif({
   display: "swap",
   fallback: ["serif"],
   variable: "--font-serif",
+  subsets: ["latin", "vietnamese"],
 })
 
 // const fontPixel = localFont({

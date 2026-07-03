@@ -54,9 +54,9 @@ export const MODEL_OPTIONS: Record<ModelId, ExtendedModelOption> = {
     topP: 0.9,
     repetitionPenalty: 1.1,
     status: "available",
-    mlcModelId: "MiniCPM-2B-sft-fp32-q4f16_1-MLC", // fallback string, adjust if specific 1B model is in MLC
-    wllamaRepo: "openbmb/MiniCPM-1B-sft-gguf",
-    wllamaFile: "minicpm-1b-sft-q4_0.gguf",
+    mlcModelId: "Llama-3.2-1B-Instruct-q4f16_1-MLC", // fallback string, adjust if specific 1B model is in MLC
+    wllamaRepo: "openbmb/MiniCPM-S-1B-sft-gguf",
+    wllamaFile: "MiniCPM-S-1B-sft.gguf",
   },
 }
 
