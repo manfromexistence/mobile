@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { BotMessageActions } from "./dx-chat-message"
 import { Copy, Pencil, Share2 } from "lucide-react"
+import { toast } from "sonner"
 
 export function ChatMessage({
   message,
@@ -25,13 +26,38 @@ export function ChatMessage({
           <span className="text-[11px] text-muted-foreground/60 mr-2">
             {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
           </span>
-          <Button variant="ghost" size="icon-xs" className="text-muted-foreground">
+          <Button 
+            variant="ghost" 
+            size="icon-xs" 
+            className="text-muted-foreground"
+            onClick={() => toast.info("Message editing coming soon")}
+          >
             <Pencil className="size-3.5" />
           </Button>
-          <Button variant="ghost" size="icon-xs" className="text-muted-foreground">
+          <Button 
+            variant="ghost" 
+            size="icon-xs" 
+            className="text-muted-foreground"
+            onClick={() => {
+              navigator.clipboard.writeText(message.content)
+              toast.success("Copied to clipboard")
+            }}
+          >
             <Copy className="size-3.5" />
           </Button>
-          <Button variant="ghost" size="icon-xs" className="text-muted-foreground">
+          <Button 
+            variant="ghost" 
+            size="icon-xs" 
+            className="text-muted-foreground"
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({ text: message.content }).catch(() => {})
+              } else {
+                navigator.clipboard.writeText(message.content)
+                toast.success("Content copied to clipboard")
+              }
+            }}
+          >
             <Share2 className="size-3.5" />
           </Button>
         </div>

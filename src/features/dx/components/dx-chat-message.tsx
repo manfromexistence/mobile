@@ -1,6 +1,7 @@
 "use client"
 
 import type { Message } from "@/features/dx/types"
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Tooltip,
@@ -85,9 +86,53 @@ function generateMockData(baseSpeed: number, seed: number) {
   return data
 }
 
+import { toast } from "sonner"
+import * as React from "react"
+
 export function BotMessageActions({ message }: { message?: Message }) {
   const metrics = message?.metrics
   const chartData = metrics ? generateMockData(metrics.speed, message.createdAt) : []
+  const [feedback, setFeedback] = React.useState<"up"|"down"|null>(null)
+  const [isSpeaking, setIsSpeaking] = React.useState(false)
+
+  const handleCopy = () => {
+    if (!message?.content) return
+    navigator.clipboard.writeText(message.content)
+    toast.success("Copied to clipboard")
+  }
+
+  const handleShare = () => {
+    if (!message?.content) return
+    if (navigator.share) {
+      navigator.share({ text: message.content }).catch(() => {})
+    } else {
+      navigator.clipboard.writeText(message.content)
+      toast.success("Content copied to clipboard")
+    }
+  }
+
+  const handleReadAloud = () => {
+    if (!message?.content) return
+    const synth = window.speechSynthesis
+    if (synth.speaking) {
+      synth.cancel()
+      setIsSpeaking(false)
+    } else {
+      const utterance = new SpeechSynthesisUtterance(message.content)
+      utterance.onend = () => setIsSpeaking(false)
+      synth.speak(utterance)
+      setIsSpeaking(true)
+    }
+  }
+
+  const handleFeedback = (type: "up" | "down") => {
+    setFeedback(type)
+    toast.success("Thanks for your feedback!")
+  }
+
+  const handleRegenerate = () => {
+    toast.info("Regeneration is currently handled by sending a new prompt.")
+  }
   
   return (
     <div className="relative mt-2 flex w-full flex-wrap items-center gap-1 pb-2 md:gap-2">
@@ -159,6 +204,7 @@ export function BotMessageActions({ message }: { message?: Message }) {
             variant="ghost"
             size="icon-xs"
             className="text-muted-foreground"
+            onClick={handleCopy}
           >
             <Copy className="size-4" />
           </Button>
@@ -171,6 +217,7 @@ export function BotMessageActions({ message }: { message?: Message }) {
             variant="ghost"
             size="icon-xs"
             className="text-muted-foreground"
+            onClick={handleShare}
           >
             <Share2 className="size-4" />
           </Button>
@@ -182,19 +229,21 @@ export function BotMessageActions({ message }: { message?: Message }) {
           <Button
             variant="ghost"
             size="icon-xs"
-            className="text-muted-foreground"
+            className={cn("text-muted-foreground", isSpeaking && "text-primary")}
+            onClick={handleReadAloud}
           >
             <Volume2 className="size-4" />
           </Button>
         </TooltipTrigger>
-        <TooltipContent side="top">Read aloud</TooltipContent>
+        <TooltipContent side="top">{isSpeaking ? "Stop reading" : "Read aloud"}</TooltipContent>
       </Tooltip>
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
             variant="ghost"
             size="icon-xs"
-            className="text-muted-foreground"
+            className={cn("text-muted-foreground", feedback === "up" && "text-primary")}
+            onClick={() => handleFeedback("up")}
           >
             <ThumbsUp className="size-4" />
           </Button>
@@ -206,7 +255,8 @@ export function BotMessageActions({ message }: { message?: Message }) {
           <Button
             variant="ghost"
             size="icon-xs"
-            className="text-muted-foreground"
+            className={cn("text-muted-foreground", feedback === "down" && "text-destructive")}
+            onClick={() => handleFeedback("down")}
           >
             <ThumbsDown className="size-4" />
           </Button>
@@ -219,6 +269,7 @@ export function BotMessageActions({ message }: { message?: Message }) {
             variant="ghost"
             size="icon-xs"
             className="text-muted-foreground"
+            onClick={handleRegenerate}
           >
             <RefreshCw className="size-4" />
           </Button>
