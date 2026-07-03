@@ -43,7 +43,7 @@
     "generate-libphonenumber-metadata": "libphonenumber-metadata-generator ./src/assets/libphonenumber.metadata.json --countries VN --extended",
     "upgrade:next": "npx @next/codemod@latest upgrade latest",
     "upgrade:tailwind": "npx @tailwindcss/upgrade@latest",
-    "prepare": "husky"
+
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -53,6 +53,7 @@
     "@hookform/resolvers": "^4.1.0",
     "@hugeicons/core-free-icons": "^4.1.1",
     "@hugeicons/react": "^1.1.6",
+    "@huggingface/transformers": "^4.2.0",
     "@ncdai/react-wheel-picker": "^1.2.0",
     "@number-flow/react": "^0.6.0",
     "@openpanel/web": "^1.4.1",
@@ -131,9 +132,7 @@
     "eslint-config-next": "16.2.9",
     "eslint-config-prettier": "^10.1.8",
     "gray-matter": "^4.0.3",
-    "husky": "^9.1.7",
     "libphonenumber-metadata-generator": "^1.1.0",
-    "lint-staged": "^16.0.0",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "puppeteer": "^24.40.0",

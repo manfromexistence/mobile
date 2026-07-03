@@ -38,6 +38,7 @@ import {
   Pin,
   Plus,
   Rocket,
+  RotateCcw,
   Search,
   Settings,
   Share2,
@@ -82,6 +83,10 @@ import {
 } from "@/components/ui/tooltip"
 
 import { useLocalStorage } from "./dx-chat-hooks"
+import { useChat } from "@/features/dx/hooks/use-chat"
+import type { ModelId } from "@/features/dx/types"
+import { MODEL_OPTIONS } from "@/lib/ai/models-config"
+import { ChatMessage } from "./chat-message"
 import {
   ThoughtProcess,
   SourceBadge,
@@ -136,7 +141,6 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
     null
   )
   const [inputValue, setInputValue] = React.useState("")
-  const [isConnecting, setIsConnecting] = React.useState(false)
   const [isVoiceMode, setIsVoiceMode] = React.useState(false)
   const [projectsOpen, setProjectsOpen] = useLocalStorage(
     "dx-projects-open",
@@ -146,6 +150,26 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
   const [darkMode, setDarkMode] = useLocalStorage("dx-dark-mode", false)
   const [settingsOpen, setSettingsOpen] = React.useState(false)
   const [settingsTab, setSettingsTab] = React.useState("account")
+
+  const {
+    messages,
+    isGenerating,
+    selectedModel,
+    setSelectedModel,
+    conversations,
+    currentConversationId,
+    sendMessage,
+    stopGeneration,
+    createNewConversation,
+    switchConversation,
+    deleteConversation,
+    clearMessages,
+    modelReady,
+    modelLoading,
+    modelProgress,
+    modelError,
+    isMock,
+  } = useChat()
 
   React.useEffect(() => {
     if (darkMode) {
@@ -185,13 +209,11 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
   }, [])
 
   const handleSend = React.useCallback(() => {
-    if (!inputValue.trim() || isConnecting) return
-    setIsConnecting(true)
+    if (!inputValue.trim() || isGenerating) return
+    const content = inputValue.trim()
     setInputValue("")
-    setTimeout(() => {
-      setIsConnecting(false)
-    }, 2000)
-  }, [inputValue, isConnecting])
+    sendMessage(content)
+  }, [inputValue, isGenerating, sendMessage])
 
   const openRightPanel = React.useCallback(
     (panel: RightPanel) => {
@@ -347,6 +369,7 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
               label="New Chat"
               collapsed={sidebarCollapsed}
               active
+              onClick={createNewConversation}
             />
           </motion.div>
           <motion.div
@@ -494,18 +517,16 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
                         </span>
                       </button>
                       <div className="mt-1 border-t border-border pt-1">
-                        <button className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-muted">
-                          <MessageSquare className="size-3.5 shrink-0 text-muted-foreground" />
-                          <span className="truncate">
-                            Latest AI News Top 10 ...
-                          </span>
-                        </button>
-                        <button className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-muted">
-                          <MessageSquare className="size-3.5 shrink-0 text-muted-foreground" />
-                          <span className="truncate">
-                            Google Antigravity AI Ed...
-                          </span>
-                        </button>
+                        {conversations.slice(0, 5).map((conv) => (
+                          <button
+                            key={conv.id}
+                            className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-muted"
+                            onClick={() => switchConversation(conv.id)}
+                          >
+                            <MessageSquare className="size-3.5 shrink-0 text-muted-foreground" />
+                            <span className="truncate">{conv.title}</span>
+                          </button>
+                        ))}
                       </div>
                     </div>
                   </HoverCardContent>
@@ -618,24 +639,24 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
                     collapsed={sidebarCollapsed}
                   />
                   <div className="px-3 pt-4 pb-1 text-[11px] font-medium text-muted-foreground/60">
-                    Today
+                    Conversations
                   </div>
-                  <HistoryItem
-                    icon={MessageSquare}
-                    label="Latest AI News Top 10 Updat..."
-                    collapsed={sidebarCollapsed}
-                    active
-                  />
-                  <HistoryItem
-                    icon={MessageSquare}
-                    label="Google Antigravity AI Editor ..."
-                    collapsed={sidebarCollapsed}
-                  />
-                  <HistoryItem
-                    icon={MessageSquare}
-                    label="Dropdown free providers thr..."
-                    collapsed={sidebarCollapsed}
-                  />
+                  {conversations.length === 0 ? (
+                    <div className="px-3 py-2 text-xs text-muted-foreground/40">
+                      No conversations yet
+                    </div>
+                  ) : (
+                    conversations.slice(0, 10).map((conv) => (
+                      <HistoryItem
+                        key={conv.id}
+                        icon={MessageSquare}
+                        label={conv.title}
+                        collapsed={sidebarCollapsed}
+                        active={conv.id === currentConversationId}
+                        onClick={() => switchConversation(conv.id)}
+                      />
+                    ))
+                  )}
                 </CollapsibleContent>
               </Collapsible>
               <div className="h-4" />
@@ -822,7 +843,46 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={clearMessages}>
+                <RotateCcw className="mr-2 size-4" />
+                Clear chat
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  const text = messages
+                    .map((m) => `${m.role}: ${m.content}`)
+                    .join("\n\n")
+                  navigator.clipboard.writeText(text)
+                }}
+              >
+                <Copy className="mr-2 size-4" />
+                Copy conversation
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  const text = messages
+                    .map((m) => `${m.role}: ${m.content}`)
+                    .join("\n\n")
+                  const blob = new Blob([text], { type: "text/plain" })
+                  const url = URL.createObjectURL(blob)
+                  const a = document.createElement("a")
+                  a.href = url
+                  a.download = "conversation.txt"
+                  a.click()
+                  URL.revokeObjectURL(url)
+                }}
+              >
+                <FileText className="mr-2 size-4" />
+                Export as text
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  if (currentConversationId) {
+                    deleteConversation(currentConversationId)
+                  }
+                }}
+              >
                 <Trash2 className="mr-2 size-4" />
                 Delete chat
               </DropdownMenuItem>
@@ -839,101 +899,75 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
           >
             <div className="flex flex-col items-center pb-40 md:pb-44">
               <div className="w-full max-w-3xl text-[15px] leading-relaxed text-foreground/80">
-                {/* User Message */}
-                <div className="group my-6 flex flex-col items-end">
-                  <div className="max-w-[90%] rounded-[1.5rem] rounded-tr-sm border border-border bg-muted px-4 py-3 text-[14px] text-foreground shadow-xs md:max-w-[85%] md:px-5 md:text-[15px]">
-                    Please tell me what are the latest today&apos;s ai updates -
-                    list top 10 news of today
-                  </div>
-                  <div className="mt-1 flex items-center gap-1 pr-2 opacity-0 transition-opacity group-hover:opacity-100">
-                    <Button
-                      variant="ghost"
-                      size="icon-xs"
-                      className="text-muted-foreground"
-                    >
-                      <Pencil className="size-3.5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon-xs"
-                      className="text-muted-foreground"
-                    >
-                      <Copy className="size-3.5" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon-xs"
-                      className="text-muted-foreground"
-                    >
-                      <Share2 className="size-3.5" />
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Bot Message */}
-                <div className="group relative my-8 flex w-full flex-col items-start gap-2">
-                  <ThoughtProcess
-                    label="49s"
-                    onOpenThoughts={() => openRightPanel("thoughts")}
-                  />
-
-                  <div className="w-full text-[14px] leading-[1.7] text-foreground/80 md:text-[15px]">
-                    <p className="mb-6">
-                      Your AI Friday here, popping out of the Doraemon pocket
-                      with the freshest AI scoop straight from the future! I dug
-                      through the latest buzz (as of this morning, June 25,
-                      2026) like a true gadget-hunting best friend. Here&apos;s
-                      the <strong>Top 10 AI news dominating today</strong>{" "}
-                      &mdash; ranked by what&apos;s buzzing hardest right now:
-                    </p>
-
-                    <div className="mb-6">
-                      <h3 className="mb-2 text-[17px] leading-snug font-bold text-foreground md:text-[18px]">
-                        1. Anthropic Accuses Alibaba of Massive Claude
-                        &quot;Distillation&quot; Theft
-                      </h3>
-                      <p>
-                        Anthropic dropped a bombshell: Alibaba-linked operators
-                        allegedly used <strong>~25,000 fake accounts</strong> to
-                        make queries to Claude, stealing its best capabilities.
-                        They called it the largest known attack of its kind.
-                        <SourceBadge label="Reuters" domain="reuters" />
-                      </p>
+                {messages.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-32 text-center">
+                    <div className="mb-4 rounded-2xl bg-muted/50 p-4">
+                      <MessageSquarePlus className="size-10 text-muted-foreground/40" />
                     </div>
-
-                    <div className="mb-6">
-                      <h3 className="mb-2 text-[17px] leading-snug font-bold text-foreground md:text-[18px]">
-                        2. SK Hynix Announces Massive $29.4 Billion Nasdaq
-                        Listing
-                      </h3>
-                      <p>
-                        The AI memory chip king is going all-in. They&apos;re
-                        raising up to <strong>$29.4 billion</strong> via US ADR
-                        listing on Nasdaq &mdash; one of the biggest listings
-                        ever &mdash; to supercharge production for the AI boom.
-                        <SourceBadge label="Bloomberg" domain="bloomberg" />
-                      </p>
-                    </div>
-
-                    <div className="mb-6">
-                      <h3 className="mb-2 text-[17px] leading-snug font-bold text-foreground md:text-[18px]">
-                        3. OpenAI Drops GPT-5.5 Instant Update
-                      </h3>
-                      <p>
-                        ChatGPT&apos;s most-used model just got smarter. The
-                        June 24 update improves:
-                      </p>
-                      <ul className="mt-3 list-disc space-y-2 pl-5">
-                        <li>Understanding your real goal behind questions</li>
-                        <li>
-                          Handling complex instructions + constraints better
-                        </li>
-                      </ul>
-                    </div>
+                    {modelLoading && modelProgress ? (
+                      <>
+                        <h2 className="mb-1 text-xl font-bold text-foreground">
+                          Loading {MODEL_OPTIONS[selectedModel].name}
+                        </h2>
+                        <div className="mt-4 mb-2 h-2 w-64 overflow-hidden rounded-full bg-muted md:w-80">
+                          <motion.div
+                            className="h-full rounded-full bg-foreground"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${modelProgress.percent}%` }}
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                          />
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {modelProgress.stage}
+                          <span className="ml-2 font-mono text-xs text-muted-foreground/60">
+                            {Math.round(modelProgress.percent)}%
+                          </span>
+                        </p>
+                        {modelProgress.file && (
+                          <p className="mt-1 max-w-xs truncate text-xs text-muted-foreground/40">
+                            {modelProgress.file}
+                          </p>
+                        )}
+                      </>
+                    ) : modelError ? (
+                      <>
+                        <h2 className="mb-1 text-xl font-bold text-destructive">
+                          Model error
+                        </h2>
+                        <p className="max-w-sm text-sm text-muted-foreground">
+                          {modelError}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <h2 className="mb-1 text-xl font-bold text-foreground">
+                          {isMock ? "Chat ready (offline mode)" : "Start a conversation"}
+                        </h2>
+                        <p className="max-w-sm text-sm text-muted-foreground">
+                          {isMock
+                            ? "The AI model could not be loaded in your browser. Responses are simulated. Try a different browser or model."
+                            : `Ask anything about AI, code, or the world. I'm powered by ${MODEL_OPTIONS[selectedModel].name}.`}
+                        </p>
+                        <span className="mt-2 text-xs text-muted-foreground/60">
+                          Model: {MODEL_OPTIONS[selectedModel].name} &middot;{" "}
+                          {MODEL_OPTIONS[selectedModel].contextLength} context
+                        </span>
+                      </>
+                    )}
                   </div>
-
-                  <BotMessageActions />
-                </div>
+                ) : (
+                  messages.map((message, i) => (
+                    <ChatMessage
+                      key={message.id}
+                      message={message}
+                      isGenerating={
+                        isGenerating &&
+                        i === messages.length - 1 &&
+                        message.role === "assistant"
+                      }
+                    />
+                  ))
+                )}
               </div>
             </div>
           </ScrollArea>
@@ -964,14 +998,28 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
           </motion.button>
         </div>
 
+        {/* Fallback Mode Banner */}
+        {isMock && (
+          <div className="absolute right-0 bottom-0 left-0 z-30 px-3 md:px-6">
+            <div className="mx-auto mb-2 w-full max-w-3xl">
+              <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                <Zap className="size-3.5 shrink-0" />
+                <span>
+                  Running in fallback mode. The AI model requires more memory. Switch to the basic model or use Chrome/Edge with ample RAM.
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Chat Input */}
-        <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-30 flex flex-col items-center justify-end bg-gradient-to-t from-background via-background/95 to-transparent px-3 pt-20 pb-4 md:px-6 md:pb-6">
+        <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-20 flex flex-col items-center justify-end bg-gradient-to-t from-background via-background/95 to-transparent px-3 pt-20 pb-4 md:px-6 md:pb-6">
           <div className="pointer-events-auto relative h-[52px] w-full max-w-3xl rounded-[2rem] border border-border bg-muted/50 shadow-md transition-all duration-300 focus-within:border-muted-foreground/30 focus-within:bg-background focus-within:shadow-lg md:h-[56px]">
             {/* Default Input */}
             <div
               className={cn(
                 "absolute inset-0 flex items-center rounded-[2rem] pr-1.5 pl-2 transition-all duration-300 md:pr-2 md:pl-3",
-                isConnecting || isVoiceMode
+                isGenerating || isVoiceMode
                   ? "pointer-events-none z-0 scale-95 opacity-0"
                   : "pointer-events-auto z-10 scale-100 opacity-100"
               )}
@@ -998,7 +1046,8 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
                     handleSend()
                   }
                 }}
-                placeholder="Ask anything"
+                placeholder={modelLoading ? "Loading model..." : modelReady ? "Ask anything" : "Initializing..."}
+                disabled={!modelReady || modelLoading}
                 className="h-full flex-1 border-none bg-transparent px-2 text-[15px] shadow-none outline-none placeholder:text-muted-foreground focus-visible:border-none focus-visible:ring-0 md:px-3 dark:bg-transparent"
               />
 
@@ -1010,9 +1059,11 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
                       variant="ghost"
                       className="flex items-center gap-1 rounded-full px-2 py-1.5 text-[14px] font-medium text-muted-foreground md:px-3"
                     >
-                      <span className="hidden sm:inline">Fast</span>
-                      <Ghost className="size-4 sm:hidden" />
-                      <Ghost className="hidden size-3.5 sm:inline" />
+                      <span className="hidden sm:inline">
+                        {MODEL_OPTIONS[selectedModel].name}
+                      </span>
+                      <Zap className="size-4 sm:hidden" />
+                      <Zap className="hidden size-3.5 sm:inline" />
                       <ChevronDown className="size-2.5 text-muted-foreground" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -1022,59 +1073,32 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
                     className="w-[240px] rounded-2xl border-border bg-popover p-2 shadow-xl md:w-64"
                     sideOffset={8}
                   >
-                    <DropdownMenuItem className="rounded-xl py-2">
-                      <Rocket className="mr-3 size-4 text-muted-foreground" />
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-foreground">
-                          Auto
-                        </span>
-                        <span className="text-[12px] text-muted-foreground">
-                          Chooses Fast or Expert
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="rounded-xl bg-muted/50 py-2">
-                      <Check className="mr-3 size-4 text-foreground" />
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-foreground">
-                          Fast
-                        </span>
-                        <span className="text-[12px] text-muted-foreground">
-                          Powered by Grok 4.3
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="rounded-xl py-2">
-                      <Lightbulb className="mr-3 size-4 text-muted-foreground" />
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-foreground">
-                          Expert
-                        </span>
-                        <span className="text-[12px] text-muted-foreground">
-                          Powered by Grok 4.3
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-not-allowed rounded-xl py-2 text-muted-foreground/40">
-                      <Grid3x3 className="mr-3 size-4" />
-                      <div className="flex flex-col">
-                        <span className="font-semibold">Heavy</span>
-                        <span className="text-[12px]">Team of Experts</span>
-                      </div>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="rounded-xl bg-muted/50 py-2">
-                      <Smile className="mr-3 size-4 text-muted-foreground" />
-                      <div className="flex flex-col overflow-hidden">
-                        <span className="font-semibold text-foreground">
-                          Custom Instructions
-                        </span>
-                        <span className="w-[140px] truncate text-[12px] text-muted-foreground md:w-32">
-                          You are friday - I am essencefr...
-                        </span>
-                      </div>
-                      <ChevronRight className="ml-auto size-3 text-muted-foreground" />
-                    </DropdownMenuItem>
+                    {Object.values(MODEL_OPTIONS).map(
+                      (model) => (
+                        <DropdownMenuItem
+                          key={model.id}
+                          className={cn(
+                            "rounded-xl py-2",
+                            selectedModel === model.id && "bg-muted/50"
+                          )}
+                          onClick={() => setSelectedModel(model.id)}
+                        >
+                          {selectedModel === model.id ? (
+                            <Check className="mr-3 size-4 text-foreground" />
+                          ) : (
+                            <Zap className="mr-3 size-4 text-muted-foreground" />
+                          )}
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-foreground">
+                              {model.name}
+                            </span>
+                            <span className="text-[12px] text-muted-foreground">
+                              {model.description}
+                            </span>
+                          </div>
+                        </DropdownMenuItem>
+                      )
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
 
@@ -1094,8 +1118,9 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
 
                 <Button
                   size="icon-sm"
-                  className="ml-0.5 rounded-full bg-foreground text-background shadow-sm hover:bg-foreground/80 md:ml-1"
+                  className="ml-0.5 rounded-full bg-foreground text-background shadow-sm hover:bg-foreground/80 disabled:opacity-40 disabled:cursor-not-allowed md:ml-1"
                   onClick={handleSend}
+                  disabled={!modelReady || modelLoading}
                 >
                   {inputValue.trim() ? (
                     <ArrowUp className="size-4" />
@@ -1106,24 +1131,24 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
               </div>
             </div>
 
-            {/* Connecting State */}
+            {/* Generating State */}
             <div
               className={cn(
                 "absolute inset-0 flex items-center justify-between rounded-[2rem] bg-muted/50 pr-1.5 pl-4 transition-all duration-300 md:pr-2 md:pl-5",
-                isConnecting
+                isGenerating
                   ? "pointer-events-auto z-10 scale-100 opacity-100"
                   : "pointer-events-none z-0 scale-95 opacity-0"
               )}
             >
               <div className="flex items-center gap-3 text-muted-foreground">
-                <Volume2 className="size-5 animate-pulse text-blue-500" />
+                <Zap className="size-5 animate-pulse text-blue-500" />
                 <span className="text-[14px] font-medium md:text-[15px]">
-                  Connecting to Grok...
+                  Generating with {MODEL_OPTIONS[selectedModel].name}...
                 </span>
               </div>
               <Button
                 className="rounded-full bg-foreground px-4 py-1.5 text-sm font-semibold text-background shadow-sm md:px-5 md:py-2"
-                onClick={() => setIsConnecting(false)}
+                onClick={stopGeneration}
               >
                 Stop
               </Button>

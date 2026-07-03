@@ -15,17 +15,20 @@ export function SidebarItem({
   collapsed,
   active,
   badge,
+  onClick,
 }: {
   icon: React.ElementType
   label: string
   collapsed: boolean
   active?: boolean
   badge?: string
+  onClick?: () => void
 }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <button
+          onClick={onClick}
           className={cn(
             "group flex items-center gap-3 rounded-lg py-2.5 text-left text-[15px] font-medium transition-colors md:py-2 md:text-sm",
             collapsed ? "w-auto justify-center px-3" : "w-full px-3",
@@ -115,14 +118,17 @@ export function HistoryItem({
   label,
   collapsed,
   active,
+  onClick,
 }: {
   icon?: React.ElementType
   label: string
   collapsed: boolean
   active?: boolean
+  onClick?: () => void
 }) {
   return (
     <button
+      onClick={onClick}
       className={cn(
         "flex w-full items-center gap-3 truncate rounded-lg px-3 py-2 text-left text-[15px] transition-colors md:py-1.5 md:text-sm",
         active
