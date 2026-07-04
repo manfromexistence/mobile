@@ -913,6 +913,6 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </ZenSidebar>
   )
 }
