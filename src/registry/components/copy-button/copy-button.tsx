@@ -1,12 +1,11 @@
 "use client"
 
-import type { ComponentProps } from "react"
 import { motion } from "motion/react"
-
-import { cn } from "@/lib/utils"
+import type { ComponentProps } from "react"
+import { Button } from "@/components/ui/button"
 import type { CopyState } from "@/hooks/use-copy-to-clipboard"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import { IconSwap, IconSwapItem } from "@/registry/components/icon-swap"
 import { IconPlaceholder } from "@/registry/icons/icon-placeholder"
 

@@ -1,6 +1,6 @@
-import type { NpmCommands } from "@/types/unist"
 import { cn } from "@/lib/utils"
 import { MiddleTruncation } from "@/registry/components/middle-truncation"
+import type { NpmCommands } from "@/types/unist"
 
 import { CodeBlockCommand } from "./code-block-command"
 import { CopyButton } from "./copy-button"
@@ -68,47 +68,45 @@ export const mdxCodeBlockComponents = {
     }
 
     return (
-      <>
-        <div className="group/pre rounded-[9px] border bg-code">
-          <pre
-            className={cn(
-              __rawString__ && !__withMeta__ && "[--code-padding-right:6rem]",
-              className
-            )}
-            {...props}
-          />
-
-          {__rawString__ && (
-            <>
-              <CopyButton
-                data-slot="copy-button"
-                className={cn(
-                  "absolute top-2 right-2 z-10 size-7 rounded-[5px] border-none text-muted-foreground [&_svg:not([class*='size-'])]:size-4",
-                  __withMeta__ && "top-1.5 right-1.5 rounded-md",
-                  !__withMeta__ && "opacity-0 group-hover/pre:opacity-100"
-                )}
-                variant="ghost"
-                size="icon-xs"
-                text={__rawString__}
-                event="copy_code_block"
-              />
-
-              {!__withMeta__ && (
-                <div
-                  aria-hidden
-                  data-fade-overlay
-                  className="top-1.25 right-1.25 opacity-0 transition-opacity group-hover/pre:opacity-100"
-                  style={
-                    {
-                      "--fade-color": "var(--code)",
-                    } as React.CSSProperties
-                  }
-                />
-              )}
-            </>
+      <div className="group/pre rounded-[9px] border bg-code">
+        <pre
+          className={cn(
+            __rawString__ && !__withMeta__ && "[--code-padding-right:6rem]",
+            className
           )}
-        </div>
-      </>
+          {...props}
+        />
+
+        {__rawString__ && (
+          <>
+            <CopyButton
+              data-slot="copy-button"
+              className={cn(
+                "absolute top-2 right-2 z-10 size-7 rounded-[5px] border-none text-muted-foreground [&_svg:not([class*='size-'])]:size-4",
+                __withMeta__ && "top-1.5 right-1.5 rounded-md",
+                !__withMeta__ && "opacity-0 group-hover/pre:opacity-100"
+              )}
+              variant="ghost"
+              size="icon-xs"
+              text={__rawString__}
+              event="copy_code_block"
+            />
+
+            {!__withMeta__ && (
+              <div
+                aria-hidden
+                data-fade-overlay
+                className="top-1.25 right-1.25 opacity-0 transition-opacity group-hover/pre:opacity-100"
+                style={
+                  {
+                    "--fade-color": "var(--code)",
+                  } as React.CSSProperties
+                }
+              />
+            )}
+          </>
+        )}
+      </div>
     )
   },
 }

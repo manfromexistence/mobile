@@ -1,11 +1,10 @@
+import { describe, expect, it } from "vitest"
+import { registryConfig } from "@/config/registry"
 import {
   getRegistryItemNamespace,
   getRegistryItemUrl,
   getRegistryItemUrls,
 } from "@/utils/registry"
-import { describe, expect, it } from "vitest"
-
-import { registryConfig } from "@/config/registry"
 
 describe("getRegistryItemNamespace", () => {
   it("prefixes the configured namespace and suffixes the item", () => {
@@ -29,6 +28,8 @@ describe("getRegistryItemUrls", () => {
     expect(result).toHaveLength(2)
     expect(result[0]).toBe(getRegistryItemUrl("a"))
     expect(result[1]).toBe(getRegistryItemUrl("b"))
-    result.forEach((url) => expect(url).not.toContain("{name}"))
+    for (const url of result) {
+      expect(url).not.toContain("{name}")
+    }
   })
 })

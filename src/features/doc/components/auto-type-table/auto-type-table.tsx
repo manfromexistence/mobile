@@ -1,16 +1,16 @@
 import "server-only"
 
-import type { ComponentProps, ReactNode } from "react"
-import * as runtime from "react/jsx-runtime"
 import type { GeneratedDoc, Generator } from "fumadocs-typescript"
 import type { Nodes } from "hast"
-import { toJsxRuntime, type Jsx } from "hast-util-to-jsx-runtime"
+import { type Jsx, toJsxRuntime } from "hast-util-to-jsx-runtime"
+import type { ComponentProps, ReactNode } from "react"
+import * as runtime from "react/jsx-runtime"
 
 import { mdxCodeBlockComponents } from "@/components/mdx-code-block"
 import {
-  TypeTable,
   type ParameterNode,
   type TypeNode,
+  TypeTable,
 } from "@/features/doc/components/type-table"
 
 import type { ShikiOptions } from "./markdown"
@@ -58,7 +58,8 @@ export interface GenerateTypeTableOptions {
 }
 
 export interface AutoTypeTableProps
-  extends BaseTypeTableProps, ComponentProps<"div"> {
+  extends BaseTypeTableProps,
+    ComponentProps<"div"> {
   generator: Generator
 
   shiki?: ShikiOptions

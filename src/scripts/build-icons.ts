@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 import * as fs from "fs"
 import * as path from "path"
-import { iconLibraries, type IconLibraryName } from "shadcn/icons"
+import { type IconLibraryName, iconLibraries } from "shadcn/icons"
 
 type IconUsage = Record<IconLibraryName, Set<string>>
 
@@ -40,8 +40,8 @@ function scanIconUsage() {
   for (const file of files) {
     const content = fs.readFileSync(file, "utf-8")
 
-    let match
-    while ((match = iconPlaceholderRegex.exec(content)) !== null) {
+    let match: RegExpExecArray | null = iconPlaceholderRegex.exec(content)
+    while (match !== null) {
       const fullMatch = match[0]
 
       for (const [libraryName, config] of Object.entries(iconLibraries)) {
@@ -53,6 +53,7 @@ function scanIconUsage() {
         }
       }
     }
+    match = iconPlaceholderRegex.exec(content)
   }
 
   return iconUsage
@@ -92,7 +93,9 @@ ${icons.map((icon) => `export { ${icon} } from "${config.export}"`).join("\n")}
 
   if (written.length > 0) {
     console.log("✓ Generated icon files:")
-    written.forEach((line) => console.log(line))
+    for (const line of written) {
+      console.log(line)
+    }
   }
 }
 

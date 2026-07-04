@@ -1,7 +1,7 @@
 "use client"
 
+import { animate, type Transition, useMotionValue } from "motion/react"
 import { useEffect, useRef } from "react"
-import { animate, useMotionValue, type Transition } from "motion/react"
 
 import { DEFAULT_CHART_ENTER_TRANSITION } from "./animation"
 
@@ -17,7 +17,6 @@ export function useMountProgress(
   transitionRef.current = enterTransition
 
   // replayKey intentionally retriggers enter when motion settings change
-  // biome-ignore lint/correctness/useExhaustiveDependencies: replayKey
   useEffect(() => {
     progress.set(0)
     const controls = animate(progress, 1, {

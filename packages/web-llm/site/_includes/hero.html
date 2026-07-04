@@ -37,7 +37,7 @@
 </section>
 
 <script>
-  (function() {
+  (() => {
 
   function handlerIn(e) {
     $(this).addClass("expanded");
@@ -51,7 +51,7 @@
 
   var video = $("video")[0];
   video.play().then((_) => {
-    let observer = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (

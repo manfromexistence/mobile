@@ -1,22 +1,22 @@
-import { useMessages } from '../utils/messages.context';
-import { Screen } from '../utils/types';
-import { useWllama } from '../utils/wllama.context';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faBrain,
   faArrowUpRightFromSquare,
+  faBrain,
+  faBug,
   faQuestionCircle,
   faTrashAlt,
-  faBug,
-} from '@fortawesome/free-solid-svg-icons';
-import { WLLAMA_VERSION } from '../config';
+} from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { WLLAMA_VERSION } from "../config"
+import { useMessages } from "../utils/messages.context"
+import { Screen } from "../utils/types"
+import { useWllama } from "../utils/wllama.context"
 
 export default function Sidebar({ children }: { children: any }) {
-  const { currentConvId, navigateTo, currScreen, loadedModel } = useWllama();
+  const { currentConvId, navigateTo, currScreen, loadedModel } = useWllama()
   const { conversations, getConversationById, deleteConversation } =
-    useMessages();
+    useMessages()
 
-  const currConv = getConversationById(currentConvId);
+  const currConv = getConversationById(currentConvId)
 
   return (
     <>
@@ -35,7 +35,7 @@ export default function Sidebar({ children }: { children: any }) {
               <li onClick={() => navigateTo(Screen.CHAT)}>
                 <a
                   className={
-                    !currConv && currScreen === Screen.CHAT ? 'active' : ''
+                    !currConv && currScreen === Screen.CHAT ? "active" : ""
                   }
                 >
                   + New conversation
@@ -48,7 +48,7 @@ export default function Sidebar({ children }: { children: any }) {
                   className="group flex flex-row"
                 >
                   <a
-                    className={`${conv.id === currentConvId ? 'active' : ''} flex-1 min-w-0`}
+                    className={`${conv.id === currentConvId ? "active" : ""} flex-1 min-w-0`}
                   >
                     <div className="truncate">{conv.messages[0]?.content}</div>
                   </a>
@@ -57,12 +57,12 @@ export default function Sidebar({ children }: { children: any }) {
                     <FontAwesomeIcon
                       icon={faTrashAlt}
                       onClick={(e) => {
-                        e.preventDefault();
+                        e.preventDefault()
                         if (
-                          confirm('Are you sure to delete this conversation?')
+                          confirm("Are you sure to delete this conversation?")
                         ) {
-                          navigateTo(Screen.CHAT);
-                          deleteConversation(conv.id);
+                          navigateTo(Screen.CHAT)
+                          deleteConversation(conv.id)
                         }
                       }}
                     />
@@ -83,17 +83,17 @@ export default function Sidebar({ children }: { children: any }) {
 
             <ul className="menu gap-1">
               <li onClick={() => navigateTo(Screen.GUIDE)}>
-                <a className={currScreen === Screen.GUIDE ? 'active' : ''}>
+                <a className={currScreen === Screen.GUIDE ? "active" : ""}>
                   <FontAwesomeIcon icon={faQuestionCircle} /> Guide
                 </a>
               </li>
               <li onClick={() => navigateTo(Screen.MODEL)}>
-                <a className={currScreen === Screen.MODEL ? 'active' : ''}>
+                <a className={currScreen === Screen.MODEL ? "active" : ""}>
                   <FontAwesomeIcon icon={faBrain} /> Manage models
                 </a>
               </li>
               <li onClick={() => navigateTo(Screen.LOG)}>
-                <a className={currScreen === Screen.LOG ? 'active' : ''}>
+                <a className={currScreen === Screen.LOG ? "active" : ""}>
                   <FontAwesomeIcon icon={faBug} /> Debug log
                 </a>
               </li>
@@ -115,5 +115,5 @@ export default function Sidebar({ children }: { children: any }) {
 
       <div className="drawer-content grow">{children}</div>
     </>
-  );
+  )
 }

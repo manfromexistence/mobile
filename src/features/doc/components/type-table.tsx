@@ -1,9 +1,6 @@
 "use client"
 
 import type { ComponentProps, ReactNode } from "react"
-
-import { cn } from "@/lib/utils"
-import { Prose } from "@/components/ui/typography"
 import {
   Collapsible,
   CollapsibleChevronDownIcon,
@@ -12,6 +9,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/base/ui/collapsible"
+import { Prose } from "@/components/ui/typography"
+import { cn } from "@/lib/utils"
 
 export interface ParameterNode {
   name: string

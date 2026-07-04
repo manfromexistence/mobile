@@ -1,7 +1,4 @@
-import { formatDuration } from "@/utils/format"
 import { format } from "date-fns"
-
-import { cn } from "@/lib/utils"
 import Grid from "@/components/charts/grid"
 import LineChart, { Line } from "@/components/charts/line-chart"
 import { ChartTooltip } from "@/components/charts/tooltip"
@@ -13,6 +10,8 @@ import {
 } from "@/features/portfolio/components/panel"
 import { PanelTitleCopy } from "@/features/portfolio/components/panel-title-copy"
 import { getInsights } from "@/features/portfolio/data/insights"
+import { cn } from "@/lib/utils"
+import { formatDuration } from "@/utils/format"
 
 const ID = "insights"
 

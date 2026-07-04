@@ -1,7 +1,6 @@
-import * as React from "react"
 import { ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
 import { Slot } from "radix-ui"
-
+import type * as React from "react"
 import { cn } from "@/lib/utils"
 
 function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
@@ -110,10 +109,10 @@ function BreadcrumbEllipsis({
 
 export {
   Breadcrumb,
-  BreadcrumbList,
+  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
+  BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-  BreadcrumbEllipsis,
 }

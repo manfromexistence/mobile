@@ -1,7 +1,7 @@
 "use client"
 
-import { useMediaQuery } from "@/hooks/use-media-query"
 import { TOCMinimap } from "@/components/toc-minimap"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 export function TOC() {
   const isDesktop = useMediaQuery("(min-width: 64rem)") // xl breakpoint

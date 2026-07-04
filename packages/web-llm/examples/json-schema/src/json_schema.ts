@@ -1,12 +1,12 @@
-import * as webllm from "@mlc-ai/web-llm";
-import { Type, Static } from "@sinclair/typebox";
+import * as webllm from "@mlc-ai/web-llm"
+import { type Static, Type } from "@sinclair/typebox"
 
 function setLabel(id: string, text: string) {
-  const label = document.getElementById(id);
+  const label = document.getElementById(id)
   if (label == null) {
-    throw Error("Cannot find label " + id);
+    throw Error("Cannot find label " + id)
   }
-  label.innerText = text;
+  label.innerText = text
 }
 
 async function simpleStructuredTextExample() {
@@ -20,32 +20,32 @@ async function simpleStructuredTextExample() {
         },
         "required": ["size", "is_accepted", "num"], 
         "title": "Schema", "type": "object"
-    }`;
+    }`
 
   // 2. You can use 3rdparty libraries like typebox to create a schema
   const T = Type.Object({
     size: Type.Integer(),
     is_accepted: Type.Boolean(),
     num: Type.Number(),
-  });
-  type T = Static<typeof T>;
-  const schema2 = JSON.stringify(T);
-  console.log(schema2);
+  })
+  type T = Static<typeof T>
+  const schema2 = JSON.stringify(T)
+  console.log(schema2)
   // {"type":"object","properties":{"size":{"type":"integer"},"is_accepted":{"type":"boolean"},
   // "num":{"type":"number"}},"required":["size","is_accepted","num"]}
 
   const initProgressCallback = (report: webllm.InitProgressReport) => {
-    setLabel("init-label", report.text);
-  };
+    setLabel("init-label", report.text)
+  }
 
   // Pick any one of these models to start trying -- most models in WebLLM support grammar
   // const selectedModel = "Llama-3.2-3B-Instruct-q4f16_1-MLC";
   // const selectedModel = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC";
-  const selectedModel = "Phi-3.5-mini-instruct-q4f16_1-MLC";
+  const selectedModel = "Phi-3.5-mini-instruct-q4f16_1-MLC"
   const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
     selectedModel,
-    { initProgressCallback: initProgressCallback, logLevel: "INFO" },
-  );
+    { initProgressCallback: initProgressCallback, logLevel: "INFO" }
+  )
 
   // Note that you'd need to prompt the model to answer in JSON either in
   // user's message or the system prompt
@@ -64,12 +64,12 @@ async function simpleStructuredTextExample() {
       type: "json_object",
       schema: schema2,
     } as webllm.ResponseFormat,
-  };
+  }
 
-  const reply0 = await engine.chatCompletion(request);
-  console.log(reply0);
-  console.log("Output:\n" + (await engine.getMessage()));
-  console.log(reply0.usage);
+  const reply0 = await engine.chatCompletion(request)
+  console.log(reply0)
+  console.log("Output:\n" + (await engine.getMessage()))
+  console.log(reply0.usage)
 }
 
 // The json schema and prompt is taken from
@@ -101,25 +101,25 @@ async function harryPotterExample() {
     }),
     alive: Type.Boolean(),
     patronus: Type.String(),
-  });
+  })
 
-  type T = Static<typeof T>;
-  const schema = JSON.stringify(T);
-  console.log(schema);
+  type T = Static<typeof T>
+  const schema = JSON.stringify(T)
+  console.log(schema)
 
   const initProgressCallback = (report: webllm.InitProgressReport) => {
-    setLabel("init-label", report.text);
-  };
+    setLabel("init-label", report.text)
+  }
 
   // Pick any one of these models to start trying -- most models in WebLLM support grammar
-  const selectedModel = "Llama-3.2-3B-Instruct-q4f16_1-MLC";
+  const selectedModel = "Llama-3.2-3B-Instruct-q4f16_1-MLC"
   // const selectedModel = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC";
   // const selectedModel = "Phi-3.5-mini-instruct-q4f16_1-MLC";
 
   const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
     selectedModel,
-    { initProgressCallback: initProgressCallback, logLevel: "INFO" },
-  );
+    { initProgressCallback: initProgressCallback, logLevel: "INFO" }
+  )
 
   // Note that you'd need to prompt the model to answer in JSON either in
   // user's message or the system prompt
@@ -138,13 +138,13 @@ async function harryPotterExample() {
       type: "json_object",
       schema: schema,
     } as webllm.ResponseFormat,
-  };
+  }
 
-  const reply = await engine.chatCompletion(request);
-  console.log(reply);
-  console.log("Output:\n" + (await engine.getMessage()));
-  console.log(reply.usage);
-  console.log(reply.usage!.extra);
+  const reply = await engine.chatCompletion(request)
+  console.log(reply)
+  console.log("Output:\n" + (await engine.getMessage()))
+  console.log(reply.usage)
+  console.log(reply.usage!.extra)
 }
 
 async function functionCallingExample() {
@@ -153,12 +153,12 @@ async function functionCallingExample() {
       Type.Object({
         arguments: Type.Any(),
         name: Type.String(),
-      }),
+      })
     ),
-  });
-  type T = Static<typeof T>;
-  const schema = JSON.stringify(T);
-  console.log(schema);
+  })
+  type T = Static<typeof T>
+  const schema = JSON.stringify(T)
+  console.log(schema)
 
   const tools: Array<webllm.ChatCompletionTool> = [
     {
@@ -179,19 +179,19 @@ async function functionCallingExample() {
         },
       },
     },
-  ];
+  ]
 
   const initProgressCallback = (report: webllm.InitProgressReport) => {
-    setLabel("init-label", report.text);
-  };
+    setLabel("init-label", report.text)
+  }
 
-  const selectedModel = "Hermes-2-Pro-Llama-3-8B-q4f16_1-MLC";
+  const selectedModel = "Hermes-2-Pro-Llama-3-8B-q4f16_1-MLC"
   const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
     selectedModel,
     {
       initProgressCallback: initProgressCallback,
-    },
-  );
+    }
+  )
 
   const request: webllm.ChatCompletionRequest = {
     stream: false,
@@ -199,12 +199,12 @@ async function functionCallingExample() {
       {
         role: "system",
         content: `You are a function calling AI model. You are provided with function signatures within <tools></tools> XML tags. You may call one or more functions to assist with the user query. Don't make assumptions about what values to plug into functions. Here are the available tools: <tools> ${JSON.stringify(
-          tools,
+          tools
         )} </tools>. Do not stop calling functions until the task has been accomplished or you've reached max iteration of 10.
       Calling multiple functions at once can overload the system and increase cost so call one function at a time please.
       If you plan to continue with analysis, always call another function.
       Return a valid json object (using double quotes) in the following schema: ${JSON.stringify(
-        schema,
+        schema
       )}.`,
       },
       {
@@ -217,12 +217,12 @@ async function functionCallingExample() {
       type: "json_object",
       schema: schema,
     } as webllm.ResponseFormat,
-  };
+  }
 
-  const reply = await engine.chat.completions.create(request);
-  console.log(reply.choices[0].message.content);
+  const reply = await engine.chat.completions.create(request)
+  console.log(reply.choices[0].message.content)
 
-  console.log(reply.usage);
+  console.log(reply.usage)
 }
 
 async function ebnfGrammarExample() {
@@ -240,20 +240,20 @@ basic_null ::= "null"
 basic_array ::= "[" ("" | ws basic_any (ws "," ws basic_any)*) ws "]"
 basic_object ::= "{" ("" | ws basic_string ws ":" ws basic_any ( ws "," ws basic_string ws ":" ws basic_any)*) ws "}"
 ws ::= [ \n\t]*
-`;
+`
 
   const initProgressCallback = (report: webllm.InitProgressReport) => {
-    setLabel("init-label", report.text);
-  };
+    setLabel("init-label", report.text)
+  }
 
   // Pick any one of these models to start trying -- most models in WebLLM support grammar
-  const selectedModel = "Llama-3.2-3B-Instruct-q4f16_1-MLC";
+  const selectedModel = "Llama-3.2-3B-Instruct-q4f16_1-MLC"
   // const selectedModel = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC";
   // const selectedModel = "Phi-3.5-mini-instruct-q4f16_1-MLC";
   const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
     selectedModel,
-    { initProgressCallback: initProgressCallback, logLevel: "INFO" },
-  );
+    { initProgressCallback: initProgressCallback, logLevel: "INFO" }
+  )
 
   // Note that you'd need to prompt the model to answer in JSON either in
   // user's message or the system prompt
@@ -270,19 +270,19 @@ ws ::= [ \n\t]*
       type: "grammar",
       grammar: jsonGrammarStr,
     } as webllm.ResponseFormat,
-  };
+  }
 
-  const reply0 = await engine.chatCompletion(request);
-  console.log(reply0);
-  console.log("Output:\n" + (await engine.getMessage()));
-  console.log(reply0.usage);
+  const reply0 = await engine.chatCompletion(request)
+  console.log(reply0)
+  console.log("Output:\n" + (await engine.getMessage()))
+  console.log(reply0.usage)
 }
 
 async function main() {
   // await simpleStructuredTextExample();
-  await harryPotterExample();
+  await harryPotterExample()
   // await functionCallingExample();
   // await ebnfGrammarExample();
 }
 
-main();
+main()

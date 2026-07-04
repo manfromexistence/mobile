@@ -2,10 +2,10 @@
 
 "use client"
 
-import { useEffect, useRef } from "react"
 import { useReducedMotion } from "motion/react"
 import { useTheme } from "next-themes"
 import p5 from "p5"
+import { useEffect, useRef } from "react"
 
 import { cn } from "@/lib/utils"
 

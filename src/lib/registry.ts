@@ -1,6 +1,6 @@
 import { promises as fs } from "fs"
-import path from "path"
 import { LRUCache } from "lru-cache"
+import path from "path"
 import type { registryItemFileSchema } from "shadcn/schema"
 import { registryItemSchema } from "shadcn/schema"
 import type { z } from "zod"

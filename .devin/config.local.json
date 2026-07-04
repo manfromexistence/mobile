@@ -1,8 +1,5 @@
 {
   "permissions": {
-    "allow": [
-      "Exec(cd)",
-      "Exec(taskkill)"
-    ]
+    "allow": ["Exec(cd)", "Exec(taskkill)"]
   }
 }

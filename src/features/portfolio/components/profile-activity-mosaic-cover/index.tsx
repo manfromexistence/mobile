@@ -1,4 +1,3 @@
-import { unstable_cache } from "next/cache"
 import {
   eachYearOfInterval,
   format,
@@ -6,6 +5,7 @@ import {
   startOfYear,
   subDays,
 } from "date-fns"
+import { unstable_cache } from "next/cache"
 
 import { GITHUB_USERNAME } from "@/config/site"
 

@@ -1,13 +1,12 @@
-import { Fragment } from "react"
 import type { Metadata } from "next"
+import { Fragment } from "react"
 import type { CollectionPage, WithContext } from "schema-dts"
-
+import { BlockDisplay } from "@/app/(preview)/components/block-display"
 import { JSON_LD_ID } from "@/config/json-ld"
 import { X_HANDLE } from "@/config/site"
-import { jsonLdBreadcrumbList, JsonLdScript } from "@/lib/json-ld"
+import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
 import { absoluteUrl } from "@/lib/utils"
 import blocks from "@/registry/__blocks__.json"
-import { BlockDisplay } from "@/app/(preview)/components/block-display"
 
 export const dynamic = "force-static"
 export const revalidate = false

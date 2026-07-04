@@ -4,13 +4,12 @@ import type { Metadata, Viewport } from "next"
 import Script from "next/script"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import type { WebSite, WithContext } from "schema-dts"
-
+import { Providers } from "@/components/providers"
 import { JSON_LD_ID, personJsonLd } from "@/config/json-ld"
 import { META_THEME_COLORS, SITE_INFO, X_HANDLE } from "@/config/site"
+import { USER } from "@/features/portfolio/data/user"
 import { fontVariables } from "@/lib/fonts"
 import { JsonLdScript } from "@/lib/json-ld"
-import { Providers } from "@/components/providers"
-import { USER } from "@/features/portfolio/data/user"
 
 function getWebSiteJsonLd(): WithContext<WebSite> {
   return {
@@ -24,7 +23,7 @@ function getWebSiteJsonLd(): WithContext<WebSite> {
 }
 
 // Thanks @shadcn-ui, @tailwindcss
-const darkModeScript = String.raw`
+const darkModeScript = `
   try {
     var theme = localStorage.getItem('dx-dark-mode');
     if (theme === 'true') {

@@ -1,15 +1,14 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { curveNatural } from "@visx/curve"
 import { LinePath } from "@visx/shape"
 import { motion, useMotionTemplate, useSpring } from "motion/react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 import { chartCssVars, useChart } from "./chart-context"
 import { ChartRevealClip } from "./chart-reveal-clip"
 
 // CurveFactory type - simplified version compatible with visx
-// biome-ignore lint/suspicious/noExplicitAny: d3 curve factory type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CurveFactory = any
 
@@ -62,7 +61,6 @@ export function Line({
     [dataKey]
   )
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: data, innerWidth
   useEffect(() => {
     if (pathRef.current && animate) {
       const len = pathRef.current.getTotalLength()

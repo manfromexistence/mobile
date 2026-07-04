@@ -1,7 +1,6 @@
 import Image from "next/image"
-
-import { cn } from "@/lib/utils"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { cn } from "@/lib/utils"
 
 export default function ScrollAreaHorizontalDemo() {
   return (

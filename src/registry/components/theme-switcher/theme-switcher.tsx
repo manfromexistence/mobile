@@ -1,9 +1,9 @@
 "use client"
 
-import type { JSX } from "react"
-import { useSyncExternalStore } from "react"
 import { motion } from "motion/react"
 import { useTheme } from "next-themes"
+import type { JSX } from "react"
+import { useSyncExternalStore } from "react"
 
 import { IconPlaceholder } from "@/registry/icons/icon-placeholder"
 

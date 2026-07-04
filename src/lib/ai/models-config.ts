@@ -1,10 +1,10 @@
 import type { ModelId, ModelOption } from "@/features/dx/types"
 
 export type ExtendedModelOption = ModelOption & {
-  wllamaRepo?: string;
-  wllamaFile?: string;
-  mlcModelId?: string;
-};
+  wllamaRepo?: string
+  wllamaFile?: string
+  mlcModelId?: string
+}
 
 export const MODEL_OPTIONS: Record<ModelId, ExtendedModelOption> = {
   "qwen-0.5b": {

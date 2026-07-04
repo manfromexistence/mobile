@@ -1,11 +1,11 @@
-import Head from "next/head";
-import dynamic from "next/dynamic";
-import { Inter } from "next/font/google";
+import dynamic from "next/dynamic"
+import { Inter } from "next/font/google"
+import Head from "next/head"
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] })
 const ChatComponent = dynamic(() => import("~/utils/chat_component"), {
   ssr: false,
-});
+})
 
 export default function Home() {
   return (
@@ -24,5 +24,5 @@ export default function Home() {
         <ChatComponent />
       </main>
     </>
-  );
+  )
 }

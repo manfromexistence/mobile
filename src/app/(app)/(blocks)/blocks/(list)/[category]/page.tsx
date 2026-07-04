@@ -1,19 +1,18 @@
-import { Fragment } from "react"
 import type { Metadata } from "next"
+import { Fragment } from "react"
 import type { CollectionPage, WithContext } from "schema-dts"
-
+import { BlockDisplay } from "@/app/(preview)/components/block-display"
 import { blockCategories } from "@/config/registry"
 import { X_HANDLE } from "@/config/site"
 import { getAllBlockIds } from "@/lib/blocks"
-import { jsonLdBreadcrumbList, JsonLdScript } from "@/lib/json-ld"
+import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
 import { absoluteUrl } from "@/lib/utils"
-import { BlockDisplay } from "@/app/(preview)/components/block-display"
 
 export const revalidate = false
 export const dynamic = "force-static"
 export const dynamicParams = false
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return blockCategories.map((category) => ({
     category: category.name,
   }))

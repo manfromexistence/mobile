@@ -1,20 +1,19 @@
-import { Suspense } from "react"
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import type { Blog, WithContext } from "schema-dts"
-
-import { JSON_LD_ID } from "@/config/json-ld"
-import { X_HANDLE } from "@/config/site"
-import { jsonLdBreadcrumbList, JsonLdScript } from "@/lib/json-ld"
-import { absoluteUrl } from "@/lib/utils"
 import {
   PageHeading,
   PageHeadingTagline,
   PageHeadingTitle,
 } from "@/components/page-heading"
+import { JSON_LD_ID } from "@/config/json-ld"
+import { X_HANDLE } from "@/config/site"
 import { PostList } from "@/features/blog/components/post-list"
 import { PostListWithSearch } from "@/features/blog/components/post-list-with-search"
 import { PostSearchInput } from "@/features/blog/components/post-search-input"
 import { getBlogPosts } from "@/features/doc/data/documents"
+import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
+import { absoluteUrl } from "@/lib/utils"
 
 const title = "Blog"
 const description = "Writing about code, design, and everything in between."

@@ -1,17 +1,9 @@
+import { getTableOfContents } from "fumadocs-core/content/toc"
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
 import type { Metadata, Route } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { getTableOfContents } from "fumadocs-core/content/toc"
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
 import type { SoftwareSourceCode, WithContext } from "schema-dts"
-
-import { JSON_LD_ID } from "@/config/json-ld"
-import { LICENSE, SOURCE_CODE_GITHUB_URL, X_HANDLE } from "@/config/site"
-import { jsonLdBreadcrumbList, JsonLdScript } from "@/lib/json-ld"
-import { absoluteUrl } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Kbd } from "@/components/ui/kbd"
-import { Prose } from "@/components/ui/typography"
 import {
   Tooltip,
   TooltipContent,
@@ -20,6 +12,11 @@ import {
 import { MDX } from "@/components/mdx"
 import { TOCInline } from "@/components/toc-inline"
 import { TOCMinimap } from "@/components/toc-minimap"
+import { Button } from "@/components/ui/button"
+import { Kbd } from "@/components/ui/kbd"
+import { Prose } from "@/components/ui/typography"
+import { JSON_LD_ID } from "@/config/json-ld"
+import { LICENSE, SOURCE_CODE_GITHUB_URL, X_HANDLE } from "@/config/site"
 import { DocKeyboardShortcuts } from "@/features/doc/components/doc-keyboard-shortcuts"
 import {
   DocContentCol,
@@ -34,12 +31,14 @@ import {
   getDocBySlug,
 } from "@/features/doc/data/documents"
 import type { Doc } from "@/features/doc/types/document"
+import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
+import { absoluteUrl } from "@/lib/utils"
 
 export const revalidate = false
 export const dynamic = "force-static"
 export const dynamicParams = false
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   const docs = getComponentDocs()
   return docs.map((doc) => ({ slug: doc.slug }))
 }
@@ -50,7 +49,7 @@ export async function generateMetadata({
   const slug = (await params).slug
   const doc = getDocBySlug(slug)
 
-  if (!doc || doc.metadata.category !== "components") {
+  if (doc?.metadata.category !== "components") {
     return notFound()
   }
 

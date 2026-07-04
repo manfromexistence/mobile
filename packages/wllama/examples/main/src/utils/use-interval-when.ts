@@ -1,6 +1,6 @@
-import { useRef, useEffect } from 'react';
+import { useEffect, useRef } from "react"
 
-const noop = () => {};
+const noop = () => {}
 
 /**
  * A setInterval hook that calls a callback after a interval duration
@@ -18,31 +18,31 @@ function useIntervalWhen(
   when = true,
   startImmediate = false
 ): void {
-  const savedRefCallback = useRef<() => void>();
+  const savedRefCallback = useRef<() => void>()
 
   useEffect(() => {
-    savedRefCallback.current = callback;
-  });
+    savedRefCallback.current = callback
+  })
 
   useEffect(() => {
     if (when) {
       function internalCallback() {
-        savedRefCallback.current?.();
+        savedRefCallback.current?.()
       }
 
       if (startImmediate) {
-        internalCallback();
+        internalCallback()
       }
 
-      const interval = window.setInterval(internalCallback, intervalDurationMs);
+      const interval = window.setInterval(internalCallback, intervalDurationMs)
 
       return () => {
-        window.clearInterval(interval);
-      };
+        window.clearInterval(interval)
+      }
     }
 
-    return noop;
-  }, [when, intervalDurationMs, startImmediate]);
+    return noop
+  }, [when, intervalDurationMs, startImmediate])
 }
 
-export { useIntervalWhen };
+export { useIntervalWhen }

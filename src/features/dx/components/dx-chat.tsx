@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import {
   Archive,
@@ -21,7 +20,6 @@ import {
   FileText,
   Folder,
   FolderOpen,
-  Ghost,
   Grid3x3,
   Image,
   Lightbulb,
@@ -37,13 +35,10 @@ import {
   Pencil,
   Pin,
   Plus,
-  Rocket,
   RotateCcw,
   Search,
-  Settings,
   Share2,
   Sliders,
-  Smile,
   Sparkles,
   Sun,
   Trash2,
@@ -52,8 +47,7 @@ import {
   X,
   Zap,
 } from "lucide-react"
-
-import { cn } from "@/lib/utils"
+import * as React from "react"
 import { Button } from "@/components/ui/button"
 import {
   Collapsible,
@@ -81,19 +75,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-
-import { useLocalStorage } from "./dx-chat-hooks"
 import { useChat } from "@/features/dx/hooks/use-chat"
-import type { ModelId } from "@/features/dx/types"
 import { MODEL_OPTIONS } from "@/lib/ai/models-config"
+import { cn } from "@/lib/utils"
 import { ChatMessage } from "./chat-message"
-import {
-  ThoughtProcess,
-  SourceBadge,
-  BotMessageActions,
-} from "./dx-chat-message"
-import { VoiceBar } from "./dx-chat-voice"
-import { SidebarItem, SidebarSubItem, HistoryItem } from "./dx-chat-sidebar"
+import { useLocalStorage } from "./dx-chat-hooks"
 import { SourceItem } from "./dx-chat-right-panel"
 import {
   SettingsAccount,
@@ -101,6 +87,8 @@ import {
   SettingsCustomize,
   SettingsPlaceholder,
 } from "./dx-chat-settings"
+import { HistoryItem, SidebarItem, SidebarSubItem } from "./dx-chat-sidebar"
+import { VoiceBar } from "./dx-chat-voice"
 
 type RightPanel = "thoughts" | "sources" | "files" | null
 
@@ -646,16 +634,18 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
                       No conversations yet
                     </div>
                   ) : (
-                    conversations.slice(0, 10).map((conv) => (
-                      <HistoryItem
-                        key={conv.id}
-                        icon={MessageSquare}
-                        label={conv.title}
-                        collapsed={sidebarCollapsed}
-                        active={conv.id === currentConversationId}
-                        onClick={() => switchConversation(conv.id)}
-                      />
-                    ))
+                    conversations
+                      .slice(0, 10)
+                      .map((conv) => (
+                        <HistoryItem
+                          key={conv.id}
+                          icon={MessageSquare}
+                          label={conv.title}
+                          collapsed={sidebarCollapsed}
+                          active={conv.id === currentConversationId}
+                          onClick={() => switchConversation(conv.id)}
+                        />
+                      ))
                   )}
                 </CollapsibleContent>
               </Collapsible>
@@ -941,7 +931,9 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
                     ) : (
                       <>
                         <h2 className="mb-1 text-xl font-bold text-foreground">
-                          {isMock ? "Chat ready (offline mode)" : "Start a conversation"}
+                          {isMock
+                            ? "Chat ready (offline mode)"
+                            : "Start a conversation"}
                         </h2>
                         <p className="max-w-sm text-sm text-muted-foreground">
                           {isMock
@@ -1005,7 +997,8 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
               <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
                 <Zap className="size-3.5 shrink-0" />
                 <span>
-                  Running in fallback mode. The AI model requires more memory. Switch to the basic model or use Chrome/Edge with ample RAM.
+                  Running in fallback mode. The AI model requires more memory.
+                  Switch to the basic model or use Chrome/Edge with ample RAM.
                 </span>
               </div>
             </div>
@@ -1046,7 +1039,13 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
                     handleSend()
                   }
                 }}
-                placeholder={modelLoading ? "Loading model..." : modelReady ? "Ask anything" : "Initializing..."}
+                placeholder={
+                  modelLoading
+                    ? "Loading model..."
+                    : modelReady
+                      ? "Ask anything"
+                      : "Initializing..."
+                }
                 disabled={!modelReady || modelLoading}
                 className="h-full flex-1 border-none bg-transparent px-2 text-[15px] shadow-none outline-none placeholder:text-muted-foreground focus-visible:border-none focus-visible:ring-0 md:px-3 dark:bg-transparent"
               />
@@ -1073,32 +1072,30 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
                     className="w-[240px] rounded-2xl border-border bg-popover p-2 shadow-xl md:w-64"
                     sideOffset={8}
                   >
-                    {Object.values(MODEL_OPTIONS).map(
-                      (model) => (
-                        <DropdownMenuItem
-                          key={model.id}
-                          className={cn(
-                            "rounded-xl py-2",
-                            selectedModel === model.id && "bg-muted/50"
-                          )}
-                          onClick={() => setSelectedModel(model.id)}
-                        >
-                          {selectedModel === model.id ? (
-                            <Check className="mr-3 size-4 text-foreground" />
-                          ) : (
-                            <Zap className="mr-3 size-4 text-muted-foreground" />
-                          )}
-                          <div className="flex flex-col">
-                            <span className="font-semibold text-foreground">
-                              {model.name}
-                            </span>
-                            <span className="text-[12px] text-muted-foreground">
-                              {model.description}
-                            </span>
-                          </div>
-                        </DropdownMenuItem>
-                      )
-                    )}
+                    {Object.values(MODEL_OPTIONS).map((model) => (
+                      <DropdownMenuItem
+                        key={model.id}
+                        className={cn(
+                          "rounded-xl py-2",
+                          selectedModel === model.id && "bg-muted/50"
+                        )}
+                        onClick={() => setSelectedModel(model.id)}
+                      >
+                        {selectedModel === model.id ? (
+                          <Check className="mr-3 size-4 text-foreground" />
+                        ) : (
+                          <Zap className="mr-3 size-4 text-muted-foreground" />
+                        )}
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-foreground">
+                            {model.name}
+                          </span>
+                          <span className="text-[12px] text-muted-foreground">
+                            {model.description}
+                          </span>
+                        </div>
+                      </DropdownMenuItem>
+                    ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
 

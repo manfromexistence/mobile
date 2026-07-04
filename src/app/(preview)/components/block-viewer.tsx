@@ -1,6 +1,9 @@
 "use client"
 
-import React, {
+import { IconCheck, IconCopy, IconX } from "@tabler/icons-react"
+import { CheckIcon, ChevronRightIcon } from "lucide-react"
+import type React from "react"
+import {
   createContext,
   useContext,
   useEffect,
@@ -8,9 +11,6 @@ import React, {
   useRef,
   useState,
 } from "react"
-import { getRegistryItemNamespace, getRegistryItemUrl } from "@/utils/registry"
-import { IconCheck, IconCopy, IconX } from "@tabler/icons-react"
-import { CheckIcon, ChevronRightIcon } from "lucide-react"
 import type { PanelImperativeHandle } from "react-resizable-panels"
 import type {
   RegistryItem,
@@ -18,14 +18,33 @@ import type {
   registryItemSchema,
 } from "shadcn/schema"
 import type { z } from "zod"
-
-import { trackEvent } from "@/lib/events"
-import type {
-  createFileTreeForRegistryItemFiles,
-  FileTree,
-} from "@/lib/registry"
-import { cn } from "@/lib/utils"
-import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
+import { sendToIframe } from "@/app/(preview)/hooks/use-iframe-sync"
+import type { PreviewSearchParams } from "@/app/(preview)/lib/search-params"
+import { serializePreviewSearchParams } from "@/app/(preview)/lib/search-params"
+import {
+  Tabs,
+  TabsContent,
+  TabsIndicator,
+  TabsList,
+  TabsTrigger,
+} from "@/components/base/ui/tabs"
+import { ToggleGroup, ToggleGroupItem } from "@/components/base/ui/toggle-group"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/base/ui/tooltip"
+import {
+  DesktopIcon,
+  FolderIcon,
+  FolderOpenIcon,
+  FullScreenIcon,
+  getIconForLanguageExtension,
+  RefreshIcon,
+  SmartPhoneIcon,
+  TabletIcon,
+  TerminalIcon,
+} from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import {
   Collapsible,
@@ -62,35 +81,16 @@ import {
   SidebarMenuSub,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-import {
-  Tabs,
-  TabsContent,
-  TabsIndicator,
-  TabsList,
-  TabsTrigger,
-} from "@/components/base/ui/tabs"
-import { ToggleGroup, ToggleGroupItem } from "@/components/base/ui/toggle-group"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/base/ui/tooltip"
-import {
-  DesktopIcon,
-  FolderIcon,
-  FolderOpenIcon,
-  FullScreenIcon,
-  getIconForLanguageExtension,
-  RefreshIcon,
-  SmartPhoneIcon,
-  TabletIcon,
-  TerminalIcon,
-} from "@/components/icons"
 import { OpenInV0Button } from "@/components/v0-open-button"
+import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
+import { trackEvent } from "@/lib/events"
+import type {
+  createFileTreeForRegistryItemFiles,
+  FileTree,
+} from "@/lib/registry"
+import { cn } from "@/lib/utils"
 import { CopyButton, CopyStateIcon } from "@/registry/components/copy-button"
-import { sendToIframe } from "@/app/(preview)/hooks/use-iframe-sync"
-import type { PreviewSearchParams } from "@/app/(preview)/lib/search-params"
-import { serializePreviewSearchParams } from "@/app/(preview)/lib/search-params"
+import { getRegistryItemNamespace, getRegistryItemUrl } from "@/utils/registry"
 
 type View = "preview" | "code"
 

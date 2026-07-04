@@ -2,9 +2,8 @@ import fs from "node:fs"
 import path from "node:path"
 import { u } from "unist-builder"
 import { visit } from "unist-util-visit"
-
-import type { UnistNode, UnistTree } from "@/types/unist"
 import { Index } from "@/registry/__index__"
+import type { UnistNode, UnistTree } from "@/types/unist"
 
 import { formatCode } from "./format-code"
 import { fixImport } from "./registry"

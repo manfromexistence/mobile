@@ -1,30 +1,30 @@
-import * as webllm from "@mlc-ai/web-llm";
+import * as webllm from "@mlc-ai/web-llm"
 
 function setLabel(id: string, text: string) {
-  const label = document.getElementById(id);
+  const label = document.getElementById(id)
   if (label == null) {
-    throw Error("Cannot find label " + id);
+    throw Error("Cannot find label " + id)
   }
-  label.innerText = text;
+  label.innerText = text
 }
 
 // Helper method to stream responses from the engine
 async function streamResponse(
   engine: webllm.MLCEngineInterface,
-  request: webllm.ChatCompletionRequestStreaming,
+  request: webllm.ChatCompletionRequestStreaming
 ): Promise<void> {
-  console.log("Requesting chat completion with request:", request);
-  const asyncChunkGenerator = await engine.chat.completions.create(request);
-  let message = "";
+  console.log("Requesting chat completion with request:", request)
+  const asyncChunkGenerator = await engine.chat.completions.create(request)
+  let message = ""
   for await (const chunk of asyncChunkGenerator) {
-    message += chunk.choices[0]?.delta?.content || "";
-    setLabel("generate-label", message);
+    message += chunk.choices[0]?.delta?.content || ""
+    setLabel("generate-label", message)
     if (chunk.usage) {
-      console.log(chunk.usage); // only last chunk has usage
+      console.log(chunk.usage) // only last chunk has usage
     }
     // engine.interruptGenerate();  // works with interrupt as well
   }
-  console.log("Final message:\n", await engine.getMessage()); // the concatenated message
+  console.log("Final message:\n", await engine.getMessage()) // the concatenated message
 }
 
 /**
@@ -33,13 +33,13 @@ async function streamResponse(
  */
 async function main() {
   const initProgressCallback = (report: webllm.InitProgressReport) => {
-    setLabel("init-label", report.text);
-  };
-  const selectedModel = "Qwen3-4B-q4f16_1-MLC";
+    setLabel("init-label", report.text)
+  }
+  const selectedModel = "Qwen3-4B-q4f16_1-MLC"
   const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
     selectedModel,
-    { initProgressCallback: initProgressCallback },
-  );
+    { initProgressCallback: initProgressCallback }
+  )
 
   /**
    * 1. Default behavior: enable thinking
@@ -57,8 +57,8 @@ async function main() {
     // extra_body: {
     //   enable_thinking: true,
     // }
-  };
-  await streamResponse(engine, request);
+  }
+  await streamResponse(engine, request)
 
   /**
    * 2. Disable thinking with `enable_thinking: false`.
@@ -75,8 +75,8 @@ async function main() {
     extra_body: {
       enable_thinking: false,
     },
-  };
-  await streamResponse(engine, request);
+  }
+  await streamResponse(engine, request)
 
   /**
    * 3. Disable thinking with soft switch /no_think
@@ -98,8 +98,8 @@ async function main() {
         // content: "How many r's are there in the word strawberry? /think",
       },
     ],
-  };
-  await streamResponse(engine, request);
+  }
+  await streamResponse(engine, request)
 
   /**
    * 4. For multi-turn messages, it is recommended to
@@ -116,32 +116,32 @@ async function main() {
       content:
         "<think>Dummy thinking content here...</think>\n\nThe answer is 3.",
     },
-  ];
+  ]
   // Preprocess history to remove thinking content
   const preprocessedHistory = history.map((msg) => {
     if (msg.role === "assistant") {
       // Remove <think>...</think> block from assistant messages that is at the start
       // and may contain two \n\n line breaks.
-      const thinkRegex = /<think>.*?<\/think>\n?\n?/s; // Match <think>...</think> with optional \n\n
-      const contentWithoutThink = msg.content!.replace(thinkRegex, "").trim();
-      return { ...msg, content: contentWithoutThink };
+      const thinkRegex = /<think>.*?<\/think>\n?\n?/s // Match <think>...</think> with optional \n\n
+      const contentWithoutThink = msg.content!.replace(thinkRegex, "").trim()
+      return { ...msg, content: contentWithoutThink }
     }
-    return msg; // User messages remain unchanged
-  });
-  console.log("Preprocessed history:", preprocessedHistory);
+    return msg // User messages remain unchanged
+  })
+  console.log("Preprocessed history:", preprocessedHistory)
 
   // Now use the preprocessed history in the request
   const newMessage: webllm.ChatCompletionMessageParam = {
     role: "user",
     content: "What about blueberries?",
-  };
+  }
 
   request = {
     stream: true,
     stream_options: { include_usage: true },
     messages: [...preprocessedHistory, newMessage],
-  };
-  await streamResponse(engine, request);
+  }
+  await streamResponse(engine, request)
 }
 
-main();
+main()

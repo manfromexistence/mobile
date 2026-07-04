@@ -1,10 +1,5 @@
 import { differenceInMonths, parse } from "date-fns"
 import { BriefcaseBusinessIcon, InfinityIcon } from "lucide-react"
-
-import { cn } from "@/lib/utils"
-import { Separator } from "@/components/ui/separator"
-import { Tag } from "@/components/ui/tag"
-import { Prose } from "@/components/ui/typography"
 import {
   Collapsible,
   CollapsibleChevronsUpDownIcon,
@@ -14,7 +9,11 @@ import {
   CollapsibleTrigger,
 } from "@/components/base/ui/collapsible"
 import { Markdown } from "@/components/markdown"
+import { Separator } from "@/components/ui/separator"
+import { Tag } from "@/components/ui/tag"
+import { Prose } from "@/components/ui/typography"
 import type { ExperiencePosition } from "@/features/portfolio/types/experiences"
+import { cn } from "@/lib/utils"
 
 export function ExperiencePositionItem({
   position,

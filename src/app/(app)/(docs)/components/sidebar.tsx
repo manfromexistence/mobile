@@ -4,21 +4,20 @@
 
 "use client"
 
-import { memo, useEffect, useRef, useState } from "react"
+import { motion } from "motion/react"
 import type { Route } from "next"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { motion } from "motion/react"
+import { memo, useEffect, useRef, useState } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
-
-import { cn } from "@/lib/utils"
-import { Kbd } from "@/components/ui/kbd"
 import { Button } from "@/components/base/ui/button"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/base/ui/tooltip"
+import { Kbd } from "@/components/ui/kbd"
+import { cn } from "@/lib/utils"
 
 import type { SidebarIconHandle } from "./sidebar-icon"
 import { SidebarIcon } from "./sidebar-icon"

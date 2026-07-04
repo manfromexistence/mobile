@@ -1,5 +1,5 @@
-import React from "react"
 import { Slot } from "radix-ui"
+import type React from "react"
 
 import { cn } from "@/lib/utils"
 

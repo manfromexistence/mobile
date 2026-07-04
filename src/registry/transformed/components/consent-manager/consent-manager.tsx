@@ -1,7 +1,7 @@
 import {
-  ConsentManagerDialog,
+  ConsentBanner,
+  ConsentDialog,
   ConsentManagerProvider,
-  CookieBanner,
 } from "@c15t/nextjs"
 
 import { cn } from "@/lib/utils"
@@ -16,7 +16,7 @@ export function ConsentManager({ children }: { children: React.ReactNode }) {
         // ignoreGeoLocation: process.env.NODE_ENV === "development", // Useful for development to always view the banner.
       }}
     >
-      <CookieBanner
+      <ConsentBanner
         theme={{
           "banner.card": {
             noStyle: true,
@@ -54,7 +54,7 @@ export function ConsentManager({ children }: { children: React.ReactNode }) {
         }}
       />
 
-      <ConsentManagerDialog
+      <ConsentDialog
         theme={{
           "dialog.root": {
             style: {

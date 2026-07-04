@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react"
-import type { Message, Conversation, ModelId } from "@/features/dx/types"
+import type { Conversation, Message, ModelId } from "@/features/dx/types"
 import { DEFAULT_MODEL_ID } from "@/lib/ai/models-config"
-import { useModelInference, type ModelProgress } from "./use-model"
+import { type ModelProgress, useModelInference } from "./use-model"
 
 function createId(): string {
   if (typeof crypto !== "undefined" && crypto.randomUUID) {
@@ -45,7 +45,9 @@ function saveActiveConversationId(id: string | null) {
 
 function loadSelectedModel(): ModelId {
   if (typeof localStorage === "undefined") return DEFAULT_MODEL_ID
-  return (localStorage.getItem("dx-selected-model") as ModelId) ?? DEFAULT_MODEL_ID
+  return (
+    (localStorage.getItem("dx-selected-model") as ModelId) ?? DEFAULT_MODEL_ID
+  )
 }
 
 function saveSelectedModel(id: ModelId) {
@@ -55,12 +57,16 @@ function saveSelectedModel(id: ModelId) {
 
 export function useChat() {
   const [conversations, setConversations] = React.useState<Conversation[]>([])
-  const [currentConversationId, setCurrentConversationId] = React.useState<string | null>(null)
-  const [selectedModel, setSelectedModelState] = React.useState<ModelId>(DEFAULT_MODEL_ID)
+  const [currentConversationId, setCurrentConversationId] = React.useState<
+    string | null
+  >(null)
+  const [selectedModel, setSelectedModelState] =
+    React.useState<ModelId>(DEFAULT_MODEL_ID)
   const [isGenerating, setIsGenerating] = React.useState(false)
-  const [modelReady, setModelReady] = React.useState(true)
+  const [modelReady, _setModelReady] = React.useState(true)
   const [modelLoading, setModelLoading] = React.useState(false)
-  const [modelProgress, setModelProgress] = React.useState<ModelProgress | null>(null)
+  const [modelProgress, setModelProgress] =
+    React.useState<ModelProgress | null>(null)
 
   React.useEffect(() => {
     setConversations(loadConversations())
@@ -74,9 +80,11 @@ export function useChat() {
     if (!selectedModel) return
     setModelLoading(true)
     setModelProgress(null)
-    modelInference.loadModel(selectedModel, (p) => setModelProgress(p)).finally(() => {
-      setModelLoading(false)
-    })
+    modelInference
+      .loadModel(selectedModel, (p) => setModelProgress(p))
+      .finally(() => {
+        setModelLoading(false)
+      })
   }, [selectedModel]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const currentConversation = React.useMemo(() => {
@@ -208,23 +216,30 @@ export function useChat() {
             updateConversation(convId!, (c) => ({
               ...c,
               messages: c.messages.map((m) =>
-                m.id === assistantMessage.id ? { ...m, content: fullContent } : m
+                m.id === assistantMessage.id
+                  ? { ...m, content: fullContent }
+                  : m
               ),
               updatedAt: Date.now(),
             }))
           },
           () => {
             const durationMs = Date.now() - startTime
-            const speed = durationMs > 0 ? Number(((tokenCount / durationMs) * 1000).toFixed(1)) : 0
-            
+            const speed =
+              durationMs > 0
+                ? Number(((tokenCount / durationMs) * 1000).toFixed(1))
+                : 0
+
             updateConversation(convId!, (c) => ({
               ...c,
               messages: c.messages.map((m) =>
-                m.id === assistantMessage.id ? { 
-                  ...m, 
-                  content: fullContent,
-                  metrics: { speed, durationMs, tokenCount }
-                } : m
+                m.id === assistantMessage.id
+                  ? {
+                      ...m,
+                      content: fullContent,
+                      metrics: { speed, durationMs, tokenCount },
+                    }
+                  : m
               ),
               updatedAt: Date.now(),
             }))
@@ -234,7 +249,9 @@ export function useChat() {
             updateConversation(convId!, (c) => ({
               ...c,
               messages: c.messages.map((m) =>
-                m.id === assistantMessage.id ? { ...m, content: errorContent } : m
+                m.id === assistantMessage.id
+                  ? { ...m, content: errorContent }
+                  : m
               ),
               updatedAt: Date.now(),
             }))
@@ -246,7 +263,14 @@ export function useChat() {
         abortRef.current = null
       }
     },
-    [currentConversationId, currentConversation, selectedModel, createNewConversation, updateConversation, modelInference]
+    [
+      currentConversationId,
+      currentConversation,
+      selectedModel,
+      createNewConversation,
+      updateConversation,
+      modelInference,
+    ]
   )
 
   const stopGeneration = React.useCallback(() => {

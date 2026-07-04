@@ -1,30 +1,30 @@
-import log from "loglevel";
-import { ResponseFormat } from "./openai_api_protocols";
-import { LogitProcessor, InitProgressCallback, LogLevel } from "./types";
+import log from "loglevel"
 import {
   DependencyError,
   InvalidNumberStringError,
   MinValueError,
   NonNegativeError,
   RangeError,
-} from "./error";
-import { ModelIntegrity } from "./integrity";
+} from "./error"
+import type { ModelIntegrity } from "./integrity"
+import type { ResponseFormat } from "./openai_api_protocols"
+import type { InitProgressCallback, LogitProcessor, LogLevel } from "./types"
 
 /**
  * Conversation template config
  */
 export interface ConvTemplateConfig {
-  system_template: string;
-  system_message: string;
-  roles: Record<Role, string>;
-  role_templates?: Partial<Record<Role, string>>;
-  seps: Array<string>;
-  role_content_sep?: string;
-  role_empty_sep?: string;
-  stop_str: Array<string>;
-  system_prefix_token_ids?: Array<number>;
-  stop_token_ids: Array<number>;
-  add_role_after_system_message?: boolean;
+  system_template: string
+  system_message: string
+  roles: Record<Role, string>
+  role_templates?: Partial<Record<Role, string>>
+  seps: Array<string>
+  role_content_sep?: string
+  role_empty_sep?: string
+  stop_str: Array<string>
+  system_prefix_token_ids?: Array<number>
+  stop_token_ids: Array<number>
+  add_role_after_system_message?: boolean
 }
 
 /**
@@ -32,12 +32,12 @@ export interface ConvTemplateConfig {
  * via the Record<string, unknown> extension.
  */
 export type VisionModelConfig = {
-  mm_tokens_per_image?: number;
-  boi_token_index?: number;
-  eoi_token_index?: number;
-  vision_start_token_id?: number;
-  vision_end_token_id?: number;
-};
+  mm_tokens_per_image?: number
+  boi_token_index?: number
+  eoi_token_index?: number
+  vision_start_token_id?: number
+  vision_end_token_id?: number
+}
 
 export enum Role {
   user = "user",
@@ -45,7 +45,7 @@ export enum Role {
   tool = "tool",
 }
 
-export const DefaultLogLevel: LogLevel = "WARN";
+export const DefaultLogLevel: LogLevel = "WARN"
 
 /**
  * Place holders that can be used in role templates.
@@ -69,9 +69,9 @@ export enum MessagePlaceholders {
  * post process the token table when using grammar.
  */
 export interface TokenizerInfo {
-  token_postproc_method: string;
-  prepend_space_in_encode: boolean;
-  strip_space_in_decode: boolean;
+  token_postproc_method: string
+  prepend_space_in_encode: boolean
+  strip_space_in_decode: boolean
 }
 
 /**
@@ -84,31 +84,31 @@ export interface TokenizerInfo {
  */
 export interface ChatConfig {
   // First three fields affect the entire conversation, i.e. used in `MLCEngine.reload()`
-  tokenizer_files: Array<string>;
-  tokenizer_info?: TokenizerInfo;
-  token_table_postproc_method?: string; // TODO: backward compatibility, remove soon
-  vocab_size: number;
-  conv_config?: Partial<ConvTemplateConfig>;
-  conv_template: ConvTemplateConfig;
+  tokenizer_files: Array<string>
+  tokenizer_info?: TokenizerInfo
+  token_table_postproc_method?: string // TODO: backward compatibility, remove soon
+  vocab_size: number
+  conv_config?: Partial<ConvTemplateConfig>
+  conv_template: ConvTemplateConfig
   // KVCache settings
-  context_window_size: number;
-  sliding_window_size: number;
-  attention_sink_size: number;
+  context_window_size: number
+  sliding_window_size: number
+  attention_sink_size: number
   // RNNState settings (for hybrid/recurrent models). If unspecified, runtime picks a safe default.
-  max_history_size?: number;
+  max_history_size?: number
   // Fields below can be swapped per-generation via `GenerationConfig`
   // Fields only used in MLC
-  repetition_penalty: number;
+  repetition_penalty: number
   // Fields shared by MLC and OpenAI APIs
-  frequency_penalty: number;
-  presence_penalty: number;
-  top_p: number;
-  temperature: number;
-  bos_token_id?: number;
+  frequency_penalty: number
+  presence_penalty: number
+  top_p: number
+  temperature: number
+  bos_token_id?: number
   // Model type identifier from mlc-chat-config.json (e.g. "phi3_v", "gemma3_v")
-  model_type?: string;
+  model_type?: string
   // Nested model config from mlc-chat-config.json, contains model-specific parameters
-  model_config?: VisionModelConfig & Record<string, unknown>;
+  model_config?: VisionModelConfig & Record<string, unknown>
 }
 
 /**
@@ -128,10 +128,10 @@ export interface ChatOptions extends Partial<ChatConfig> {}
  * other `MLCEngine`s.
  */
 export interface MLCEngineConfig {
-  appConfig?: AppConfig;
-  initProgressCallback?: InitProgressCallback;
-  logitProcessorRegistry?: Map<string, LogitProcessor>;
-  logLevel?: LogLevel;
+  appConfig?: AppConfig
+  initProgressCallback?: InitProgressCallback
+  logitProcessorRegistry?: Map<string, LogitProcessor>
+  logLevel?: LogLevel
 }
 
 /**
@@ -144,88 +144,86 @@ export interface MLCEngineConfig {
  */
 export interface GenerationConfig {
   // Only used in MLC
-  repetition_penalty?: number | null;
-  ignore_eos?: boolean;
+  repetition_penalty?: number | null
+  ignore_eos?: boolean
   // Shared by MLC and OpenAI APIs
-  top_p?: number | null;
-  temperature?: number | null;
+  top_p?: number | null
+  temperature?: number | null
   // Only in OpenAI APIs
-  max_tokens?: number | null;
-  frequency_penalty?: number | null;
-  presence_penalty?: number | null;
-  stop?: string | null | Array<string>;
-  n?: number | null;
-  logit_bias?: Record<string, number> | null;
-  logprobs?: boolean | null;
-  top_logprobs?: number | null;
-  response_format?: ResponseFormat | null;
+  max_tokens?: number | null
+  frequency_penalty?: number | null
+  presence_penalty?: number | null
+  stop?: string | null | Array<string>
+  n?: number | null
+  logit_bias?: Record<string, number> | null
+  logprobs?: boolean | null
+  top_logprobs?: number | null
+  response_format?: ResponseFormat | null
   // extra_body in ChatCompletionsRequest
-  enable_thinking?: boolean | null;
-  enable_latency_breakdown?: boolean | null;
+  enable_thinking?: boolean | null
+  enable_latency_breakdown?: boolean | null
 }
 
 export function postInitAndCheckGenerationConfigValues(
-  config: GenerationConfig,
+  config: GenerationConfig
 ): void {
   function _hasValue(value: any): boolean {
     // if we use `if value` directly, `value` being 0 evaluates to false, violating semantics
-    return value !== undefined && value !== null;
+    return value !== undefined && value !== null
   }
   if (
     config.frequency_penalty &&
     (config.frequency_penalty < -2.0 || config.frequency_penalty > 2.0)
   ) {
-    throw new RangeError("frequency_penalty", -2.0, 2.0);
+    throw new RangeError("frequency_penalty", -2.0, 2.0)
   }
   if (
     config.presence_penalty &&
     (config.presence_penalty < -2.0 || config.presence_penalty > 2.0)
   ) {
-    throw new RangeError("presence_penalty", -2.0, 2.0);
+    throw new RangeError("presence_penalty", -2.0, 2.0)
   }
   if (_hasValue(config.repetition_penalty) && config.repetition_penalty! <= 0) {
-    throw new MinValueError("repetition_penalty", 0);
+    throw new MinValueError("repetition_penalty", 0)
   }
   if (_hasValue(config.max_tokens) && config.max_tokens! <= 0) {
-    throw new MinValueError("max_tokens", 0);
+    throw new MinValueError("max_tokens", 0)
   }
   if ((_hasValue(config.top_p) && config.top_p! <= 0) || config.top_p! > 1) {
-    throw new RangeError("top_p", 0, 1);
+    throw new RangeError("top_p", 0, 1)
   }
   if (_hasValue(config.temperature) && config.temperature! < 0) {
-    throw new NonNegativeError("temperature");
+    throw new NonNegativeError("temperature")
   }
   // If only one of frequency or presence penatly is set, make the other one 0.0
   if (
     _hasValue(config.frequency_penalty) &&
     !_hasValue(config.presence_penalty)
   ) {
-    config.presence_penalty = 0.0;
-    log.warn("Only frequency_penalty is set; we default presence_penaty to 0.");
+    config.presence_penalty = 0.0
+    log.warn("Only frequency_penalty is set; we default presence_penaty to 0.")
   }
   if (
     _hasValue(config.presence_penalty) &&
     !_hasValue(config.frequency_penalty)
   ) {
-    config.frequency_penalty = 0.0;
-    log.warn(
-      "Only presence_penalty is set; we default frequency_penalty to 0.",
-    );
+    config.frequency_penalty = 0.0
+    log.warn("Only presence_penalty is set; we default frequency_penalty to 0.")
   }
   // Check logit_bias range
   if (_hasValue(config.logit_bias)) {
     for (const tokenID in config.logit_bias) {
-      const bias = config.logit_bias[tokenID];
+      const bias = config.logit_bias[tokenID]
       if (bias > 100 || bias < -100) {
         throw new RangeError(
           "logit_bias",
           -100,
           100,
-          "Got " + bias + " for tokenID " + tokenID,
-        );
+          "Got " + bias + " for tokenID " + tokenID
+        )
       }
       if (isNaN(parseInt(tokenID))) {
-        throw new InvalidNumberStringError("logit_bias's keys", tokenID);
+        throw new InvalidNumberStringError("logit_bias's keys", tokenID)
       }
     }
   }
@@ -233,25 +231,25 @@ export function postInitAndCheckGenerationConfigValues(
   if (_hasValue(config.top_logprobs)) {
     // If top_logprobs is non-null, logprobs must be true
     if (!config.logprobs) {
-      throw new DependencyError("top_logprobs", "logprobs", true);
+      throw new DependencyError("top_logprobs", "logprobs", true)
     }
     // top_logprobs should be in range [0,5]
     if (config.top_logprobs! < 0 || config.top_logprobs! > 5) {
-      throw new RangeError("top_logprobs", 0, 5, "Got " + config.top_logprobs);
+      throw new RangeError("top_logprobs", 0, 5, "Got " + config.top_logprobs)
     }
   }
   // If defined logprobs but not top_logprobs, simply make it 0
   if (config.logprobs) {
     if (!_hasValue(config.top_logprobs)) {
-      config.top_logprobs = 0;
+      config.top_logprobs = 0
     }
   }
 }
 
 export enum ModelType {
-  "LLM",
-  "embedding",
-  "VLM", // vision-language model
+  LLM,
+  embedding,
+  VLM, // vision-language model
 }
 
 /**
@@ -273,16 +271,16 @@ export enum ModelType {
  * @param integrity: optional SRI hashes to verify downloaded artifacts. See {@link ModelIntegrity}.
  */
 export interface ModelRecord {
-  model: string;
-  model_id: string;
-  model_lib: string;
-  overrides?: ChatOptions;
-  vram_required_MB?: number;
-  low_resource_required?: boolean;
-  buffer_size_required_bytes?: number;
-  required_features?: Array<string>;
-  model_type?: ModelType;
-  integrity?: ModelIntegrity;
+  model: string
+  model_id: string
+  model_lib: string
+  overrides?: ChatOptions
+  vram_required_MB?: number
+  low_resource_required?: boolean
+  buffer_size_required_bytes?: number
+  required_features?: Array<string>
+  model_type?: ModelType
+  integrity?: ModelIntegrity
 }
 
 /**
@@ -307,20 +305,20 @@ export interface ModelRecord {
  *
  * @note Note that the Cache API is the most well-tested in WebLLM as of now.
  */
-export type CacheBackend = "cache" | "indexeddb" | "cross-origin" | "opfs";
-export type OPFSAccessMode = "async" | "sync" | "auto";
+export type CacheBackend = "cache" | "indexeddb" | "cross-origin" | "opfs"
+export type OPFSAccessMode = "async" | "sync" | "auto"
 
 export interface AppConfig {
-  model_list: Array<ModelRecord>;
-  cacheBackend?: CacheBackend;
-  opfsAccessMode?: OPFSAccessMode;
+  model_list: Array<ModelRecord>
+  cacheBackend?: CacheBackend
+  opfsAccessMode?: OPFSAccessMode
 }
 
 export function getCacheBackend(appConfig: AppConfig): CacheBackend {
   if (appConfig.cacheBackend !== undefined) {
-    return appConfig.cacheBackend;
+    return appConfig.cacheBackend
   }
-  return "cache";
+  return "cache"
 }
 
 /**
@@ -330,9 +328,9 @@ export function getCacheBackend(appConfig: AppConfig): CacheBackend {
  * @note The model version does not have to match the npm version, since not each npm update
  * requires an update of the model libraries.
  */
-export const modelVersion = "v0_2_84/base";
+export const modelVersion = "v0_2_84/base"
 export const modelLibURLPrefix =
-  "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/main/web-llm-models/";
+  "https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/main/web-llm-models/"
 
 /**
  * Models that support function calling (i.e. usage of `ChatCompletionRequest.tools`). More to come.
@@ -343,7 +341,7 @@ export const functionCallingModelIds = [
   "Hermes-2-Pro-Mistral-7B-q4f16_1-MLC",
   "Hermes-3-Llama-3.1-8B-q4f32_1-MLC",
   "Hermes-3-Llama-3.1-8B-q4f16_1-MLC",
-];
+]
 
 /**
  * Default models and model library mapping to be used if unspecified.
@@ -2600,4 +2598,4 @@ export const prebuiltAppConfig: AppConfig = {
       model_type: ModelType.embedding,
     },
   ],
-};
+}

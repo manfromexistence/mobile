@@ -56,7 +56,7 @@ export function rehypeHighlightCodeRawString() {
         }
 
         const preElement = node.children.at(-1)
-        if (!preElement || preElement.tagName !== "pre") {
+        if (preElement?.tagName !== "pre") {
           return
         }
 

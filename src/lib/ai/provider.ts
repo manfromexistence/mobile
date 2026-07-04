@@ -5,7 +5,9 @@ type TokenCallback = (token: string) => void
 type DoneCallback = () => void
 type ErrorCallback = (err: Error) => void
 
-let generatorInstance: Awaited<ReturnType<typeof import("@huggingface/transformers").pipeline>> | null = null
+let generatorInstance: Awaited<
+  ReturnType<typeof import("@huggingface/transformers").pipeline>
+> | null = null
 let currentModelId: string | null = null
 
 async function getOrCreateGenerator(modelId: string) {
@@ -26,13 +28,13 @@ async function getOrCreateGenerator(modelId: string) {
 }
 
 function formatChatPrompt(messages: Message[]): string {
-  return messages
+  return `${messages
     .map((m) => {
       if (m.role === "system") return `System: ${m.content}`
       if (m.role === "user") return `User: ${m.content}`
       return `Assistant: ${m.content}`
     })
-    .join("\n") + "\nAssistant:"
+    .join("\n")}\nAssistant:`
 }
 
 export async function generateChatCompletion(
@@ -49,13 +51,13 @@ export async function generateChatCompletion(
 
     const { TextStreamer } = await import("@huggingface/transformers")
 
-    let buffer = ""
+    let _buffer = ""
 
     const streamer = new TextStreamer(generator.tokenizer, {
       skip_prompt: true,
       skip_special_tokens: true,
       callback_function: (text: string) => {
-        buffer += text
+        _buffer += text
         onToken(text)
       },
     })

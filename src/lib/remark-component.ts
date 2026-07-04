@@ -1,14 +1,13 @@
 import fs from "node:fs"
 import path from "node:path"
 import { visit } from "unist-util-visit"
-
-import type { UnistNode, UnistTree } from "@/types/unist"
 import { Index } from "@/registry/__index__"
+import type { UnistNode, UnistTree } from "@/types/unist"
 
 import { fixImport } from "./registry"
 
 export function remarkComponent() {
-  return async (tree: UnistTree) => {
+  return (tree: UnistTree) => {
     visit(tree, (node: UnistNode, index, parent) => {
       // src prop overrides both name and fileName.
       const { value: srcPath } =

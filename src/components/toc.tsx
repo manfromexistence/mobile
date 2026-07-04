@@ -3,6 +3,7 @@
 
 "use client"
 
+import type { TOCItemInfo, TOCItemType } from "fumadocs-core/toc"
 import type { ReactNode } from "react"
 import {
   createContext,
@@ -12,7 +13,6 @@ import {
   useMemo,
   useState,
 } from "react"
-import type { TOCItemInfo, TOCItemType } from "fumadocs-core/toc"
 
 const ObserverContext = createContext<Observer | null>(null)
 

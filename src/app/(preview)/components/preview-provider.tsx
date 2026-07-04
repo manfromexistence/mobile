@@ -38,7 +38,7 @@ export function PreviewProvider({
   })
 
   useLayoutEffect(() => {
-    if (typeof document === "undefined" || !!themeParam || !themeApplied) {
+    if (typeof document === "undefined" || themeParam || !themeApplied) {
       return
     }
 

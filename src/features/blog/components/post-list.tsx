@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils"
 import type { Doc } from "@/features/doc/types/document"
+import { cn } from "@/lib/utils"
 
 import { PostItem } from "./post-item"
 

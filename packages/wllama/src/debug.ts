@@ -1,52 +1,52 @@
-import { WASM_SOURCE_MAP } from './wasm/source-map';
+import { WASM_SOURCE_MAP } from "./wasm/source-map"
 
 interface DecodedMap {
-  firstId: number;
-  funcNames: (string | null)[]; // indexed by (funcId - firstId)
+  firstId: number
+  funcNames: (string | null)[] // indexed by (funcId - firstId)
 }
 
-const cache = new Map<string, DecodedMap>();
+const cache = new Map<string, DecodedMap>()
 
 async function loadMap(buildKey: string): Promise<DecodedMap> {
-  if (cache.has(buildKey)) return cache.get(buildKey)!;
+  if (cache.has(buildKey)) return cache.get(buildKey)!
 
-  const b64 = WASM_SOURCE_MAP[buildKey];
-  if (!b64) throw new Error(`No source map for build "${buildKey}"`);
+  const b64 = WASM_SOURCE_MAP[buildKey]
+  if (!b64) throw new Error(`No source map for build "${buildKey}"`)
 
-  const gzipped = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-  const ds = new DecompressionStream('gzip');
-  const writer = ds.writable.getWriter();
-  writer.write(gzipped);
-  writer.close();
-  const buf = await new Response(ds.readable).arrayBuffer();
-  const dv = new DataView(buf);
-  const bytes = new Uint8Array(buf);
+  const gzipped = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))
+  const ds = new DecompressionStream("gzip")
+  const writer = ds.writable.getWriter()
+  writer.write(gzipped)
+  writer.close()
+  const buf = await new Response(ds.readable).arrayBuffer()
+  const dv = new DataView(buf)
+  const bytes = new Uint8Array(buf)
 
-  const firstId = dv.getUint32(0, true);
-  const funcCount = dv.getUint32(4, true);
-  const numNames = dv.getUint32(8, true);
+  const firstId = dv.getUint32(0, true)
+  const funcCount = dv.getUint32(4, true)
+  const numNames = dv.getUint32(8, true)
 
   // Read name table
-  const td = new TextDecoder();
-  const names: string[] = [];
-  let pos = 12;
+  const td = new TextDecoder()
+  const names: string[] = []
+  let pos = 12
   for (let i = 0; i < numNames; i++) {
-    const len = bytes[pos++];
-    names.push(td.decode(bytes.subarray(pos, pos + len)));
-    pos += len;
+    const len = bytes[pos++]
+    names.push(td.decode(bytes.subarray(pos, pos + len)))
+    pos += len
   }
 
   // Read u16 index array
-  const funcNames: (string | null)[] = [];
+  const funcNames: (string | null)[] = []
   for (let i = 0; i < funcCount; i++) {
-    const idx = dv.getUint16(pos, true);
-    pos += 2;
-    funcNames.push(idx === 0xffff ? null : names[idx]);
+    const idx = dv.getUint16(pos, true)
+    pos += 2
+    funcNames.push(idx === 0xffff ? null : names[idx])
   }
 
-  const entry: DecodedMap = { firstId, funcNames };
-  cache.set(buildKey, entry);
-  return entry;
+  const entry: DecodedMap = { firstId, funcNames }
+  cache.set(buildKey, entry)
+  return entry
 }
 
 export const Debug = {
@@ -57,16 +57,16 @@ export const Debug = {
     funcIds: number[],
     isCompatBuild: boolean
   ): Promise<{ funcId: number; name: string }[]> => {
-    const buildKey = isCompatBuild ? 'compat' : 'default';
-    const { firstId, funcNames } = await loadMap(buildKey);
+    const buildKey = isCompatBuild ? "compat" : "default"
+    const { firstId, funcNames } = await loadMap(buildKey)
     return funcIds.map((funcId) => {
-      const i = funcId - firstId;
+      const i = funcId - firstId
       const name =
         i >= 0 && i < funcNames.length && funcNames[i]
           ? funcNames[i]!
-          : '(unknown)';
-      return { funcId, name };
-    });
+          : "(unknown)"
+      return { funcId, name }
+    })
   },
   /**
    * Annotates a wasm stack trace string with resolved function names.
@@ -91,21 +91,21 @@ export const Debug = {
     isCompatBuild: boolean
   ): Promise<string> => {
     // match wasm-function[N] from Chrome, Firefox and Safari stack formats
-    const re = /wasm-function\[(\d+)\]/g;
+    const re = /wasm-function\[(\d+)\]/g
     const funcIds = [
       ...new Set([...stack.matchAll(re)].map((m) => parseInt(m[1]))),
-    ];
-    if (funcIds.length === 0) return stack;
+    ]
+    if (funcIds.length === 0) return stack
 
-    const resolved = await Debug.decodeFuncIds(funcIds, isCompatBuild);
+    const resolved = await Debug.decodeFuncIds(funcIds, isCompatBuild)
 
     return resolved
       .map((r) => {
-        if (r.name === '(unknown)') {
-          return `    wasm-func[${r.funcId}] (unknown)`;
+        if (r.name === "(unknown)") {
+          return `    wasm-func[${r.funcId}] (unknown)`
         }
-        return `    wasm-func[${r.funcId}] (${r.name})`;
+        return `    wasm-func[${r.funcId}] (${r.name})`
       })
-      .join('\n');
+      .join("\n")
   },
-};
+}

@@ -1,26 +1,25 @@
-import { cache } from "react"
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
 import type { Metadata, Route } from "next"
 import Link from "next/link"
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
+import { cache } from "react"
 import type { SoftwareSourceCode, WithContext } from "schema-dts"
-
-import { JSON_LD_ID } from "@/config/json-ld"
-import { blockCategories } from "@/config/registry"
-import { LICENSE, SOURCE_CODE_GITHUB_URL, X_HANDLE } from "@/config/site"
-import { getAllBlockStaticParams } from "@/lib/blocks"
-import { jsonLdBreadcrumbList, JsonLdScript } from "@/lib/json-ld"
-import { getRegistryItem } from "@/lib/registry"
-import { absoluteUrl } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Kbd } from "@/components/ui/kbd"
+import { BlockDisplay } from "@/app/(preview)/components/block-display"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/base/ui/tooltip"
-import { BlockDisplay } from "@/app/(preview)/components/block-display"
+import { Button } from "@/components/ui/button"
+import { Kbd } from "@/components/ui/kbd"
+import { JSON_LD_ID } from "@/config/json-ld"
+import { blockCategories } from "@/config/registry"
+import { LICENSE, SOURCE_CODE_GITHUB_URL, X_HANDLE } from "@/config/site"
 import { DocKeyboardShortcuts } from "@/features/doc/components/doc-keyboard-shortcuts"
 import { DocShareMenu } from "@/features/doc/components/doc-share-menu"
+import { getAllBlockStaticParams } from "@/lib/blocks"
+import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
+import { getRegistryItem } from "@/lib/registry"
+import { absoluteUrl } from "@/lib/utils"
 
 export const revalidate = false
 export const dynamic = "force-static"

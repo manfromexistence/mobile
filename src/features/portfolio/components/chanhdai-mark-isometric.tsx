@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useId, useRef } from "react"
 import type { Transition } from "motion/react"
 import {
   motion,
@@ -10,9 +9,9 @@ import {
   useSpring,
   useTransform,
 } from "motion/react"
-
-import { metalClickSound } from "@/lib/soundcn/metal-click"
+import { useEffect, useId, useRef } from "react"
 import { useSound } from "@/hooks/soundcn/use-sound"
+import { metalClickSound } from "@/lib/soundcn/metal-click"
 
 const transition: Transition = {
   type: "spring",

@@ -1,9 +1,5 @@
 import { format } from "date-fns"
 import { Crown, Paperclip } from "lucide-react"
-
-import { cn } from "@/lib/utils"
-import { Separator } from "@/components/ui/separator"
-import { Prose } from "@/components/ui/typography"
 import {
   Collapsible,
   CollapsibleChevronsUpDownIcon,
@@ -18,7 +14,10 @@ import {
   TooltipTrigger,
 } from "@/components/base/ui/tooltip"
 import { Markdown } from "@/components/markdown"
+import { Separator } from "@/components/ui/separator"
+import { Prose } from "@/components/ui/typography"
 import type { Award } from "@/features/portfolio/types/awards"
+import { cn } from "@/lib/utils"
 
 export function AwardItem({
   className,

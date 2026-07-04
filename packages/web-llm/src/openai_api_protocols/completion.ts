@@ -15,38 +15,38 @@
  * limitations under the License.
  */
 
-import { MLCEngineInterface } from "../types";
 import {
   InvalidStreamOptionsError,
   SeedTypeError,
   StreamingCountError,
   UnsupportedFieldsError,
-} from "../error";
-import {
+} from "../error"
+import type { MLCEngineInterface } from "../types"
+import type {
   ChatCompletion,
+  ChatCompletionFinishReason,
   ChatCompletionStreamOptions,
   CompletionUsage,
-  ChatCompletionFinishReason,
-} from "./chat_completion";
+} from "./chat_completion"
 
 export class Completions {
-  private engine: MLCEngineInterface;
+  private engine: MLCEngineInterface
 
   constructor(engine: MLCEngineInterface) {
-    this.engine = engine;
+    this.engine = engine
   }
 
-  create(request: CompletionCreateParamsNonStreaming): Promise<Completion>;
+  create(request: CompletionCreateParamsNonStreaming): Promise<Completion>
   create(
-    request: CompletionCreateParamsStreaming,
-  ): Promise<AsyncIterable<Completion>>;
+    request: CompletionCreateParamsStreaming
+  ): Promise<AsyncIterable<Completion>>
   create(
-    request: CompletionCreateParamsBase,
-  ): Promise<AsyncIterable<Completion> | Completion>;
+    request: CompletionCreateParamsBase
+  ): Promise<AsyncIterable<Completion> | Completion>
   create(
-    request: CompletionCreateParams,
+    request: CompletionCreateParams
   ): Promise<AsyncIterable<Completion> | Completion> {
-    return this.engine.completion(request);
+    return this.engine.completion(request)
   }
 }
 
@@ -63,12 +63,12 @@ export interface CompletionCreateParamsBase {
   /**
    * The prompt(s) to generate completions for, encoded as a string.
    */
-  prompt: string;
+  prompt: string
 
   /**
    * Echo back the prompt in addition to the completion
    */
-  echo?: boolean | null;
+  echo?: boolean | null
 
   /**
    * Number between -2.0 and 2.0. Positive values penalize new tokens based on their
@@ -77,7 +77,7 @@ export interface CompletionCreateParamsBase {
    *
    * [See more information about frequency and presence penalties.](https://platform.openai.com/docs/guides/text-generation/parameter-details)
    */
-  frequency_penalty?: number | null;
+  frequency_penalty?: number | null
 
   /**
    * Modify the likelihood of specified tokens appearing in the completion.
@@ -97,7 +97,7 @@ export interface CompletionCreateParamsBase {
    * @note If used in combination with `webllm.LogitProcessor`, `logit_bias` is applied after
    * `LogitProcessor.processLogits()` is called.
    */
-  logit_bias?: Record<string, number> | null;
+  logit_bias?: Record<string, number> | null
 
   /**
    * Whether to return log probabilities of the output tokens or not.
@@ -105,14 +105,14 @@ export interface CompletionCreateParamsBase {
    * If true, returns the log probabilities of each output token returned in the `content` of
    * `message`.
    */
-  logprobs?: boolean | null;
+  logprobs?: boolean | null
 
   /**
    * An integer between 0 and 5 specifying the number of most likely tokens to return
    * at each token position, each with an associated log probability. `logprobs` must
    * be set to `true` if this parameter is used.
    */
-  top_logprobs?: number | null;
+  top_logprobs?: number | null
 
   /**
    * The maximum number of [tokens](/tokenizer) that can be generated in the
@@ -121,12 +121,12 @@ export interface CompletionCreateParamsBase {
    * The total length of input tokens and generated tokens is limited by the model's
    * context length.
    */
-  max_tokens?: number | null;
+  max_tokens?: number | null
 
   /**
    * How many completions to generate for each prompt.
    */
-  n?: number | null;
+  n?: number | null
 
   /**
    * Number between -2.0 and 2.0. Positive values penalize new tokens based on
@@ -135,14 +135,14 @@ export interface CompletionCreateParamsBase {
    *
    * [See more information about frequency and presence penalties.](https://platform.openai.com/docs/guides/text-generation/parameter-details)
    */
-  presence_penalty?: number | null;
+  presence_penalty?: number | null
 
   /**
    * Penalizes new tokens based on whether they appear in the prompt and the
    * generated text so far. Values greater than 1.0 encourage the model to use new
    * tokens, while values less than 1.0 encourage the model to repeat tokens.
    */
-  repetition_penalty?: number | null;
+  repetition_penalty?: number | null
 
   /**
    * If specified, our system will make a best effort to sample deterministically,
@@ -153,23 +153,23 @@ export interface CompletionCreateParamsBase {
    * would still get different content for each `Choice`. But if two requests with `n = 2` are
    * processed with the same seed, the two results should be the same (two choices are different).
    */
-  seed?: number | null;
+  seed?: number | null
 
   /**
    * Up to 4 sequences where the API will stop generating further tokens. The
    * returned text will not contain the stop sequence.
    */
-  stop?: string | null | Array<string>;
+  stop?: string | null | Array<string>
 
   /**
    * If set, partial deltas will be sent. It will be terminated by an empty chunk.
    */
-  stream?: boolean | null;
+  stream?: boolean | null
 
   /**
    * Options for streaming response. Only set this when you set `stream: true`.
    */
-  stream_options?: ChatCompletionStreamOptions | null;
+  stream_options?: ChatCompletionStreamOptions | null
 
   /**
    * What sampling temperature to use, between 0 and 2. Higher values like 0.8 will
@@ -178,7 +178,7 @@ export interface CompletionCreateParamsBase {
    *
    * We generally recommend altering this or `top_p` but not both.
    */
-  temperature?: number | null;
+  temperature?: number | null
 
   /**
    * An alternative to sampling with temperature, called nucleus sampling, where the
@@ -187,13 +187,13 @@ export interface CompletionCreateParamsBase {
    *
    * We generally recommend altering this or `temperature` but not both.
    */
-  top_p?: number | null;
+  top_p?: number | null
 
   /**
    * If true, will ignore stop string and stop token and generate until max_tokens hit.
    * If unset, will treat as false.
    */
-  ignore_eos?: boolean;
+  ignore_eos?: boolean
 
   /**
    * ID of the model to use. This equals to `ModelRecord.model_id`, which needs to either be in
@@ -203,7 +203,7 @@ export interface CompletionCreateParamsBase {
    * @note If only one model is loaded in the engine, this field is optional. If multiple models
    *   are loaded, this is required.
    */
-  model?: string | null;
+  model?: string | null
 
   //////////////// BELOW FIELDS NOT SUPPORTED YET ////////////////
 
@@ -212,7 +212,7 @@ export interface CompletionCreateParamsBase {
    *
    * @note This field is not supported.
    */
-  suffix?: string | null;
+  suffix?: string | null
 
   /**
    * A unique identifier representing your end-user, which can help OpenAI to monitor
@@ -220,7 +220,7 @@ export interface CompletionCreateParamsBase {
    *
    * @note This field is not supported.
    */
-  user?: string;
+  user?: string
 
   /**
    * Generates `best_of` completions server-side and returns the "best" (the one with
@@ -231,7 +231,7 @@ export interface CompletionCreateParamsBase {
    *
    * @note This field is not supported.
    */
-  best_of?: number | null;
+  best_of?: number | null
 
   /**
    * Fields specific to WebLLM, not present in OpenAI.
@@ -241,20 +241,20 @@ export interface CompletionCreateParamsBase {
      * If set to true, the response will include a breakdown of the time spent in various
      * stages of token sampling.
      */
-    enable_latency_breakdown?: boolean | null;
-  };
+    enable_latency_breakdown?: boolean | null
+  }
 }
 
 export type CompletionCreateParams =
   | CompletionCreateParamsNonStreaming
-  | CompletionCreateParamsStreaming;
+  | CompletionCreateParamsStreaming
 
 export interface CompletionCreateParamsNonStreaming
   extends CompletionCreateParamsBase {
   /**
    * If set, partial deltas will be sent. It will be terminated by an empty chunk.
    */
-  stream?: false | null;
+  stream?: false | null
 }
 
 export interface CompletionCreateParamsStreaming
@@ -262,7 +262,7 @@ export interface CompletionCreateParamsStreaming
   /**
    * If set, partial deltas will be sent. It will be terminated by an empty chunk.
    */
-  stream: true;
+  stream: true
 }
 
 //////////////////////////////// 2. RESPONSE ////////////////////////////////
@@ -273,27 +273,27 @@ export interface Completion {
   /**
    * A unique identifier for the completion.
    */
-  id: string;
+  id: string
 
   /**
    * The list of completion choices the model generated for the input prompt.
    */
-  choices: Array<CompletionChoice>;
+  choices: Array<CompletionChoice>
 
   /**
    * The Unix timestamp (in seconds) of when the completion was created.
    */
-  created: number;
+  created: number
 
   /**
    * The model used for completion.
    */
-  model: string;
+  model: string
 
   /**
    * The object type, which is always "text_completion"
    */
-  object: "text_completion";
+  object: "text_completion"
 
   /**
    * This fingerprint represents the backend configuration that the model runs with.
@@ -303,12 +303,12 @@ export interface Completion {
    *
    * @note Not supported yet.
    */
-  system_fingerprint?: string;
+  system_fingerprint?: string
 
   /**
    * Usage statistics for the completion request.
    */
-  usage?: CompletionUsage;
+  usage?: CompletionUsage
 }
 
 export interface CompletionChoice {
@@ -317,17 +317,17 @@ export interface CompletionChoice {
    * hit a natural stop point or a provided stop sequence, or `length` if the maximum
    * number of tokens specified in the request was reached.
    */
-  finish_reason: ChatCompletionFinishReason | null;
+  finish_reason: ChatCompletionFinishReason | null
 
-  index: number;
+  index: number
 
   /**
    * A list of message content tokens with log probability information.
    * @note Different from openai-node, we reuse ChatCompletion's Logprobs.
    */
-  logprobs?: ChatCompletion.Choice.Logprobs | null;
+  logprobs?: ChatCompletion.Choice.Logprobs | null
 
-  text: string;
+  text: string
 }
 
 //////////////////////////////// 3. POST INIT ////////////////////////////////
@@ -336,7 +336,7 @@ export const CompletionCreateParamsUnsupportedFields: Array<string> = [
   "suffix",
   "user",
   "best_of",
-];
+]
 
 /**
  * Post init and verify whether the input of the request is valid. Thus, this function can throw
@@ -347,35 +347,35 @@ export const CompletionCreateParamsUnsupportedFields: Array<string> = [
 export function postInitAndCheckFields(
   request: CompletionCreateParams,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  currentModelId: string,
+  currentModelId: string
 ): void {
   // 1. Check unsupported fields in request
-  const unsupported: Array<string> = [];
+  const unsupported: Array<string> = []
   CompletionCreateParamsUnsupportedFields.forEach((field) => {
     if (field in request) {
-      unsupported.push(field);
+      unsupported.push(field)
     }
-  });
+  })
   if (unsupported.length > 0) {
-    throw new UnsupportedFieldsError(unsupported, "CompletionCreateParams");
+    throw new UnsupportedFieldsError(unsupported, "CompletionCreateParams")
   }
 
   // 2. If streaming, n cannot be > 1, since we cannot manage multiple sequences at once
   if (request.stream && request.n && request.n > 1) {
-    throw new StreamingCountError();
+    throw new StreamingCountError()
   }
 
   // 3. Seed should be an integer
   if (request.seed !== undefined && request.seed !== null) {
     if (!Number.isInteger(request.seed)) {
-      throw new SeedTypeError(request.seed);
+      throw new SeedTypeError(request.seed)
     }
   }
 
   // 4. Only set stream_options when streaming
   if (request.stream_options !== undefined && request.stream_options !== null) {
     if (!request.stream) {
-      throw new InvalidStreamOptionsError();
+      throw new InvalidStreamOptionsError()
     }
   }
 }

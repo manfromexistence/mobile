@@ -33,7 +33,7 @@ export function Twemoji({
   const parts: ReactNode[] = []
   let lastIndex = 0
   const globalRegex = new RegExp(emojiRegex.source, "g")
-  let match
+  let match: RegExpExecArray | null
 
   while ((match = globalRegex.exec(children)) !== null) {
     if (match.index > lastIndex) {

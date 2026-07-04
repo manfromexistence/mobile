@@ -1,12 +1,8 @@
 "use client"
 
-import React, { useMemo, useState } from "react"
 import { Repeat, Settings2 } from "lucide-react"
 import { useTheme } from "next-themes"
-
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Code as CodeInline } from "@/components/ui/typography"
+import React, { useMemo, useState } from "react"
 import {
   Tabs,
   TabsContent,
@@ -20,7 +16,10 @@ import {
   TooltipTrigger,
 } from "@/components/base/ui/tooltip"
 import { CodeCollapsibleWrapper } from "@/components/code-collapsible-wrapper"
+import { Button } from "@/components/ui/button"
+import { Code as CodeInline } from "@/components/ui/typography"
 import { OpenInV0Button } from "@/components/v0-open-button"
+import { cn } from "@/lib/utils"
 import { Index } from "@/registry/__index__"
 
 export function ComponentPreview({

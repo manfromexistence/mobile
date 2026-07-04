@@ -1,7 +1,7 @@
-import React from 'react';
-import { DebugLogger } from '../utils/utils';
-import ScreenWrapper from './ScreenWrapper';
-import { nl2br } from '../utils/nl2br';
+import React from "react"
+import { nl2br } from "../utils/nl2br"
+import { DebugLogger } from "../utils/utils"
+import ScreenWrapper from "./ScreenWrapper"
 
 export default function LogScreen() {
   return (
@@ -22,5 +22,5 @@ export default function LogScreen() {
         </div>
       </div>
     </ScreenWrapper>
-  );
+  )
 }

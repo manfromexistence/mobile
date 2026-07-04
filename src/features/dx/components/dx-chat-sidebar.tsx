@@ -1,13 +1,13 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import { motion } from "framer-motion"
+import type * as React from "react"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { motion } from "framer-motion"
-import * as React from "react"
+import { cn } from "@/lib/utils"
 
 export function SidebarItem({
   icon: Icon,

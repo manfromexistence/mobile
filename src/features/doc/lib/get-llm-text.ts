@@ -4,10 +4,9 @@ import { remarkAutoTypeTable } from "fumadocs-typescript"
 import { remark } from "remark"
 import remarkGfm from "remark-gfm"
 import remarkMdx from "remark-mdx"
-
+import type { Doc } from "@/features/doc/types/document"
 import { generator } from "@/lib/auto-type-table"
 import { remarkComponent } from "@/lib/remark-component"
-import type { Doc } from "@/features/doc/types/document"
 
 const processor = remark()
   .use(remarkMdx)

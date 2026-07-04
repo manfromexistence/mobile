@@ -1,8 +1,8 @@
 "use client"
 
-import { useCallback, useRef, useState } from "react"
 import { localPoint } from "@visx/event"
 import type { scaleLinear, scaleTime } from "@visx/scale"
+import { useCallback, useRef, useState } from "react"
 
 import type { LineConfig, Margin, TooltipData } from "./chart-context"
 

@@ -97,5 +97,7 @@ export function getCachedCapabilities(): LLMEngineCapabilities | null {
 export function setCachedCapabilities(cap: LLMEngineCapabilities): void {
   try {
     localStorage.setItem("llm:capabilities", JSON.stringify(cap))
-  } catch { /* noop */ }
+  } catch {
+    /* noop */
+  }
 }

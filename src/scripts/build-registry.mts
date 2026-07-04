@@ -5,7 +5,7 @@ import path from "node:path"
 import { availableParallelism } from "os"
 import prettier from "prettier"
 import { rimraf } from "rimraf"
-import { registrySchema, type Registry } from "shadcn/schema"
+import { type Registry, registrySchema } from "shadcn/schema"
 import { transformIcons } from "shadcn/utils"
 import { Project, ScriptKind } from "ts-morph"
 

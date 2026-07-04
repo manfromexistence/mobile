@@ -1,8 +1,8 @@
 "use client"
 
-import { useImperativeHandle } from "react"
 import type { MotionNodeAnimationOptions } from "motion/react"
 import { motion, useAnimation } from "motion/react"
+import { useImperativeHandle } from "react"
 
 export type SidebarIconHandle = {
   startAnimation: () => void

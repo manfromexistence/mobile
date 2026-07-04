@@ -1,34 +1,32 @@
-import { useState } from "react";
-import { MLCEngine } from "@mlc-ai/web-llm";
-import ChatUI from "~/utils/chat_ui";
+import { MLCEngine } from "@mlc-ai/web-llm"
+import { useState } from "react"
+import ChatUI from "~/utils/chat_ui"
 
 const ChatComponent = () => {
-  const [messages, setMessages] = useState<{ kind: string; text: string }[]>(
-    [],
-  );
-  const [prompt, setPrompt] = useState("");
-  const [runtimeStats, setRuntimeStats] = useState("");
-  const [chat_ui] = useState(new ChatUI(new MLCEngine()));
+  const [messages, setMessages] = useState<{ kind: string; text: string }[]>([])
+  const [prompt, setPrompt] = useState("")
+  const [runtimeStats, setRuntimeStats] = useState("")
+  const [chat_ui] = useState(new ChatUI(new MLCEngine()))
   const updateMessage = (kind: string, text: string, append: boolean) => {
     if (kind == "init") {
-      text = "[System Initalize] " + text;
+      text = "[System Initalize] " + text
     }
-    const msgCopy = [...messages];
+    const msgCopy = [...messages]
     if (msgCopy.length == 0 || append) {
-      setMessages([...msgCopy, { kind, text }]);
+      setMessages([...msgCopy, { kind, text }])
     } else {
-      msgCopy[msgCopy.length - 1] = { kind, text };
-      setMessages([...msgCopy]);
+      msgCopy[msgCopy.length - 1] = { kind, text }
+      setMessages([...msgCopy])
     }
-  };
+  }
   return (
     <div className="flex flex-col items-center">
       <button
         className="chatui-btn"
         onClick={() => {
           chat_ui.asyncInitChat(updateMessage).catch((error) => {
-            console.log(error);
-          });
+            console.log(error)
+          })
         }}
       >
         Download Model
@@ -55,7 +53,7 @@ const ChatComponent = () => {
               if (event.key === "Enter") {
                 chat_ui
                   .onGenerate(prompt, updateMessage, setRuntimeStats)
-                  .catch((error) => console.log(error));
+                  .catch((error) => console.log(error))
               }
             }}
             value={prompt}
@@ -66,7 +64,7 @@ const ChatComponent = () => {
             onClick={() => {
               chat_ui
                 .onGenerate(prompt, updateMessage, setRuntimeStats)
-                .catch((error) => console.log(error));
+                .catch((error) => console.log(error))
             }}
           >
             Send
@@ -80,9 +78,9 @@ const ChatComponent = () => {
           onClick={() => {
             chat_ui
               .onReset(() => {
-                setMessages([]);
+                setMessages([])
               })
-              .catch((error) => console.log(error));
+              .catch((error) => console.log(error))
           }}
         >
           Reset Chat
@@ -90,7 +88,7 @@ const ChatComponent = () => {
         <label id="chatui-info-label">{runtimeStats}</label>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ChatComponent;
+export default ChatComponent

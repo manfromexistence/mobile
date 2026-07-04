@@ -1,7 +1,7 @@
 "use client"
 
-import { Fragment, useImperativeHandle, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
+import { Fragment, useImperativeHandle, useState } from "react"
 
 export type VolumeIconHandle = {
   startAnimation: () => void

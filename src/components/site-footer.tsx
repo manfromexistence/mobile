@@ -1,9 +1,9 @@
-import { LICENSE, SOURCE_CODE_GITHUB_URL } from "@/config/site"
-import { cn } from "@/lib/utils"
 import { DmcaIcon, GitHubIcon, LinkedInIcon, XIcon } from "@/components/icons"
 import { SiteFooterInteractiveLogotype } from "@/components/site-footer-brand"
+import { LICENSE, SOURCE_CODE_GITHUB_URL } from "@/config/site"
 import { SOCIAL } from "@/features/portfolio/data/social-links"
 import { USER } from "@/features/portfolio/data/user"
+import { cn } from "@/lib/utils"
 
 export function SiteFooter() {
   const xLink = SOCIAL.x

@@ -1,7 +1,7 @@
 import "@/components/daikanoid/daikanoid.css"
 
-import { Suspense } from "react"
 import type { Metadata } from "next"
+import { Suspense } from "react"
 
 import { X_HANDLE } from "@/config/site"
 

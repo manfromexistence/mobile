@@ -4,7 +4,11 @@ import * as React from "react"
 import type { ModelId } from "@/features/dx/types"
 import { getModelConfig } from "@/lib/ai/models-config"
 
-let cachedEngine: { modelId: ModelId; instance: any; type: 'webgpu' | 'wllama' } | null = null
+let cachedEngine: {
+  modelId: ModelId
+  instance: any
+  type: "webgpu" | "wllama"
+} | null = null
 
 export interface ModelProgress {
   percent: number
@@ -29,7 +33,7 @@ function formatPrompt(messages: { role: string; content: string }[]): string {
     .join("\n")
 }
 
-function getMockResponse(userMessage: string): string {
+function getMockResponse(_userMessage: string): string {
   const base = MOCK_RESPONSES[Math.floor(Math.random() * MOCK_RESPONSES.length)]
   const extra = `\n\n(Simulated response because AI model could not be loaded)`
   return base + extra
@@ -55,7 +59,11 @@ export function useModelInference() {
 
       const config = getModelConfig(modelId)
 
-      function updateProgress(percent: number, stage: string, file: string | null = null) {
+      function updateProgress(
+        percent: number,
+        stage: string,
+        file: string | null = null
+      ) {
         const p: ModelProgress = { percent, stage, file }
         setProgress(p)
         onProgress?.(p)
@@ -63,69 +71,83 @@ export function useModelInference() {
 
       try {
         let instance: any = null
-        let engineType: 'webgpu' | 'wllama' | 'tauri' = 'wllama'
-        
+        let engineType: "webgpu" | "wllama" | "tauri" = "wllama"
+
         // Detect if running inside Tauri (iOS/Android/Desktop)
-        const isTauri = typeof window !== 'undefined' && window.__TAURI_INTERNALS__ !== undefined;
+        const isTauri =
+          typeof window !== "undefined" &&
+          window.__TAURI_INTERNALS__ !== undefined
 
         if (isTauri) {
           updateProgress(10, "Initializing dx-flow via Tauri...")
           // We don't need to load a full browser instance, just pass a dummy one
           instance = { isTauri: true }
-          engineType = 'tauri'
+          engineType = "tauri"
         } else if (navigator.gpu) {
           // Check for WebGPU support
           try {
             updateProgress(5, "Initializing WebGPU...")
             const { CreateMLCEngine } = await import("@mlc-ai/web-llm")
-            
-            const mlcModelId = config.mlcModelId || "Llama-3-8B-Instruct-q4f32_1-MLC"
+
+            const mlcModelId =
+              config.mlcModelId || "Llama-3-8B-Instruct-q4f32_1-MLC"
             instance = await CreateMLCEngine(mlcModelId, {
               initProgressCallback: (p: any) => {
                 updateProgress(Math.round(p.progress * 100), p.text)
-              }
+              },
             })
-            engineType = 'webgpu'
+            engineType = "webgpu"
           } catch (e) {
-            console.warn("WebGPU initialization failed, falling back to Wllama (CPU)", e)
+            console.warn(
+              "WebGPU initialization failed, falling back to Wllama (CPU)",
+              e
+            )
           }
         }
 
         if (!instance) {
           updateProgress(5, "Initializing Wllama (CPU)...")
           const { Wllama } = await import("@wllama/wllama")
-          
+
           const CONFIG_PATHS = {
-            'single-thread/wllama.js': 'https://unpkg.com/@wllama/wllama/esm/wasm/single-thread/wllama.js',
-            'single-thread/wllama.wasm': 'https://unpkg.com/@wllama/wllama/esm/wasm/single-thread/wllama.wasm',
-            'multi-thread/wllama.js': 'https://unpkg.com/@wllama/wllama/esm/wasm/multi-thread/wllama.js',
-            'multi-thread/wllama.wasm': 'https://unpkg.com/@wllama/wllama/esm/wasm/multi-thread/wllama.wasm',
-            'multi-thread/wllama.worker.mjs': 'https://unpkg.com/@wllama/wllama/esm/wasm/multi-thread/wllama.worker.mjs',
-          };
-          
+            "single-thread/wllama.js":
+              "https://unpkg.com/@wllama/wllama/esm/wasm/single-thread/wllama.js",
+            "single-thread/wllama.wasm":
+              "https://unpkg.com/@wllama/wllama/esm/wasm/single-thread/wllama.wasm",
+            "multi-thread/wllama.js":
+              "https://unpkg.com/@wllama/wllama/esm/wasm/multi-thread/wllama.js",
+            "multi-thread/wllama.wasm":
+              "https://unpkg.com/@wllama/wllama/esm/wasm/multi-thread/wllama.wasm",
+            "multi-thread/wllama.worker.mjs":
+              "https://unpkg.com/@wllama/wllama/esm/wasm/multi-thread/wllama.worker.mjs",
+          }
+
           instance = new Wllama(CONFIG_PATHS)
-          
+
           const repo = config.wllamaRepo || "openbmb/MiniCPM-1B-sft-gguf"
           const file = config.wllamaFile || "minicpm-1b-sft-q4_0.gguf"
-          
+
           await instance.loadModelFromHF(
             { repo, file },
             {
               n_ctx: config.contextLength,
               n_batch: config.contextLength,
               n_gpu_layers: 99999,
-              n_threads: Math.max(1, (navigator as any).hardwareConcurrency - 1),
+              n_threads: Math.max(
+                1,
+                (navigator as any).hardwareConcurrency - 1
+              ),
               flash_attn: true,
-              cache_type_k: 'q8_0',
-              cache_type_v: 'q8_0',
+              cache_type_k: "q8_0",
+              cache_type_v: "q8_0",
               warmup: true,
               progressCallback: ({ loaded, total }: any) => {
                 const percent = Math.round((loaded / total) * 100)
                 updateProgress(percent, `Downloading model... ${percent}%`)
-              }
+              },
             }
           )
-          engineType = 'wllama'
+          engineType = "wllama"
         }
 
         updateProgress(100, "Ready!")
@@ -158,7 +180,9 @@ export function useModelInference() {
     ) => {
       if (mockRef.current || isMock) {
         try {
-          const lastUserMsg = [...messages].reverse().find((m) => m.role === "user")
+          const lastUserMsg = [...messages]
+            .reverse()
+            .find((m) => m.role === "user")
           const fullResponse = getMockResponse(lastUserMsg?.content ?? "")
           const words = fullResponse.split(/(?<=\s)/)
           for (const word of words) {
@@ -178,21 +202,21 @@ export function useModelInference() {
         if (signal?.aborted) return
 
         const config = getModelConfig(modelId)
-        
-        if (cachedEngine?.type === 'tauri') {
+
+        if (cachedEngine?.type === "tauri") {
           // Tauri (dx-flow via Rust)
-          const { invoke, Channel } = await import('@tauri-apps/api/core')
+          const { invoke, Channel } = await import("@tauri-apps/api/core")
           const prompt = formatPrompt(messages)
-          
+
           const onTokenChannel = new Channel<string>()
           onTokenChannel.onmessage = (token: string) => {
-             if (!signal?.aborted) {
-                 onToken(token)
-             }
+            if (!signal?.aborted) {
+              onToken(token)
+            }
           }
-          
-          await invoke('flow_generate', { prompt, onToken: onTokenChannel })
-        } else if (cachedEngine?.type === 'webgpu') {
+
+          await invoke("flow_generate", { prompt, onToken: onTokenChannel })
+        } else if (cachedEngine?.type === "webgpu") {
           // Web-LLM (MLCEngine)
           const reply = await generator.chat.completions.create({
             messages,
@@ -201,7 +225,7 @@ export function useModelInference() {
             max_tokens: config.maxTokens,
             stream: true,
           })
-          
+
           for await (const chunk of reply) {
             if (signal?.aborted) {
               break
@@ -211,27 +235,31 @@ export function useModelInference() {
           }
         } else {
           // Wllama
-          const response = await generator.createChatCompletion({
+          const _response = await generator.createChatCompletion({
             messages,
             temperature: config.temperature,
             top_p: config.topP,
             max_tokens: config.maxTokens,
             cache_prompt: true,
             penalty_repeat: config.repetitionPenalty,
-            onNewToken: (seqId: number, word: string) => {
+            onNewToken: (_seqId: number, word: string) => {
               if (signal?.aborted) {
-                 throw new Error("AbortError")
+                throw new Error("AbortError")
               }
               onToken(word)
-            }
+            },
           })
         }
-        
+
         if (!signal?.aborted) {
           onDone()
         }
       } catch (err) {
-        if ((err as Error).name === "AbortError" || (err as Error).message === "AbortError") return
+        if (
+          (err as Error).name === "AbortError" ||
+          (err as Error).message === "AbortError"
+        )
+          return
         onError(err as Error)
       }
     },
@@ -247,4 +275,3 @@ export function useModelInference() {
     generate,
   }
 }
-

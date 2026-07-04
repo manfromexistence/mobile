@@ -1,9 +1,9 @@
-import { Screen } from '../utils/types';
-import { useWllama } from '../utils/wllama.context';
-import ScreenWrapper from './ScreenWrapper';
+import { Screen } from "../utils/types"
+import { useWllama } from "../utils/wllama.context"
+import ScreenWrapper from "./ScreenWrapper"
 
 export default function GuideScreen() {
-  const { navigateTo } = useWllama();
+  const { navigateTo } = useWllama()
 
   return (
     <ScreenWrapper>
@@ -11,7 +11,7 @@ export default function GuideScreen() {
         <h1 className="text-2xl font-bold mb-4">Wllama 🦙</h1>
 
         <div className="mb-3">
-          Wllama is a project based on{' '}
+          Wllama is a project based on{" "}
           <a
             href="https://github.com/ggerganov/llama.cpp"
             target="_blank"
@@ -33,7 +33,7 @@ export default function GuideScreen() {
             </li>
             <li>
               Due to memory constraint of WebAssembly and emscripten, models
-              larger than 2GB will need to be split.{' '}
+              larger than 2GB will need to be split.{" "}
               <a
                 href="https://github.com/ngxson/wllama?tab=readme-ov-file#split-model"
                 target="_blank"
@@ -54,13 +54,13 @@ export default function GuideScreen() {
         </div>
 
         <div className="mb-3">
-          To get started, go to{' '}
+          To get started, go to{" "}
           <button
             className="btn btn-sm btn-primary btn-outline"
             onClick={() => navigateTo(Screen.MODEL)}
           >
             Manage models
-          </button>{' '}
+          </button>{" "}
           page to select a model.
         </div>
 
@@ -68,15 +68,15 @@ export default function GuideScreen() {
 
         <div className="mb-3">
           Wllama is in development and many bugs are expected to happen. If you
-          find a bug, please{' '}
+          find a bug, please{" "}
           <a
             href="https://github.com/ngxson/wllama/issues"
             target="_blank"
             rel="noopener"
           >
             open a issue
-          </a>{' '}
-          with log copied from{' '}
+          </a>{" "}
+          with log copied from{" "}
           <button
             className="btn btn-sm btn-primary btn-outline"
             onClick={() => navigateTo(Screen.LOG)}
@@ -86,5 +86,5 @@ export default function GuideScreen() {
         </div>
       </div>
     </ScreenWrapper>
-  );
+  )
 }

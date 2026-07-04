@@ -3,8 +3,8 @@
 /* eslint-disable react-hooks/refs */
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
 import { motion, useSpring } from "motion/react"
+import { useEffect, useMemo, useState } from "react"
 
 import { chartCssVars, useChart } from "../chart-context"
 import { DateTicker } from "./date-ticker"

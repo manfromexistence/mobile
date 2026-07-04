@@ -1,5 +1,5 @@
-import Link from "next/link"
 import { ArrowRightIcon } from "lucide-react"
+import Link from "next/link"
 
 import { Button } from "@/components/base/ui/button"
 import { Daikanoid } from "@/components/daikanoid"

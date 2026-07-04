@@ -1,5 +1,5 @@
 import { CreateMLCEngine } from "@mlc-ai/web-llm"
-import type { LLMEngine, LLMChatOptions } from "../types"
+import type { LLMChatOptions, LLMEngine } from "../types"
 
 export class WebLLMEngine implements LLMEngine {
   readonly type = "webllm" as const
@@ -14,8 +14,8 @@ export class WebLLMEngine implements LLMEngine {
   }
 
   async chat(
-    options: LLMChatOptions,
-  ): Promise<{ message: string } | void> {
+    options: LLMChatOptions
+  ): Promise<{ message: string } | undefined> {
     if (!this.engine) throw new Error("Model not loaded")
 
     if (options.stream && options.onData) {
@@ -48,7 +48,7 @@ export class WebLLMEngine implements LLMEngine {
     return { message: reply.choices?.[0]?.message?.content ?? "" }
   }
 
-  async exit(): Promise<void> {
+  exit(): void {
     this.engine = null
   }
 }

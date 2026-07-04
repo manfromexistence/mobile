@@ -23,5 +23,5 @@ export default function Navbar() {
       </div>
       <a className="btn btn-ghost text-xl">wllama</a>
     </div>
-  );
+  )
 }

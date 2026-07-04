@@ -1,9 +1,6 @@
-import Image from "next/image"
 import { format } from "date-fns"
 import { ArrowUpRightIcon, CircleCheckBigIcon } from "lucide-react"
-
-import { cn } from "@/lib/utils"
-import { Separator } from "@/components/ui/separator"
+import Image from "next/image"
 import {
   AccentureIcon,
   AnimationsDevIcon,
@@ -13,6 +10,8 @@ import {
   MicrosoftIcon,
   VercelIcon,
 } from "@/components/icons"
+import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
 
 import type { Certification } from "../../types/certifications"
 

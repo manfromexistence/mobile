@@ -1,9 +1,6 @@
+import { Grip, LayoutDashboard } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Grip, LayoutDashboard } from "lucide-react"
-
-import { X_HANDLE } from "@/config/site"
-import { jsonLdBreadcrumbList, JsonLdScript } from "@/lib/json-ld"
 import { Button } from "@/components/base/ui/button"
 import {
   Tooltip,
@@ -16,6 +13,8 @@ import {
   PageHeadingTitle,
 } from "@/components/page-heading"
 import { RemountOnThemeChange } from "@/components/remount-on-theme-change"
+import { X_HANDLE } from "@/config/site"
+import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
 import AppleHelloEffectAllDemo from "@/registry/examples/apple-hello-effect-languages-demo"
 import BrandAssetsMenuDemo from "@/registry/examples/brand-assets-menu-demo"
 import CodeBlockCommandDemo from "@/registry/examples/code-block-command-demo"

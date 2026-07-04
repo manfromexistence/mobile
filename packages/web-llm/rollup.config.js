@@ -1,7 +1,7 @@
-import { nodeResolve } from "@rollup/plugin-node-resolve";
-import ignore from "rollup-plugin-ignore";
-import commonjs from "@rollup/plugin-commonjs";
-import typescript from "@rollup/plugin-typescript";
+import commonjs from "@rollup/plugin-commonjs"
+import { nodeResolve } from "@rollup/plugin-node-resolve"
+import typescript from "@rollup/plugin-typescript"
+import ignore from "rollup-plugin-ignore"
 
 export default {
   input: "src/index.ts",
@@ -24,4 +24,4 @@ export default {
       tsconfig: "./tsconfig.json",
     }),
   ],
-};
+}

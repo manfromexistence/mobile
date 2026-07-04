@@ -1,18 +1,18 @@
 "use client"
 
+import { scaleLinear, scaleTime } from "@visx/scale"
+import { bisector } from "d3-array"
+import type { Transition } from "motion/react"
 import {
   Children,
   isValidElement,
+  type ReactElement,
+  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
   useState,
-  type ReactElement,
-  type ReactNode,
 } from "react"
-import { scaleLinear, scaleTime } from "@visx/scale"
-import { bisector } from "d3-array"
-import type { Transition } from "motion/react"
 
 import { DEFAULT_ANIMATION_EASING } from "./animation"
 import { ChartProvider, type LineConfig, type Margin } from "./chart-context"

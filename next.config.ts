@@ -42,9 +42,9 @@ const nextConfig: NextConfig = {
         perf_hooks: false,
         fs: false,
         path: false,
-      };
+      }
     }
-    return config;
+    return config
   },
   turbopack: {},
 }

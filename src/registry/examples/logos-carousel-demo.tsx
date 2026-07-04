@@ -1,5 +1,5 @@
-import { LogosCarousel } from "@/registry/components/logos-carousel"
 import { SPONSORS } from "@/features/sponsor/data"
+import { LogosCarousel } from "@/registry/components/logos-carousel"
 
 export default function LogosCarouselDemo() {
   return (

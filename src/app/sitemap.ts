@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next"
 
 import { blockCategories } from "@/config/registry"
 import { SITE_INFO } from "@/config/site"
-import { getAllBlockStaticParams } from "@/lib/blocks"
 import { getBlogPosts, getComponentDocs } from "@/features/doc/data/documents"
+import { getAllBlockStaticParams } from "@/lib/blocks"
 
 export const revalidate = false
 export const dynamic = "force-static"

@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/refs */
 "use client"
 
-import { useMemo, useRef } from "react"
 import { motion, useSpring } from "motion/react"
+import { useMemo, useRef } from "react"
 
 const TICKER_ITEM_HEIGHT = 24
 

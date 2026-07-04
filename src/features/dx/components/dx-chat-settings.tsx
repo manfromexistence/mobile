@@ -1,15 +1,7 @@
 "use client"
 
+import { Check, CircleSlash, Info, Languages, Plus, X } from "lucide-react"
 import * as React from "react"
-import { AnimatePresence, motion } from "framer-motion"
-import {
-  Check,
-  CircleSlash,
-  Info,
-  Languages,
-  Plus,
-  X,
-} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -71,14 +63,15 @@ function PixelCanvas({ palette }: { palette: string[] }) {
         return
       }
 
-      const dt = (time - prevTime) / 1000
+      const _dt = (time - prevTime) / 1000
       prevTime = time
 
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
           const idx = r * cols + c
           const cell = grid[idx]
-          const brightness = 0.6 + 0.4 * Math.sin(time * cell.speed * 0.003 + cell.phase)
+          const brightness =
+            0.6 + 0.4 * Math.sin(time * cell.speed * 0.003 + cell.phase)
           ctx.globalAlpha = brightness
           ctx.fillStyle = cell.color
           ctx.fillRect(c * pixelSize, r * pixelSize, pixelSize, pixelSize)

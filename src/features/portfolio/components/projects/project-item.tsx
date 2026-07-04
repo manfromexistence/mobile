@@ -1,10 +1,5 @@
-import Image from "next/image"
-import { addQueryParams } from "@/utils/url"
 import { BoxIcon, InfinityIcon, LinkIcon } from "lucide-react"
-
-import { UTM_PARAMS } from "@/config/site"
-import { Tag } from "@/components/ui/tag"
-import { Prose } from "@/components/ui/typography"
+import Image from "next/image"
 import {
   Collapsible,
   CollapsibleChevronsUpDownIcon,
@@ -19,6 +14,10 @@ import {
   TooltipTrigger,
 } from "@/components/base/ui/tooltip"
 import { Markdown } from "@/components/markdown"
+import { Tag } from "@/components/ui/tag"
+import { Prose } from "@/components/ui/typography"
+import { UTM_PARAMS } from "@/config/site"
+import { addQueryParams } from "@/utils/url"
 
 import type { Project } from "../../types/projects"
 

@@ -1,11 +1,9 @@
 "use client"
 
-import Link from "next/link"
-import { copyText } from "@/utils/copy"
 import { useTiks } from "@rexa-developer/tiks/react"
 import { Download, SquareDashed, Type } from "lucide-react"
+import Link from "next/link"
 import { toast } from "sonner"
-
 import {
   ContextMenu,
   ContextMenuContent,
@@ -13,6 +11,7 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
+import { copyText } from "@/utils/copy"
 
 import { ChanhDaiMark, getMarkSVG } from "./chanhdai-mark"
 import { getWordmarkSVG } from "./chanhdai-wordmark"

@@ -1,7 +1,7 @@
 import "@ncdai/react-wheel-picker/style.css"
 
-import type { ComponentProps } from "react"
 import * as WheelPickerPrimitive from "@ncdai/react-wheel-picker"
+import type { ComponentProps } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -55,5 +55,5 @@ function WheelPicker<T extends WheelPickerValue = string>({
   )
 }
 
-export { WheelPicker, WheelPickerWrapper }
 export type { WheelPickerClassNames, WheelPickerOption }
+export { WheelPicker, WheelPickerWrapper }

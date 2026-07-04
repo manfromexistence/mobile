@@ -1,8 +1,8 @@
 "use client"
 
-import { copyText } from "@/utils/copy"
 import { EllipsisIcon, LinkIcon, ShareIcon } from "lucide-react"
 import { toast } from "sonner"
+import { LinkedInIcon, XIcon } from "@/components/icons"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { LinkedInIcon, XIcon } from "@/components/icons"
+import { copyText } from "@/utils/copy"
 
 export function DocShareMenu({ title, url }: { title: string; url: string }) {
   const absoluteUrl = url.startsWith("http")

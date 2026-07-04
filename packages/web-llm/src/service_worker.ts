@@ -1,23 +1,23 @@
-import * as tvmjs from "@mlc-ai/web-runtime";
-import log from "loglevel";
-import { ChatOptions, MLCEngineConfig } from "./config";
-import { ReloadParams, WorkerRequest, WorkerResponse } from "./message";
-import { InitProgressReport } from "./types";
+import * as tvmjs from "@mlc-ai/web-runtime"
+import log from "loglevel"
+import type { ChatOptions, MLCEngineConfig } from "./config"
 import {
-  WebWorkerMLCEngineHandler,
-  WebWorkerMLCEngine,
-  ChatWorker,
-} from "./web_worker";
-import { areArraysEqual, areChatOptionsListEqual } from "./utils";
-import {
-  NoServiceWorkerAPIError,
   NonWorkerEnvironmentError,
+  NoServiceWorkerAPIError,
   ServiceWorkerInitializationError,
-} from "./error";
+} from "./error"
+import type { ReloadParams, WorkerRequest, WorkerResponse } from "./message"
+import type { InitProgressReport } from "./types"
+import { areArraysEqual, areChatOptionsListEqual } from "./utils"
+import {
+  type ChatWorker,
+  WebWorkerMLCEngine,
+  WebWorkerMLCEngineHandler,
+} from "./web_worker"
 
 /* Service Worker Script */
 
-type IServiceWorker = globalThis.ServiceWorker;
+type IServiceWorker = globalThis.ServiceWorker
 
 /**
  * Worker handler that can be used in a ServiceWorker.
@@ -39,45 +39,45 @@ export class ServiceWorkerMLCEngineHandler extends WebWorkerMLCEngineHandler {
   private clientRegistry = new Map<
     string,
     IServiceWorker | Client | MessagePort
-  >();
-  private initRequestUuid?: string;
+  >()
+  private initRequestUuid?: string
 
   constructor() {
     if (!self || !("addEventListener" in self)) {
-      throw new NonWorkerEnvironmentError("ServiceWorkerMLCEngineHandler");
+      throw new NonWorkerEnvironmentError("ServiceWorkerMLCEngineHandler")
     }
-    super();
-    const onmessage = this.onmessage.bind(this);
+    super()
+    const onmessage = this.onmessage.bind(this)
 
     this.engine.setInitProgressCallback((report: InitProgressReport) => {
       const msg: WorkerResponse = {
         kind: "initProgressCallback",
         uuid: this.initRequestUuid || "",
         content: report,
-      };
-      this.postMessage(msg);
-    });
+      }
+      this.postMessage(msg)
+    })
 
     self.addEventListener("message", (event) => {
-      const message = event as unknown as ExtendableMessageEvent;
+      const message = event as unknown as ExtendableMessageEvent
       if (message.source) {
-        this.clientRegistry.set(message.data.uuid, message.source);
+        this.clientRegistry.set(message.data.uuid, message.source)
       }
       message.waitUntil(
         new Promise((resolve, reject) => {
-          onmessage(message, resolve, reject);
-        }),
-      );
-    });
+          onmessage(message, resolve, reject)
+        })
+      )
+    })
   }
 
   postMessage(message: WorkerResponse) {
     if (this.clientRegistry.has(message.uuid)) {
-      const client = this.clientRegistry.get(message.uuid);
-      client?.postMessage(message);
+      const client = this.clientRegistry.get(message.uuid)
+      client?.postMessage(message)
 
       if (message.kind === "return" || message.kind === "throw") {
-        this.clientRegistry.delete(message.uuid);
+        this.clientRegistry.delete(message.uuid)
       } else {
         // TODO(nestor): Delete clientRegistry after complete to avoid memory leak?
       }
@@ -87,94 +87,94 @@ export class ServiceWorkerMLCEngineHandler extends WebWorkerMLCEngineHandler {
   onmessage(
     event: ExtendableMessageEvent,
     onComplete?: (value: any) => void,
-    onError?: () => void,
+    onError?: () => void
   ): void {
-    const msg = event.data as WorkerRequest;
+    const msg = event.data as WorkerRequest
     log.trace(
-      `ServiceWorker message: [${msg.kind}] ${JSON.stringify(msg.content)}`,
-    );
+      `ServiceWorker message: [${msg.kind}] ${JSON.stringify(msg.content)}`
+    )
 
     // Special case message handling different from WebWorkerMLCEngineHandler
     if (msg.kind === "keepAlive") {
       const reply: WorkerResponse = {
         kind: "heartbeat",
         uuid: msg.uuid,
-      };
-      this.postMessage(reply);
-      onComplete?.(reply);
-      return;
+      }
+      this.postMessage(reply)
+      onComplete?.(reply)
+      return
     }
 
     if (msg.kind === "reload") {
       this.handleTask(msg.uuid, async () => {
-        const params = msg.content as ReloadParams;
+        const params = msg.content as ReloadParams
         // If the modelId, chatOpts, and appConfig are the same, immediately return
         if (
           areArraysEqual(this.modelId, params.modelId) &&
           areChatOptionsListEqual(this.chatOpts, params.chatOpts)
         ) {
-          log.info("Already loaded the model. Skip loading");
-          const gpuDetectOutput = await tvmjs.detectGPUDevice();
+          log.info("Already loaded the model. Skip loading")
+          const gpuDetectOutput = await tvmjs.detectGPUDevice()
           if (gpuDetectOutput == undefined) {
-            throw Error("Cannot find WebGPU in the environment");
+            throw Error("Cannot find WebGPU in the environment")
           }
-          let gpuLabel = "WebGPU";
+          let gpuLabel = "WebGPU"
           if (gpuDetectOutput.adapterInfo.description.length != 0) {
-            gpuLabel += " - " + gpuDetectOutput.adapterInfo.description;
+            gpuLabel += " - " + gpuDetectOutput.adapterInfo.description
           } else {
-            gpuLabel += " - " + gpuDetectOutput.adapterInfo.vendor;
+            gpuLabel += " - " + gpuDetectOutput.adapterInfo.vendor
           }
           this.engine.getInitProgressCallback()?.({
             progress: 1,
             timeElapsed: 0,
             text: "Finish loading on " + gpuLabel,
-          });
-          onComplete?.(null);
-          return null;
+          })
+          onComplete?.(null)
+          return null
         }
 
-        this.initRequestUuid = msg.uuid;
-        await this.engine.reload(params.modelId, params.chatOpts);
-        this.modelId = params.modelId;
-        this.chatOpts = params.chatOpts;
-        onComplete?.(null);
-        return null;
-      });
-      return;
+        this.initRequestUuid = msg.uuid
+        await this.engine.reload(params.modelId, params.chatOpts)
+        this.modelId = params.modelId
+        this.chatOpts = params.chatOpts
+        onComplete?.(null)
+        return null
+      })
+      return
     }
 
     // All rest of message handling are the same as WebWorkerMLCEngineHandler
-    super.onmessage(msg, onComplete, onError);
+    super.onmessage(msg, onComplete, onError)
   }
 }
 
 /* Webapp Client */
 export class ServiceWorker implements ChatWorker {
-  _onmessage: (event: MessageEvent) => void = () => {};
+  _onmessage: (event: MessageEvent) => void = () => {}
 
   get onmessage() {
-    return this._onmessage;
+    return this._onmessage
   }
 
   set onmessage(handler: (event: any) => void) {
-    this._onmessage = handler;
+    this._onmessage = handler
 
     if (!("serviceWorker" in navigator)) {
-      throw new NoServiceWorkerAPIError();
+      throw new NoServiceWorkerAPIError()
     }
-    (navigator.serviceWorker as ServiceWorkerContainer).onmessage = handler;
+    ;(navigator.serviceWorker as ServiceWorkerContainer).onmessage = handler
   }
 
   postMessage(message: WorkerRequest) {
     if (!("serviceWorker" in navigator)) {
-      throw new NoServiceWorkerAPIError();
+      throw new NoServiceWorkerAPIError()
     }
     const serviceWorker = (navigator.serviceWorker as ServiceWorkerContainer)
-      .controller;
+      .controller
     if (!serviceWorker) {
-      throw new Error("There is no active service worker");
+      throw new Error("There is no active service worker")
     }
-    serviceWorker.postMessage(message);
+    serviceWorker.postMessage(message)
   }
 }
 
@@ -193,60 +193,60 @@ export async function CreateServiceWorkerMLCEngine(
   modelId: string | string[],
   engineConfig?: MLCEngineConfig,
   chatOpts?: ChatOptions | ChatOptions[],
-  keepAliveMs = 10000,
+  keepAliveMs = 10000
 ): Promise<ServiceWorkerMLCEngine> {
   if (!("serviceWorker" in navigator)) {
-    throw new NoServiceWorkerAPIError();
+    throw new NoServiceWorkerAPIError()
   }
-  const serviceWorkerAPI = navigator.serviceWorker as ServiceWorkerContainer;
-  const registration = await serviceWorkerAPI.ready;
-  const serviceWorker = registration.active || serviceWorkerAPI.controller;
+  const serviceWorkerAPI = navigator.serviceWorker as ServiceWorkerContainer
+  const registration = await serviceWorkerAPI.ready
+  const serviceWorker = registration.active || serviceWorkerAPI.controller
   if (!serviceWorker) {
-    throw new ServiceWorkerInitializationError();
+    throw new ServiceWorkerInitializationError()
   }
   const serviceWorkerMLCEngine = new ServiceWorkerMLCEngine(
     engineConfig,
-    keepAliveMs,
-  );
-  await serviceWorkerMLCEngine.reload(modelId, chatOpts);
-  return serviceWorkerMLCEngine;
+    keepAliveMs
+  )
+  await serviceWorkerMLCEngine.reload(modelId, chatOpts)
+  return serviceWorkerMLCEngine
 }
 
 /**
  * A client of MLCEngine that exposes the same interface
  */
 export class ServiceWorkerMLCEngine extends WebWorkerMLCEngine {
-  missedHeartbeat = 0;
+  missedHeartbeat = 0
 
   constructor(engineConfig?: MLCEngineConfig, keepAliveMs = 10000) {
     if (!("serviceWorker" in navigator)) {
-      throw new NoServiceWorkerAPIError();
+      throw new NoServiceWorkerAPIError()
     }
-    super(new ServiceWorker(), engineConfig);
+    super(new ServiceWorker(), engineConfig)
 
     // Keep alive through periodical heartbeat signals
     setInterval(() => {
-      this.worker.postMessage({ kind: "keepAlive", uuid: crypto.randomUUID() });
-      this.missedHeartbeat += 1;
-      log.trace("missedHeartbeat", this.missedHeartbeat);
-    }, keepAliveMs);
+      this.worker.postMessage({ kind: "keepAlive", uuid: crypto.randomUUID() })
+      this.missedHeartbeat += 1
+      log.trace("missedHeartbeat", this.missedHeartbeat)
+    }, keepAliveMs)
   }
 
   onmessage(event: any): void {
-    const msg = event.data;
+    const msg = event.data
     log.trace(
-      `MLC client message: [${msg.kind}] ${JSON.stringify(msg.content)}`,
-    );
+      `MLC client message: [${msg.kind}] ${JSON.stringify(msg.content)}`
+    )
     try {
       if (msg.kind === "heartbeat") {
-        this.missedHeartbeat = 0;
-        return;
+        this.missedHeartbeat = 0
+        return
       }
-      super.onmessage(msg);
+      super.onmessage(msg)
     } catch (err: any) {
       // This is expected to throw if user has multiple windows open
       if (!err.message.startsWith("return from a unknown uuid")) {
-        log.error("CreateWebServiceWorkerMLCEngine.onmessage", err);
+        log.error("CreateWebServiceWorkerMLCEngine.onmessage", err)
       }
     }
   }

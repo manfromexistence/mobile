@@ -1,6 +1,6 @@
-import { IBM_Plex_Serif } from "next/font/google"
 import { GeistMono } from "geist/font/mono"
 import { GeistSans } from "geist/font/sans"
+import { IBM_Plex_Serif } from "next/font/google"
 
 import { cn } from "@/lib/utils"
 

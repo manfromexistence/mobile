@@ -1,31 +1,31 @@
-import * as webllm from "@mlc-ai/web-llm";
+import * as webllm from "@mlc-ai/web-llm"
 
 const registerServiceWorker = async () => {
   if ("serviceWorker" in navigator) {
     try {
       const registration = await navigator.serviceWorker.register(
         new URL("sw.ts", import.meta.url),
-        { type: "module" },
-      );
+        { type: "module" }
+      )
       if (registration.installing) {
-        console.log("Service worker installing");
+        console.log("Service worker installing")
       } else if (registration.waiting) {
-        console.log("Service worker installed");
+        console.log("Service worker installed")
       } else if (registration.active) {
-        console.log("Service worker active");
+        console.log("Service worker active")
       }
     } catch (error) {
-      console.error(`Registration failed with ${error}`);
+      console.error(`Registration failed with ${error}`)
     }
   }
-};
+}
 
 function setLabel(id: string, text: string) {
-  const label = document.getElementById(id);
+  const label = document.getElementById(id)
   if (label == null) {
-    throw Error("Cannot find label " + id);
+    throw Error("Cannot find label " + id)
   }
-  label.innerText = text;
+  label.innerText = text
 }
 
 // There are two demonstrations, pick one to run
@@ -35,14 +35,14 @@ function setLabel(id: string, text: string) {
  */
 async function mainNonStreaming() {
   const initProgressCallback = (report: webllm.InitProgressReport) => {
-    setLabel("init-label", report.text);
-  };
-  const selectedModel = "Llama-3.1-8B-Instruct-q4f32_1-MLC";
+    setLabel("init-label", report.text)
+  }
+  const selectedModel = "Llama-3.1-8B-Instruct-q4f32_1-MLC"
 
   const engine: webllm.MLCEngineInterface =
     await webllm.CreateServiceWorkerMLCEngine(selectedModel, {
       initProgressCallback: initProgressCallback,
-    });
+    })
 
   const request: webllm.ChatCompletionRequest = {
     messages: [
@@ -59,13 +59,13 @@ async function mainNonStreaming() {
     n: 3,
     temperature: 1.5,
     max_tokens: 256,
-  };
+  }
 
-  const reply0 = await engine.chat.completions.create(request);
-  console.log(reply0);
-  setLabel("generate-label", reply0.choices[0].message.content || "");
+  const reply0 = await engine.chat.completions.create(request)
+  console.log(reply0)
+  setLabel("generate-label", reply0.choices[0].message.content || "")
 
-  console.log(reply0.usage);
+  console.log(reply0.usage)
 }
 
 /**
@@ -73,14 +73,14 @@ async function mainNonStreaming() {
  */
 async function mainStreaming() {
   const initProgressCallback = (report: webllm.InitProgressReport) => {
-    setLabel("init-label", report.text);
-  };
-  const selectedModel = "Llama-3.1-8B-Instruct-q4f32_1-MLC";
+    setLabel("init-label", report.text)
+  }
+  const selectedModel = "Llama-3.1-8B-Instruct-q4f32_1-MLC"
 
   const engine: webllm.ServiceWorkerMLCEngine =
     await webllm.CreateServiceWorkerMLCEngine(selectedModel, {
       initProgressCallback: initProgressCallback,
-    });
+    })
 
   const request: webllm.ChatCompletionRequest = {
     stream: true,
@@ -98,23 +98,23 @@ async function mainStreaming() {
     ],
     temperature: 1.5,
     max_tokens: 256,
-  };
+  }
 
-  const asyncChunkGenerator = await engine.chat.completions.create(request);
-  let message = "";
+  const asyncChunkGenerator = await engine.chat.completions.create(request)
+  let message = ""
   for await (const chunk of asyncChunkGenerator) {
-    console.log(chunk);
-    message += chunk.choices[0]?.delta?.content || "";
-    setLabel("generate-label", message);
+    console.log(chunk)
+    message += chunk.choices[0]?.delta?.content || ""
+    setLabel("generate-label", message)
     if (chunk.usage) {
-      console.log(chunk.usage); // only last chunk has usage
+      console.log(chunk.usage) // only last chunk has usage
     }
     // engine.interruptGenerate();  // works with interrupt as well
   }
-  console.log("Final message:\n", await engine.getMessage()); // the concatenated message
+  console.log("Final message:\n", await engine.getMessage()) // the concatenated message
 }
 
-registerServiceWorker();
+registerServiceWorker()
 // Run one of the function below
 // mainNonStreaming();
-mainStreaming();
+mainStreaming()

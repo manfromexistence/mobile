@@ -1,12 +1,9 @@
 "use client"
 
-import { useRef } from "react"
-import Link from "next/link"
 import { ArrowRightIcon } from "lucide-react"
 import { useInView, usePageInView } from "motion/react"
-
-import { cn } from "@/lib/utils"
-import { useMediaQuery } from "@/hooks/use-media-query"
+import Link from "next/link"
+import { useRef } from "react"
 import { Button } from "@/components/base/ui/button"
 import type { MarqueeContentProps } from "@/components/kibo-ui/marquee"
 import {
@@ -15,6 +12,14 @@ import {
   MarqueeFade,
   MarqueeItem,
 } from "@/components/kibo-ui/marquee"
+import { SOCIAL } from "@/features/portfolio/data/social-links"
+import {
+  TESTIMONIALS_1,
+  TESTIMONIALS_2,
+} from "@/features/portfolio/data/testimonials"
+import type { Testimonial as TestimonialType } from "@/features/portfolio/types/testimonials"
+import { useMediaQuery } from "@/hooks/use-media-query"
+import { cn } from "@/lib/utils"
 import {
   Testimonial,
   TestimonialAuthor,
@@ -27,12 +32,6 @@ import {
 } from "@/registry/transformed/components/testimonial"
 import { TestimonialSpotlight } from "@/registry/transformed/components/testimonial-spotlight"
 import { Twemoji } from "@/registry/transformed/components/twemoji/twemoji"
-import { SOCIAL } from "@/features/portfolio/data/social-links"
-import {
-  TESTIMONIALS_1,
-  TESTIMONIALS_2,
-} from "@/features/portfolio/data/testimonials"
-import type { Testimonial as TestimonialType } from "@/features/portfolio/types/testimonials"
 
 import { Panel, PanelContent, PanelHeader, PanelTitle } from "./panel"
 

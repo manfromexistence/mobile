@@ -1,5 +1,5 @@
-import React from "react"
 import { ChevronDownIcon } from "lucide-react"
+import type React from "react"
 
 import { Button } from "@/components/base/ui/button"
 import {

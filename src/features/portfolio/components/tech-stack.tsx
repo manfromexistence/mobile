@@ -80,7 +80,10 @@ function groupByCategory(
 ): Record<string, TechStackType[]> {
   return items.reduce<Record<string, TechStackType[]>>((acc, item) => {
     for (const category of item.categories) {
-      ;(acc[category] ??= []).push(item)
+      if (!acc[category]) {
+        acc[category] = []
+      }
+      acc[category].push(item)
     }
     return acc
   }, {})

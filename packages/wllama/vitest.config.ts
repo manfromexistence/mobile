@@ -1,16 +1,16 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from "vitest/config"
 
-const SAFARI = process.env.BROWSER === 'safari';
-const WEBGPU = process.env.WEBGPU === '1';
-const AUTO = process.env.AUTO === '1';
+const SAFARI = process.env.BROWSER === "safari"
+const WEBGPU = process.env.WEBGPU === "1"
+const AUTO = process.env.AUTO === "1"
 
-const chromeArgsCI = ['disable-gpu', 'no-sandbox', 'disable-setuid-sandbox'];
+const chromeArgsCI = ["disable-gpu", "no-sandbox", "disable-setuid-sandbox"]
 const chromeArgsWebGPU = [
-  'no-sandbox',
-  'disable-setuid-sandbox',
-  'enable-unsafe-webgpu',
-  'enable-features=WebGPU',
-];
+  "no-sandbox",
+  "disable-setuid-sandbox",
+  "enable-unsafe-webgpu",
+  "enable-features=WebGPU",
+]
 
 export default defineConfig({
   define: {
@@ -19,24 +19,24 @@ export default defineConfig({
   test: {
     ...(AUTO ? { watch: false } : {}),
     exclude: [
-      '**/node_modules/**',
-      '**/esm/**',
-      '**/docs/**',
-      '**/examples/**',
-      ...(!WEBGPU ? ['**/src/*.wgpu.test.*'] : []),
+      "**/node_modules/**",
+      "**/esm/**",
+      "**/docs/**",
+      "**/examples/**",
+      ...(!WEBGPU ? ["**/src/*.wgpu.test.*"] : []),
     ],
-    include: WEBGPU ? ['**/src/*.wgpu.test.*'] : ['**/src/**/*.test.*'],
+    include: WEBGPU ? ["**/src/*.wgpu.test.*"] : ["**/src/**/*.test.*"],
     browser: {
       enabled: true,
-      name: process.env.BROWSER ?? 'chromium',
-      provider: SAFARI ? 'webdriverio' : 'playwright',
+      name: process.env.BROWSER ?? "chromium",
+      provider: SAFARI ? "webdriverio" : "playwright",
       // https://playwright.dev
       providerOptions: WEBGPU
         ? { launch: { args: chromeArgsWebGPU.map((a) => `--${a}`) } }
         : process.env.GITHUB_ACTIONS
           ? {
               capabilities: {
-                'goog:chromeOptions': {
+                "goog:chromeOptions": {
                   args: chromeArgsCI,
                 },
               },
@@ -44,9 +44,9 @@ export default defineConfig({
           : SAFARI
             ? {
                 capabilities: {
-                  alwaysMatch: { browserName: 'safari' },
+                  alwaysMatch: { browserName: "safari" },
                   firstMatch: [{}],
-                  browserName: 'safari',
+                  browserName: "safari",
                 },
               }
             : {},
@@ -54,8 +54,8 @@ export default defineConfig({
   },
   server: {
     headers: {
-      'Cross-Origin-Embedder-Policy': 'require-corp',
-      'Cross-Origin-Opener-Policy': 'same-origin',
+      "Cross-Origin-Embedder-Policy": "require-corp",
+      "Cross-Origin-Opener-Policy": "same-origin",
     },
   },
-});
+})

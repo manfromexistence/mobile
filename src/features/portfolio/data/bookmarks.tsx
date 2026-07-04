@@ -1,6 +1,6 @@
 import { AnimationsDevIcon, ResendIcon, VercelIcon } from "@/components/icons"
 
-import { BookmarkCategory, type Bookmark } from "../types/bookmarks"
+import { type Bookmark, BookmarkCategory } from "../types/bookmarks"
 
 export const BOOKMARKS: Bookmark[] = [
   {

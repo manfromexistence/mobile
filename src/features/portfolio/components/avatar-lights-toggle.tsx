@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import type React from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 
 import { useAvatarLights } from "@/hooks/use-avatar-lights"

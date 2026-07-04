@@ -1,5 +1,6 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.9/schema.json",
+  "root": false,
+  "$schema": "https://biomejs.dev/schemas/2.5.2/schema.json",
   "assist": {
     "actions": {
       "source": {
@@ -23,7 +24,7 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "a11y": {
         "noSvgWithoutTitle": "off",
         "useButtonType": "off",

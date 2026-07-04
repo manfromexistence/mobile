@@ -1,17 +1,16 @@
 "use client"
 
-import { useEffect } from "react"
 import { XIcon } from "lucide-react"
+import { useEffect } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
-
-import { trackEvent } from "@/lib/events"
+import { SearchIcon } from "@/components/icons"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group"
-import { SearchIcon } from "@/components/icons"
+import { trackEvent } from "@/lib/events"
 
 import { useSearchQuery } from "../hooks/use-search-query"
 

@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
+import type { scaleBand, scaleLinear, scaleTime } from "@visx/scale"
+import type { Transition } from "motion/react"
 import {
   createContext,
-  useContext,
   type Dispatch,
   type RefObject,
   type SetStateAction,
+  useContext,
 } from "react"
-import type { scaleBand, scaleLinear, scaleTime } from "@visx/scale"
-import type { Transition } from "motion/react"
 
 import type { ChartSelection } from "./use-chart-interaction"
 

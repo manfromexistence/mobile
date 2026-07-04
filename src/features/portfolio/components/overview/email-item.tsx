@@ -1,16 +1,16 @@
 "use client"
 
-import { useId } from "react"
-import { copyToClipboardWithEvent } from "@/utils/copy"
-import { decodeEmail } from "@/utils/string"
 import { useTiks } from "@rexa-developer/tiks/react"
 import { MailIcon } from "lucide-react"
+import { useId } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { toast } from "sonner"
+import { CopyButton } from "@/components/copy-button"
+import { useIsClient } from "@/hooks/use-is-client"
 
 import { trackEvent } from "@/lib/events"
-import { useIsClient } from "@/hooks/use-is-client"
-import { CopyButton } from "@/components/copy-button"
+import { copyToClipboardWithEvent } from "@/utils/copy"
+import { decodeEmail } from "@/utils/string"
 
 import {
   IntroItem,

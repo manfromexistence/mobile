@@ -28,6 +28,6 @@ export interface LLMChatResponse {
 export interface LLMEngine {
   readonly type: LLMEngineType
   load(modelId: string): Promise<void>
-  chat(options: LLMChatOptions): Promise<LLMChatResponse | void>
+  chat(options: LLMChatOptions): Promise<LLMChatResponse | undefined>
   exit(): Promise<void>
 }

@@ -89,9 +89,9 @@ function CollapsibleChevronDownIcon(props: Omit<ChevronDownIconProps, "ref">) {
 }
 
 export {
-  CollapsibleWithContext as Collapsible,
   CollapsibleChevronDownIcon,
   CollapsibleChevronsUpDownIcon,
+  CollapsibleWithContext as Collapsible,
   useCollapsible,
   useCollapsibleAnimation,
 }

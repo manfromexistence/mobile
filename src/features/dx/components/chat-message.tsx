@@ -1,11 +1,10 @@
 "use client"
 
-import type { Message } from "@/features/dx/types"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { BotMessageActions } from "./dx-chat-message"
 import { Copy, Pencil, Share2 } from "lucide-react"
 import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
+import type { Message } from "@/features/dx/types"
+import { BotMessageActions } from "./dx-chat-message"
 
 export function ChatMessage({
   message,
@@ -24,19 +23,22 @@ export function ChatMessage({
         </div>
         <div className="mt-1 flex items-center gap-1 pr-2 opacity-0 transition-opacity group-hover:opacity-100">
           <span className="text-[11px] text-muted-foreground/60 mr-2">
-            {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            {new Date(message.createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </span>
-          <Button 
-            variant="ghost" 
-            size="icon-xs" 
+          <Button
+            variant="ghost"
+            size="icon-xs"
             className="text-muted-foreground"
             onClick={() => toast.info("Message editing coming soon")}
           >
             <Pencil className="size-3.5" />
           </Button>
-          <Button 
-            variant="ghost" 
-            size="icon-xs" 
+          <Button
+            variant="ghost"
+            size="icon-xs"
             className="text-muted-foreground"
             onClick={() => {
               navigator.clipboard.writeText(message.content)
@@ -45,9 +47,9 @@ export function ChatMessage({
           >
             <Copy className="size-3.5" />
           </Button>
-          <Button 
-            variant="ghost" 
-            size="icon-xs" 
+          <Button
+            variant="ghost"
+            size="icon-xs"
             className="text-muted-foreground"
             onClick={() => {
               if (navigator.share) {
@@ -73,13 +75,21 @@ export function ChatMessage({
         ) : isGenerating ? (
           <div className="flex items-center gap-2 text-muted-foreground">
             <span className="size-2 animate-pulse rounded-full bg-foreground/40" />
-            <span className="size-2 animate-pulse rounded-full bg-foreground/40" style={{ animationDelay: "0.2s" }} />
-            <span className="size-2 animate-pulse rounded-full bg-foreground/40" style={{ animationDelay: "0.4s" }} />
+            <span
+              className="size-2 animate-pulse rounded-full bg-foreground/40"
+              style={{ animationDelay: "0.2s" }}
+            />
+            <span
+              className="size-2 animate-pulse rounded-full bg-foreground/40"
+              style={{ animationDelay: "0.4s" }}
+            />
             <span className="ml-1 text-sm">Thinking...</span>
           </div>
         ) : null}
       </div>
-      {message.content && !isGenerating && <BotMessageActions message={message} />}
+      {message.content && !isGenerating && (
+        <BotMessageActions message={message} />
+      )}
     </div>
   )
 }

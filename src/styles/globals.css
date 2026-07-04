@@ -22,47 +22,47 @@
 }
 
 @theme {
-  --color-background: oklch(0.9900 0 0);
+  --color-background: oklch(0.99 0 0);
   --color-foreground: oklch(0 0 0);
   --color-card: oklch(1 0 0);
   --color-card-foreground: oklch(0 0 0);
-  --color-popover: oklch(0.9900 0 0);
+  --color-popover: oklch(0.99 0 0);
   --color-popover-foreground: oklch(0 0 0);
   --color-primary: oklch(0 0 0);
   --color-primary-foreground: oklch(1 0 0);
-  --color-secondary: oklch(0.9400 0 0);
+  --color-secondary: oklch(0.94 0 0);
   --color-secondary-foreground: oklch(0 0 0);
-  --color-muted: oklch(0.9700 0 0);
-  --color-muted-foreground: oklch(0.4400 0 0);
-  --color-accent: oklch(0.9400 0 0);
+  --color-muted: oklch(0.97 0 0);
+  --color-muted-foreground: oklch(0.44 0 0);
+  --color-accent: oklch(0.94 0 0);
   --color-accent-foreground: oklch(0 0 0);
-  --color-destructive: oklch(0.6300 0.1900 23.0300);
+  --color-destructive: oklch(0.63 0.19 23.03);
   --color-destructive-foreground: oklch(1 0 0);
-  --color-border: oklch(0.9200 0 0);
-  --color-input: oklch(0.9400 0 0);
+  --color-border: oklch(0.92 0 0);
+  --color-input: oklch(0.94 0 0);
   --color-ring: oklch(0 0 0);
-  --color-chart-1: oklch(0.8100 0.1700 75.3500);
-  --color-chart-2: oklch(0.5500 0.2200 264.5300);
-  --color-chart-3: oklch(0.7200 0 0);
-  --color-chart-4: oklch(0.9200 0 0);
-  --color-chart-5: oklch(0.5600 0 0);
-  --color-sidebar: oklch(0.9900 0 0);
+  --color-chart-1: oklch(0.81 0.17 75.35);
+  --color-chart-2: oklch(0.55 0.22 264.53);
+  --color-chart-3: oklch(0.72 0 0);
+  --color-chart-4: oklch(0.92 0 0);
+  --color-chart-5: oklch(0.56 0 0);
+  --color-sidebar: oklch(0.99 0 0);
   --color-sidebar-foreground: oklch(0 0 0);
   --color-sidebar-primary: oklch(0 0 0);
   --color-sidebar-primary-foreground: oklch(1 0 0);
-  --color-sidebar-accent: oklch(0.9400 0 0);
+  --color-sidebar-accent: oklch(0.94 0 0);
   --color-sidebar-accent-foreground: oklch(0 0 0);
-  --color-sidebar-border: oklch(0.9400 0 0);
+  --color-sidebar-border: oklch(0.94 0 0);
   --color-sidebar-ring: oklch(0 0 0);
 
-  --color-line: color-mix(in oklab, oklch(0.9200 0 0) 64%, oklch(0.9900 0 0));
+  --color-line: color-mix(in oklab, oklch(0.92 0 0) 64%, oklch(0.99 0 0));
   --color-info: oklch(0.67 0.17 244.98);
   --color-success: oklch(0.723 0.219 149.579);
   --color-link: oklch(0.488 0.243 264.376);
   --color-surface: oklch(0.985 0 0);
   --color-surface-foreground: oklch(0.141 0.005 285.823);
-  --color-accent-muted: color-mix(in oklab, oklch(0.9400 0 0) 50%, transparent);
-  --color-code: oklch(0.9900 0 0);
+  --color-accent-muted: color-mix(in oklab, oklch(0.94 0 0) 50%, transparent);
+  --color-code: oklch(0.99 0 0);
   --color-code-foreground: oklch(0 0 0);
   --color-code-number: oklch(0.24 0.01 0 / 0.3);
   --color-code-highlight: oklch(0.49 0.18 257.61 / 0.06);
@@ -71,14 +71,14 @@
 
   --color-chart-background: oklch(1 0 0);
   --color-chart-foreground: oklch(0 0 0);
-  --color-chart-foreground-muted: oklch(0.4400 0 0);
+  --color-chart-foreground-muted: oklch(0.44 0 0);
   --chart-line-primary: var(--color-chart-1);
   --chart-line-secondary: var(--color-chart-2);
   --color-chart-crosshair: oklch(0 0 0 / 0.15);
-  --color-chart-grid: color-mix(in oklab, oklch(0.9200 0 0) 64%, oklch(0.9900 0 0));
+  --color-chart-grid: color-mix(in oklab, oklch(0.92 0 0) 64%, oklch(0.99 0 0));
   --color-chart-tooltip-background: oklch(1 0 0);
   --color-chart-tooltip-foreground: oklch(0 0 0);
-  --color-chart-tooltip-muted: oklch(0.4400 0 0);
+  --color-chart-tooltip-muted: oklch(0.44 0 0);
   --color-chart-marker-background: oklch(0.97 0.005 260);
   --color-chart-marker-border: oklch(0.85 0.01 260);
   --color-chart-marker-foreground: oklch(0.3 0.01 260);
@@ -111,41 +111,41 @@
 @variant dark {
   --color-background: oklch(0 0 0);
   --color-foreground: oklch(1 0 0);
-  --color-card: oklch(0.1400 0 0);
+  --color-card: oklch(0.14 0 0);
   --color-card-foreground: oklch(1 0 0);
-  --color-popover: oklch(0.1800 0 0);
+  --color-popover: oklch(0.18 0 0);
   --color-popover-foreground: oklch(1 0 0);
   --color-primary: oklch(1 0 0);
   --color-primary-foreground: oklch(0 0 0);
-  --color-secondary: oklch(0.2500 0 0);
+  --color-secondary: oklch(0.25 0 0);
   --color-secondary-foreground: oklch(1 0 0);
-  --color-muted: oklch(0.2300 0 0);
-  --color-muted-foreground: oklch(0.7200 0 0);
-  --color-accent: oklch(0.3200 0 0);
+  --color-muted: oklch(0.23 0 0);
+  --color-muted-foreground: oklch(0.72 0 0);
+  --color-accent: oklch(0.32 0 0);
   --color-accent-foreground: oklch(1 0 0);
-  --color-destructive: oklch(0.6900 0.2000 23.9100);
+  --color-destructive: oklch(0.69 0.2 23.91);
   --color-destructive-foreground: oklch(0 0 0);
-  --color-border: oklch(0.2600 0 0);
-  --color-input: oklch(0.3200 0 0);
-  --color-ring: oklch(0.7200 0 0);
-  --color-chart-1: oklch(0.8100 0.1700 75.3500);
-  --color-chart-2: oklch(0.5800 0.2100 260.8400);
-  --color-chart-3: oklch(0.5600 0 0);
-  --color-chart-4: oklch(0.4400 0 0);
-  --color-chart-5: oklch(0.9200 0 0);
-  --color-sidebar: oklch(0.1800 0 0);
+  --color-border: oklch(0.26 0 0);
+  --color-input: oklch(0.32 0 0);
+  --color-ring: oklch(0.72 0 0);
+  --color-chart-1: oklch(0.81 0.17 75.35);
+  --color-chart-2: oklch(0.58 0.21 260.84);
+  --color-chart-3: oklch(0.56 0 0);
+  --color-chart-4: oklch(0.44 0 0);
+  --color-chart-5: oklch(0.92 0 0);
+  --color-sidebar: oklch(0.18 0 0);
   --color-sidebar-foreground: oklch(1 0 0);
   --color-sidebar-primary: oklch(1 0 0);
   --color-sidebar-primary-foreground: oklch(0 0 0);
-  --color-sidebar-accent: oklch(0.3200 0 0);
+  --color-sidebar-accent: oklch(0.32 0 0);
   --color-sidebar-accent-foreground: oklch(1 0 0);
-  --color-sidebar-border: oklch(0.3200 0 0);
-  --color-sidebar-ring: oklch(0.7200 0 0);
+  --color-sidebar-border: oklch(0.32 0 0);
+  --color-sidebar-ring: oklch(0.72 0 0);
 
-  --color-line: color-mix(in oklab, oklch(0.2600 0 0) 64%, oklch(0 0 0));
-  --color-surface: oklch(0.2100 0 0);
+  --color-line: color-mix(in oklab, oklch(0.26 0 0) 64%, oklch(0 0 0));
+  --color-surface: oklch(0.21 0 0);
   --color-surface-foreground: oklch(0.985 0 0);
-  --color-accent-muted: color-mix(in oklab, oklch(0.3200 0 0) 20%, transparent);
+  --color-accent-muted: color-mix(in oklab, oklch(0.32 0 0) 20%, transparent);
   --color-code: oklch(0 0 0);
   --color-code-foreground: oklch(1 0 0);
   --color-code-number: oklch(0.43 0 0);
@@ -155,12 +155,12 @@
 
   --color-chart-background: oklch(0 0 0);
   --color-chart-foreground: oklch(1 0 0);
-  --color-chart-foreground-muted: oklch(0.7200 0 0);
+  --color-chart-foreground-muted: oklch(0.72 0 0);
   --color-chart-crosshair: oklch(1 0 0 / 0.15);
-  --color-chart-grid: color-mix(in oklab, oklch(0.2600 0 0) 64%, oklch(0 0 0));
-  --color-chart-tooltip-background: oklch(0.1400 0 0);
+  --color-chart-grid: color-mix(in oklab, oklch(0.26 0 0) 64%, oklch(0 0 0));
+  --color-chart-tooltip-background: oklch(0.14 0 0);
   --color-chart-tooltip-foreground: oklch(1 0 0);
-  --color-chart-tooltip-muted: oklch(0.7200 0 0);
+  --color-chart-tooltip-muted: oklch(0.72 0 0);
 }
 
 /* These don't change between themes */
@@ -395,11 +395,23 @@
     --fade-linear-gradient: linear-gradient(
       to right,
       transparent 0,
-      color-mix(in oklab, var(--fade-color, var(--color-background)) 20%, transparent)
+      color-mix(
+          in oklab,
+          var(--fade-color, var(--color-background)) 20%,
+          transparent
+        )
         10px,
-      color-mix(in oklab, var(--fade-color, var(--color-background)) 50%, transparent)
+      color-mix(
+          in oklab,
+          var(--fade-color, var(--color-background)) 50%,
+          transparent
+        )
         25px,
-      color-mix(in oklab, var(--fade-color, var(--color-background)) 80%, transparent)
+      color-mix(
+          in oklab,
+          var(--fade-color, var(--color-background)) 80%,
+          transparent
+        )
         35px,
       var(--fade-color, var(--color-background)) 45px
     );
@@ -407,11 +419,23 @@
     --fade-radial-gradient: radial-gradient(
       ellipse at top right,
       var(--fade-color, var(--color-background)) 30%,
-      color-mix(in oklab, var(--fade-color, var(--color-background)) 80%, transparent)
+      color-mix(
+          in oklab,
+          var(--fade-color, var(--color-background)) 80%,
+          transparent
+        )
         40%,
-      color-mix(in oklab, var(--fade-color, var(--color-background)) 50%, transparent)
+      color-mix(
+          in oklab,
+          var(--fade-color, var(--color-background)) 50%,
+          transparent
+        )
         50%,
-      color-mix(in oklab, var(--fade-color, var(--color-background)) 20%, transparent)
+      color-mix(
+          in oklab,
+          var(--fade-color, var(--color-background)) 20%,
+          transparent
+        )
         60%,
       transparent 70%
     );

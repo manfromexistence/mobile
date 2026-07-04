@@ -1,13 +1,16 @@
 import type { Metadata } from "next"
-
-import { X_HANDLE } from "@/config/site"
-import { jsonLdBreadcrumbList, JsonLdScript } from "@/lib/json-ld"
-import { cn } from "@/lib/utils"
 import {
   PageHeading,
   PageHeadingTagline,
   PageHeadingTitle,
 } from "@/components/page-heading"
+import { X_HANDLE } from "@/config/site"
+import {
+  TESTIMONIALS_1,
+  TESTIMONIALS_2,
+} from "@/features/portfolio/data/testimonials"
+import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
+import { cn } from "@/lib/utils"
 import {
   Testimonial,
   TestimonialAuthor,
@@ -19,10 +22,6 @@ import {
   TestimonialQuote,
 } from "@/registry/components/testimonial"
 import { Twemoji } from "@/registry/components/twemoji/twemoji"
-import {
-  TESTIMONIALS_1,
-  TESTIMONIALS_2,
-} from "@/features/portfolio/data/testimonials"
 
 const title = "Testimonials"
 const description = "Trusted by top builders."

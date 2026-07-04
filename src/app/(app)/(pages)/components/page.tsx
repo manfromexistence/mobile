@@ -1,14 +1,7 @@
+import { Grip, LayoutDashboard } from "lucide-react"
 import type { Metadata, Route } from "next"
 import Link from "next/link"
-import { addQueryParams } from "@/utils/url"
-import { Grip, LayoutDashboard } from "lucide-react"
 import type { CollectionPage, WithContext } from "schema-dts"
-
-import { JSON_LD_ID } from "@/config/json-ld"
-import { registryConfig } from "@/config/registry"
-import { UTM_PARAMS, X_HANDLE } from "@/config/site"
-import { jsonLdBreadcrumbList, JsonLdScript } from "@/lib/json-ld"
-import { absoluteUrl, cn } from "@/lib/utils"
 import { Button } from "@/components/base/ui/button"
 import {
   Tooltip,
@@ -22,9 +15,15 @@ import {
   PageHeadingTitle,
 } from "@/components/page-heading"
 import { RegistryCommandAnimated } from "@/components/registry-command-animated"
+import { JSON_LD_ID } from "@/config/json-ld"
+import { registryConfig } from "@/config/registry"
+import { UTM_PARAMS, X_HANDLE } from "@/config/site"
 import { ComponentIcon } from "@/features/doc/components/component-icon"
 import { getComponentDocs } from "@/features/doc/data/documents"
 import type { Doc } from "@/features/doc/types/document"
+import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
+import { absoluteUrl, cn } from "@/lib/utils"
+import { addQueryParams } from "@/utils/url"
 
 import {
   ComponentItem,

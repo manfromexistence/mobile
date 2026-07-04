@@ -1,5 +1,5 @@
 import { Wllama } from "@wllama/wllama"
-import type { LLMEngine, LLMChatOptions, LLMChatMessage } from "../types"
+import type { LLMChatOptions, LLMEngine } from "../types"
 
 const DEFAULT_WASM_URL =
   "https://cdn.jsdelivr.net/npm/@wllama/wllama@3.5.1/esm/single-thread/wllama.wasm"
@@ -16,7 +16,7 @@ export class WllamaEngine implements LLMEngine {
   async load(_modelId: string): Promise<void> {
     this.wllama = new Wllama(
       { default: this.wasmUrl },
-      { suppressNativeLog: true },
+      { suppressNativeLog: true }
     )
     await this.wllama.loadModelFromUrl(_modelId, {
       n_ctx: 2048,
@@ -24,8 +24,8 @@ export class WllamaEngine implements LLMEngine {
   }
 
   async chat(
-    options: LLMChatOptions,
-  ): Promise<{ message: string } | void> {
+    options: LLMChatOptions
+  ): Promise<{ message: string } | undefined> {
     if (!this.wllama) throw new Error("Model not loaded")
 
     const params: Record<string, unknown> = {
@@ -36,14 +36,16 @@ export class WllamaEngine implements LLMEngine {
     }
 
     if (options.stream && options.onData) {
-      params.onData = (chunk: { choices: { delta: { content: string } }[] }) => {
+      params.onData = (chunk: {
+        choices: { delta: { content: string } }[]
+      }) => {
         const content = chunk.choices?.[0]?.delta?.content ?? ""
         if (content) options.onData!(content)
       }
     }
 
     const result = await this.wllama.createChatCompletion(
-      params as Parameters<typeof this.wllama.createChatCompletion>[0],
+      params as Parameters<typeof this.wllama.createChatCompletion>[0]
     )
 
     if (!options.stream) {

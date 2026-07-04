@@ -1,9 +1,4 @@
 import { GraduationCapIcon, InfinityIcon } from "lucide-react"
-
-import { cn } from "@/lib/utils"
-import { Separator } from "@/components/ui/separator"
-import { Tag } from "@/components/ui/tag"
-import { Prose } from "@/components/ui/typography"
 import {
   Collapsible,
   CollapsibleChevronsUpDownIcon,
@@ -13,7 +8,11 @@ import {
   CollapsibleTrigger,
 } from "@/components/base/ui/collapsible"
 import { Markdown } from "@/components/markdown"
+import { Separator } from "@/components/ui/separator"
+import { Tag } from "@/components/ui/tag"
+import { Prose } from "@/components/ui/typography"
 import type { Education } from "@/features/portfolio/types/education"
+import { cn } from "@/lib/utils"
 
 export function EducationItem({ item }: { item: Education }) {
   const { start, end } = item.period
