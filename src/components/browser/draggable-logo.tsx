@@ -57,7 +57,7 @@ export function DraggableLogo({
           {...attributes}
           {...listeners}
           className={cn(
-            "bg-background/90 hover:bg-accent relative flex h-16 cursor-grab items-center justify-center rounded-md transition-colors active:cursor-grabbing",
+            "bg-background/90 hover:bg-accent relative flex h-16 cursor-grab items-center justify-center rounded-2xl transition-colors active:cursor-grabbing",
             isDragging && "opacity-50",
             isOver && "ring-2 ring-primary",
           )}

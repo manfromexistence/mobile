@@ -88,7 +88,8 @@ export type ProviderId =
   | "together"
   | "perplexity"
   | "ollama"
-  | "ai-gateway"; // AI Gateway for 20+ providers
+  | "ai-gateway"
+  | "opencode"; // Opencode
 
 export interface ModelConfig {
   id: string;
@@ -107,6 +108,22 @@ export interface ProviderConfig {
 }
 
 export const providers: Record<ProviderId, ProviderConfig> = {
+  opencode: {
+    id: "opencode",
+    name: "Opencode",
+    icon: OpenAILogo,
+    models: [
+      { id: "opencode-low", name: "MiniMax M3 Free", modelId: "low", description: "Free Tier" },
+      { id: "opencode-high", name: "BigPickle", modelId: "high", description: "Free Tier" },
+      { id: "opencode-xhigh", name: "DeepSeek V4 Flash Free", modelId: "xhigh", description: "Free Tier" },
+      { id: "opencode-default", name: "Mimo V2.5 Free", modelId: "default", description: "Free Tier" },
+      { id: "opencode-medium", name: "Nemotron 3 Super Free", modelId: "medium", description: "Free Tier" },
+      { id: "opencode-xlow", name: "Nemotron 3 Ultra Free", modelId: "xlow", description: "Free Tier" },
+    ],
+    defaultModel: "opencode-default",
+    description: "Opencode Free Models",
+  },
+
   "ai-gateway": {
     id: "ai-gateway",
     name: "AI Gateway",
@@ -536,6 +553,13 @@ export function getModel(providerId: ProviderId, modelId: string) {
 
   // Create the actual model instance based on provider
   switch (providerId) {
+    case "opencode": {
+      const opencodeProvider = createOpenAI({
+        baseURL: "https://opencode.ai/zen/v1",
+        apiKey: process.env.OPENCODE_API_KEY || "empty",
+      });
+      return opencodeProvider(modelConfig.modelId);
+    }
     case "ai-gateway":
       // AI Gateway uses string format: "provider/model"
       return modelConfig.modelId;
@@ -577,5 +601,5 @@ export function getModel(providerId: ProviderId, modelId: string) {
 }
 
 export const providerList = Object.values(providers);
-export const defaultProvider: ProviderId = "groq";
-export const defaultModel = "llama-3.1-8b-instant";
+export const defaultProvider: ProviderId = "opencode";
+export const defaultModel = "opencode-default";

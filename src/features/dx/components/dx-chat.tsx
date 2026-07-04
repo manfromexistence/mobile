@@ -90,6 +90,7 @@ import {
 import { HistoryItem, SidebarItem, SidebarSubItem } from "./dx-chat-sidebar"
 import { ZenSidebar } from "./zen-sidebar"
 import { WelcomeScreen } from "@/components/screens/welcome-screen"
+import { AIInputBar } from "@/components/chat/ai-input-bar"
 import { VoiceBar } from "./dx-chat-voice"
 
 type RightPanel = "thoughts" | "sources" | "files" | null
@@ -490,7 +491,7 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
         </div>
 
         {/* Fallback Mode Banner */}
-        {isMock && (
+        {isMock && !selectedModel.includes("opencode") && !selectedModel.includes("bigpickle") && (
           <div className="absolute right-0 bottom-0 left-0 z-30 px-3 md:px-6">
             <div className="mx-auto mb-2 w-full max-w-3xl">
               <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
@@ -506,176 +507,19 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
 
         {/* Chat Input */}
         <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-20 flex flex-col items-center justify-end bg-gradient-to-t from-background via-background/95 to-transparent px-3 pt-20 pb-4 md:px-6 md:pb-6">
-          <div className="pointer-events-auto relative h-[52px] w-full max-w-3xl rounded-[2rem] border border-border bg-muted/50 shadow-md transition-all duration-300 focus-within:border-muted-foreground/30 focus-within:bg-background focus-within:shadow-lg md:h-[56px]">
-            {/* Default Input */}
-            <div
-              className={cn(
-                "absolute inset-0 flex items-center rounded-[2rem] pr-1.5 pl-2 transition-all duration-300 md:pr-2 md:pl-3",
-                isVoiceMode
-                  ? "pointer-events-none z-0 scale-95 opacity-0"
-                  : "pointer-events-auto z-10 scale-100 opacity-100"
-              )}
-            >
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    className="rounded-full text-muted-foreground"
-                  >
-                    <Paperclip className="size-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top">Attach files</TooltipContent>
-              </Tooltip>
-
-              <Input
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault()
-                    handleSend()
-                  }
-                }}
-                placeholder={
-                  modelLoading
-                    ? "Loading model..."
-                    : modelReady
-                      ? "Ask anything"
-                      : "Initializing..."
-                }
-                disabled={!modelReady || modelLoading}
-                className="h-full flex-1 border-none bg-transparent px-2 text-[15px] shadow-none outline-none placeholder:text-muted-foreground focus-visible:border-none focus-visible:ring-0 md:px-3 dark:bg-transparent"
-              />
-
-              <div className="flex flex-shrink-0 items-center gap-1 md:gap-1.5">
-                {/* Model Selector */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="flex items-center gap-1 rounded-full px-2 py-1.5 text-[14px] font-medium text-muted-foreground md:px-3"
-                    >
-                      <span className="hidden sm:inline">
-                        {MODEL_OPTIONS[selectedModel].name}
-                      </span>
-                      <Zap className="size-4 sm:hidden" />
-                      <Zap className="hidden size-3.5 sm:inline" />
-                      <ChevronDown className="size-2.5 text-muted-foreground" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="end"
-                    side="top"
-                    className="w-[240px] rounded-2xl border-border bg-popover p-2 shadow-xl md:w-64"
-                    sideOffset={8}
-                  >
-                    {Object.values(MODEL_OPTIONS).map((model) => (
-                      <DropdownMenuItem
-                        key={model.id}
-                        className={cn(
-                          "rounded-xl py-2",
-                          selectedModel === model.id && "bg-muted/50"
-                        )}
-                        onClick={() => setSelectedModel(model.id)}
-                      >
-                        {selectedModel === model.id ? (
-                          <Check className="mr-3 size-4 text-foreground" />
-                        ) : (
-                          <Zap className="mr-3 size-4 text-muted-foreground" />
-                        )}
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-foreground">
-                            {model.name}
-                          </span>
-                          <span className="text-[12px] text-muted-foreground">
-                            {model.description}
-                          </span>
-                        </div>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon-xs"
-                      className="rounded-full text-muted-foreground"
-                      onClick={() => setIsVoiceMode(true)}
-                    >
-                      <Mic className="size-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent side="top">Voice Input</TooltipContent>
-                </Tooltip>
-
-                <Button
-                  size="icon-sm"
-                  className="ml-0.5 rounded-full bg-foreground text-background shadow-sm hover:bg-foreground/80 disabled:opacity-40 disabled:cursor-not-allowed md:ml-1"
-                  onClick={isGenerating ? stopGeneration : handleSend}
-                  disabled={!modelReady || modelLoading}
-                >
-                  {isGenerating ? (
-                    <div className="size-3.5 rounded-sm bg-background" />
-                  ) : inputValue.trim() ? (
-                    <ArrowUp className="size-4" />
-                  ) : (
-                    <Volume2 className="size-4" />
-                  )}
-                </Button>
-              </div>
-            </div>
-
-            {/* Voice State */}
-            <div
-              className={cn(
-                "absolute inset-0 flex items-center justify-between rounded-[2rem] border border-blue-200 bg-background pr-1.5 pl-2 shadow-[0_0_20px_rgba(59,130,246,0.1)] transition-all duration-300 md:pr-2 md:pl-3",
-                isVoiceMode
-                  ? "pointer-events-auto z-10 scale-100 opacity-100"
-                  : "pointer-events-none z-0 scale-95 opacity-0"
-              )}
-            >
-              <div className="flex h-full flex-1 items-center">
-                <Button
-                  variant="ghost"
-                  size="icon-xs"
-                  className="rounded-full text-muted-foreground"
-                >
-                  <Paperclip className="size-4" />
-                </Button>
-                <Input
-                  placeholder="Speak now or type..."
-                  className="h-full flex-1 border-none bg-transparent px-2 text-[15px] font-medium text-foreground shadow-none outline-none placeholder:text-blue-400 md:px-3"
-                />
-              </div>
-              <div className="flex flex-shrink-0 items-center gap-1.5 md:gap-2">
-                <div className="flex h-[38px] items-center gap-2 rounded-full border border-blue-100 bg-blue-50 pr-1 pl-3 md:h-[42px] md:gap-3 md:pr-1.5 md:pl-4 dark:border-blue-900 dark:bg-blue-950">
-                  <div className="flex h-4 items-center gap-[3px] md:h-5">
-                    <VoiceBar delay="0.1s" height={40} />
-                    <VoiceBar delay="0.3s" height={80} />
-                    <VoiceBar delay="0.5s" height={60} />
-                    <VoiceBar delay="0.2s" height={100} />
-                    <VoiceBar delay="0.6s" height={50} />
-                    <VoiceBar delay="0.4s" height={90} />
-                    <VoiceBar delay="0.7s" height={30} />
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon-xs"
-                    className="rounded-full text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900"
-                    onClick={() => setIsVoiceMode(false)}
-                  >
-                    <X className="size-3" />
-                  </Button>
-                </div>
-                <Button className="size-10 rounded-full bg-foreground text-background shadow-sm hover:bg-blue-600">
-                  <ArrowUp className="size-4" />
-                </Button>
-              </div>
-            </div>
+          <div className="pointer-events-auto relative w-full max-w-3xl mx-auto">
+            <AIInputBar
+              inputValue={inputValue}
+              onInputChange={setInputValue}
+              onSubmit={handleSend}
+              onStop={stopGeneration}
+              isGenerating={isGenerating}
+              isLoading={!modelReady || modelLoading}
+              isVoiceMode={isVoiceMode}
+              onVoiceModeChange={setIsVoiceMode}
+              selectedModelId={selectedModel}
+              onModelChange={setSelectedModel}
+            />
           </div>
         </div>
       </main>

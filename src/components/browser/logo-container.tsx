@@ -77,7 +77,7 @@ export function LogoContainer({
                 return (
                   <div
                     key={logo.id}
-                    className="bg-background/90 hover:bg-accent flex h-16 items-center justify-center rounded-md transition-colors"
+                    className="bg-background/90 hover:bg-accent flex h-16 items-center justify-center rounded-2xl transition-colors"
                     title={logo.title}
                   >
                     <LogoComponent className="h-6 w-6" />

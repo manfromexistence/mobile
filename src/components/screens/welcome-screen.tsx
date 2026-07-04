@@ -479,23 +479,6 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
         </ScrollArea>
       </motion.div>
 
-      {/* Fixed AI Chat Input - Centered relative to viewport, accounting for sidebar */}
-      <div 
-        className="fixed bottom-4 z-50 flex justify-center transition-all duration-200"
-        style={{
-          left: `${sidebarWidth}px`,
-          right: 0,
-        }}
-      >
-        <div className="w-full max-w-4xl px-4">
-          <AIInputBar 
-            messages={messages} 
-            onMessagesChange={setMessages}
-            isLoading={isLoading}
-            onLoadingChange={setIsLoading}
-          />
-        </div>
-      </div>
-    </>
+      </>
   );
 }
