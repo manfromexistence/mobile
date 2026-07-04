@@ -385,9 +385,11 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
           >
             <div className="flex flex-col items-center pb-40 md:pb-44">
               <div className="w-full max-w-3xl text-[15px] leading-relaxed text-foreground/80">
+                <div className="w-full max-w-none">
+                  <WelcomeScreen sidebarExpanded={!sidebarCollapsed} />
+                </div>
                 {messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center pt-8 pb-16 text-center w-full max-w-none">
-                    <WelcomeScreen sidebarExpanded={!sidebarCollapsed} />
                     <div className="mt-8 mb-4 rounded-2xl bg-muted/50 p-4">
                       <MessageSquarePlus className="size-10 text-muted-foreground/40" />
                     </div>
