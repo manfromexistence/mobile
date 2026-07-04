@@ -57,7 +57,7 @@ export function useModelInference() {
       setIsMock(false)
       mockRef.current = false
 
-      if (modelId.includes("opencode")) {
+      if (!["minicpm-1b", "tinyllama-1.1b", "qwen-0.5b"].includes(modelId)) {
         const engineType = "api" as any;
         cachedEngine = { modelId, instance: null, type: engineType };
         setIsLoading(false);
