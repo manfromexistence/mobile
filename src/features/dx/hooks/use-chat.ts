@@ -44,10 +44,7 @@ function saveActiveConversationId(id: string | null) {
 }
 
 function loadSelectedModel(): ModelId {
-  if (typeof localStorage === "undefined") return DEFAULT_MODEL_ID
-  return (
-    (localStorage.getItem("dx-selected-model") as ModelId) ?? DEFAULT_MODEL_ID
-  )
+  return DEFAULT_MODEL_ID as ModelId
 }
 
 function saveSelectedModel(id: ModelId) {
