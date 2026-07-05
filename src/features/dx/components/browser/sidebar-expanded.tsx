@@ -46,6 +46,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Youtube } from "@/components/ui/svgs/youtube"
 import { cn } from "@/lib/utils"
+import { ArchivedChatsList } from "./archived-chats"
 import { DraggableTab } from "./draggable-tab"
 import { DraggableTabInFolder } from "./draggable-tab-in-folder"
 import { DroppableFolder } from "./droppable-folder"
@@ -437,25 +438,39 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                     align="start"
                     className="border-border bg-card w-80 p-4"
                   >
-                    <div className="space-y-4">
-                      <p className="text-muted-foreground text-sm">
-                        No archived chats.
-                      </p>
-                      <div className="border-border border-t pt-4">
-                        <button className="text-accent-foreground hover:text-accent-foreground text-sm underline">
-                          Show all archived chats
-                        </button>
-                      </div>
-                    </div>
+                    <ArchivedChatsList
+                      onClose={() => props.onSetarchivesOpen(false)}
+                    />
                   </PopoverContent>
                 </Popover>
               </motion.div>
             </ContextMenuTrigger>
             <ContextMenuContent className="border-border bg-card">
-              <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+              <ContextMenuItem
+                className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                onClick={() => props.onSetarchivesOpen(true)}
+              >
                 Open Archived Chats
               </ContextMenuItem>
-              <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+              <ContextMenuItem
+                className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                onClick={() => {
+                  try {
+                    const raw = localStorage.getItem("dx-conversations")
+                    if (raw) {
+                      const convs = JSON.parse(raw).map((c: any) => ({
+                        ...c,
+                        archived: false,
+                      }))
+                      localStorage.setItem(
+                        "dx-conversations",
+                        JSON.stringify(convs)
+                      )
+                    }
+                  } catch {}
+                  props.onSetarchivesOpen(false)
+                }}
+              >
                 Clear Archive
               </ContextMenuItem>
             </ContextMenuContent>

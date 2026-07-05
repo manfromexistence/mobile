@@ -48,6 +48,7 @@ export function Sidebar({
   onTabSelect,
   onRenameTab,
   onArchiveTab,
+  onOpenSettings,
 }: {
   children: React.ReactNode
   onNewChat?: () => any

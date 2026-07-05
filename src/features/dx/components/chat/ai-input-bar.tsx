@@ -52,6 +52,10 @@ interface AIInputBarProps {
   onVoiceModeChange?: (isVoice: boolean) => void
   selectedModelId?: string
   onModelChange?: (model: string) => void
+  onMediaSubmit?: (params: {
+    prompt: string
+    mediaType: string
+  }) => void
 }
 
 const MEDIA_TYPES: MediaType[] = [
@@ -82,6 +86,7 @@ export function AIInputBar({
   onVoiceModeChange,
   selectedModelId,
   onModelChange,
+  onMediaSubmit,
 }: AIInputBarProps) {
   const [selectedMedia, setSelectedMedia] = useState<string>("text")
   const [selectedProvider, setSelectedProvider] = useState<string>("opencode")
@@ -149,13 +154,22 @@ export function AIInputBar({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!input.trim() || isLoading || isGenerating) return
+
+    // Route media generation to onMediaSubmit if provided
+    if (selectedMedia !== "text" && selectedMedia !== "email" && onMediaSubmit) {
+      const prompt = input.trim()
+      setInput("")
+      onMediaSubmit({ prompt, mediaType: selectedMedia })
+      return
+    }
+
     if (onSubmit) {
       onSubmit(e)
       return
     }
 
-    e.preventDefault()
-    if (!input.trim() || isLoading) return
+    if (!input.trim()) return
 
     const userMessage = {
       role: "user",

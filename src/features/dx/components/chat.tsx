@@ -51,6 +51,8 @@ import { ScreenCarousel } from "@/features/dx/components/screens/screen-carousel
 import { ScreenGridDialog } from "@/features/dx/components/screens/screen-grid-dialog"
 import type { Screen } from "@/features/dx/components/screens/types"
 import { useChat } from "@/features/dx/hooks/use-chat"
+import { generateImage, generateVideo } from "@/lib/muapi"
+import type { Message } from "@/features/dx/types"
 import { cn } from "@/lib/utils"
 import { useLocalStorage } from "./chat-hooks"
 import { ChatMessage } from "./chat-message"
@@ -235,6 +237,106 @@ export function Chat({ swapped }: { swapped?: boolean }) {
     setInputValue("")
     sendMessage(content)
   }, [inputValue, sendMessage])
+
+  const handleMediaSubmit = React.useCallback(
+    async ({
+      prompt,
+      mediaType,
+    }: {
+      prompt: string
+      mediaType: string
+    }) => {
+      const apiKey =
+        typeof localStorage !== "undefined"
+          ? localStorage.getItem("muapi_key") || ""
+          : ""
+
+      if (!apiKey) {
+        const errMsg =
+          "Please set your MuAPI API key (localStorage key: muapi_key)"
+        sendMessage(errMsg)
+        return
+      }
+
+      let convId = currentConversationId
+      if (!convId) {
+        const conv = createNewConversation()
+        convId = conv.id
+      }
+
+      const userMsg: Message = {
+        id: crypto.randomUUID(),
+        role: "user",
+        content: prompt,
+        createdAt: Date.now(),
+      }
+
+      const assistMsg: Message = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: "",
+        createdAt: Date.now(),
+      }
+
+      updateConversation(convId, (conv) => ({
+        ...conv,
+        title:
+          conv.title === "New chat" ? `${mediaType} generation` : conv.title,
+        messages: [...conv.messages, userMsg, assistMsg],
+        updatedAt: Date.now(),
+      }))
+
+      try {
+        let result: { url?: string; outputs?: string[] }
+        if (mediaType === "image") {
+          result = await generateImage(apiKey, {
+            model: "nano-banana-pro",
+            prompt,
+            aspect_ratio: "1:1",
+          })
+        } else if (mediaType === "video") {
+          result = await generateVideo(apiKey, {
+            model: "wan2.2-text-to-video",
+            prompt,
+            aspect_ratio: "16:9",
+            duration: 5,
+          })
+        } else {
+          throw new Error(`Media type "${mediaType}" not yet supported`)
+        }
+
+        const url = result.url || result.outputs?.[0] || ""
+        const content = url
+          ? `${mediaType === "image" ? "![Generated Image]" : "![Generated Video]"}\n${url}`
+          : "Generation completed but no URL was returned."
+
+        updateConversation(convId, (conv) => ({
+          ...conv,
+          messages: conv.messages.map((m) =>
+            m.id === assistMsg.id
+              ? { ...m, content, createdAt: Date.now() }
+              : m
+          ),
+          updatedAt: Date.now(),
+        }))
+      } catch (error) {
+        updateConversation(convId, (conv) => ({
+          ...conv,
+          messages: conv.messages.map((m) =>
+            m.id === assistMsg.id
+              ? {
+                  ...m,
+                  content: `Generation failed: ${(error as Error).message}`,
+                  createdAt: Date.now(),
+                }
+              : m
+          ),
+          updatedAt: Date.now(),
+        }))
+      }
+    },
+    [currentConversationId, createNewConversation, updateConversation, sendMessage]
+  )
 
   const openRightPanel = React.useCallback(
     (panel: RightPanel) => {
@@ -558,6 +660,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
                 inputValue={inputValue}
                 onInputChange={setInputValue}
                 onSubmit={handleSend}
+                onMediaSubmit={handleMediaSubmit}
                 onStop={stopGeneration}
                 isGenerating={isGenerating}
                 isLoading={!modelReady || modelLoading}
@@ -733,11 +836,11 @@ export function Chat({ swapped }: { swapped?: boolean }) {
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
         <DialogContent
           aria-describedby={undefined}
-          className="flex h-full max-h-[90vh] w-full max-w-[100vw] flex-col gap-0 overflow-hidden rounded-2xl border-border bg-muted p-0 md:h-[650px] md:w-[900px] md:max-w-[95vw] md:flex-row"
+          className="flex h-full max-h-[90vh] w-full max-w-[100vw] flex-col gap-0 overflow-hidden rounded-2xl border-border bg-muted p-0 md:h-[700px] md:w-[1100px] md:max-w-[95vw] md:flex-row"
         >
           <DialogTitle className="sr-only">Settings</DialogTitle>
           {/* Settings Sidebar */}
-          <ScrollArea className="z-10 flex w-full flex-shrink-0 border-b border-border bg-background shadow-sm md:w-[220px] md:border-r md:border-b-0 md:shadow-none">
+          <div className="z-10 flex w-full flex-shrink-0 flex-col overflow-y-auto border-b border-border bg-background shadow-sm md:w-[240px] md:border-r md:border-b-0 md:shadow-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent">
             <div className="flex w-max flex-row gap-1 p-2 md:w-full md:flex-col md:p-3 md:py-4">
               {[
                 { id: "account", label: "Account", icon: User },
@@ -774,7 +877,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
                 </motion.button>
               ))}
             </div>
-          </ScrollArea>
+          </div>
 
           {/* Settings Content */}
           <div className="relative flex h-full flex-1 flex-col overflow-hidden bg-muted">
@@ -785,9 +888,9 @@ export function Chat({ swapped }: { swapped?: boolean }) {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-                className="flex h-full flex-1 flex-col"
+                className="flex h-full flex-1 flex-col overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-track]:bg-transparent"
               >
-                <ScrollArea className="flex-1 p-4 pt-6 md:p-8">
+                <div className="p-4 pt-6 md:p-8">
                   {settingsTab === "account" && <SettingsAccount />}
                   {settingsTab === "appearance" && (
                     <SettingsAppearance
@@ -808,7 +911,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
                   {settingsTab === "usage" && (
                     <SettingsPlaceholder title="Usage" />
                   )}
-                </ScrollArea>
+                </div>
               </motion.div>
             </AnimatePresence>
           </div>
