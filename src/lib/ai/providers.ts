@@ -584,7 +584,8 @@ export function getModel(providerId: ProviderId, modelId: string) {
   // Create the actual model instance based on provider
   switch (providerId) {
     case "opencode": {
-      const opencodeProvider = createOpenAI({
+      const opencodeProvider = createOpenAICompatible({
+        name: "opencode",
         baseURL: "https://opencode.ai/zen/v1",
         apiKey: process.env.OPENCODE_API_KEY || "public",
         headers: {
