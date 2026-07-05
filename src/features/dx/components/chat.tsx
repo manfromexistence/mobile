@@ -454,8 +454,8 @@ export function Chat({ swapped }: { swapped?: boolean }) {
             <div className="w-10" />
           </div>
 
-          {/* Top Right Actions */}
-          <div className="absolute top-2 right-1 z-40 flex items-center gap-0.5 rounded-xl bg-background/50 p-1 text-muted-foreground backdrop-blur-md md:top-3 md:right-2 md:bg-transparent md:p-0 md:backdrop-blur-none">
+          {/* Top Left Actions */}
+          <div className="absolute top-2 left-1 z-40 hidden items-center gap-0.5 rounded-xl bg-background/50 p-1 text-muted-foreground backdrop-blur-md md:top-3 md:left-2 md:flex md:bg-transparent md:p-0 md:backdrop-blur-none">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -473,25 +473,17 @@ export function Chat({ swapped }: { swapped?: boolean }) {
                 <Button
                   variant="ghost"
                   size="icon-xs"
-                  className="hidden text-muted-foreground sm:inline-flex"
+                  className="text-muted-foreground"
                 >
                   <Share2 className="size-4" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom">Share link</TooltipContent>
             </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon-xs"
-                  className="hidden text-muted-foreground sm:inline-flex"
-                >
-                  <Pencil className="size-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">Edit chat</TooltipContent>
-            </Tooltip>
+          </div>
+
+          {/* Top Right Actions */}
+          <div className="absolute top-2 right-1 z-40 flex items-center gap-0.5 rounded-xl bg-background/50 p-1 text-muted-foreground backdrop-blur-md md:top-3 md:right-2 md:bg-transparent md:p-0 md:backdrop-blur-none">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
