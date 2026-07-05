@@ -19,14 +19,14 @@ import { useEffect, useRef, useState } from "react";
 import {
   MAX_LOGOS,
   MAX_VISIBLE_WORKSPACES,
-} from "@/components/browser/constants";
-import { SidebarCollapsed } from "@/components/browser/sidebar-collapsed";
-import { SidebarExpanded } from "@/components/browser/sidebar-expanded";
-import { SidebarHeader } from "@/components/browser/sidebar-header";
-import type { DropPosition, Tab, TabFolder } from "@/components/browser/types";
-import { useBrowserState } from "@/components/browser/use-browser-state";
-import { getLogoComponentForTab } from "@/components/browser/utils";
-import { WorkspaceIcon } from "@/components/browser/workspace-icon";
+} from "@/features/dx/components/browser/constants";
+import { SidebarCollapsed } from "@/features/dx/components/browser/sidebar-collapsed";
+import { SidebarExpanded } from "@/features/dx/components/browser/sidebar-expanded";
+import { SidebarHeader } from "@/features/dx/components/browser/sidebar-header";
+import type { DropPosition, Tab, TabFolder } from "@/features/dx/components/browser/types";
+import { useBrowserState } from "@/features/dx/components/browser/use-browser-state";
+import { getLogoComponentForTab } from "@/features/dx/components/browser/utils";
+import { WorkspaceIcon } from "@/features/dx/components/browser/workspace-icon";
 import {
   Command,
   CommandEmpty,

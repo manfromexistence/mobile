@@ -21,7 +21,7 @@ import {
   MetaLogo,
   MistralLogo,
   OpenAILogo,
-} from "@/components/chat/provider-logos";
+} from "@/features/dx/components/chat/provider-logos";
 
 // ── OpenRouter (uses its own community SDK) ──
 const openrouter = createOpenRouter({

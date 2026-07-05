@@ -7,7 +7,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/base/ui/tooltip"
+} from "@/components/ui/tooltip"
 import { TrustedRegistryIcon } from "@/components/icons"
 import {
   PageHeading,
@@ -23,7 +23,7 @@ import { getComponentDocs } from "@/features/doc/data/documents"
 import type { Doc } from "@/features/doc/types/document"
 import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
 import { absoluteUrl, cn } from "@/lib/utils"
-import { addQueryParams } from "@/utils/url"
+import { addQueryParams } from "@/lib/utils/url"
 
 import {
   ComponentItem,

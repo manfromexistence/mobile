@@ -2,7 +2,7 @@ import { ArrowRightIcon } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/base/ui/button"
-import { Daikanoid } from "@/components/daikanoid"
+import { Daikanoid } from "@/features/portfolio/components/daikanoid"
 
 export function NotFound() {
   return (

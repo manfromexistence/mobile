@@ -7,7 +7,7 @@ import {
 import {
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/base/ui/collapsible"
+} from "@/components/ui/collapsible"
 import { Markdown } from "@/components/markdown"
 import { Separator } from "@/components/ui/separator"
 import { Tag } from "@/components/ui/tag"

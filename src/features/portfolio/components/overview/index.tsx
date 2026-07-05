@@ -7,7 +7,7 @@ import {
 } from "lucide-react"
 import { USER } from "@/features/portfolio/data/user"
 import type { User } from "@/features/portfolio/types/user"
-import { urlToName } from "@/utils/url"
+import { urlToName } from "@/lib/utils/url"
 
 import { Panel, PanelContent } from "../panel"
 import { CurrentLocalTimeItem } from "./current-local-time-item"

@@ -11,7 +11,7 @@ import {
 import { PanelTitleCopy } from "@/features/portfolio/components/panel-title-copy"
 import { getInsights } from "@/features/portfolio/data/insights"
 import { cn } from "@/lib/utils"
-import { formatDuration } from "@/utils/format"
+import { formatDuration } from "@/lib/utils/format"
 
 const ID = "insights"
 

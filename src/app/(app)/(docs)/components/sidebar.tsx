@@ -15,7 +15,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/base/ui/tooltip"
+} from "@/components/ui/tooltip"
 import { Kbd } from "@/components/ui/kbd"
 import { cn } from "@/lib/utils"
 

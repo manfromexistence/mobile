@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { addQueryParams, urlToName } from "@/utils/url"
+import { addQueryParams, urlToName } from "@/lib/utils/url"
 
 describe("urlToName", () => {
   it("strips https:// scheme", () => {

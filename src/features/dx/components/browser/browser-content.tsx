@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { getRandomDockIconName } from "@/components/screens/dock-icons";
-import { MacOSDock } from "@/components/screens/macos-dock";
-import { ScreenCarousel } from "@/components/screens/screen-carousel";
-import { ScreenGridDialog } from "@/components/screens/screen-grid-dialog";
-import type { Screen } from "@/components/screens/types";
+import { getRandomDockIconName } from "@/features/dx/components/screens/dock-icons";
+import { MacOSDock } from "@/features/dx/components/screens/macos-dock";
+import { ScreenCarousel } from "@/features/dx/components/screens/screen-carousel";
+import { ScreenGridDialog } from "@/features/dx/components/screens/screen-grid-dialog";
+import type { Screen } from "@/features/dx/components/screens/types";
 
 interface BrowserContentProps {
   sidebarExpanded: boolean;

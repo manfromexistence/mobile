@@ -9,8 +9,8 @@ import { CopyButton } from "@/components/copy-button"
 import { useIsClient } from "@/hooks/use-is-client"
 
 import { trackEvent } from "@/lib/events"
-import { copyToClipboardWithEvent } from "@/utils/copy"
-import { decodeEmail } from "@/utils/string"
+import { copyToClipboardWithEvent } from "@/lib/utils/copy"
+import { decodeEmail } from "@/lib/utils/string"
 
 import {
   IntroItem,

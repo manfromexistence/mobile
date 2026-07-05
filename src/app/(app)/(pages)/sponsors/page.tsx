@@ -14,7 +14,7 @@ import type { Sponsor, SponsorTier } from "@/features/sponsor/types"
 import { SPONSOR_TIERS } from "@/features/sponsor/types"
 import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
 import { cn } from "@/lib/utils"
-import { addQueryParams } from "@/utils/url"
+import { addQueryParams } from "@/lib/utils/url"
 
 const title = "Sponsors"
 const description =

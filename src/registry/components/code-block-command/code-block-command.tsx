@@ -10,7 +10,7 @@ import {
   TabsIndicator,
   TabsList,
   TabsTrigger,
-} from "@/components/base/ui/tabs"
+} from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { CopyButton } from "@/registry/components/copy-button"
 import { IconSwap, IconSwapItem } from "@/registry/components/icon-swap"

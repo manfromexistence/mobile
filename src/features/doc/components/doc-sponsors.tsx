@@ -7,7 +7,7 @@ import { Button } from "@/components/base/ui/button"
 import { UTM_PARAMS } from "@/config/site"
 import { SPONSORS } from "@/features/sponsor/data"
 import { trackEvent } from "@/lib/events"
-import { addQueryParams } from "@/utils/url"
+import { addQueryParams } from "@/lib/utils/url"
 
 export function DocSponsors() {
   const [visible, setVisible] = useState(true)

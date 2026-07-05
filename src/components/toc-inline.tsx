@@ -9,7 +9,7 @@ import {
 import {
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/base/ui/collapsible"
+} from "@/components/ui/collapsible"
 import { trackEvent } from "@/lib/events"
 import { cn } from "@/lib/utils"
 

@@ -4,7 +4,7 @@ import {
   getRegistryItemNamespace,
   getRegistryItemUrl,
   getRegistryItemUrls,
-} from "@/utils/registry"
+} from "@/lib/utils/registry"
 
 describe("getRegistryItemNamespace", () => {
   it("prefixes the configured namespace and suffixes the item", () => {

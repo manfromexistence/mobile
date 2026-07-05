@@ -12,7 +12,7 @@ import {
 } from "motion/react"
 
 import { metalClickSound } from "@/lib/soundcn/metal-click"
-import { useSound } from "@/hooks/soundcn/use-sound"
+import { useSound } from "@/lib/soundcn/hooks/use-sound"
 
 const transition: Transition = {
   type: "spring",

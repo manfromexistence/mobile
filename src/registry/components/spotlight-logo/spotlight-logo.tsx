@@ -10,7 +10,7 @@ import {
   useTransform,
 } from "motion/react"
 import { useEffect, useId, useRef } from "react"
-import { useSound } from "@/hooks/soundcn/use-sound"
+import { useSound } from "@/lib/soundcn/hooks/use-sound"
 import { metalClickSound } from "@/lib/soundcn/metal-click"
 
 const transition: Transition = {

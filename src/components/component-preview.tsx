@@ -9,12 +9,12 @@ import {
   TabsIndicator,
   TabsList,
   TabsTrigger,
-} from "@/components/base/ui/tabs"
+} from "@/components/ui/tabs"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/base/ui/tooltip"
+} from "@/components/ui/tooltip"
 import { CodeCollapsibleWrapper } from "@/components/code-collapsible-wrapper"
 import { Button } from "@/components/ui/button"
 import { Code as CodeInline } from "@/components/ui/typography"

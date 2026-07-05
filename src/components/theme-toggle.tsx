@@ -4,7 +4,7 @@ import { useTheme } from "next-themes"
 import { useHotkeys } from "react-hotkeys-hook"
 
 import { META_THEME_COLORS } from "@/config/site"
-import { useClickSound } from "@/hooks/soundcn/use-click-sound"
+import { useClickSound } from "@/lib/soundcn/hooks/use-click-sound"
 import { useMetaColor } from "@/hooks/use-meta-color"
 
 import { MoonIcon } from "./animated-icons/moon-icon"

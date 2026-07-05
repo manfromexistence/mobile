@@ -3,7 +3,7 @@
 import { Cog, PanelLeft, ShieldAlert, ShieldBan, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { WelcomeScreen } from "@/components/screens/welcome-screen";
+import { WelcomeScreen } from "@/features/dx/components/screens/welcome-screen";
 
 interface SidebarHeaderProps {
   sidebarExpanded: boolean;

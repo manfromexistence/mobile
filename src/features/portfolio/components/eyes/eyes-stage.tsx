@@ -1,6 +1,6 @@
 "use client";
 
-import { useEyes } from "@/lib/hooks/use-eyes";
+import { useEyes } from "@/hooks/use-eyes";
 import { Eye } from "./eye";
 import { GlassCrack } from "./glass-crack";
 import { GunshotMode } from "./gunshot-mode";

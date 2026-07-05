@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { AIInputBar } from "@/components/chat/ai-input-bar";
+import { AIInputBar } from "@/features/dx/components/chat/ai-input-bar";
 import { HelloGlow } from "@/components/hello-glow";
 import { Friday } from "@/components/friday";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -28,10 +28,10 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { PixelCircle } from "@/components/PixelCircle";
-import { EyesStage } from "@/components/eyes/eyes-stage";
-import { AnimationControls } from "@/components/eyes/animation-controls";
+import { EyesStage } from "@/features/portfolio/components/eyes/eyes-stage";
+import { AnimationControls } from "@/features/portfolio/components/eyes/animation-controls";
 import { ThemePicker } from "@/components/theme-picker";
-import { SpidermanWavesMode } from "@/components/eyes/spiderman-waves";
+import { SpidermanWavesMode } from "@/features/portfolio/components/eyes/spiderman-waves";
 import { cn } from "@/lib/utils";
 
 const PALETTES = [

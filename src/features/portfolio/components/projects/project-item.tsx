@@ -7,17 +7,17 @@ import {
 import {
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/base/ui/collapsible"
+} from "@/components/ui/collapsible"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/base/ui/tooltip"
+} from "@/components/ui/tooltip"
 import { Markdown } from "@/components/markdown"
 import { Tag } from "@/components/ui/tag"
 import { Prose } from "@/components/ui/typography"
 import { UTM_PARAMS } from "@/config/site"
-import { addQueryParams } from "@/utils/url"
+import { addQueryParams } from "@/lib/utils/url"
 
 import type { Project } from "../../types/projects"
 

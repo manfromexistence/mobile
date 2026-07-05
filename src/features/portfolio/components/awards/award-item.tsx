@@ -7,12 +7,12 @@ import {
 import {
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/base/ui/collapsible"
+} from "@/components/ui/collapsible"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/base/ui/tooltip"
+} from "@/components/ui/tooltip"
 import { Markdown } from "@/components/markdown"
 import { Separator } from "@/components/ui/separator"
 import { Prose } from "@/components/ui/typography"

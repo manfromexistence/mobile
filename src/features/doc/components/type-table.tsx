@@ -8,7 +8,7 @@ import {
 import {
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/base/ui/collapsible"
+} from "@/components/ui/collapsible"
 import { Prose } from "@/components/ui/typography"
 import { cn } from "@/lib/utils"
 

@@ -2,8 +2,8 @@
 
 import { useRef } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
-import type { VolumeIconHandle } from "@/components/animated-icons/volume-icon"
-import { VolumeIcon } from "@/components/animated-icons/volume-icon"
+import type { VolumeIconHandle } from "@/features/portfolio/components/animated-icons/volume-icon"
+import { VolumeIcon } from "@/features/portfolio/components/animated-icons/volume-icon"
 import { trackEvent } from "@/lib/events"
 import { cn } from "@/lib/utils"
 import { useSound } from "@/registry/hooks/sound/use-sound"

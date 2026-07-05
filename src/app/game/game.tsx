@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation"
 
-import { Daikanoid } from "@/components/daikanoid"
+import { Daikanoid } from "@/features/portfolio/components/daikanoid"
 
 export function Game() {
   const searchParams = useSearchParams()

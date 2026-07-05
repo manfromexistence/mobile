@@ -27,13 +27,13 @@ import {
   TabsIndicator,
   TabsList,
   TabsTrigger,
-} from "@/components/base/ui/tabs"
+} from "@/components/ui/tabs"
 import { ToggleGroup, ToggleGroupItem } from "@/components/base/ui/toggle-group"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/base/ui/tooltip"
+} from "@/components/ui/tooltip"
 import {
   DesktopIcon,
   FolderIcon,
@@ -90,7 +90,7 @@ import type {
 } from "@/lib/registry"
 import { cn } from "@/lib/utils"
 import { CopyButton, CopyStateIcon } from "@/registry/components/copy-button"
-import { getRegistryItemNamespace, getRegistryItemUrl } from "@/utils/registry"
+import { getRegistryItemNamespace, getRegistryItemUrl } from "@/lib/utils/registry"
 
 type View = "preview" | "code"
 

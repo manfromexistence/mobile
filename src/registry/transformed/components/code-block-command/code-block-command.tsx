@@ -13,7 +13,7 @@ import {
   TabsIndicator,
   TabsList,
   TabsTrigger,
-} from "@/components/base/ui/tabs"
+} from "@/components/ui/tabs"
 import { CopyButton } from "@/registry/transformed/components/copy-button"
 import {
   IconSwap,

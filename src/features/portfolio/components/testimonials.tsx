@@ -5,13 +5,13 @@ import { useInView, usePageInView } from "motion/react"
 import Link from "next/link"
 import { useRef } from "react"
 import { Button } from "@/components/base/ui/button"
-import type { MarqueeContentProps } from "@/components/kibo-ui/marquee"
+import type { MarqueeContentProps } from "@/components/vendor/kibo-ui/marquee"
 import {
   Marquee,
   MarqueeContent,
   MarqueeFade,
   MarqueeItem,
-} from "@/components/kibo-ui/marquee"
+} from "@/components/vendor/kibo-ui/marquee"
 import { SOCIAL } from "@/features/portfolio/data/social-links"
 import {
   TESTIMONIALS_1,

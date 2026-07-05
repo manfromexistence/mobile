@@ -8,7 +8,7 @@ import {
   BookmarkCategory,
 } from "@/features/portfolio/types/bookmarks"
 import { cn } from "@/lib/utils"
-import { addQueryParams } from "@/utils/url"
+import { addQueryParams } from "@/lib/utils/url"
 
 export function BookmarkItem({
   className,
