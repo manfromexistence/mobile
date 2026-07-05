@@ -217,12 +217,10 @@ export function Sidebar({
     const activeData = active.data.current;
     const overData = over.data.current;
 
-    // Handle logo reordering
+    // Logo reordering
     if (activeData?.type === "logo" && overData?.type === "logo") {
-      const oldIndex = state.logos.findIndex(
-        (l) => `logo-${l.id}` === activeId,
-      );
-      const newIndex = state.logos.findIndex((l) => `logo-${l.id}` === overId);
+      const oldIndex = state.logos.findIndex(l => `logo-${l.id}` === activeId);
+      const newIndex = state.logos.findIndex(l => `logo-${l.id}` === overId);
       if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
         const newLogos = [...state.logos];
         const [removed] = newLogos.splice(oldIndex, 1);
@@ -232,11 +230,10 @@ export function Sidebar({
       return;
     }
 
-    // Handle dragging logos out
+    // Dragging logo out to create a tab
     if (activeData?.type === "logo") {
       const logoId = activeId.replace("logo-", "");
-      const logo = state.logos.find((l) => l.id === parseInt(logoId, 10));
-
+      const logo = state.logos.find(l => l.id === parseInt(logoId, 10));
       if (!logo) return;
 
       if (
@@ -247,7 +244,7 @@ export function Sidebar({
         return;
       }
 
-      state.setLogos(state.logos.filter((l) => l.id !== parseInt(logoId, 10)));
+      state.setLogos(state.logos.filter(l => l.id !== parseInt(logoId, 10)));
 
       const newTab: Tab = {
         id: Date.now().toString(),
@@ -259,80 +256,77 @@ export function Sidebar({
 
       if (overData?.type === "folder") {
         state.setFolders(
-          state.folders.map((f) =>
-            f.id === overId ? { ...f, tabs: [...f.tabs, newTab] } : f,
-          ),
+          state.folders.map(f => f.id === overId ? { ...f, tabs: [...f.tabs, newTab] } : f),
         );
       } else {
         state.setLooseTabs([...state.looseTabs, newTab]);
-        }
-        return;
       }
+      return;
+    }
 
-      // Handle reordering folders
-      if (activeData?.type === "folder" && overData?.type === "folder") {
-        const oldIndex = state.folders.findIndex((f) => f.id === activeId);
-        const newIndex = state.folders.findIndex((f) => f.id === overId);
-        if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
-          const newFolders = [...state.folders];
-          const [removed] = newFolders.splice(oldIndex, 1);
-          newFolders.splice(newIndex, 0, removed);
-          state.setFolders(newFolders);
-        }
-        return;
+    // Folder reordering
+    if (activeData?.type === "folder" && overData?.type === "folder") {
+      const oldIndex = state.folders.findIndex(f => f.id === activeId);
+      const newIndex = state.folders.findIndex(f => f.id === overId);
+      if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+        const newFolders = [...state.folders];
+        const [removed] = newFolders.splice(oldIndex, 1);
+        newFolders.splice(newIndex, 0, removed);
+        state.setFolders(newFolders);
       }
+      return;
+    }
 
-      // Handle dropping a tab into a folder
-      if (activeData?.type === "tab" && overData?.type === "folder") {
-        let draggedTab = state.looseTabs.find((t) => t.id === activeId);
-        if (!draggedTab) {
-          // It might be in another folder
-          for (const folder of state.folders) {
-            const tab = folder.tabs.find((t) => t.id === activeId);
-            if (tab) {
-              draggedTab = tab;
-              // Remove from old folder
-              state.setFolders(
-                state.folders.map((f) =>
-                  f.id === folder.id
-                    ? { ...f, tabs: f.tabs.filter((t) => t.id !== activeId) }
-                    : f
-                )
-              );
-              break;
-            }
+    // Drop tab into folder
+    if (activeData?.type === "tab" && overData?.type === "folder") {
+      let draggedTab = state.looseTabs.find(t => t.id === activeId);
+      let sourceFolder: TabFolder | undefined;
+
+      if (!draggedTab) {
+        for (const folder of state.folders) {
+          const tab = folder.tabs.find(t => t.id === activeId);
+          if (tab) {
+            draggedTab = tab;
+            sourceFolder = folder;
+            // Remove from old folder
+            state.setFolders(
+              state.folders.map(f =>
+                f.id === folder.id ? { ...f, tabs: f.tabs.filter(t => t.id !== activeId) } : f,
+              ),
+            );
+            break;
           }
-        } else {
-          // Remove from loose tabs
-          state.setLooseTabs(state.looseTabs.filter((t) => t.id !== activeId));
         }
-
-        if (draggedTab) {
-          state.setFolders(
-            state.folders.map((f) =>
-              f.id === overId
-                ? { ...f, tabs: [...f.tabs, { ...draggedTab!, folderId: overId }] }
-                : f
-            )
-          );
-        }
-        return;
+      } else {
+        // Remove from loose tabs
+        state.setLooseTabs(state.looseTabs.filter(t => t.id !== activeId));
       }
 
-      // Handle tab reordering (loose tabs)
-      if (activeData?.type === "tab" && overData?.type === "tab") {
-        const oldIndex = state.looseTabs.findIndex((t) => t.id === activeId);
-        const newIndex = state.looseTabs.findIndex((t) => t.id === overId);
-        if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
-          const newTabs = [...state.looseTabs];
-          const [removed] = newTabs.splice(oldIndex, 1);
-          newTabs.splice(newIndex, 0, removed);
-          state.setLooseTabs(newTabs);
-        }
-        return;
+      if (draggedTab) {
+        // Add to target folder and set folderId
+        state.setFolders(
+          state.folders.map(f =>
+            f.id === overId ? { ...f, tabs: [...f.tabs, { ...draggedTab, folderId: overId }] } : f,
+          ),
+        );
       }
+      return;
+    }
 
-      // Handle dropping tabs/folders onto logo container
+    // Reorder loose tabs
+    if (activeData?.type === "tab" && overData?.type === "tab") {
+      const oldIndex = state.looseTabs.findIndex(t => t.id === activeId);
+      const newIndex = state.looseTabs.findIndex(t => t.id === overId);
+      if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+        const newTabs = [...state.looseTabs];
+        const [removed] = newTabs.splice(oldIndex, 1);
+        newTabs.splice(newIndex, 0, removed);
+        state.setLooseTabs(newTabs);
+      }
+      return;
+    }
+
+    // Drop onto logo container - create logo
     if (overId === "logo-container" || overData?.type === "logo-container") {
       if (state.logos.length >= MAX_LOGOS) {
         alert("Logo container is full! Maximum 12 items allowed.");
@@ -340,7 +334,7 @@ export function Sidebar({
       }
 
       if (activeData?.type === "folder") {
-        const draggedFolder = state.folders.find((f) => f.id === activeId);
+        const draggedFolder = state.folders.find(f => f.id === activeId);
         if (draggedFolder) {
           const newLogo = {
             id: Date.now(),
@@ -357,47 +351,17 @@ export function Sidebar({
         }
       }
 
-      let draggedTab = state.looseTabs.find((tab) => tab.id === activeId);
-      let sourceFolder: TabFolder | undefined;
-
-      if (!draggedTab) {
-        for (const folder of state.folders) {
-          const tab = folder.tabs.find((t) => t.id === activeId);
-          if (tab) {
-            draggedTab = tab;
-            sourceFolder = folder;
-            break;
-          }
-        }
-      }
-
+      const draggedTab = state.looseTabs.find(t => t.id === activeId);
       if (draggedTab) {
         const newLogo = {
           id: Date.now(),
           title: draggedTab.title,
           component: getLogoComponentForTab(draggedTab),
         };
-
         state.setLogos([...state.logos, newLogo]);
-
-        if (sourceFolder) {
-          state.setFolders(
-            state.folders.map((folder) =>
-              folder.id === sourceFolder.id
-                ? {
-                    ...folder,
-                    tabs: folder.tabs.filter((t) => t.id !== activeId),
-                  }
-                : folder,
-            ),
-          );
-        } else {
-          state.setLooseTabs(
-            state.looseTabs.filter((tab) => tab.id !== activeId),
-          );
-        }
-        return;
+        state.setLooseTabs(state.looseTabs.filter(t => t.id !== activeId));
       }
+      return;
     }
   }
 
@@ -473,6 +437,7 @@ export function Sidebar({
 
   function renderWorkspaceIcon(workspace: any, isActive: boolean) {
     return <WorkspaceIcon workspace={workspace} isActive={isActive} />;
+
   }
 
   return (
