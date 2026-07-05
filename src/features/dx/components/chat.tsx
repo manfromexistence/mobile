@@ -757,8 +757,8 @@ export function Chat({ swapped }: { swapped?: boolean }) {
         >
           <DialogTitle className="sr-only">Settings</DialogTitle>
           {/* Settings Sidebar */}
-          <div className="z-10 no-scrollbar flex w-full flex-shrink-0 flex-row overflow-x-auto border-b border-border bg-background px-2 py-2 whitespace-nowrap shadow-sm md:w-[220px] md:flex-col md:border-r md:border-b-0 md:px-3 md:py-4 md:shadow-none">
-            <div className="flex w-max flex-row gap-1 md:w-full md:flex-col">
+          <ScrollArea className="z-10 flex w-full flex-shrink-0 border-b border-border bg-background shadow-sm md:w-[220px] md:border-r md:border-b-0 md:shadow-none">
+            <div className="flex w-max flex-row gap-1 p-2 md:w-full md:flex-col md:p-3 md:py-4">
               {[
                 { id: "account", label: "Account", icon: User },
                 { id: "appearance", label: "Appearance", icon: Paintbrush },
@@ -794,7 +794,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
                 </motion.button>
               ))}
             </div>
-          </div>
+          </ScrollArea>
 
           {/* Settings Content */}
           <div className="relative flex h-full flex-1 flex-col overflow-hidden bg-muted">

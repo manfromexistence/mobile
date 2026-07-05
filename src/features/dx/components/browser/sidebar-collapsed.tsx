@@ -12,6 +12,7 @@ import {
   Plus,
   Search,
   Cog,
+  Snowflake,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
@@ -167,7 +168,7 @@ export function SidebarCollapsed({
           ))}
         </div>
       </ScrollArea>
-      
+
       <div className="relative mt-auto flex flex-col items-center pt-3 pb-3 border-border border-t w-full">
         {canScrollLeft && (
           <motion.button
@@ -360,7 +361,7 @@ export function SidebarCollapsed({
           <Cog className="h-4 w-4" />
         </Button>
 
-        {/* <motion.div
+        <motion.div
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           drag
@@ -384,9 +385,9 @@ export function SidebarCollapsed({
               }}
               title="Create Space"
             >
-              <WorkspaceIcon workspace={activeWorkspaceObj} />
+              <Snowflake className="h-4 w-4" />
             </Button>
-            <DropdownMenu open={plusMenuOpen} onOpenChange={onSetPlusMenuOpen}>
+            {/* <DropdownMenu open={plusMenuOpen} onOpenChange={onSetPlusMenuOpen}>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
@@ -397,58 +398,59 @@ export function SidebarCollapsed({
                   <ChevronUp className="h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
-            <DropdownMenuContent
-              side="right"
-              align="end"
-              sideOffset={5}
-              className="border-border bg-card w-56"
-            >
-              <DropdownMenuItem
-                onClick={() => {
-                  onCreateFolder();
-                  onSetPlusMenuOpen(false);
-                }}
-                className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+              <DropdownMenuContent
+                side="right"
+                align="end"
+                sideOffset={5}
+                className="border-border bg-card w-56"
               >
-                <Folder className="mr-2 h-4 w-4" />
-                Create Folder
-              </DropdownMenuItem>
-              <div className="border-border my-1 border-t" />
-              <DropdownMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                <Folder className="mr-2 h-4 w-4" />
-                Live Folder
-                <ChevronRight className="ml-auto h-4 w-4" />
-              </DropdownMenuItem>
-              <div className="border-border my-1 border-t" />
-              <DropdownMenuItem
-                onClick={() => {
-                  onOpenWorkspaceDialog();
-                  onSetPlusMenuOpen(false);
-                }}
-                className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-              >
-                <Copy className="mr-2 h-4 w-4" />
-                Create Space
-              </DropdownMenuItem>
-              <div className="border-border my-1 border-t" />
-              <DropdownMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                <Columns2 className="mr-2 h-4 w-4" />
-                New Split
-              </DropdownMenuItem>
-              <div className="border-border my-1 border-t" />
-              <DropdownMenuItem
-                onClick={() => {
-                  onAddNewTab();
-                  onSetPlusMenuOpen(false);
-                }}
-                className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                New Chat
-              </DropdownMenuItem>
-            </DropdownMenuContent>
+                <DropdownMenuItem
+                  onClick={() => {
+                    onCreateFolder();
+                    onSetPlusMenuOpen(false);
+                  }}
+                  className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                >
+                  <Folder className="mr-2 h-4 w-4" />
+                  Create Folder
+                </DropdownMenuItem>
+                <div className="border-border my-1 border-t" />
+                <DropdownMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                  <Folder className="mr-2 h-4 w-4" />
+                  Live Folder
+                  <ChevronRight className="ml-auto h-4 w-4" />
+                </DropdownMenuItem>
+                <div className="border-border my-1 border-t" />
+                <DropdownMenuItem
+                  onClick={() => {
+                    onOpenWorkspaceDialog();
+                    onSetPlusMenuOpen(false);
+                  }}
+                  className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                >
+                  <Copy className="mr-2 h-4 w-4" />
+                  Create Space
+                </DropdownMenuItem>
+                <div className="border-border my-1 border-t" />
+                <DropdownMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                  <Columns2 className="mr-2 h-4 w-4" />
+                  New Split
+                </DropdownMenuItem>
+                <div className="border-border my-1 border-t" />
+                <DropdownMenuItem
+                  onClick={() => {
+                    onAddNewTab();
+                    onSetPlusMenuOpen(false);
+                  }}
+                  className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  New Chat
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu> */}
           </div>
-        </motion.div> */}
+        </motion.div>
       </div>
     </motion.div>
   );
