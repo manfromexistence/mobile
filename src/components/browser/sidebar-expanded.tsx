@@ -144,6 +144,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
         </button>
       </div>
 
+      <ScrollArea className="flex-1 overflow-hidden overflow-x-hidden w-full">
       <LogoContainer
         logos={props.logos}
         isMounted={props.isMounted}
@@ -277,14 +278,13 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
           >
             <Plus className="h-4 w-4 shrink-0" />
             <span className="min-w-0 flex-1 truncate text-sm text-left">
-              New Tab
+              New Chat
             </span>
           </Button>
         </div>
       </div>
 
-      <ScrollArea className="flex-1 overflow-hidden overflow-x-hidden px-2">
-        <div className="w-full max-w-full space-y-0.5 pb-4">
+        <div className="w-full max-w-full space-y-0.5 pb-4 px-2">
           {props.isMounted ? (
             <SortableContext
               items={props.activeWorkspaceTabs.map((t) => t.id)}
@@ -688,7 +688,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                   className="text-accent-foreground focus:bg-accent focus:text-accent-foreground text-left"
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  New Tab
+                  New Chat
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

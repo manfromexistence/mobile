@@ -2,6 +2,8 @@
 
 import { Cog, PanelLeft, ShieldAlert, ShieldBan, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { WelcomeScreen } from "@/components/screens/welcome-screen";
 
 interface SidebarHeaderProps {
   sidebarExpanded: boolean;
@@ -25,13 +27,20 @@ export function SidebarHeader({
             >
               <PanelLeft className="h-4 w-4" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
-            >
-              <Cog className="h-4 w-4" />
-            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
+                >
+                  <Cog className="h-4 w-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent side="right" align="start" className="w-[80vw] h-[80vh] p-0 overflow-hidden border-border bg-card">
+                <WelcomeScreen sidebarExpanded={sidebarExpanded} />
+              </PopoverContent>
+            </Popover>
           </div>
           <div className="bg-card flex items-center justify-end gap-1 px-2">
             <Button

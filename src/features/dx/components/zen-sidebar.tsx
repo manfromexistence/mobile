@@ -328,7 +328,7 @@ export function ZenSidebar({ children }: { children: React.ReactNode }) {
   function addNewTab(): void {
     const newTab: Tab = {
       id: Date.now().toString(),
-      title: "New Tab",
+      title: "New Chat",
       url: "about:blank",
       workspaceId: state.activeWorkspace,
       folderId: null,
@@ -668,7 +668,7 @@ export function ZenSidebar({ children }: { children: React.ReactNode }) {
                   }}
                 >
                   <Plus className="mr-2 h-4 w-4" />
-                  <span>New Tab</span>
+                  <span>New Chat</span>
                 </CommandItem>
                 <CommandItem
                   onSelect={() => {

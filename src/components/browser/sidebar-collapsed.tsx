@@ -328,7 +328,7 @@ export function SidebarCollapsed({
                 className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
               >
                 <Plus className="mr-2 h-4 w-4" />
-                New Tab
+                New Chat
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

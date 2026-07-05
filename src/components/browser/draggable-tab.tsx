@@ -60,7 +60,7 @@ export function DraggableTab({
           {...attributes}
           {...listeners}
           className={cn(
-            "group/item relative flex h-9 max-w-[93.5%] cursor-grab items-center gap-2 rounded-md px-2 text-sm select-none active:cursor-grabbing transition-colors",
+            "group/item relative flex h-9 w-full overflow-hidden cursor-grab items-center gap-2 rounded-md px-2 text-sm select-none active:cursor-grabbing transition-colors",
             activeTab === tab.id
               ? "bg-accent text-accent-foreground"
               : "text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground",
@@ -103,7 +103,7 @@ export function DraggableTab({
           }}
           className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
         >
-          New Tab Below
+          New Chat Below
         </ContextMenuItem>
         <ContextMenuItem
           onSelect={(e) => {

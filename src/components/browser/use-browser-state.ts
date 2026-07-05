@@ -15,7 +15,7 @@ export function useBrowserState() {
   const [downloadsOpen, setDownloadsOpen] = useState(false);
   const [plusMenuOpen, setPlusMenuOpen] = useState(false);
   const [workspaceDialogOpen, setWorkspaceDialogOpen] = useState(false);
-  const [mediaPlaying, setMediaPlaying] = useState(true);
+  const [mediaPlaying, setMediaPlaying] = useState(false);
   const [workspaceScrollPosition, setWorkspaceScrollPosition] = useState(0);
 
   const [workspaceEditMode, setWorkspaceEditMode] = useState<
@@ -50,43 +50,9 @@ export function useBrowserState() {
     },
   ]);
 
-  const [folders, setFolders] = useState<TabFolder[]>([
-    {
-      id: "folder-zen-basics",
-      name: "zen basics",
-      collapsed: false,
-      workspaceId: "1",
-      parentId: null,
-      tabs: [
-        {
-          id: "welcome-tab",
-          title: "Welcome!",
-          url: "about:welcome",
-          workspaceId: "1",
-          folderId: "folder-zen-basics",
-        },
-      ],
-    },
-  ]);
+  const [folders, setFolders] = useState<TabFolder[]>([]);
 
-  const [looseTabs, setLooseTabs] = useState<Tab[]>([
-    {
-      id: "3",
-      title: "Beautiful themes for shadcn/ui — tweakcn | Theme Editor",
-      url: "https://tweakcn.com",
-      favicon: "https://tweakcn.com/favicon.ico",
-      workspaceId: "1",
-      folderId: null,
-    },
-    {
-      id: "4",
-      title: "GitHub - zen-browser/desktop",
-      url: "https://github.com",
-      favicon: "https://github.com/favicon.ico",
-      workspaceId: "1",
-      folderId: null,
-    },
-  ]);
+  const [looseTabs, setLooseTabs] = useState<Tab[]>([]);
 
   useEffect(() => {
     setIsMounted(true);

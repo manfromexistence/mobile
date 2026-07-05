@@ -227,9 +227,8 @@ export function AIInputBar({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className={cn(
-        "bg-background/30 backdrop-blur-2xl border border-white/10 relative w-full rounded-3xl shadow-2xl transition-all duration-300 overflow-hidden ring-1 ring-white/5",
-        "dark:bg-black/40 dark:border-white/10",
-        isFocused && "shadow-[0_8px_30px_rgb(0,0,0,0.12)] bg-background/40 dark:bg-black/50 border-white/20 ring-white/10",
+        "bg-background/50 backdrop-blur-2xl border border-border/50 relative w-full rounded-3xl shadow-2xl transition-all duration-300 overflow-hidden ring-1 ring-border/20",
+        isFocused && "shadow-xl bg-background/80 border-border ring-border/50",
       )}
     >
       <form onSubmit={handleSubmit}>
@@ -237,7 +236,7 @@ export function AIInputBar({
         {onVoiceModeChange && (
           <div
             className={cn(
-              "absolute inset-0 flex items-center justify-between rounded-2xl bg-background/95 backdrop-blur-xl border border-blue-200/50 pr-1.5 pl-2 shadow-[0_0_30px_rgba(59,130,246,0.15)] transition-all duration-300 md:pr-2 md:pl-3",
+              "absolute inset-0 flex items-center justify-between rounded-2xl bg-background/95 backdrop-blur-xl border border-primary/20 pr-1.5 pl-2 shadow-lg transition-all duration-300 md:pr-2 md:pl-3",
               isVoiceMode
                 ? "pointer-events-auto z-50 scale-100 opacity-100"
                 : "pointer-events-none z-0 scale-95 opacity-0"
@@ -256,7 +255,7 @@ export function AIInputBar({
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Speak now or type..."
-                className="h-full flex-1 border-none bg-transparent px-2 text-[15px] font-medium text-foreground shadow-none outline-none placeholder:text-blue-400 md:px-3 focus-visible:ring-0"
+                className="h-full flex-1 border-none bg-transparent px-2 text-[15px] font-medium text-foreground shadow-none outline-none placeholder:text-primary/60 md:px-3 focus-visible:ring-0"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -266,7 +265,7 @@ export function AIInputBar({
               />
             </div>
             <div className="flex flex-shrink-0 items-center gap-1.5 md:gap-2">
-              <div className="flex h-[38px] items-center gap-2 rounded-full border border-blue-100 bg-blue-50/80 pr-1 pl-3 md:h-[42px] md:gap-3 md:pr-1.5 md:pl-4 dark:border-blue-900/50 dark:bg-blue-950/80">
+              <div className="flex h-[38px] items-center gap-2 rounded-full border border-primary/20 bg-primary/10 pr-1 pl-3 md:h-[42px] md:gap-3 md:pr-1.5 md:pl-4">
                 <div className="flex h-4 items-center gap-[3px] md:h-5">
                   <VoiceBar delay="0.1s" height={40} />
                   <VoiceBar delay="0.3s" height={80} />
@@ -280,7 +279,7 @@ export function AIInputBar({
                   type="button"
                   variant="ghost"
                   size="icon-xs"
-                  className="rounded-full h-6 w-6 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900 flex items-center justify-center p-0"
+                  className="rounded-full h-6 w-6 text-primary hover:bg-primary/20 flex items-center justify-center p-0"
                   onClick={() => onVoiceModeChange(false)}
                 >
                   <X className="h-3 w-3" />
@@ -288,7 +287,7 @@ export function AIInputBar({
               </div>
               <Button 
                 type="submit"
-                className="size-10 rounded-full bg-foreground text-background shadow-sm hover:bg-blue-600 flex items-center justify-center"
+                className="size-10 rounded-full bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 flex items-center justify-center"
                 onClick={isGenerating ? (e) => { e.preventDefault(); onStop?.(); } : undefined}
               >
                 {isGenerating ? <div className="h-3.5 w-3.5 rounded-sm bg-background" /> : (input.trim() ? <ArrowUp className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />)}
@@ -317,7 +316,7 @@ export function AIInputBar({
           />
         </div>
 
-        <div className="flex items-center justify-between gap-3 bg-white/5 dark:bg-black/20 backdrop-blur-md px-4 py-3 border-t border-white/5">
+        <div className="flex items-center justify-between gap-3 bg-muted/20 backdrop-blur-md px-4 py-3 border-t border-border/20">
           <div className="flex items-center gap-2">
             <AITargetSwitcher />
             <AIModeSwitcher />

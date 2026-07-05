@@ -89,7 +89,6 @@ import {
 } from "./dx-chat-settings"
 import { HistoryItem, SidebarItem, SidebarSubItem } from "./dx-chat-sidebar"
 import { ZenSidebar } from "./zen-sidebar"
-import { WelcomeScreen } from "@/components/screens/welcome-screen"
 import { AIInputBar } from "@/components/chat/ai-input-bar"
 import { VoiceBar } from "./dx-chat-voice"
 
@@ -386,9 +385,7 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
           >
             <div className="flex flex-col items-center pb-40 md:pb-44">
               <div className="w-full max-w-3xl text-[15px] leading-relaxed text-foreground/80">
-                <div className="w-full max-w-none">
-                  <WelcomeScreen sidebarExpanded={!sidebarCollapsed} />
-                </div>
+
                 {messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center pt-8 pb-16 text-center w-full max-w-none">
                     <div className="mt-8 mb-4 rounded-2xl bg-muted/50 p-4">
@@ -506,7 +503,7 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
         )}
 
         {/* Chat Input */}
-        <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-20 flex flex-col items-center justify-end bg-gradient-to-t from-background via-background/95 to-transparent px-3 pt-20 pb-4 md:px-6 md:pb-6">
+        <div className={cn("pointer-events-none absolute right-0 left-0 z-20 flex flex-col items-center px-3 md:px-6", messages.length === 0 ? "top-1/2 -translate-y-1/2 justify-center" : "bottom-0 justify-end bg-gradient-to-t from-background via-background/95 to-transparent pt-20 pb-4 md:pb-6")}>
           <div className="pointer-events-auto relative w-full max-w-3xl mx-auto">
             <AIInputBar
               inputValue={inputValue}
