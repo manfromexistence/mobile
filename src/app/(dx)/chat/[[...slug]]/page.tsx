@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import { DxChat } from "@/features/dx/components/dx-chat"
+import { Chat } from "@/features/dx/components/chat"
 
 export const metadata: Metadata = {
   title: "SuperGrok",
@@ -11,6 +11,6 @@ export function generateStaticParams() {
   return [{ slug: [] }]
 }
 
-export default function DxPage() {
-  return <DxChat />
+export default function ChatPage() {
+  return <Chat />
 }

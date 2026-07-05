@@ -19,6 +19,8 @@ export interface Conversation {
   modelId: string
   createdAt: number
   updatedAt: number
+  spaceId?: string
+  archived?: boolean
 }
 
 export interface StreamChunk {

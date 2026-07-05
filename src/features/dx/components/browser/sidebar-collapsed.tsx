@@ -38,10 +38,10 @@ interface SidebarCollapsedProps {
   visibleWorkspaces: Workspace[];
   canScrollLeft: boolean;
   canScrollRight: boolean;
-  downloadsOpen: boolean;
+  archivesOpen: boolean;
   plusMenuOpen: boolean;
   onSetActiveWorkspace: (id: string) => void;
-  onSetDownloadsOpen: (open: boolean) => void;
+  onSetarchivesOpen: (open: boolean) => void;
   onSetPlusMenuOpen: (open: boolean) => void;
   onStartScrolling: (direction: "left" | "right") => void;
   onStopScrolling: () => void;
@@ -57,10 +57,10 @@ export function SidebarCollapsed({
   visibleWorkspaces,
   canScrollLeft,
   canScrollRight,
-  downloadsOpen,
+  archivesOpen,
   plusMenuOpen,
   onSetActiveWorkspace,
-  onSetDownloadsOpen,
+  onSetarchivesOpen,
   onSetPlusMenuOpen,
   onStartScrolling,
   onStopScrolling,
@@ -212,7 +212,7 @@ export function SidebarCollapsed({
               dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
               dragElastic={0.1}
             >
-              <Popover open={downloadsOpen} onOpenChange={onSetDownloadsOpen}>
+              <Popover open={archivesOpen} onOpenChange={onSetarchivesOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
@@ -228,11 +228,11 @@ export function SidebarCollapsed({
                 >
                   <div className="space-y-4">
                     <p className="text-muted-foreground text-sm">
-                      No downloads for this session.
+                      No archived chats.
                     </p>
                     <div className="border-border border-t pt-4">
                       <button className="text-accent-foreground hover:text-accent-foreground text-sm underline">
-                        Show all downloads
+                        Show all archived chats
                       </button>
                     </div>
                   </div>
@@ -242,10 +242,10 @@ export function SidebarCollapsed({
           </ContextMenuTrigger>
           <ContextMenuContent className="border-border bg-card">
             <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-              Open Downloads
+              Open Archived Chats
             </ContextMenuItem>
             <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-              Clear Downloads
+              Clear Archive
             </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>

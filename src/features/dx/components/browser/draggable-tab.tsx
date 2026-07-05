@@ -1,14 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ChevronRight, X } from "lucide-react";
+import { ChevronRight, X, Archive, Edit2 } from "lucide-react";
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { DropPosition, Tab } from "./types";
 
@@ -21,6 +32,8 @@ interface DraggableTabProps {
   onCloseTab: (tabId: string) => void;
   onAddNewTab: () => void;
   onCreateFolder: () => void;
+  onRenameTab?: (tabId: string, newTitle: string) => void;
+  onArchiveTab?: (tabId: string) => void;
 }
 
 export function DraggableTab({
@@ -32,7 +45,12 @@ export function DraggableTab({
   onCloseTab,
   onAddNewTab,
   onCreateFolder,
+  onRenameTab,
+  onArchiveTab,
 }: DraggableTabProps) {
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [newTitle, setNewTitle] = useState(tab.title);
+  
   const {
     attributes,
     listeners,
@@ -96,6 +114,63 @@ export function DraggableTab({
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent className="border-border bg-card w-56">
+        <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
+          <DialogTrigger asChild>
+            <ContextMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setNewTitle(tab.title);
+                setRenameDialogOpen(true);
+              }}
+              className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+            >
+              <Edit2 className="mr-2 h-4 w-4" />
+              Rename Chat
+            </ContextMenuItem>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Rename Chat</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <Input
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (newTitle.trim()) {
+                      onRenameTab?.(tab.id, newTitle.trim());
+                      setRenameDialogOpen(false);
+                    }
+                  }
+                }}
+                autoFocus
+              />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setRenameDialogOpen(false)}>Cancel</Button>
+              <Button onClick={() => {
+                if (newTitle.trim()) {
+                  onRenameTab?.(tab.id, newTitle.trim());
+                  setRenameDialogOpen(false);
+                }
+              }}>Save</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        
+        <ContextMenuItem
+          onSelect={(e) => {
+            e.preventDefault();
+            onArchiveTab?.(tab.id) || onCloseTab(tab.id);
+          }}
+          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+        >
+          <Archive className="mr-2 h-4 w-4" />
+          Archive Chat
+        </ContextMenuItem>
+        
+        <div className="border-border my-1 border-t" />
         <ContextMenuItem
           onSelect={(e) => {
             e.preventDefault();
@@ -119,100 +194,18 @@ export function DraggableTab({
           onSelect={(e) => e.preventDefault()}
           className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
         >
-          Reload Tab
-        </ContextMenuItem>
-        <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Mute Tab
-        </ContextMenuItem>
-        <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Remove from Essentials
+          Mute Chat
         </ContextMenuItem>
         <div className="border-border my-1 border-t" />
         <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+          onSelect={(e) => {
+            e.preventDefault();
+            onCloseTab(tab.id);
+          }}
+          className="text-destructive focus:bg-accent focus:text-destructive"
         >
-          Change Icon...
-        </ContextMenuItem>
-        <div className="border-border my-1 border-t" />
-        <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Duplicate Tab
-        </ContextMenuItem>
-        <div className="border-border my-1 border-t" />
-        <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Bookmark Tab...
-        </ContextMenuItem>
-        <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Move Tab
-          <ChevronRight className="ml-auto h-4 w-4" />
-        </ContextMenuItem>
-        <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Share
-        </ContextMenuItem>
-        <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Open in New Container Tab
-          <ChevronRight className="ml-auto h-4 w-4" />
-        </ContextMenuItem>
-        <div className="border-border my-1 border-t" />
-        <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Select All Tabs
-        </ContextMenuItem>
-        <div className="border-border my-1 border-t" />
-        <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-muted-foreground/50 focus:bg-accent focus:text-muted-foreground/50"
-        >
-          Close Duplicate Tabs
-        </ContextMenuItem>
-        <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Close Multiple Tabs
-          <ChevronRight className="ml-auto h-4 w-4" />
-        </ContextMenuItem>
-        <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Reopen Closed Tab
-        </ContextMenuItem>
-        <div className="border-border my-1 border-t" />
-        <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Replace Essential URL with Current
-        </ContextMenuItem>
-        <ContextMenuItem
-          onSelect={(e) => e.preventDefault()}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Reset Essential Tab
+          <X className="mr-2 h-4 w-4" />
+          Delete Chat
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

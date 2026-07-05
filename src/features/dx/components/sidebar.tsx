@@ -47,6 +47,8 @@ export function Sidebar({
   children: React.ReactNode;
   onNewChat?: () => any;
   onTabSelect?: (tabId: string) => void;
+  onRenameTab?: (tabId: string, newTitle: string) => void;
+  onArchiveTab?: (tabId: string) => void;
 }) {
   const state = useBrowserState();
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -436,10 +438,10 @@ export function Sidebar({
               visibleWorkspaces={visibleWorkspaces}
               canScrollLeft={canScrollLeft}
               canScrollRight={canScrollRight}
-              downloadsOpen={state.downloadsOpen}
+              archivesOpen={state.archivesOpen}
               plusMenuOpen={state.plusMenuOpen}
               onSetActiveWorkspace={state.setActiveWorkspace}
-              onSetDownloadsOpen={state.setDownloadsOpen}
+              onSetarchivesOpen={state.setarchivesOpen}
               onSetPlusMenuOpen={state.setPlusMenuOpen}
               onStartScrolling={startScrolling}
               onStopScrolling={stopScrolling}
@@ -465,7 +467,7 @@ export function Sidebar({
                 visibleWorkspaces={visibleWorkspaces}
                 canScrollLeft={canScrollLeft}
                 canScrollRight={canScrollRight}
-                downloadsOpen={state.downloadsOpen}
+                archivesOpen={state.archivesOpen}
                 plusMenuOpen={state.plusMenuOpen}
                 spaceCollapsed={state.spaceCollapsed}
                 isSpaceAreaHovered={isSpaceAreaHovered}
@@ -482,7 +484,7 @@ export function Sidebar({
                 dropPosition={dropPosition}
                 folders={state.folders}
                 onSetActiveWorkspace={state.setActiveWorkspace}
-                onSetDownloadsOpen={state.setDownloadsOpen}
+                onSetarchivesOpen={state.setarchivesOpen}
                 onSetPlusMenuOpen={state.setPlusMenuOpen}
                 onSetSpaceCollapsed={state.setSpaceCollapsed}
                 onSetSpaceAreaHovered={setIsSpaceAreaHovered}
@@ -520,6 +522,8 @@ export function Sidebar({
                   onTabSelect?.(id);
                 }}
                 onCloseTab={closeTab}
+                onRenameTab={onRenameTab}
+                onArchiveTab={onArchiveTab}
                 onToggleFolder={toggleFolder}
                 onDeleteFolder={deleteFolder}
                 onRenameFolder={(folderId, newName) =>

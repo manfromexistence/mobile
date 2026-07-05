@@ -68,10 +68,11 @@ export function useChat() {
   React.useEffect(() => {
     setConversations(loadConversations())
     
-    // Check for slug in URL (e.g., /chat/[id])
+    // Check for slug in URL (e.g., /chat/[spaceId]/[chatId])
     if (typeof window !== "undefined") {
       const pathSegments = window.location.pathname.split('/').filter(Boolean)
-      const slug = pathSegments[0] === 'chat' && pathSegments[1] ? pathSegments[1] : null
+      const spaceId = pathSegments[0] === 'chat' && pathSegments[1] ? pathSegments[1] : null
+      const slug = pathSegments[0] === 'chat' && pathSegments[2] ? pathSegments[2] : null
       
       if (slug) {
         setCurrentConversationId(slug)
@@ -122,7 +123,7 @@ export function useChat() {
     []
   )
 
-  const createNewConversation = React.useCallback(() => {
+  const createNewConversation = React.useCallback((spaceId?: string) => {
     const conv: Conversation = {
       id: createId(),
       title: "New chat",
@@ -130,6 +131,7 @@ export function useChat() {
       modelId: selectedModel,
       createdAt: Date.now(),
       updatedAt: Date.now(),
+      spaceId: spaceId,
     }
     setConversations((prev) => {
       const next = [conv, ...prev]

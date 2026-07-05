@@ -12,7 +12,7 @@ export function useBrowserState() {
   const [spaceCollapsed, setSpaceCollapsed] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [downloadsOpen, setDownloadsOpen] = useState(false);
+  const [archivesOpen, setArchivesOpen] = useState(false);
   const [plusMenuOpen, setPlusMenuOpen] = useState(false);
   const [workspaceDialogOpen, setWorkspaceDialogOpen] = useState(false);
   const [mediaPlaying, setMediaPlaying] = useState(false);
@@ -95,8 +95,8 @@ export function useBrowserState() {
     commandOpen,
     setCommandOpen,
     isMounted,
-    downloadsOpen,
-    setDownloadsOpen,
+    archivesOpen,
+    setArchivesOpen,
     plusMenuOpen,
     setPlusMenuOpen,
     workspaceDialogOpen,

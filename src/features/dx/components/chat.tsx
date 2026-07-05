@@ -117,7 +117,7 @@ function LogoIcon({ className }: { className?: string }) {
   )
 }
 
-export function DxChat({ swapped }: { swapped?: boolean }) {
+export function Chat({ swapped }: { swapped?: boolean }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useLocalStorage(
     "dx-sidebar-collapsed",
     true
@@ -192,12 +192,13 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
     switchConversation,
     deleteConversation,
     clearMessages,
-    modelReady,
     modelLoading,
     modelProgress,
     modelError,
     isMock,
   } = useChat()
+
+  const { activeWorkspace } = useBrowserState()
 
   React.useEffect(() => {
     if (darkMode) {
@@ -210,12 +211,12 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
   React.useEffect(() => {
     if (typeof window !== "undefined") {
       if (currentConversationId) {
-        window.history.replaceState(null, "", `/chat/${currentConversationId}`)
+        window.history.replaceState(null, "", `/chat/${activeWorkspace}/${currentConversationId}`)
       } else {
-        window.history.replaceState(null, "", `/chat`)
+        window.history.replaceState(null, "", `/chat/${activeWorkspace}`)
       }
     }
-  }, [currentConversationId])
+  }, [currentConversationId, activeWorkspace])
 
   const toggleDarkMode = React.useCallback(() => {
     setDarkMode((prev) => {
@@ -266,7 +267,7 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
 
   return (
     <Sidebar
-      onNewChat={createNewConversation}
+      onNewChat={() => createNewConversation(activeWorkspace)}
       onTabSelect={switchConversation}
     >
 

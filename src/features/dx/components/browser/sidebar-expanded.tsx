@@ -58,7 +58,7 @@ interface SidebarExpandedProps {
   visibleWorkspaces: Workspace[];
   canScrollLeft: boolean;
   canScrollRight: boolean;
-  downloadsOpen: boolean;
+  archivesOpen: boolean;
   plusMenuOpen: boolean;
   spaceCollapsed: boolean;
   isSpaceAreaHovered: boolean;
@@ -75,7 +75,7 @@ interface SidebarExpandedProps {
   dropPosition: DropPosition;
   folders: TabFolder[];
   onSetActiveWorkspace: (id: string) => void;
-  onSetDownloadsOpen: (open: boolean) => void;
+  onSetarchivesOpen: (open: boolean) => void;
   onSetPlusMenuOpen: (open: boolean) => void;
   onSetSpaceCollapsed: (collapsed: boolean) => void;
   onSetSpaceAreaHovered: (hovered: boolean) => void;
@@ -91,6 +91,8 @@ interface SidebarExpandedProps {
   onSetCommandOpen: (open: boolean) => void;
   onRemoveLogo: (logoId: number) => void;
   onRenameLogo: (logoId: number, newTitle: string) => void;
+  onRenameTab?: (tabId: string, newTitle: string) => void;
+  onArchiveTab?: (tabId: string) => void;
   onSetActiveTab: (tabId: string) => void;
   onCloseTab: (tabId: string) => void;
   onToggleFolder: (folderId: string) => void;
@@ -232,6 +234,8 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                                   dropPosition={props.dropPosition}
                                   onSetActiveTab={props.onSetActiveTab}
                                   onCloseTab={props.onCloseTab}
+                                  onRenameTab={props.onRenameTab}
+                                  onArchiveTab={props.onArchiveTab}
                                 />
                               ))}
                             </SortableContext>
@@ -301,6 +305,8 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                   onCloseTab={props.onCloseTab}
                   onAddNewTab={props.onAddNewTab}
                   onCreateFolder={props.onCreateFolder}
+                  onRenameTab={props.onRenameTab}
+                  onArchiveTab={props.onArchiveTab}
                 />
               ))}
             </SortableContext>
@@ -408,8 +414,8 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                 }}
               >
                 <Popover
-                  open={props.downloadsOpen}
-                  onOpenChange={props.onSetDownloadsOpen}
+                  open={props.archivesOpen}
+                  onOpenChange={props.onSetarchivesOpen}
                 >
                   <PopoverTrigger asChild>
                     <Button
@@ -427,11 +433,11 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                   >
                     <div className="space-y-4">
                       <p className="text-muted-foreground text-sm">
-                        No downloads for this session.
+                        No archived chats.
                       </p>
                       <div className="border-border border-t pt-4">
                         <button className="text-accent-foreground hover:text-accent-foreground text-sm underline">
-                          Show all downloads
+                          Show all archived chats
                         </button>
                       </div>
                     </div>
@@ -441,10 +447,10 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
             </ContextMenuTrigger>
             <ContextMenuContent className="border-border bg-card">
               <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                Open Downloads
+                Open Archived Chats
               </ContextMenuItem>
               <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                Clear Downloads
+                Clear Archive
               </ContextMenuItem>
             </ContextMenuContent>
           </ContextMenu>
