@@ -44,7 +44,7 @@ interface AIInputBarProps {
   onMessagesChange?: (messages: Message[]) => void;
   isLoading?: boolean;
   onLoadingChange?: (loading: boolean) => void;
-  // Merged props from dx-chat
+  // Merged props from chat
   inputValue?: string;
   onInputChange?: (val: string) => void;
   onSubmit?: (e?: React.FormEvent) => void;
@@ -67,7 +67,7 @@ const MEDIA_TYPES: MediaType[] = [
 ];
 
 import { Paperclip, X, ArrowUp, Volume2 } from "lucide-react";
-import { VoiceBar } from "@/features/dx/components/dx-chat-voice";
+import { VoiceBar } from "@/features/dx/components/chat-voice";
 import { Input } from "@/components/ui/input";
 
 export function AIInputBar({ 

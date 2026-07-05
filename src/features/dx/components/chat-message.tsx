@@ -4,7 +4,7 @@ import { Copy, Pencil, Share2 } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import type { Message } from "@/features/dx/types"
-import { BotMessageActions } from "./dx-chat-message"
+import { BotMessageActions } from "./chat-message-actions"
 
 export function ChatMessage({
   message,

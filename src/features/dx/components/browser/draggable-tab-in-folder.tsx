@@ -1,8 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { X } from "lucide-react";
+import { X, Archive, Edit2 } from "lucide-react";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { DropPosition, Tab } from "./types";
 
@@ -12,6 +29,8 @@ interface DraggableTabInFolderProps {
   dropPosition: DropPosition;
   onSetActiveTab: (tabId: string) => void;
   onCloseTab: (tabId: string) => void;
+  onRenameTab?: (tabId: string, newTitle: string) => void;
+  onArchiveTab?: (tabId: string) => void;
 }
 
 export function DraggableTabInFolder({
@@ -20,7 +39,12 @@ export function DraggableTabInFolder({
   dropPosition,
   onSetActiveTab,
   onCloseTab,
+  onRenameTab,
+  onArchiveTab,
 }: DraggableTabInFolderProps) {
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [newTitle, setNewTitle] = useState(tab.title);
+
   const {
     attributes,
     listeners,
@@ -40,7 +64,9 @@ export function DraggableTabInFolder({
   };
 
   return (
-    <div
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <div
       ref={setNodeRef}
       style={style}
       {...attributes}
@@ -76,6 +102,77 @@ export function DraggableTabInFolder({
           <div className="bg-primary h-0.5 flex-1" />
         </div>
       )}
-    </div>
+        </div>
+      </ContextMenuTrigger>
+      <ContextMenuContent className="border-border bg-card w-56">
+        <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
+          <DialogTrigger asChild>
+            <ContextMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setNewTitle(tab.title);
+                setRenameDialogOpen(true);
+              }}
+              className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+            >
+              <Edit2 className="mr-2 h-4 w-4" />
+              Rename Chat
+            </ContextMenuItem>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Rename Chat</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <Input
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (newTitle.trim()) {
+                      onRenameTab?.(tab.id, newTitle.trim());
+                      setRenameDialogOpen(false);
+                    }
+                  }
+                }}
+                autoFocus
+              />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setRenameDialogOpen(false)}>Cancel</Button>
+              <Button onClick={() => {
+                if (newTitle.trim()) {
+                  onRenameTab?.(tab.id, newTitle.trim());
+                  setRenameDialogOpen(false);
+                }
+              }}>Save</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        
+        <ContextMenuItem
+          onSelect={(e) => {
+            e.preventDefault();
+            onArchiveTab?.(tab.id) || onCloseTab(tab.id);
+          }}
+          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+        >
+          <Archive className="mr-2 h-4 w-4" />
+          Archive Chat
+        </ContextMenuItem>
+        
+        <div className="border-border my-1 border-t" />
+        <ContextMenuItem
+          onSelect={(e) => {
+            e.preventDefault();
+            onCloseTab(tab.id);
+          }}
+          className="text-destructive focus:bg-accent focus:text-destructive"
+        >
+          <X className="mr-2 h-4 w-4" />
+          Delete Chat
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }

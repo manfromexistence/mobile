@@ -79,15 +79,15 @@ import { useChat } from "@/features/dx/hooks/use-chat"
 import { MODEL_OPTIONS } from "@/lib/ai/models-config"
 import { cn } from "@/lib/utils"
 import { ChatMessage } from "./chat-message"
-import { useLocalStorage } from "./dx-chat-hooks"
-import { SourceItem } from "./dx-chat-right-panel"
+import { useLocalStorage } from "./chat-hooks"
+import { SourceItem } from "./chat-right-panel"
 import {
   SettingsAccount,
   SettingsAppearance,
   SettingsCustomize,
   SettingsPlaceholder,
-} from "./dx-chat-settings"
-import { HistoryItem, SidebarItem, SidebarSubItem } from "./dx-chat-sidebar"
+} from "./chat-settings"
+import { HistoryItem, SidebarItem, SidebarSubItem } from "./chat-sidebar"
 import { Sidebar } from "./sidebar"
 import { getRandomDockIconName } from "@/features/dx/components/screens/dock-icons"
 import { MacOSDock } from "@/features/dx/components/screens/macos-dock"
@@ -95,7 +95,7 @@ import { ScreenCarousel } from "@/features/dx/components/screens/screen-carousel
 import { ScreenGridDialog } from "@/features/dx/components/screens/screen-grid-dialog"
 import type { Screen } from "@/features/dx/components/screens/types"
 import { AIInputBar } from "@/features/dx/components/chat/ai-input-bar"
-import { VoiceBar } from "./dx-chat-voice"
+import { VoiceBar } from "./chat-voice"
 import { DockDemo } from "@/components/dock"
 
 type RightPanel = "thoughts" | "sources" | "files" | null
@@ -269,6 +269,8 @@ export function Chat({ swapped }: { swapped?: boolean }) {
     <Sidebar
       onNewChat={() => createNewConversation(activeWorkspace)}
       onTabSelect={switchConversation}
+      onRenameTab={(id, title) => updateConversation(id, (c) => ({ ...c, title }))}
+      onArchiveTab={(id) => updateConversation(id, (c) => ({ ...c, archived: true }))}
     >
 
       {/* MAIN CONTENT */}

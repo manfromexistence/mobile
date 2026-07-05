@@ -1,5 +1,5 @@
-import { DxChat } from "@/features/dx/components/dx-chat"
+import { Chat } from "@/features/dx/components/chat"
 
-export default function DxHomePage() {
-  return <DxChat swapped />
+export default function ChatHomePage() {
+  return <Chat swapped />
 }

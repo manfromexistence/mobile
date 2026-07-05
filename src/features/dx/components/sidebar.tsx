@@ -43,6 +43,8 @@ export function Sidebar({
   children,
   onNewChat,
   onTabSelect,
+  onRenameTab,
+  onArchiveTab,
 }: {
   children: React.ReactNode;
   onNewChat?: () => any;
@@ -522,6 +524,8 @@ export function Sidebar({
                   onTabSelect?.(id);
                 }}
                 onCloseTab={closeTab}
+                onRenameTab={onRenameTab}
+                onArchiveTab={onArchiveTab}
                 onRenameTab={onRenameTab}
                 onArchiveTab={onArchiveTab}
                 onToggleFolder={toggleFolder}
