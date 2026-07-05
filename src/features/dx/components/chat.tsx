@@ -80,6 +80,7 @@ import { MODEL_OPTIONS } from "@/lib/ai/models-config"
 import { cn } from "@/lib/utils"
 import { ChatMessage } from "./chat-message"
 import { useLocalStorage } from "./chat-hooks"
+import { useBrowserState } from "@/features/dx/components/browser/use-browser-state"
 import { SourceItem } from "./chat-right-panel"
 import {
   SettingsAccount,
@@ -192,6 +193,8 @@ export function Chat({ swapped }: { swapped?: boolean }) {
     switchConversation,
     deleteConversation,
     clearMessages,
+      updateConversation,
+    modelReady,
     modelLoading,
     modelProgress,
     modelError,

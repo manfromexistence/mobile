@@ -8,7 +8,6 @@ import { Slack } from "@/components/ui/svgs/slack";
 import { Stripe } from "@/components/ui/svgs/stripe";
 import { Supabase } from "@/components/ui/svgs/supabase";
 import { Typescript } from "@/components/ui/svgs/typescript";
-import { VercelThemed } from "@/components/ui/svgs/vercelThemed";
 import { Youtube } from "@/components/ui/svgs/youtube";
 import type { SVGLogo } from "./types";
 
@@ -17,7 +16,7 @@ export const DEFAULT_LOGOS: SVGLogo[] = [
   { id: 2, title: "Next.js", component: NextjsIconDark },
   { id: 3, title: "TypeScript", component: Typescript },
   { id: 4, title: "GitHub", component: GithubDark },
-  { id: 5, title: "Vercel", component: VercelThemed },
+  { id: 5, title: "Supabase", component: Supabase },
   { id: 6, title: "Figma", component: Figma },
   { id: 7, title: "Notion", component: Notion },
   { id: 8, title: "Slack", component: Slack },

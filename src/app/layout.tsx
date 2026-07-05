@@ -122,7 +122,6 @@ export default function RootLayout({
       <head>
         <Script
           id="dark-mode-script"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: darkModeScript }}
         />
         {/*
@@ -131,7 +130,6 @@ export default function RootLayout({
          */}
         <Script
           id="avatar-lights-script"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               try {
