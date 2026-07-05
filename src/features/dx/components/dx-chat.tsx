@@ -88,7 +88,7 @@ import {
   SettingsPlaceholder,
 } from "./dx-chat-settings"
 import { HistoryItem, SidebarItem, SidebarSubItem } from "./dx-chat-sidebar"
-import { ZenSidebar } from "./zen-sidebar"
+import { Sidebar } from "./sidebar"
 import { getRandomDockIconName } from "@/features/dx/components/screens/dock-icons"
 import { MacOSDock } from "@/features/dx/components/screens/macos-dock"
 import { ScreenCarousel } from "@/features/dx/components/screens/screen-carousel"
@@ -210,9 +210,9 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
   React.useEffect(() => {
     if (typeof window !== "undefined") {
       if (currentConversationId) {
-        window.history.replaceState(null, "", `/dx/${currentConversationId}`)
+        window.history.replaceState(null, "", `/chat/${currentConversationId}`)
       } else {
-        window.history.replaceState(null, "", `/dx`)
+        window.history.replaceState(null, "", `/chat`)
       }
     }
   }, [currentConversationId])
@@ -265,7 +265,7 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
   }, [setRightPanel])
 
   return (
-    <ZenSidebar
+    <Sidebar
       onNewChat={createNewConversation}
       onTabSelect={switchConversation}
     >
@@ -294,7 +294,7 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
                   "var(--color-sidebar-primary-foreground)",
                 "--color-ring": "var(--color-sidebar-ring)",
                 "--color-input": "var(--color-sidebar-accent)",
-              } as React.CSSProperties)
+              })
             : undefined
         }
       >
@@ -758,6 +758,6 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
           </div>
         </DialogContent>
       </Dialog>
-    </ZenSidebar>
+    </Sidebar>
   )
 }

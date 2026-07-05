@@ -1,8 +1,28 @@
-"use client";
-
+import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -27,6 +47,9 @@ export function DraggableLogo({
   onRemoveLogo,
   onRenameLogo,
 }: DraggableLogoProps) {
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
+  const [newTitle, setNewTitle] = useState(logo.title);
   const {
     attributes,
     listeners,
@@ -79,31 +102,78 @@ export function DraggableLogo({
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent className="border-border bg-card w-56">
-        <ContextMenuItem
-          onSelect={(e) => {
-            e.preventDefault();
-            const newTitle = prompt("Enter new title:", logo.title);
-            if (newTitle?.trim()) {
-              onRenameLogo(logo.id, newTitle.trim());
-            }
-          }}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Rename
-        </ContextMenuItem>
+        <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
+          <DialogTrigger asChild>
+            <ContextMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setNewTitle(logo.title);
+                setRenameDialogOpen(true);
+              }}
+              className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+            >
+              Rename
+            </ContextMenuItem>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Rename Quick Access</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <Input
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (newTitle.trim()) {
+                      onRenameLogo(logo.id, newTitle.trim());
+                      setRenameDialogOpen(false);
+                    }
+                  }
+                }}
+                autoFocus
+              />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setRenameDialogOpen(false)}>Cancel</Button>
+              <Button onClick={() => {
+                if (newTitle.trim()) {
+                  onRenameLogo(logo.id, newTitle.trim());
+                  setRenameDialogOpen(false);
+                }
+              }}>Save</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <div className="border-border my-1 border-t" />
-        <ContextMenuItem
-          onSelect={(e) => {
-            e.preventDefault();
-            if (confirm(`Remove "${logo.title}" from quick access?`)) {
-              onRemoveLogo(logo.id);
-            }
-          }}
-          className="text-destructive focus:bg-accent focus:text-destructive"
-        >
-          <X className="mr-2 h-4 w-4" />
-          Remove
-        </ContextMenuItem>
+        <AlertDialog open={removeDialogOpen} onOpenChange={setRemoveDialogOpen}>
+          <AlertDialogTrigger asChild>
+            <ContextMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setRemoveDialogOpen(true);
+              }}
+              className="text-destructive focus:bg-accent focus:text-destructive"
+            >
+              <X className="mr-2 h-4 w-4" />
+              Remove
+            </ContextMenuItem>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Remove Quick Access</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to remove "{logo.title}" from your quick access?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={() => onRemoveLogo(logo.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Remove
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </ContextMenuContent>
     </ContextMenu>
   );

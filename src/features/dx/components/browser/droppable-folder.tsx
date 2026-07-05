@@ -1,8 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { ChevronRight, Folder, FolderOpen, X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -35,6 +46,8 @@ export function DroppableFolder({
   onCreateSubfolder,
   onUnpackFolder,
 }: DroppableFolderProps) {
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
+  const [newName, setNewName] = useState(folder.name);
   const {
     attributes,
     listeners,
@@ -103,18 +116,49 @@ export function DroppableFolder({
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent className="border-border bg-card w-56">
-        <ContextMenuItem
-          onSelect={(e) => {
-            e.preventDefault();
-            const newName = prompt("Enter new folder name:", folder.name);
-            if (newName?.trim()) {
-              onRenameFolder(folder.id, newName.trim());
-            }
-          }}
-          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-        >
-          Rename Folder
-        </ContextMenuItem>
+        <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
+          <DialogTrigger asChild>
+            <ContextMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setNewName(folder.name);
+                setRenameDialogOpen(true);
+              }}
+              className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+            >
+              Rename Folder
+            </ContextMenuItem>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Rename Folder</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <Input
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (newName.trim()) {
+                      onRenameFolder(folder.id, newName.trim());
+                      setRenameDialogOpen(false);
+                    }
+                  }
+                }}
+                autoFocus
+              />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setRenameDialogOpen(false)}>Cancel</Button>
+              <Button onClick={() => {
+                if (newName.trim()) {
+                  onRenameFolder(folder.id, newName.trim());
+                  setRenameDialogOpen(false);
+                }
+              }}>Save</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         <ContextMenuItem
           onSelect={(e) => e.preventDefault()}
           className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"

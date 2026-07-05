@@ -39,7 +39,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { WorkspaceDialog } from "@/components/workspace-dialog";
 import { cn } from "@/lib/utils";
 
-export function ZenSidebar({
+export function Sidebar({
   children,
   onNewChat,
   onTabSelect,

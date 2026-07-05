@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   description: "AI chat interface",
 }
 
+export function generateStaticParams() {
+  return [{ slug: [] }]
+}
+
 export default function DxPage() {
   return <DxChat />
 }

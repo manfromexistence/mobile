@@ -68,10 +68,10 @@ export function useChat() {
   React.useEffect(() => {
     setConversations(loadConversations())
     
-    // Check for slug in URL (e.g., /dx/[id])
+    // Check for slug in URL (e.g., /chat/[id])
     if (typeof window !== "undefined") {
       const pathSegments = window.location.pathname.split('/').filter(Boolean)
-      const slug = pathSegments[0] === 'dx' && pathSegments[1] ? pathSegments[1] : null
+      const slug = pathSegments[0] === 'chat' && pathSegments[1] ? pathSegments[1] : null
       
       if (slug) {
         setCurrentConversationId(slug)
