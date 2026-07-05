@@ -67,13 +67,15 @@ export function useChat() {
 
   React.useEffect(() => {
     setConversations(loadConversations())
-    
+
     // Check for slug in URL (e.g., /chat/[spaceId]/[chatId])
     if (typeof window !== "undefined") {
-      const pathSegments = window.location.pathname.split('/').filter(Boolean)
-      const spaceId = pathSegments[0] === 'chat' && pathSegments[1] ? pathSegments[1] : null
-      const slug = pathSegments[0] === 'chat' && pathSegments[2] ? pathSegments[2] : null
-      
+      const pathSegments = window.location.pathname.split("/").filter(Boolean)
+      const _spaceId =
+        pathSegments[0] === "chat" && pathSegments[1] ? pathSegments[1] : null
+      const slug =
+        pathSegments[0] === "chat" && pathSegments[2] ? pathSegments[2] : null
+
       if (slug) {
         setCurrentConversationId(slug)
         saveActiveConversationId(slug)
@@ -83,7 +85,7 @@ export function useChat() {
     } else {
       setCurrentConversationId(loadActiveConversationId())
     }
-    
+
     setSelectedModelState(loadSelectedModel())
   }, [])
   const modelInference = useModelInference()
@@ -123,25 +125,28 @@ export function useChat() {
     []
   )
 
-  const createNewConversation = React.useCallback((spaceId?: string) => {
-    const conv: Conversation = {
-      id: createId(),
-      title: "New chat",
-      messages: [],
-      modelId: selectedModel,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      spaceId: spaceId,
-    }
-    setConversations((prev) => {
-      const next = [conv, ...prev]
-      saveConversations(next)
-      return next
-    })
-    setCurrentConversationId(conv.id)
-    saveActiveConversationId(conv.id)
-    return conv
-  }, [selectedModel])
+  const createNewConversation = React.useCallback(
+    (spaceId?: string) => {
+      const conv: Conversation = {
+        id: createId(),
+        title: "New chat",
+        messages: [],
+        modelId: selectedModel,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        spaceId: spaceId,
+      }
+      setConversations((prev) => {
+        const next = [conv, ...prev]
+        saveConversations(next)
+        return next
+      })
+      setCurrentConversationId(conv.id)
+      saveActiveConversationId(conv.id)
+      return conv
+    },
+    [selectedModel]
+  )
 
   const switchConversation = React.useCallback((id: string) => {
     setCurrentConversationId(id)

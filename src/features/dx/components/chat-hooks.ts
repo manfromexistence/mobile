@@ -5,16 +5,22 @@ export function useLocalStorage<T>(
   initialValue: T
 ): [T, React.Dispatch<React.SetStateAction<T>>] {
   const initialValueRef = React.useRef(initialValue)
-  const cachedValue = React.useRef<{ key: string | null; value: T | null }>({ key: null, value: null })
+  const cachedValue = React.useRef<{ key: string | null; value: T | null }>({
+    key: null,
+    value: null,
+  })
 
   const getSnapshot = React.useCallback((): T => {
     if (typeof window === "undefined") return initialValueRef.current
     try {
       const item = window.localStorage.getItem(key)
-      if (item === cachedValue.current.key && cachedValue.current.value !== null) {
+      if (
+        item === cachedValue.current.key &&
+        cachedValue.current.value !== null
+      ) {
         return cachedValue.current.value as T
       }
-      
+
       const parsed = item ? (JSON.parse(item) as T) : initialValueRef.current
       cachedValue.current = { key: item, value: parsed }
       return parsed

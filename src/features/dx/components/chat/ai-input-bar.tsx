@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   Box,
@@ -10,50 +10,48 @@ import {
   Radio,
   Send,
   Video,
-} from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
+} from "lucide-react"
+import { AnimatePresence, motion } from "motion/react"
+import { useEffect, useRef, useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { AIModeSwitcher } from "./ai-mode-switcher";
-import { AITargetSwitcher } from "./ai-target-switcher";
-import { ImageControls, MediaControls } from "./media-controls";
-import { ModelPicker } from "./model-picker";
-import { providers } from "@/lib/ai/providers";
+} from "@/components/ui/popover"
+import { Textarea } from "@/components/ui/textarea"
+import { providers } from "@/lib/ai/providers"
+import { cn } from "@/lib/utils"
+import { ImageControls, MediaControls } from "./media-controls"
+import { ModelPicker } from "./model-picker"
 
 interface MediaType {
-  id: string;
-  label: string;
-  icon: React.ElementType;
+  id: string
+  label: string
+  icon: React.ElementType
 }
 
 interface Message {
-  role: string;
-  content: string;
-  id: string;
+  role: string
+  content: string
+  id: string
 }
 
 interface AIInputBarProps {
-  messages?: Message[];
-  onMessagesChange?: (messages: Message[]) => void;
-  isLoading?: boolean;
-  onLoadingChange?: (loading: boolean) => void;
+  messages?: Message[]
+  onMessagesChange?: (messages: Message[]) => void
+  isLoading?: boolean
+  onLoadingChange?: (loading: boolean) => void
   // Merged props from chat
-  inputValue?: string;
-  onInputChange?: (val: string) => void;
-  onSubmit?: (e?: React.FormEvent) => void;
-  onStop?: () => void;
-  isGenerating?: boolean;
-  isVoiceMode?: boolean;
-  onVoiceModeChange?: (isVoice: boolean) => void;
-  selectedModelId?: string;
-  onModelChange?: (model: string) => void;
+  inputValue?: string
+  onInputChange?: (val: string) => void
+  onSubmit?: (e?: React.FormEvent) => void
+  onStop?: () => void
+  isGenerating?: boolean
+  isVoiceMode?: boolean
+  onVoiceModeChange?: (isVoice: boolean) => void
+  selectedModelId?: string
+  onModelChange?: (model: string) => void
 }
 
 const MEDIA_TYPES: MediaType[] = [
@@ -64,16 +62,16 @@ const MEDIA_TYPES: MediaType[] = [
   { id: "email", label: "Email", icon: Mail },
   { id: "live", label: "Live", icon: Radio },
   { id: "3d", label: "3D", icon: Box },
-];
+]
 
-import { Paperclip, X, ArrowUp, Volume2 } from "lucide-react";
-import { VoiceBar } from "@/features/dx/components/chat-voice";
-import { Input } from "@/components/ui/input";
+import { ArrowUp, Paperclip, Volume2, X } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { VoiceBar } from "@/features/dx/components/chat-voice"
 
-export function AIInputBar({ 
-  messages = [], 
-  onMessagesChange, 
-  isLoading = false, 
+export function AIInputBar({
+  messages = [],
+  onMessagesChange,
+  isLoading = false,
   onLoadingChange,
   inputValue,
   onInputChange,
@@ -83,92 +81,91 @@ export function AIInputBar({
   isVoiceMode,
   onVoiceModeChange,
   selectedModelId,
-  onModelChange
+  onModelChange,
 }: AIInputBarProps) {
-  const [selectedMedia, setSelectedMedia] = useState<string>("text");
-  const [selectedProvider, setSelectedProvider] = useState<string>("opencode");
-  const [selectedModel, setSelectedModel] =
-    useState<string>("opencode-high");
-  const [internalInput, setInternalInput] = useState("");
-  const input = inputValue !== undefined ? inputValue : internalInput;
+  const [selectedMedia, setSelectedMedia] = useState<string>("text")
+  const [selectedProvider, setSelectedProvider] = useState<string>("opencode")
+  const [selectedModel, setSelectedModel] = useState<string>("opencode-high")
+  const [internalInput, setInternalInput] = useState("")
+  const input = inputValue !== undefined ? inputValue : internalInput
   const setInput = (val: string) => {
-    if (onInputChange) onInputChange(val);
-    else setInternalInput(val);
-  };
-  const [isFocused, setIsFocused] = useState(false);
-  const [showMoreMedia, setShowMoreMedia] = useState(false);
-  const [visibleMediaCount, setVisibleMediaCount] = useState(7);
-  const [showMediaLabels, setShowMediaLabels] = useState(true);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+    if (onInputChange) onInputChange(val)
+    else setInternalInput(val)
+  }
+  const [isFocused, setIsFocused] = useState(false)
+  const [showMoreMedia, setShowMoreMedia] = useState(false)
+  const [visibleMediaCount, setVisibleMediaCount] = useState(7)
+  const [showMediaLabels, setShowMediaLabels] = useState(true)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (selectedModelId) {
-      setSelectedModel(selectedModelId);
+      setSelectedModel(selectedModelId)
       for (const [providerId, providerConfig] of Object.entries(providers)) {
-        if (providerConfig.models.some(m => m.id === selectedModelId)) {
-          setSelectedProvider(providerId);
-          break;
+        if (providerConfig.models.some((m) => m.id === selectedModelId)) {
+          setSelectedProvider(providerId)
+          break
         }
       }
     }
-  }, [selectedModelId]);
+  }, [selectedModelId])
 
   // Calculate visible media items and label visibility based on container width
   useEffect(() => {
     const updateVisibleMedia = () => {
-      if (!containerRef.current) return;
-      const width = containerRef.current.offsetWidth;
+      if (!containerRef.current) return
+      const width = containerRef.current.offsetWidth
 
       if (width < 600) {
-        setVisibleMediaCount(1);
-        setShowMediaLabels(false);
+        setVisibleMediaCount(1)
+        setShowMediaLabels(false)
       } else if (width < 750) {
-        setVisibleMediaCount(3);
-        setShowMediaLabels(false);
+        setVisibleMediaCount(3)
+        setShowMediaLabels(false)
       } else if (width < 900) {
-        setVisibleMediaCount(5);
-        setShowMediaLabels(false);
+        setVisibleMediaCount(5)
+        setShowMediaLabels(false)
       } else {
-        setVisibleMediaCount(7);
-        setShowMediaLabels(true);
+        setVisibleMediaCount(7)
+        setShowMediaLabels(true)
       }
-    };
-
-    updateVisibleMedia();
-    const ro = new ResizeObserver(updateVisibleMedia);
-    if (containerRef.current) {
-      ro.observe(containerRef.current);
     }
-    return () => ro.disconnect();
-  }, []);
+
+    updateVisibleMedia()
+    const ro = new ResizeObserver(updateVisibleMedia)
+    if (containerRef.current) {
+      ro.observe(containerRef.current)
+    }
+    return () => ro.disconnect()
+  }, [])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e);
+      e.preventDefault()
+      handleSubmit(e)
     }
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (onSubmit) {
-      onSubmit(e);
-      return;
+      onSubmit(e)
+      return
     }
 
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    e.preventDefault()
+    if (!input.trim() || isLoading) return
 
     const userMessage = {
       role: "user",
       content: input,
       id: Date.now().toString(),
-    };
+    }
 
-    onMessagesChange([...messages, userMessage]);
-    setInput("");
-    onLoadingChange(true);
+    onMessagesChange([...messages, userMessage])
+    setInput("")
+    onLoadingChange(true)
 
     try {
       const response = await fetch("/api/chat", {
@@ -179,59 +176,63 @@ export function AIInputBar({
           providerId: selectedProvider,
           modelId: selectedModel,
         }),
-      });
+      })
 
-      if (!response.ok) throw new Error("Failed to fetch");
+      if (!response.ok) throw new Error("Failed to fetch")
 
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let assistantMessage = "";
+      const reader = response.body?.getReader()
+      const decoder = new TextDecoder()
+      let assistantMessage = ""
 
-      const assistantId = Date.now().toString();
+      const assistantId = Date.now().toString()
       onMessagesChange([
         ...messages,
         userMessage,
         { role: "assistant", content: "", id: assistantId },
-      ]);
+      ])
 
       while (reader) {
-        const { done, value } = await reader.read();
-        if (done) break;
+        const { done, value } = await reader.read()
+        if (done) break
 
-        const chunk = decoder.decode(value);
-        const lines = chunk.split("\n");
+        const chunk = decoder.decode(value)
+        const lines = chunk.split("\n")
 
         for (const line of lines) {
-          if (line.trim() === "" || line === "data: [DONE]") continue;
+          if (line.trim() === "" || line === "data: [DONE]") continue
 
           if (line.startsWith("data: ")) {
             try {
-              const jsonStr = line.slice(6);
-              const parsed = JSON.parse(jsonStr);
+              const jsonStr = line.slice(6)
+              const parsed = JSON.parse(jsonStr)
 
               if (parsed.type === "text-delta" && parsed.delta) {
-                assistantMessage += parsed.delta;
+                assistantMessage += parsed.delta
                 onMessagesChange([
                   ...messages,
                   userMessage,
-                  { role: "assistant", content: assistantMessage, id: assistantId },
-                ]);
+                  {
+                    role: "assistant",
+                    content: assistantMessage,
+                    id: assistantId,
+                  },
+                ])
               }
             } catch (_parseError) {
-              console.log("Failed to parse SSE data:", line);
+              console.log("Failed to parse SSE data:", line)
             }
           }
         }
       }
     } catch (error) {
-      console.error("Chat error:", error);
+      console.error("Chat error:", error)
     } finally {
-      onLoadingChange(false);
+      onLoadingChange(false)
     }
-  };
+  }
 
-  const visibleMedia = MEDIA_TYPES.slice(0, visibleMediaCount);
-  const hiddenMedia = MEDIA_TYPES.slice(visibleMediaCount);
+  const visibleMedia = MEDIA_TYPES.slice(0, visibleMediaCount)
+  const hiddenMedia = MEDIA_TYPES.slice(visibleMediaCount)
 
   return (
     <motion.div
@@ -241,7 +242,7 @@ export function AIInputBar({
       transition={{ duration: 0.3 }}
       className={cn(
         "bg-background/50 backdrop-blur-2xl border border-border/50 relative w-full rounded-3xl shadow-2xl transition-all duration-300 overflow-hidden ring-1 ring-border/20",
-        isFocused && "shadow-xl bg-background/80 border-border ring-border/50",
+        isFocused && "shadow-xl bg-background/80 border-border ring-border/50"
       )}
     >
       <form onSubmit={handleSubmit}>
@@ -271,8 +272,8 @@ export function AIInputBar({
                 className="h-full flex-1 border-none bg-transparent px-2 text-[15px] font-medium text-foreground shadow-none outline-none placeholder:text-primary/60 md:px-3 focus-visible:ring-0"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    if (input.trim()) onSubmit?.();
+                    e.preventDefault()
+                    if (input.trim()) onSubmit?.()
                   }
                 }}
               />
@@ -298,12 +299,25 @@ export function AIInputBar({
                   <X className="h-3 w-3" />
                 </Button>
               </div>
-              <Button 
+              <Button
                 type="submit"
                 className="size-10 rounded-full bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 flex items-center justify-center"
-                onClick={isGenerating ? (e) => { e.preventDefault(); onStop?.(); } : undefined}
+                onClick={
+                  isGenerating
+                    ? (e) => {
+                        e.preventDefault()
+                        onStop?.()
+                      }
+                    : undefined
+                }
               >
-                {isGenerating ? <div className="h-3.5 w-3.5 rounded-sm bg-background" /> : (input.trim() ? <ArrowUp className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />)}
+                {isGenerating ? (
+                  <div className="h-3.5 w-3.5 rounded-sm bg-background" />
+                ) : input.trim() ? (
+                  <ArrowUp className="h-4 w-4" />
+                ) : (
+                  <Volume2 className="h-4 w-4" />
+                )}
               </Button>
             </div>
           </div>
@@ -346,11 +360,11 @@ export function AIInputBar({
               selectedProvider={selectedProvider}
               selectedModel={selectedModelId || selectedModel}
               onProviderChange={(provider) => {
-                setSelectedProvider(provider);
+                setSelectedProvider(provider)
               }}
               onModelChange={(model) => {
-                setSelectedModel(model);
-                onModelChange?.(model);
+                setSelectedModel(model)
+                onModelChange?.(model)
               }}
             />
           </div>
@@ -359,8 +373,8 @@ export function AIInputBar({
             <div className="flex items-center gap-1">
               <AnimatePresence mode="popLayout">
                 {visibleMedia.map((media) => {
-                  const Icon = media.icon;
-                  const isSelected = selectedMedia === media.id;
+                  const Icon = media.icon
+                  const isSelected = selectedMedia === media.id
                   return (
                     <motion.div
                       key={media.id}
@@ -377,7 +391,7 @@ export function AIInputBar({
                         onClick={() => setSelectedMedia(media.id)}
                         className={cn(
                           "h-7 transition-all",
-                          showMediaLabels ? "gap-1.5 px-2.5" : "w-7 px-0",
+                          showMediaLabels ? "gap-1.5 px-2.5" : "w-7 px-0"
                         )}
                         title={media.label}
                       >
@@ -387,15 +401,12 @@ export function AIInputBar({
                         )}
                       </Button>
                     </motion.div>
-                  );
+                  )
                 })}
               </AnimatePresence>
 
               {hiddenMedia.length > 0 && (
-                <Popover
-                  open={showMoreMedia}
-                  onOpenChange={setShowMoreMedia}
-                >
+                <Popover open={showMoreMedia} onOpenChange={setShowMoreMedia}>
                   <PopoverTrigger asChild>
                     <motion.div
                       initial={{ opacity: 0, scale: 0.8 }}
@@ -413,15 +424,11 @@ export function AIInputBar({
                       </Button>
                     </motion.div>
                   </PopoverTrigger>
-                  <PopoverContent
-                    side="top"
-                    align="end"
-                    className="w-48 p-2"
-                  >
+                  <PopoverContent side="top" align="end" className="w-48 p-2">
                     <div className="space-y-1">
                       {hiddenMedia.map((media) => {
-                        const Icon = media.icon;
-                        const isSelected = selectedMedia === media.id;
+                        const Icon = media.icon
+                        const isSelected = selectedMedia === media.id
                         return (
                           <Button
                             key={media.id}
@@ -429,15 +436,15 @@ export function AIInputBar({
                             variant={isSelected ? "default" : "ghost"}
                             size="sm"
                             onClick={() => {
-                              setSelectedMedia(media.id);
-                              setShowMoreMedia(false);
+                              setSelectedMedia(media.id)
+                              setShowMoreMedia(false)
                             }}
                             className="w-full justify-start gap-2 h-8"
                           >
                             <Icon className="h-3.5 w-3.5" />
                             <span className="text-sm">{media.label}</span>
                           </Button>
-                        );
+                        )
                       })}
                     </div>
                   </PopoverContent>
@@ -445,10 +452,7 @@ export function AIInputBar({
               )}
             </div>
 
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               {onVoiceModeChange && (
                 <Button
                   type="button"
@@ -463,7 +467,14 @@ export function AIInputBar({
               )}
               <Button
                 type="submit"
-                onClick={isGenerating ? (e) => { e.preventDefault(); onStop?.(); } : undefined}
+                onClick={
+                  isGenerating
+                    ? (e) => {
+                        e.preventDefault()
+                        onStop?.()
+                      }
+                    : undefined
+                }
                 disabled={!input.trim() || isLoading}
                 size="sm"
                 className="h-8 gap-2 px-3 bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground"
@@ -482,5 +493,5 @@ export function AIInputBar({
         </div>
       </form>
     </motion.div>
-  );
+  )
 }

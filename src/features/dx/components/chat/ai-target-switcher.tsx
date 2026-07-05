@@ -1,21 +1,21 @@
-"use client";
+"use client"
 
-import { Cloud, Laptop } from "lucide-react";
-import { motion } from "motion/react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Cloud, Laptop } from "lucide-react"
+import { motion } from "motion/react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+} from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
 
-type TargetType = "local" | "remote";
+type TargetType = "local" | "remote"
 
 export function AITargetSwitcher() {
-  const [target, setTarget] = useState<TargetType>("local");
-  const [open, setOpen] = useState(false);
+  const [target, setTarget] = useState<TargetType>("local")
+  const [open, setOpen] = useState(false)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -45,14 +45,14 @@ export function AITargetSwitcher() {
           <div className="bg-muted flex rounded-lg p-1">
             <button
               onClick={() => {
-                setTarget("local");
-                setOpen(false);
+                setTarget("local")
+                setOpen(false)
               }}
               className={cn(
                 "flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm transition-all",
                 target === "local"
                   ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground",
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               <Laptop className="h-4 w-4" />
@@ -60,14 +60,14 @@ export function AITargetSwitcher() {
             </button>
             <button
               onClick={() => {
-                setTarget("remote");
-                setOpen(false);
+                setTarget("remote")
+                setOpen(false)
               }}
               className={cn(
                 "flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm transition-all",
                 target === "remote"
                   ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground",
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               <Cloud className="h-4 w-4" />
@@ -77,5 +77,5 @@ export function AITargetSwitcher() {
         </div>
       </PopoverContent>
     </Popover>
-  );
+  )
 }

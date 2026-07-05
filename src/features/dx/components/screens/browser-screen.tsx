@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { Globe } from "lucide-react";
-import { motion } from "motion/react";
+import { Globe } from "lucide-react"
+import { motion } from "motion/react"
 
 export function BrowserScreen() {
   return (
@@ -31,5 +31,5 @@ export function BrowserScreen() {
         </div>
       </div>
     </motion.div>
-  );
+  )
 }

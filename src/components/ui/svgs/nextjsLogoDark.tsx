@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from "react"
 
 const NextjsLogoDark = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} viewBox="0 0 394 80" fill="none">
@@ -37,6 +37,6 @@ const NextjsLogoDark = (props: SVGProps<SVGSVGElement>) => (
       fill="white"
     />
   </svg>
-);
+)
 
-export { NextjsLogoDark };
+export { NextjsLogoDark }

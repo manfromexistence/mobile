@@ -1,13 +1,17 @@
-"use client";
+"use client"
 
-import { Cog, PanelLeft, ShieldAlert, ShieldBan, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { WelcomeScreen } from "@/features/dx/components/screens/welcome-screen";
+import { Cog, PanelLeft, ShieldAlert, ShieldBan, Trash2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { WelcomeScreen } from "@/features/dx/components/screens/welcome-screen"
 
 interface SidebarHeaderProps {
-  sidebarExpanded: boolean;
-  onToggleSidebar: () => void;
+  sidebarExpanded: boolean
+  onToggleSidebar: () => void
 }
 
 export function SidebarHeader({
@@ -37,7 +41,11 @@ export function SidebarHeader({
                   <Cog className="h-4 w-4" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent side="right" align="start" className="w-[80vw] h-[80vh] p-0 overflow-hidden border-border bg-card">
+              <PopoverContent
+                side="right"
+                align="start"
+                className="w-[80vw] h-[80vh] p-0 overflow-hidden border-border bg-card"
+              >
                 <WelcomeScreen sidebarExpanded={sidebarExpanded} />
               </PopoverContent>
             </Popover>
@@ -79,5 +87,5 @@ export function SidebarHeader({
         </div>
       )}
     </div>
-  );
+  )
 }

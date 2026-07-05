@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from "react"
 
 const SlackWordmark = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} viewBox="0 0 2500 632.6">
@@ -27,6 +27,6 @@ const SlackWordmark = (props: SVGProps<SVGSVGElement>) => (
       />
     </g>
   </svg>
-);
+)
 
-export { SlackWordmark };
+export { SlackWordmark }

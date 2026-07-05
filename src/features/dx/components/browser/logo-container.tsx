@@ -1,31 +1,31 @@
-"use client";
+"use client"
 
 import {
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { Folder, Plus } from "lucide-react";
+} from "@dnd-kit/sortable"
+import { Folder, Plus } from "lucide-react"
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-import { cn } from "@/lib/utils";
-import { DraggableLogo } from "./draggable-logo";
-import type { SVGLogo } from "./types";
+} from "@/components/ui/context-menu"
+import { cn } from "@/lib/utils"
+import { DraggableLogo } from "./draggable-logo"
+import type { SVGLogo } from "./types"
 
 interface LogoContainerProps {
-  logos: SVGLogo[];
-  isMounted: boolean;
-  logoContainerHovered: boolean;
-  onRemoveLogo: (logoId: number) => void;
-  onRenameLogo: (logoId: number, newTitle: string) => void;
-  onAddNewTab: () => void;
-  onCreateFolder: () => void;
-  overId: string | null;
-  dropPosition: "before" | "after" | "inside" | null;
+  logos: SVGLogo[]
+  isMounted: boolean
+  logoContainerHovered: boolean
+  onRemoveLogo: (logoId: number) => void
+  onRenameLogo: (logoId: number, newTitle: string) => void
+  onAddNewTab: () => void
+  onCreateFolder: () => void
+  overId: string | null
+  dropPosition: "before" | "after" | "inside" | null
 }
 
 export function LogoContainer({
@@ -42,7 +42,7 @@ export function LogoContainer({
   const { setNodeRef } = useSortable({
     id: "logo-container",
     data: { type: "logo-container" },
-  });
+  })
 
   return (
     <ContextMenu modal={false}>
@@ -51,7 +51,7 @@ export function LogoContainer({
           ref={setNodeRef}
           className={cn(
             "shrink-0 p-2 transition-all duration-200",
-            logoContainerHovered && "bg-primary/20 ring-2 ring-primary",
+            logoContainerHovered && "bg-primary/20 ring-2 ring-primary"
           )}
         >
           <div className="mx-auto grid w-[95%] grid-cols-4 gap-2">
@@ -73,7 +73,7 @@ export function LogoContainer({
               </SortableContext>
             ) : (
               logos.map((logo) => {
-                const LogoComponent = logo.component;
+                const LogoComponent = logo.component
                 return (
                   <div
                     key={logo.id}
@@ -82,7 +82,7 @@ export function LogoContainer({
                   >
                     <LogoComponent className="h-6 w-6" />
                   </div>
-                );
+                )
               })
             )}
           </div>
@@ -91,8 +91,8 @@ export function LogoContainer({
       <ContextMenuContent className="border-border bg-card w-56">
         <ContextMenuItem
           onSelect={(e) => {
-            e.preventDefault();
-            onAddNewTab();
+            e.preventDefault()
+            onAddNewTab()
           }}
           className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
         >
@@ -101,8 +101,8 @@ export function LogoContainer({
         </ContextMenuItem>
         <ContextMenuItem
           onSelect={(e) => {
-            e.preventDefault();
-            onCreateFolder();
+            e.preventDefault()
+            onCreateFolder()
           }}
           className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
         >
@@ -111,5 +111,5 @@ export function LogoContainer({
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
-  );
+  )
 }

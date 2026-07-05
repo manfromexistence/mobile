@@ -4,13 +4,13 @@ import Link from "next/link"
 import { cache } from "react"
 import type { SoftwareSourceCode, WithContext } from "schema-dts"
 import { BlockDisplay } from "@/app/(preview)/components/block-display"
+import { Button } from "@/components/ui/button"
+import { Kbd } from "@/components/ui/kbd"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { Button } from "@/components/ui/button"
-import { Kbd } from "@/components/ui/kbd"
 import { JSON_LD_ID } from "@/config/json-ld"
 import { blockCategories } from "@/config/registry"
 import { LICENSE, SOURCE_CODE_GITHUB_URL, X_HANDLE } from "@/config/site"

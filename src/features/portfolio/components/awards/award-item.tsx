@@ -3,18 +3,16 @@ import { Crown, Paperclip } from "lucide-react"
 import {
   Collapsible,
   CollapsibleChevronsUpDownIcon,
-} from "@/components/base/collapsible-animated"
-import {
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/base/collapsible-animated"
+import { Markdown } from "@/components/markdown"
+import { Separator } from "@/components/ui/separator"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { Markdown } from "@/components/markdown"
-import { Separator } from "@/components/ui/separator"
 import { Prose } from "@/components/ui/typography"
 import type { Award } from "@/features/portfolio/types/awards"
 import { cn } from "@/lib/utils"

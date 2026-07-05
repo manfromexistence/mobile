@@ -4,13 +4,6 @@ import { MDXRemote } from "next-mdx-remote/rsc"
 import rehypeExternalLinks from "rehype-external-links"
 import rehypeSlug from "rehype-slug"
 import remarkGfm from "remark-gfm"
-import {
-  Tabs,
-  TabsContent,
-  TabsIndicator,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
 import { CodeCollapsibleWrapper } from "@/components/code-collapsible-wrapper"
 import { ComponentSource } from "@/components/component-source"
 import {
@@ -21,6 +14,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  Tabs,
+  TabsContent,
+  TabsIndicator,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
 import { Code } from "@/components/ui/typography"
 import { UTM_PARAMS } from "@/config/site"
 import { AutoTypeTable } from "@/features/doc/components/auto-type-table"

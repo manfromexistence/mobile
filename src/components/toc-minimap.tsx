@@ -6,8 +6,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
-import { useSound } from "@/lib/soundcn/hooks/use-sound"
 import { trackEvent } from "@/lib/events"
+import { useSound } from "@/lib/soundcn/hooks/use-sound"
 import { uMiniMapOpenSound } from "@/lib/soundcn/u-mini-map-open"
 import { cn } from "@/lib/utils"
 

@@ -39,9 +39,7 @@ export function IframeEmbed({
   )
 }
 
-export function FramedImage({
-  ...props
-}: React.ComponentProps<"img">) {
+export function FramedImage({ ...props }: React.ComponentProps<"img">) {
   // eslint-disable-next-line jsx-a11y/alt-text
   const image = <img {...props} />
 

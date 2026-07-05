@@ -4,11 +4,9 @@ import type { ComponentProps, ReactNode } from "react"
 import {
   Collapsible,
   CollapsibleChevronDownIcon,
-} from "@/components/base/collapsible-animated"
-import {
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/base/collapsible-animated"
 import { Prose } from "@/components/ui/typography"
 import { cn } from "@/lib/utils"
 

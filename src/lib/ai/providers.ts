@@ -1,72 +1,72 @@
 // lib/ai/providers.ts
 
-import type React from "react";
-import { bedrock } from "@ai-sdk/amazon-bedrock";
-import { anthropic } from "@ai-sdk/anthropic";
-import { createAzure } from "@ai-sdk/azure";
-import { cerebras } from "@ai-sdk/cerebras";
-import { cohere } from "@ai-sdk/cohere";
-import { deepseek } from "@ai-sdk/deepseek";
-import { google } from "@ai-sdk/google";
-import { groq } from "@ai-sdk/groq";
-import { mistral } from "@ai-sdk/mistral";
-import { createOpenAI } from "@ai-sdk/openai";
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
-import { xai } from "@ai-sdk/xai";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { 
+import { bedrock } from "@ai-sdk/amazon-bedrock"
+import { anthropic } from "@ai-sdk/anthropic"
+import { createAzure } from "@ai-sdk/azure"
+import { cerebras } from "@ai-sdk/cerebras"
+import { cohere } from "@ai-sdk/cohere"
+import { deepseek } from "@ai-sdk/deepseek"
+import { google } from "@ai-sdk/google"
+import { groq } from "@ai-sdk/groq"
+import { mistral } from "@ai-sdk/mistral"
+import { createOpenAI } from "@ai-sdk/openai"
+import { createOpenAICompatible } from "@ai-sdk/openai-compatible"
+import { xai } from "@ai-sdk/xai"
+import { createOpenRouter } from "@openrouter/ai-sdk-provider"
+import type React from "react"
+import {
   AnthropicLogo,
   CohereLogoIcon,
   GoogleLogo,
   MetaLogo,
   MistralLogo,
   OpenAILogo,
-} from "@/features/dx/components/chat/provider-logos";
+} from "@/features/dx/components/chat/provider-logos"
 
 // ── OpenRouter (uses its own community SDK) ──
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
-});
+})
 
 // ── GitHub Models (OpenAI-compatible endpoint) ──
 const githubModels = createOpenAI({
   baseURL: "https://models.inference.ai.azure.com",
   apiKey: process.env.GITHUB_MODELS_API_KEY,
-});
+})
 
 // ── Azure OpenAI ──
 const azure = createAzure({
   apiKey: process.env.AZURE_API_KEY,
   resourceName: process.env.AZURE_RESOURCE_NAME,
-});
+})
 
 // ── Fireworks AI (OpenAI-compatible) ──
 const fireworks = createOpenAICompatible({
   name: "fireworks",
   baseURL: "https://api.fireworks.ai/inference/v1",
   apiKey: process.env.FIREWORKS_API_KEY,
-});
+})
 
 // ── Together AI (OpenAI-compatible) ──
 const together = createOpenAICompatible({
   name: "together",
   baseURL: "https://api.together.xyz/v1",
   apiKey: process.env.TOGETHER_API_KEY,
-});
+})
 
 // ── Perplexity (OpenAI-compatible) ──
 const perplexity = createOpenAICompatible({
   name: "perplexity",
   baseURL: "https://api.perplexity.ai",
   apiKey: process.env.PERPLEXITY_API_KEY,
-});
+})
 
 // ── Ollama (local, OpenAI-compatible) ──
 const ollama = createOpenAICompatible({
   name: "ollama",
   baseURL: "http://localhost:11434/v1",
   apiKey: "ollama", // Ollama doesn't require a real API key
-});
+})
 
 // ═══════════════════════════════════════════════════
 //  PROVIDER REGISTRY — single source of truth
@@ -89,22 +89,22 @@ export type ProviderId =
   | "perplexity"
   | "ollama"
   | "ai-gateway"
-  | "opencode"; // Opencode
+  | "opencode" // Opencode
 
 export interface ModelConfig {
-  id: string;
-  name: string;
-  modelId: string;
-  description: string;
+  id: string
+  name: string
+  modelId: string
+  description: string
 }
 
 export interface ProviderConfig {
-  id: ProviderId;
-  name: string;
-  icon: React.ComponentType<{ className?: string }>;
-  models: ModelConfig[];
-  defaultModel: string;
-  description: string;
+  id: ProviderId
+  name: string
+  icon: React.ComponentType<{ className?: string }>
+  models: ModelConfig[]
+  defaultModel: string
+  description: string
 }
 
 export const providers: Record<ProviderId, ProviderConfig> = {
@@ -113,12 +113,42 @@ export const providers: Record<ProviderId, ProviderConfig> = {
     name: "Opencode",
     icon: OpenAILogo,
     models: [
-      { id: "opencode-low", name: "MiniMax M3 Free", modelId: "low", description: "Free Tier" },
-      { id: "opencode-high", name: "BigPickle", modelId: "high", description: "Free Tier" },
-      { id: "opencode-xhigh", name: "DeepSeek V4 Flash Free", modelId: "xhigh", description: "Free Tier" },
-      { id: "opencode-default", name: "Mimo V2.5 Free", modelId: "default", description: "Free Tier" },
-      { id: "opencode-medium", name: "Nemotron 3 Super Free", modelId: "medium", description: "Free Tier" },
-      { id: "opencode-xlow", name: "Nemotron 3 Ultra Free", modelId: "xlow", description: "Free Tier" },
+      {
+        id: "opencode-low",
+        name: "MiniMax M3 Free",
+        modelId: "low",
+        description: "Free Tier",
+      },
+      {
+        id: "opencode-high",
+        name: "BigPickle",
+        modelId: "high",
+        description: "Free Tier",
+      },
+      {
+        id: "opencode-xhigh",
+        name: "DeepSeek V4 Flash Free",
+        modelId: "xhigh",
+        description: "Free Tier",
+      },
+      {
+        id: "opencode-default",
+        name: "Mimo V2.5 Free",
+        modelId: "default",
+        description: "Free Tier",
+      },
+      {
+        id: "opencode-medium",
+        name: "Nemotron 3 Super Free",
+        modelId: "medium",
+        description: "Free Tier",
+      },
+      {
+        id: "opencode-xlow",
+        name: "Nemotron 3 Ultra Free",
+        modelId: "xlow",
+        description: "Free Tier",
+      },
     ],
     defaultModel: "opencode-default",
     description: "Opencode Free Models",
@@ -541,15 +571,15 @@ export const providers: Record<ProviderId, ProviderConfig> = {
     defaultModel: "llama3.1",
     description: "Run models locally with Ollama",
   },
-};
+}
 
 // Helper function to get model by provider and model ID
 export function getModel(providerId: ProviderId, modelId: string) {
-  const provider = providers[providerId];
-  if (!provider) return null;
+  const provider = providers[providerId]
+  if (!provider) return null
 
-  const modelConfig = provider.models.find((m) => m.id === modelId);
-  if (!modelConfig) return null;
+  const modelConfig = provider.models.find((m) => m.id === modelId)
+  if (!modelConfig) return null
 
   // Create the actual model instance based on provider
   switch (providerId) {
@@ -557,49 +587,49 @@ export function getModel(providerId: ProviderId, modelId: string) {
       const opencodeProvider = createOpenAI({
         baseURL: "https://opencode.ai/zen/v1",
         apiKey: process.env.OPENCODE_API_KEY || "empty",
-      });
-      return opencodeProvider(modelConfig.modelId);
+      })
+      return opencodeProvider(modelConfig.modelId)
     }
     case "ai-gateway":
       // AI Gateway uses string format: "provider/model"
-      return modelConfig.modelId;
+      return modelConfig.modelId
     case "gemini":
-      return google(modelConfig.modelId);
+      return google(modelConfig.modelId)
     case "anthropic":
-      return anthropic(modelConfig.modelId);
+      return anthropic(modelConfig.modelId)
     case "xai":
-      return xai(modelConfig.modelId);
+      return xai(modelConfig.modelId)
     case "github_models":
-      return githubModels(modelConfig.modelId);
+      return githubModels(modelConfig.modelId)
     case "groq":
-      return groq(modelConfig.modelId);
+      return groq(modelConfig.modelId)
     case "cerebras":
-      return cerebras(modelConfig.modelId);
+      return cerebras(modelConfig.modelId)
     case "mistral":
-      return mistral(modelConfig.modelId);
+      return mistral(modelConfig.modelId)
     case "openrouter":
-      return openrouter(modelConfig.modelId);
+      return openrouter(modelConfig.modelId)
     case "cohere":
-      return cohere(modelConfig.modelId);
+      return cohere(modelConfig.modelId)
     case "deepseek":
-      return deepseek(modelConfig.modelId);
+      return deepseek(modelConfig.modelId)
     case "azure":
-      return azure(modelConfig.modelId);
+      return azure(modelConfig.modelId)
     case "bedrock":
-      return bedrock(modelConfig.modelId);
+      return bedrock(modelConfig.modelId)
     case "fireworks":
-      return fireworks(modelConfig.modelId);
+      return fireworks(modelConfig.modelId)
     case "together":
-      return together(modelConfig.modelId);
+      return together(modelConfig.modelId)
     case "perplexity":
-      return perplexity(modelConfig.modelId);
+      return perplexity(modelConfig.modelId)
     case "ollama":
-      return ollama(modelConfig.modelId);
+      return ollama(modelConfig.modelId)
     default:
-      return null;
+      return null
   }
 }
 
-export const providerList = Object.values(providers);
-export const defaultProvider: ProviderId = "opencode";
-export const defaultModel = "opencode-default";
+export const providerList = Object.values(providers)
+export const defaultProvider: ProviderId = "opencode"
+export const defaultModel = "opencode-default"

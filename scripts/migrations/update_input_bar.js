@@ -1,5 +1,5 @@
-const fs = require('fs');
-const content = fs.readFileSync('src/components/chat/ai-input-bar.tsx', 'utf8');
+const fs = require("fs")
+const content = fs.readFileSync("src/components/chat/ai-input-bar.tsx", "utf8")
 
 let newContent = content.replace(
   /interface AIInputBarProps \{[\s\S]*?\}/,
@@ -19,7 +19,7 @@ let newContent = content.replace(
   selectedModelId?: string;
   onModelChange?: (model: string) => void;
 }`
-);
+)
 
 newContent = newContent.replace(
   /export function AIInputBar\(\{([^}]+)\}: AIInputBarProps\) \{/,
@@ -42,7 +42,7 @@ export function AIInputBar({
   selectedModelId,
   onModelChange
 }: AIInputBarProps) {`
-);
+)
 
 newContent = newContent.replace(
   /const \[input, setInput\] = useState\(""\);/,
@@ -52,7 +52,7 @@ newContent = newContent.replace(
     if (onInputChange) onInputChange(val);
     else setInternalInput(val);
   };`
-);
+)
 
 newContent = newContent.replace(
   /const handleSubmit = async \(e: React\.FormEvent\) => \{/,
@@ -63,10 +63,10 @@ newContent = newContent.replace(
       return;
     }
 `
-);
+)
 
 newContent = newContent.replace(
-  /              <Button\n                type="submit"/,
+  / {14}<Button\n {16}type="submit"/,
   `              {onVoiceModeChange && (
                 <Button
                   type="button"
@@ -82,10 +82,10 @@ newContent = newContent.replace(
               <Button
                 type="submit"
                 onClick={isGenerating ? (e) => { e.preventDefault(); onStop?.(); } : undefined}`
-);
+)
 
 newContent = newContent.replace(
-  /                <span className="text-sm font-medium">\n                  \{isLoading \? "Sending\.\.\." : "Send"\}\n                <\/span>\n              <\/Button>/,
+  / {16}<span className="text-sm font-medium">\n {18}\{isLoading \? "Sending\.\.\." : "Send"\}\n {16}<\/span>\n {14}<\/Button>/,
   `                <span className="text-sm font-medium">
                   {isGenerating || isLoading ? (
                     <div className="h-3.5 w-3.5 rounded-sm bg-background animate-pulse" />
@@ -94,9 +94,9 @@ newContent = newContent.replace(
                   )}
                 </span>
               </Button>`
-);
+)
 
-const formTagRegex = /(<form onSubmit=\{handleSubmit\}>)/;
+const formTagRegex = /(<form onSubmit=\{handleSubmit\}>)/
 newContent = newContent.replace(
   formTagRegex,
   `$1
@@ -164,25 +164,25 @@ newContent = newContent.replace(
           </div>
         )}
 `
-);
+)
 
 newContent = newContent.replace(
   /onProviderChange=\{setSelectedProvider\}/,
   `onProviderChange={(provider) => {
                 setSelectedProvider(provider);
               }}`
-);
+)
 newContent = newContent.replace(
   /onModelChange=\{setSelectedModel\}/,
   `onModelChange={(model) => {
                 setSelectedModel(model);
                 onModelChange?.(model);
               }}`
-);
+)
 newContent = newContent.replace(
   /selectedModel=\{selectedModel\}/,
   `selectedModel={selectedModelId || selectedModel}`
-);
+)
 
-fs.writeFileSync('src/components/chat/ai-input-bar.tsx', newContent);
-console.log("Updated ai-input-bar.tsx");
+fs.writeFileSync("src/components/chat/ai-input-bar.tsx", newContent)
+console.log("Updated ai-input-bar.tsx")

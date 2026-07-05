@@ -58,11 +58,11 @@ export function useModelInference() {
       mockRef.current = false
 
       if (!["minicpm-1b", "tinyllama-1.1b", "qwen-0.5b"].includes(modelId)) {
-        const engineType = "api" as any;
-        cachedEngine = { modelId, instance: null, type: engineType };
-        setIsLoading(false);
-        setTimeout(() => setProgress(null), 500);
-        return null;
+        const engineType = "api" as any
+        cachedEngine = { modelId, instance: null, type: engineType }
+        setIsLoading(false)
+        setTimeout(() => setProgress(null), 500)
+        return null
       }
 
       const config = getModelConfig(modelId)
@@ -206,29 +206,28 @@ export function useModelInference() {
       }
 
       try {
-        
         if (cachedEngine?.type === "api") {
           const res = await fetch("/api/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ messages, modelId }),
-            signal
-          });
-          
-          if (!res.ok) throw new Error(await res.text());
-          
-          const reader = res.body?.getReader();
-          if (!reader) throw new Error("No response body");
-          const decoder = new TextDecoder();
-          
+            signal,
+          })
+
+          if (!res.ok) throw new Error(await res.text())
+
+          const reader = res.body?.getReader()
+          if (!reader) throw new Error("No response body")
+          const decoder = new TextDecoder()
+
           while (true) {
-            const { done, value } = await reader.read();
-            if (done || signal?.aborted) break;
-            const text = decoder.decode(value, { stream: true });
-            if (text) onToken(text);
+            const { done, value } = await reader.read()
+            if (done || signal?.aborted) break
+            const text = decoder.decode(value, { stream: true })
+            if (text) onToken(text)
           }
-          onDone();
-          return;
+          onDone()
+          return
         }
 
         const generator = cachedEngine?.instance ?? (await loadModel(modelId))

@@ -1,12 +1,12 @@
 "use client"
 
 import { createContext, useContext, useEffect, useRef, useState } from "react"
+import { Collapsible as CollapsibleRoot } from "@/components/ui/collapsible"
 import type {
   ChevronDownIconHandle,
   ChevronDownIconProps,
 } from "@/features/portfolio/components/animated-icons/chevron-down-icon"
 import { ChevronDownIcon } from "@/features/portfolio/components/animated-icons/chevron-down-icon"
-import { Collapsible as CollapsibleRoot } from "@/components/ui/collapsible"
 import type {
   ChevronsUpDownIconHandle,
   ChevronsUpDownIconProps,

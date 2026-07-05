@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import type React from "react";
+import type React from "react"
 
-import { Dock, DockIcon } from "@/components/ui/dock";
+import { Dock, DockIcon } from "@/components/ui/dock"
 
-export type IconProps = React.HTMLAttributes<SVGElement>;
+export type IconProps = React.HTMLAttributes<SVGElement>
 
 export function DockDemo() {
   return (
@@ -24,7 +24,7 @@ export function DockDemo() {
         </DockIcon>
       </Dock>
     </div>
-  );
+  )
 }
 
 const Icons = {
@@ -138,4 +138,4 @@ const Icons = {
       />
     </svg>
   ),
-};
+}

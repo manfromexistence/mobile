@@ -21,19 +21,7 @@ import type { z } from "zod"
 import { sendToIframe } from "@/app/(preview)/hooks/use-iframe-sync"
 import type { PreviewSearchParams } from "@/app/(preview)/lib/search-params"
 import { serializePreviewSearchParams } from "@/app/(preview)/lib/search-params"
-import {
-  Tabs,
-  TabsContent,
-  TabsIndicator,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
 import { ToggleGroup, ToggleGroupItem } from "@/components/base/ui/toggle-group"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import {
   DesktopIcon,
   FolderIcon,
@@ -81,6 +69,18 @@ import {
   SidebarMenuSub,
   SidebarProvider,
 } from "@/components/ui/sidebar"
+import {
+  Tabs,
+  TabsContent,
+  TabsIndicator,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { OpenInV0Button } from "@/components/v0-open-button"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 import { trackEvent } from "@/lib/events"
@@ -89,8 +89,11 @@ import type {
   FileTree,
 } from "@/lib/registry"
 import { cn } from "@/lib/utils"
+import {
+  getRegistryItemNamespace,
+  getRegistryItemUrl,
+} from "@/lib/utils/registry"
 import { CopyButton, CopyStateIcon } from "@/registry/components/copy-button"
-import { getRegistryItemNamespace, getRegistryItemUrl } from "@/lib/utils/registry"
 
 type View = "preview" | "code"
 

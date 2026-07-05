@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from "react"
 
 const NextjsIconDark = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} viewBox="0 0 180 180">
@@ -52,6 +52,6 @@ const NextjsIconDark = (props: SVGProps<SVGSVGElement>) => (
       </linearGradient>
     </defs>
   </svg>
-);
+)
 
-export { NextjsIconDark };
+export { NextjsIconDark }

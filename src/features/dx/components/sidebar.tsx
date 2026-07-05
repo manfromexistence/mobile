@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   closestCenter,
@@ -10,23 +10,11 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { Copy, Plus, X } from "lucide-react";
-import { AnimatePresence } from "motion/react";
-import { useEffect, useRef, useState } from "react";
-
-import {
-  MAX_LOGOS,
-  MAX_VISIBLE_WORKSPACES,
-} from "@/features/dx/components/browser/constants";
-import { SidebarCollapsed } from "@/features/dx/components/browser/sidebar-collapsed";
-import { SidebarExpanded } from "@/features/dx/components/browser/sidebar-expanded";
-import { SidebarHeader } from "@/features/dx/components/browser/sidebar-header";
-import type { DropPosition, Tab, TabFolder } from "@/features/dx/components/browser/types";
-import { useBrowserState } from "@/features/dx/components/browser/use-browser-state";
-import { getLogoComponentForTab } from "@/features/dx/components/browser/utils";
-import { WorkspaceIcon } from "@/features/dx/components/browser/workspace-icon";
+} from "@dnd-kit/core"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
+import { Copy, Plus, X } from "lucide-react"
+import { AnimatePresence } from "motion/react"
+import { useEffect, useRef, useState } from "react"
 import {
   Command,
   CommandEmpty,
@@ -34,10 +22,25 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { WorkspaceDialog } from "@/components/workspace-dialog";
-import { cn } from "@/lib/utils";
+} from "@/components/ui/command"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { WorkspaceDialog } from "@/components/workspace-dialog"
+import {
+  MAX_LOGOS,
+  MAX_VISIBLE_WORKSPACES,
+} from "@/features/dx/components/browser/constants"
+import { SidebarCollapsed } from "@/features/dx/components/browser/sidebar-collapsed"
+import { SidebarExpanded } from "@/features/dx/components/browser/sidebar-expanded"
+import { SidebarHeader } from "@/features/dx/components/browser/sidebar-header"
+import type {
+  DropPosition,
+  Tab,
+  TabFolder,
+} from "@/features/dx/components/browser/types"
+import { useBrowserState } from "@/features/dx/components/browser/use-browser-state"
+import { getLogoComponentForTab } from "@/features/dx/components/browser/utils"
+import { WorkspaceIcon } from "@/features/dx/components/browser/workspace-icon"
+import { cn } from "@/lib/utils"
 
 export function Sidebar({
   children,
@@ -46,205 +49,205 @@ export function Sidebar({
   onRenameTab,
   onArchiveTab,
 }: {
-  children: React.ReactNode;
-  onNewChat?: () => any;
-  onTabSelect?: (tabId: string) => void;
-  onRenameTab?: (tabId: string, newTitle: string) => void;
-  onArchiveTab?: (tabId: string) => void;
-  onOpenSettings?: () => void;
+  children: React.ReactNode
+  onNewChat?: () => any
+  onTabSelect?: (tabId: string) => void
+  onRenameTab?: (tabId: string, newTitle: string) => void
+  onArchiveTab?: (tabId: string) => void
+  onOpenSettings?: () => void
 }) {
-  const state = useBrowserState();
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const [overId, setOverId] = useState<string | null>(null);
-  const [dropPosition, setDropPosition] = useState<DropPosition>(null);
-  const [logoContainerHovered, setLogoContainerHovered] = useState(false);
-  const [isSpaceAreaHovered, setIsSpaceAreaHovered] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const [mediaProgress] = useState(33);
+  const state = useBrowserState()
+  const [activeId, setActiveId] = useState<string | null>(null)
+  const [overId, setOverId] = useState<string | null>(null)
+  const [dropPosition, setDropPosition] = useState<DropPosition>(null)
+  const [logoContainerHovered, setLogoContainerHovered] = useState(false)
+  const [isSpaceAreaHovered, setIsSpaceAreaHovered] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const [mediaProgress] = useState(33)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
         distance: 8,
       },
-    }),
-  );
+    })
+  )
 
   useEffect(() => {
     return () => {
       if (scrollIntervalRef.current) {
-        clearInterval(scrollIntervalRef.current);
+        clearInterval(scrollIntervalRef.current)
       }
-    };
-  }, []);
+    }
+  }, [])
 
   function scrollWorkspaces(direction: "left" | "right"): void {
     if (direction === "left") {
-      state.setWorkspaceScrollPosition((prev) => Math.max(0, prev - 1));
+      state.setWorkspaceScrollPosition((prev) => Math.max(0, prev - 1))
     } else {
       state.setWorkspaceScrollPosition((prev) =>
-        Math.min(state.workspaces.length - MAX_VISIBLE_WORKSPACES, prev + 1),
-      );
+        Math.min(state.workspaces.length - MAX_VISIBLE_WORKSPACES, prev + 1)
+      )
     }
   }
 
   function startScrolling(direction: "left" | "right"): void {
-    scrollWorkspaces(direction);
+    scrollWorkspaces(direction)
 
     scrollIntervalRef.current = setInterval(() => {
-      scrollWorkspaces(direction);
-    }, 150);
+      scrollWorkspaces(direction)
+    }, 150)
   }
 
   function stopScrolling(): void {
     if (scrollIntervalRef.current) {
-      clearInterval(scrollIntervalRef.current);
-      scrollIntervalRef.current = null;
+      clearInterval(scrollIntervalRef.current)
+      scrollIntervalRef.current = null
     }
   }
 
   const visibleWorkspaces = state.workspaces.slice(
     state.workspaceScrollPosition,
-    state.workspaceScrollPosition + MAX_VISIBLE_WORKSPACES,
-  );
-  const canScrollLeft = state.workspaceScrollPosition > 0;
+    state.workspaceScrollPosition + MAX_VISIBLE_WORKSPACES
+  )
+  const canScrollLeft = state.workspaceScrollPosition > 0
   const canScrollRight =
     state.workspaceScrollPosition <
-    state.workspaces.length - MAX_VISIBLE_WORKSPACES;
+    state.workspaces.length - MAX_VISIBLE_WORKSPACES
 
   function handleDragStart(event: DragStartEvent): void {
-    setActiveId(event.active.id as string);
+    setActiveId(event.active.id as string)
   }
 
   function handleDragOver(event: DragOverEvent): void {
-    const overId = event.over?.id as string | null;
-    setOverId(overId);
+    const overId = event.over?.id as string | null
+    setOverId(overId)
 
     if (!overId || !event.over) {
-      setDropPosition(null);
-      setLogoContainerHovered(false);
-      return;
+      setDropPosition(null)
+      setLogoContainerHovered(false)
+      return
     }
 
-    const overData = event.over.data.current;
-    const activeData = event.active.data.current;
+    const overData = event.over.data.current
+    const activeData = event.active.data.current
 
     if (overId === "logo-container" || overData?.type === "logo-container") {
       if (activeData?.type === "tab" || activeData?.type === "folder") {
-        setLogoContainerHovered(true);
-        setDropPosition(null);
+        setLogoContainerHovered(true)
+        setDropPosition(null)
       } else {
-        setLogoContainerHovered(false);
-        setDropPosition(null);
+        setLogoContainerHovered(false)
+        setDropPosition(null)
       }
-      return;
+      return
     } else {
-      setLogoContainerHovered(false);
+      setLogoContainerHovered(false)
     }
 
     if (activeData?.type === "logo") {
       if (overData?.type === "logo") {
-        const overRect = event.over.rect;
-        const offsetX = event.delta.x;
+        const overRect = event.over.rect
+        const offsetX = event.delta.x
         if (overRect && offsetX < 0) {
-          setDropPosition("before");
+          setDropPosition("before")
         } else {
-          setDropPosition("after");
+          setDropPosition("after")
         }
       } else if (overData?.type === "folder") {
-        setDropPosition("inside");
+        setDropPosition("inside")
       } else if (overData?.type === "tab") {
-        const overRect = event.over.rect;
-        const offsetY = event.delta.y;
+        const overRect = event.over.rect
+        const offsetY = event.delta.y
         if (overRect && offsetY < 0) {
-          setDropPosition("before");
+          setDropPosition("before")
         } else {
-          setDropPosition("after");
+          setDropPosition("after")
         }
       } else {
-        setDropPosition(null);
+        setDropPosition(null)
       }
-      return;
+      return
     }
 
     if (overData?.type === "folder") {
       if (activeData?.type === "tab") {
-        setDropPosition("inside");
+        setDropPosition("inside")
       } else if (activeData?.type === "folder") {
-        const overRect = event.over.rect;
-        const offsetY = event.delta.y;
+        const overRect = event.over.rect
+        const offsetY = event.delta.y
         if (overRect && offsetY < 0) {
-          setDropPosition("before");
+          setDropPosition("before")
         } else {
-          setDropPosition("after");
+          setDropPosition("after")
         }
       } else {
-        setDropPosition(null);
+        setDropPosition(null)
       }
     } else if (overData?.type === "tab") {
-      const overRect = event.over.rect;
-      const offsetY = event.delta.y;
+      const overRect = event.over.rect
+      const offsetY = event.delta.y
       if (overRect && offsetY < 0) {
-        setDropPosition("before");
+        setDropPosition("before")
       } else {
-        setDropPosition("after");
+        setDropPosition("after")
       }
     } else if (overData?.type === "logo") {
-      const overRect = event.over.rect;
-      const offsetX = event.delta.x;
+      const overRect = event.over.rect
+      const offsetX = event.delta.x
       if (overRect && offsetX < 0) {
-        setDropPosition("before");
+        setDropPosition("before")
       } else {
-        setDropPosition("after");
+        setDropPosition("after")
       }
     } else {
-      setDropPosition(null);
+      setDropPosition(null)
     }
   }
 
   function handleDragEnd(event: DragEndEvent): void {
-    const { active, over } = event;
-    setActiveId(null);
-    setOverId(null);
-    setDropPosition(null);
-    setLogoContainerHovered(false);
+    const { active, over } = event
+    setActiveId(null)
+    setOverId(null)
+    setDropPosition(null)
+    setLogoContainerHovered(false)
 
-    if (!over || active.id === over.id) return;
+    if (!over || active.id === over.id) return
 
-    const activeId = active.id as string;
-    const overId = over.id as string;
-    const activeData = active.data.current;
-    const overData = over.data.current;
+    const activeId = active.id as string
+    const overId = over.id as string
+    const activeData = active.data.current
+    const overData = over.data.current
 
     // Logo reordering
     if (activeData?.type === "logo" && overData?.type === "logo") {
-      const oldIndex = state.logos.findIndex(l => `logo-${l.id}` === activeId);
-      const newIndex = state.logos.findIndex(l => `logo-${l.id}` === overId);
+      const oldIndex = state.logos.findIndex((l) => `logo-${l.id}` === activeId)
+      const newIndex = state.logos.findIndex((l) => `logo-${l.id}` === overId)
       if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
-        const newLogos = [...state.logos];
-        const [removed] = newLogos.splice(oldIndex, 1);
-        newLogos.splice(newIndex, 0, removed);
-        state.setLogos(newLogos);
+        const newLogos = [...state.logos]
+        const [removed] = newLogos.splice(oldIndex, 1)
+        newLogos.splice(newIndex, 0, removed)
+        state.setLogos(newLogos)
       }
-      return;
+      return
     }
 
     // Dragging logo out to create a tab
     if (activeData?.type === "logo") {
-      const logoId = activeId.replace("logo-", "");
-      const logo = state.logos.find(l => l.id === parseInt(logoId, 10));
-      if (!logo) return;
+      const logoId = activeId.replace("logo-", "")
+      const logo = state.logos.find((l) => l.id === parseInt(logoId, 10))
+      if (!logo) return
 
       if (
         overId === "logo-container" ||
         overData?.type === "logo-container" ||
         overData?.type === "logo"
       ) {
-        return;
+        return
       }
 
-      state.setLogos(state.logos.filter(l => l.id !== parseInt(logoId, 10)));
+      state.setLogos(state.logos.filter((l) => l.id !== parseInt(logoId, 10)))
 
       const newTab: Tab = {
         id: Date.now().toString(),
@@ -252,89 +255,95 @@ export function Sidebar({
         url: "about:blank",
         workspaceId: state.activeWorkspace,
         folderId: overData?.type === "folder" ? overId : null,
-      };
+      }
 
       if (overData?.type === "folder") {
         state.setFolders(
-          state.folders.map(f => f.id === overId ? { ...f, tabs: [...f.tabs, newTab] } : f),
-        );
+          state.folders.map((f) =>
+            f.id === overId ? { ...f, tabs: [...f.tabs, newTab] } : f
+          )
+        )
       } else {
-        state.setLooseTabs([...state.looseTabs, newTab]);
+        state.setLooseTabs([...state.looseTabs, newTab])
       }
-      return;
+      return
     }
 
     // Folder reordering
     if (activeData?.type === "folder" && overData?.type === "folder") {
-      const oldIndex = state.folders.findIndex(f => f.id === activeId);
-      const newIndex = state.folders.findIndex(f => f.id === overId);
+      const oldIndex = state.folders.findIndex((f) => f.id === activeId)
+      const newIndex = state.folders.findIndex((f) => f.id === overId)
       if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
-        const newFolders = [...state.folders];
-        const [removed] = newFolders.splice(oldIndex, 1);
-        newFolders.splice(newIndex, 0, removed);
-        state.setFolders(newFolders);
+        const newFolders = [...state.folders]
+        const [removed] = newFolders.splice(oldIndex, 1)
+        newFolders.splice(newIndex, 0, removed)
+        state.setFolders(newFolders)
       }
-      return;
+      return
     }
 
     // Drop tab into folder
     if (activeData?.type === "tab" && overData?.type === "folder") {
-      let draggedTab = state.looseTabs.find(t => t.id === activeId);
-      let sourceFolder: TabFolder | undefined;
+      let draggedTab = state.looseTabs.find((t) => t.id === activeId)
+      let _sourceFolder: TabFolder | undefined
 
       if (!draggedTab) {
         for (const folder of state.folders) {
-          const tab = folder.tabs.find(t => t.id === activeId);
+          const tab = folder.tabs.find((t) => t.id === activeId)
           if (tab) {
-            draggedTab = tab;
-            sourceFolder = folder;
+            draggedTab = tab
+            _sourceFolder = folder
             // Remove from old folder
             state.setFolders(
-              state.folders.map(f =>
-                f.id === folder.id ? { ...f, tabs: f.tabs.filter(t => t.id !== activeId) } : f,
-              ),
-            );
-            break;
+              state.folders.map((f) =>
+                f.id === folder.id
+                  ? { ...f, tabs: f.tabs.filter((t) => t.id !== activeId) }
+                  : f
+              )
+            )
+            break
           }
         }
       } else {
         // Remove from loose tabs
-        state.setLooseTabs(state.looseTabs.filter(t => t.id !== activeId));
+        state.setLooseTabs(state.looseTabs.filter((t) => t.id !== activeId))
       }
 
       if (draggedTab) {
         // Add to target folder and set folderId
         state.setFolders(
-          state.folders.map(f =>
-            f.id === overId ? { ...f, tabs: [...f.tabs, { ...draggedTab, folderId: overId }] } : f,
-          ),
-        );
+          state.folders.map((f) =>
+            f.id === overId
+              ? { ...f, tabs: [...f.tabs, { ...draggedTab, folderId: overId }] }
+              : f
+          )
+        )
       }
-      return;
+      return
     }
 
     // Reorder loose tabs
     if (activeData?.type === "tab" && overData?.type === "tab") {
-      const oldIndex = state.looseTabs.findIndex(t => t.id === activeId);
-      const newIndex = state.looseTabs.findIndex(t => t.id === overId);
+      const oldIndex = state.looseTabs.findIndex((t) => t.id === activeId)
+      const newIndex = state.looseTabs.findIndex((t) => t.id === overId)
       if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
-        const newTabs = [...state.looseTabs];
-        const [removed] = newTabs.splice(oldIndex, 1);
-        newTabs.splice(newIndex, 0, removed);
-        state.setLooseTabs(newTabs);
+        const newTabs = [...state.looseTabs]
+        const [removed] = newTabs.splice(oldIndex, 1)
+        newTabs.splice(newIndex, 0, removed)
+        state.setLooseTabs(newTabs)
       }
-      return;
+      return
     }
 
     // Drop onto logo container - create logo
     if (overId === "logo-container" || overData?.type === "logo-container") {
       if (state.logos.length >= MAX_LOGOS) {
-        alert("Logo container is full! Maximum 12 items allowed.");
-        return;
+        alert("Logo container is full! Maximum 12 items allowed.")
+        return
       }
 
       if (activeData?.type === "folder") {
-        const draggedFolder = state.folders.find(f => f.id === activeId);
+        const draggedFolder = state.folders.find((f) => f.id === activeId)
         if (draggedFolder) {
           const newLogo = {
             id: Date.now(),
@@ -345,44 +354,44 @@ export function Sidebar({
               url: "",
               workspaceId: "",
             }),
-          };
-          state.setLogos([...state.logos, newLogo]);
-          return;
+          }
+          state.setLogos([...state.logos, newLogo])
+          return
         }
       }
 
-      const draggedTab = state.looseTabs.find(t => t.id === activeId);
+      const draggedTab = state.looseTabs.find((t) => t.id === activeId)
       if (draggedTab) {
         const newLogo = {
           id: Date.now(),
           title: draggedTab.title,
           component: getLogoComponentForTab(draggedTab),
-        };
-        state.setLogos([...state.logos, newLogo]);
-        state.setLooseTabs(state.looseTabs.filter(t => t.id !== activeId));
+        }
+        state.setLogos([...state.logos, newLogo])
+        state.setLooseTabs(state.looseTabs.filter((t) => t.id !== activeId))
       }
-      return;
+      return
     }
   }
 
   function addNewTab(): void {
-    const newChat = onNewChat?.();
-    const newId = newChat?.id || Date.now().toString();
+    const newChat = onNewChat?.()
+    const newId = newChat?.id || Date.now().toString()
     const newTab: Tab = {
       id: newId,
       title: "New Chat",
       url: "about:blank",
       workspaceId: state.activeWorkspace,
       folderId: null,
-    };
-    state.setLooseTabs([...state.looseTabs, newTab]);
-    state.setActiveTab(newId);
+    }
+    state.setLooseTabs([...state.looseTabs, newTab])
+    state.setActiveTab(newId)
   }
 
   function createFolder(): void {
     const folderCount = state.folders.filter(
-      (f) => f.workspaceId === state.activeWorkspace,
-    ).length;
+      (f) => f.workspaceId === state.activeWorkspace
+    ).length
     const newFolder: TabFolder = {
       id: `folder-${Date.now()}`,
       name: `Folder ${folderCount + 1}`,
@@ -390,8 +399,8 @@ export function Sidebar({
       workspaceId: state.activeWorkspace,
       parentId: null,
       tabs: [],
-    };
-    state.setFolders([...state.folders, newFolder]);
+    }
+    state.setFolders([...state.folders, newFolder])
   }
 
   function toggleFolder(folderId: string): void {
@@ -399,45 +408,43 @@ export function Sidebar({
       state.folders.map((folder) =>
         folder.id === folderId
           ? { ...folder, collapsed: !folder.collapsed }
-          : folder,
-      ),
-    );
+          : folder
+      )
+    )
   }
 
   function deleteFolder(folderId: string): void {
-    const folder = state.folders.find((f) => f.id === folderId);
+    const folder = state.folders.find((f) => f.id === folderId)
     if (folder) {
-      const folderTabs = folder.tabs.map((tab) => ({ ...tab, folderId: null }));
-      state.setLooseTabs([...state.looseTabs, ...folderTabs]);
+      const folderTabs = folder.tabs.map((tab) => ({ ...tab, folderId: null }))
+      state.setLooseTabs([...state.looseTabs, ...folderTabs])
     }
-    state.setFolders(state.folders.filter((f) => f.id !== folderId));
+    state.setFolders(state.folders.filter((f) => f.id !== folderId))
   }
 
   function closeTab(tabId: string): void {
-    state.setLooseTabs(state.looseTabs.filter((tab) => tab.id !== tabId));
+    state.setLooseTabs(state.looseTabs.filter((tab) => tab.id !== tabId))
     state.setFolders(
       state.folders.map((folder) => ({
         ...folder,
         tabs: folder.tabs.filter((tab) => tab.id !== tabId),
-      })),
-    );
+      }))
+    )
   }
 
   function clearAllTabs(): void {
-    state.setLooseTabs([]);
+    state.setLooseTabs([])
   }
 
   const activeWorkspaceFolders = state.folders.filter(
-    (folder) =>
-      folder.workspaceId === state.activeWorkspace && !folder.parentId,
-  );
+    (folder) => folder.workspaceId === state.activeWorkspace && !folder.parentId
+  )
   const activeWorkspaceTabs = state.looseTabs.filter(
-    (tab) => tab.workspaceId === state.activeWorkspace && !tab.folderId,
-  );
+    (tab) => tab.workspaceId === state.activeWorkspace && !tab.folderId
+  )
 
   function renderWorkspaceIcon(workspace: any, isActive: boolean) {
-    return <WorkspaceIcon workspace={workspace} isActive={isActive} />;
-
+    return <WorkspaceIcon workspace={workspace} isActive={isActive} />
   }
 
   return (
@@ -452,7 +459,7 @@ export function Sidebar({
         <div
           className={cn(
             "group bg-card flex h-full shrink-0 flex-col transition-all duration-200 select-none overflow-x-hidden",
-            state.sidebarExpanded ? "w-[360px]" : "w-14",
+            state.sidebarExpanded ? "w-[360px]" : "w-14"
           )}
         >
           <SidebarHeader
@@ -493,7 +500,7 @@ export function Sidebar({
               onSetCommandOpen={state.setCommandOpen}
               onSetActiveTab={state.setActiveTab}
               onSetSettingsOpen={() => {
-                if (onOpenSettings) onOpenSettings();
+                if (onOpenSettings) onOpenSettings()
               }}
             />
           )}
@@ -552,17 +559,15 @@ export function Sidebar({
                 onRenameLogo={(logoId, newTitle) =>
                   state.setLogos(
                     state.logos.map((l) =>
-                      l.id === logoId ? { ...l, title: newTitle } : l,
-                    ),
+                      l.id === logoId ? { ...l, title: newTitle } : l
+                    )
                   )
                 }
                 onSetActiveTab={(id) => {
-                  state.setActiveTab(id);
-                  onTabSelect?.(id);
+                  state.setActiveTab(id)
+                  onTabSelect?.(id)
                 }}
                 onCloseTab={closeTab}
-                onRenameTab={onRenameTab}
-                onArchiveTab={onArchiveTab}
                 onRenameTab={onRenameTab}
                 onArchiveTab={onArchiveTab}
                 onToggleFolder={toggleFolder}
@@ -570,21 +575,21 @@ export function Sidebar({
                 onRenameFolder={(folderId, newName) =>
                   state.setFolders(
                     state.folders.map((f) =>
-                      f.id === folderId ? { ...f, name: newName } : f,
-                    ),
+                      f.id === folderId ? { ...f, name: newName } : f
+                    )
                   )
                 }
                 onUnloadAllTabs={(folderId) =>
                   state.setFolders(
                     state.folders.map((f) =>
-                      f.id === folderId ? { ...f, tabs: [] } : f,
-                    ),
+                      f.id === folderId ? { ...f, tabs: [] } : f
+                    )
                   )
                 }
                 onCreateSubfolder={(parentId) => {
                   const subfolderCount = state.folders.filter(
-                    (f) => f.parentId === parentId,
-                  ).length;
+                    (f) => f.parentId === parentId
+                  ).length
                   const newSubfolder: TabFolder = {
                     id: `folder-${Date.now()}`,
                     name: `Subfolder ${subfolderCount + 1}`,
@@ -592,96 +597,96 @@ export function Sidebar({
                     workspaceId: state.activeWorkspace,
                     parentId: parentId,
                     tabs: [],
-                  };
-                  state.setFolders([...state.folders, newSubfolder]);
+                  }
+                  state.setFolders([...state.folders, newSubfolder])
                 }}
                 onUnpackFolder={(folderId) => {
-                  const folder = state.folders.find((f) => f.id === folderId);
+                  const folder = state.folders.find((f) => f.id === folderId)
                   if (folder) {
                     const folderTabs = folder.tabs.map((tab) => ({
                       ...tab,
                       folderId: null,
-                    }));
-                    state.setLooseTabs([...state.looseTabs, ...folderTabs]);
-                    deleteFolder(folderId);
+                    }))
+                    state.setLooseTabs([...state.looseTabs, ...folderTabs])
+                    deleteFolder(folderId)
                   }
                 }}
                 onRenameWorkspace={() => {
                   const currentWorkspace = state.workspaces.find(
-                    (w) => w.id === state.activeWorkspace,
-                  );
+                    (w) => w.id === state.activeWorkspace
+                  )
                   const newName = prompt(
                     "Enter new workspace name:",
-                    currentWorkspace?.name || "",
-                  );
+                    currentWorkspace?.name || ""
+                  )
                   if (newName?.trim()) {
                     state.setWorkspaces(
                       state.workspaces.map((w) =>
                         w.id === state.activeWorkspace
                           ? { ...w, name: newName.trim() }
-                          : w,
-                      ),
-                    );
+                          : w
+                      )
+                    )
                   }
                 }}
                 onEditWorkspaceIcon={() => {
                   const currentWorkspace = state.workspaces.find(
-                    (w) => w.id === state.activeWorkspace,
-                  );
+                    (w) => w.id === state.activeWorkspace
+                  )
                   if (currentWorkspace) {
                     state.setWorkspaceEditMode({
                       workspaceId: currentWorkspace.id,
                       currentName: currentWorkspace.name,
                       currentIcon: currentWorkspace.icon,
-                    });
-                    state.setWorkspaceDialogOpen(true);
+                    })
+                    state.setWorkspaceDialogOpen(true)
                   }
                 }}
                 onUnloadSpace={() => {
                   state.setFolders(
                     state.folders.filter(
-                      (f) => f.workspaceId !== state.activeWorkspace,
-                    ),
-                  );
+                      (f) => f.workspaceId !== state.activeWorkspace
+                    )
+                  )
                   state.setLooseTabs(
                     state.looseTabs.filter(
-                      (t) => t.workspaceId !== state.activeWorkspace,
-                    ),
-                  );
+                      (t) => t.workspaceId !== state.activeWorkspace
+                    )
+                  )
                 }}
                 onDeleteSpace={() => {
                   if (state.workspaces.length <= 1) {
-                    alert("Cannot delete the last workspace!");
-                    return;
+                    alert("Cannot delete the last workspace!")
+                    return
                   }
                   const currentWorkspace = state.workspaces.find(
-                    (w) => w.id === state.activeWorkspace,
-                  );
+                    (w) => w.id === state.activeWorkspace
+                  )
                   if (
                     confirm(
-                      `Are you sure you want to delete "${currentWorkspace?.name}"? All tabs and folders will be removed.`,
+                      `Are you sure you want to delete "${currentWorkspace?.name}"? All tabs and folders will be removed.`
                     )
                   ) {
                     state.setFolders(
                       state.folders.filter(
-                        (f) => f.workspaceId !== state.activeWorkspace,
-                      ),
-                    );
+                        (f) => f.workspaceId !== state.activeWorkspace
+                      )
+                    )
                     state.setLooseTabs(
                       state.looseTabs.filter(
-                        (t) => t.workspaceId !== state.activeWorkspace,
-                      ),
-                    );
+                        (t) => t.workspaceId !== state.activeWorkspace
+                      )
+                    )
                     state.setWorkspaces(
                       state.workspaces.filter(
-                        (w) => w.id !== state.activeWorkspace,
-                      ),
-                    );
+                        (w) => w.id !== state.activeWorkspace
+                      )
+                    )
                     const remainingWorkspaces = state.workspaces.filter(
-                      (w) => w.id !== state.activeWorkspace,
-                    );
+                      (w) => w.id !== state.activeWorkspace
+                    )
                     if (remainingWorkspaces.length > 0) {
-                      state.setActiveWorkspace(remainingWorkspaces[0].id);
+                      state.setActiveWorkspace(remainingWorkspaces[0].id)
                     }
                   }
                 }}
@@ -700,9 +705,9 @@ export function Sidebar({
       <WorkspaceDialog
         open={state.workspaceDialogOpen}
         onOpenChange={(open) => {
-          state.setWorkspaceDialogOpen(open);
+          state.setWorkspaceDialogOpen(open)
           if (!open) {
-            state.setWorkspaceEditMode(undefined);
+            state.setWorkspaceEditMode(undefined)
           }
         }}
         onCreateWorkspace={state.handleCreateWorkspace}
@@ -722,8 +727,8 @@ export function Sidebar({
               <CommandGroup heading="Suggestions">
                 <CommandItem
                   onSelect={() => {
-                    addNewTab();
-                    state.setCommandOpen(false);
+                    addNewTab()
+                    state.setCommandOpen(false)
                   }}
                 >
                   <Plus className="mr-2 h-4 w-4" />
@@ -731,8 +736,8 @@ export function Sidebar({
                 </CommandItem>
                 <CommandItem
                   onSelect={() => {
-                    state.setWorkspaceDialogOpen(true);
-                    state.setCommandOpen(false);
+                    state.setWorkspaceDialogOpen(true)
+                    state.setCommandOpen(false)
                   }}
                 >
                   <Copy className="mr-2 h-4 w-4" />
@@ -740,8 +745,8 @@ export function Sidebar({
                 </CommandItem>
                 <CommandItem
                   onSelect={() => {
-                    clearAllTabs();
-                    state.setCommandOpen(false);
+                    clearAllTabs()
+                    state.setCommandOpen(false)
                   }}
                 >
                   <X className="mr-2 h-4 w-4" />
@@ -753,8 +758,8 @@ export function Sidebar({
                   <CommandItem
                     key={tab.id}
                     onSelect={() => {
-                      state.setActiveTab(tab.id);
-                      state.setCommandOpen(false);
+                      state.setActiveTab(tab.id)
+                      state.setCommandOpen(false)
                     }}
                   >
                     <div className="bg-destructive mr-2 h-4 w-4 shrink-0 rounded-sm" />
@@ -767,8 +772,8 @@ export function Sidebar({
                   <CommandItem
                     key={workspace.id}
                     onSelect={() => {
-                      state.setActiveWorkspace(workspace.id);
-                      state.setCommandOpen(false);
+                      state.setActiveWorkspace(workspace.id)
+                      state.setCommandOpen(false)
                     }}
                   >
                     <div className="mr-2 flex h-4 w-4 items-center justify-center">
@@ -800,5 +805,5 @@ export function Sidebar({
         ) : null}
       </DragOverlay>
     </DndContext>
-  );
+  )
 }

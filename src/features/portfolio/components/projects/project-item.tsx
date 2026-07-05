@@ -3,18 +3,16 @@ import Image from "next/image"
 import {
   Collapsible,
   CollapsibleChevronsUpDownIcon,
-} from "@/components/base/collapsible-animated"
-import {
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/base/collapsible-animated"
+import { Markdown } from "@/components/markdown"
+import { Tag } from "@/components/ui/tag"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { Markdown } from "@/components/markdown"
-import { Tag } from "@/components/ui/tag"
 import { Prose } from "@/components/ui/typography"
 import { UTM_PARAMS } from "@/config/site"
 import { addQueryParams } from "@/lib/utils/url"

@@ -11,12 +11,12 @@ import { usePathname } from "next/navigation"
 import { memo, useEffect, useRef, useState } from "react"
 import { useHotkeys } from "react-hotkeys-hook"
 import { Button } from "@/components/base/ui/button"
+import { Kbd } from "@/components/ui/kbd"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { Kbd } from "@/components/ui/kbd"
 import { cn } from "@/lib/utils"
 
 import type { SidebarIconHandle } from "./sidebar-icon"

@@ -3,16 +3,16 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Button } from "@/components/base/ui/button"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import {
   PageHeading,
   PageHeadingTagline,
   PageHeadingTitle,
 } from "@/components/page-heading"
 import { RemountOnThemeChange } from "@/components/remount-on-theme-change"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { X_HANDLE } from "@/config/site"
 import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
 import AppleHelloEffectAllDemo from "@/registry/examples/apple-hello-effect-languages-demo"

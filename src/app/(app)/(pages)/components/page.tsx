@@ -3,11 +3,6 @@ import type { Metadata, Route } from "next"
 import Link from "next/link"
 import type { CollectionPage, WithContext } from "schema-dts"
 import { Button } from "@/components/base/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { TrustedRegistryIcon } from "@/components/icons"
 import {
   PageHeading,
@@ -15,6 +10,11 @@ import {
   PageHeadingTitle,
 } from "@/components/page-heading"
 import { RegistryCommandAnimated } from "@/components/registry-command-animated"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { JSON_LD_ID } from "@/config/json-ld"
 import { registryConfig } from "@/config/registry"
 import { UTM_PARAMS, X_HANDLE } from "@/config/site"

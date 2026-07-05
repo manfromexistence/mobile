@@ -1,15 +1,15 @@
-"use client";
+"use client"
 
-import { motion } from "motion/react";
-import { getDockIconComponent } from "./dock-icons";
+import { motion } from "motion/react"
+import { getDockIconComponent } from "./dock-icons"
 
 interface CustomScreenProps {
-  title: string;
-  dockIcon?: string;
+  title: string
+  dockIcon?: string
 }
 
 export function CustomScreen({ title, dockIcon }: CustomScreenProps) {
-  const Icon = getDockIconComponent(dockIcon);
+  const Icon = getDockIconComponent(dockIcon)
 
   return (
     <motion.div
@@ -25,5 +25,5 @@ export function CustomScreen({ title, dockIcon }: CustomScreenProps) {
       <h2 className="text-xl font-semibold text-foreground">{title}</h2>
       <p className="text-sm text-muted-foreground">Empty screen</p>
     </motion.div>
-  );
+  )
 }

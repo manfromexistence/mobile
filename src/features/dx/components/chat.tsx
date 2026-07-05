@@ -2,61 +2,32 @@
 
 import { AnimatePresence, motion } from "framer-motion"
 import {
-  Archive,
   ArrowDown,
-  ArrowUp,
-  CalendarDays,
-  Check,
-  ChevronDown,
-  ChevronLeft,
   ChevronRight,
-  Clock,
-  Code,
-  Cog,
   Copy,
   Database,
   DollarSign,
   Download,
-  Files,
   FileText,
   Folder,
   FolderKanban,
   FolderOpen,
-  Folders,
-  Grid3x3,
-  Image,
   Lightbulb,
-  LogOut,
   Menu,
-  MessageSquare,
-  MessageSquarePlus,
-  Mic,
-  Moon,
   MoreHorizontal,
   Paintbrush,
-  Paperclip,
   Pencil,
-  Pin,
-  Plus,
   RotateCcw,
-  Search,
   Share2,
   Sliders,
   Sparkles,
-  Sun,
   Trash2,
   User,
-  Volume2,
   X,
   Zap,
 } from "lucide-react"
 import * as React from "react"
 import { Button } from "@/components/ui/button"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import {
   DropdownMenu,
@@ -65,12 +36,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card"
-import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -78,12 +43,17 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { useChat } from "@/features/dx/hooks/use-chat"
-import { MODEL_OPTIONS } from "@/lib/ai/models-config"
-import { cn } from "@/lib/utils"
-import { ChatMessage } from "./chat-message"
-import { useLocalStorage } from "./chat-hooks"
 import { useBrowserState } from "@/features/dx/components/browser/use-browser-state"
+import { AIInputBar } from "@/features/dx/components/chat/ai-input-bar"
+import { getRandomDockIconName } from "@/features/dx/components/screens/dock-icons"
+import { MacOSDock } from "@/features/dx/components/screens/macos-dock"
+import { ScreenCarousel } from "@/features/dx/components/screens/screen-carousel"
+import { ScreenGridDialog } from "@/features/dx/components/screens/screen-grid-dialog"
+import type { Screen } from "@/features/dx/components/screens/types"
+import { useChat } from "@/features/dx/hooks/use-chat"
+import { cn } from "@/lib/utils"
+import { useLocalStorage } from "./chat-hooks"
+import { ChatMessage } from "./chat-message"
 import { SourceItem } from "./chat-right-panel"
 import {
   SettingsAccount,
@@ -91,20 +61,11 @@ import {
   SettingsCustomize,
   SettingsPlaceholder,
 } from "./chat-settings"
-import { HistoryItem, SidebarItem, SidebarSubItem } from "./chat-sidebar"
 import { Sidebar } from "./sidebar"
-import { getRandomDockIconName } from "@/features/dx/components/screens/dock-icons"
-import { MacOSDock } from "@/features/dx/components/screens/macos-dock"
-import { ScreenCarousel } from "@/features/dx/components/screens/screen-carousel"
-import { ScreenGridDialog } from "@/features/dx/components/screens/screen-grid-dialog"
-import type { Screen } from "@/features/dx/components/screens/types"
-import { AIInputBar } from "@/features/dx/components/chat/ai-input-bar"
-import { VoiceBar } from "./chat-voice"
-import { DockDemo } from "@/components/dock"
 
 type RightPanel = "thoughts" | "sources" | "files" | null
 
-function LogoIcon({ className }: { className?: string }) {
+function _LogoIcon({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -126,7 +87,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
     "dx-sidebar-collapsed",
     true
   )
-  const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false)
+  const [_mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false)
   const [isDesktop, setIsDesktop] = React.useState(true)
 
   React.useEffect(() => {
@@ -142,34 +103,43 @@ export function Chat({ swapped }: { swapped?: boolean }) {
   )
   const [inputValue, setInputValue] = React.useState("")
   const [isVoiceMode, setIsVoiceMode] = React.useState(false)
-  const [projectsOpen, setProjectsOpen] = useLocalStorage(
+  const [_projectsOpen, _setProjectsOpen] = useLocalStorage(
     "dx-projects-open",
     true
   )
-  const [historyOpen, setHistoryOpen] = useLocalStorage("dx-history-open", true)
+  const [_historyOpen, _setHistoryOpen] = useLocalStorage(
+    "dx-history-open",
+    true
+  )
   const [darkMode, setDarkMode] = useLocalStorage("dx-dark-mode", false)
   const [settingsOpen, setSettingsOpen] = React.useState(false)
   const [settingsTab, setSettingsTab] = React.useState("account")
 
-  const [activeScreenId, setActiveScreenId] = React.useState<string>("welcome");
+  const [activeScreenId, setActiveScreenId] = React.useState<string>("welcome")
   const [screens, setScreens] = React.useState<Screen[]>([
     { id: "welcome", type: "welcome", title: "Welcome", width: 0, height: 0 },
-    { id: "terminal", type: "terminal", title: "Terminal", width: 0, height: 0 },
+    {
+      id: "terminal",
+      type: "terminal",
+      title: "Terminal",
+      width: 0,
+      height: 0,
+    },
     { id: "code", type: "code", title: "Code Editor", width: 0, height: 0 },
     { id: "browser", type: "browser", title: "Browser", width: 0, height: 0 },
-  ]);
-  const [gridOpen, setGridOpen] = React.useState(false);
+  ])
+  const [gridOpen, setGridOpen] = React.useState(false)
 
   const handleScreenResize = (id: string, width: number, height: number) => {
     setScreens((prev) =>
       prev.map((screen) =>
-        screen.id === id ? { ...screen, width, height } : screen,
-      ),
-    );
-  };
+        screen.id === id ? { ...screen, width, height } : screen
+      )
+    )
+  }
 
   const handleAddScreen = () => {
-    const number = screens.length + 1;
+    const number = screens.length + 1
     const newScreen = {
       id: `screen-${Date.now()}`,
       type: "custom",
@@ -177,18 +147,17 @@ export function Chat({ swapped }: { swapped?: boolean }) {
       width: 0,
       height: 0,
       dockIcon: getRandomDockIconName(),
-    };
-    setScreens((prev) => [...prev, newScreen as Screen]);
-    setActiveScreenId(newScreen.id);
-  };
-
+    }
+    setScreens((prev) => [...prev, newScreen as Screen])
+    setActiveScreenId(newScreen.id)
+  }
 
   const {
     messages,
     isGenerating,
     selectedModel,
     setSelectedModel,
-    conversations,
+    _conversations,
     currentConversationId,
     sendMessage,
     stopGeneration,
@@ -196,11 +165,11 @@ export function Chat({ swapped }: { swapped?: boolean }) {
     switchConversation,
     deleteConversation,
     clearMessages,
-      updateConversation,
+    updateConversation,
     modelReady,
     modelLoading,
-    modelProgress,
-    modelError,
+    _modelProgress,
+    _modelError,
     isMock,
   } = useChat()
 
@@ -217,7 +186,11 @@ export function Chat({ swapped }: { swapped?: boolean }) {
   React.useEffect(() => {
     if (typeof window !== "undefined") {
       if (currentConversationId) {
-        window.history.replaceState(null, "", `/chat/${activeWorkspace}/${currentConversationId}`)
+        window.history.replaceState(
+          null,
+          "",
+          `/chat/${activeWorkspace}/${currentConversationId}`
+        )
       } else {
         window.history.replaceState(null, "", `/chat/${activeWorkspace}`)
       }
@@ -296,7 +269,9 @@ export function Chat({ swapped }: { swapped?: boolean }) {
       onTabSelect={switchConversation}
       onRenameTab={(id, title) => {
         updateConversation(id, (c) => ({ ...c, title }))
-        setLooseTabs((prev) => prev.map((t) => (t.id === id ? { ...t, title } : t)))
+        setLooseTabs((prev) =>
+          prev.map((t) => (t.id === id ? { ...t, title } : t))
+        )
         setFolders((prev) =>
           prev.map((f) => ({
             ...f,
@@ -316,13 +291,12 @@ export function Chat({ swapped }: { swapped?: boolean }) {
       }}
       onOpenSettings={() => setSettingsOpen(true)}
     >
-
       {/* MAIN CONTENT */}
       <main
         className="relative z-10 flex h-full flex-1 flex-col overflow-hidden bg-background"
         style={
           swapped
-            ? ({
+            ? {
                 "--color-background": "var(--color-sidebar)",
                 "--color-foreground": "var(--color-sidebar-foreground)",
                 "--color-border": "var(--color-sidebar-border)",
@@ -341,7 +315,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
                   "var(--color-sidebar-primary-foreground)",
                 "--color-ring": "var(--color-sidebar-ring)",
                 "--color-input": "var(--color-sidebar-accent)",
-              })
+              }
             : undefined
         }
       >
@@ -366,228 +340,234 @@ export function Chat({ swapped }: { swapped?: boolean }) {
           sidebarExpanded={!sidebarCollapsed}
         >
           {/* Mobile Header */}
-        <div className="absolute top-0 right-0 left-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background/80 px-2 backdrop-blur-md md:hidden">
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => setMobileSidebarOpen(true)}
-          >
-            <Menu className="size-5" />
-          </Button>
-          <span className="font-bold text-foreground">SuperGrok</span>
-          <div className="w-10" />
-        </div>
+          <div className="absolute top-0 right-0 left-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background/80 px-2 backdrop-blur-md md:hidden">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => setMobileSidebarOpen(true)}
+            >
+              <Menu className="size-5" />
+            </Button>
+            <span className="font-bold text-foreground">SuperGrok</span>
+            <div className="w-10" />
+          </div>
 
-        {/* Top Right Actions */}
-        <div className="absolute top-2 right-1 z-40 flex items-center gap-0.5 rounded-xl bg-background/50 p-1 text-muted-foreground backdrop-blur-md md:top-3 md:right-2 md:bg-transparent md:p-0 md:backdrop-blur-none">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                className="text-muted-foreground"
-              >
-                <Download className="size-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">Export chat</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                className="hidden text-muted-foreground sm:inline-flex"
-              >
-                <Share2 className="size-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">Share link</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                className="hidden text-muted-foreground sm:inline-flex"
-              >
-                <Pencil className="size-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">Edit chat</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                className={cn(
-                  "text-muted-foreground",
-                  rightPanel === "files" && "bg-muted text-foreground"
-                )}
-                onClick={() =>
-                  rightPanel === "files"
-                    ? closeRightPanel()
-                    : openRightPanel("files")
-                }
-              >
-                <FolderKanban className="size-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">Files</TooltipContent>
-          </Tooltip>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                className="text-muted-foreground"
-              >
-                <MoreHorizontal className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={clearMessages}>
-                <RotateCcw className="mr-2 size-4" />
-                Clear chat
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  const text = messages
-                    .map((m) => `${m.role}: ${m.content}`)
-                    .join("\n\n")
-                  navigator.clipboard.writeText(text)
-                }}
-              >
-                <Copy className="mr-2 size-4" />
-                Copy conversation
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  const text = messages
-                    .map((m) => `${m.role}: ${m.content}`)
-                    .join("\n\n")
-                  const blob = new Blob([text], { type: "text/plain" })
-                  const url = URL.createObjectURL(blob)
-                  const a = document.createElement("a")
-                  a.href = url
-                  a.download = "conversation.txt"
-                  a.click()
-                  URL.revokeObjectURL(url)
-                }}
-              >
-                <FileText className="mr-2 size-4" />
-                Export as text
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => {
-                  if (currentConversationId) {
-                    deleteConversation(currentConversationId)
+          {/* Top Right Actions */}
+          <div className="absolute top-2 right-1 z-40 flex items-center gap-0.5 rounded-xl bg-background/50 p-1 text-muted-foreground backdrop-blur-md md:top-3 md:right-2 md:bg-transparent md:p-0 md:backdrop-blur-none">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  className="text-muted-foreground"
+                >
+                  <Download className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Export chat</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  className="hidden text-muted-foreground sm:inline-flex"
+                >
+                  <Share2 className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Share link</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  className="hidden text-muted-foreground sm:inline-flex"
+                >
+                  <Pencil className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Edit chat</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  className={cn(
+                    "text-muted-foreground",
+                    rightPanel === "files" && "bg-muted text-foreground"
+                  )}
+                  onClick={() =>
+                    rightPanel === "files"
+                      ? closeRightPanel()
+                      : openRightPanel("files")
                   }
-                }}
-              >
-                <Trash2 className="mr-2 size-4" />
-                Delete chat
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+                >
+                  <FolderKanban className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Files</TooltipContent>
+            </Tooltip>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  className="text-muted-foreground"
+                >
+                  <MoreHorizontal className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={clearMessages}>
+                  <RotateCcw className="mr-2 size-4" />
+                  Clear chat
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    const text = messages
+                      .map((m) => `${m.role}: ${m.content}`)
+                      .join("\n\n")
+                    navigator.clipboard.writeText(text)
+                  }}
+                >
+                  <Copy className="mr-2 size-4" />
+                  Copy conversation
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    const text = messages
+                      .map((m) => `${m.role}: ${m.content}`)
+                      .join("\n\n")
+                    const blob = new Blob([text], { type: "text/plain" })
+                    const url = URL.createObjectURL(blob)
+                    const a = document.createElement("a")
+                    a.href = url
+                    a.download = "conversation.txt"
+                    a.click()
+                    URL.revokeObjectURL(url)
+                  }}
+                >
+                  <FileText className="mr-2 size-4" />
+                  Export as text
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (currentConversationId) {
+                      deleteConversation(currentConversationId)
+                    }
+                  }}
+                >
+                  <Trash2 className="mr-2 size-4" />
+                  Delete chat
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
 
-        {/* Chat Scroll Area */}
-        <div className="min-h-0 flex-1">
-          <ScrollArea
-            viewportRef={scrollViewportRef}
-            onScroll={handleScroll}
-            className="h-full px-4 md:px-6"
-          >
-            <div className="flex flex-col items-center pb-40 md:pb-44">
-              <div className="w-full max-w-3xl text-[15px] leading-relaxed text-foreground/80">
-
-                {messages.length === 0 ? null : (
-                  messages.map((message, i) => (
-                    <ChatMessage
-                      key={message.id}
-                      message={message}
-                      isGenerating={
-                        isGenerating &&
-                        i === messages.length - 1 &&
-                        message.role === "assistant"
-                      }
-                    />
-                  ))
-                )}
+          {/* Chat Scroll Area */}
+          <div className="min-h-0 flex-1">
+            <ScrollArea
+              viewportRef={scrollViewportRef}
+              onScroll={handleScroll}
+              className="h-full px-4 md:px-6"
+            >
+              <div className="flex flex-col items-center pb-40 md:pb-44">
+                <div className="w-full max-w-3xl text-[15px] leading-relaxed text-foreground/80">
+                  {messages.length === 0
+                    ? null
+                    : messages.map((message, i) => (
+                        <ChatMessage
+                          key={message.id}
+                          message={message}
+                          isGenerating={
+                            isGenerating &&
+                            i === messages.length - 1 &&
+                            message.role === "assistant"
+                          }
+                        />
+                      ))}
+                </div>
               </div>
-            </div>
-          </ScrollArea>
-        </div>
+            </ScrollArea>
+          </div>
 
-        {/* Scroll to Bottom Button */}
-        <div className="absolute bottom-36 left-1/2 z-30 -translate-x-1/2 md:bottom-40">
-          <motion.button
-            onClick={scrollToBottom}
-            className="flex size-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-md hover:bg-muted hover:text-foreground md:size-9"
+          {/* Scroll to Bottom Button */}
+          <div className="absolute bottom-36 left-1/2 z-30 -translate-x-1/2 md:bottom-40">
+            <motion.button
+              onClick={scrollToBottom}
+              className="flex size-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-md hover:bg-muted hover:text-foreground md:size-9"
+              animate={{
+                y: showScrollBtn ? 0 : 20,
+                opacity: showScrollBtn ? 1 : 0,
+                scale: showScrollBtn ? 1 : 0.8,
+                pointerEvents: showScrollBtn
+                  ? ("auto" as const)
+                  : ("none" as const),
+              }}
+              transition={{
+                y: { type: "spring", stiffness: 400, damping: 30 },
+                opacity: { duration: 0.2 },
+                scale: { type: "spring", stiffness: 400, damping: 30 },
+              }}
+              whileHover={{ scale: 1.1, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <ArrowDown className="size-4" />
+            </motion.button>
+          </div>
+
+          {/* Fallback Mode Banner */}
+          {isMock &&
+            !selectedModel.includes("opencode") &&
+            !selectedModel.includes("bigpickle") && (
+              <div className="absolute right-0 bottom-0 left-0 z-30 px-3 md:px-6">
+                <div className="mx-auto mb-2 w-full max-w-3xl">
+                  <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+                    <Zap className="size-3.5 shrink-0" />
+                    <span>
+                      Running in fallback mode. The AI model requires more
+                      memory. Switch to the basic model or use Chrome/Edge with
+                      ample RAM.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          {/* Chat Input */}
+          <motion.div
+            layout
+            initial={false}
             animate={{
-              y: showScrollBtn ? 0 : 20,
-              opacity: showScrollBtn ? 1 : 0,
-              scale: showScrollBtn ? 1 : 0.8,
-              pointerEvents: showScrollBtn
-                ? ("auto" as const)
-                : ("none" as const),
+              bottom: messages.length === 0 ? "50%" : "0%",
+              y: messages.length === 0 ? "50%" : "0%",
             }}
-            transition={{
-              y: { type: "spring", stiffness: 400, damping: 30 },
-              opacity: { duration: 0.2 },
-              scale: { type: "spring", stiffness: 400, damping: 30 },
-            }}
-            whileHover={{ scale: 1.1, y: -2 }}
-            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 350, damping: 30 }}
+            className={cn(
+              "pointer-events-none absolute right-0 left-0 z-20 flex flex-col items-center px-3 md:px-6",
+              messages.length > 0 &&
+                "bg-gradient-to-t from-background via-background/95 to-transparent pt-20 pb-4 md:pb-6"
+            )}
           >
-            <ArrowDown className="size-4" />
-          </motion.button>
-        </div>
-
-        {/* Fallback Mode Banner */}
-        {isMock && !selectedModel.includes("opencode") && !selectedModel.includes("bigpickle") && (
-          <div className="absolute right-0 bottom-0 left-0 z-30 px-3 md:px-6">
-            <div className="mx-auto mb-2 w-full max-w-3xl">
-              <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
-                <Zap className="size-3.5 shrink-0" />
-                <span>
-                  Running in fallback mode. The AI model requires more memory.
-                  Switch to the basic model or use Chrome/Edge with ample RAM.
-                </span>
-              </div>
+            <div className="pointer-events-auto relative w-full max-w-3xl mx-auto">
+              <AIInputBar
+                inputValue={inputValue}
+                onInputChange={setInputValue}
+                onSubmit={handleSend}
+                onStop={stopGeneration}
+                isGenerating={isGenerating}
+                isLoading={!modelReady || modelLoading}
+                isVoiceMode={isVoiceMode}
+                onVoiceModeChange={setIsVoiceMode}
+                selectedModelId={selectedModel}
+                onModelChange={setSelectedModel}
+              />
             </div>
-          </div>
-        )}
-
-        {/* Chat Input */}
-        <motion.div 
-          layout
-          initial={false}
-          animate={{
-            bottom: messages.length === 0 ? "50%" : "0%",
-            y: messages.length === 0 ? "50%" : "0%",
-          }}
-          transition={{ type: "spring", stiffness: 350, damping: 30 }}
-          className={cn("pointer-events-none absolute right-0 left-0 z-20 flex flex-col items-center px-3 md:px-6", messages.length > 0 && "bg-gradient-to-t from-background via-background/95 to-transparent pt-20 pb-4 md:pb-6")}
-        >
-          <div className="pointer-events-auto relative w-full max-w-3xl mx-auto">
-            <AIInputBar
-              inputValue={inputValue}
-              onInputChange={setInputValue}
-              onSubmit={handleSend}
-              onStop={stopGeneration}
-              isGenerating={isGenerating}
-              isLoading={!modelReady || modelLoading}
-              isVoiceMode={isVoiceMode}
-              onVoiceModeChange={setIsVoiceMode}
-              selectedModelId={selectedModel}
-              onModelChange={setSelectedModel}
-            />
-          </div>
-        </motion.div>
+          </motion.div>
         </ScreenCarousel>
 
         <ScreenGridDialog

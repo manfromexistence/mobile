@@ -104,4 +104,11 @@ function TabsIndicator({
   )
 }
 
-export { Tabs, TabsContent, TabsList, TabsTrigger, tabsListVariants, TabsIndicator }
+export {
+  Tabs,
+  TabsContent,
+  TabsIndicator,
+  TabsList,
+  TabsTrigger,
+  tabsListVariants,
+}

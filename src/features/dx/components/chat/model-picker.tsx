@@ -1,22 +1,22 @@
-"use client";
+"use client"
 
-import { ChevronDown } from "lucide-react";
-import { motion } from "motion/react";
-import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react"
+import { motion } from "motion/react"
+import { Button } from "@/components/ui/button"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { type ProviderId, providers } from "@/lib/ai/providers";
-import { cn } from "@/lib/utils";
+} from "@/components/ui/popover"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { type ProviderId, providers } from "@/lib/ai/providers"
+import { cn } from "@/lib/utils"
 
 interface ModelPickerProps {
-  selectedProvider: string;
-  selectedModel: string;
-  onProviderChange: (providerId: string) => void;
-  onModelChange: (modelId: string) => void;
+  selectedProvider: string
+  selectedModel: string
+  onProviderChange: (providerId: string) => void
+  onModelChange: (modelId: string) => void
 }
 
 export function ModelPicker({
@@ -25,19 +25,19 @@ export function ModelPicker({
   onProviderChange,
   onModelChange,
 }: ModelPickerProps) {
-  const currentProvider = providers[selectedProvider as ProviderId];
+  const currentProvider = providers[selectedProvider as ProviderId]
   const currentModel = currentProvider?.models.find(
-    (m) => m.id === selectedModel,
-  );
+    (m) => m.id === selectedModel
+  )
 
   const handleProviderChange = (providerId: string) => {
-    onProviderChange(providerId);
+    onProviderChange(providerId)
     // Auto-select the default model for the new provider
-    const newProvider = providers[providerId as ProviderId];
+    const newProvider = providers[providerId as ProviderId]
     if (newProvider) {
-      onModelChange(newProvider.defaultModel);
+      onModelChange(newProvider.defaultModel)
     }
-  };
+  }
 
   return (
     <Popover>
@@ -62,7 +62,7 @@ export function ModelPicker({
         <ScrollArea className="h-[500px]">
           <div className="space-y-3 p-3">
             {Object.values(providers).map((provider) => {
-              const isProviderSelected = selectedProvider === provider.id;
+              const isProviderSelected = selectedProvider === provider.id
               return (
                 <div key={provider.id} className="space-y-2">
                   <div className="flex items-center gap-2 px-2">
@@ -75,13 +75,13 @@ export function ModelPicker({
                   <div className="space-y-1">
                     {provider.models.map((model) => {
                       const isSelected =
-                        isProviderSelected && selectedModel === model.id;
+                        isProviderSelected && selectedModel === model.id
                       return (
                         <motion.button
                           key={model.id}
                           onClick={() => {
-                            handleProviderChange(provider.id);
-                            onModelChange(model.id);
+                            handleProviderChange(provider.id)
+                            onModelChange(model.id)
                           }}
                           whileHover={{ scale: 1.01 }}
                           whileTap={{ scale: 0.99 }}
@@ -89,7 +89,7 @@ export function ModelPicker({
                             "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-all",
                             isSelected
                               ? "bg-primary text-primary-foreground"
-                              : "hover:bg-accent hover:text-accent-foreground",
+                              : "hover:bg-accent hover:text-accent-foreground"
                           )}
                         >
                           <div className="flex-1">
@@ -101,7 +101,7 @@ export function ModelPicker({
                                 "text-xs",
                                 isSelected
                                   ? "text-primary-foreground/80"
-                                  : "text-muted-foreground",
+                                  : "text-muted-foreground"
                               )}
                             >
                               {model.description}
@@ -111,15 +111,15 @@ export function ModelPicker({
                             <div className="h-2 w-2 rounded-full bg-current" />
                           )}
                         </motion.button>
-                      );
+                      )
                     })}
                   </div>
                 </div>
-              );
+              )
             })}
           </div>
         </ScrollArea>
       </PopoverContent>
     </Popover>
-  );
+  )
 }

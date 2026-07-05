@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from "react"
 
 const GithubWordmarkDark = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} xmlSpace="preserve" viewBox="0 0 249.1 67.5">
@@ -7,6 +7,6 @@ const GithubWordmarkDark = (props: SVGProps<SVGSVGElement>) => (
       style={{ fill: "#fff" }}
     />
   </svg>
-);
+)
 
-export { GithubWordmarkDark };
+export { GithubWordmarkDark }

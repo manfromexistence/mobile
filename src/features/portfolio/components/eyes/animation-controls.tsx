@@ -1,33 +1,39 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getAllAnimations } from "@/lib/eyes-registry";
-import { useEyesControl } from "@/lib/eyes-context";
-import type { Animation } from "@/lib/eyes-types";
-import { useState } from "react";
 import {
-  Smile,
-  Frown,
   Angry,
-  Heart,
-  Eye,
-  Zap,
-  Sparkles,
-  Target,
   ArrowLeft,
   ArrowRight,
-  RotateCcw,
-  Skull,
-  Moon,
-  Search,
-  Lightbulb,
-  PartyPopper,
   Crosshair,
-} from "lucide-react";
+  Eye,
+  Frown,
+  Heart,
+  Lightbulb,
+  Moon,
+  PartyPopper,
+  RotateCcw,
+  Search,
+  Skull,
+  Smile,
+  Sparkles,
+  Target,
+  Zap,
+} from "lucide-react"
+import { useState } from "react"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useEyesControl } from "@/lib/eyes-context"
+import { getAllAnimations } from "@/lib/eyes-registry"
+import type { Animation } from "@/lib/eyes-types"
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   blink: Eye,
@@ -50,49 +56,52 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   thinking: Lightbulb,
   excited: PartyPopper,
   gunshot: Skull,
-};
-
-interface AnimationControlsProps {
-  onGunshotModeChange?: (active: boolean) => void;
-  onSpidermanModeChange?: (active: boolean) => void;
 }
 
-export function AnimationControls({ onGunshotModeChange, onSpidermanModeChange }: AnimationControlsProps) {
-  const { play, current } = useEyesControl();
-  const animations = getAllAnimations();
-  const [gunshotMode, setGunshotMode] = useState(false);
-  const [spidermanMode, setSpidermanMode] = useState(false);
+interface AnimationControlsProps {
+  onGunshotModeChange?: (active: boolean) => void
+  onSpidermanModeChange?: (active: boolean) => void
+}
+
+export function AnimationControls({
+  onGunshotModeChange,
+  onSpidermanModeChange,
+}: AnimationControlsProps) {
+  const { play, current } = useEyesControl()
+  const animations = getAllAnimations()
+  const [gunshotMode, setGunshotMode] = useState(false)
+  const [spidermanMode, setSpidermanMode] = useState(false)
 
   const toggleGunshotMode = () => {
-    const newMode = !gunshotMode;
-    setGunshotMode(newMode);
-    onGunshotModeChange?.(newMode);
+    const newMode = !gunshotMode
+    setGunshotMode(newMode)
+    onGunshotModeChange?.(newMode)
     if (newMode) {
-      play("gunshot");
-      setSpidermanMode(false);
-      onSpidermanModeChange?.(false);
+      play("gunshot")
+      setSpidermanMode(false)
+      onSpidermanModeChange?.(false)
     }
-  };
+  }
 
   const toggleSpidermanMode = () => {
-    const newMode = !spidermanMode;
-    setSpidermanMode(newMode);
-    onSpidermanModeChange?.(newMode);
+    const newMode = !spidermanMode
+    setSpidermanMode(newMode)
+    onSpidermanModeChange?.(newMode)
     if (newMode) {
-      setGunshotMode(false);
-      onGunshotModeChange?.(false);
+      setGunshotMode(false)
+      onGunshotModeChange?.(false)
     }
-  };
+  }
 
   const groupedAnimations = animations.reduce(
     (acc, anim) => {
-      const category = anim.tags?.[0] || "other";
-      if (!acc[category]) acc[category] = [];
-      acc[category].push(anim);
-      return acc;
+      const category = anim.tags?.[0] || "other"
+      if (!acc[category]) acc[category] = []
+      acc[category].push(anim)
+      return acc
     },
-    {} as Record<string, Animation[]>,
-  );
+    {} as Record<string, Animation[]>
+  )
 
   const categories = [
     { key: "basic", label: "Basic", icon: Eye },
@@ -100,11 +109,11 @@ export function AnimationControls({ onGunshotModeChange, onSpidermanModeChange }
     { key: "gesture", label: "Gestures", icon: Target },
     { key: "effect", label: "Effects", icon: Zap },
     { key: "viral", label: "Viral", icon: Sparkles },
-  ];
+  ]
 
   const renderAnimationButton = (anim: Animation) => {
-    const Icon = iconMap[anim.name] || Eye;
-    const isPlaying = current === anim.name;
+    const Icon = iconMap[anim.name] || Eye
+    const isPlaying = current === anim.name
 
     return (
       <Button
@@ -118,7 +127,10 @@ export function AnimationControls({ onGunshotModeChange, onSpidermanModeChange }
         <Icon className="h-4 w-4 shrink-0" />
         <div className="flex flex-col items-start gap-1 flex-1 min-w-0">
           <span className="text-sm font-medium truncate w-full text-left">
-            {anim.name.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
+            {anim.name
+              .split("-")
+              .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+              .join(" ")}
           </span>
           <span className="text-xs text-muted-foreground truncate w-full text-left">
             {anim.description}
@@ -130,8 +142,8 @@ export function AnimationControls({ onGunshotModeChange, onSpidermanModeChange }
           </Badge>
         )}
       </Button>
-    );
-  };
+    )
+  }
 
   return (
     <Card className="w-full max-w-md">
@@ -162,8 +174,8 @@ export function AnimationControls({ onGunshotModeChange, onSpidermanModeChange }
             <ScrollArea className="h-[400px] pr-4">
               <div className="space-y-4">
                 {categories.map((cat) => {
-                  const anims = groupedAnimations[cat.key] || [];
-                  if (anims.length === 0) return null;
+                  const anims = groupedAnimations[cat.key] || []
+                  if (anims.length === 0) return null
 
                   return (
                     <div key={cat.key} className="space-y-2">
@@ -175,7 +187,7 @@ export function AnimationControls({ onGunshotModeChange, onSpidermanModeChange }
                         {anims.map(renderAnimationButton)}
                       </div>
                     </div>
-                  );
+                  )
                 })}
               </div>
             </ScrollArea>
@@ -229,7 +241,9 @@ export function AnimationControls({ onGunshotModeChange, onSpidermanModeChange }
                 className="h-20 flex flex-col gap-1"
               >
                 <Skull className="h-5 w-5" />
-                <span className="text-xs">{gunshotMode ? "Exit Gunshot" : "Gunshot Mode"}</span>
+                <span className="text-xs">
+                  {gunshotMode ? "Exit Gunshot" : "Gunshot Mode"}
+                </span>
               </Button>
               <Button
                 variant={spidermanMode ? "default" : "outline"}
@@ -237,12 +251,14 @@ export function AnimationControls({ onGunshotModeChange, onSpidermanModeChange }
                 className="h-20 flex flex-col gap-1"
               >
                 <Crosshair className="h-5 w-5" />
-                <span className="text-xs">{spidermanMode ? "Exit Spider-Man" : "Spider-Man"}</span>
+                <span className="text-xs">
+                  {spidermanMode ? "Exit Spider-Man" : "Spider-Man"}
+                </span>
               </Button>
             </div>
           </TabsContent>
         </Tabs>
       </CardContent>
     </Card>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from "react"
 
 const Supabase = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} viewBox="0 0 109 113" fill="none">
@@ -40,6 +40,6 @@ const Supabase = (props: SVGProps<SVGSVGElement>) => (
       </linearGradient>
     </defs>
   </svg>
-);
+)
 
-export { Supabase };
+export { Supabase }

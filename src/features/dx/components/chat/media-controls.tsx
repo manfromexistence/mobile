@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   Box,
@@ -9,29 +9,29 @@ import {
   Sliders,
   Video,
   Wifi,
-} from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+} from "lucide-react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Slider } from "@/components/ui/slider";
+} from "@/components/ui/popover"
+import { Slider } from "@/components/ui/slider"
 
-type MediaType = "text" | "email" | "image" | "video" | "audio" | "live" | "3d";
+type MediaType = "text" | "email" | "image" | "video" | "audio" | "live" | "3d"
 
 interface MediaControlsProps {
-  mediaType: MediaType;
+  mediaType: MediaType
 }
 
 // Image-specific controls
 export function ImageControls() {
-  const [ratio, setRatio] = useState("1:1");
-  const [imageCount, setImageCount] = useState(1);
-  const [open, setOpen] = useState(false);
+  const [ratio, setRatio] = useState("1:1")
+  const [imageCount, setImageCount] = useState(1)
+  const [open, setOpen] = useState(false)
 
-  const ratios = ["1:1", "16:9", "9:16", "4:3", "3:4"];
+  const ratios = ["1:1", "16:9", "9:16", "4:3", "3:4"]
 
   return (
     <div className="flex items-center gap-2">
@@ -51,8 +51,8 @@ export function ImageControls() {
                 variant={ratio === r ? "default" : "ghost"}
                 size="sm"
                 onClick={() => {
-                  setRatio(r);
-                  setOpen(false);
+                  setRatio(r)
+                  setOpen(false)
                 }}
                 className="w-full justify-start gap-2"
               >
@@ -100,12 +100,12 @@ export function ImageControls() {
         <span className="hidden text-xs sm:inline">Settings</span>
       </Button>
     </div>
-  );
+  )
 }
 
 // Video-specific controls
 function VideoControls() {
-  const [duration, setDuration] = useState(5);
+  const [duration, setDuration] = useState(5)
 
   return (
     <div className="flex items-center gap-2">
@@ -143,7 +143,7 @@ function VideoControls() {
         <span className="hidden text-xs sm:inline">16:9</span>
       </Button>
     </div>
-  );
+  )
 }
 
 // Audio-specific controls
@@ -155,12 +155,12 @@ function AudioControls() {
         <span className="hidden text-xs sm:inline">Voice</span>
       </Button>
     </div>
-  );
+  )
 }
 
 // Live-specific controls
 function LiveControls() {
-  const [quality, setQuality] = useState("HD");
+  const [quality, setQuality] = useState("HD")
 
   return (
     <div className="flex items-center gap-2">
@@ -194,12 +194,12 @@ function LiveControls() {
         <span className="hidden text-xs sm:inline">Stream</span>
       </Button>
     </div>
-  );
+  )
 }
 
 // 3D-specific controls
 function ThreeDControls() {
-  const [format, setFormat] = useState("GLB");
+  const [format, setFormat] = useState("GLB")
 
   return (
     <div className="flex items-center gap-2">
@@ -233,23 +233,23 @@ function ThreeDControls() {
         <span className="hidden text-xs sm:inline">Texture</span>
       </Button>
     </div>
-  );
+  )
 }
 
 export function MediaControls({ mediaType }: MediaControlsProps) {
   // Return different controls based on media type
   switch (mediaType) {
     case "image":
-      return <ImageControls />;
+      return <ImageControls />
     case "video":
-      return <VideoControls />;
+      return <VideoControls />
     case "audio":
-      return <AudioControls />;
+      return <AudioControls />
     case "live":
-      return <LiveControls />;
+      return <LiveControls />
     case "3d":
-      return <ThreeDControls />;
+      return <ThreeDControls />
     default:
-      return null; // Text and email don't have additional controls
+      return null // Text and email don't have additional controls
   }
 }

@@ -1,71 +1,62 @@
-"use client";
+"use client"
 
 import {
   Archive,
   ChevronLeft,
   ChevronRight,
-  ChevronUp,
-  Columns2,
-  Copy,
+  Cog,
   Folder,
   MessageSquare,
   Plus,
   Search,
-  Cog,
   Snowflake,
-} from "lucide-react";
-import { motion } from "motion/react";
-import { Button } from "@/components/ui/button";
+} from "lucide-react"
+import { motion } from "motion/react"
+import { Button } from "@/components/ui/button"
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/context-menu"
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card";
+} from "@/components/ui/hover-card"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import type { Tab, Workspace } from "./types";
-import { WorkspaceIcon } from "./workspace-icon";
+} from "@/components/ui/popover"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { cn } from "@/lib/utils"
+import type { Tab, Workspace } from "./types"
+import { WorkspaceIcon } from "./workspace-icon"
 
 interface SidebarCollapsedProps {
-  workspaces: Workspace[];
-  activeWorkspace: string;
-  visibleWorkspaces: Workspace[];
-  canScrollLeft: boolean;
-  canScrollRight: boolean;
-  archivesOpen: boolean;
-  plusMenuOpen: boolean;
-  onSetActiveWorkspace: (id: string) => void;
-  onSetarchivesOpen: (open: boolean) => void;
-  onSetPlusMenuOpen: (open: boolean) => void;
-  onStartScrolling: (direction: "left" | "right") => void;
-  onStopScrolling: () => void;
-  onCreateWorkspace: () => void;
-  onOpenWorkspaceDialog: () => void;
-  onCreateFolder: () => void;
-  onAddNewTab: () => void;
-  folders?: TabFolder[];
-  activeWorkspaceTabs?: Tab[];
-  activeTab?: string;
-  onSetActiveTab?: (id: string) => void;
-  onSetCommandOpen?: (open: boolean) => void;
-  onSetSettingsOpen?: (open: boolean) => void;
+  workspaces: Workspace[]
+  activeWorkspace: string
+  visibleWorkspaces: Workspace[]
+  canScrollLeft: boolean
+  canScrollRight: boolean
+  archivesOpen: boolean
+  plusMenuOpen: boolean
+  onSetActiveWorkspace: (id: string) => void
+  onSetarchivesOpen: (open: boolean) => void
+  onSetPlusMenuOpen: (open: boolean) => void
+  onStartScrolling: (direction: "left" | "right") => void
+  onStopScrolling: () => void
+  onCreateWorkspace: () => void
+  onOpenWorkspaceDialog: () => void
+  onCreateFolder: () => void
+  onAddNewTab: () => void
+  folders?: TabFolder[]
+  activeWorkspaceTabs?: Tab[]
+  activeTab?: string
+  onSetActiveTab?: (id: string) => void
+  onSetCommandOpen?: (open: boolean) => void
+  onSetSettingsOpen?: (open: boolean) => void
 }
 
 export function SidebarCollapsed({
@@ -75,15 +66,15 @@ export function SidebarCollapsed({
   canScrollLeft,
   canScrollRight,
   archivesOpen,
-  plusMenuOpen,
+  _plusMenuOpen,
   onSetActiveWorkspace,
   onSetarchivesOpen,
-  onSetPlusMenuOpen,
+  _onSetPlusMenuOpen,
   onStartScrolling,
   onStopScrolling,
   onCreateWorkspace,
   onOpenWorkspaceDialog,
-  onCreateFolder,
+  _onCreateFolder,
   onAddNewTab,
   folders = [],
   activeWorkspaceTabs = [],
@@ -92,8 +83,8 @@ export function SidebarCollapsed({
   onSetCommandOpen,
   onSetSettingsOpen,
 }: SidebarCollapsedProps) {
-  const activeWorkspaceObj =
-    workspaces.find((w) => w.id === activeWorkspace) || workspaces[0];
+  const _activeWorkspaceObj =
+    workspaces.find((w) => w.id === activeWorkspace) || workspaces[0]
 
   return (
     <motion.div className="flex flex-1 flex-col items-center py-2 h-full">
@@ -129,12 +120,20 @@ export function SidebarCollapsed({
                   <Folder className="h-4 w-4 shrink-0" />
                 </Button>
               </HoverCardTrigger>
-              <HoverCardContent side="right" className="w-48 border-border bg-card p-2">
+              <HoverCardContent
+                side="right"
+                className="w-48 border-border bg-card p-2"
+              >
                 <div className="flex flex-col gap-1">
-                  <span className="text-sm font-medium mb-1 border-b border-border pb-1">{folder.name}</span>
+                  <span className="text-sm font-medium mb-1 border-b border-border pb-1">
+                    {folder.name}
+                  </span>
                   {folder.tabs && folder.tabs.length > 0 ? (
                     folder.tabs.map((tab) => (
-                      <div key={tab.id} className="flex items-center gap-2 text-xs text-muted-foreground truncate">
+                      <div
+                        key={tab.id}
+                        className="flex items-center gap-2 text-xs text-muted-foreground truncate"
+                      >
                         <MessageSquare className="h-3 w-3 shrink-0" />
                         <span className="truncate">{tab.title}</span>
                       </div>
@@ -161,7 +160,10 @@ export function SidebarCollapsed({
                   <MessageSquare className="h-4 w-4 shrink-0" />
                 </Button>
               </HoverCardTrigger>
-              <HoverCardContent side="right" className="w-auto border-border bg-card p-2">
+              <HoverCardContent
+                side="right"
+                className="w-auto border-border bg-card p-2"
+              >
                 <span className="text-sm font-medium">{tab.title}</span>
               </HoverCardContent>
             </HoverCard>
@@ -206,7 +208,7 @@ export function SidebarCollapsed({
                   onClick={() => onSetActiveWorkspace(workspace.id)}
                   className={cn(
                     "group flex h-6 w-6 shrink-0 items-center justify-center rounded-md",
-                    activeWorkspace === workspace.id && "scale-110",
+                    activeWorkspace === workspace.id && "scale-110"
                   )}
                   title={workspace.name}
                   aria-label={`Switch to ${workspace.name} workspace`}
@@ -317,8 +319,8 @@ export function SidebarCollapsed({
                     size="icon"
                     className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
                     onClick={(e) => {
-                      e.stopPropagation();
-                      onSetarchivesOpen(true);
+                      e.stopPropagation()
+                      onSetarchivesOpen(true)
                     }}
                   >
                     <Archive className="h-4 w-4" />
@@ -380,8 +382,8 @@ export function SidebarCollapsed({
               size="icon"
               className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-none border-r border-border/50"
               onClick={(e) => {
-                e.stopPropagation();
-                onCreateWorkspace();
+                e.stopPropagation()
+                onCreateWorkspace()
               }}
               title="Create Space"
             >
@@ -453,5 +455,5 @@ export function SidebarCollapsed({
         </motion.div>
       </div>
     </motion.div>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-import type { Animation } from "./eyes-types";
+import type { Animation } from "./eyes-types"
 
 const animations: Animation[] = [
   {
@@ -23,7 +23,11 @@ const animations: Animation[] = [
     tags: ["emotion", "positive"],
     keyframes: [
       { at: 0, eyes: { sy: 1, h: 80, r: 16 } },
-      { at: 200, eyes: { sy: 1, h: 40, r: "40px 40px 8px 8px", y: 8 }, ease: "spring" },
+      {
+        at: 200,
+        eyes: { sy: 1, h: 40, r: "40px 40px 8px 8px", y: 8 },
+        ease: "spring",
+      },
       { at: 1100, eyes: { sy: 1, h: 40, r: "40px 40px 8px 8px", y: 8 } },
       { at: 1400, eyes: { sy: 1, h: 80, r: 16, y: 0 }, ease: "ease-out" },
     ],
@@ -36,7 +40,11 @@ const animations: Animation[] = [
     tags: ["emotion", "positive", "effect"],
     keyframes: [
       { at: 0, eyes: { sy: 1, h: 80, r: 16 } },
-      { at: 200, eyes: { sy: 1, h: 40, r: "40px 40px 8px 8px", y: 8 }, ease: "spring" },
+      {
+        at: 200,
+        eyes: { sy: 1, h: 40, r: "40px 40px 8px 8px", y: 8 },
+        ease: "spring",
+      },
       { at: 400, eyes: { sy: 1, h: 40, r: "40px 40px 8px 8px", y: 8 } },
       { at: 1600, eyes: { sy: 1, h: 40, r: "40px 40px 8px 8px", y: 8 } },
       { at: 2000, eyes: { sy: 1, h: 80, r: 16, y: 0 }, ease: "ease-out" },
@@ -65,7 +73,11 @@ const animations: Animation[] = [
     keyframes: [
       { at: 0, eyes: { w: 80, h: 80, r: 16 } },
       { at: 100, eyes: { w: 0, h: 0 }, ease: "ease-in" },
-      { at: 350, eyes: { w: 80, h: 80, r: 16, color: "#ff2d55" }, ease: "spring" },
+      {
+        at: 350,
+        eyes: { w: 80, h: 80, r: 16, color: "#ff2d55" },
+        ease: "spring",
+      },
       { at: 1600, eyes: { w: 80, h: 80, r: 16, color: "#ff2d55" } },
       { at: 1800, eyes: { w: 0, h: 0, color: "#ff2d55" }, ease: "ease-in" },
       { at: 2000, eyes: { w: 80, h: 80, r: 16, rot: 0 }, ease: "ease-out" },
@@ -94,7 +106,11 @@ const animations: Animation[] = [
     tags: ["emotion", "negative"],
     keyframes: [
       { at: 0, eyes: { h: 80, w: 80, r: 16, y: 0 } },
-      { at: 300, eyes: { h: 50, w: 70, r: "8px 8px 20px 20px", y: 10 }, ease: "ease" },
+      {
+        at: 300,
+        eyes: { h: 50, w: 70, r: "8px 8px 20px 20px", y: 10 },
+        ease: "ease",
+      },
       { at: 1300, eyes: { h: 50, w: 70, r: "8px 8px 20px 20px", y: 10 } },
       { at: 1700, eyes: { h: 80, w: 80, r: 16, y: 0 }, ease: "ease-out" },
     ],
@@ -108,9 +124,24 @@ const animations: Animation[] = [
     tags: ["emotion", "negative"],
     keyframes: [
       { at: 0, eyes: {} },
-      { at: 200, eyes: { h: 50, w: 90, r: 8, y: 4 }, left: { rot: 8 }, right: { rot: -8 }, ease: "ease-in" },
-      { at: 900, eyes: { h: 50, w: 90, r: 8, y: 4 }, left: { rot: 8 }, right: { rot: -8 } },
-      { at: 1200, eyes: { h: 80, w: 80, r: 16, y: 0, rot: 0 }, ease: "ease-out" },
+      {
+        at: 200,
+        eyes: { h: 50, w: 90, r: 8, y: 4 },
+        left: { rot: 8 },
+        right: { rot: -8 },
+        ease: "ease-in",
+      },
+      {
+        at: 900,
+        eyes: { h: 50, w: 90, r: 8, y: 4 },
+        left: { rot: 8 },
+        right: { rot: -8 },
+      },
+      {
+        at: 1200,
+        eyes: { h: 80, w: 80, r: 16, y: 0, rot: 0 },
+        ease: "ease-out",
+      },
     ],
   },
   {
@@ -169,7 +200,11 @@ const animations: Animation[] = [
     tags: ["directional"],
     keyframes: [
       { at: 0, eyes: { x: 0, w: 80 } },
-      { at: 200, eyes: { x: -16, w: 72, r: "16px 8px 8px 16px" }, ease: "ease-out" },
+      {
+        at: 200,
+        eyes: { x: -16, w: 72, r: "16px 8px 8px 16px" },
+        ease: "ease-out",
+      },
       { at: 700, eyes: { x: -16, w: 72, r: "16px 8px 8px 16px" } },
       { at: 1000, eyes: { x: 0, w: 80, r: 16 }, ease: "ease" },
     ],
@@ -182,7 +217,11 @@ const animations: Animation[] = [
     tags: ["directional"],
     keyframes: [
       { at: 0, eyes: { x: 0, w: 80 } },
-      { at: 200, eyes: { x: 16, w: 72, r: "8px 16px 16px 8px" }, ease: "ease-out" },
+      {
+        at: 200,
+        eyes: { x: 16, w: 72, r: "8px 16px 16px 8px" },
+        ease: "ease-out",
+      },
       { at: 700, eyes: { x: 16, w: 72, r: "8px 16px 16px 8px" } },
       { at: 1000, eyes: { x: 0, w: 80, r: 16 }, ease: "ease" },
     ],
@@ -214,17 +253,65 @@ const animations: Animation[] = [
     tags: ["effect", "digital"],
     keyframes: [
       { at: 0, eyes: { w: 80, h: 80, r: 16, color: "currentColor" } },
-      { at: 60, eyes: { w: 120, h: 20, x: -20, color: "#00ffff" }, ease: "linear" },
-      { at: 120, eyes: { w: 40, h: 90, x: 15, color: "#ff00ff" }, ease: "linear" },
-      { at: 180, eyes: { w: 100, h: 30, x: -10, y: -10, color: "currentColor" }, ease: "linear" },
-      { at: 240, eyes: { w: 50, h: 100, x: 20, y: 5, color: "#00ffff" }, ease: "linear" },
-      { at: 300, eyes: { w: 80, h: 10, x: -15, color: "#ff00ff" }, ease: "linear" },
-      { at: 360, eyes: { w: 10, h: 80, x: 10, color: "currentColor" }, ease: "linear" },
-      { at: 420, eyes: { w: 90, h: 50, x: -5, y: -8, color: "#00ffff" }, ease: "linear" },
-      { at: 500, eyes: { w: 60, h: 60, r: 50, x: 0, y: 0, color: "#ff00ff" }, ease: "linear" },
-      { at: 600, eyes: { w: 80, h: 80, r: 16, x: 0, y: 0, color: "currentColor", sy: 0.05 }, ease: "linear" },
+      {
+        at: 60,
+        eyes: { w: 120, h: 20, x: -20, color: "#00ffff" },
+        ease: "linear",
+      },
+      {
+        at: 120,
+        eyes: { w: 40, h: 90, x: 15, color: "#ff00ff" },
+        ease: "linear",
+      },
+      {
+        at: 180,
+        eyes: { w: 100, h: 30, x: -10, y: -10, color: "currentColor" },
+        ease: "linear",
+      },
+      {
+        at: 240,
+        eyes: { w: 50, h: 100, x: 20, y: 5, color: "#00ffff" },
+        ease: "linear",
+      },
+      {
+        at: 300,
+        eyes: { w: 80, h: 10, x: -15, color: "#ff00ff" },
+        ease: "linear",
+      },
+      {
+        at: 360,
+        eyes: { w: 10, h: 80, x: 10, color: "currentColor" },
+        ease: "linear",
+      },
+      {
+        at: 420,
+        eyes: { w: 90, h: 50, x: -5, y: -8, color: "#00ffff" },
+        ease: "linear",
+      },
+      {
+        at: 500,
+        eyes: { w: 60, h: 60, r: 50, x: 0, y: 0, color: "#ff00ff" },
+        ease: "linear",
+      },
+      {
+        at: 600,
+        eyes: {
+          w: 80,
+          h: 80,
+          r: 16,
+          x: 0,
+          y: 0,
+          color: "currentColor",
+          sy: 0.05,
+        },
+        ease: "linear",
+      },
       { at: 700, eyes: { sy: 1 }, ease: "linear" },
-      { at: 900, eyes: { w: 80, h: 80, r: 16, x: 0, y: 0, color: "currentColor", sy: 1 }, ease: "ease-out" },
+      {
+        at: 900,
+        eyes: { w: 80, h: 80, r: 16, x: 0, y: 0, color: "currentColor", sy: 1 },
+        ease: "ease-out",
+      },
     ],
   },
   {
@@ -281,7 +368,12 @@ const animations: Animation[] = [
       { at: 450, eyes: { x: 2 }, ease: "linear" },
       { at: 500, eyes: { x: 0 }, ease: "linear" },
       { at: 1200, eyes: { w: 100, h: 100, r: 50 }, gap: 90 },
-      { at: 1500, eyes: { w: 80, h: 80, r: 16, x: 0 }, gap: 60, ease: "ease-out" },
+      {
+        at: 1500,
+        eyes: { w: 80, h: 80, r: 16, x: 0 },
+        gap: 60,
+        ease: "ease-out",
+      },
     ],
   },
   {
@@ -305,13 +397,23 @@ const animations: Animation[] = [
     tags: ["emotion", "positive"],
     keyframes: [
       { at: 0, eyes: { w: 80, h: 80, r: 16, sy: 1 } },
-      { at: 200, eyes: { w: 95, h: 95, r: 20, sy: 1.1 }, gap: 70, ease: "spring" },
+      {
+        at: 200,
+        eyes: { w: 95, h: 95, r: 20, sy: 1.1 },
+        gap: 70,
+        ease: "spring",
+      },
       { at: 300, eyes: { sy: 0.05 }, ease: "ease-in" },
       { at: 400, eyes: { sy: 1.1 }, ease: "ease-out" },
       { at: 500, eyes: { sy: 0.05 }, ease: "ease-in" },
       { at: 600, eyes: { sy: 1.1 }, ease: "ease-out" },
       { at: 1300, eyes: { w: 95, h: 95, r: 20, sy: 1.1 }, gap: 70 },
-      { at: 1600, eyes: { w: 80, h: 80, r: 16, sy: 1 }, gap: 60, ease: "ease-out" },
+      {
+        at: 1600,
+        eyes: { w: 80, h: 80, r: 16, sy: 1 },
+        gap: 60,
+        ease: "ease-out",
+      },
     ],
   },
   {
@@ -330,25 +432,33 @@ const animations: Animation[] = [
       { at: 560, eyes: { w: 60, h: 10, r: 3, rot: 45 }, ease: "linear" },
       { at: 660, eyes: { w: 10, h: 60, r: 3, rot: 45 } },
       { at: 1800, eyes: { w: 10, h: 60, r: 3, rot: 45 } },
-      { at: 2200, eyes: { w: 10, h: 60, r: 3, rot: 45, y: 120, sy: 0 }, ease: "ease-in" },
+      {
+        at: 2200,
+        eyes: { w: 10, h: 60, r: 3, rot: 45, y: 120, sy: 0 },
+        ease: "ease-in",
+      },
       { at: 3000, eyes: { w: 10, h: 60, r: 3, rot: 45, y: 120, sy: 0 } },
-      { at: 3500, eyes: { w: 80, h: 80, r: 16, rot: 0, y: 0, sy: 1 }, ease: "spring" },
+      {
+        at: 3500,
+        eyes: { w: 80, h: 80, r: 16, rot: 0, y: 0, sy: 1 },
+        ease: "spring",
+      },
     ],
   },
-];
+]
 
 export function getAllAnimations(): Animation[] {
-  return [...animations];
+  return [...animations]
 }
 
 export function getAnimation(name: string): Animation | undefined {
-  return animations.find((a) => a.name === name);
+  return animations.find((a) => a.name === name)
 }
 
 export function getAnimationsByTrigger(trigger: string): Animation[] {
-  return animations.filter((a) => a.trigger === trigger);
+  return animations.filter((a) => a.trigger === trigger)
 }
 
 export function getAnimationByKey(key: string): Animation | undefined {
-  return animations.find((a) => a.key === key);
+  return animations.find((a) => a.key === key)
 }

@@ -3,11 +3,9 @@ import { BriefcaseBusinessIcon, InfinityIcon } from "lucide-react"
 import {
   Collapsible,
   CollapsibleChevronsUpDownIcon,
-} from "@/components/base/collapsible-animated"
-import {
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/base/collapsible-animated"
 import { Markdown } from "@/components/markdown"
 import { Separator } from "@/components/ui/separator"
 import { Tag } from "@/components/ui/tag"

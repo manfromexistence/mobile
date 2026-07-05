@@ -1,13 +1,11 @@
 "use client"
 
+import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useHotkeys } from "react-hotkeys-hook"
-
 import { META_THEME_COLORS } from "@/config/site"
-import { useClickSound } from "@/lib/soundcn/hooks/use-click-sound"
 import { useMetaColor } from "@/hooks/use-meta-color"
-
-import { Moon, Sun } from "lucide-react"
+import { useClickSound } from "@/lib/soundcn/hooks/use-click-sound"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./base/ui/tooltip"
 import { Button } from "./ui/button"
 import { Kbd } from "./ui/kbd"

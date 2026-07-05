@@ -11,7 +11,7 @@ export function OpenAILogo({ className }: { className?: string }) {
     >
       <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z" />
     </svg>
-  );
+  )
 }
 
 export function AnthropicLogo({ className }: { className?: string }) {
@@ -24,7 +24,7 @@ export function AnthropicLogo({ className }: { className?: string }) {
     >
       <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L19.82 8 12 11.82 4.18 8 12 4.18zM4 9.48l7 3.5v7.84l-7-3.5V9.48zm16 0v7.84l-7 3.5v-7.84l7-3.5z" />
     </svg>
-  );
+  )
 }
 
 export function GoogleLogo({ className }: { className?: string }) {
@@ -51,7 +51,7 @@ export function GoogleLogo({ className }: { className?: string }) {
         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
       />
     </svg>
-  );
+  )
 }
 
 export function MetaLogo({ className }: { className?: string }) {
@@ -64,7 +64,7 @@ export function MetaLogo({ className }: { className?: string }) {
     >
       <path d="M12 2C6.477 2 2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.879V14.89h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.989C18.343 21.129 22 16.99 22 12c0-5.523-4.477-10-10-10z" />
     </svg>
-  );
+  )
 }
 
 export function MistralLogo({ className }: { className?: string }) {
@@ -78,7 +78,7 @@ export function MistralLogo({ className }: { className?: string }) {
       <path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.5L18.5 8v8L12 19.5 5.5 16V8L12 4.5z" />
       <path d="M12 8l-4 2.5v5l4 2.5 4-2.5v-5L12 8z" />
     </svg>
-  );
+  )
 }
 
 export function CohereLogoIcon({ className }: { className?: string }) {
@@ -92,7 +92,7 @@ export function CohereLogoIcon({ className }: { className?: string }) {
       <circle cx="12" cy="12" r="10" opacity="0.2" />
       <circle cx="12" cy="12" r="6" />
     </svg>
-  );
+  )
 }
 
 export function GroqLogo({ className }: { className?: string }) {
@@ -106,7 +106,7 @@ export function GroqLogo({ className }: { className?: string }) {
       <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L19.82 8 12 11.82 4.18 8 12 4.18zM4 9.48l7 3.5v7.84l-7-3.5V9.48zm16 0v7.84l-7 3.5v-7.84l7-3.5z" />
       <circle cx="12" cy="12" r="2" fill="currentColor" />
     </svg>
-  );
+  )
 }
 
 export function CerebrasLogo({ className }: { className?: string }) {
@@ -121,7 +121,7 @@ export function CerebrasLogo({ className }: { className?: string }) {
       <path d="M12 6c-3.314 0-6 2.686-6 6s2.686 6 6 6 6-2.686 6-6-2.686-6-6-6zm0 10c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z" />
       <circle cx="12" cy="12" r="2" />
     </svg>
-  );
+  )
 }
 
 export function DeepSeekLogo({ className }: { className?: string }) {
@@ -135,7 +135,7 @@ export function DeepSeekLogo({ className }: { className?: string }) {
       <path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.5L18.5 8v8L12 19.5 5.5 16V8L12 4.5z" />
       <path d="M12 7l-3 2v6l3 2 3-2V9l-3-2z" />
     </svg>
-  );
+  )
 }
 
 export function OpenRouterLogo({ className }: { className?: string }) {
@@ -149,5 +149,5 @@ export function OpenRouterLogo({ className }: { className?: string }) {
       <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L19.82 8 12 11.82 4.18 8 12 4.18zM4 9.48l7 3.5v7.84l-7-3.5V9.48zm16 0v7.84l-7 3.5v-7.84l7-3.5z" />
       <path d="M8 10l4 2 4-2v4l-4 2-4-2v-4z" />
     </svg>
-  );
+  )
 }

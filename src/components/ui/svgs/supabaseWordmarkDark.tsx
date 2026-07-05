@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from "react"
 
 const SupabaseWordmarkDark = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} viewBox="0 0 581 113" fill="none">
@@ -72,6 +72,6 @@ const SupabaseWordmarkDark = (props: SVGProps<SVGSVGElement>) => (
       </linearGradient>
     </defs>
   </svg>
-);
+)
 
-export { SupabaseWordmarkDark };
+export { SupabaseWordmarkDark }

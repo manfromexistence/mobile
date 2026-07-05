@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from "react"
 
 const YoutubeWordmarkLight = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} viewBox="409.289 277.787 512 114.301">
@@ -34,6 +34,6 @@ const YoutubeWordmarkLight = (props: SVGProps<SVGSVGElement>) => (
       </g>
     </g>
   </svg>
-);
+)
 
-export { YoutubeWordmarkLight };
+export { YoutubeWordmarkLight }

@@ -1,38 +1,38 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { ChevronRight, Folder, FolderOpen, X } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import { ChevronRight, Folder, FolderOpen, X } from "lucide-react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-import { cn } from "@/lib/utils";
-import type { DropPosition, TabFolder } from "./types";
+} from "@/components/ui/context-menu"
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
+import type { DropPosition, TabFolder } from "./types"
 
 interface DroppableFolderProps {
-  folder: TabFolder;
-  overId: string | null;
-  dropPosition: DropPosition;
-  onToggleFolder: (folderId: string) => void;
-  onDeleteFolder: (folderId: string) => void;
-  onRenameFolder: (folderId: string, newName: string) => void;
-  onUnloadAllTabs: (folderId: string) => void;
-  onCreateSubfolder: (parentId: string) => void;
-  onUnpackFolder: (folderId: string) => void;
+  folder: TabFolder
+  overId: string | null
+  dropPosition: DropPosition
+  onToggleFolder: (folderId: string) => void
+  onDeleteFolder: (folderId: string) => void
+  onRenameFolder: (folderId: string, newName: string) => void
+  onUnloadAllTabs: (folderId: string) => void
+  onCreateSubfolder: (parentId: string) => void
+  onUnpackFolder: (folderId: string) => void
 }
 
 export function DroppableFolder({
@@ -46,8 +46,8 @@ export function DroppableFolder({
   onCreateSubfolder,
   onUnpackFolder,
 }: DroppableFolderProps) {
-  const [renameDialogOpen, setRenameDialogOpen] = useState(false);
-  const [newName, setNewName] = useState(folder.name);
+  const [renameDialogOpen, setRenameDialogOpen] = useState(false)
+  const [newName, setNewName] = useState(folder.name)
   const {
     attributes,
     listeners,
@@ -58,15 +58,15 @@ export function DroppableFolder({
   } = useSortable({
     id: folder.id,
     data: { type: "folder", folder },
-  });
+  })
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-  };
+  }
 
-  const isDropTarget = overId === folder.id && dropPosition === "inside";
+  const isDropTarget = overId === folder.id && dropPosition === "inside"
 
   return (
     <ContextMenu modal={false}>
@@ -79,7 +79,7 @@ export function DroppableFolder({
           className={cn(
             "text-muted-foreground hover:bg-accent hover:text-accent-foreground group/item relative flex h-10 w-full cursor-grab items-center gap-2 rounded-md px-2 text-sm transition-colors active:cursor-grabbing",
             isDropTarget && "bg-accent text-accent-foreground",
-            isDragging && "opacity-50",
+            isDragging && "opacity-50"
           )}
           onClick={() => onToggleFolder(folder.id)}
           onContextMenu={(e) => e.stopPropagation()}
@@ -95,8 +95,8 @@ export function DroppableFolder({
           <button
             className="absolute right-2 flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center opacity-0 transition-opacity group-hover/item:opacity-100"
             onClick={(e) => {
-              e.stopPropagation();
-              onDeleteFolder(folder.id);
+              e.stopPropagation()
+              onDeleteFolder(folder.id)
             }}
           >
             <X className="h-3 w-3" />
@@ -120,9 +120,9 @@ export function DroppableFolder({
           <DialogTrigger asChild>
             <ContextMenuItem
               onSelect={(e) => {
-                e.preventDefault();
-                setNewName(folder.name);
-                setRenameDialogOpen(true);
+                e.preventDefault()
+                setNewName(folder.name)
+                setRenameDialogOpen(true)
               }}
               className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
             >
@@ -140,8 +140,8 @@ export function DroppableFolder({
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     if (newName.trim()) {
-                      onRenameFolder(folder.id, newName.trim());
-                      setRenameDialogOpen(false);
+                      onRenameFolder(folder.id, newName.trim())
+                      setRenameDialogOpen(false)
                     }
                   }
                 }}
@@ -149,13 +149,22 @@ export function DroppableFolder({
               />
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setRenameDialogOpen(false)}>Cancel</Button>
-              <Button onClick={() => {
-                if (newName.trim()) {
-                  onRenameFolder(folder.id, newName.trim());
-                  setRenameDialogOpen(false);
-                }
-              }}>Save</Button>
+              <Button
+                variant="outline"
+                onClick={() => setRenameDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  if (newName.trim()) {
+                    onRenameFolder(folder.id, newName.trim())
+                    setRenameDialogOpen(false)
+                  }
+                }}
+              >
+                Save
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -168,8 +177,8 @@ export function DroppableFolder({
         <div className="border-border my-1 border-t" />
         <ContextMenuItem
           onSelect={(e) => {
-            e.preventDefault();
-            onUnloadAllTabs(folder.id);
+            e.preventDefault()
+            onUnloadAllTabs(folder.id)
           }}
           className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
         >
@@ -177,8 +186,8 @@ export function DroppableFolder({
         </ContextMenuItem>
         <ContextMenuItem
           onSelect={(e) => {
-            e.preventDefault();
-            onCreateSubfolder(folder.id);
+            e.preventDefault()
+            onCreateSubfolder(folder.id)
           }}
           className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
         >
@@ -201,8 +210,8 @@ export function DroppableFolder({
         <div className="border-border my-1 border-t" />
         <ContextMenuItem
           onSelect={(e) => {
-            e.preventDefault();
-            onUnpackFolder(folder.id);
+            e.preventDefault()
+            onUnpackFolder(folder.id)
           }}
           className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
         >
@@ -210,8 +219,8 @@ export function DroppableFolder({
         </ContextMenuItem>
         <ContextMenuItem
           onSelect={(e) => {
-            e.preventDefault();
-            onDeleteFolder(folder.id);
+            e.preventDefault()
+            onDeleteFolder(folder.id)
           }}
           className="text-destructive focus:bg-accent focus:text-destructive"
         >
@@ -219,5 +228,5 @@ export function DroppableFolder({
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
-  );
+  )
 }

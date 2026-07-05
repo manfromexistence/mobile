@@ -1,13 +1,16 @@
 "use client"
 
 import { createContext, useContext, useEffect, useRef, useState } from "react"
-
+import {
+  CollapsibleContent,
+  Collapsible as CollapsibleRoot,
+  CollapsibleTrigger,
+} from "@/components/base/ui/collapsible"
 import type {
   ChevronDownIconHandle,
   ChevronDownIconProps,
 } from "@/features/portfolio/components/animated-icons/chevron-down-icon"
 import { ChevronDownIcon } from "@/features/portfolio/components/animated-icons/chevron-down-icon"
-import { Collapsible as CollapsibleRoot } from "@/components/base/ui/collapsible"
 import type {
   ChevronsUpDownIconHandle,
   ChevronsUpDownIconProps,
@@ -91,6 +94,8 @@ function CollapsibleChevronDownIcon(props: Omit<ChevronDownIconProps, "ref">) {
 export {
   CollapsibleChevronDownIcon,
   CollapsibleChevronsUpDownIcon,
+  CollapsibleContent,
+  CollapsibleTrigger,
   CollapsibleWithContext as Collapsible,
   useCollapsible,
   useCollapsibleAnimation,

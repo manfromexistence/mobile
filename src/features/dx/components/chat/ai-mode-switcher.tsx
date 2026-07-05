@@ -1,23 +1,23 @@
-"use client";
+"use client"
 
-import { Bug, GitBranch, MessageSquare, Sparkles } from "lucide-react";
-import { motion } from "motion/react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Bug, GitBranch, MessageSquare, Sparkles } from "lucide-react"
+import { motion } from "motion/react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+} from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
 
-type AIMode = "agent" | "plan" | "ask" | "debug";
+type AIMode = "agent" | "plan" | "ask" | "debug"
 
 interface AIModeOption {
-  id: AIMode;
-  label: string;
-  icon: React.ElementType;
-  description: string;
+  id: AIMode
+  label: string
+  icon: React.ElementType
+  description: string
 }
 
 const AI_MODES: AIModeOption[] = [
@@ -45,14 +45,14 @@ const AI_MODES: AIModeOption[] = [
     icon: Bug,
     description: "Debug and troubleshoot",
   },
-];
+]
 
 export function AIModeSwitcher() {
-  const [mode, setMode] = useState<AIMode>("agent");
-  const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<AIMode>("agent")
+  const [open, setOpen] = useState(false)
 
-  const currentMode = AI_MODES.find((m) => m.id === mode);
-  const ModeIcon = currentMode?.icon || Sparkles;
+  const currentMode = AI_MODES.find((m) => m.id === mode)
+  const ModeIcon = currentMode?.icon || Sparkles
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -69,14 +69,14 @@ export function AIModeSwitcher() {
           </div>
           <div className="space-y-1">
             {AI_MODES.map((modeOption) => {
-              const Icon = modeOption.icon;
-              const isSelected = mode === modeOption.id;
+              const Icon = modeOption.icon
+              const isSelected = mode === modeOption.id
               return (
                 <motion.button
                   key={modeOption.id}
                   onClick={() => {
-                    setMode(modeOption.id);
-                    setOpen(false);
+                    setMode(modeOption.id)
+                    setOpen(false)
                   }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -84,7 +84,7 @@ export function AIModeSwitcher() {
                     "flex w-full items-start gap-3 rounded-lg px-3 py-2.5 text-left transition-all",
                     isSelected
                       ? "bg-primary text-primary-foreground"
-                      : "hover:bg-accent hover:text-accent-foreground",
+                      : "hover:bg-accent hover:text-accent-foreground"
                   )}
                 >
                   <Icon className="mt-0.5 h-4 w-4 shrink-0" />
@@ -97,18 +97,18 @@ export function AIModeSwitcher() {
                         "text-xs",
                         isSelected
                           ? "text-primary-foreground/80"
-                          : "text-muted-foreground",
+                          : "text-muted-foreground"
                       )}
                     >
                       {modeOption.description}
                     </div>
                   </div>
                 </motion.button>
-              );
+              )
             })}
           </div>
         </div>
       </PopoverContent>
     </Popover>
-  );
+  )
 }

@@ -5,11 +5,9 @@ import { TextIcon } from "lucide-react"
 import {
   Collapsible,
   CollapsibleChevronDownIcon,
-} from "@/components/base/collapsible-animated"
-import {
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/base/collapsible-animated"
 import { trackEvent } from "@/lib/events"
 import { cn } from "@/lib/utils"
 

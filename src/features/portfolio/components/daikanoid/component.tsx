@@ -36,7 +36,7 @@ export function Daikanoid({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const shouldReduceMotion = useReducedMotion()
-  const p5Ref = useRef<any>(null);
+  const p5Ref = useRef<any>(null)
   const { resolvedTheme } = useTheme()
 
   useEffect(() => {
@@ -160,19 +160,19 @@ export function Daikanoid({
 
     // Dynamically import p5 to avoid SSR issues
     const initP5 = async () => {
-      if (p5Ref.current) return; // already initialized
-      const p5Module = await import("p5");
-      const p5Lib = p5Module.default || p5Module;
-      p5Ref.current = new p5Lib(game);
-    };
-    initP5();
+      if (p5Ref.current) return // already initialized
+      const p5Module = await import("p5")
+      const p5Lib = p5Module.default || p5Module
+      p5Ref.current = new p5Lib(game)
+    }
+    initP5()
 
     // Cleanup function
     return () => {
-      window.removeEventListener("keypress", handleKeyPress);
-      if (p5Ref.current) p5Ref.current.remove();
-    };
-  }, [] )
+      window.removeEventListener("keypress", handleKeyPress)
+      if (p5Ref.current) p5Ref.current.remove()
+    }
+  }, [])
 
   return (
     <canvas

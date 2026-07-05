@@ -1,46 +1,48 @@
-"use client";
+"use client"
 
-import { useEyes } from "@/hooks/use-eyes";
-import { Eye } from "./eye";
-import { GlassCrack } from "./glass-crack";
-import { GunshotMode } from "./gunshot-mode";
-import { EyesProvider } from "@/lib/eyes-context";
-import { useState, useEffect } from "react";
-import { generateCrackClipPath } from "@/lib/crack-path-generator";
+import { useEffect, useState } from "react"
+import { useEyes } from "@/hooks/use-eyes"
+import { generateCrackClipPath } from "@/lib/crack-path-generator"
+import { EyesProvider } from "@/lib/eyes-context"
+import { Eye } from "./eye"
+import { GlassCrack } from "./glass-crack"
+import { GunshotMode } from "./gunshot-mode"
 
 interface EyesStageProps {
-  children?: React.ReactNode;
-  gunshotMode?: boolean;
+  children?: React.ReactNode
+  gunshotMode?: boolean
 }
 
 export function EyesStage({ children, gunshotMode = false }: EyesStageProps) {
-  const eyes = useEyes();
-  const [showCrack, setShowCrack] = useState(false);
-  const [crackPosition, setCrackPosition] = useState({ x: 0, y: 0 });
-  const [eyeCrackPath, setEyeCrackPath] = useState<string | undefined>();
+  const eyes = useEyes()
+  const [showCrack, setShowCrack] = useState(false)
+  const [crackPosition, setCrackPosition] = useState({ x: 0, y: 0 })
+  const [eyeCrackPath, setEyeCrackPath] = useState<string | undefined>()
 
   useEffect(() => {
     if (eyes.current === "gunshot" && !gunshotMode) {
-      const rect = document.querySelector(".eyes-container")?.getBoundingClientRect();
+      const rect = document
+        .querySelector(".eyes-container")
+        ?.getBoundingClientRect()
       if (rect) {
         setCrackPosition({
           x: rect.left + rect.width / 2,
           y: rect.top + rect.height / 2,
-        });
+        })
       }
-      setShowCrack(true);
-      const timer = setTimeout(() => setShowCrack(false), 3500);
-      return () => clearTimeout(timer);
+      setShowCrack(true)
+      const timer = setTimeout(() => setShowCrack(false), 3500)
+      return () => clearTimeout(timer)
     }
-    
+
     // Generate crack pattern for cracked-happy animation
     if (eyes.current === "cracked-happy") {
-      const crackPath = generateCrackClipPath(50, 40, 100, 100, 12);
-      setEyeCrackPath(crackPath);
-      const timer = setTimeout(() => setEyeCrackPath(undefined), 2000);
-      return () => clearTimeout(timer);
+      const crackPath = generateCrackClipPath(50, 40, 100, 100, 12)
+      setEyeCrackPath(crackPath)
+      const timer = setTimeout(() => setEyeCrackPath(undefined), 2000)
+      return () => clearTimeout(timer)
     }
-  }, [eyes.current, gunshotMode]);
+  }, [eyes.current, gunshotMode])
 
   return (
     <EyesProvider play={eyes.play} current={eyes.current}>
@@ -63,8 +65,12 @@ export function EyesStage({ children, gunshotMode = false }: EyesStageProps) {
         </div>
       </div>
       {children}
-      <GlassCrack show={showCrack} targetX={crackPosition.x} targetY={crackPosition.y} />
+      <GlassCrack
+        show={showCrack}
+        targetX={crackPosition.x}
+        targetY={crackPosition.y}
+      />
       <GunshotMode active={gunshotMode} onShoot={() => eyes.play("gunshot")} />
     </EyesProvider>
-  );
+  )
 }

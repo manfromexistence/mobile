@@ -1,14 +1,14 @@
-const fs = require('fs');
-let content = fs.readFileSync('src/lib/ai/providers.ts', 'utf8');
+const fs = require("fs")
+let content = fs.readFileSync("src/lib/ai/providers.ts", "utf8")
 
 // 1. Add "opencode" to ProviderId
 content = content.replace(
   '  | "ai-gateway"; // AI Gateway for 20+ providers',
   '  | "ai-gateway"\n  | "opencode"; // Opencode'
-);
+)
 
 // 2. Add opencode to providers map
-const opencodeEntry = `
+const _opencodeEntry = `
   opencode: {
     id: "opencode",
     name: "Opencode",
@@ -24,7 +24,7 @@ const opencodeEntry = `
     defaultModel: "opencode-default",
     description: "Opencode Free Models",
   },
-`;
+`
 
 // Wait, we need an icon. Let's look for an icon imported. `CodeIcon`? No.
 // Let's use AnthropicLogo or OpenAILogo for now since we don't know what's imported.
@@ -45,18 +45,19 @@ const actualOpencodeEntry = `
     defaultModel: "opencode-default",
     description: "Opencode Free Models",
   },
-`;
+`
 
 content = content.replace(
-  'export const providers: Record<ProviderId, ProviderConfig> = {',
-  'export const providers: Record<ProviderId, ProviderConfig> = {' + actualOpencodeEntry
-);
+  "export const providers: Record<ProviderId, ProviderConfig> = {",
+  "export const providers: Record<ProviderId, ProviderConfig> = {" +
+    actualOpencodeEntry
+)
 
 // 3. Update defaultProvider and defaultModel
 content = content.replace(
   /export const defaultProvider: ProviderId = "groq";\nexport const defaultModel = "llama-3\.1-8b-instant";/,
   'export const defaultProvider: ProviderId = "opencode";\nexport const defaultModel = "opencode-default";'
-);
+)
 
 // 4. Update getModel
 const getModelCase = `    case "opencode": {
@@ -66,12 +67,12 @@ const getModelCase = `    case "opencode": {
       });
       return opencodeProvider(modelConfig.modelId);
     }
-`;
+`
 
 content = content.replace(
   '    case "ai-gateway":',
-  getModelCase + '    case "ai-gateway":'
-);
+  `${getModelCase}    case "ai-gateway":`
+)
 
-fs.writeFileSync('src/lib/ai/providers.ts', content);
-console.log("Updated providers.ts");
+fs.writeFileSync("src/lib/ai/providers.ts", content)
+console.log("Updated providers.ts")

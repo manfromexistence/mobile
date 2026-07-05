@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { motion } from "motion/react";
+import { motion } from "motion/react"
 
 export function CodeScreen() {
   return (
@@ -76,5 +76,5 @@ export function CodeScreen() {
         </div>
       </div>
     </motion.div>
-  );
+  )
 }

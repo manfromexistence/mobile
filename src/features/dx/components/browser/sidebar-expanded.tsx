@@ -1,130 +1,128 @@
-"use client";
+"use client"
 
 import {
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+} from "@dnd-kit/sortable"
 import {
   Archive,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
   Columns2,
   Copy,
   Folder,
-  LayoutGrid,
   Grid3x3,
   Link,
-  MoreVertical,
   Play,
   Plus,
   Search,
   SkipBack,
   SkipForward,
+  Snowflake,
   Volume2,
   X,
-  ChevronUp,
-  Snowflake,
-} from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
-import { Button } from "@/components/ui/button";
+} from "lucide-react"
+import { AnimatePresence, motion } from "motion/react"
+import { Button } from "@/components/ui/button"
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu";
+} from "@/components/ui/context-menu"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Youtube } from "@/components/ui/svgs/youtube";
-import { cn } from "@/lib/utils";
-import { DraggableTab } from "./draggable-tab";
-import { DraggableTabInFolder } from "./draggable-tab-in-folder";
-import { DroppableFolder } from "./droppable-folder";
-import { LogoContainer } from "./logo-container";
-import { SpaceSection } from "./space-section";
-import type { DropPosition, SVGLogo, Tab, TabFolder, Workspace } from "./types";
-import { WorkspaceIcon } from "./workspace-icon";
+} from "@/components/ui/popover"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Youtube } from "@/components/ui/svgs/youtube"
+import { cn } from "@/lib/utils"
+import { DraggableTab } from "./draggable-tab"
+import { DraggableTabInFolder } from "./draggable-tab-in-folder"
+import { DroppableFolder } from "./droppable-folder"
+import { LogoContainer } from "./logo-container"
+import { SpaceSection } from "./space-section"
+import type { DropPosition, SVGLogo, Tab, TabFolder, Workspace } from "./types"
+import { WorkspaceIcon } from "./workspace-icon"
 
 interface SidebarExpandedProps {
-  workspaces: Workspace[];
-  activeWorkspace: string;
-  visibleWorkspaces: Workspace[];
-  canScrollLeft: boolean;
-  canScrollRight: boolean;
-  archivesOpen: boolean;
-  plusMenuOpen: boolean;
-  spaceCollapsed: boolean;
-  isSpaceAreaHovered: boolean;
-  dropdownOpen: boolean;
-  mediaPlaying: boolean;
-  mediaProgress: number;
-  isMounted: boolean;
-  logos: SVGLogo[];
-  logoContainerHovered: boolean;
-  activeWorkspaceFolders: TabFolder[];
-  activeWorkspaceTabs: Tab[];
-  activeTab: string;
-  overId: string | null;
-  dropPosition: DropPosition;
-  folders: TabFolder[];
-  onSetActiveWorkspace: (id: string) => void;
-  onSetarchivesOpen: (open: boolean) => void;
-  onSetPlusMenuOpen: (open: boolean) => void;
-  onSetSpaceCollapsed: (collapsed: boolean) => void;
-  onSetSpaceAreaHovered: (hovered: boolean) => void;
-  onSetDropdownOpen: (open: boolean) => void;
-  onSetMediaPlaying: (playing: boolean) => void;
-  onStartScrolling: (direction: "left" | "right") => void;
-  onStopScrolling: () => void;
-  onCreateWorkspace: () => void;
-  onOpenWorkspaceDialog: () => void;
-  onCreateFolder: () => void;
-  onAddNewTab: () => void;
-  onClearAllTabs: () => void;
-  onSetCommandOpen: (open: boolean) => void;
-  onRemoveLogo: (logoId: number) => void;
-  onRenameLogo: (logoId: number, newTitle: string) => void;
-  onRenameTab?: (tabId: string, newTitle: string) => void;
-  onArchiveTab?: (tabId: string) => void;
-  onSetActiveTab: (tabId: string) => void;
-  onCloseTab: (tabId: string) => void;
-  onToggleFolder: (folderId: string) => void;
-  onDeleteFolder: (folderId: string) => void;
-  onRenameFolder: (folderId: string, newName: string) => void;
-  onUnloadAllTabs: (folderId: string) => void;
-  onCreateSubfolder: (parentId: string) => void;
-  onUnpackFolder: (folderId: string) => void;
-  onRenameWorkspace: () => void;
-  onEditWorkspaceIcon: () => void;
-  onUnloadSpace: () => void;
-  onDeleteSpace: () => void;
+  workspaces: Workspace[]
+  activeWorkspace: string
+  visibleWorkspaces: Workspace[]
+  canScrollLeft: boolean
+  canScrollRight: boolean
+  archivesOpen: boolean
+  plusMenuOpen: boolean
+  spaceCollapsed: boolean
+  isSpaceAreaHovered: boolean
+  dropdownOpen: boolean
+  mediaPlaying: boolean
+  mediaProgress: number
+  isMounted: boolean
+  logos: SVGLogo[]
+  logoContainerHovered: boolean
+  activeWorkspaceFolders: TabFolder[]
+  activeWorkspaceTabs: Tab[]
+  activeTab: string
+  overId: string | null
+  dropPosition: DropPosition
+  folders: TabFolder[]
+  onSetActiveWorkspace: (id: string) => void
+  onSetarchivesOpen: (open: boolean) => void
+  onSetPlusMenuOpen: (open: boolean) => void
+  onSetSpaceCollapsed: (collapsed: boolean) => void
+  onSetSpaceAreaHovered: (hovered: boolean) => void
+  onSetDropdownOpen: (open: boolean) => void
+  onSetMediaPlaying: (playing: boolean) => void
+  onStartScrolling: (direction: "left" | "right") => void
+  onStopScrolling: () => void
+  onCreateWorkspace: () => void
+  onOpenWorkspaceDialog: () => void
+  onCreateFolder: () => void
+  onAddNewTab: () => void
+  onClearAllTabs: () => void
+  onSetCommandOpen: (open: boolean) => void
+  onRemoveLogo: (logoId: number) => void
+  onRenameLogo: (logoId: number, newTitle: string) => void
+  onRenameTab?: (tabId: string, newTitle: string) => void
+  onArchiveTab?: (tabId: string) => void
+  onSetActiveTab: (tabId: string) => void
+  onCloseTab: (tabId: string) => void
+  onToggleFolder: (folderId: string) => void
+  onDeleteFolder: (folderId: string) => void
+  onRenameFolder: (folderId: string, newName: string) => void
+  onUnloadAllTabs: (folderId: string) => void
+  onCreateSubfolder: (parentId: string) => void
+  onUnpackFolder: (folderId: string) => void
+  onRenameWorkspace: () => void
+  onEditWorkspaceIcon: () => void
+  onUnloadSpace: () => void
+  onDeleteSpace: () => void
   renderWorkspaceIcon: (
     workspace: Workspace,
-    isActive: boolean,
-  ) => React.ReactElement;
-  COLORS: string[];
+    isActive: boolean
+  ) => React.ReactElement
+  COLORS: string[]
 }
 
 export function SidebarExpanded(props: SidebarExpandedProps) {
   const { setNodeRef: setNewTabButtonRef } = useSortable({
     id: "new-tab-button",
     data: { type: "new-tab-button" },
-  });
+  })
 
   const currentWorkspace = props.workspaces.find(
-    (w) => w.id === props.activeWorkspace,
-  );
+    (w) => w.id === props.activeWorkspace
+  )
 
   return (
     <motion.div
@@ -151,146 +149,146 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
       </div>
 
       <ScrollArea className="flex-1 overflow-hidden overflow-x-hidden w-full">
-      <LogoContainer
-        logos={props.logos}
-        isMounted={props.isMounted}
-        logoContainerHovered={props.logoContainerHovered}
-        onRemoveLogo={props.onRemoveLogo}
-        onRenameLogo={props.onRenameLogo}
-        onAddNewTab={props.onAddNewTab}
-        onCreateFolder={props.onCreateFolder}
-        overId={props.overId}
-        dropPosition={props.dropPosition}
-      />
+        <LogoContainer
+          logos={props.logos}
+          isMounted={props.isMounted}
+          logoContainerHovered={props.logoContainerHovered}
+          onRemoveLogo={props.onRemoveLogo}
+          onRenameLogo={props.onRenameLogo}
+          onAddNewTab={props.onAddNewTab}
+          onCreateFolder={props.onCreateFolder}
+          overId={props.overId}
+          dropPosition={props.dropPosition}
+        />
 
-      <SpaceSection
-        workspace={currentWorkspace}
-        spaceCollapsed={props.spaceCollapsed}
-        isSpaceAreaHovered={props.isSpaceAreaHovered}
-        dropdownOpen={props.dropdownOpen}
-        overId={props.overId}
-        dropPosition={props.dropPosition}
-        workspaces={props.workspaces}
-        activeWorkspace={props.activeWorkspace}
-        onToggleCollapse={() =>
-          props.onSetSpaceCollapsed(!props.spaceCollapsed)
-        }
-        onSetSpaceAreaHovered={props.onSetSpaceAreaHovered}
-        onSetDropdownOpen={props.onSetDropdownOpen}
-        onSetActiveWorkspace={props.onSetActiveWorkspace}
-        onRenameWorkspace={props.onRenameWorkspace}
-        onEditWorkspaceIcon={props.onEditWorkspaceIcon}
-        onUnloadSpace={props.onUnloadSpace}
-        onDeleteSpace={props.onDeleteSpace}
-        onCreateFolder={props.onCreateFolder}
-        onOpenWorkspaceDialog={props.onOpenWorkspaceDialog}
-        renderWorkspaceIcon={props.renderWorkspaceIcon}
-      />
+        <SpaceSection
+          workspace={currentWorkspace}
+          spaceCollapsed={props.spaceCollapsed}
+          isSpaceAreaHovered={props.isSpaceAreaHovered}
+          dropdownOpen={props.dropdownOpen}
+          overId={props.overId}
+          dropPosition={props.dropPosition}
+          workspaces={props.workspaces}
+          activeWorkspace={props.activeWorkspace}
+          onToggleCollapse={() =>
+            props.onSetSpaceCollapsed(!props.spaceCollapsed)
+          }
+          onSetSpaceAreaHovered={props.onSetSpaceAreaHovered}
+          onSetDropdownOpen={props.onSetDropdownOpen}
+          onSetActiveWorkspace={props.onSetActiveWorkspace}
+          onRenameWorkspace={props.onRenameWorkspace}
+          onEditWorkspaceIcon={props.onEditWorkspaceIcon}
+          onUnloadSpace={props.onUnloadSpace}
+          onDeleteSpace={props.onDeleteSpace}
+          onCreateFolder={props.onCreateFolder}
+          onOpenWorkspaceDialog={props.onOpenWorkspaceDialog}
+          renderWorkspaceIcon={props.renderWorkspaceIcon}
+        />
 
-      <AnimatePresence>
-        {!props.spaceCollapsed && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-            onMouseEnter={() => props.onSetSpaceAreaHovered(true)}
-            onMouseLeave={() => props.onSetSpaceAreaHovered(false)}
-          >
-            <div className="shrink-0 space-y-1 px-2 pb-3">
-              {props.isMounted ? (
-                <SortableContext
-                  items={props.activeWorkspaceFolders.map((f) => f.id)}
-                  strategy={verticalListSortingStrategy}
-                >
-                  {props.activeWorkspaceFolders.map((folder) => (
-                    <div key={folder.id}>
-                      <DroppableFolder
-                        folder={folder}
-                        overId={props.overId}
-                        dropPosition={props.dropPosition}
-                        onToggleFolder={props.onToggleFolder}
-                        onDeleteFolder={props.onDeleteFolder}
-                        onRenameFolder={props.onRenameFolder}
-                        onUnloadAllTabs={props.onUnloadAllTabs}
-                        onCreateSubfolder={props.onCreateSubfolder}
-                        onUnpackFolder={props.onUnpackFolder}
-                      />
-                      <AnimatePresence>
-                        {!folder.collapsed && folder.tabs.length > 0 && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="ml-5 space-y-0.5"
-                          >
-                            <SortableContext
-                              items={folder.tabs.map((t) => t.id)}
-                              strategy={verticalListSortingStrategy}
+        <AnimatePresence>
+          {!props.spaceCollapsed && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+              onMouseEnter={() => props.onSetSpaceAreaHovered(true)}
+              onMouseLeave={() => props.onSetSpaceAreaHovered(false)}
+            >
+              <div className="shrink-0 space-y-1 px-2 pb-3">
+                {props.isMounted ? (
+                  <SortableContext
+                    items={props.activeWorkspaceFolders.map((f) => f.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {props.activeWorkspaceFolders.map((folder) => (
+                      <div key={folder.id}>
+                        <DroppableFolder
+                          folder={folder}
+                          overId={props.overId}
+                          dropPosition={props.dropPosition}
+                          onToggleFolder={props.onToggleFolder}
+                          onDeleteFolder={props.onDeleteFolder}
+                          onRenameFolder={props.onRenameFolder}
+                          onUnloadAllTabs={props.onUnloadAllTabs}
+                          onCreateSubfolder={props.onCreateSubfolder}
+                          onUnpackFolder={props.onUnpackFolder}
+                        />
+                        <AnimatePresence>
+                          {!folder.collapsed && folder.tabs.length > 0 && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="ml-5 space-y-0.5"
                             >
-                              {folder.tabs.map((tab) => (
-                                <DraggableTabInFolder
-                                  key={tab.id}
-                                  tab={tab}
-                                  overId={props.overId}
-                                  dropPosition={props.dropPosition}
-                                  onSetActiveTab={props.onSetActiveTab}
-                                  onCloseTab={props.onCloseTab}
-                                  onRenameTab={props.onRenameTab}
-                                  onArchiveTab={props.onArchiveTab}
-                                />
-                              ))}
-                            </SortableContext>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                              <SortableContext
+                                items={folder.tabs.map((t) => t.id)}
+                                strategy={verticalListSortingStrategy}
+                              >
+                                {folder.tabs.map((tab) => (
+                                  <DraggableTabInFolder
+                                    key={tab.id}
+                                    tab={tab}
+                                    overId={props.overId}
+                                    dropPosition={props.dropPosition}
+                                    onSetActiveTab={props.onSetActiveTab}
+                                    onCloseTab={props.onCloseTab}
+                                    onRenameTab={props.onRenameTab}
+                                    onArchiveTab={props.onArchiveTab}
+                                  />
+                                ))}
+                              </SortableContext>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    ))}
+                  </SortableContext>
+                ) : (
+                  props.activeWorkspaceFolders.map((folder) => (
+                    <div key={folder.id}>
+                      <div className="text-muted-foreground hover:bg-accent hover:text-accent-foreground group/item relative flex h-10 w-full cursor-pointer items-center gap-2 rounded-md px-2 text-sm transition-colors overflow-hidden">
+                        <Folder className="text-primary h-4 w-4 shrink-0" />
+                        <span className="text-foreground min-w-0 flex-1 truncate pr-5 text-left text-sm">
+                          {folder.name}
+                        </span>
+                      </div>
                     </div>
-                  ))}
-                </SortableContext>
-              ) : (
-                props.activeWorkspaceFolders.map((folder) => (
-                  <div key={folder.id}>
-                    <div className="text-muted-foreground hover:bg-accent hover:text-accent-foreground group/item relative flex h-10 w-full cursor-pointer items-center gap-2 rounded-md px-2 text-sm transition-colors overflow-hidden">
-                      <Folder className="text-primary h-4 w-4 shrink-0" />
-                      <span className="text-foreground min-w-0 flex-1 truncate pr-5 text-left text-sm">
-                        {folder.name}
-                      </span>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-      <div
-        ref={setNewTabButtonRef}
-        className="shrink-0 px-2 pt-3 pb-3 overflow-x-hidden"
-      >
-        <div className="border-border/50 relative border-t border-dashed">
-          <button
-            onClick={props.onClearAllTabs}
-            className="text-muted-foreground hover:text-accent-foreground absolute -top-2 right-0 cursor-pointer bg-card px-1 text-xs opacity-0 transition-opacity group-hover:opacity-100"
-          >
-            Clear
-          </button>
+        <div
+          ref={setNewTabButtonRef}
+          className="shrink-0 px-2 pt-3 pb-3 overflow-x-hidden"
+        >
+          <div className="border-border/50 relative border-t border-dashed">
+            <button
+              onClick={props.onClearAllTabs}
+              className="text-muted-foreground hover:text-accent-foreground absolute -top-2 right-0 cursor-pointer bg-card px-1 text-xs opacity-0 transition-opacity group-hover:opacity-100"
+            >
+              Clear
+            </button>
+          </div>
+          <div className="pt-3 w-full">
+            <Button
+              onClick={props.onAddNewTab}
+              className="border border-dashed px-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground h-10 w-full justify-start gap-2 bg-transparent overflow-hidden"
+              variant="ghost"
+            >
+              <Plus className="h-4 w-4 shrink-0" />
+              <span className="min-w-0 flex-1 truncate text-sm text-left">
+                New Chat
+              </span>
+            </Button>
+          </div>
         </div>
-        <div className="pt-3 w-full">
-          <Button
-            onClick={props.onAddNewTab}
-            className="border border-dashed px-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground h-10 w-full justify-start gap-2 bg-transparent overflow-hidden"
-            variant="ghost"
-          >
-            <Plus className="h-4 w-4 shrink-0" />
-            <span className="min-w-0 flex-1 truncate text-sm text-left">
-              New Chat
-            </span>
-          </Button>
-        </div>
-      </div>
 
         <div className="w-full max-w-full space-y-0.5 pb-4 px-2">
           {props.isMounted ? (
@@ -427,8 +425,8 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                       size="icon"
                       className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
                       onClick={(e) => {
-                        e.stopPropagation();
-                        props.onSetarchivesOpen(true);
+                        e.stopPropagation()
+                        props.onSetarchivesOpen(true)
                       }}
                     >
                       <Archive className="h-4 w-4" />
@@ -479,7 +477,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                 "bg-background text-primary absolute left-0 z-10 flex h-6 w-6 items-center justify-center rounded-full border transition-all duration-200",
                 props.canScrollLeft
                   ? "text-muted-foreground hover:text-accent-foreground cursor-pointer"
-                  : "hidden!",
+                  : "hidden!"
               )}
               aria-label="Scroll workspaces left"
               aria-disabled={!props.canScrollLeft}
@@ -513,7 +511,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                           className={cn(
                             "group flex h-4 w-4 shrink-0 items-center justify-center rounded-md",
                             props.activeWorkspace === workspace.id &&
-                              "scale-110",
+                              "scale-110"
                           )}
                           title={workspace.name}
                           aria-label={`Switch to ${workspace.name} workspace`}
@@ -612,7 +610,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                 "bg-background text-primary absolute right-0 z-50 flex h-6 w-6 items-center justify-center rounded-full border transition-all duration-200",
                 props.canScrollRight
                   ? "text-muted-foreground hover:text-accent-foreground cursor-pointer"
-                  : "hidden!",
+                  : "hidden!"
               )}
               aria-label="Scroll workspaces right"
               aria-disabled={!props.canScrollRight}
@@ -640,8 +638,8 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                 size="icon"
                 className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-none border-r border-border/50"
                 onClick={(e) => {
-                  e.stopPropagation();
-                  props.onCreateWorkspace();
+                  e.stopPropagation()
+                  props.onCreateWorkspace()
                 }}
                 title="Create Space"
               >
@@ -661,61 +659,61 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                     <ChevronUp className="h-3 w-3" />
                   </Button>
                 </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                align="end"
-                sideOffset={5}
-                className="border-border bg-card w-56"
-              >
-                <DropdownMenuItem
-                  onClick={() => {
-                    props.onCreateFolder();
-                    props.onSetPlusMenuOpen(false);
-                  }}
-                  className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                <DropdownMenuContent
+                  side="top"
+                  align="end"
+                  sideOffset={5}
+                  className="border-border bg-card w-56"
                 >
-                  <Folder className="mr-2 h-4 w-4" />
-                  Create Folder
-                </DropdownMenuItem>
-                <div className="border-border my-1 border-t" />
-                <DropdownMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                  <Folder className="mr-2 h-4 w-4" />
-                  Live Folder
-                  <ChevronRight className="ml-auto h-4 w-4" />
-                </DropdownMenuItem>
-                <div className="border-border my-1 border-t" />
-                <DropdownMenuItem
-                  onClick={() => {
-                    props.onOpenWorkspaceDialog();
-                    props.onSetPlusMenuOpen(false);
-                  }}
-                  className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                >
-                  <Copy className="mr-2 h-4 w-4" />
-                  Create Space
-                </DropdownMenuItem>
-                <div className="border-border my-1 border-t" />
-                <DropdownMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                  <Columns2 className="mr-2 h-4 w-4" />
-                  New Split
-                </DropdownMenuItem>
-                <div className="border-border my-1 border-t" />
-                <DropdownMenuItem
-                  onClick={() => {
-                    props.onAddNewTab();
-                    props.onSetPlusMenuOpen(false);
-                  }}
-                  className="text-accent-foreground focus:bg-accent focus:text-accent-foreground text-left"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  New Chat
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      props.onCreateFolder()
+                      props.onSetPlusMenuOpen(false)
+                    }}
+                    className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                  >
+                    <Folder className="mr-2 h-4 w-4" />
+                    Create Folder
+                  </DropdownMenuItem>
+                  <div className="border-border my-1 border-t" />
+                  <DropdownMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <Folder className="mr-2 h-4 w-4" />
+                    Live Folder
+                    <ChevronRight className="ml-auto h-4 w-4" />
+                  </DropdownMenuItem>
+                  <div className="border-border my-1 border-t" />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      props.onOpenWorkspaceDialog()
+                      props.onSetPlusMenuOpen(false)
+                    }}
+                    className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                  >
+                    <Copy className="mr-2 h-4 w-4" />
+                    Create Space
+                  </DropdownMenuItem>
+                  <div className="border-border my-1 border-t" />
+                  <DropdownMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                    <Columns2 className="mr-2 h-4 w-4" />
+                    New Split
+                  </DropdownMenuItem>
+                  <div className="border-border my-1 border-t" />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      props.onAddNewTab()
+                      props.onSetPlusMenuOpen(false)
+                    }}
+                    className="text-accent-foreground focus:bg-accent focus:text-accent-foreground text-left"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    New Chat
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </motion.div>
         </motion.div>
       </div>
     </motion.div>
-  );
+  )
 }

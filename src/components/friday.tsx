@@ -1,152 +1,150 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import * as React from "react"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
-const FRIDAY_Z = 9990;
-const SLIDE_DURATION_MS = 750;
-const SPAN_COUNT = 25;
-const BORDER_THICKNESS = 10;
-const CORNER_SIZE = 20;
-const GLOW_SPREAD = 8;
-const GLOW_INTENSITY = 12;
+const FRIDAY_Z = 9990
+const SLIDE_DURATION_MS = 750
+const SPAN_COUNT = 25
+const BORDER_THICKNESS = 10
+const _CORNER_SIZE = 20
+const GLOW_SPREAD = 8
+const GLOW_INTENSITY = 12
 
 function generateRainbowGradient(count: number): string {
   const stops = Array.from({ length: count + 1 }, (_, i) => {
-    const hue = (i / count) * 360;
-    return `hsl(${hue}, 85%, 55%)`;
-  });
-  return `linear-gradient(90deg, ${stops.join(", ")})`;
+    const hue = (i / count) * 360
+    return `hsl(${hue}, 85%, 55%)`
+  })
+  return `linear-gradient(90deg, ${stops.join(", ")})`
 }
 
-const RAINBOW_GRADIENT = generateRainbowGradient(SPAN_COUNT);
+const RAINBOW_GRADIENT = generateRainbowGradient(SPAN_COUNT)
 
 interface FridayProps {
-  sidebarWidth?: number;
-  className?: string;
+  sidebarWidth?: number
+  className?: string
 }
 
 export function Friday({ sidebarWidth = 56, className }: FridayProps) {
-  const [isActive, setIsActive] = React.useState(false);
+  const [isActive, setIsActive] = React.useState(false)
   const [phase, setPhase] = React.useState<
     "idle" | "entering" | "active" | "exiting"
-  >("idle");
+  >("idle")
 
-  const scrollOrigin = React.useRef(0);
-  const rafRef = React.useRef<number>(0);
+  const scrollOrigin = React.useRef(0)
+  const rafRef = React.useRef<number>(0)
 
   React.useEffect(() => {
     return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [])
 
   const smoothScrollTo = React.useCallback(
     (target: number, duration: number): Promise<void> => {
       return new Promise((resolve) => {
-        const start = window.scrollY;
-        const delta = target - start;
+        const start = window.scrollY
+        const delta = target - start
         if (Math.abs(delta) < 1) {
-          resolve();
-          return;
+          resolve()
+          return
         }
-        const startTime = performance.now();
+        const startTime = performance.now()
 
         function tick(now: number) {
-          const elapsed = now - startTime;
-          const progress = Math.min(elapsed / duration, 1);
+          const elapsed = now - startTime
+          const progress = Math.min(elapsed / duration, 1)
           const eased =
             progress < 0.5
               ? 4 * progress * progress * progress
-              : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+              : 1 - (-2 * progress + 2) ** 3 / 2
 
-          window.scrollTo(0, start + delta * eased);
+          window.scrollTo(0, start + delta * eased)
 
           if (progress < 1) {
-            rafRef.current = requestAnimationFrame(tick);
+            rafRef.current = requestAnimationFrame(tick)
           } else {
-            resolve();
+            resolve()
           }
         }
-        rafRef.current = requestAnimationFrame(tick);
-      });
+        rafRef.current = requestAnimationFrame(tick)
+      })
     },
     []
-  );
+  )
 
-  const springScrollTo = React.useCallback(
-    (target: number): Promise<void> => {
-      return new Promise((resolve) => {
-        let current = window.scrollY;
-        let velocity = 0;
-        const stiffness = 0.03;
-        const damping = 0.2;
+  const springScrollTo = React.useCallback((target: number): Promise<void> => {
+    return new Promise((resolve) => {
+      let current = window.scrollY
+      let velocity = 0
+      const stiffness = 0.03
+      const damping = 0.2
 
-        function tick() {
-          const displacement = target - current;
-          velocity += displacement * stiffness - velocity * damping;
-          current += velocity;
+      function tick() {
+        const displacement = target - current
+        velocity += displacement * stiffness - velocity * damping
+        current += velocity
 
-          window.scrollTo(0, current);
+        window.scrollTo(0, current)
 
-          if (Math.abs(current - target) < 0.5 && Math.abs(velocity) < 0.5) {
-            window.scrollTo(0, target);
-            resolve();
-          } else {
-            rafRef.current = requestAnimationFrame(tick);
-          }
+        if (Math.abs(current - target) < 0.5 && Math.abs(velocity) < 0.5) {
+          window.scrollTo(0, target)
+          resolve()
+        } else {
+          rafRef.current = requestAnimationFrame(tick)
         }
-        rafRef.current = requestAnimationFrame(tick);
-      });
-    },
-    []
-  );
+      }
+      rafRef.current = requestAnimationFrame(tick)
+    })
+  }, [])
 
   const runEntrySequence = React.useCallback(async () => {
-    scrollOrigin.current = window.scrollY;
-    setPhase("entering");
+    scrollOrigin.current = window.scrollY
+    setPhase("entering")
 
-    const scrollAmount = window.innerHeight * 0.1;
-    const maxScroll =
-      document.documentElement.scrollHeight - window.innerHeight;
+    const scrollAmount = window.innerHeight * 0.1
+    const maxScroll = document.documentElement.scrollHeight - window.innerHeight
     const scrollTarget = Math.min(
       scrollOrigin.current + scrollAmount,
       maxScroll
-    );
+    )
 
-    await smoothScrollTo(scrollTarget, SLIDE_DURATION_MS * 0.9);
-    await new Promise((r) => setTimeout(r, SLIDE_DURATION_MS * 0.1));
+    await smoothScrollTo(scrollTarget, SLIDE_DURATION_MS * 0.9)
+    await new Promise((r) => setTimeout(r, SLIDE_DURATION_MS * 0.1))
 
-    setPhase("active");
+    setPhase("active")
 
-    const origin = scrollOrigin.current;
-    await springScrollTo(origin);
-    await springScrollTo(origin - 30);
-    await springScrollTo(origin);
-  }, [smoothScrollTo, springScrollTo]);
+    const origin = scrollOrigin.current
+    await springScrollTo(origin)
+    await springScrollTo(origin - 30)
+    await springScrollTo(origin)
+  }, [smoothScrollTo, springScrollTo])
 
   const handleToggle = React.useCallback(() => {
     if (!isActive) {
-      setIsActive(true);
-      runEntrySequence();
+      setIsActive(true)
+      runEntrySequence()
     } else {
-      setIsActive(false);
-      setPhase("idle");
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      setIsActive(false)
+      setPhase("idle")
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
-  }, [isActive, runEntrySequence]);
+  }, [isActive, runEntrySequence])
 
-  const showBottom = phase === "entering" || phase === "active";
-  const showRight = phase === "entering" || phase === "active";
-  const showLeft = phase === "entering" || phase === "active";
-  const showTop = phase === "active";
+  const showBottom = phase === "entering" || phase === "active"
+  const showRight = phase === "entering" || phase === "active"
+  const showLeft = phase === "entering" || phase === "active"
+  const showTop = phase === "active"
 
-  const BT = BORDER_THICKNESS;
+  const BT = BORDER_THICKNESS
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
         .friday-border {
           position: fixed;
           opacity: 0;
@@ -360,7 +358,9 @@ export function Friday({ sidebarWidth = 56, className }: FridayProps) {
           0%   { background-position: 0% 0%; }
           100% { background-position: 0% 200%; }
         }
-      ` }} />
+      `,
+        }}
+      />
 
       <div
         className={cn(
@@ -380,9 +380,7 @@ export function Friday({ sidebarWidth = 56, className }: FridayProps) {
               : "border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground"
           )}
           aria-label={
-            isActive
-              ? "Deactivate Friday Effect"
-              : "Activate Friday Effect"
+            isActive ? "Deactivate Friday Effect" : "Activate Friday Effect"
           }
         >
           {isActive ? "Deactivate Friday" : "Activate Friday"}
@@ -391,20 +389,36 @@ export function Friday({ sidebarWidth = 56, className }: FridayProps) {
 
       {/* BORDER LINES */}
       <div
-        className={showTop ? "friday-border friday-border-top visible" : "friday-border friday-border-top"}
+        className={
+          showTop
+            ? "friday-border friday-border-top visible"
+            : "friday-border friday-border-top"
+        }
         aria-hidden="true"
       />
       <div
-        className={showBottom ? "friday-border friday-border-bottom visible" : "friday-border friday-border-bottom"}
+        className={
+          showBottom
+            ? "friday-border friday-border-bottom visible"
+            : "friday-border friday-border-bottom"
+        }
         aria-hidden="true"
       />
       <div
-        className={showLeft ? "friday-border friday-border-left visible" : "friday-border friday-border-left"}
+        className={
+          showLeft
+            ? "friday-border friday-border-left visible"
+            : "friday-border friday-border-left"
+        }
         style={{ transitionDelay: showLeft ? "0.3s" : "0s" }}
         aria-hidden="true"
       />
       <div
-        className={showRight ? "friday-border friday-border-right visible" : "friday-border friday-border-right"}
+        className={
+          showRight
+            ? "friday-border friday-border-right visible"
+            : "friday-border friday-border-right"
+        }
         style={{
           transitionDelay: showRight ? `${SLIDE_DURATION_MS / 2000}s` : "0s",
         }}
@@ -413,27 +427,43 @@ export function Friday({ sidebarWidth = 56, className }: FridayProps) {
 
       {/* OUTER GLOW LAYERS */}
       <div
-        className={showTop ? "friday-glow friday-glow-top visible" : "friday-glow friday-glow-top"}
+        className={
+          showTop
+            ? "friday-glow friday-glow-top visible"
+            : "friday-glow friday-glow-top"
+        }
         aria-hidden="true"
       />
       <div
-        className={showBottom ? "friday-glow friday-glow-bottom visible" : "friday-glow friday-glow-bottom"}
+        className={
+          showBottom
+            ? "friday-glow friday-glow-bottom visible"
+            : "friday-glow friday-glow-bottom"
+        }
         aria-hidden="true"
       />
       <div
-        className={showLeft ? "friday-glow friday-glow-left visible" : "friday-glow friday-glow-left"}
+        className={
+          showLeft
+            ? "friday-glow friday-glow-left visible"
+            : "friday-glow friday-glow-left"
+        }
         style={{ transitionDelay: showLeft ? "0.3s" : "0s" }}
         aria-hidden="true"
       />
       <div
-        className={showRight ? "friday-glow friday-glow-right visible" : "friday-glow friday-glow-right"}
+        className={
+          showRight
+            ? "friday-glow friday-glow-right visible"
+            : "friday-glow friday-glow-right"
+        }
         style={{
           transitionDelay: showRight ? `${SLIDE_DURATION_MS / 2000}s` : "0s",
         }}
         aria-hidden="true"
       />
     </>
-  );
+  )
 }
 
-Friday.displayName = "Friday";
+Friday.displayName = "Friday"
