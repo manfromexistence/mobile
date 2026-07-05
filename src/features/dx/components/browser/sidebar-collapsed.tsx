@@ -58,6 +58,10 @@ interface SidebarCollapsedProps {
   onSetActiveTab?: (id: string) => void
   onSetCommandOpen?: (open: boolean) => void
   onSetSettingsOpen?: (open: boolean) => void
+  onRenameWorkspace?: () => void
+  onEditWorkspaceIcon?: () => void
+  onUnloadSpace?: () => void
+  onDeleteSpace?: () => void
 }
 
 export function SidebarCollapsed({
@@ -83,6 +87,10 @@ export function SidebarCollapsed({
   onSetActiveTab,
   onSetCommandOpen,
   onSetSettingsOpen,
+  onRenameWorkspace,
+  onEditWorkspaceIcon,
+  onUnloadSpace,
+  onDeleteSpace,
 }: SidebarCollapsedProps) {
   const _activeWorkspaceObj =
     workspaces.find((w) => w.id === activeWorkspace) || workspaces[0]
@@ -231,10 +239,16 @@ export function SidebarCollapsed({
                 </motion.button>
               </ContextMenuTrigger>
               <ContextMenuContent className="border-border bg-card w-56">
-                <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                <ContextMenuItem
+                  onClick={onRenameWorkspace}
+                  className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                >
                   Change Name
                 </ContextMenuItem>
-                <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                <ContextMenuItem
+                  onClick={onEditWorkspaceIcon}
+                  className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                >
                   Change Icon
                 </ContextMenuItem>
                 <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
@@ -244,7 +258,10 @@ export function SidebarCollapsed({
                   Set Profile
                   <ChevronRight className="ml-auto h-4 w-4" />
                 </ContextMenuItem>
-                <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                <ContextMenuItem
+                  onClick={onUnloadSpace}
+                  className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                >
                   Unload Space
                 </ContextMenuItem>
                 <div className="border-border my-1 border-t" />
@@ -279,7 +296,10 @@ export function SidebarCollapsed({
                 >
                   Create Space
                 </ContextMenuItem>
-                <ContextMenuItem className="text-destructive focus:bg-accent focus:text-destructive">
+                <ContextMenuItem
+                  onClick={onDeleteSpace}
+                  className="text-destructive focus:bg-accent focus:text-destructive"
+                >
                   Delete Space
                 </ContextMenuItem>
               </ContextMenuContent>

@@ -108,6 +108,8 @@ interface SidebarExpandedProps {
   onEditWorkspaceIcon: () => void
   onUnloadSpace: () => void
   onDeleteSpace: () => void
+  onCollapseAllFolders?: () => void
+  onExpandAllFolders?: () => void
   renderWorkspaceIcon: (
     workspace: Workspace,
     isActive: boolean
@@ -183,6 +185,9 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
           onDeleteSpace={props.onDeleteSpace}
           onCreateFolder={props.onCreateFolder}
           onOpenWorkspaceDialog={props.onOpenWorkspaceDialog}
+          onAddNewTab={props.onAddNewTab}
+          onCollapseAllFolders={props.onCollapseAllFolders}
+          onExpandAllFolders={props.onExpandAllFolders}
           renderWorkspaceIcon={props.renderWorkspaceIcon}
         />
 
@@ -548,10 +553,16 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                         </motion.button>
                       </ContextMenuTrigger>
                       <ContextMenuContent className="border-border bg-card w-56">
-                        <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                        <ContextMenuItem
+                          onClick={props.onRenameWorkspace}
+                          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        >
                           Change Name
                         </ContextMenuItem>
-                        <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                        <ContextMenuItem
+                          onClick={props.onEditWorkspaceIcon}
+                          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        >
                           Change Icon
                         </ContextMenuItem>
                         <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
@@ -561,7 +572,10 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                           Set Profile
                           <ChevronRight className="ml-auto h-4 w-4" />
                         </ContextMenuItem>
-                        <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                        <ContextMenuItem
+                          onClick={props.onUnloadSpace}
+                          className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                        >
                           Unload Space
                         </ContextMenuItem>
                         <div className="border-border my-1 border-t" />
@@ -600,7 +614,10 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                         >
                           Create Space
                         </ContextMenuItem>
-                        <ContextMenuItem className="text-destructive focus:bg-accent focus:text-destructive">
+                        <ContextMenuItem
+                          onClick={props.onDeleteSpace}
+                          className="text-destructive focus:bg-accent focus:text-destructive"
+                        >
                           Delete Space
                         </ContextMenuItem>
                       </ContextMenuContent>

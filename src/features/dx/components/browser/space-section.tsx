@@ -42,6 +42,9 @@ interface SpaceSectionProps {
   onDeleteSpace: () => void
   onCreateFolder: () => void
   onOpenWorkspaceDialog: () => void
+  onAddNewTab?: () => void
+  onCollapseAllFolders?: () => void
+  onExpandAllFolders?: () => void
   renderWorkspaceIcon: (
     workspace: Workspace,
     isActive: boolean
@@ -67,6 +70,9 @@ export function SpaceSection({
   onDeleteSpace,
   onCreateFolder,
   onOpenWorkspaceDialog,
+  onAddNewTab,
+  onCollapseAllFolders,
+  onExpandAllFolders,
   renderWorkspaceIcon,
 }: SpaceSectionProps) {
   const { setNodeRef } = useSortable({
@@ -278,9 +284,7 @@ export function SpaceSection({
             Create Folder
           </ContextMenuItem>
           <ContextMenuItem
-            onSelect={(e) => {
-              e.preventDefault()
-            }}
+            onSelect={() => onAddNewTab?.()}
             className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
           >
             <Plus className="mr-2 h-4 w-4" />
@@ -288,13 +292,13 @@ export function SpaceSection({
           </ContextMenuItem>
           <div className="border-border my-1 border-t" />
           <ContextMenuItem
-            onSelect={(e) => e.preventDefault()}
+            onSelect={() => onCollapseAllFolders?.()}
             className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
           >
             Collapse All Folders
           </ContextMenuItem>
           <ContextMenuItem
-            onSelect={(e) => e.preventDefault()}
+            onSelect={() => onExpandAllFolders?.()}
             className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
           >
             Expand All Folders

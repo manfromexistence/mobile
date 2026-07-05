@@ -13,6 +13,7 @@ import {
 } from "@dnd-kit/core"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { Copy, Plus, X } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { AnimatePresence } from "motion/react"
 import { useEffect, useRef, useState } from "react"
 import {
@@ -23,7 +24,19 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { WorkspaceDialog } from "@/components/workspace-dialog"
 import {
   MAX_LOGOS,
@@ -64,6 +77,10 @@ export function Sidebar({
   const [logoContainerHovered, setLogoContainerHovered] = useState(false)
   const [isSpaceAreaHovered, setIsSpaceAreaHovered] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null)
+  const [renameTarget, setRenameTarget] = useState<string>("")
+  const [renameValue, setRenameValue] = useState("")
+  const [alertMessage, setAlertMessage] = useState<string | null>(null)
   const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const [mediaProgress] = useState(33)
 
@@ -339,7 +356,7 @@ export function Sidebar({
     // Drop onto logo container - create logo
     if (overId === "logo-container" || overData?.type === "logo-container") {
       if (state.logos.length >= MAX_LOGOS) {
-        alert("Logo container is full! Maximum 12 items allowed.")
+        setAlertMessage("Logo container is full! Maximum 12 items allowed.")
         return
       }
 
@@ -503,6 +520,48 @@ export function Sidebar({
               onSetSettingsOpen={() => {
                 if (onOpenSettings) onOpenSettings()
               }}
+              onRenameWorkspace={() => {
+                const currentWorkspace = state.workspaces.find(
+                  (w) => w.id === state.activeWorkspace
+                )
+                setRenameTarget(currentWorkspace?.name || "")
+                setRenameValue(currentWorkspace?.name || "")
+              }}
+              onEditWorkspaceIcon={() => {
+                const currentWorkspace = state.workspaces.find(
+                  (w) => w.id === state.activeWorkspace
+                )
+                if (currentWorkspace) {
+                  state.setWorkspaceEditMode({
+                    workspaceId: currentWorkspace.id,
+                    currentName: currentWorkspace.name,
+                    currentIcon: currentWorkspace.icon,
+                  })
+                  state.setWorkspaceDialogOpen(true)
+                }
+              }}
+              onUnloadSpace={() => {
+                state.setFolders(
+                  state.folders.filter(
+                    (f) => f.workspaceId !== state.activeWorkspace
+                  )
+                )
+                state.setLooseTabs(
+                  state.looseTabs.filter(
+                    (t) => t.workspaceId !== state.activeWorkspace
+                  )
+                )
+              }}
+              onDeleteSpace={() => {
+                if (state.workspaces.length <= 1) {
+                  setAlertMessage("Cannot delete the last workspace!")
+                  return
+                }
+                const currentWorkspace = state.workspaces.find(
+                  (w) => w.id === state.activeWorkspace
+                )
+                setDeleteTarget(currentWorkspace?.name || "")
+              }}
             />
           )}
 
@@ -552,6 +611,16 @@ export function Sidebar({
                 onOpenWorkspaceDialog={() => state.setWorkspaceDialogOpen(true)}
                 onCreateFolder={createFolder}
                 onAddNewTab={addNewTab}
+                onCollapseAllFolders={() =>
+                  state.setFolders(
+                    state.folders.map((f) => ({ ...f, collapsed: true }))
+                  )
+                }
+                onExpandAllFolders={() =>
+                  state.setFolders(
+                    state.folders.map((f) => ({ ...f, collapsed: false }))
+                  )
+                }
                 onClearAllTabs={clearAllTabs}
                 onSetCommandOpen={state.setCommandOpen}
                 onRemoveLogo={(logoId) =>
@@ -616,19 +685,8 @@ export function Sidebar({
                   const currentWorkspace = state.workspaces.find(
                     (w) => w.id === state.activeWorkspace
                   )
-                  const newName = prompt(
-                    "Enter new workspace name:",
-                    currentWorkspace?.name || ""
-                  )
-                  if (newName?.trim()) {
-                    state.setWorkspaces(
-                      state.workspaces.map((w) =>
-                        w.id === state.activeWorkspace
-                          ? { ...w, name: newName.trim() }
-                          : w
-                      )
-                    )
-                  }
+                  setRenameTarget(currentWorkspace?.name || "")
+                  setRenameValue(currentWorkspace?.name || "")
                 }}
                 onEditWorkspaceIcon={() => {
                   const currentWorkspace = state.workspaces.find(
@@ -657,39 +715,10 @@ export function Sidebar({
                 }}
                 onDeleteSpace={() => {
                   if (state.workspaces.length <= 1) {
-                    alert("Cannot delete the last workspace!")
+                    setAlertMessage("Cannot delete the last workspace!")
                     return
                   }
-                  const currentWorkspace = state.workspaces.find(
-                    (w) => w.id === state.activeWorkspace
-                  )
-                  if (
-                    confirm(
-                      `Are you sure you want to delete "${currentWorkspace?.name}"? All tabs and folders will be removed.`
-                    )
-                  ) {
-                    state.setFolders(
-                      state.folders.filter(
-                        (f) => f.workspaceId !== state.activeWorkspace
-                      )
-                    )
-                    state.setLooseTabs(
-                      state.looseTabs.filter(
-                        (t) => t.workspaceId !== state.activeWorkspace
-                      )
-                    )
-                    state.setWorkspaces(
-                      state.workspaces.filter(
-                        (w) => w.id !== state.activeWorkspace
-                      )
-                    )
-                    const remainingWorkspaces = state.workspaces.filter(
-                      (w) => w.id !== state.activeWorkspace
-                    )
-                    if (remainingWorkspaces.length > 0) {
-                      state.setActiveWorkspace(remainingWorkspaces[0].id)
-                    }
-                  }
+                  setDeleteTarget(state.activeWorkspace)
                 }}
                 renderWorkspaceIcon={renderWorkspaceIcon}
                 COLORS={state.COLORS}
@@ -805,6 +834,109 @@ export function Sidebar({
           </div>
         ) : null}
       </DragOverlay>
+
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete workspace?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this workspace? All tabs and folders will be removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteTarget(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                const id = deleteTarget
+                if (!id) return
+                state.setFolders(state.folders.filter((f) => f.workspaceId !== id))
+                state.setLooseTabs(state.looseTabs.filter((t) => t.workspaceId !== id))
+                state.setWorkspaces(state.workspaces.filter((w) => w.id !== id))
+                const remaining = state.workspaces.filter((w) => w.id !== id)
+                if (remaining.length > 0) state.setActiveWorkspace(remaining[0].id)
+                setDeleteTarget(null)
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Dialog open={!!renameTarget} onOpenChange={(open) => !open && setRenameTarget("")}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Rename workspace</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Workspace name</Label>
+              <Input
+                id="name"
+                value={renameValue}
+                onChange={(e) => setRenameValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && renameValue.trim()) {
+                    const currentWorkspace = state.workspaces.find(
+                      (w) => w.name === renameTarget || w.id === state.activeWorkspace
+                    )
+                    if (currentWorkspace) {
+                      state.setWorkspaces(
+                        state.workspaces.map((w) =>
+                          w.id === currentWorkspace.id
+                            ? { ...w, name: renameValue.trim() }
+                            : w
+                        )
+                      )
+                    }
+                    setRenameTarget("")
+                  }
+                }}
+                autoFocus
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRenameTarget("")}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (renameValue.trim()) {
+                  const currentWorkspace = state.workspaces.find(
+                    (w) => w.name === renameTarget || w.id === state.activeWorkspace
+                  )
+                  if (currentWorkspace) {
+                    state.setWorkspaces(
+                      state.workspaces.map((w) =>
+                        w.id === currentWorkspace.id
+                          ? { ...w, name: renameValue.trim() }
+                          : w
+                      )
+                    )
+                  }
+                }
+                setRenameTarget("")
+              }}
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={!!alertMessage} onOpenChange={(open) => !open && setAlertMessage(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Notice</AlertDialogTitle>
+            <AlertDialogDescription>{alertMessage}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setAlertMessage(null)}>OK</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </DndContext>
   )
 }
