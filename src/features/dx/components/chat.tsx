@@ -422,7 +422,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
         }
       >
         {/* Top Centered Dock */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 z-40 hidden md:flex">
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-40 hidden md:flex">
           <MacOSDock
             screens={screens}
             activeScreenId={activeScreenId}

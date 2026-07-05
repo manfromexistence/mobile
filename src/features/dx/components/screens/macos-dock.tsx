@@ -27,15 +27,8 @@ export function MacOSDock({
   const sidebarWidth = sidebarExpanded ? 360 : 56
 
   return (
-    <div
-      className="pointer-events-none fixed top-2 z-50 flex justify-center transition-all duration-200"
-      style={{
-        left: `${sidebarWidth}px`,
-        right: 0,
-      }}
-    >
-      <div className="pointer-events-auto">
-        <Dock iconMagnification={48} iconDistance={140}>
+    <div className="pointer-events-auto">
+      <Dock iconMagnification={48} iconDistance={140}>
           {screens.map((screen) => {
             const Icon = getIconForScreen(screen)
             const isActive = screen.id === activeScreenId
@@ -64,8 +57,7 @@ export function MacOSDock({
           <DockIcon onClick={onToggleViewMode}>
             <LayoutGrid className="h-4 w-4" />
           </DockIcon>
-        </Dock>
-      </div>
+      </Dock>
     </div>
   )
 }

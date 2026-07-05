@@ -3,15 +3,15 @@
 import {
   Box,
   FileText,
-  FileType,
-  Mail,
+  Image,
   Mic,
   MoreHorizontal,
+  Music,
   Radio,
   Send,
   Video,
 } from "lucide-react"
-import { AnimatePresence, motion } from "motion/react"
+import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,9 +21,15 @@ import {
 } from "@/components/ui/popover"
 import { Textarea } from "@/components/ui/textarea"
 import { providers } from "@/lib/ai/providers"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 import { ImageControls, MediaControls } from "./media-controls"
-import { ModelPicker } from "./model-picker"
 
 interface MediaType {
   id: string
@@ -60,10 +66,12 @@ interface AIInputBarProps {
 
 const MEDIA_TYPES: MediaType[] = [
   { id: "text", label: "Text", icon: FileText },
-  { id: "image", label: "Image", icon: FileType },
+  { id: "image", label: "Image", icon: Image },
   { id: "video", label: "Video", icon: Video },
-  { id: "audio", label: "Audio", icon: Mic },
-  { id: "email", label: "Email", icon: Mail },
+]
+
+const MORE_MEDIA_TYPES: MediaType[] = [
+  { id: "audio", label: "Audio", icon: Music },
   { id: "live", label: "Live", icon: Radio },
   { id: "3d", label: "3D", icon: Box },
 ]
@@ -98,9 +106,6 @@ export function AIInputBar({
     else setInternalInput(val)
   }
   const [isFocused, setIsFocused] = useState(false)
-  const [showMoreMedia, setShowMoreMedia] = useState(false)
-  const [visibleMediaCount, setVisibleMediaCount] = useState(7)
-  const [showMediaLabels, setShowMediaLabels] = useState(true)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -116,35 +121,6 @@ export function AIInputBar({
     }
   }, [selectedModelId])
 
-  // Calculate visible media items and label visibility based on container width
-  useEffect(() => {
-    const updateVisibleMedia = () => {
-      if (!containerRef.current) return
-      const width = containerRef.current.offsetWidth
-
-      if (width < 600) {
-        setVisibleMediaCount(1)
-        setShowMediaLabels(false)
-      } else if (width < 750) {
-        setVisibleMediaCount(3)
-        setShowMediaLabels(false)
-      } else if (width < 900) {
-        setVisibleMediaCount(5)
-        setShowMediaLabels(false)
-      } else {
-        setVisibleMediaCount(7)
-        setShowMediaLabels(true)
-      }
-    }
-
-    updateVisibleMedia()
-    const ro = new ResizeObserver(updateVisibleMedia)
-    if (containerRef.current) {
-      ro.observe(containerRef.current)
-    }
-    return () => ro.disconnect()
-  }, [])
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
@@ -157,7 +133,7 @@ export function AIInputBar({
     if (!input.trim() || isLoading || isGenerating) return
 
     // Route media generation to onMediaSubmit if provided
-    if (selectedMedia !== "text" && selectedMedia !== "email" && onMediaSubmit) {
+    if (selectedMedia !== "text" && onMediaSubmit) {
       const prompt = input.trim()
       setInput("")
       onMediaSubmit({ prompt, mediaType: selectedMedia })
@@ -245,9 +221,6 @@ export function AIInputBar({
     }
   }
 
-  const visibleMedia = MEDIA_TYPES.slice(0, visibleMediaCount)
-  const hiddenMedia = MEDIA_TYPES.slice(visibleMediaCount)
-
   return (
     <motion.div
       ref={containerRef}
@@ -264,76 +237,72 @@ export function AIInputBar({
         {onVoiceModeChange && (
           <div
             className={cn(
-              "absolute inset-0 flex items-center justify-between rounded-2xl bg-background/95 backdrop-blur-xl border border-primary/20 pr-1.5 pl-2 shadow-lg transition-all duration-300 md:pr-2 md:pl-3",
+              "absolute inset-0 flex items-center gap-2 rounded-2xl bg-background/95 backdrop-blur-xl border border-primary/20 pr-1.5 pl-2 shadow-lg transition-all duration-300 md:pr-2 md:pl-3",
               isVoiceMode
                 ? "pointer-events-auto z-50 scale-100 opacity-100"
                 : "pointer-events-none z-0 scale-95 opacity-0"
             )}
           >
-            <div className="flex h-full flex-1 items-center">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              className="rounded-full text-muted-foreground shrink-0"
+            >
+              <Paperclip className="h-4 w-4" />
+            </Button>
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Speak now or type..."
+              className="h-8 flex-1 border-none bg-muted/30 px-3 text-[15px] font-medium text-foreground shadow-none outline-none placeholder:text-primary/60 rounded-lg focus-visible:ring-0"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault()
+                  if (input.trim()) onSubmit?.()
+                }
+              }}
+            />
+            <div className="flex h-8 items-center gap-2 rounded-full border border-primary/20 bg-muted/30 px-2 shrink-0">
+              <div className="flex h-3 items-center gap-[3px]">
+                <VoiceBar delay="0.1s" height={30} />
+                <VoiceBar delay="0.3s" height={60} />
+                <VoiceBar delay="0.5s" height={45} />
+                <VoiceBar delay="0.2s" height={75} />
+                <VoiceBar delay="0.6s" height={35} />
+                <VoiceBar delay="0.4s" height={65} />
+                <VoiceBar delay="0.7s" height={25} />
+              </div>
               <Button
                 type="button"
                 variant="ghost"
                 size="icon-xs"
-                className="rounded-full text-muted-foreground"
+                className="rounded-full h-5 w-5 text-primary hover:bg-primary/20 flex items-center justify-center p-0"
+                onClick={() => onVoiceModeChange(false)}
               >
-                <Paperclip className="h-4 w-4" />
-              </Button>
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Speak now or type..."
-                className="h-full flex-1 border-none bg-transparent px-2 text-[15px] font-medium text-foreground shadow-none outline-none placeholder:text-primary/60 md:px-3 focus-visible:ring-0"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault()
-                    if (input.trim()) onSubmit?.()
-                  }
-                }}
-              />
-            </div>
-            <div className="flex flex-shrink-0 items-center gap-1.5 md:gap-2">
-              <div className="flex h-[38px] items-center gap-2 rounded-full border border-primary/20 bg-primary/10 pr-1 pl-3 md:h-[42px] md:gap-3 md:pr-1.5 md:pl-4">
-                <div className="flex h-4 items-center gap-[3px] md:h-5">
-                  <VoiceBar delay="0.1s" height={40} />
-                  <VoiceBar delay="0.3s" height={80} />
-                  <VoiceBar delay="0.5s" height={60} />
-                  <VoiceBar delay="0.2s" height={100} />
-                  <VoiceBar delay="0.6s" height={50} />
-                  <VoiceBar delay="0.4s" height={90} />
-                  <VoiceBar delay="0.7s" height={30} />
-                </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-xs"
-                  className="rounded-full h-6 w-6 text-primary hover:bg-primary/20 flex items-center justify-center p-0"
-                  onClick={() => onVoiceModeChange(false)}
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              </div>
-              <Button
-                type="submit"
-                className="size-10 rounded-full bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 flex items-center justify-center"
-                onClick={
-                  isGenerating
-                    ? (e) => {
-                        e.preventDefault()
-                        onStop?.()
-                      }
-                    : undefined
-                }
-              >
-                {isGenerating ? (
-                  <div className="h-3.5 w-3.5 rounded-sm bg-background" />
-                ) : input.trim() ? (
-                  <ArrowUp className="h-4 w-4" />
-                ) : (
-                  <Volume2 className="h-4 w-4" />
-                )}
+                <X className="h-2.5 w-2.5" />
               </Button>
             </div>
+            <Button
+              type="submit"
+              className="size-8 rounded-full bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 flex items-center justify-center shrink-0"
+              onClick={
+                isGenerating
+                  ? (e) => {
+                      e.preventDefault()
+                      onStop?.()
+                    }
+                  : undefined
+              }
+            >
+              {isGenerating ? (
+                <div className="h-3 w-3 rounded-sm bg-background" />
+              ) : input.trim() ? (
+                <ArrowUp className="h-4 w-4" />
+              ) : (
+                <Volume2 className="h-4 w-4" />
+              )}
+            </Button>
           </div>
         )}
 
@@ -357,11 +326,9 @@ export function AIInputBar({
           />
         </div>
 
-        <div className="flex items-center justify-between gap-3 bg-muted/20 backdrop-blur-md px-4 py-3 border-t border-border/20">
-          <div className="flex items-center gap-2">
-            {/* <AITargetSwitcher />
-            <AIModeSwitcher /> */}
-
+        <div className="flex items-center gap-3 bg-muted/20 backdrop-blur-md px-4 py-3 border-t border-border/20">
+          {/* Left: Media controls + model selector */}
+          <div className="flex min-w-0 flex-1 items-center gap-2">
             {selectedMedia === "image" && <ImageControls />}
             {(selectedMedia === "video" ||
               selectedMedia === "audio" ||
@@ -369,116 +336,138 @@ export function AIInputBar({
               selectedMedia === "3d") && (
               <MediaControls mediaType={selectedMedia as any} />
             )}
-
-            <ModelPicker
-              selectedProvider={selectedProvider}
-              selectedModel={selectedModelId || selectedModel}
-              onProviderChange={(provider) => {
-                setSelectedProvider(provider)
+            <Select
+              value={selectedModelId || selectedModel}
+              onValueChange={(val) => {
+                setSelectedModel(val)
+                onModelChange?.(val)
+                for (const [pid, pConfig] of Object.entries(providers)) {
+                  if (pConfig.models.some((m) => m.id === val)) {
+                    setSelectedProvider(pid)
+                    break
+                  }
+                }
               }}
-              onModelChange={(model) => {
-                setSelectedModel(model)
-                onModelChange?.(model)
-              }}
-            />
+            >
+              <SelectTrigger className="h-8 w-auto min-w-[120px] gap-1.5 px-2.5 text-xs">
+                <SelectValue placeholder="Select model" />
+              </SelectTrigger>
+              <SelectContent>
+                {(() => {
+                  const seen = new Set<string>()
+                  const items: { modelId: string; name: string; ProviderIcon: React.ElementType }[] = []
+                  for (const provider of Object.values(providers)) {
+                    for (const model of provider.models) {
+                      if (!seen.has(model.id)) {
+                        seen.add(model.id)
+                        items.push({ modelId: model.id, name: model.name, ProviderIcon: provider.icon })
+                      }
+                    }
+                  }
+                  return items.map(({ modelId, name, ProviderIcon }) => (
+                    <SelectItem key={modelId} value={modelId} className="text-xs">
+                      <span className="flex items-center gap-2">
+                        <ProviderIcon className="h-3.5 w-3.5" />
+                        {name}
+                      </span>
+                    </SelectItem>
+                  ))
+                })()}
+              </SelectContent>
+            </Select>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
-              <AnimatePresence mode="popLayout">
-                {visibleMedia.map((media) => {
-                  const Icon = media.icon
-                  const isSelected = selectedMedia === media.id
-                  return (
-                    <motion.div
-                      key={media.id}
-                      layout
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      transition={{ duration: 0.15 }}
+          {/* Center: Media type toggles */}
+          <div className="flex shrink-0 items-center justify-center gap-1">
+            <AnimatePresence mode="popLayout">
+              {MEDIA_TYPES.map((media) => {
+                const Icon = media.icon
+                const isSelected = selectedMedia === media.id
+                return (
+                  <motion.div
+                    key={media.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                  >
+                    <Button
+                      type="button"
+                      variant={isSelected ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setSelectedMedia(media.id)}
+                      className={cn(
+                        "h-7 gap-1.5 px-2.5 transition-all duration-200"
+                      )}
+                      title={media.label}
                     >
+                      <Icon className="h-3.5 w-3.5 shrink-0" />
+                    </Button>
+                  </motion.div>
+                )
+              })}
+            </AnimatePresence>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                >
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 w-7 px-0 text-muted-foreground"
+                    title="More media types"
+                  >
+                    <MoreHorizontal className="h-3.5 w-3.5" />
+                  </Button>
+                </motion.div>
+              </PopoverTrigger>
+              <PopoverContent side="top" align="center" className="w-48 p-2">
+                <div className="space-y-1">
+                  {MORE_MEDIA_TYPES.map((media) => {
+                    const Icon = media.icon
+                    const isSelected = selectedMedia === media.id
+                    return (
                       <Button
+                        key={media.id}
                         type="button"
                         variant={isSelected ? "default" : "ghost"}
                         size="sm"
                         onClick={() => setSelectedMedia(media.id)}
-                        className={cn(
-                          "h-7 transition-all",
-                          showMediaLabels ? "gap-1.5 px-2.5" : "w-7 px-0"
-                        )}
-                        title={media.label}
+                        className="w-full justify-start gap-2 h-8"
                       >
-                        <Icon className="h-3.5 w-3.5 shrink-0" />
-                        {showMediaLabels && (
-                          <span className="text-xs">{media.label}</span>
-                        )}
+                        <Icon className="h-3.5 w-3.5" />
+                        <span className="text-sm">{media.label}</span>
                       </Button>
-                    </motion.div>
-                  )
-                })}
-              </AnimatePresence>
+                    )
+                  })}
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
 
-              {hiddenMedia.length > 0 && (
-                <Popover open={showMoreMedia} onOpenChange={setShowMoreMedia}>
-                  <PopoverTrigger asChild>
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 w-7 px-0"
-                        title="More media types"
-                      >
-                        <MoreHorizontal className="h-3.5 w-3.5" />
-                      </Button>
-                    </motion.div>
-                  </PopoverTrigger>
-                  <PopoverContent side="top" align="end" className="w-48 p-2">
-                    <div className="space-y-1">
-                      {hiddenMedia.map((media) => {
-                        const Icon = media.icon
-                        const isSelected = selectedMedia === media.id
-                        return (
-                          <Button
-                            key={media.id}
-                            type="button"
-                            variant={isSelected ? "default" : "ghost"}
-                            size="sm"
-                            onClick={() => {
-                              setSelectedMedia(media.id)
-                              setShowMoreMedia(false)
-                            }}
-                            className="w-full justify-start gap-2 h-8"
-                          >
-                            <Icon className="h-3.5 w-3.5" />
-                            <span className="text-sm">{media.label}</span>
-                          </Button>
-                        )
-                      })}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              )}
-            </div>
-
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              {onVoiceModeChange && (
+          {/* Right: Voice + Send */}
+          <div className="flex shrink-0 items-center gap-1">
+            {onVoiceModeChange && (
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 rounded-full px-0 text-muted-foreground mr-1"
+                  className="h-8 w-8 rounded-full px-0 text-muted-foreground"
                   onClick={() => onVoiceModeChange(true)}
                   title="Voice Input"
                 >
                   <Mic className="h-4 w-4" />
                 </Button>
-              )}
+              </motion.div>
+            )}
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Button
                 type="submit"
                 onClick={
