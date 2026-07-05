@@ -25,6 +25,7 @@ import { AIModeSwitcher } from "./ai-mode-switcher";
 import { AITargetSwitcher } from "./ai-target-switcher";
 import { ImageControls, MediaControls } from "./media-controls";
 import { ModelPicker } from "./model-picker";
+import { providers } from "@/lib/ai/providers";
 
 interface MediaType {
   id: string;
@@ -85,9 +86,9 @@ export function AIInputBar({
   onModelChange
 }: AIInputBarProps) {
   const [selectedMedia, setSelectedMedia] = useState<string>("text");
-  const [selectedProvider, setSelectedProvider] = useState<string>("gemini");
+  const [selectedProvider, setSelectedProvider] = useState<string>("opencode");
   const [selectedModel, setSelectedModel] =
-    useState<string>("gemini-3.1-flash-lite-preview");
+    useState<string>("opencode-high");
   const [internalInput, setInternalInput] = useState("");
   const input = inputValue !== undefined ? inputValue : internalInput;
   const setInput = (val: string) => {
@@ -100,6 +101,18 @@ export function AIInputBar({
   const [showMediaLabels, setShowMediaLabels] = useState(true);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (selectedModelId) {
+      setSelectedModel(selectedModelId);
+      for (const [providerId, providerConfig] of Object.entries(providers)) {
+        if (providerConfig.models.some(m => m.id === selectedModelId)) {
+          setSelectedProvider(providerId);
+          break;
+        }
+      }
+    }
+  }, [selectedModelId]);
 
   // Calculate visible media items and label visibility based on container width
   useEffect(() => {

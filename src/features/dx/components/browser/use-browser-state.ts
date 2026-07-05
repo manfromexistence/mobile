@@ -7,7 +7,7 @@ import type { SVGLogo, Tab, TabFolder, Workspace } from "./types";
 
 export function useBrowserState() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
-  const [activeWorkspace, setActiveWorkspace] = useState("1");
+  const [activeWorkspace, setActiveWorkspace] = useState("");
   const [activeTab, setActiveTab] = useState("1");
   const [spaceCollapsed, setSpaceCollapsed] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
@@ -29,26 +29,7 @@ export function useBrowserState() {
 
   const [logos, setLogos] = useState<SVGLogo[]>(DEFAULT_LOGOS);
 
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([
-    {
-      id: "1",
-      name: "Personal",
-      color: "hsl(var(--chart-1))",
-      icon: { type: "emoji", value: "😊" },
-    },
-    {
-      id: "2",
-      name: "Work",
-      color: "hsl(var(--chart-2))",
-      icon: { type: "icon", value: "Briefcase" },
-    },
-    {
-      id: "3",
-      name: "Development",
-      color: "hsl(var(--chart-3))",
-      icon: { type: "dot", value: "" },
-    },
-  ]);
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
 
   const [folders, setFolders] = useState<TabFolder[]>([]);
 

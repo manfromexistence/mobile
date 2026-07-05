@@ -146,7 +146,7 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
   },
 }
 
-export const DEFAULT_MODEL_ID = "opencode-default" as any;
+export const DEFAULT_MODEL_ID = "opencode-high" as any;
 
 export function getModelConfig(id: ModelId): ExtendedModelOption {
   return MODEL_OPTIONS[id]

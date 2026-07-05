@@ -67,7 +67,22 @@ export function useChat() {
 
   React.useEffect(() => {
     setConversations(loadConversations())
-    setCurrentConversationId(loadActiveConversationId())
+    
+    // Check for slug in URL (e.g., /dx/[id])
+    if (typeof window !== "undefined") {
+      const pathSegments = window.location.pathname.split('/').filter(Boolean)
+      const slug = pathSegments[0] === 'dx' && pathSegments[1] ? pathSegments[1] : null
+      
+      if (slug) {
+        setCurrentConversationId(slug)
+        saveActiveConversationId(slug)
+      } else {
+        setCurrentConversationId(loadActiveConversationId())
+      }
+    } else {
+      setCurrentConversationId(loadActiveConversationId())
+    }
+    
     setSelectedModelState(loadSelectedModel())
   }, [])
   const modelInference = useModelInference()

@@ -39,7 +39,15 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { WorkspaceDialog } from "@/components/workspace-dialog";
 import { cn } from "@/lib/utils";
 
-export function ZenSidebar({ children }: { children: React.ReactNode }) {
+export function ZenSidebar({
+  children,
+  onNewChat,
+  onTabSelect,
+}: {
+  children: React.ReactNode;
+  onNewChat?: () => any;
+  onTabSelect?: (tabId: string) => void;
+}) {
   const state = useBrowserState();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
@@ -326,14 +334,17 @@ export function ZenSidebar({ children }: { children: React.ReactNode }) {
   }
 
   function addNewTab(): void {
+    const newChat = onNewChat?.();
+    const newId = newChat?.id || Date.now().toString();
     const newTab: Tab = {
-      id: Date.now().toString(),
+      id: newId,
       title: "New Chat",
       url: "about:blank",
       workspaceId: state.activeWorkspace,
       folderId: null,
     };
     state.setLooseTabs([...state.looseTabs, newTab]);
+    state.setActiveTab(newId);
   }
 
   function createFolder(): void {
@@ -504,7 +515,10 @@ export function ZenSidebar({ children }: { children: React.ReactNode }) {
                     ),
                   )
                 }
-                onSetActiveTab={state.setActiveTab}
+                onSetActiveTab={(id) => {
+                  state.setActiveTab(id);
+                  onTabSelect?.(id);
+                }}
                 onCloseTab={closeTab}
                 onToggleFolder={toggleFolder}
                 onDeleteFolder={deleteFolder}

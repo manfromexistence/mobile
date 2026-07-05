@@ -580,6 +580,14 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                     </ContextMenu>
                   ))}
                 </AnimatePresence>
+
+                <motion.button
+                  onClick={props.onOpenWorkspaceDialog}
+                  className="group flex h-4 w-4 shrink-0 items-center justify-center rounded-md border border-dashed text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors ml-1"
+                  title="Add Space"
+                >
+                  <Plus className="h-3 w-3" />
+                </motion.button>
               </div>
             </div>
 

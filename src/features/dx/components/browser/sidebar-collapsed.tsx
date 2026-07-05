@@ -184,6 +184,13 @@ export function SidebarCollapsed({
               </ContextMenuContent>
             </ContextMenu>
           ))}
+          <motion.button
+            onClick={onOpenWorkspaceDialog}
+            className="group mt-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-dashed text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+            title="Add Space"
+          >
+            <Plus className="h-4 w-4" />
+          </motion.button>
         </div>
 
         {canScrollRight && (

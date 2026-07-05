@@ -207,6 +207,16 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
     }
   }, [darkMode])
 
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (currentConversationId) {
+        window.history.replaceState(null, "", `/dx/${currentConversationId}`)
+      } else {
+        window.history.replaceState(null, "", `/dx`)
+      }
+    }
+  }, [currentConversationId])
+
   const toggleDarkMode = React.useCallback(() => {
     setDarkMode((prev) => {
       const next = !prev
@@ -255,7 +265,10 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
   }, [setRightPanel])
 
   return (
-    <ZenSidebar>
+    <ZenSidebar
+      onNewChat={createNewConversation}
+      onTabSelect={switchConversation}
+    >
 
       {/* MAIN CONTENT */}
       <main
@@ -424,65 +437,7 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
             <div className="flex flex-col items-center pb-40 md:pb-44">
               <div className="w-full max-w-3xl text-[15px] leading-relaxed text-foreground/80">
 
-                {messages.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center pt-8 pb-16 text-center w-full max-w-none">
-                    <div className="mt-8 mb-4 rounded-2xl bg-muted/50 p-4">
-                      <MessageSquarePlus className="size-10 text-muted-foreground/40" />
-                    </div>
-                    {modelLoading && modelProgress ? (
-                      <>
-                        <h2 className="mb-1 text-xl font-bold text-foreground">
-                          Loading {MODEL_OPTIONS[selectedModel].name}
-                        </h2>
-                        <div className="mt-4 mb-2 h-2 w-64 overflow-hidden rounded-full bg-muted md:w-80">
-                          <motion.div
-                            className="h-full rounded-full bg-foreground"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${modelProgress.percent}%` }}
-                            transition={{ duration: 0.3, ease: "easeOut" }}
-                          />
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {modelProgress.stage}
-                          <span className="ml-2 font-mono text-xs text-muted-foreground/60">
-                            {Math.round(modelProgress.percent)}%
-                          </span>
-                        </p>
-                        {modelProgress.file && (
-                          <p className="mt-1 max-w-xs truncate text-xs text-muted-foreground/40">
-                            {modelProgress.file}
-                          </p>
-                        )}
-                      </>
-                    ) : modelError ? (
-                      <>
-                        <h2 className="mb-1 text-xl font-bold text-destructive">
-                          Model error
-                        </h2>
-                        <p className="max-w-sm text-sm text-muted-foreground">
-                          {modelError}
-                        </p>
-                      </>
-                    ) : (
-                      <>
-                        <h2 className="mb-1 text-xl font-bold text-foreground">
-                          {isMock
-                            ? "Chat ready (offline mode)"
-                            : "Start a conversation"}
-                        </h2>
-                        <p className="max-w-sm text-sm text-muted-foreground">
-                          {isMock
-                            ? "The AI model could not be loaded in your browser. Responses are simulated. Try a different browser or model."
-                            : `Ask anything about AI, code, or the world. I'm powered by ${MODEL_OPTIONS[selectedModel].name}.`}
-                        </p>
-                        <span className="mt-2 text-xs text-muted-foreground/60">
-                          Model: {MODEL_OPTIONS[selectedModel].name} &middot;{" "}
-                          {MODEL_OPTIONS[selectedModel].contextLength} context
-                        </span>
-                      </>
-                    )}
-                  </div>
-                ) : (
+                {messages.length === 0 ? null : (
                   messages.map((message, i) => (
                     <ChatMessage
                       key={message.id}
@@ -541,7 +496,16 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
         )}
 
         {/* Chat Input */}
-        <div className={cn("pointer-events-none absolute right-0 left-0 z-20 flex flex-col items-center px-3 md:px-6", messages.length === 0 ? "top-1/2 -translate-y-1/2 justify-center" : "bottom-0 justify-end bg-gradient-to-t from-background via-background/95 to-transparent pt-20 pb-4 md:pb-6")}>
+        <motion.div 
+          layout
+          initial={false}
+          animate={{
+            bottom: messages.length === 0 ? "50%" : "0%",
+            y: messages.length === 0 ? "50%" : "0%",
+          }}
+          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+          className={cn("pointer-events-none absolute right-0 left-0 z-20 flex flex-col items-center px-3 md:px-6", messages.length > 0 && "bg-gradient-to-t from-background via-background/95 to-transparent pt-20 pb-4 md:pb-6")}
+        >
           <div className="pointer-events-auto relative w-full max-w-3xl mx-auto">
             <AIInputBar
               inputValue={inputValue}
@@ -556,7 +520,7 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
               onModelChange={setSelectedModel}
             />
           </div>
-        </div>
+        </motion.div>
       </main>
 
       {/* RIGHT SIDEBAR */}
