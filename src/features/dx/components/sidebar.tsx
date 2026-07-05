@@ -506,6 +506,8 @@ export function Sidebar({
               canScrollRight={canScrollRight}
               archivesOpen={state.archivesOpen}
               plusMenuOpen={state.plusMenuOpen}
+              folders={state.folders}
+              activeWorkspaceTabs={activeWorkspaceTabs}
               onSetActiveWorkspace={state.setActiveWorkspace}
               onSetarchivesOpen={state.setArchivesOpen}
               onSetPlusMenuOpen={state.setPlusMenuOpen}
@@ -522,8 +524,8 @@ export function Sidebar({
               onOpenWorkspaceDialog={() => state.setWorkspaceDialogOpen(true)}
               onCreateFolder={createFolder}
               onAddNewTab={addNewTab}
-              activeWorkspaceTabs={activeWorkspaceTabs}
               activeTab={state.activeTab}
+              onSetCommandOpen={state.setCommandOpen}
               onSetActiveTab={state.setActiveTab}
               onSetSettingsOpen={() => {
                 if (onOpenSettings) onOpenSettings();

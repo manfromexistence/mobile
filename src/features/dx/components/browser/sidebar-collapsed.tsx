@@ -10,7 +10,7 @@ import {
   MessageSquare,
   Plus,
   Search,
-  Settings,
+  Cog,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import {
   Popover,
   PopoverContent,
@@ -53,6 +58,7 @@ interface SidebarCollapsedProps {
   onOpenWorkspaceDialog: () => void;
   onCreateFolder: () => void;
   onAddNewTab: () => void;
+  folders?: TabFolder[];
   activeWorkspaceTabs?: Tab[];
   activeTab?: string;
   onSetActiveTab?: (id: string) => void;
@@ -77,6 +83,7 @@ export function SidebarCollapsed({
   onOpenWorkspaceDialog,
   onCreateFolder,
   onAddNewTab,
+  folders = [],
   activeWorkspaceTabs = [],
   activeTab = "",
   onSetActiveTab,
@@ -109,20 +116,41 @@ export function SidebarCollapsed({
 
       <ScrollArea className="flex-1 w-full px-2">
         <div className="flex flex-col items-center gap-2">
+          {folders.map((folder) => (
+            <HoverCard key={folder.id} openDelay={0} closeDelay={0}>
+              <HoverCardTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                >
+                  <Folder className="h-4 w-4 shrink-0" />
+                </Button>
+              </HoverCardTrigger>
+              <HoverCardContent side="right" className="w-auto border-border bg-card p-2">
+                <span className="text-sm font-medium">{folder.name}</span>
+              </HoverCardContent>
+            </HoverCard>
+          ))}
           {activeWorkspaceTabs.map((tab) => (
-            <Button
-              key={tab.id}
-              variant={activeTab === tab.id ? "secondary" : "ghost"}
-              size="icon"
-              className={cn(
-                "h-8 w-8",
-                activeTab === tab.id ? "bg-accent" : "text-muted-foreground"
-              )}
-              onClick={() => onSetActiveTab?.(tab.id)}
-              title={tab.title}
-            >
-              <MessageSquare className="h-4 w-4 shrink-0" />
-            </Button>
+            <HoverCard key={tab.id} openDelay={0} closeDelay={0}>
+              <HoverCardTrigger asChild>
+                <Button
+                  variant={activeTab === tab.id ? "secondary" : "ghost"}
+                  size="icon"
+                  className={cn(
+                    "h-8 w-8",
+                    activeTab === tab.id ? "bg-accent" : "text-muted-foreground"
+                  )}
+                  onClick={() => onSetActiveTab?.(tab.id)}
+                >
+                  <MessageSquare className="h-4 w-4 shrink-0" />
+                </Button>
+              </HoverCardTrigger>
+              <HoverCardContent side="right" className="w-auto border-border bg-card p-2">
+                <span className="text-sm font-medium">{tab.title}</span>
+              </HoverCardContent>
+            </HoverCard>
           ))}
         </div>
       </ScrollArea>
@@ -316,7 +344,7 @@ export function SidebarCollapsed({
           className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
           onClick={() => onSetSettingsOpen?.(true)}
         >
-          <Settings className="h-4 w-4" />
+          <Cog className="h-4 w-4" />
         </Button>
 
         <motion.div

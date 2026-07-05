@@ -274,6 +274,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
       onTabSelect={switchConversation}
       onRenameTab={(id, title) => updateConversation(id, (c) => ({ ...c, title }))}
       onArchiveTab={(id) => updateConversation(id, (c) => ({ ...c, archived: true }))}
+      onOpenSettings={() => setSettingsOpen(true)}
     >
 
       {/* MAIN CONTENT */}
