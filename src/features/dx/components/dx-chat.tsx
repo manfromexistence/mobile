@@ -89,8 +89,14 @@ import {
 } from "./dx-chat-settings"
 import { HistoryItem, SidebarItem, SidebarSubItem } from "./dx-chat-sidebar"
 import { ZenSidebar } from "./zen-sidebar"
+import { getRandomDockIconName } from "@/components/screens/dock-icons"
+import { MacOSDock } from "@/components/screens/macos-dock"
+import { ScreenCarousel } from "@/components/screens/screen-carousel"
+import { ScreenGridDialog } from "@/components/screens/screen-grid-dialog"
+import type { Screen } from "@/components/screens/types"
 import { AIInputBar } from "@/components/chat/ai-input-bar"
 import { VoiceBar } from "./dx-chat-voice"
+import { DockDemo } from "@/components/dock"
 
 type RightPanel = "thoughts" | "sources" | "files" | null
 
@@ -140,6 +146,38 @@ export function DxChat({ swapped }: { swapped?: boolean }) {
   const [darkMode, setDarkMode] = useLocalStorage("dx-dark-mode", false)
   const [settingsOpen, setSettingsOpen] = React.useState(false)
   const [settingsTab, setSettingsTab] = React.useState("account")
+
+  const [activeScreenId, setActiveScreenId] = React.useState<string>("welcome");
+  const [screens, setScreens] = React.useState<Screen[]>([
+    { id: "welcome", type: "welcome", title: "Welcome", width: 0, height: 0 },
+    { id: "terminal", type: "terminal", title: "Terminal", width: 0, height: 0 },
+    { id: "code", type: "code", title: "Code Editor", width: 0, height: 0 },
+    { id: "browser", type: "browser", title: "Browser", width: 0, height: 0 },
+  ]);
+  const [gridOpen, setGridOpen] = React.useState(false);
+
+  const handleScreenResize = (id: string, width: number, height: number) => {
+    setScreens((prev) =>
+      prev.map((screen) =>
+        screen.id === id ? { ...screen, width, height } : screen,
+      ),
+    );
+  };
+
+  const handleAddScreen = () => {
+    const number = screens.length + 1;
+    const newScreen = {
+      id: `screen-${Date.now()}`,
+      type: "custom",
+      title: `Screen ${number}`,
+      width: 0,
+      height: 0,
+      dockIcon: getRandomDockIconName(),
+    };
+    setScreens((prev) => [...prev, newScreen as Screen]);
+    setActiveScreenId(newScreen.id);
+  };
+
 
   const {
     messages,
