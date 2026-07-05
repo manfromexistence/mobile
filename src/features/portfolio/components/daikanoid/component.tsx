@@ -4,7 +4,7 @@
 
 import { useReducedMotion } from "motion/react"
 import { useTheme } from "next-themes"
-import p5 from "p5"
+// import p5 from "p5" // moved to dynamic import inside useEffect
 import { useEffect, useRef } from "react"
 
 import { cn } from "@/lib/utils"
@@ -157,12 +157,18 @@ export function Daikanoid({
     }
     window.addEventListener("keypress", handleKeyPress)
 
-    const p5Instance = new p5(game)
+    // Dynamically import p5 to avoid SSR issues
+    let p5Instance: any;
+    import("p5").then((p5Module) => {
+      const p5Lib = p5Module.default || p5Module;
+      p5Instance = new p5Lib(game);
+    });
 
+    // Cleanup function
     return () => {
-      window.removeEventListener("keypress", handleKeyPress)
-      p5Instance.remove()
-    }
+      window.removeEventListener("keypress", handleKeyPress);
+      if (p5Instance) p5Instance.remove();
+    };
   }, [shouldReduceMotion, resolvedTheme, defaultLogo])
 
   return (

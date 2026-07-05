@@ -201,7 +201,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
     isMock,
   } = useChat()
 
-  const { activeWorkspace } = useBrowserState()
+  const { activeWorkspace, setLooseTabs, setFolders } = useBrowserState()
 
   React.useEffect(() => {
     if (darkMode) {
@@ -222,17 +222,20 @@ export function Chat({ swapped }: { swapped?: boolean }) {
   }, [currentConversationId, activeWorkspace])
 
   const toggleDarkMode = React.useCallback(() => {
-    setDarkMode((prev) => {
-      const next = !prev
-      if (next) {
-        document.documentElement.classList.add("dark")
-      } else {
-        document.documentElement.classList.remove("dark")
-      }
-      return next
-    })
-  }, [setDarkMode])
+    setDarkMode(!darkMode)
+  }, [darkMode, setDarkMode])
 
+  // handle window resize
+  React.useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768)
+    }
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  // scroll helpers
   const scrollViewportRef = React.useRef<HTMLDivElement>(null)
   const [showScrollBtn, setShowScrollBtn] = React.useState(false)
 
@@ -259,21 +262,55 @@ export function Chat({ swapped }: { swapped?: boolean }) {
 
   const openRightPanel = React.useCallback(
     (panel: RightPanel) => {
-      setRightPanel((prev) => (prev === panel ? null : panel))
+      setRightPanel(panel)
+      if (!isDesktop) {
+        setSidebarCollapsed(true)
+      }
     },
-    [setRightPanel]
+    [isDesktop, setSidebarCollapsed, setRightPanel]
   )
 
   const closeRightPanel = React.useCallback(() => {
     setRightPanel(null)
   }, [setRightPanel])
 
+  React.useEffect(() => {
+    if (rightPanel && !isDesktop) {
+      setSidebarCollapsed(true)
+    }
+  }, [rightPanel, isDesktop, setSidebarCollapsed])
+
+  // Sync state between browser state and chat conversations when workspace changes
+  React.useEffect(() => {
+    if (currentConversationId) {
+      // Find the tab and rename it if needed
+    }
+  }, [currentConversationId])
+
   return (
     <Sidebar
       onNewChat={() => createNewConversation(activeWorkspace)}
       onTabSelect={switchConversation}
-      onRenameTab={(id, title) => updateConversation(id, (c) => ({ ...c, title }))}
-      onArchiveTab={(id) => updateConversation(id, (c) => ({ ...c, archived: true }))}
+      onRenameTab={(id, title) => {
+        updateConversation(id, (c) => ({ ...c, title }))
+        setLooseTabs((prev) => prev.map((t) => (t.id === id ? { ...t, title } : t)))
+        setFolders((prev) =>
+          prev.map((f) => ({
+            ...f,
+            tabs: f.tabs.map((t) => (t.id === id ? { ...t, title } : t)),
+          }))
+        )
+      }}
+      onArchiveTab={(id) => {
+        updateConversation(id, (c) => ({ ...c, archived: true }))
+        setLooseTabs((prev) => prev.filter((t) => t.id !== id))
+        setFolders((prev) =>
+          prev.map((f) => ({
+            ...f,
+            tabs: f.tabs.filter((t) => t.id !== id),
+          }))
+        )
+      }}
       onOpenSettings={() => setSettingsOpen(true)}
     >
 
