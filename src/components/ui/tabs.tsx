@@ -90,9 +90,9 @@ function TabsContent({
 function TabsIndicator({
   className,
   ...props
-}: React.ComponentProps<typeof TabsPrimitive.Indicator>) {
+}: React.ComponentPropsWithoutRef<"div">) {
   return (
-    <TabsPrimitive.Indicator
+    <div
       data-slot="tabs-indicator"
       className={cn(
         "absolute bottom-0 left-0 -z-1 h-(--active-tab-height) w-(--active-tab-width) translate-x-(--active-tab-left) -translate-y-(--active-tab-bottom) rounded-md bg-white transition-[width,translate] duration-200 ease-in-out dark:bg-muted",
