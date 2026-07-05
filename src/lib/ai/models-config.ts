@@ -11,7 +11,7 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
     id: "opencode-low" as any,
     name: "MiniMax M3 Free",
     provider: "openai-compatible" as any,
-    modelName: "low",
+    modelName: "minimax-m3-free",
     quantization: "api",
     contextLength: 8192,
     description: "Free Tier",
@@ -25,7 +25,7 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
     id: "opencode-high" as any,
     name: "BigPickle",
     provider: "openai-compatible" as any,
-    modelName: "high",
+    modelName: "bigpickle",
     quantization: "api",
     contextLength: 8192,
     description: "Free Tier",
@@ -39,7 +39,7 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
     id: "opencode-xhigh" as any,
     name: "DeepSeek V4 Flash Free",
     provider: "openai-compatible" as any,
-    modelName: "xhigh",
+    modelName: "deepseek-v4-flash-free",
     quantization: "api",
     contextLength: 8192,
     description: "Free Tier",
@@ -53,7 +53,7 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
     id: "opencode-default" as any,
     name: "Mimo V2.5 Free",
     provider: "openai-compatible" as any,
-    modelName: "default",
+    modelName: "mimo-v2.5-free",
     quantization: "api",
     contextLength: 8192,
     description: "Free Tier",
@@ -67,7 +67,7 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
     id: "opencode-medium" as any,
     name: "Nemotron 3 Super Free",
     provider: "openai-compatible" as any,
-    modelName: "medium",
+    modelName: "nemotron-3-super-free",
     quantization: "api",
     contextLength: 8192,
     description: "Free Tier",
@@ -81,7 +81,7 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
     id: "opencode-xlow" as any,
     name: "Nemotron 3 Ultra Free",
     provider: "openai-compatible" as any,
-    modelName: "xlow",
+    modelName: "nemotron-3-ultra-free",
     quantization: "api",
     contextLength: 8192,
     description: "Free Tier",
@@ -145,7 +145,7 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
   },
 }
 
-export const DEFAULT_MODEL_ID = "opencode-high" as any
+export const DEFAULT_MODEL_ID = "opencode-default" as any
 
 export function getModelConfig(id: ModelId): ExtendedModelOption {
   return MODEL_OPTIONS[id]

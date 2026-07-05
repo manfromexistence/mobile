@@ -116,37 +116,37 @@ export const providers: Record<ProviderId, ProviderConfig> = {
       {
         id: "opencode-low",
         name: "MiniMax M3 Free",
-        modelId: "low",
+        modelId: "minimax-m3-free",
         description: "Free Tier",
       },
       {
         id: "opencode-high",
         name: "BigPickle",
-        modelId: "high",
+        modelId: "bigpickle",
         description: "Free Tier",
       },
       {
         id: "opencode-xhigh",
         name: "DeepSeek V4 Flash Free",
-        modelId: "xhigh",
+        modelId: "deepseek-v4-flash-free",
         description: "Free Tier",
       },
       {
         id: "opencode-default",
         name: "Mimo V2.5 Free",
-        modelId: "default",
+        modelId: "mimo-v2.5-free",
         description: "Free Tier",
       },
       {
         id: "opencode-medium",
         name: "Nemotron 3 Super Free",
-        modelId: "medium",
+        modelId: "nemotron-3-super-free",
         description: "Free Tier",
       },
       {
         id: "opencode-xlow",
         name: "Nemotron 3 Ultra Free",
-        modelId: "xlow",
+        modelId: "nemotron-3-ultra-free",
         description: "Free Tier",
       },
     ],
@@ -586,7 +586,11 @@ export function getModel(providerId: ProviderId, modelId: string) {
     case "opencode": {
       const opencodeProvider = createOpenAI({
         baseURL: "https://opencode.ai/zen/v1",
-        apiKey: process.env.OPENCODE_API_KEY || "empty",
+        apiKey: process.env.OPENCODE_API_KEY || "public",
+        headers: {
+          "HTTP-Referer": "https://opencode.ai/",
+          "X-Title": "opencode",
+        },
       })
       return opencodeProvider(modelConfig.modelId)
     }

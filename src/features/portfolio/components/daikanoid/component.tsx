@@ -31,10 +31,10 @@ export function Daikanoid({
   className,
   defaultLogo,
   ...props
-}: Omit<React.ComponentPropsWithRef<"canvas">, "children"> & {
+}: Omit<React.ComponentPropsWithRef<"div">, "children"> & {
   defaultLogo?: string
 }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const shouldReduceMotion = useReducedMotion()
   const p5Ref = useRef<any>(null)
   const { resolvedTheme } = useTheme()
@@ -42,7 +42,7 @@ export function Daikanoid({
   useEffect(() => {
     loadColors()
 
-    const el = canvasRef.current!
+    const el = containerRef.current!
 
     const state: GameState = {
       canvas: null,
@@ -72,74 +72,93 @@ export function Daikanoid({
       sketch = p
 
       p.preload = () => {
-        font = p.loadFont(FONT_URL)
+        try {
+          font = p.loadFont(FONT_URL)
 
-        state.soundBounce = p.createAudio(SOUND_BOUNCE_URL)
-        state.soundBreak = p.createAudio(SOUND_BREAK_URL)
-        state.soundGameOver = p.createAudio(SOUND_GAME_OVER_URL)
+          state.soundBounce = p.createAudio(SOUND_BOUNCE_URL)
+          state.soundBreak = p.createAudio(SOUND_BREAK_URL)
+          state.soundGameOver = p.createAudio(SOUND_GAME_OVER_URL)
 
-        state.ballImage = p.loadImage(
-          resolvedTheme === "dark" ? BALL_DARK_URL : BALL_LIGHT_URL
-        )
-        state.paddleImage = p.loadImage(
-          resolvedTheme === "dark" ? PADDLE_DARK_URL : PADDLE_LIGHT_URL
-        )
+          state.ballImage = p.loadImage(
+            resolvedTheme === "dark" ? BALL_DARK_URL : BALL_LIGHT_URL
+          )
+          state.paddleImage = p.loadImage(
+            resolvedTheme === "dark" ? PADDLE_DARK_URL : PADDLE_LIGHT_URL
+          )
+        } catch (err) {
+          console.error("p5 preload error:", err)
+        }
       }
 
       p.setup = () => {
-        state.canvas = p.createCanvas(800, 600, p.P2D, el)
-        paddle = new Paddle(p, state)
-        ball = new Ball(p, state)
-        ui = new UI(p, state)
+        try {
+          if (!isMounted) {
+            p.remove()
+            return
+          }
+          state.canvas = p.createCanvas(800, 600, p.P2D)
+          state.canvas.parent(el)
+          paddle = new Paddle(p, state)
+          ball = new Ball(p, state)
+          ui = new UI(p, state)
 
-        p.imageMode(p.CENTER)
-        p.textFont(font)
-        p.background(Colors.background)
-        p.fill(Colors.foreground)
-        p.noStroke()
+          p.imageMode(p.CENTER)
+          p.textFont(font)
+          p.background(Colors.background)
+          p.fill(Colors.foreground)
+          p.noStroke()
 
-        resetGame(p, state)
+          resetGame(p, state)
 
-        state.canvas.mouseClicked(() => {
-          state.enableGame = true
-          ball.reset()
-          return false
-        })
+          state.canvas.mouseClicked(() => {
+            state.enableGame = true
+            ball.reset()
+            return false
+          })
 
-        state.canvas.touchStarted(() => {
-          state.enableGame = true
-          return false
-        })
+          state.canvas.touchStarted(() => {
+            state.enableGame = true
+            return false
+          })
+        } catch (err) {
+          console.error("p5 setup error:", err)
+        }
       }
 
       p.draw = () => {
-        p.background(Colors.background)
+        try {
+          if (!isMounted) return
+          p.background(Colors.background)
 
-        if (state.bricks.length === 0) {
-          p.fill(Colors.foreground)
-          p.textAlign(p.CENTER, p.CENTER)
-          p.textSize(80)
-          p.text("404", p.width / 2, p.height / 2 - 11)
-          return
+          if (state.bricks.length === 0) {
+            p.fill(Colors.foreground)
+            p.textAlign(p.CENTER, p.CENTER)
+            p.textSize(80)
+            p.text("404", p.width / 2, p.height / 2 - 11)
+            return
+          }
+
+          paddle.show()
+          paddle.move()
+
+          ball.show()
+          if (state.enableGame) {
+            ball.move()
+            ball.checkEdges()
+            ball.checkPaddle(paddle)
+          }
+
+          for (const brick of state.bricks) {
+            brick.show()
+          }
+          p.noStroke()
+
+          ball.checkBricks(state.bricks)
+          ui.show()
+        } catch (err) {
+          console.error("p5 draw error:", err)
+          p.noLoop()
         }
-
-        paddle.show()
-        paddle.move()
-
-        ball.show()
-        if (state.enableGame) {
-          ball.move()
-          ball.checkEdges()
-          ball.checkPaddle(paddle)
-        }
-
-        for (const brick of state.bricks) {
-          brick.show()
-        }
-        p.noStroke()
-
-        ball.checkBricks(state.bricks)
-        ui.show()
       }
     }
 
@@ -158,26 +177,36 @@ export function Daikanoid({
     }
     window.addEventListener("keypress", handleKeyPress)
 
+    let isMounted = true
     // Dynamically import p5 to avoid SSR issues
     const initP5 = async () => {
       if (p5Ref.current) return // already initialized
-      const p5Module = await import("p5")
-      const p5Lib = p5Module.default || p5Module
-      p5Ref.current = new p5Lib(game)
+      try {
+        const p5Module = await import("p5")
+        if (!isMounted) return
+        const p5Lib = p5Module.default || p5Module
+        p5Ref.current = new p5Lib(game)
+      } catch (err) {
+        console.error("Failed to initialize p5 sketch:", err)
+      }
     }
     initP5()
 
     // Cleanup function
     return () => {
+      isMounted = false
       window.removeEventListener("keypress", handleKeyPress)
-      if (p5Ref.current) p5Ref.current.remove()
+      if (p5Ref.current) {
+        p5Ref.current.remove()
+        p5Ref.current = null
+      }
     }
   }, [])
 
   return (
-    <canvas
-      ref={canvasRef}
-      className={cn("h-150 w-200 ring-1 ring-border", className)}
+    <div
+      ref={containerRef}
+      className={cn("h-150 w-200 ring-1 ring-border overflow-hidden", className)}
       {...props}
     />
   )
