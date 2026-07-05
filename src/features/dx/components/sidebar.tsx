@@ -51,6 +51,7 @@ export function Sidebar({
   onTabSelect?: (tabId: string) => void;
   onRenameTab?: (tabId: string, newTitle: string) => void;
   onArchiveTab?: (tabId: string) => void;
+  onOpenSettings?: () => void;
 }) {
   const state = useBrowserState();
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -458,6 +459,12 @@ export function Sidebar({
               onOpenWorkspaceDialog={() => state.setWorkspaceDialogOpen(true)}
               onCreateFolder={createFolder}
               onAddNewTab={addNewTab}
+              activeWorkspaceTabs={activeWorkspaceTabs}
+              activeTab={state.activeTab}
+              onSetActiveTab={state.setActiveTab}
+              onSetSettingsOpen={() => {
+                if (onOpenSettings) onOpenSettings();
+              }}
             />
           )}
 

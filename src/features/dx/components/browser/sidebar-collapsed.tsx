@@ -7,7 +7,10 @@ import {
   Columns2,
   Copy,
   Folder,
+  MessageSquare,
   Plus,
+  Search,
+  Settings,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
@@ -29,7 +32,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import type { Workspace } from "./types";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import type { Tab, Workspace } from "./types";
 import { WorkspaceIcon } from "./workspace-icon";
 
 interface SidebarCollapsedProps {
@@ -49,6 +53,11 @@ interface SidebarCollapsedProps {
   onOpenWorkspaceDialog: () => void;
   onCreateFolder: () => void;
   onAddNewTab: () => void;
+  activeWorkspaceTabs?: Tab[];
+  activeTab?: string;
+  onSetActiveTab?: (id: string) => void;
+  onSetCommandOpen?: (open: boolean) => void;
+  onSetSettingsOpen?: (open: boolean) => void;
 }
 
 export function SidebarCollapsed({
@@ -68,10 +77,54 @@ export function SidebarCollapsed({
   onOpenWorkspaceDialog,
   onCreateFolder,
   onAddNewTab,
+  activeWorkspaceTabs = [],
+  activeTab = "",
+  onSetActiveTab,
+  onSetCommandOpen,
+  onSetSettingsOpen,
 }: SidebarCollapsedProps) {
   return (
-    <div className="flex flex-1 flex-col items-center py-2">
-      <div className="relative mt-auto flex flex-col items-center pb-3">
+    <div className="flex flex-1 flex-col items-center py-2 h-full">
+      <div className="flex flex-col items-center gap-2 mb-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
+          onClick={() => onSetCommandOpen?.(true)}
+        >
+          <Search className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
+          onClick={() => onAddNewTab?.()}
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <ScrollArea className="flex-1 w-full px-2">
+        <div className="flex flex-col items-center gap-2">
+          {activeWorkspaceTabs.map((tab) => (
+            <Button
+              key={tab.id}
+              variant={activeTab === tab.id ? "secondary" : "ghost"}
+              size="icon"
+              className={cn(
+                "h-8 w-8",
+                activeTab === tab.id ? "bg-accent" : "text-muted-foreground"
+              )}
+              onClick={() => onSetActiveTab?.(tab.id)}
+              title={tab.title}
+            >
+              <MessageSquare className="h-4 w-4 shrink-0" />
+            </Button>
+          ))}
+        </div>
+      </ScrollArea>
+      
+      <div className="relative mt-auto flex flex-col items-center pt-3 pb-3 border-border border-t w-full">
         {canScrollLeft && (
           <motion.button
             whileTap={{ scale: 0.9 }}
@@ -249,6 +302,15 @@ export function SidebarCollapsed({
             </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
+          onClick={() => onSetSettingsOpen?.(true)}
+        >
+          <Settings className="h-4 w-4" />
+        </Button>
 
         <motion.div
           whileHover={{ scale: 1.05 }}
