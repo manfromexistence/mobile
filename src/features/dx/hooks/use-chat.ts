@@ -320,6 +320,7 @@ export function useChat() {
     switchConversation,
     deleteConversation,
     clearMessages,
+    updateConversation,
     modelReady,
     modelLoading,
     modelProgress,
