@@ -87,4 +87,21 @@ function TabsContent({
   )
 }
 
-export { Tabs, TabsContent, TabsList, TabsTrigger, tabsListVariants }
+function TabsIndicator({
+  className,
+  ...props
+}: React.ComponentProps<typeof TabsPrimitive.Indicator>) {
+  return (
+    <TabsPrimitive.Indicator
+      data-slot="tabs-indicator"
+      className={cn(
+        "absolute bottom-0 left-0 -z-1 h-(--active-tab-height) w-(--active-tab-width) translate-x-(--active-tab-left) -translate-y-(--active-tab-bottom) rounded-md bg-white transition-[width,translate] duration-200 ease-in-out dark:bg-muted",
+        "inset-ring-1 inset-ring-foreground/10 dark:inset-ring-foreground/6",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export { Tabs, TabsContent, TabsList, TabsTrigger, tabsListVariants, TabsIndicator }

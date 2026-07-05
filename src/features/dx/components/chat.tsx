@@ -304,7 +304,27 @@ export function Chat({ swapped }: { swapped?: boolean }) {
             : undefined
         }
       >
-        {/* Mobile Header */}
+        {/* Top Centered Dock */}
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-40 hidden md:flex">
+          <MacOSDock
+            screens={screens}
+            activeScreenId={activeScreenId}
+            onScreenChange={setActiveScreenId}
+            onAddScreen={handleAddScreen}
+            onToggleViewMode={() => setGridOpen(true)}
+            sidebarExpanded={!sidebarCollapsed}
+          />
+        </div>
+
+        <ScreenCarousel
+          activeScreenId={activeScreenId}
+          screens={screens}
+          onScreenChange={setActiveScreenId}
+          onScreenResize={handleScreenResize}
+          onScreensUpdate={setScreens}
+          sidebarExpanded={!sidebarCollapsed}
+        >
+          {/* Mobile Header */}
         <div className="absolute top-0 right-0 left-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background/80 px-2 backdrop-blur-md md:hidden">
           <Button
             variant="ghost"
@@ -527,6 +547,15 @@ export function Chat({ swapped }: { swapped?: boolean }) {
             />
           </div>
         </motion.div>
+        </ScreenCarousel>
+
+        <ScreenGridDialog
+          open={gridOpen}
+          onOpenChange={setGridOpen}
+          screens={screens}
+          activeScreenId={activeScreenId}
+          onSelectScreen={setActiveScreenId}
+        />
       </main>
 
       {/* RIGHT SIDEBAR */}

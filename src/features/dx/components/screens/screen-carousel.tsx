@@ -17,6 +17,7 @@ interface ScreenCarouselProps {
   onScreenResize: (id: string, width: number, height: number) => void;
   onScreensUpdate: (screens: Screen[]) => void;
   sidebarExpanded: boolean;
+  children?: React.ReactNode;
 }
 
 export function ScreenCarousel({
@@ -26,6 +27,7 @@ export function ScreenCarousel({
   onScreenResize,
   onScreensUpdate,
   sidebarExpanded,
+  children,
 }: ScreenCarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
@@ -207,11 +209,11 @@ export function ScreenCarousel({
       case "browser":
         return <BrowserScreen />;
       case "welcome":
-        return <WelcomeScreen sidebarExpanded={sidebarExpanded} />;
+        return children || <WelcomeScreen sidebarExpanded={sidebarExpanded} />;
       case "custom":
         return <CustomScreen title={screen.title} dockIcon={screen.dockIcon} />;
       default:
-        return <WelcomeScreen sidebarExpanded={sidebarExpanded} />;
+        return children || <WelcomeScreen sidebarExpanded={sidebarExpanded} />;
     }
   };
 

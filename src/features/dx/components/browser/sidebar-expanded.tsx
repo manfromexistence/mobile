@@ -6,9 +6,9 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import {
+  Archive,
   ChevronLeft,
   ChevronRight,
-  CircleDashed,
   Columns2,
   Copy,
   Folder,
@@ -266,7 +266,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
         ref={setNewTabButtonRef}
         className="shrink-0 px-2 pt-3 pb-3 overflow-x-hidden"
       >
-        <div className="border-border/50 relative border-t">
+        <div className="border-border/50 relative border-t border-dashed">
           <button
             onClick={props.onClearAllTabs}
             className="text-muted-foreground hover:text-accent-foreground absolute -top-2 right-0 cursor-pointer bg-card px-1 text-xs opacity-0 transition-opacity group-hover:opacity-100"
@@ -422,8 +422,12 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                       variant="ghost"
                       size="icon"
                       className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        props.onSetarchivesOpen(true);
+                      }}
                     >
-                      <CircleDashed className="h-4 w-4" />
+                      <Archive className="h-4 w-4" />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent

@@ -507,7 +507,7 @@ export function Sidebar({
               archivesOpen={state.archivesOpen}
               plusMenuOpen={state.plusMenuOpen}
               onSetActiveWorkspace={state.setActiveWorkspace}
-              onSetarchivesOpen={state.setarchivesOpen}
+              onSetarchivesOpen={state.setArchivesOpen}
               onSetPlusMenuOpen={state.setPlusMenuOpen}
               onStartScrolling={startScrolling}
               onStopScrolling={stopScrolling}
@@ -556,7 +556,7 @@ export function Sidebar({
                 dropPosition={dropPosition}
                 folders={state.folders}
                 onSetActiveWorkspace={state.setActiveWorkspace}
-                onSetarchivesOpen={state.setarchivesOpen}
+                onSetarchivesOpen={state.setArchivesOpen}
                 onSetPlusMenuOpen={state.setPlusMenuOpen}
                 onSetSpaceCollapsed={state.setSpaceCollapsed}
                 onSetSpaceAreaHovered={setIsSpaceAreaHovered}

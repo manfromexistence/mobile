@@ -7,8 +7,7 @@ import { META_THEME_COLORS } from "@/config/site"
 import { useClickSound } from "@/lib/soundcn/hooks/use-click-sound"
 import { useMetaColor } from "@/hooks/use-meta-color"
 
-import { MoonIcon } from "./animated-icons/moon-icon"
-import { SunMediumIcon } from "./animated-icons/sun-medium-icon"
+import { Moon, Sun } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipTrigger } from "./base/ui/tooltip"
 import { Button } from "./ui/button"
 import { Kbd } from "./ui/kbd"
@@ -47,11 +46,8 @@ export function ThemeToggle() {
               className="absolute size-12 pointer-fine:hidden"
               aria-hidden
             />
-            <MoonIcon className="hidden [html.dark_&]:block" aria-hidden />
-            <SunMediumIcon
-              className="hidden [html.light_&]:block"
-              aria-hidden
-            />
+            <Sun className="hidden size-[1.2rem] text-neutral-800 dark:block dark:text-neutral-200" />
+            <Moon className="block size-[1.2rem] text-neutral-800 dark:hidden dark:text-neutral-200" />
           </Button>
         }
       />

@@ -1,9 +1,9 @@
 "use client";
 
 import {
+  Archive,
   ChevronLeft,
   ChevronRight,
-  CircleDashed,
   Columns2,
   Copy,
   Folder,
@@ -83,8 +83,11 @@ export function SidebarCollapsed({
   onSetCommandOpen,
   onSetSettingsOpen,
 }: SidebarCollapsedProps) {
+  const activeWorkspaceObj =
+    workspaces.find((w) => w.id === activeWorkspace) || workspaces[0];
+
   return (
-    <div className="flex flex-1 flex-col items-center py-2 h-full">
+    <motion.div className="flex flex-1 flex-col items-center py-2 h-full">
       <div className="flex flex-col items-center gap-2 mb-4">
         <Button
           variant="ghost"
@@ -271,8 +274,12 @@ export function SidebarCollapsed({
                     variant="ghost"
                     size="icon"
                     className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSetarchivesOpen(true);
+                    }}
                   >
-                    <CircleDashed className="h-4 w-4" />
+                    <Archive className="h-4 w-4" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent
@@ -341,7 +348,7 @@ export function SidebarCollapsed({
                   onSetPlusMenuOpen(true);
                 }}
               >
-                <Plus className="h-4 w-4" />
+                <WorkspaceIcon workspace={activeWorkspaceObj} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -350,6 +357,17 @@ export function SidebarCollapsed({
               sideOffset={5}
               className="border-border bg-card w-56"
             >
+              <DropdownMenuItem
+                onClick={() => {
+                  onCreateFolder();
+                  onSetPlusMenuOpen(false);
+                }}
+                className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+              >
+                <Folder className="mr-2 h-4 w-4" />
+                Create Folder
+              </DropdownMenuItem>
+              <div className="border-border my-1 border-t" />
               <DropdownMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                 <Folder className="mr-2 h-4 w-4" />
                 Live Folder
@@ -365,16 +383,6 @@ export function SidebarCollapsed({
               >
                 <Copy className="mr-2 h-4 w-4" />
                 Create Space
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  onCreateFolder();
-                  onSetPlusMenuOpen(false);
-                }}
-                className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-              >
-                <Folder className="mr-2 h-4 w-4" />
-                Create Folder
               </DropdownMenuItem>
               <div className="border-border my-1 border-t" />
               <DropdownMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
@@ -396,6 +404,6 @@ export function SidebarCollapsed({
           </DropdownMenu>
         </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -1,14 +1,13 @@
-"use client";
-
 import { useEffect, useState } from "react";
+import { useLocalStorage } from "../chat-hooks";
 import { COLORS } from "./constants";
 import { DEFAULT_LOGOS } from "./default-logos";
 import type { SVGLogo, Tab, TabFolder, Workspace } from "./types";
 
 export function useBrowserState() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
-  const [activeWorkspace, setActiveWorkspace] = useState("1");
-  const [activeTab, setActiveTab] = useState("1");
+  const [activeWorkspace, setActiveWorkspace] = useLocalStorage("dx-active-workspace", "1");
+  const [activeTab, setActiveTab] = useLocalStorage("dx-active-tab", "1");
   const [spaceCollapsed, setSpaceCollapsed] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -27,9 +26,9 @@ export function useBrowserState() {
     | undefined
   >(undefined);
 
-  const [logos, setLogos] = useState<SVGLogo[]>(DEFAULT_LOGOS);
+  const [logos, setLogos] = useLocalStorage<SVGLogo[]>("dx-logos", DEFAULT_LOGOS);
 
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([
+  const [workspaces, setWorkspaces] = useLocalStorage<Workspace[]>("dx-workspaces", [
     {
       id: "1",
       name: "Space 1",
@@ -38,9 +37,9 @@ export function useBrowserState() {
     }
   ]);
 
-  const [folders, setFolders] = useState<TabFolder[]>([]);
+  const [folders, setFolders] = useLocalStorage<TabFolder[]>("dx-folders", []);
 
-  const [looseTabs, setLooseTabs] = useState<Tab[]>([]);
+  const [looseTabs, setLooseTabs] = useLocalStorage<Tab[]>("dx-loose-tabs", []);
 
   useEffect(() => {
     setIsMounted(true);

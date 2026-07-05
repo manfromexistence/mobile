@@ -4,19 +4,28 @@ export function useLocalStorage<T>(
   key: string,
   initialValue: T
 ): [T, React.Dispatch<React.SetStateAction<T>>] {
+  const initialValueRef = React.useRef(initialValue)
+  const cachedValue = React.useRef<{ key: string | null; value: T | null }>({ key: null, value: null })
+
   const getSnapshot = React.useCallback((): T => {
-    if (typeof window === "undefined") return initialValue
+    if (typeof window === "undefined") return initialValueRef.current
     try {
       const item = window.localStorage.getItem(key)
-      return item ? (JSON.parse(item) as T) : initialValue
+      if (item === cachedValue.current.key && cachedValue.current.value !== null) {
+        return cachedValue.current.value as T
+      }
+      
+      const parsed = item ? (JSON.parse(item) as T) : initialValueRef.current
+      cachedValue.current = { key: item, value: parsed }
+      return parsed
     } catch {
-      return initialValue
+      return initialValueRef.current
     }
-  }, [key, initialValue])
+  }, [key])
 
   const getServerSnapshot = React.useCallback(
-    (): T => initialValue,
-    [initialValue]
+    (): T => initialValueRef.current,
+    []
   )
 
   const store = React.useSyncExternalStore(

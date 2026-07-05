@@ -11,8 +11,8 @@ import {
   useTransform,
 } from "motion/react"
 
-import { metalClickSound } from "@/lib/soundcn/metal-click"
 import { useSound } from "@/lib/soundcn/hooks/use-sound"
+import { metalClickSound } from "@/lib/soundcn/metal-click"
 
 const transition: Transition = {
   type: "spring",

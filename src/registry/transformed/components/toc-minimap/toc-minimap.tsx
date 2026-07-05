@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react"
 
+import { useSound } from "@/lib/soundcn/hooks/use-sound"
 import { uMiniMapOpenSound } from "@/lib/soundcn/u-mini-map-open"
 import { cn } from "@/lib/utils"
-import { useSound } from "@/lib/soundcn/hooks/use-sound"
 import {
   HoverCard,
   HoverCardContent,
