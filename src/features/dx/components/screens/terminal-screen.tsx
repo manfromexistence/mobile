@@ -7,7 +7,7 @@ export function TerminalScreen() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex h-full w-full flex-col rounded-[20px] border border-border bg-black/95 font-mono text-sm shadow-2xl overflow-hidden"
+      className="flex h-full w-full flex-col bg-black/95 font-mono text-sm shadow-2xl overflow-hidden"
     >
       <div className="mb-2 flex items-center gap-2 p-4 pb-0">
         <div className="h-3 w-3 rounded-full bg-red-500" />

@@ -331,8 +331,8 @@ export function AIInputBar({
 
         <div className="flex items-center justify-between gap-3 bg-muted/20 backdrop-blur-md px-4 py-3 border-t border-border/20">
           <div className="flex items-center gap-2">
-            <AITargetSwitcher />
-            <AIModeSwitcher />
+            {/* <AITargetSwitcher />
+            <AIModeSwitcher /> */}
 
             {selectedMedia === "image" && <ImageControls />}
             {(selectedMedia === "video" ||

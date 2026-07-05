@@ -28,7 +28,7 @@ export function MacOSDock({
 
   return (
     <div
-      className="pointer-events-none fixed top-4 z-50 flex justify-center transition-all duration-200"
+      className="pointer-events-none fixed top-2 z-50 flex justify-center transition-all duration-200"
       style={{
         left: `${sidebarWidth}px`,
         right: 0,
@@ -50,13 +50,13 @@ export function MacOSDock({
                 )}
                 onClick={() => onScreenChange(screen.id)}
               >
-                <Icon className="h-4.5 w-4.5" />
+                <Icon className="h-4 w-4" />
               </DockIcon>
             );
 
           })}
 
-          <Separator orientation="vertical" className="h-[90%] py-2 bg-border/50" />
+          <Separator orientation="vertical" className="h-[50%] py-2 my-auto bg-border/50" />
 
           <DockIcon onClick={onAddScreen}>
             <Plus className="h-4 w-4" />

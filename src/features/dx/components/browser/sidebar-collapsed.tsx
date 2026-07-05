@@ -347,7 +347,7 @@ export function SidebarCollapsed({
           <Cog className="h-4 w-4" />
         </Button>
 
-        <motion.div
+        {/* <motion.div
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           drag
@@ -430,7 +430,7 @@ export function SidebarCollapsed({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </motion.div>
+        </motion.div> */}
       </div>
     </motion.div>
   );

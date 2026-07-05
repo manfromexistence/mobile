@@ -15,7 +15,7 @@ export function CustomScreen({ title, dockIcon }: CustomScreenProps) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex h-full w-full flex-col items-center justify-center gap-4 rounded-[20px] border border-border bg-muted/30 p-8 shadow-2xl overflow-hidden"
+      className="flex h-full w-full flex-col items-center justify-center gap-4 border border-border bg-muted/30 p-8 shadow-2xl overflow-hidden"
     >
       {Icon && (
         <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-muted">

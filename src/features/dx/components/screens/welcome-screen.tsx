@@ -89,14 +89,14 @@ const featureCards = [
   },
 ];
 
-function ControlSlider({ 
-  label, 
-  value, 
-  min, 
-  max, 
-  step, 
-  onChange 
-}: { 
+function ControlSlider({
+  label,
+  value,
+  min,
+  max,
+  step,
+  onChange
+}: {
   label: string;
   value: number;
   min: number;
@@ -136,7 +136,7 @@ interface WelcomeScreenProps {
 
 export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
   const sidebarWidth = sidebarExpanded ? 360 : 56;
-  
+
   const [isPlaying, setIsPlaying] = useState(true);
   const [speed, setSpeed] = useState(3);
   const [resolution, setResolution] = useState(12);
@@ -147,7 +147,7 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [gunshotMode, setGunshotMode] = useState(false);
   const [spidermanMode, setSpidermanMode] = useState(false);
-  
+
   const hasMessages = messages.length > 0;
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -163,15 +163,15 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
     <>
       {/* Spider-Man Waves Mode */}
       <SpidermanWavesMode active={spidermanMode} />
-      
+
       {/* Friday Siri-style Border Animation */}
       <Friday sidebarWidth={sidebarWidth} />
-      
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative flex h-full w-full flex-col rounded-[20px] border border-border bg-background shadow-2xl"
+        className="relative flex h-full w-full flex-col bg-background shadow-2xl"
       >
         {/* Scrollable Content Area */}
         <ScrollArea className="flex-1">
@@ -182,205 +182,205 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
             {/* Welcome Content - Hidden when there are messages */}
             {!hasMessages && (
               <>
-            {/* Eyes Animation */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="flex justify-center"
-            >
-              <EyesStage gunshotMode={gunshotMode}>
-                {/* Animation Controls inside the provider */}
+                {/* Eyes Animation */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  className="flex justify-center"
+                >
+                  <EyesStage gunshotMode={gunshotMode}>
+                    {/* Animation Controls inside the provider */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+                      className="flex justify-center mt-8"
+                    >
+                      <AnimationControls
+                        onGunshotModeChange={setGunshotMode}
+                        onSpidermanModeChange={setSpidermanMode}
+                      />
+                    </motion.div>
+                  </EyesStage>
+                </motion.div>
+
+                {/* Welcome Header */}
+                <div className="text-center space-y-4">
+                  <h1 className="text-foreground text-2xl font-semibold">
+                    Start building with Gemini
+                  </h1>
+                  <ThemeSwitcher />
+                </div>
+
+                {/* Zen Theme Picker */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-                  className="flex justify-center mt-8"
+                  transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+                  className="flex justify-center"
                 >
-                  <AnimationControls 
-                    onGunshotModeChange={setGunshotMode}
-                    onSpidermanModeChange={setSpidermanMode}
-                  />
+                  <ThemePicker />
                 </motion.div>
-              </EyesStage>
-            </motion.div>
 
-            {/* Welcome Header */}
-            <div className="text-center space-y-4">
-              <h1 className="text-foreground text-2xl font-semibold">
-                Start building with Gemini
-              </h1>
-              <ThemeSwitcher />
-            </div>
-
-            {/* Zen Theme Picker */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-              className="flex justify-center"
-            >
-              <ThemePicker />
-            </motion.div>
-
-            {/* PixelCircle Showcase */}
-            <div className="flex flex-col items-center justify-center gap-8">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="flex items-center justify-center"
-              >
-                {PALETTES.map((palette) => (
+                {/* PixelCircle Showcase */}
+                <div className="flex flex-col items-center justify-center gap-8">
                   <motion.div
-                    key={`palette-${palette[0]}`}
-                    initial={{ x: -20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: PALETTES.indexOf(palette) * 0.1 + 0.3 }}
-                    style={{
-                      marginLeft: PALETTES.indexOf(palette) === 0 ? 0 : `-${overlap}px`,
-                      zIndex: PALETTES.length - PALETTES.indexOf(palette),
-                    }}
-                    className="relative rounded-full overflow-hidden border-[3px] border-background shadow-2xl"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="flex items-center justify-center"
                   >
-                    <PixelCircle
-                      palette={palette}
-                      speed={speed}
-                      resolution={resolution}
-                      isPlaying={isPlaying}
-                      timeOffset={PALETTES.indexOf(palette) * 1000}
-                      size={circleSize}
-                      noiseAmount={noiseAmount}
-                    />
-                  </motion.div>
-                ))}
-              </motion.div>
-
-              {/* Controls */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-                className="w-full max-w-md"
-              >
-                <Card className="border-border bg-card/80 backdrop-blur-2xl shadow-2xl">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <CardTitle className="text-xl font-semibold flex items-center gap-2">
-                          <Settings className="w-5 h-5 text-muted-foreground" />
-                          Parameters
-                        </CardTitle>
-                        <p className="text-sm text-muted-foreground">
-                          Adjust the pixelated gradient effect
-                        </p>
-                      </div>
-                      <Button
-                        onClick={() => setIsPlaying(!isPlaying)}
-                        size="icon"
-                        className="h-12 w-12 rounded-full shadow-lg"
+                    {PALETTES.map((palette) => (
+                      <motion.div
+                        key={`palette-${palette[0]}`}
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ duration: 0.5, delay: PALETTES.indexOf(palette) * 0.1 + 0.3 }}
+                        style={{
+                          marginLeft: PALETTES.indexOf(palette) === 0 ? 0 : `-${overlap}px`,
+                          zIndex: PALETTES.length - PALETTES.indexOf(palette),
+                        }}
+                        className="relative rounded-full overflow-hidden border-[3px] border-background shadow-2xl"
                       >
-                        {isPlaying ? (
-                          <Pause className="w-5 h-5 fill-current" />
-                        ) : (
-                          <Play className="w-5 h-5 fill-current ml-0.5" />
-                        )}
-                      </Button>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <ControlSlider
-                      label="Animation Speed"
-                      value={speed}
-                      min={0}
-                      max={10}
-                      step={0.1}
-                      onChange={setSpeed}
-                    />
-                    <ControlSlider
-                      label="Pixel Density"
-                      value={resolution}
-                      min={4}
-                      max={48}
-                      step={1}
-                      onChange={setResolution}
-                    />
-                    <ControlSlider
-                      label="Circle Size"
-                      value={circleSize}
-                      min={40}
-                      max={200}
-                      step={4}
-                      onChange={setCircleSize}
-                    />
-                    <ControlSlider
-                      label="Overlap Offset"
-                      value={overlap}
-                      min={0}
-                      max={circleSize}
-                      step={1}
-                      onChange={setOverlap}
-                    />
-                    <ControlSlider
-                      label="Static Noise"
-                      value={noiseAmount}
-                      min={0}
-                      max={0.5}
-                      step={0.01}
-                      onChange={setNoiseAmount}
-                    />
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </div>
+                        <PixelCircle
+                          palette={palette}
+                          speed={speed}
+                          resolution={resolution}
+                          isPlaying={isPlaying}
+                          timeOffset={PALETTES.indexOf(palette) * 1000}
+                          size={circleSize}
+                          noiseAmount={noiseAmount}
+                        />
+                      </motion.div>
+                    ))}
+                  </motion.div>
 
-            {/* HelloGlow Showcase Rectangle */}
-            <div className="flex items-center justify-center">
-              <HelloGlow className="w-full max-w-2xl rounded-xl">
-                <div className="text-center space-y-4 py-24">
-                  <h2 className="text-4xl font-bold text-foreground">
-                    Premium Animations
-                  </h2>
-                  <p className="text-muted-foreground">
-                    Experience the HelloGlow effect
-                  </p>
-                </div>
-              </HelloGlow>
-            </div>
-
-            {/* Feature Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-              {featureCards.map((card, index) => {
-                const Icon = card.icon;
-                return (
+                  {/* Controls */}
                   <motion.div
-                    key={card.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
+                    transition={{ duration: 0.6, delay: 0.6 }}
+                    className="w-full max-w-md"
                   >
-                    <Card className="h-full border-border bg-card hover:bg-accent/50 transition-colors cursor-pointer group">
-                      <CardHeader className="pb-3">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                            <Icon className="h-4 w-4 text-primary" />
+                    <Card className="border-border bg-card/80 backdrop-blur-2xl shadow-2xl">
+                      <CardHeader className="pb-4">
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-1">
+                            <CardTitle className="text-xl font-semibold flex items-center gap-2">
+                              <Settings className="w-5 h-5 text-muted-foreground" />
+                              Parameters
+                            </CardTitle>
+                            <p className="text-sm text-muted-foreground">
+                              Adjust the pixelated gradient effect
+                            </p>
                           </div>
-                          <CardTitle className="text-sm font-medium text-card-foreground">
-                            {card.title}
-                          </CardTitle>
+                          <Button
+                            onClick={() => setIsPlaying(!isPlaying)}
+                            size="icon"
+                            className="h-12 w-12 rounded-full shadow-lg"
+                          >
+                            {isPlaying ? (
+                              <Pause className="w-5 h-5 fill-current" />
+                            ) : (
+                              <Play className="w-5 h-5 fill-current ml-0.5" />
+                            )}
+                          </Button>
                         </div>
                       </CardHeader>
-                      <CardContent className="pt-0">
-                        <p className="text-xs text-muted-foreground leading-relaxed">
-                          {card.description}
-                        </p>
+                      <CardContent className="space-y-6">
+                        <ControlSlider
+                          label="Animation Speed"
+                          value={speed}
+                          min={0}
+                          max={10}
+                          step={0.1}
+                          onChange={setSpeed}
+                        />
+                        <ControlSlider
+                          label="Pixel Density"
+                          value={resolution}
+                          min={4}
+                          max={48}
+                          step={1}
+                          onChange={setResolution}
+                        />
+                        <ControlSlider
+                          label="Circle Size"
+                          value={circleSize}
+                          min={40}
+                          max={200}
+                          step={4}
+                          onChange={setCircleSize}
+                        />
+                        <ControlSlider
+                          label="Overlap Offset"
+                          value={overlap}
+                          min={0}
+                          max={circleSize}
+                          step={1}
+                          onChange={setOverlap}
+                        />
+                        <ControlSlider
+                          label="Static Noise"
+                          value={noiseAmount}
+                          min={0}
+                          max={0.5}
+                          step={0.01}
+                          onChange={setNoiseAmount}
+                        />
                       </CardContent>
                     </Card>
                   </motion.div>
-                );
-              })}
-            </div>
-            </>
+                </div>
+
+                {/* HelloGlow Showcase Rectangle */}
+                <div className="flex items-center justify-center">
+                  <HelloGlow className="w-full max-w-2xl rounded-xl">
+                    <div className="text-center space-y-4 py-24">
+                      <h2 className="text-4xl font-bold text-foreground">
+                        Premium Animations
+                      </h2>
+                      <p className="text-muted-foreground">
+                        Experience the HelloGlow effect
+                      </p>
+                    </div>
+                  </HelloGlow>
+                </div>
+
+                {/* Feature Cards Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                  {featureCards.map((card, index) => {
+                    const Icon = card.icon;
+                    return (
+                      <motion.div
+                        key={card.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                        <Card className="h-full border-border bg-card hover:bg-accent/50 transition-colors cursor-pointer group">
+                          <CardHeader className="pb-3">
+                            <div className="flex items-center gap-3">
+                              <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                                <Icon className="h-4 w-4 text-primary" />
+                              </div>
+                              <CardTitle className="text-sm font-medium text-card-foreground">
+                                {card.title}
+                              </CardTitle>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="pt-0">
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                              {card.description}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </>
             )}
 
             {/* Chat Messages - Shown when there are messages */}
@@ -458,7 +458,7 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
                     )}
                   </motion.div>
                 ))}
-                
+
                 {/* Thinking state - only show when loading and last message is not from assistant or assistant message is empty */}
                 {isLoading && (!messages.length || messages[messages.length - 1]?.role !== "assistant" || !messages[messages.length - 1]?.content) && (
                   <motion.div
@@ -471,7 +471,7 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
                     </span>
                   </motion.div>
                 )}
-                
+
                 <div ref={messagesEndRef} />
               </div>
             )}
@@ -479,6 +479,6 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
         </ScrollArea>
       </motion.div>
 
-      </>
+    </>
   );
 }

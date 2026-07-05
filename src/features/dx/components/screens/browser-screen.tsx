@@ -8,7 +8,7 @@ export function BrowserScreen() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex h-full w-full flex-col rounded-[20px] border border-border bg-card shadow-2xl overflow-hidden"
+      className="flex h-full w-full flex-col bg-card shadow-2xl overflow-hidden"
     >
       <div className="flex items-center gap-2 border-b border-border p-3">
         <div className="h-3 w-3 rounded-full bg-red-500" />
