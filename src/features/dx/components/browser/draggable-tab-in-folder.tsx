@@ -72,7 +72,7 @@ export function DraggableTabInFolder({
       {...attributes}
       {...listeners}
       className={cn(
-        "group/welcome text-muted-foreground hover:bg-accent hover:text-accent-foreground relative flex h-9 w-full max-w-[95%] cursor-grab items-center gap-2 rounded-md px-2 text-sm transition-colors active:cursor-grabbing",
+        "group/welcome text-muted-foreground hover:bg-accent hover:text-accent-foreground relative flex h-9 w-full cursor-grab items-center gap-2 rounded-md px-2 text-sm transition-colors active:cursor-grabbing",
         isDragging && "opacity-50",
       )}
       onClick={() => onSetActiveTab(tab.id)}

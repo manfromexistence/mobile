@@ -77,7 +77,7 @@ export function DroppableFolder({
           {...attributes}
           {...listeners}
           className={cn(
-            "text-muted-foreground hover:bg-accent hover:text-accent-foreground group/item relative flex h-10 w-full max-w-[95%] cursor-grab items-center gap-2 rounded-md px-2 text-sm transition-colors active:cursor-grabbing",
+            "text-muted-foreground hover:bg-accent hover:text-accent-foreground group/item relative flex h-10 w-full cursor-grab items-center gap-2 rounded-md px-2 text-sm transition-colors active:cursor-grabbing",
             isDropTarget && "bg-accent text-accent-foreground",
             isDragging && "opacity-50",
           )}

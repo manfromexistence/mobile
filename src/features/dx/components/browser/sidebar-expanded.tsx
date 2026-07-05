@@ -314,7 +314,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
             props.activeWorkspaceTabs.map((tab) => (
               <div
                 key={tab.id}
-                className="group/item relative flex h-9 w-full max-w-[95%] cursor-pointer items-center gap-2 rounded-md px-2 text-sm select-none text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground"
+                className="group/item relative flex h-9 w-full cursor-pointer items-center gap-2 rounded-md px-2 text-sm select-none text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground"
               >
                 <div className="bg-destructive h-4 w-4 shrink-0 rounded-sm" />
                 <span className="min-w-0 flex-1 truncate pr-6 text-xs">
@@ -654,6 +654,17 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                 sideOffset={5}
                 className="border-border bg-card w-56"
               >
+                <DropdownMenuItem
+                  onClick={() => {
+                    props.onCreateFolder();
+                    props.onSetPlusMenuOpen(false);
+                  }}
+                  className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                >
+                  <Folder className="mr-2 h-4 w-4" />
+                  Create Folder
+                </DropdownMenuItem>
+                <div className="border-border my-1 border-t" />
                 <DropdownMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                   <Folder className="mr-2 h-4 w-4" />
                   Live Folder
@@ -669,16 +680,6 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                 >
                   <Copy className="mr-2 h-4 w-4" />
                   Create Space
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    props.onCreateFolder();
-                    props.onSetPlusMenuOpen(false);
-                  }}
-                  className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                >
-                  <Folder className="mr-2 h-4 w-4" />
-                  Create Folder
                 </DropdownMenuItem>
                 <div className="border-border my-1 border-t" />
                 <DropdownMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">

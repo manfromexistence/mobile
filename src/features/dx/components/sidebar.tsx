@@ -265,11 +265,74 @@ export function Sidebar({
         );
       } else {
         state.setLooseTabs([...state.looseTabs, newTab]);
+        }
+        return;
       }
-      return;
-    }
 
-    // Handle dropping tabs/folders onto logo container
+      // Handle reordering folders
+      if (activeData?.type === "folder" && overData?.type === "folder") {
+        const oldIndex = state.folders.findIndex((f) => f.id === activeId);
+        const newIndex = state.folders.findIndex((f) => f.id === overId);
+        if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+          const newFolders = [...state.folders];
+          const [removed] = newFolders.splice(oldIndex, 1);
+          newFolders.splice(newIndex, 0, removed);
+          state.setFolders(newFolders);
+        }
+        return;
+      }
+
+      // Handle dropping a tab into a folder
+      if (activeData?.type === "tab" && overData?.type === "folder") {
+        let draggedTab = state.looseTabs.find((t) => t.id === activeId);
+        if (!draggedTab) {
+          // It might be in another folder
+          for (const folder of state.folders) {
+            const tab = folder.tabs.find((t) => t.id === activeId);
+            if (tab) {
+              draggedTab = tab;
+              // Remove from old folder
+              state.setFolders(
+                state.folders.map((f) =>
+                  f.id === folder.id
+                    ? { ...f, tabs: f.tabs.filter((t) => t.id !== activeId) }
+                    : f
+                )
+              );
+              break;
+            }
+          }
+        } else {
+          // Remove from loose tabs
+          state.setLooseTabs(state.looseTabs.filter((t) => t.id !== activeId));
+        }
+
+        if (draggedTab) {
+          state.setFolders(
+            state.folders.map((f) =>
+              f.id === overId
+                ? { ...f, tabs: [...f.tabs, { ...draggedTab!, folderId: overId }] }
+                : f
+            )
+          );
+        }
+        return;
+      }
+
+      // Handle tab reordering (loose tabs)
+      if (activeData?.type === "tab" && overData?.type === "tab") {
+        const oldIndex = state.looseTabs.findIndex((t) => t.id === activeId);
+        const newIndex = state.looseTabs.findIndex((t) => t.id === overId);
+        if (oldIndex !== -1 && newIndex !== -1 && oldIndex !== newIndex) {
+          const newTabs = [...state.looseTabs];
+          const [removed] = newTabs.splice(oldIndex, 1);
+          newTabs.splice(newIndex, 0, removed);
+          state.setLooseTabs(newTabs);
+        }
+        return;
+      }
+
+      // Handle dropping tabs/folders onto logo container
     if (overId === "logo-container" || overData?.type === "logo-container") {
       if (state.logos.length >= MAX_LOGOS) {
         alert("Logo container is full! Maximum 12 items allowed.");
