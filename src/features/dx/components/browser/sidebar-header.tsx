@@ -11,9 +11,9 @@ import { WelcomeScreen } from "@/features/dx/components/screens/welcome-screen"
 
 const screenItems = [
   { id: "welcome", label: "Welcome", component: WelcomeScreen },
-  { id: "terminal", label: "Terminal", component: TerminalScreen },
-  { id: "code", label: "Code Editor", component: CodeScreen },
-  { id: "browser", label: "Browser", component: BrowserScreen },
+  // { id: "terminal", label: "Terminal", component: TerminalScreen },
+  // { id: "code", label: "Code Editor", component: CodeScreen },
+  // { id: "browser", label: "Browser", component: BrowserScreen },
 ]
 
 interface SidebarHeaderProps {
