@@ -12,8 +12,10 @@ import {
   Columns2,
   Copy,
   Folder,
+  LayoutGrid,
   Grid3x3,
   Link,
+  MoreVertical,
   Play,
   Plus,
   Search,
@@ -21,6 +23,7 @@ import {
   SkipForward,
   Volume2,
   X,
+  ChevronUp,
 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { Button } from "@/components/ui/button";
@@ -274,16 +277,27 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
             Clear
           </button>
         </div>
-        <div className="pt-3">
+        <div className="pt-3 flex gap-2 w-full">
           <Button
             onClick={props.onAddNewTab}
-            className="border border-dashed px-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground h-10 w-full justify-start gap-2 bg-transparent overflow-hidden"
+            className="border border-dashed px-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground h-10 flex-1 justify-start gap-2 bg-transparent overflow-hidden"
             variant="ghost"
           >
             <Plus className="h-4 w-4 shrink-0" />
             <span className="min-w-0 flex-1 truncate text-sm text-left">
               New Chat
             </span>
+          </Button>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onCreateWorkspace();
+            }}
+            className="border border-dashed px-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground h-10 w-10 shrink-0 bg-transparent flex items-center justify-center"
+            variant="ghost"
+            title="Create Space"
+          >
+            <LayoutGrid className="h-4 w-4 shrink-0" />
           </Button>
         </div>
       </div>
@@ -630,28 +644,33 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
               mass: 0.5,
             }}
           >
-            <DropdownMenu
-              open={props.plusMenuOpen}
-              onOpenChange={props.onSetPlusMenuOpen}
-            >
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    props.onCreateWorkspace();
-                  }}
-                  onContextMenu={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    props.onSetPlusMenuOpen(true);
-                  }}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
+            <div className="flex bg-background/50 backdrop-blur-md rounded-md overflow-hidden ring-1 ring-border/50">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-none border-r border-border/50"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  props.onCreateWorkspace();
+                }}
+                title="Create Space"
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+              <DropdownMenu
+                open={props.plusMenuOpen}
+                onOpenChange={props.onSetPlusMenuOpen}
+              >
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-6 rounded-none"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <ChevronUp className="h-3 w-3" />
+                  </Button>
+                </DropdownMenuTrigger>
               <DropdownMenuContent
                 side="top"
                 align="end"
@@ -703,6 +722,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            </div>
           </motion.div>
         </motion.div>
       </div>

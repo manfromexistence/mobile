@@ -50,7 +50,7 @@ export function LogoContainer({
         <div
           ref={setNodeRef}
           className={cn(
-            "shrink-0 p-2 transition-all duration-200 rounded-md",
+            "shrink-0 p-2 transition-all duration-200",
             logoContainerHovered && "bg-primary/20 ring-2 ring-primary",
           )}
         >
@@ -77,7 +77,7 @@ export function LogoContainer({
                 return (
                   <div
                     key={logo.id}
-                    className="bg-background/90 hover:bg-accent flex h-16 items-center justify-center rounded-2xl transition-colors"
+                    className="bg-background/90 hover:bg-accent flex h-16 items-center justify-center transition-colors"
                     title={logo.title}
                   >
                     <LogoComponent className="h-6 w-6" />

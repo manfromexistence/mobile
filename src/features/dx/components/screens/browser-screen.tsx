@@ -17,7 +17,7 @@ export function BrowserScreen() {
         <div className="ml-2 flex flex-1 items-center gap-2 rounded-md bg-accent px-3 py-1.5">
           <Globe className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">
-            https://zen-browser.app
+            https://dx-chat.app
           </span>
         </div>
       </div>

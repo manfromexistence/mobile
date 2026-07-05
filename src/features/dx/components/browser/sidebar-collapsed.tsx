@@ -4,6 +4,7 @@ import {
   Archive,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
   Columns2,
   Copy,
   Folder,
@@ -127,8 +128,20 @@ export function SidebarCollapsed({
                   <Folder className="h-4 w-4 shrink-0" />
                 </Button>
               </HoverCardTrigger>
-              <HoverCardContent side="right" className="w-auto border-border bg-card p-2">
-                <span className="text-sm font-medium">{folder.name}</span>
+              <HoverCardContent side="right" className="w-48 border-border bg-card p-2">
+                <div className="flex flex-col gap-1">
+                  <span className="text-sm font-medium mb-1 border-b border-border pb-1">{folder.name}</span>
+                  {folder.tabs && folder.tabs.length > 0 ? (
+                    folder.tabs.map((tab) => (
+                      <div key={tab.id} className="flex items-center gap-2 text-xs text-muted-foreground truncate">
+                        <MessageSquare className="h-3 w-3 shrink-0" />
+                        <span className="truncate">{tab.title}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <span className="text-xs text-muted-foreground">Empty</span>
+                  )}
+                </div>
               </HoverCardContent>
             </HoverCard>
           ))}
@@ -360,25 +373,30 @@ export function SidebarCollapsed({
             mass: 0.5,
           }}
         >
-          <DropdownMenu open={plusMenuOpen} onOpenChange={onSetPlusMenuOpen}>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onCreateWorkspace();
-                }}
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onSetPlusMenuOpen(true);
-                }}
-              >
-                <WorkspaceIcon workspace={activeWorkspaceObj} />
-              </Button>
-            </DropdownMenuTrigger>
+          <div className="flex bg-background/50 backdrop-blur-md rounded-md overflow-hidden ring-1 ring-border/50">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-none border-r border-border/50"
+              onClick={(e) => {
+                e.stopPropagation();
+                onCreateWorkspace();
+              }}
+              title="Create Space"
+            >
+              <WorkspaceIcon workspace={activeWorkspaceObj} />
+            </Button>
+            <DropdownMenu open={plusMenuOpen} onOpenChange={onSetPlusMenuOpen}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-4 rounded-none"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ChevronUp className="h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
             <DropdownMenuContent
               side="right"
               align="end"
@@ -429,7 +447,7 @@ export function SidebarCollapsed({
                 New Chat
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </div>
         </motion.div> */}
       </div>
     </motion.div>

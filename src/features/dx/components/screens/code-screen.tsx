@@ -7,7 +7,7 @@ export function CodeScreen() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex h-full w-full flex-col bg-[#1e1e1e] font-mono text-sm shadow-2xl overflow-hidden"
+      className="flex h-full w-full flex-col bg-background font-mono text-sm shadow-2xl overflow-hidden"
     >
       <div className="mb-2 flex items-center gap-2 p-4 pb-0">
         <div className="h-3 w-3 rounded-full bg-red-500" />
@@ -19,34 +19,34 @@ export function CodeScreen() {
         <div className="space-y-1 text-sm">
           <div>
             <span className="text-purple-400">import</span>
-            <span className="text-white"> {"{"} </span>
+            <span className="text-foreground"> {"{"} </span>
             <span className="text-blue-300">useState</span>
-            <span className="text-white"> {"}"} </span>
+            <span className="text-foreground"> {"}"} </span>
             <span className="text-purple-400">from</span>
             <span className="text-orange-300"> "react"</span>
-            <span className="text-white">;</span>
+            <span className="text-foreground">;</span>
           </div>
           <div className="mt-4">
             <span className="text-purple-400">export</span>
             <span className="text-purple-400"> function</span>
             <span className="text-yellow-300"> App</span>
-            <span className="text-white">() {"{"}</span>
+            <span className="text-foreground">() {"{"}</span>
           </div>
           <div className="ml-4">
             <span className="text-purple-400">const</span>
-            <span className="text-white"> [</span>
+            <span className="text-foreground"> [</span>
             <span className="text-blue-300">count</span>
-            <span className="text-white">, </span>
+            <span className="text-foreground">, </span>
             <span className="text-blue-300">setCount</span>
-            <span className="text-white">] = </span>
+            <span className="text-foreground">] = </span>
             <span className="text-yellow-300">useState</span>
-            <span className="text-white">(</span>
+            <span className="text-foreground">(</span>
             <span className="text-orange-300">0</span>
-            <span className="text-white">);</span>
+            <span className="text-foreground">);</span>
           </div>
           <div className="mt-4 ml-4">
             <span className="text-purple-400">return</span>
-            <span className="text-white"> (</span>
+            <span className="text-foreground"> (</span>
           </div>
           <div className="ml-8">
             <span className="text-gray-500">&lt;</span>
@@ -57,7 +57,7 @@ export function CodeScreen() {
             <span className="text-gray-500">&lt;</span>
             <span className="text-green-400">h1</span>
             <span className="text-gray-500">&gt;</span>
-            <span className="text-white">Zen Browser Code Editor</span>
+            <span className="text-foreground">DX Chat Code Editor</span>
             <span className="text-gray-500">&lt;/</span>
             <span className="text-green-400">h1</span>
             <span className="text-gray-500">&gt;</span>
@@ -68,10 +68,10 @@ export function CodeScreen() {
             <span className="text-gray-500">&gt;</span>
           </div>
           <div className="ml-4">
-            <span className="text-white">);</span>
+            <span className="text-foreground">);</span>
           </div>
           <div>
-            <span className="text-white">{"}"}</span>
+            <span className="text-foreground">{"}"}</span>
           </div>
         </div>
       </div>
