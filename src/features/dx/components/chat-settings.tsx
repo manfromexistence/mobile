@@ -1,9 +1,20 @@
 "use client"
 
-import { Check, CircleSlash, Info, Languages, Plus, X } from "lucide-react"
+import {
+  Check,
+  CircleSlash,
+  Eye,
+  EyeOff,
+  Info,
+  Key,
+  Languages,
+  Plus,
+  X,
+} from "lucide-react"
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
 export const DORA_COLORS = [
@@ -285,6 +296,97 @@ export function SettingsCustomize() {
           <div className="mt-2 text-[12px] leading-relaxed text-muted-foreground md:mt-4 md:text-[13px]">
             Changes will only apply to new conversations, not existing ones.
           </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+function ApiKeyInput({
+  label,
+  description,
+  storageKey,
+}: {
+  label: string
+  description: string
+  storageKey: string
+}) {
+  const [showKey, setShowKey] = React.useState(false)
+  const [value, setValue] = React.useState("")
+
+  React.useEffect(() => {
+    if (typeof localStorage !== "undefined") {
+      setValue(localStorage.getItem(storageKey) || "")
+    }
+  }, [storageKey])
+
+  const handleChange = (val: string) => {
+    setValue(val)
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(storageKey, val)
+    }
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <label className="text-[14px] font-medium text-foreground md:text-[15px]">
+          {label}
+        </label>
+        <Button
+          variant="ghost"
+          size="icon-xs"
+          onClick={() => setShowKey(!showKey)}
+          className="h-6 w-6 text-muted-foreground"
+        >
+          {showKey ? (
+            <EyeOff className="h-3.5 w-3.5" />
+          ) : (
+            <Eye className="h-3.5 w-3.5" />
+          )}
+        </Button>
+      </div>
+      <p className="text-[12px] text-muted-foreground md:text-[13px]">
+        {description}
+      </p>
+      <Input
+        type={showKey ? "text" : "password"}
+        value={value}
+        onChange={(e) => handleChange(e.target.value)}
+        placeholder={`Enter your ${label}`}
+        className="h-9 text-sm"
+      />
+    </div>
+  )
+}
+
+export function SettingsApiKeys() {
+  return (
+    <>
+      <h2 className="mb-4 text-lg font-bold text-foreground md:mb-6 md:text-xl">
+        API Keys
+      </h2>
+      <div className="space-y-6">
+        <ApiKeyInput
+          label="Google AI Studio"
+          description="Used for Gemini multimodal (image, audio, video) and Gemini Live voice calls."
+          storageKey="google_api_key"
+        />
+        <div className="border-t border-border" />
+        <ApiKeyInput
+          label="OpenAI / Vercel AI SDK"
+          description="Used for OpenAI-compatible models when no Google key is set."
+          storageKey="openai_api_key"
+        />
+        <div className="border-t border-border" />
+        <ApiKeyInput
+          label="MuAPI"
+          description="Used for image and video generation (e.g., Flux, Wan2.1)."
+          storageKey="muapi_key"
+        />
+        <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+          API keys are stored locally in your browser. They are never sent to
+          our servers — only directly to the respective service.
         </div>
       </div>
     </>

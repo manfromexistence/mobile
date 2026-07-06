@@ -3,7 +3,11 @@
 import {
   Box,
   Layers,
+  Mic,
+  MicOff,
   Paintbrush,
+  Phone,
+  PhoneOff,
   RectangleHorizontal,
   Settings,
   Sliders,
@@ -18,11 +22,19 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Slider } from "@/components/ui/slider"
+import { cn } from "@/lib/utils"
 
 type MediaType = "text" | "email" | "image" | "video" | "audio" | "live" | "3d"
 
 interface MediaControlsProps {
   mediaType: MediaType
+}
+
+interface LiveControlsProps {
+  isConnected?: boolean
+  isSpeaking?: boolean
+  onConnect?: () => void
+  onDisconnect?: () => void
 }
 
 // Image-specific controls
@@ -35,7 +47,6 @@ export function ImageControls() {
 
   return (
     <div className="flex items-center gap-2">
-      {/* Aspect Ratio Selector */}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" size="sm" className="h-8 gap-2 px-3">
@@ -64,7 +75,6 @@ export function ImageControls() {
         </PopoverContent>
       </Popover>
 
-      {/* Image Count */}
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="outline" size="sm" className="h-8 gap-2 px-3">
@@ -94,7 +104,6 @@ export function ImageControls() {
         </PopoverContent>
       </Popover>
 
-      {/* Image Settings */}
       <Button variant="outline" size="sm" className="h-8 gap-2 px-3">
         <Settings className="h-3.5 w-3.5" />
         <span className="hidden text-xs sm:inline">Settings</span>
@@ -158,12 +167,42 @@ function AudioControls() {
   )
 }
 
-// Live-specific controls
-function LiveControls() {
+// Live-specific controls with connect/disconnect
+function LiveControls({
+  isConnected,
+  isSpeaking,
+  onConnect,
+  onDisconnect,
+}: LiveControlsProps) {
   const [quality, setQuality] = useState("HD")
 
   return (
     <div className="flex items-center gap-2">
+      {isConnected ? (
+        <Button
+          variant="destructive"
+          size="sm"
+          className="h-8 gap-2 px-3 animate-pulse"
+          onClick={onDisconnect}
+        >
+          <PhoneOff className="h-3.5 w-3.5" />
+          <span className="hidden text-xs sm:inline">End Call</span>
+        </Button>
+      ) : (
+        <Button
+          variant="default"
+          size="sm"
+          className={cn(
+            "h-8 gap-2 px-3",
+            "bg-green-600 hover:bg-green-700 text-white"
+          )}
+          onClick={onConnect}
+        >
+          <Phone className="h-3.5 w-3.5" />
+          <span className="hidden text-xs sm:inline">Start Live</span>
+        </Button>
+      )}
+
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="outline" size="sm" className="h-8 gap-2 px-3">
@@ -189,10 +228,12 @@ function LiveControls() {
         </PopoverContent>
       </Popover>
 
-      <Button variant="outline" size="sm" className="h-8 gap-2 px-3">
-        <Settings className="h-3.5 w-3.5" />
-        <span className="hidden text-xs sm:inline">Stream</span>
-      </Button>
+      {isSpeaking && (
+        <div className="flex items-center gap-1.5 text-xs text-green-500">
+          <Mic className="h-3 w-3 animate-pulse" />
+          Speaking
+        </div>
+      )}
     </div>
   )
 }
@@ -237,19 +278,7 @@ function ThreeDControls() {
 }
 
 export function MediaControls({ mediaType }: MediaControlsProps) {
-  // Return different controls based on media type
-  switch (mediaType) {
-    case "image":
-      return <ImageControls />
-    case "video":
-      return <VideoControls />
-    case "audio":
-      return <AudioControls />
-    case "live":
-      return <LiveControls />
-    case "3d":
-      return <ThreeDControls />
-    default:
-      return null // Text and email don't have additional controls
-  }
+  return null
 }
+
+export { AudioControls, LiveControls, ThreeDControls, VideoControls }

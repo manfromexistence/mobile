@@ -1,10 +1,9 @@
 "use client"
 
+import { Tabs } from "@/components/ui/tabs"
 import type { InstallationType } from "@/hooks/use-config"
 import { useConfig } from "@/hooks/use-config"
 import { cn } from "@/lib/utils"
-
-import { Tabs } from "@/components/ui/tabs"
 
 export function CodeTabs({
   className,

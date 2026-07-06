@@ -13,17 +13,8 @@ import {
 } from "@dnd-kit/core"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { Copy, Plus, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { AnimatePresence } from "motion/react"
 import { useEffect, useRef, useState } from "react"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,7 +25,22 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { WorkspaceDialog } from "@/components/workspace-dialog"
@@ -835,25 +841,36 @@ export function Sidebar({
         ) : null}
       </DragOverlay>
 
-      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+      <AlertDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete workspace?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this workspace? All tabs and folders will be removed.
+              Are you sure you want to delete this workspace? All tabs and
+              folders will be removed.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setDeleteTarget(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setDeleteTarget(null)}>
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 const id = deleteTarget
                 if (!id) return
-                state.setFolders(state.folders.filter((f) => f.workspaceId !== id))
-                state.setLooseTabs(state.looseTabs.filter((t) => t.workspaceId !== id))
+                state.setFolders(
+                  state.folders.filter((f) => f.workspaceId !== id)
+                )
+                state.setLooseTabs(
+                  state.looseTabs.filter((t) => t.workspaceId !== id)
+                )
                 state.setWorkspaces(state.workspaces.filter((w) => w.id !== id))
                 const remaining = state.workspaces.filter((w) => w.id !== id)
-                if (remaining.length > 0) state.setActiveWorkspace(remaining[0].id)
+                if (remaining.length > 0)
+                  state.setActiveWorkspace(remaining[0].id)
                 setDeleteTarget(null)
               }}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
@@ -864,7 +881,10 @@ export function Sidebar({
         </AlertDialogContent>
       </AlertDialog>
 
-      <Dialog open={!!renameTarget} onOpenChange={(open) => !open && setRenameTarget("")}>
+      <Dialog
+        open={!!renameTarget}
+        onOpenChange={(open) => !open && setRenameTarget("")}
+      >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Rename workspace</DialogTitle>
@@ -879,7 +899,9 @@ export function Sidebar({
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && renameValue.trim()) {
                     const currentWorkspace = state.workspaces.find(
-                      (w) => w.name === renameTarget || w.id === state.activeWorkspace
+                      (w) =>
+                        w.name === renameTarget ||
+                        w.id === state.activeWorkspace
                     )
                     if (currentWorkspace) {
                       state.setWorkspaces(
@@ -905,7 +927,8 @@ export function Sidebar({
               onClick={() => {
                 if (renameValue.trim()) {
                   const currentWorkspace = state.workspaces.find(
-                    (w) => w.name === renameTarget || w.id === state.activeWorkspace
+                    (w) =>
+                      w.name === renameTarget || w.id === state.activeWorkspace
                   )
                   if (currentWorkspace) {
                     state.setWorkspaces(
@@ -926,14 +949,19 @@ export function Sidebar({
         </DialogContent>
       </Dialog>
 
-      <AlertDialog open={!!alertMessage} onOpenChange={(open) => !open && setAlertMessage(null)}>
+      <AlertDialog
+        open={!!alertMessage}
+        onOpenChange={(open) => !open && setAlertMessage(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Notice</AlertDialogTitle>
             <AlertDialogDescription>{alertMessage}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={() => setAlertMessage(null)}>OK</AlertDialogAction>
+            <AlertDialogAction onClick={() => setAlertMessage(null)}>
+              OK
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -1,8 +1,29 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useLocalStorage } from "../chat-hooks"
 import { COLORS } from "./constants"
 import { DEFAULT_LOGOS } from "./default-logos"
 import type { SVGLogo, Tab, TabFolder, Workspace } from "./types"
+import { getLogoComponentForTab } from "./utils"
+
+const DEFAULT_LOGO_COMPONENT_BY_ID = new Map<
+  number,
+  React.ComponentType<React.SVGProps<SVGSVGElement>>
+>(DEFAULT_LOGOS.map((l) => [l.id, l.component]))
+
+function resolveLogoComponent(logo: {
+  id: number
+  title: string
+}): React.ComponentType<React.SVGProps<SVGSVGElement>> {
+  const fromDefault = DEFAULT_LOGO_COMPONENT_BY_ID.get(logo.id)
+  if (fromDefault) return fromDefault
+  return getLogoComponentForTab({
+    id: "",
+    title: logo.title,
+    url: "",
+    workspaceId: "",
+    folderId: null,
+  })
+}
 
 export function useBrowserState() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true)
@@ -29,9 +50,17 @@ export function useBrowserState() {
     | undefined
   >(undefined)
 
-  const [logos, setLogos] = useLocalStorage<SVGLogo[]>(
-    "dx-logos",
-    DEFAULT_LOGOS
+  const [rawLogos, setRawLogos] = useLocalStorage<
+    { id: number; title: string }[]
+  >("dx-logos", DEFAULT_LOGOS)
+
+  const logos: SVGLogo[] = useMemo(
+    () =>
+      rawLogos.map((raw) => ({
+        ...raw,
+        component: resolveLogoComponent(raw),
+      })),
+    [rawLogos]
   )
 
   const [workspaces, setWorkspaces] = useLocalStorage<Workspace[]>(
@@ -116,7 +145,7 @@ export function useBrowserState() {
     workspaceEditMode,
     setWorkspaceEditMode,
     logos,
-    setLogos,
+    setLogos: setRawLogos,
     workspaces,
     setWorkspaces,
     folders,

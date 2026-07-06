@@ -206,7 +206,10 @@ export function Daikanoid({
   return (
     <div
       ref={containerRef}
-      className={cn("h-150 w-200 ring-1 ring-border overflow-hidden", className)}
+      className={cn(
+        "h-150 w-200 ring-1 ring-border overflow-hidden",
+        className
+      )}
       {...props}
     />
   )

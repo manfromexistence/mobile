@@ -12,6 +12,7 @@ import {
   Folder,
   FolderKanban,
   FolderOpen,
+  Key,
   Lightbulb,
   Menu,
   MoreHorizontal,
@@ -51,14 +52,17 @@ import { ScreenCarousel } from "@/features/dx/components/screens/screen-carousel
 import { ScreenGridDialog } from "@/features/dx/components/screens/screen-grid-dialog"
 import type { Screen } from "@/features/dx/components/screens/types"
 import { useChat } from "@/features/dx/hooks/use-chat"
-import { generateImage, generateVideo } from "@/lib/muapi"
+import { useGeminiLive } from "@/features/dx/hooks/use-gemini-live"
+import Strands from "@/features/dx/components/chat/strands"
 import type { Message } from "@/features/dx/types"
+import { generateImage, generateVideo } from "@/lib/muapi"
 import { cn } from "@/lib/utils"
 import { useLocalStorage } from "./chat-hooks"
 import { ChatMessage } from "./chat-message"
 import { SourceItem } from "./chat-right-panel"
 import {
   SettingsAccount,
+  SettingsApiKeys,
   SettingsAppearance,
   SettingsCustomize,
   SettingsPlaceholder,
@@ -116,6 +120,8 @@ export function Chat({ swapped }: { swapped?: boolean }) {
   const [darkMode, setDarkMode] = useLocalStorage("dx-dark-mode", false)
   const [settingsOpen, setSettingsOpen] = React.useState(false)
   const [settingsTab, setSettingsTab] = React.useState("account")
+  const [googleApiKey] = useLocalStorage("google_api_key", "")
+  const [_openaiApiKey] = useLocalStorage("openai_api_key", "")
 
   const [activeScreenId, setActiveScreenId] = React.useState<string>("welcome")
   const [screens, setScreens] = React.useState<Screen[]>([
@@ -239,13 +245,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
   }, [inputValue, sendMessage])
 
   const handleMediaSubmit = React.useCallback(
-    async ({
-      prompt,
-      mediaType,
-    }: {
-      prompt: string
-      mediaType: string
-    }) => {
+    async ({ prompt, mediaType }: { prompt: string; mediaType: string }) => {
       const apiKey =
         typeof localStorage !== "undefined"
           ? localStorage.getItem("muapi_key") || ""
@@ -313,9 +313,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
         updateConversation(convId, (conv) => ({
           ...conv,
           messages: conv.messages.map((m) =>
-            m.id === assistMsg.id
-              ? { ...m, content, createdAt: Date.now() }
-              : m
+            m.id === assistMsg.id ? { ...m, content, createdAt: Date.now() } : m
           ),
           updatedAt: Date.now(),
         }))
@@ -325,18 +323,30 @@ export function Chat({ swapped }: { swapped?: boolean }) {
           messages: conv.messages.map((m) =>
             m.id === assistMsg.id
               ? {
-                  ...m,
-                  content: `Generation failed: ${(error as Error).message}`,
-                  createdAt: Date.now(),
-                }
+                ...m,
+                content: `Generation failed: ${(error as Error).message}`,
+                createdAt: Date.now(),
+              }
               : m
           ),
           updatedAt: Date.now(),
         }))
       }
     },
-    [currentConversationId, createNewConversation, updateConversation, sendMessage]
+    [
+      currentConversationId,
+      createNewConversation,
+      updateConversation,
+      sendMessage,
+    ]
   )
+
+  const {
+    isConnected: isLiveConnected,
+    isSpeaking: isLiveSpeaking,
+    connect: connectLive,
+    disconnect: disconnectLive,
+  } = useGeminiLive(googleApiKey)
 
   const openRightPanel = React.useCallback(
     (panel: RightPanel) => {
@@ -399,25 +409,25 @@ export function Chat({ swapped }: { swapped?: boolean }) {
         style={
           swapped
             ? {
-                "--color-background": "var(--color-sidebar)",
-                "--color-foreground": "var(--color-sidebar-foreground)",
-                "--color-border": "var(--color-sidebar-border)",
-                "--color-muted": "var(--color-sidebar-accent)",
-                "--color-muted-foreground":
-                  "var(--color-sidebar-accent-foreground)",
-                "--color-accent": "var(--color-sidebar-accent)",
-                "--color-accent-foreground":
-                  "var(--color-sidebar-accent-foreground)",
-                "--color-card": "var(--color-sidebar)",
-                "--color-card-foreground": "var(--color-sidebar-foreground)",
-                "--color-popover": "var(--color-sidebar)",
-                "--color-popover-foreground": "var(--color-sidebar-foreground)",
-                "--color-primary": "var(--color-sidebar-primary)",
-                "--color-primary-foreground":
-                  "var(--color-sidebar-primary-foreground)",
-                "--color-ring": "var(--color-sidebar-ring)",
-                "--color-input": "var(--color-sidebar-accent)",
-              }
+              "--color-background": "var(--color-sidebar)",
+              "--color-foreground": "var(--color-sidebar-foreground)",
+              "--color-border": "var(--color-sidebar-border)",
+              "--color-muted": "var(--color-sidebar-accent)",
+              "--color-muted-foreground":
+                "var(--color-sidebar-accent-foreground)",
+              "--color-accent": "var(--color-sidebar-accent)",
+              "--color-accent-foreground":
+                "var(--color-sidebar-accent-foreground)",
+              "--color-card": "var(--color-sidebar)",
+              "--color-card-foreground": "var(--color-sidebar-foreground)",
+              "--color-popover": "var(--color-sidebar)",
+              "--color-popover-foreground": "var(--color-sidebar-foreground)",
+              "--color-primary": "var(--color-sidebar-primary)",
+              "--color-primary-foreground":
+                "var(--color-sidebar-primary-foreground)",
+              "--color-ring": "var(--color-sidebar-ring)",
+              "--color-input": "var(--color-sidebar-accent)",
+            }
             : undefined
         }
       >
@@ -574,16 +584,16 @@ export function Chat({ swapped }: { swapped?: boolean }) {
                   {messages.length === 0
                     ? null
                     : messages.map((message, i) => (
-                        <ChatMessage
-                          key={message.id}
-                          message={message}
-                          isGenerating={
-                            isGenerating &&
-                            i === messages.length - 1 &&
-                            message.role === "assistant"
-                          }
-                        />
-                      ))}
+                      <ChatMessage
+                        key={message.id}
+                        message={message}
+                        isGenerating={
+                          isGenerating &&
+                          i === messages.length - 1 &&
+                          message.role === "assistant"
+                        }
+                      />
+                    ))}
                 </div>
               </div>
             </ScrollArea>
@@ -644,10 +654,32 @@ export function Chat({ swapped }: { swapped?: boolean }) {
             className={cn(
               "pointer-events-none absolute right-0 left-0 z-20 flex flex-col items-center px-3 md:px-6",
               messages.length > 0 &&
-                "bg-gradient-to-t from-background via-background/95 to-transparent pt-20 pb-4 md:pb-6"
+              "bg-gradient-to-t from-background via-background/95 to-transparent pt-20 pb-4 md:pb-6"
             )}
           >
-            <div className="pointer-events-auto relative w-full max-w-3xl mx-auto">
+            <div className="pointer-events-auto relative min-w-full mx-auto">
+              <div className="relative flex items-center justify-center mb-10 w-[300px] h-[300px] border rounded-full overflow-hidden mx-auto">
+                <Strands
+                  colors={["#f76500", "#5e00ff", "#00daff"]}
+                  count={10}
+                  speed={0.5}
+                  amplitude={1}
+                  waviness={1}
+                  thickness={0.6}
+                  glow={3}
+                  taper={2.5}
+                  spread={1}
+                  intensity={0.5}
+                  saturation={2}
+                  opacity={1}
+                  scale={1}
+                  glass={false}
+                  refraction={1}
+                  dispersion={1}
+                  glassSize={1}
+                  hueShift={1}
+                />
+              </div>
               <AIInputBar
                 inputValue={inputValue}
                 onInputChange={setInputValue}
@@ -660,6 +692,10 @@ export function Chat({ swapped }: { swapped?: boolean }) {
                 onVoiceModeChange={setIsVoiceMode}
                 selectedModelId={selectedModel}
                 onModelChange={setSelectedModel}
+                isLiveConnected={isLiveConnected}
+                isLiveSpeaking={isLiveSpeaking}
+                onLiveConnect={connectLive}
+                onLiveDisconnect={disconnectLive}
               />
             </div>
           </motion.div>
@@ -692,25 +728,25 @@ export function Chat({ swapped }: { swapped?: boolean }) {
         style={
           swapped
             ? ({
-                "--color-sidebar": "var(--color-background)",
-                "--color-background": "var(--color-sidebar)",
-                "--color-foreground": "var(--color-sidebar-foreground)",
-                "--color-muted": "var(--color-sidebar-accent)",
-                "--color-muted-foreground":
-                  "var(--color-sidebar-accent-foreground)",
-                "--color-accent": "var(--color-sidebar-accent)",
-                "--color-accent-foreground":
-                  "var(--color-sidebar-accent-foreground)",
-                "--color-card": "var(--color-sidebar)",
-                "--color-card-foreground": "var(--color-sidebar-foreground)",
-                "--color-popover": "var(--color-sidebar)",
-                "--color-popover-foreground": "var(--color-sidebar-foreground)",
-                "--color-primary": "var(--color-sidebar-primary)",
-                "--color-primary-foreground":
-                  "var(--color-sidebar-primary-foreground)",
-                "--color-ring": "var(--color-sidebar-ring)",
-                "--color-input": "var(--color-sidebar-accent)",
-              } as React.CSSProperties)
+              "--color-sidebar": "var(--color-background)",
+              "--color-background": "var(--color-sidebar)",
+              "--color-foreground": "var(--color-sidebar-foreground)",
+              "--color-muted": "var(--color-sidebar-accent)",
+              "--color-muted-foreground":
+                "var(--color-sidebar-accent-foreground)",
+              "--color-accent": "var(--color-sidebar-accent)",
+              "--color-accent-foreground":
+                "var(--color-sidebar-accent-foreground)",
+              "--color-card": "var(--color-sidebar)",
+              "--color-card-foreground": "var(--color-sidebar-foreground)",
+              "--color-popover": "var(--color-sidebar)",
+              "--color-popover-foreground": "var(--color-sidebar-foreground)",
+              "--color-primary": "var(--color-sidebar-primary)",
+              "--color-primary-foreground":
+                "var(--color-sidebar-primary-foreground)",
+              "--color-ring": "var(--color-sidebar-ring)",
+              "--color-input": "var(--color-sidebar-accent)",
+            } as React.CSSProperties)
             : undefined
         }
       >
@@ -837,6 +873,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
               {[
                 { id: "account", label: "Account", icon: User },
                 { id: "appearance", label: "Appearance", icon: Paintbrush },
+                { id: "apikeys", label: "API Keys", icon: Key },
                 { id: "behavior", label: "Behavior", icon: Sparkles },
                 { id: "customize", label: "Customize", icon: Sliders },
                 {
@@ -884,6 +921,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
               >
                 <div className="p-4 pt-6 md:p-8">
                   {settingsTab === "account" && <SettingsAccount />}
+                  {settingsTab === "apikeys" && <SettingsApiKeys />}
                   {settingsTab === "appearance" && (
                     <SettingsAppearance
                       darkMode={darkMode}
