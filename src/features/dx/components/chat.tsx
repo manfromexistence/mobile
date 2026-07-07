@@ -657,8 +657,11 @@ export function Chat({ swapped }: { swapped?: boolean }) {
               "bg-gradient-to-t from-background via-background/95 to-transparent pt-20 pb-4 md:pb-6"
             )}
           >
-            <div className="pointer-events-auto relative min-w-full mx-auto">
-              <div className="relative flex items-center justify-center mb-10 w-[300px] h-[300px] border rounded-full overflow-hidden mx-auto">
+
+            {/* <div className="hello">hello</div> */}
+
+            <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] pointer-events-auto min-w-full mx-auto">
+              <div className="relative flex items-center justify-center mb-10 w-[300px] h-[300px] border rounded-full overflow-hidden mx-auto bg-background/90 hover:bg-background/80">
                 <Strands
                   colors={["#f76500", "#5e00ff", "#00daff"]}
                   count={10}
