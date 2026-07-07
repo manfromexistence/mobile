@@ -68,6 +68,7 @@ import {
   SettingsPlaceholder,
 } from "./chat-settings"
 import { Sidebar } from "./sidebar"
+import { BloomMenu } from "@/components/motion/bloom-menu"
 
 type RightPanel = "thoughts" | "sources" | "files" | null
 
@@ -657,7 +658,6 @@ export function Chat({ swapped }: { swapped?: boolean }) {
               "bg-gradient-to-t from-background via-background/95 to-transparent pt-20 pb-4 md:pb-6"
             )}
           >
-
             {/* <div className="hello">hello</div> */}
 
             <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] pointer-events-auto min-w-full mx-auto">

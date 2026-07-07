@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from "framer-motion"
 import {
   ArrowUp,
   Box,
+  ChartAreaIcon,
+  File,
   FileText,
   Image,
   Mic,
@@ -12,6 +14,7 @@ import {
   Paperclip,
   Radio,
   Send,
+  Text,
   Video,
   Volume2,
   X,
@@ -36,6 +39,8 @@ import { VoiceBar } from "@/features/dx/components/chat-voice"
 import { providers } from "@/lib/ai/providers"
 import { cn } from "@/lib/utils"
 import { ImageControls, LiveControls } from "./media-controls"
+import { PdfIcon } from "@hugeicons/core-free-icons"
+import { BloomMenu } from "@/components/motion/bloom-menu"
 
 
 interface MediaType {
@@ -72,15 +77,17 @@ interface AIInputBarProps {
 }
 
 const MEDIA_TYPES: MediaType[] = [
-  { id: "text", label: "Text", icon: FileText },
+  { id: "text", label: "Text", icon: Text },
   { id: "image", label: "Image", icon: Image },
   { id: "video", label: "Video", icon: Video },
+  { id: "audio", label: "Audio", icon: Music },
 ]
 
 const MORE_MEDIA_TYPES: MediaType[] = [
-  { id: "audio", label: "Audio", icon: Music },
   { id: "live", label: "Live", icon: Radio },
   { id: "3d", label: "3D", icon: Box },
+  { id: "charts", label: "Charts", icon: ChartAreaIcon },
+  { id: "documents", label: "Documents", icon: File },
 ]
 
 function base64FromFile(file: File): Promise<string> {
@@ -364,12 +371,11 @@ export function AIInputBar({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       className={cn(
-        "bg-background/50 backdrop-blur-2xl border border-border/50 relative w-full rounded-3xl shadow-2xl transition-all duration-300 overflow-hidden ring-1 ring-border/20 lg:w-[70%]! mx-auto!",
+        "bg-background/50 backdrop-blur-2xl border border-border/50 relative w-full rounded-3xl shadow-2xl transition-all duration-300 ring-1 ring-border/20 lg:w-[70%]! mx-auto!",
         isFocused && "shadow-xl bg-background/80 border-border ring-border/50"
       )}
     >
       <form onSubmit={handleSubmit}>
-        {/* Voice Mode Overlay */}
         {onVoiceModeChange && (
           <div
             className={cn(
@@ -425,9 +431,9 @@ export function AIInputBar({
               onClick={
                 isGenerating
                   ? (e) => {
-                      e.preventDefault()
-                      onStop?.()
-                    }
+                    e.preventDefault()
+                    onStop?.()
+                  }
                   : undefined
               }
             >
@@ -466,8 +472,7 @@ export function AIInputBar({
           />
         </div>
 
-        <div className="flex items-center gap-3 bg-muted/20 backdrop-blur-md px-4 py-3 border-t border-border/20">
-          {/* Left: Media controls + model selector */}
+        <div className="relative flex items-center gap-3 bg-muted/20 backdrop-blur-md px-4 py-3 border-t border-border/20">
           <div className="flex min-w-0 flex-1 items-center gap-2">
             {selectedMedia === "image" && <ImageControls />}
             {selectedMedia === "live" && onLiveConnect && (
@@ -479,8 +484,8 @@ export function AIInputBar({
               />
             )}
             {selectedMedia === "video" ||
-            selectedMedia === "audio" ||
-            selectedMedia === "3d" ? (
+              selectedMedia === "audio" ||
+              selectedMedia === "3d" ? (
               <span className="text-xs text-muted-foreground">
                 {selectedMedia === "video"
                   ? "Video generation"
@@ -491,62 +496,65 @@ export function AIInputBar({
               </span>
             ) : null}
             {!isLiveConnected && (
-              <Select
-                value={selectedModelId || selectedModel}
-                onValueChange={(val) => {
-                  setSelectedModel(val)
-                  onModelChange?.(val)
-                  for (const [pid, pConfig] of Object.entries(providers)) {
-                    if (pConfig.models.some((m) => m.id === val)) {
-                      setSelectedProvider(pid)
-                      break
-                    }
-                  }
-                }}
-              >
-                <SelectTrigger className="h-8 w-auto min-w-[120px] gap-1.5 px-2.5 text-xs">
-                  <SelectValue placeholder="Select model" />
-                </SelectTrigger>
-                <SelectContent>
-                  {(() => {
-                    const seen = new Set<string>()
-                    const items: {
-                      modelId: string
-                      name: string
-                      ProviderIcon: React.ElementType
-                    }[] = []
-                    for (const provider of Object.values(providers)) {
-                      for (const model of provider.models) {
-                        if (!seen.has(model.id)) {
-                          seen.add(model.id)
-                          items.push({
-                            modelId: model.id,
-                            name: model.name,
-                            ProviderIcon: provider.icon,
-                          })
-                        }
-                      }
-                    }
-                    return items.map(({ modelId, name, ProviderIcon }) => (
-                      <SelectItem
-                        key={modelId}
-                        value={modelId}
-                        className="text-xs"
-                      >
-                        <span className="flex items-center gap-2">
-                          <ProviderIcon className="h-3.5 w-3.5" />
-                          {name}
-                        </span>
-                      </SelectItem>
-                    ))
-                  })()}
-                </SelectContent>
-              </Select>
+              <>
+                <BloomMenu />
+              </>
+
+              // <Select
+              //   value={selectedModelId || selectedModel}
+              //   onValueChange={(val) => {
+              //     setSelectedModel(val)
+              //     onModelChange?.(val)
+              //     for (const [pid, pConfig] of Object.entries(providers)) {
+              //       if (pConfig.models.some((m) => m.id === val)) {
+              //         setSelectedProvider(pid)
+              //         break
+              //       }
+              //     }
+              //   }}
+              // >
+              //   <SelectTrigger className="h-8 w-auto min-w-[120px] gap-1.5 px-2.5 text-xs">
+              //     <SelectValue placeholder="Select model" />
+              //   </SelectTrigger>
+              //   <SelectContent>
+              //     {(() => {
+              //       const seen = new Set<string>()
+              //       const items: {
+              //         modelId: string
+              //         name: string
+              //         ProviderIcon: React.ElementType
+              //       }[] = []
+              //       for (const provider of Object.values(providers)) {
+              //         for (const model of provider.models) {
+              //           if (!seen.has(model.id)) {
+              //             seen.add(model.id)
+              //             items.push({
+              //               modelId: model.id,
+              //               name: model.name,
+              //               ProviderIcon: provider.icon,
+              //             })
+              //           }
+              //         }
+              //       }
+              //       return items.map(({ modelId, name, ProviderIcon }) => (
+              //         <SelectItem
+              //           key={modelId}
+              //           value={modelId}
+              //           className="text-xs"
+              //         >
+              //           <span className="flex items-center gap-2">
+              //             <ProviderIcon className="h-3.5 w-3.5" />
+              //             {name}
+              //           </span>
+              //         </SelectItem>
+              //       ))
+              //     })()}
+              //   </SelectContent>
+              // </Select>
             )}
           </div>
 
-          {/* Center: Media type toggles */}
-          <div className="flex shrink-0 items-center justify-center gap-1">
+          <div className="flex shrink-0 items-center self-center gap-1 absolute left-1/2 -translate-x-1/2 border p-1.5 rounded-full">
             <AnimatePresence mode="popLayout">
               {MEDIA_TYPES.map((media) => {
                 const Icon = media.icon
@@ -566,7 +574,7 @@ export function AIInputBar({
                       size="sm"
                       onClick={() => setSelectedMedia(media.id)}
                       className={cn(
-                        "h-7 gap-1.5 px-2.5 transition-all duration-200"
+                        "h-7 gap-1.5 p-1.5 transition-all duration-200 rounded-full border"
                       )}
                       title={media.label}
                     >
@@ -588,7 +596,7 @@ export function AIInputBar({
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="h-7 w-7 px-0 text-muted-foreground"
+                    className="h-7 gap-1.5 p-1.5 transition-all duration-200 rounded-full border"
                     title="More media types"
                   >
                     <MoreHorizontal className="h-3.5 w-3.5" />
@@ -619,12 +627,12 @@ export function AIInputBar({
             </Popover>
           </div>
 
-          {/* Right: Attach + Voice + Send */}
           <div className="flex shrink-0 items-center gap-1">
             {!isLiveConnected && (
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                className="border border-dashed rounded-full"
               >
                 <Button
                   type="button"
@@ -642,12 +650,13 @@ export function AIInputBar({
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                className="border border-dashed rounded-full"
               >
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 rounded-full px-0 text-muted-foreground"
+                  className="h-8 w-8 rounded-full px-0 text-muted-foreground border border-dashed"
                   onClick={() => onVoiceModeChange(true)}
                   title="Voice Input"
                 >
@@ -661,9 +670,9 @@ export function AIInputBar({
                 onClick={
                   isGenerating
                     ? (e) => {
-                        e.preventDefault()
-                        onStop?.()
-                      }
+                      e.preventDefault()
+                      onStop?.()
+                    }
                     : undefined
                 }
                 disabled={!input.trim() || isLoading || isLiveConnected}
