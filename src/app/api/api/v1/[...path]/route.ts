@@ -1,5 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
 
+export const dynamic = "force-static"
+
+export function generateStaticParams() {
+  return []
+}
+
 const MUAPI_BASE = "https://api.muapi.ai"
 
 function getApiKey(request: NextRequest) {
