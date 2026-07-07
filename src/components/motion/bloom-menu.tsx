@@ -205,8 +205,8 @@ export function BloomMenu({
                 layout
                 className="inline-flex items-center gap-2 whitespace-nowrap"
               >
-                Create
-                <Plus className="h-4 w-4" />
+                Big Pickel
+                {/* <Plus className="h-4 w-4" /> */}
               </motion.span>
             </motion.button>
           )}
