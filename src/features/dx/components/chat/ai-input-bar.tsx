@@ -41,6 +41,9 @@ import { cn } from "@/lib/utils"
 import { ImageControls, LiveControls } from "./media-controls"
 import { PdfIcon } from "@hugeicons/core-free-icons"
 import { BloomMenu } from "@/components/motion/bloom-menu"
+import { OverflowActionsPreview } from "@/components/dx/media-control"
+import { ExpandableTabsPreview } from "@/components/dx/media-switcher"
+import { DynamicIslandPreview } from "@/components/dx/dynamic-status"
 
 
 interface MediaType {
@@ -497,6 +500,25 @@ export function AIInputBar({
             ) : null}
             {!isLiveConnected && (
               <>
+                <DynamicIslandPreview />
+                <ExpandableTabsPreview />
+                <OverflowActionsPreview />
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="border border-dashed rounded-full"
+                >
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 rounded-full px-0 text-muted-foreground"
+                    onClick={handleAttachFile}
+                    title="Attach file"
+                  >
+                    <Paperclip className="h-4 w-4" />
+                  </Button>
+                </motion.div>
                 <BloomMenu />
               </>
 
@@ -628,7 +650,7 @@ export function AIInputBar({
           </div>
 
           <div className="flex shrink-0 items-center gap-1">
-            {!isLiveConnected && (
+            {/* {!isLiveConnected && (
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -645,7 +667,7 @@ export function AIInputBar({
                   <Paperclip className="h-4 w-4" />
                 </Button>
               </motion.div>
-            )}
+            )} */}
             {onVoiceModeChange && !isLiveConnected && (
               <motion.div
                 whileHover={{ scale: 1.05 }}

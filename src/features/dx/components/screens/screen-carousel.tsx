@@ -176,7 +176,7 @@ export function ScreenCarousel({
     x,
   ])
 
-  const _handleDragEnd = (_event: any, info: any) => {
+  const handleDragEnd = (_event: any, info: any) => {
     if (isResizing) return
     setIsDragging(false)
     const offset = info.offset.x
@@ -222,17 +222,16 @@ export function ScreenCarousel({
       <motion.div
         className="flex h-full"
         style={{ x }}
-        // Drag functionality commented out to allow text selection
-        // drag={!isResizing && "x"}
-        // dragConstraints={{
-        //   left: -(screens.length - 1) * (containerSize.width + GAP),
-        //   right: containerSize.width,
-        // }}
-        // dragElastic={0.1}
-        // onDragStart={() => {
-        //   if (!isResizing) setIsDragging(true);
-        // }}
-        // onDragEnd={handleDragEnd}
+        drag={!isResizing ? "x" : false}
+        dragConstraints={{
+          left: -(screens.length - 1) * (containerSize.width + GAP),
+          right: 0,
+        }}
+        dragElastic={0.1}
+        onDragStart={() => {
+          if (!isResizing) setIsDragging(true);
+        }}
+        onDragEnd={handleDragEnd}
       >
         {/* Render last screen before first for circular wrapping */}
         {safeActiveIndex === 0 &&
