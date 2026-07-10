@@ -3,8 +3,10 @@
   "private": true,
   "description": "chanhdai.com - Internal Dev Codename: dx",
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
+    "dev": "next dev --turbopack",
+    "dev:web": "turbo run dev",
+    "build": "next build",
+    "build:web": "turbo run build",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
@@ -18,6 +20,9 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@changesets/cli": "^2.27.0",
+    "next": "16.2.10",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
     "turbo": "^2.3.0",
     "typescript": "^5.7.0"
   },
