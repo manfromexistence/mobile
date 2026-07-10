@@ -192,12 +192,11 @@ export function BloomMenu({
               type="button"
               layoutId={layoutId}
               transition={morph}
-              style={{ borderRadius: 16 }}
               onClick={() => setOpen(true)}
               aria-haspopup="menu"
               aria-expanded={open}
               whileTap={reduce ? undefined : { scale: 0.97 }}
-              className="inline-flex h-11 w-36 items-center justify-center border border-border bg-card text-sm font-medium text-foreground"
+              className="inline-flex p-2 w-auto items-center justify-center border border-dashed hover:bg-card-foreground hover:text-card bg-card text-sm font-medium text-foreground rounded-lg!"
             >
               {/* own `layout` counter-scales the label so it stays crisp while the
                   button box morphs, instead of stretching with it */}

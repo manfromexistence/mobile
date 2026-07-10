@@ -373,32 +373,12 @@ export function AIInputBar({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-red-500 rounded-full border"
+      className="border rounded-md border mx-auto lg:max-w-[60%] overflow-hidden"
     // className={cn(
     //   "backdrop-blur-2xl relative w-full rounded-3xl shadow-2xl transition-all duration-300 ring-1 ring-border/20 lg:w-[70%]! mx-auto! bg-green-500 oveflow-hidden",
     //   isFocused && "shadow-xl bg-background/80 border-border ring-border/50"
     // )}
     >
-                      <DynamicIslandPreview />
-                <ExpandableTabsPreview />
-                <OverflowActionsPreview />
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="border border-dashed rounded-full"
-                >
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 w-8 rounded-full px-0 text-muted-foreground"
-                    onClick={handleAttachFile}
-                    title="Attach file"
-                  >
-                    <Paperclip className="h-4 w-4" />
-                  </Button>
-                </motion.div>
-                <BloomMenu />
       <Textarea
         ref={textareaRef}
         value={input}
@@ -418,8 +398,32 @@ export function AIInputBar({
                 : "Ask me anything or describe what you need help with..."
         }
         disabled={isLoading || isLiveConnected}
-      // className="text-foreground placeholder:text-muted-foreground/50 min-h-px max-h-[120px] resize-none border-0 bg-red-500 px-4 py-2 text-sm leading-tight focus-visible:ring-0"
+        className="text-foreground placeholder:text-muted-foreground/50 min-h-full resize-none border-0 px-4 py-2 text-sm leading-tight focus-visible:ring-0 rounded-none"
       />
+      {/* <DynamicIslandPreview />/ */}
+      {/* <ExpandableTabsPreview />
+      <OverflowActionsPreview /> */}
+      <div className="flex items-center justify-start p-3 gap-2">
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="border border-dashed rounded-full max-h-8 max-w-8"
+        >
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 rounded-full px-0 text-muted-foreground"
+            onClick={handleAttachFile}
+            title="Attach file"
+          >
+            <Paperclip className="h-4 w-4" />
+          </Button>
+        </motion.div>
+        <BloomMenu />
+
+      </div>
+
       {/* <form onSubmit={handleSubmit}>
         {onVoiceModeChange && (
           <div
