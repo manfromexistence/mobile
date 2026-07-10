@@ -15,28 +15,6 @@ const fontSerif = IBM_Plex_Serif({
   subsets: ["latin", "vietnamese"],
 })
 
-// const fontPixel = localFont({
-//   src: "../assets/fonts/DepartureMono-Regular.woff2",
-//   weight: "400",
-//   fallback: ["monospace"],
-//   variable: "--font-pixel",
-// })
-
-// const pixelatedMSSansSerif = localFont({
-//   src: [
-//     {
-//       path: "../assets/fonts/ms_sans_serif.woff2",
-//       weight: "400",
-//     },
-//     {
-//       path: "../assets/fonts/ms_sans_serif_bold.woff2",
-//       weight: "700",
-//     },
-//   ],
-//   fallback: ["Arial"],
-//   variable: "--font-98cn",
-// })
-
 export const fontVariables = cn(
   fontSans.variable,
   fontMono.variable,

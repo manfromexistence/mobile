@@ -75,7 +75,8 @@ export async function POST(req: Request) {
     })
 
     return result.toTextStreamResponse()
-  } catch (err: any) {
-    return new Response(err.message, { status: 500 })
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Internal server error"
+    return new Response(message, { status: 500 })
   }
 }

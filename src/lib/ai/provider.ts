@@ -16,7 +16,7 @@ async function getOrCreateGenerator(modelId: string) {
   }
 
   const { pipeline } = await import("@huggingface/transformers")
-  const config = getModelConfig(modelId as any)
+  const config = getModelConfig(modelId as import("@/features/dx/types").ModelId)
   const huggingFaceId = config.modelName
 
   generatorInstance = await pipeline("text-generation", huggingFaceId, {
@@ -46,7 +46,7 @@ export async function generateChatCompletion(
 ) {
   try {
     const generator = await getOrCreateGenerator(modelId)
-    const config = getModelConfig(modelId as any)
+    const config = getModelConfig(modelId as import("@/features/dx/types").ModelId)
     const prompt = formatChatPrompt(messages)
 
     const { TextStreamer } = await import("@huggingface/transformers")

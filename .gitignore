@@ -2,7 +2,7 @@ node_modules/
 dist/
 .next/
 target/
-gen/
+apps/native/gen/
 *.local
 .env.local
 .env.production

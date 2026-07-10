@@ -13,10 +13,10 @@
     "rules": {
       "recommended": true,
       "style": {
-        "noNonNullAssertion": "off"
+        "noNonNullAssertion": "warn"
       },
       "suspicious": {
-        "noExplicitAny": "off"
+        "noExplicitAny": "error"
       },
       "a11y": {
         "useKeyWithClickEvents": "warn",

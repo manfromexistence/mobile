@@ -29,7 +29,16 @@ export interface StreamChunk {
   error?: string
 }
 
-export type ModelId = "minicpm-1b" | "tinyllama-1.1b" | "qwen-0.5b"
+export type ModelId =
+  | "opencode-low"
+  | "opencode-high"
+  | "opencode-xhigh"
+  | "opencode-default"
+  | "opencode-medium"
+  | "opencode-xlow"
+  | "qwen-0.5b"
+  | "tinyllama-1.1b"
+  | "minicpm-1b"
 
 export interface ModelOption {
   id: ModelId

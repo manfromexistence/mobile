@@ -7,7 +7,7 @@ import { getModelConfig } from "@/lib/ai/models-config"
 let cachedEngine: {
   modelId: ModelId
   instance: any
-  type: "webgpu" | "wllama"
+  type: "webgpu" | "wllama" | "api" | "tauri"
 } | null = null
 
 export interface ModelProgress {
@@ -58,7 +58,7 @@ export function useModelInference() {
       mockRef.current = false
 
       if (!["minicpm-1b", "tinyllama-1.1b", "qwen-0.5b"].includes(modelId)) {
-        const engineType = "api" as any
+        const engineType: "api" = "api"
         cachedEngine = { modelId, instance: null, type: engineType }
         setIsLoading(false)
         setTimeout(() => setProgress(null), 500)
@@ -143,7 +143,7 @@ export function useModelInference() {
               n_gpu_layers: 99999,
               n_threads: Math.max(
                 1,
-                (navigator as any).hardwareConcurrency - 1
+                navigator.hardwareConcurrency - 1
               ),
               flash_attn: true,
               cache_type_k: "q8_0",

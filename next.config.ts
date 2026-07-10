@@ -1,11 +1,10 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-  output: process.env.NODE_ENV === "development" ? undefined : "export",
   reactStrictMode: true,
   typedRoutes: true,
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   transpilePackages: ["next-mdx-remote"],
   serverExternalPackages: ["@mlc-ai/web-llm"],

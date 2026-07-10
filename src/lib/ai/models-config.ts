@@ -8,9 +8,9 @@ export type ExtendedModelOption = ModelOption & {
 
 export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
   "opencode-low": {
-    id: "opencode-low" as any,
+    id: "opencode-low",
     name: "MiniMax M3 Free",
-    provider: "openai-compatible" as any,
+    provider: "openai-compatible",
     modelName: "minimax-m3-free",
     quantization: "api",
     contextLength: 8192,
@@ -22,9 +22,9 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
     status: "available",
   },
   "opencode-high": {
-    id: "opencode-high" as any,
+    id: "opencode-high",
     name: "BigPickle",
-    provider: "openai-compatible" as any,
+    provider: "openai-compatible",
     modelName: "bigpickle",
     quantization: "api",
     contextLength: 8192,
@@ -36,9 +36,9 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
     status: "available",
   },
   "opencode-xhigh": {
-    id: "opencode-xhigh" as any,
+    id: "opencode-xhigh",
     name: "DeepSeek V4 Flash Free",
-    provider: "openai-compatible" as any,
+    provider: "openai-compatible",
     modelName: "deepseek-v4-flash-free",
     quantization: "api",
     contextLength: 8192,
@@ -50,9 +50,9 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
     status: "available",
   },
   "opencode-default": {
-    id: "opencode-default" as any,
+    id: "opencode-default",
     name: "Mimo V2.5 Free",
-    provider: "openai-compatible" as any,
+    provider: "openai-compatible",
     modelName: "mimo-v2.5-free",
     quantization: "api",
     contextLength: 8192,
@@ -64,9 +64,9 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
     status: "available",
   },
   "opencode-medium": {
-    id: "opencode-medium" as any,
+    id: "opencode-medium",
     name: "Nemotron 3 Super Free",
-    provider: "openai-compatible" as any,
+    provider: "openai-compatible",
     modelName: "nemotron-3-super-free",
     quantization: "api",
     contextLength: 8192,
@@ -78,9 +78,9 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
     status: "available",
   },
   "opencode-xlow": {
-    id: "opencode-xlow" as any,
+    id: "opencode-xlow",
     name: "Nemotron 3 Ultra Free",
-    provider: "openai-compatible" as any,
+    provider: "openai-compatible",
     modelName: "nemotron-3-ultra-free",
     quantization: "api",
     contextLength: 8192,
@@ -145,7 +145,7 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
   },
 }
 
-export const DEFAULT_MODEL_ID = "opencode-default" as any
+export const DEFAULT_MODEL_ID: ModelId = "opencode-default"
 
 export function getModelConfig(id: ModelId): ExtendedModelOption {
   return MODEL_OPTIONS[id]

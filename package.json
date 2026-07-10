@@ -1,6 +1,7 @@
 {
-  "name": "dx-platform",
+  "name": "dx",
   "private": true,
+  "description": "chanhdai.com - Internal Dev Codename: dx",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
