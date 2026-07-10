@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   transpilePackages: ["next-mdx-remote"],
+  serverExternalPackages: ["@mlc-ai/web-llm"],
   allowedDevOrigins: ["ncdai.localhost", "ncdai.local"],
   devIndicators: false,
   images: {
@@ -34,18 +35,6 @@ const nextConfig: NextConfig = {
           },
         }
       : undefined,
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        module: false,
-        perf_hooks: false,
-        fs: false,
-        path: false,
-      }
-    }
-    return config
-  },
   turbopack: {},
 }
 

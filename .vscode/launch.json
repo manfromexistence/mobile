@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Web",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "bun run dev --filter=@dx/web"
+    },
+    {
+      "name": "Debug Tauri",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/apps/native/target/debug/dx-native",
+      "cargo": {
+        "args": ["build", "--manifest-path", "${workspaceFolder}/apps/native/Cargo.toml"]
+      }
+    }
+  ]
+}

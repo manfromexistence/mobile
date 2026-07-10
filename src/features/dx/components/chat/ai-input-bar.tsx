@@ -373,20 +373,62 @@ export function AIInputBar({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={cn(
-        "bg-background/50 backdrop-blur-2xl border border-border/50 relative w-full rounded-3xl shadow-2xl transition-all duration-300 ring-1 ring-border/20 lg:w-[70%]! mx-auto!",
-        isFocused && "shadow-xl bg-background/80 border-border ring-border/50"
-      )}
+      className="bg-red-500 rounded-full border"
+    // className={cn(
+    //   "backdrop-blur-2xl relative w-full rounded-3xl shadow-2xl transition-all duration-300 ring-1 ring-border/20 lg:w-[70%]! mx-auto! bg-green-500 oveflow-hidden",
+    //   isFocused && "shadow-xl bg-background/80 border-border ring-border/50"
+    // )}
     >
-      <form onSubmit={handleSubmit}>
+                      <DynamicIslandPreview />
+                <ExpandableTabsPreview />
+                <OverflowActionsPreview />
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="border border-dashed rounded-full"
+                >
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 rounded-full px-0 text-muted-foreground"
+                    onClick={handleAttachFile}
+                    title="Attach file"
+                  >
+                    <Paperclip className="h-4 w-4" />
+                  </Button>
+                </motion.div>
+                <BloomMenu />
+      <Textarea
+        ref={textareaRef}
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={handleKeyDown}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        placeholder={
+          selectedMedia === "image"
+            ? "Describe the image you want to generate..."
+            : selectedMedia === "video"
+              ? "Describe the video you want to create..."
+              : selectedMedia === "live"
+                ? isLiveConnected
+                  ? "Connected to Gemini Live. Speak naturally..."
+                  : "Click 'Start Live' to begin a voice call..."
+                : "Ask me anything or describe what you need help with..."
+        }
+        disabled={isLoading || isLiveConnected}
+      // className="text-foreground placeholder:text-muted-foreground/50 min-h-px max-h-[120px] resize-none border-0 bg-red-500 px-4 py-2 text-sm leading-tight focus-visible:ring-0"
+      />
+      {/* <form onSubmit={handleSubmit}>
         {onVoiceModeChange && (
           <div
-            className={cn(
-              "absolute inset-0 flex items-center gap-2 rounded-2xl bg-background/95 backdrop-blur-xl border border-primary/20 pr-1.5 pl-2 shadow-lg transition-all duration-300 md:pr-2 md:pl-3",
-              isVoiceMode
-                ? "pointer-events-auto z-50 scale-100 opacity-100"
-                : "pointer-events-none z-0 scale-95 opacity-0"
-            )}
+          // className={cn(
+          //   "absolute inset-0 flex items-center gap-2 rounded-2xl backdrop-blur-xl border border-primary/20 pr-1.5 pl-2 shadow-lg transition-all duration-300 md:pr-2 md:pl-3 bg-pink-500",
+          //   isVoiceMode
+          //     ? "pointer-events-auto z-50 scale-100 opacity-100"
+          //     : "pointer-events-none z-0 scale-95 opacity-0"
+          // )}
           >
             <Button
               type="button"
@@ -471,7 +513,7 @@ export function AIInputBar({
                     : "Ask me anything or describe what you need help with..."
             }
             disabled={isLoading || isLiveConnected}
-            className="text-foreground placeholder:text-muted-foreground/50 min-h-px max-h-[120px] resize-none border-0 bg-transparent px-4 py-2 text-sm leading-tight focus-visible:ring-0"
+            className="text-foreground placeholder:text-muted-foreground/50 min-h-px max-h-[120px] resize-none border-0 bg-red-500 px-4 py-2 text-sm leading-tight focus-visible:ring-0"
           />
         </div>
 
@@ -522,57 +564,57 @@ export function AIInputBar({
                 <BloomMenu />
               </>
 
-              // <Select
-              //   value={selectedModelId || selectedModel}
-              //   onValueChange={(val) => {
-              //     setSelectedModel(val)
-              //     onModelChange?.(val)
-              //     for (const [pid, pConfig] of Object.entries(providers)) {
-              //       if (pConfig.models.some((m) => m.id === val)) {
-              //         setSelectedProvider(pid)
-              //         break
-              //       }
-              //     }
-              //   }}
-              // >
-              //   <SelectTrigger className="h-8 w-auto min-w-[120px] gap-1.5 px-2.5 text-xs">
-              //     <SelectValue placeholder="Select model" />
-              //   </SelectTrigger>
-              //   <SelectContent>
-              //     {(() => {
-              //       const seen = new Set<string>()
-              //       const items: {
-              //         modelId: string
-              //         name: string
-              //         ProviderIcon: React.ElementType
-              //       }[] = []
-              //       for (const provider of Object.values(providers)) {
-              //         for (const model of provider.models) {
-              //           if (!seen.has(model.id)) {
-              //             seen.add(model.id)
-              //             items.push({
-              //               modelId: model.id,
-              //               name: model.name,
-              //               ProviderIcon: provider.icon,
-              //             })
-              //           }
-              //         }
-              //       }
-              //       return items.map(({ modelId, name, ProviderIcon }) => (
-              //         <SelectItem
-              //           key={modelId}
-              //           value={modelId}
-              //           className="text-xs"
-              //         >
-              //           <span className="flex items-center gap-2">
-              //             <ProviderIcon className="h-3.5 w-3.5" />
-              //             {name}
-              //           </span>
-              //         </SelectItem>
-              //       ))
-              //     })()}
-              //   </SelectContent>
-              // </Select>
+              <Select
+                value={selectedModelId || selectedModel}
+                onValueChange={(val) => {
+                  setSelectedModel(val)
+                  onModelChange?.(val)
+                  for (const [pid, pConfig] of Object.entries(providers)) {
+                    if (pConfig.models.some((m) => m.id === val)) {
+                      setSelectedProvider(pid)
+                      break
+                    }
+                  }
+                }}
+              >
+                <SelectTrigger className="h-8 w-auto min-w-[120px] gap-1.5 px-2.5 text-xs">
+                  <SelectValue placeholder="Select model" />
+                </SelectTrigger>
+                <SelectContent>
+                  {(() => {
+                    const seen = new Set<string>()
+                    const items: {
+                      modelId: string
+                      name: string
+                      ProviderIcon: React.ElementType
+                    }[] = []
+                    for (const provider of Object.values(providers)) {
+                      for (const model of provider.models) {
+                        if (!seen.has(model.id)) {
+                          seen.add(model.id)
+                          items.push({
+                            modelId: model.id,
+                            name: model.name,
+                            ProviderIcon: provider.icon,
+                          })
+                        }
+                      }
+                    }
+                    return items.map(({ modelId, name, ProviderIcon }) => (
+                      <SelectItem
+                        key={modelId}
+                        value={modelId}
+                        className="text-xs"
+                      >
+                        <span className="flex items-center gap-2">
+                          <ProviderIcon className="h-3.5 w-3.5" />
+                          {name}
+                        </span>
+                      </SelectItem>
+                    ))
+                  })()}
+                </SelectContent>
+              </Select>
             )}
           </div>
 
@@ -650,7 +692,7 @@ export function AIInputBar({
           </div>
 
           <div className="flex shrink-0 items-center gap-1">
-            {/* {!isLiveConnected && (
+            {!isLiveConnected && (
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -667,7 +709,7 @@ export function AIInputBar({
                   <Paperclip className="h-4 w-4" />
                 </Button>
               </motion.div>
-            )} */}
+            )}
             {onVoiceModeChange && !isLiveConnected && (
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -713,7 +755,7 @@ export function AIInputBar({
             </motion.div>
           </div>
         </div>
-      </form>
+      </form> */}
     </motion.div>
   )
 }
