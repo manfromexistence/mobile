@@ -280,7 +280,7 @@ export function ExpandableTabs({
         transition={reduce ? { duration: 0 } : SHELL_SPRING}
         style={{ transformOrigin: "bottom center" }}
         className={cn(
-          "relative overflow-hidden rounded-[26px] border border-border bg-card",
+          "relative overflow-hidden border border-dashed bg-card rounded-md",
           className,
           classNames?.root,
         )}

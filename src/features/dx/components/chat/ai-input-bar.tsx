@@ -40,10 +40,10 @@ import { providers } from "@/lib/ai/providers"
 import { cn } from "@/lib/utils"
 import { ImageControls, LiveControls } from "./media-controls"
 import { PdfIcon } from "@hugeicons/core-free-icons"
-import { BloomMenu } from "@/components/motion/bloom-menu"
-import { OverflowActionsPreview } from "@/components/dx/media-control"
-import { ExpandableTabsPreview } from "@/components/dx/media-switcher"
-import { DynamicIslandPreview } from "@/components/dx/dynamic-status"
+import { AiProvider } from "@/features/dx/components/chat/ai-provider"
+import { OverflowActionsPreview } from "@/features/dx/components/chat/media-control"
+import { ExpandableTabsPreview } from "@/features/dx/components/chat/media-switcher"
+import { DynamicIslandPreview } from "@/features/dx/components/chat/dynamic-status"
 
 
 interface MediaType {
@@ -373,7 +373,7 @@ export function AIInputBar({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="border rounded-md border mx-auto lg:max-w-[60%] overflow-hidden"
+      className="border rounded-md border mx-auto lg:max-w-[60%]"
     // className={cn(
     //   "backdrop-blur-2xl relative w-full rounded-3xl shadow-2xl transition-all duration-300 ring-1 ring-border/20 lg:w-[70%]! mx-auto! bg-green-500 oveflow-hidden",
     //   isFocused && "shadow-xl bg-background/80 border-border ring-border/50"
@@ -401,27 +401,31 @@ export function AIInputBar({
         className="text-foreground placeholder:text-muted-foreground/50 min-h-full resize-none border-0 px-4 py-2 text-sm leading-tight focus-visible:ring-0 rounded-none"
       />
       {/* <DynamicIslandPreview />/ */}
-      {/* <ExpandableTabsPreview />
-      <OverflowActionsPreview /> */}
-      <div className="flex items-center justify-start p-3 gap-2">
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="border border-dashed rounded-full max-h-8 max-w-8"
-        >
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 rounded-full px-0 text-muted-foreground"
-            onClick={handleAttachFile}
-            title="Attach file"
+      <div className="flex items-center justify-start">
+        <div className="flex items-center justify-start p-3 gap-2">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="border border-dashed rounded-full max-h-8 max-w-8"
           >
-            <Paperclip className="h-4 w-4" />
-          </Button>
-        </motion.div>
-        <BloomMenu />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 rounded-full px-0 text-muted-foreground"
+              onClick={handleAttachFile}
+              title="Attach file"
+            >
+              <Paperclip className="h-4 w-4" />
+            </Button>
+          </motion.div>
+          <AiProvider />
+        </div>
 
+        <div className="flex items-center justify-end p-3 gap-2">
+          <ExpandableTabsPreview />
+          <OverflowActionsPreview />
+        </div>
       </div>
 
       {/* <form onSubmit={handleSubmit}>
@@ -565,7 +569,7 @@ export function AIInputBar({
                     <Paperclip className="h-4 w-4" />
                   </Button>
                 </motion.div>
-                <BloomMenu />
+                <AiProvider />
               </>
 
               <Select
