@@ -42,7 +42,7 @@ import { ImageControls, LiveControls } from "./media-controls"
 import { PdfIcon } from "@hugeicons/core-free-icons"
 import { AiProvider } from "@/features/dx/components/chat/ai-provider"
 import { OverflowActionsPreview } from "@/features/dx/components/chat/media-control"
-import { ExpandableTabsPreview } from "@/features/dx/components/chat/media-switcher"
+import { MediaSwitcher } from "@/features/dx/components/chat/media-switcher"
 import { DynamicIslandPreview } from "@/features/dx/components/chat/dynamic-status"
 
 
@@ -398,10 +398,10 @@ export function AIInputBar({
                 : "Ask me anything or describe what you need help with..."
         }
         disabled={isLoading || isLiveConnected}
-        className="text-foreground placeholder:text-muted-foreground/50 min-h-full resize-none border-0 px-4 py-2 text-sm leading-tight focus-visible:ring-0 rounded-none"
+        className="text-foreground placeholder:text-muted-foreground/50 min-h-full resize-none border-0 px-4 py-2 text-sm leading-tight focus-visible:ring-0 rounded-none bg-transparent!"
       />
       {/* <DynamicIslandPreview />/ */}
-      <div className="flex items-center justify-start">
+      <div className="flex items-center">
         <div className="flex items-center justify-start p-3 gap-2">
           <motion.div
             whileHover={{ scale: 1.05 }}
@@ -422,9 +422,9 @@ export function AIInputBar({
           <AiProvider />
         </div>
 
-        <div className="flex items-center justify-end p-3 gap-2">
-          <ExpandableTabsPreview />
-          <OverflowActionsPreview />
+        <div className="relative h-8 w-48">
+          <MediaSwitcher />
+          {/* <OverflowActionsPreview /> */}
         </div>
       </div>
 
@@ -551,7 +551,7 @@ export function AIInputBar({
             {!isLiveConnected && (
               <>
                 <DynamicIslandPreview />
-                <ExpandableTabsPreview />
+                <MediaSwitcher />
                 <OverflowActionsPreview />
                 <motion.div
                   whileHover={{ scale: 1.05 }}

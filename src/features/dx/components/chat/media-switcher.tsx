@@ -1,30 +1,33 @@
 "use client";
 
 import {
-  BadgeCheck,
-  Brush,
-  CalendarClock,
-  ChartSpline,
+  AudioLines,
+  Captions,
   ChevronRight,
-  ClipboardCheck,
-  CloudUpload,
+  Clapperboard,
+  Code2,
   FileText,
-  Gauge,
-  GitBranch,
-  Images,
-  Inbox,
+  Film,
+  Image as ImageIcon,
+  Languages,
+  Layers,
   type LucideIcon,
-  Megaphone,
+  Maximize2,
   MessageCircle,
-  PackageOpen,
-  RefreshCw,
-  Rocket,
-  Siren,
-  SwatchBook,
-  UploadCloud,
-  Users,
-  Webhook,
-  Workflow,
+  Mic,
+  Music,
+  Paintbrush,
+  Phone,
+  Radio,
+  Scissors,
+  ShieldAlert,
+  Shuffle,
+  Sparkles,
+  Text,
+  Timer,
+  Video,
+  Volume2,
+  Wand2,
 } from "lucide-react";
 import { ExpandableTabs } from "@/components/motion/expandable-tabs";
 
@@ -51,80 +54,87 @@ function Menu({ rows }: { rows: { icon: LucideIcon; label: string }[] }) {
   );
 }
 
-export function ExpandableTabsPreview() {
+export function MediaSwitcher() {
   return (
-    <div className="flex w-full items-end justify-center">
+    <div className="absolute left-0 top-0">
       <ExpandableTabs
         items={[
           {
-            id: "launch",
-            label: "Launch",
-            icon: <Rocket className="h-4 w-4" />,
+            id: "text",
+            label: "Text",
+            icon: <Text className="h-4 w-4" />,
             content: (
               <Menu
                 rows={[
-                  { icon: FileText, label: "Release Brief" },
-                  { icon: ClipboardCheck, label: "Launch Checklist" },
-                  { icon: Megaphone, label: "Campaign Notes" },
-                  { icon: CalendarClock, label: "Rollout Calendar" },
-                  { icon: CloudUpload, label: "Ship Build" },
+                  { icon: MessageCircle, label: "Chat Assistant" },
+                  { icon: FileText, label: "Document Summary" },
+                  { icon: Code2, label: "Code Generation" },
+                  { icon: Sparkles, label: "Prompt Templates" },
+                  { icon: Wand2, label: "Text Refiner" },
                 ]}
               />
             ),
           },
           {
-            id: "inbox",
-            label: "Inbox",
-            icon: <Inbox className="h-4 w-4" />,
+            id: "image",
+            label: "Image",
+            icon: <ImageIcon className="h-4 w-4" />,
             content: (
               <Menu
                 rows={[
-                  { icon: MessageCircle, label: "Client Feedback" },
-                  { icon: Users, label: "Team Requests" },
-                  { icon: BadgeCheck, label: "Approval Notes" },
+                  { icon: Wand2, label: "Text to Image" },
+                  { icon: Layers, label: "Image to Image" },
+                  { icon: Paintbrush, label: "Inpainting / Outpainting" },
+                  { icon: Maximize2, label: "Upscaler" },
+                  { icon: Scissors, label: "Background Remover" },
                 ]}
               />
             ),
           },
           {
-            id: "flows",
-            label: "Flows",
-            icon: <Workflow className="h-4 w-4" />,
+            id: "video",
+            label: "Video",
+            icon: <Video className="h-4 w-4" />,
             content: (
               <Menu
                 rows={[
-                  { icon: GitBranch, label: "Trigger Map" },
-                  { icon: Webhook, label: "Webhook Runs" },
-                  { icon: RefreshCw, label: "Retry Queue" },
+                  { icon: Clapperboard, label: "Text to Video" },
+                  { icon: Film, label: "Image to Video" },
+                  { icon: AudioLines, label: "Lip Sync" },
+                  { icon: Shuffle, label: "Video Remix" },
+                  { icon: Timer, label: "Frame Interpolation" },
                 ]}
               />
             ),
           },
           {
-            id: "assets",
-            label: "Assets",
-            icon: <PackageOpen className="h-4 w-4" />,
+            id: "audio",
+            label: "Audio",
+            icon: <AudioLines className="h-4 w-4" />,
             content: (
               <Menu
                 rows={[
-                  { icon: SwatchBook, label: "Brand Kit" },
-                  { icon: Images, label: "Mockup Library" },
-                  { icon: Brush, label: "Design Tokens" },
-                  { icon: UploadCloud, label: "Export Queue" },
+                  { icon: Mic, label: "Voice Cloning" },
+                  { icon: Volume2, label: "Text to Speech" },
+                  { icon: Music, label: "Music Generation" },
+                  { icon: Captions, label: "Audio Transcription" },
+                  { icon: Wand2, label: "Audio Enhancer" },
                 ]}
               />
             ),
           },
           {
-            id: "status",
-            label: "Status",
-            icon: <ChartSpline className="h-4 w-4" />,
+            id: "live",
+            label: "Live",
+            icon: <Radio className="h-4 w-4" />,
             content: (
               <Menu
                 rows={[
-                  { icon: Gauge, label: "Activation" },
-                  { icon: ChartSpline, label: "Conversion" },
-                  { icon: Siren, label: "Incidents" },
+                  { icon: Phone, label: "Real-time Voice Chat" },
+                  { icon: Video, label: "Live Avatars" },
+                  { icon: Languages, label: "Live Translation" },
+                  { icon: Captions, label: "Live Captions" },
+                  { icon: ShieldAlert, label: "Stream Moderation" },
                 ]}
               />
             ),

@@ -66,7 +66,7 @@ const LABEL_CLOSE = { duration: 0.16, ease: EASE_OUT } as const;
 
 // Fixed bar height keeps the content panel's bottom reserve static so the open
 // height is right on the first frame. p-2 (16) + h-9 button (36).
-const BAR_H = 52;
+const BAR_H = 32;
 const TAB_W = 32;
 const BAR_X = 16;
 const BAR_GAP = 4;
@@ -75,7 +75,7 @@ const ICON_W = 16;
 const ACTIVE_LEFT_PAD = 10;
 const ACTIVE_RIGHT_PAD = 16;
 const LABEL_GAP = 7;
-const PANEL_DOCK_GAP = 4;
+const PANEL_DOCK_GAP = 2;
 
 // Content is clipped above the dock so rows never pass through the icon bar.
 // It enters from slightly above instead of from the dock line.
@@ -289,7 +289,7 @@ export function ExpandableTabs({
           ref={sizerRef}
           aria-hidden
           className={cn(
-            "pointer-events-none invisible absolute left-0 top-0 grid w-max px-2 pt-2",
+            "pointer-events-none invisible absolute left-0 top-0 grid w-max",
             classNames?.panel,
           )}
           style={{ paddingBottom: BAR_H + PANEL_DOCK_GAP }}
@@ -303,7 +303,7 @@ export function ExpandableTabs({
 
         <div
           className={cn(
-            "absolute left-0 right-0 top-0 z-10 overflow-hidden px-2 pt-2",
+            "absolute left-0 right-0 top-0 z-10 overflow-hidden",
             classNames?.panel,
           )}
           style={{ bottom: BAR_H + PANEL_DOCK_GAP }}
@@ -360,7 +360,7 @@ export function ExpandableTabs({
                 }}
                 transition={reduce ? { duration: 0 } : TAB_CHANGE_SPRING}
                 className={cn(
-                  "relative isolate flex h-9 min-w-8 shrink-0 items-center justify-center overflow-hidden rounded-[18px] px-2 text-sm font-medium outline-none",
+                  "relative isolate flex h-8 min-w-8 shrink-0 items-center justify-center overflow-hidden rounded-[18px] px-2 text-sm font-medium outline-none",
                   "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   active && isActive && "min-w-0 justify-start pl-2.5 pr-4",
                   isActive
