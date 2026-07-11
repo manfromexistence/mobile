@@ -78,12 +78,12 @@ const LABEL_GAP = 7;
 const PANEL_DOCK_GAP = 2;
 
 // Content is clipped above the dock so rows never pass through the icon bar.
-// It enters from slightly above instead of from the dock line.
+// It enters from slightly below instead of from the top, growing upwards.
 const CONTENT_VARIANTS: Variants = {
-  enter: { y: -8, scale: 0.98, opacity: 0, filter: "blur(4px)" },
+  enter: { y: 8, scale: 0.98, opacity: 0, filter: "blur(4px)" },
   center: { y: 0, scale: 1, opacity: 1, filter: "blur(0px)" },
   exit: {
-    y: -6,
+    y: 8,
     scale: 0.98,
     opacity: 0,
     filter: "blur(4px)",
@@ -274,7 +274,13 @@ export function ExpandableTabs({
         initial={false}
         animate={
           targetSize
-            ? { width: targetSize.width, height: targetSize.height }
+            ? {
+                width: targetSize.width,
+                height: targetSize.height,
+                // Dynamically shift upwards by the height delta to force 
+                // bottom-to-top growth while pinning the bottom edge.
+                y: closedSize.height - targetSize.height,
+              }
             : undefined
         }
         transition={reduce ? { duration: 0 } : SHELL_SPRING}
@@ -321,7 +327,7 @@ export function ExpandableTabs({
                 }
                 className="w-max"
                 style={{
-                  transformOrigin: "top center",
+                  transformOrigin: "bottom center",
                   willChange: "transform, opacity, filter",
                 }}
               >
