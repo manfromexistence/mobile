@@ -37,7 +37,6 @@ export const getWModuleConfig = (pathConfig: {
         text = Array.prototype.slice.call(arguments).join(" ")
       console.warn(text)
     },
-    // @ts-expect-error
     locateFile: (filename: string, basePath: string) => {
       const p = pathConfig[filename]
       console.log(`Loading "${filename}" from "${p}"`)
@@ -138,7 +137,7 @@ export const isMmproj = async (blob: Blob): Promise<boolean> => {
   if (offset + 8 * 4 + 4 > buf.length) return false
   const view = new DataView(header)
   const valLen = view.getBigUint64(offset + 8 * 3, true)
-  if (valLen !== 4n) return false
+  if (valLen !== BigInt(4)) return false
 
   // Read 4 bytes at offset+8*4, compare with META_VAL bytes
   for (let i = 0; i < valBytes.length; i++) {
@@ -275,7 +274,7 @@ export const isSupportMem64 = (): boolean => {
   try {
     new WebAssembly.Memory({
       address: "i64",
-      initial: 1n, // 1 page (64 KiB)
+      initial: BigInt(1), // 1 page (64 KiB)
     } as any)
     return true
   } catch {

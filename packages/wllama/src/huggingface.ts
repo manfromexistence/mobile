@@ -53,13 +53,13 @@ async function fetchRepoFiles(
   if (!res.ok) {
     let msg = res.statusText
     try {
-      msg = (await res.json()).error ?? msg
+      msg = ((await res.json()) as { error?: string }).error ?? msg
     } catch {
       /* ignore */
     }
     throw new Error(`HF API error (${res.status}): ${msg}`)
   }
-  return res.json()
+  return res.json() as Promise<HFFileEntry[]>
 }
 
 // For split GGUF (-00001-of-00005.gguf), return the first shard path.

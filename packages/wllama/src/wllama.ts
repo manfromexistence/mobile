@@ -837,7 +837,7 @@ export class Wllama {
             onData: (chunk: TChunk) => callback(chunk),
           })
             .then(() => callback(undefined, true))
-            .catch((err) => callback(undefined, false, err))
+            .catch((err) => callback(undefined, false, err as Error))
         }
       )
       resolve(createGenerator())
@@ -943,7 +943,7 @@ export class Wllama {
   //////////////////////////////////////////////
   // Utils
 
-  private jsonDecode(data_json: string) {
+  private jsonDecode(data_json: string): any {
     try {
       return JSON.parse(data_json)
     } catch (e) {

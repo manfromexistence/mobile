@@ -256,7 +256,7 @@ export class CacheManager {
           null
     }
     try {
-      return await new Response(blob).json()
+      return (await new Response(blob).json()) as CacheEntryMetadata
     } catch (e) {
       // metadata corrupted; caller will re-download
       return null
@@ -268,13 +268,13 @@ export class CacheManager {
    */
   async list(): Promise<CacheEntry[]> {
     const all = await this.sb.list()
-    const metadataMap: Record<string, CacheEntryMetadata> = {}
+    const metadataMap: Record<string, CacheEntryMetadata | null> = {}
 
     for (const { key } of all) {
       if (key.startsWith(PREFIX_METADATA)) {
         const blob = await this.sb.read(key)
         if (blob) {
-          const meta = await new Response(blob).json().catch(() => null)
+          const meta = (await new Response(blob).json().catch(() => null)) as CacheEntryMetadata | null
           metadataMap[key.slice(PREFIX_METADATA.length)] = meta
         }
       }

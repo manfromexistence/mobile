@@ -274,7 +274,6 @@ export class ProxyToWorker {
           args: [fileId, value, offset],
           callbackId: this.taskId++,
         },
-        // @ts-expect-error Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'
         [value.buffer]
       )
       offset += size
@@ -312,7 +311,7 @@ export class ProxyToWorker {
    * TODO: get rid of this function once everything is migrated to Glue
    */
   private parseResult(result: any): any {
-    const parsedResult = JSON.parse(result)
+    const parsedResult = JSON.parse(result) as Record<string, unknown>
     if (parsedResult && parsedResult["error"]) {
       throw new WllamaRuntimeError("Unknown error, please see console.log", "")
     }
