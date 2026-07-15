@@ -19,7 +19,7 @@ export interface UnistNode extends Node {
 }
 
 export interface UnistTree extends Node {
-  children: UnistNode[]
+  children?: UnistNode[]
 }
 
 export interface NpmCommands {

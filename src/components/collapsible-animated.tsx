@@ -44,11 +44,11 @@ function CollapsibleWithContext({
     <CollapsibleContext.Provider value={{ open }}>
       <CollapsibleRoot
         open={open}
-        onOpenChange={(open) => {
+        onOpenChange={(open, event) => {
           if (controlledOpen === undefined) {
             setUncontrolledOpen(open)
           }
-          onOpenChange?.(open)
+          onOpenChange?.(open, event)
         }}
         {...props}
       />

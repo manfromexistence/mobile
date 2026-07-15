@@ -16,7 +16,7 @@ function loadConversations(): Conversation[] {
   if (typeof localStorage === "undefined") return []
   try {
     const raw = localStorage.getItem("dx-conversations")
-    return raw ? JSON.parse(raw) : []
+    return raw ? (JSON.parse(raw) as Conversation[]) : []
   } catch {
     return []
   }

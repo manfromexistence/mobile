@@ -224,7 +224,7 @@ export function AIInputBar({
                 if (line.startsWith("data: ")) {
                   try {
                     const jsonStr = line.slice(6)
-                    const parsed = JSON.parse(jsonStr)
+                    const parsed = JSON.parse(jsonStr) as any
                     if (parsed.type === "text-delta" && parsed.delta) {
                       assistantContent += parsed.delta
                       onMessagesChange([
@@ -340,7 +340,7 @@ export function AIInputBar({
           if (line.startsWith("data: ")) {
             try {
               const jsonStr = line.slice(6)
-              const parsed = JSON.parse(jsonStr)
+              const parsed = JSON.parse(jsonStr) as any
 
               if (parsed.type === "text-delta" && parsed.delta) {
                 assistantMessage += parsed.delta
@@ -424,3 +424,4 @@ export function AIInputBar({
     </motion.div>
   )
 }
+

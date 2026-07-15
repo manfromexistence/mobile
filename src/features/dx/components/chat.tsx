@@ -68,7 +68,6 @@ import {
   SettingsPlaceholder,
 } from "./chat-settings"
 import { Sidebar } from "./sidebar"
-import { BloomMenu } from "@/components/motion/bloom-menu"
 
 type RightPanel = "thoughts" | "sources" | "files" | null
 

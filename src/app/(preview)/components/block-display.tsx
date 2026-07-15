@@ -1,6 +1,4 @@
 import { cache } from "react"
-import type { registryItemFileSchema } from "shadcn/schema"
-import type { z } from "zod"
 import { BlockViewer } from "@/app/(preview)/components/block-viewer"
 import { getCachedThemes } from "@/app/(preview)/lib/get-themes"
 import { formatCode } from "@/lib/format-code"
@@ -9,6 +7,7 @@ import {
   createFileTreeForRegistryItemFiles,
   getRegistryItem,
 } from "@/lib/registry"
+import type { RegistryItemFile } from "@/lib/registry-types"
 
 export async function BlockDisplay({ name }: { name: string }) {
   const item = await getCachedRegistryItem(name)
@@ -47,14 +46,23 @@ const getCachedFileTree = cache(
 )
 
 const getCachedHighlightedFiles = cache(
-  async (files: z.infer<typeof registryItemFileSchema>[]) => {
-    return await Promise.all(
-      files.map(async (file) => ({
-        ...file,
-        highlightedContent: await highlightCode(
-          await formatCode(file.content ?? "", "radix-vega")
-        ),
-      }))
-    )
+  async (files: RegistryItemFile[]) => {
+    return (await Promise.all(
+      files.map(async (file) => {
+        const f = file as {
+          path: string
+          content?: string
+          target?: string
+          type: string
+          [key: string]: unknown
+        }
+        return {
+          ...f,
+          highlightedContent: await highlightCode(
+            await formatCode(f.content ?? "", "radix-vega")
+          ),
+        }
+      })
+    )) as (RegistryItemFile & { highlightedContent: string })[]
   }
 )

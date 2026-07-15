@@ -12,13 +12,9 @@ import {
   useState,
 } from "react"
 import type { PanelImperativeHandle } from "react-resizable-panels"
-import type {
-  RegistryItem,
-  registryItemFileSchema,
-  registryItemSchema,
-} from "shadcn/schema"
-import type { z } from "zod"
+import type { RegistryItem } from "shadcn/schema"
 import { sendToIframe } from "@/app/(preview)/hooks/use-iframe-sync"
+import type { RegistryItemFile } from "@/lib/registry-types"
 import type { PreviewSearchParams } from "@/app/(preview)/lib/search-params"
 import { serializePreviewSearchParams } from "@/app/(preview)/lib/search-params"
 import { ToggleGroup, ToggleGroupItem } from "@/components/base/ui/toggle-group"
@@ -98,7 +94,7 @@ import { CopyButton, CopyStateIcon } from "@/registry/components/copy-button"
 type View = "preview" | "code"
 
 type BlockViewerContext = {
-  item: z.infer<typeof registryItemSchema>
+  item: RegistryItem
 
   setView: (view: View) => void
 
@@ -107,7 +103,7 @@ type BlockViewerContext = {
 
   tree: ReturnType<typeof createFileTreeForRegistryItemFiles> | null
   highlightedFiles:
-    | (z.infer<typeof registryItemFileSchema> & {
+    | (RegistryItemFile & {
         highlightedContent: string
       })[]
     | null

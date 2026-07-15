@@ -148,7 +148,7 @@ export function BotMessageActions({ message }: { message?: Message }) {
   return (
     <div className="relative mt-2 flex w-full flex-wrap items-center gap-1 pb-2 md:gap-2">
       {metrics && (
-        <HoverCard openDelay={200}>
+        <HoverCard>
           <HoverCardTrigger asChild>
             <Button
               variant="ghost"

@@ -1,6 +1,6 @@
 "use client"
 
-import { ClientSideOptionsProvider } from "@c15t/nextjs/client"
+import { ConsentManagerProvider } from "@c15t/nextjs"
 import { posthog } from "posthog-js"
 
 export function ConsentManagerClient({
@@ -9,18 +9,22 @@ export function ConsentManagerClient({
   children: React.ReactNode
 }) {
   return (
-    <ClientSideOptionsProvider
-      callbacks={{
-        onConsentSet({ preferences }) {
-          if (preferences.measurement) {
-            posthog.opt_in_capturing()
-          } else {
-            posthog.opt_out_capturing()
-          }
+    <ConsentManagerProvider
+      options={{
+        mode: "offline",
+        consentCategories: ["necessary", "measurement"],
+        callbacks: {
+          onConsentSet({ preferences }) {
+            if (preferences.measurement) {
+              posthog.opt_in_capturing()
+            } else {
+              posthog.opt_out_capturing()
+            }
+          },
         },
       }}
     >
       {children}
-    </ClientSideOptionsProvider>
+    </ConsentManagerProvider>
   )
 }

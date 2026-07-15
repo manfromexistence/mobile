@@ -21,7 +21,7 @@ export function CodeCollapsibleWrapper({
     >
       <CollapsibleContent
         className="overflow-hidden *:data-rehype-pretty-code-figure:my-0 data-[state=closed]:max-h-80"
-        forceMount
+        keepMounted
       >
         {children}
       </CollapsibleContent>

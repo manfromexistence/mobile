@@ -32,7 +32,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { ArchivedChatsList } from "./archived-chats"
-import type { Tab, Workspace } from "./types"
+import type { Tab, TabFolder, Workspace } from "./types"
 import { WorkspaceIcon } from "./workspace-icon"
 
 interface SidebarCollapsedProps {
@@ -71,15 +71,15 @@ export function SidebarCollapsed({
   canScrollLeft,
   canScrollRight,
   archivesOpen,
-  _plusMenuOpen,
+  plusMenuOpen,
   onSetActiveWorkspace,
   onSetarchivesOpen,
-  _onSetPlusMenuOpen,
+  onSetPlusMenuOpen,
   onStartScrolling,
   onStopScrolling,
   onCreateWorkspace,
   onOpenWorkspaceDialog,
-  _onCreateFolder,
+  onCreateFolder,
   onAddNewTab,
   folders = [],
   activeWorkspaceTabs = [],
@@ -119,7 +119,7 @@ export function SidebarCollapsed({
       <ScrollArea className="flex-1 w-full px-2">
         <div className="flex flex-col items-center gap-2">
           {folders.map((folder) => (
-            <HoverCard key={folder.id} openDelay={0} closeDelay={0}>
+            <HoverCard key={folder.id}>
               <HoverCardTrigger asChild>
                 <Button
                   variant="ghost"
@@ -155,7 +155,7 @@ export function SidebarCollapsed({
             </HoverCard>
           ))}
           {activeWorkspaceTabs.map((tab) => (
-            <HoverCard key={tab.id} openDelay={0} closeDelay={0}>
+            <HoverCard key={tab.id}>
               <HoverCardTrigger asChild>
                 <Button
                   variant={activeTab === tab.id ? "secondary" : "ghost"}
@@ -369,7 +369,7 @@ export function SidebarCollapsed({
                 try {
                   const raw = localStorage.getItem("dx-conversations")
                   if (raw) {
-                    const convs = JSON.parse(raw).map((c: any) => ({
+                    const convs = (JSON.parse(raw) as any[]).map((c: any) => ({
                       ...c,
                       archived: false,
                     }))

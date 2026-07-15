@@ -463,7 +463,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                   try {
                     const raw = localStorage.getItem("dx-conversations")
                     if (raw) {
-                      const convs = JSON.parse(raw).map((c: any) => ({
+                      const convs = (JSON.parse(raw) as any[]).map((c: any) => ({
                         ...c,
                         archived: false,
                       }))

@@ -1,11 +1,12 @@
 import type { LineElement } from "rehype-pretty-code"
 import rehypePrettyCode from "rehype-pretty-code"
+import type { Plugin } from "unified"
 import { visit } from "unist-util-visit"
 
 import type { UnistNode, UnistTree } from "@/types/unist"
 
-export function rehypeCodeRawString() {
-  return (tree: UnistTree) => {
+export function rehypeCodeRawString(): Plugin {
+  return ((tree: UnistTree) => {
     visit(tree, (node: UnistNode) => {
       if (node?.type === "element" && node?.tagName === "pre") {
         if (!node.children || node.children.length === 0) {
@@ -20,7 +21,7 @@ export function rehypeCodeRawString() {
         node.__rawString__ = codeEl.children?.[0].value
       }
     })
-  }
+  }) as Plugin
 }
 
 export function rehypeHighlightCode() {
@@ -40,8 +41,8 @@ export function rehypeHighlightCode() {
   })
 }
 
-export function rehypeHighlightCodeRawString() {
-  return (tree: UnistTree) => {
+export function rehypeHighlightCodeRawString(): Plugin {
+  return ((tree: UnistTree) => {
     visit(tree, (node: UnistNode) => {
       if (node?.type === "element" && node?.tagName === "figure") {
         if (
@@ -67,5 +68,5 @@ export function rehypeHighlightCodeRawString() {
         }
       }
     })
-  }
+  }) as Plugin
 }

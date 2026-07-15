@@ -1,5 +1,5 @@
 import { registryItemSchema } from "shadcn/schema"
-import type { z } from "zod"
+import type { RegistryItem } from "shadcn/schema"
 
 import { blockCategories } from "@/config/registry"
 
@@ -26,7 +26,7 @@ export async function getAllBlockStaticParams(): Promise<
 }
 
 export async function getAllBlockIds(
-  types: z.infer<typeof registryItemSchema>["type"][] = ["registry:block"],
+  types: RegistryItem["type"][] = ["registry:block"],
   categories: string[] = []
 ): Promise<string[]> {
   const blocks = await getAllBlocks(types, categories)
@@ -34,13 +34,13 @@ export async function getAllBlockIds(
 }
 
 export async function getAllBlocks(
-  types: z.infer<typeof registryItemSchema>["type"][] = ["registry:block"],
+  types: RegistryItem["type"][] = ["registry:block"],
   categories: string[] = []
 ) {
   const { Index } = await import("@/registry/__index__")
 
   // Collect all blocks from all styles.
-  const allBlocks: z.infer<typeof registryItemSchema>[] = []
+  const allBlocks: RegistryItem[] = []
 
   for (const itemName in Index) {
     const item = Index[itemName]
@@ -54,7 +54,7 @@ export async function getAllBlocks(
       return result.success ? result.data : null
     })
     .filter(
-      (block): block is z.infer<typeof registryItemSchema> => block !== null
+      (block): block is RegistryItem => block !== null
     )
 
   return validatedBlocks

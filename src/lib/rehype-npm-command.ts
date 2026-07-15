@@ -1,10 +1,11 @@
+import type { Plugin } from "unified"
 import { visit } from "unist-util-visit"
 
 import type { UnistNode, UnistTree } from "@/types/unist"
 
-export function rehypeNpmCommand() {
+export function rehypeNpmCommand(): Plugin {
   // Thanks @shadcn/ui
-  return (tree: UnistTree) => {
+  return ((tree: UnistTree) => {
     visit(tree, (node: UnistNode) => {
       if (node.type !== "element" || node?.tagName !== "pre") {
         return
@@ -82,5 +83,5 @@ export function rehypeNpmCommand() {
         node.properties["__bun__"] = npmCommand.replace("npm run", "bun")
       }
     })
-  }
+  }) as Plugin
 }

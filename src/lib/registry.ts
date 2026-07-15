@@ -1,11 +1,10 @@
 import { promises as fs } from "fs"
 import { LRUCache } from "lru-cache"
 import path from "path"
-import type { registryItemFileSchema } from "shadcn/schema"
 import { registryItemSchema } from "shadcn/schema"
-import type { z } from "zod"
 
 import { Index } from "@/registry/__index__"
+import type { RegistryItemFile } from "@/lib/registry-types"
 
 // LRU cache for cross-request caching of registry items.
 // File reads are I/O-bound, so caching improves dev server performance.
@@ -40,7 +39,7 @@ export async function getRegistryItem(name: string) {
 
   // Read all files in parallel.
   let files: typeof result.data.files = await Promise.all(
-    item.files.map(async (file: z.infer<typeof registryItemFileSchema>) => {
+    item.files.map(async (file: RegistryItemFile) => {
       const content = await getFileContent(file)
       const relativePath = path.relative(process.cwd(), file.path)
 
@@ -72,7 +71,7 @@ export async function getRegistryItem(name: string) {
   return parsed.data
 }
 
-async function getFileContent(file: z.infer<typeof registryItemFileSchema>) {
+async function getFileContent(file: RegistryItemFile) {
   let code = await fs.readFile(file.path, "utf-8")
 
   // Some registry items uses default export.
@@ -112,7 +111,7 @@ export function fixImport(content: string) {
   return content.replace(regex, replacement)
 }
 
-function fixFilePaths(files: z.infer<typeof registryItemSchema>["files"]) {
+function fixFilePaths(files: RegistryItemFile[]) {
   if (!files) {
     return []
   }
@@ -130,7 +129,7 @@ function fixFilePaths(files: z.infer<typeof registryItemSchema>["files"]) {
   })
 }
 
-function getFileTarget(file: z.infer<typeof registryItemFileSchema>) {
+function getFileTarget(file: RegistryItemFile) {
   let target = file.target
 
   if (!target || target === "") {

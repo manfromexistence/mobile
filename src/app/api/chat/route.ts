@@ -1,6 +1,6 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google"
 import { createOpenAI } from "@ai-sdk/openai"
-import { streamText, tool } from "ai"
+import { streamText, tool, zodSchema } from "ai"
 import { z } from "zod"
 import { getModel } from "@/lib/ai/providers"
 
@@ -25,10 +25,12 @@ export async function POST(req: Request) {
         tools: {
           generateImage: tool({
             description: "Generate an image based on a description",
-            parameters: z.object({
-              prompt: z.string().describe("The prompt to generate the image"),
-            }),
-            execute: ({ prompt }: { prompt: string }) => {
+            inputSchema: zodSchema(
+              z.object({
+                prompt: z.string().describe("The prompt to generate the image"),
+              })
+            ),
+            execute: async ({ prompt }) => {
               return {
                 url: `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}`,
               }

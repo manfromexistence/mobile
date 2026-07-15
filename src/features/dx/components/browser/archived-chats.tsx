@@ -18,7 +18,7 @@ function loadArchived(): ArchivedConversation[] {
   try {
     const raw = localStorage.getItem("dx-conversations")
     if (!raw) return []
-    const convs: ArchivedConversation[] = JSON.parse(raw)
+    const convs: ArchivedConversation[] = JSON.parse(raw) as ArchivedConversation[]
     return convs.filter((c) => c.archived)
   } catch {
     return []
@@ -30,7 +30,9 @@ function saveAndReload(
 ) {
   try {
     const raw = localStorage.getItem("dx-conversations")
-    const convs: ArchivedConversation[] = raw ? JSON.parse(raw) : []
+    const convs: ArchivedConversation[] = raw
+      ? (JSON.parse(raw) as ArchivedConversation[])
+      : []
     const updated = updater(convs)
     localStorage.setItem("dx-conversations", JSON.stringify(updated))
   } catch {}
