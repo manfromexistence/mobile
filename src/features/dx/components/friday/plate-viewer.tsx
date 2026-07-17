@@ -152,7 +152,7 @@ function renderElement(props: RenderElementProps) {
       return (
         <blockquote
           {...attributes}
-          className="my-3 border-l-[3px] border-purple-500/40 pl-4 italic text-foreground-muted"
+          className="my-3 border-l-[3px] border-foreground/20 pl-4 italic text-foreground-muted"
         >
           {children}
         </blockquote>

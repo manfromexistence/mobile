@@ -49,6 +49,7 @@ type ChatInputProps = {
   streaming?: boolean;
   model: ZenModel;
   onModelChange: (m: ZenModel) => void;
+  onMenuOpenChange?: (open: boolean) => void;
 };
 
 const MAX_HEIGHT = 220;
@@ -70,6 +71,7 @@ export function ChatInput({
   streaming,
   model,
   onModelChange,
+  onMenuOpenChange,
 }: ChatInputProps) {
   const [value, setValue] = useState("");
   const [focused, setFocused] = useState(false);
@@ -120,6 +122,10 @@ export function ChatInput({
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
+
+  useEffect(() => {
+    if (onMenuOpenChange) onMenuOpenChange(menuOpen);
+  }, [menuOpen, onMenuOpenChange]);
 
   useEffect(() => {
     const el = ref.current;
@@ -913,6 +919,7 @@ function ModelSlot({
     <div
       className="p-4 bg-surface border border-border rounded-xl shadow-2xl w-[92vw] max-w-[580px] select-none"
       onClick={(e) => e.stopPropagation()}
+      onPointerDown={(e) => e.stopPropagation()}
     >
       <div className="flex items-center gap-2 mb-2">
         <div className="relative flex-1">
@@ -951,7 +958,7 @@ function ModelSlot({
 
       <div className="flex items-center gap-2.5 mb-2 pb-2 border-b border-border/60">
         <Avatar size="md">
-          <AvatarFallback className="text-[11px] font-bold text-purple-600 dark:text-purple-400">
+          <AvatarFallback className="text-[11px] font-bold text-chart-2">
             {providerInitial}
           </AvatarFallback>
         </Avatar>
@@ -964,7 +971,7 @@ function ModelSlot({
           </div>
         </div>
         <div className="text-right shrink-0">
-          <div className="text-[10px] font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider">
+          <div className="text-[10px] font-semibold text-foreground uppercase tracking-wider">
             {TIER_LABELS_LIST[modelState.col] ?? "Low"}
           </div>
           <div className="text-[10px] text-muted-foreground">
@@ -981,7 +988,7 @@ function ModelSlot({
                 key={tier}
                 className={cn(
                   "text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-center transition-colors",
-                  i === modelState.col ? "text-foreground" : "text-muted-foreground",
+                  i === modelState.col ? "text-chart-2" : "text-muted-foreground",
                 )}
                 style={{ width: COL_WIDTH }}
               >
@@ -1007,7 +1014,7 @@ function ModelSlot({
                     className={cn(
                       "absolute left-0 flex items-center pr-1 text-[11px] font-medium cursor-pointer pl-1 text-left transition-colors outline-none whitespace-nowrap",
                       isActive
-                        ? "text-purple-600 dark:text-purple-400"
+                        ? "text-chart-2"
                         : "text-muted-foreground hover:text-foreground",
                     )}
                     style={{
@@ -1021,20 +1028,18 @@ function ModelSlot({
                 );
               })}
 
-              <div
-                ref={trackRef}
-                onClick={onTrackClick}
-                className="absolute overflow-hidden rounded-lg bg-surface-2/50"
-                style={{ left: LABEL_W, top: 0, right: 0, height: TRACK_H }}
-              >
                 <div
-                  className="absolute pointer-events-none h-[2px] bg-purple-500/60 dark:bg-purple-400/50"
-                  style={{ left: 0, top: center.y, width: center.x }}
-                />
-                <div
-                  className="absolute pointer-events-none w-px bg-purple-500/60 dark:bg-purple-400/50"
-                  style={{ left: center.x, top: center.y - 6, height: 12 }}
-                />
+                  ref={trackRef}
+                  onClick={onTrackClick}
+                  className="absolute overflow-hidden rounded-lg bg-surface-2/50"
+                  style={{ left: LABEL_W, top: 0, right: 0, height: TRACK_H }}
+                >
+                  <motion.div
+                    className="absolute pointer-events-auto h-[3px] bg-chart-2/60 cursor-pointer"
+                    style={{ left: 0, top: center.y, width: center.x }}
+                    whileHover={{ scaleY: 2.5, opacity: 1 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  />
 
                 {filtered.map((_, rIdx) =>
                   tierLabels.map((_, cIdx) => {
@@ -1065,7 +1070,7 @@ function ModelSlot({
                         <motion.span
                           className={cn(
                             "block w-1.5 h-1.5 rounded-full",
-                            isActive ? "bg-purple-500 dark:bg-purple-400" : "bg-border",
+                            isActive ? "bg-chart-2" : "bg-border",
                           )}
                           animate={
                             isActive
@@ -1076,7 +1081,7 @@ function ModelSlot({
                         />
                         {isActive && (
                           <motion.span
-                            className="absolute w-4 h-4 rounded-full border border-purple-500/30"
+                            className="absolute w-4 h-4 rounded-full border border-chart-2/30"
                             animate={{ scale: [1, 1.8], opacity: [0.6, 0] }}
                             transition={{ duration: 1.5, repeat: Infinity }}
                           />
@@ -1108,7 +1113,7 @@ function ModelSlot({
                     animate={dragging ? { scale: 1.12 } : { scale: 1 }}
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   >
-                    <div className="w-2 h-2 rounded-full bg-purple-500/50 dark:bg-purple-300" />
+                    <div className="w-2 h-2 rounded-full bg-chart-2/60" />
                   </motion.div>
                 </motion.div>
               </div>
@@ -1120,7 +1125,7 @@ function ModelSlot({
           className="flex flex-col items-center border-l border-border shrink-0"
           style={{ width: 64, height: Math.min(TRACK_H, 300) + 18 }}
         >
-          <span className="text-[9px] sm:text-[10px] font-bold text-purple-600 dark:text-purple-400 tracking-widest mb-1">
+          <span className="text-[9px] sm:text-[10px] font-bold text-chart-2 tracking-widest mb-1">
             ULTRA
           </span>
           <div className="flex-1 flex items-center justify-center w-full">
@@ -1132,7 +1137,7 @@ function ModelSlot({
             />
           </div>
           {modelState.ultra && (
-            <span className="text-[9px] font-semibold text-purple-600 dark:text-purple-400 mt-0.5">
+            <span className="text-[9px] font-semibold text-chart-2 mt-0.5">
               {tierLabels[modelState.col]}
               <span>
                 {" "}
@@ -1164,7 +1169,7 @@ function ModelSlot({
         </div>
         <div className="flex items-center gap-2">
           {modelState.ultra && (
-            <span className="text-[9px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">
+            <span className="text-[9px] font-bold text-chart-2 uppercase tracking-wider">
               Max: {selected.maxTier}
             </span>
           )}
@@ -1195,56 +1200,56 @@ function UltraButton({
   const ballSize = 24;
 
   return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      whileHover={{ scale: 1.04 }}
-      whileTap={{ scale: 0.94 }}
-      className={cn(
-        "relative rounded-full border transition-colors overflow-hidden cursor-pointer",
-        active
-          ? "bg-purple-100 dark:bg-purple-900/30 border-purple-200 dark:border-purple-500/40"
-          : "bg-surface-2 border-border",
-      )}
-      style={{ width: 28, height }}
-      aria-label="Toggle ULTRA"
-    >
-      <AnimatePresence>{burstKey > 0 && <ThunderBurst key={burstKey} />}</AnimatePresence>
-
-      <motion.div
-        className="absolute left-1 right-1 rounded-full"
-        style={{
-          bottom: 4,
-          background: active
-            ? "linear-gradient(to top, rgb(168,85,247), rgb(192,132,252))"
-            : "rgb(229,231,235)",
-        }}
-        animate={{ height: active ? "calc(100% - 8px)" : "30%" }}
-        transition={{ type: "spring", stiffness: 250, damping: 22 }}
-      />
-
-      <motion.div
-        className="absolute left-1/2 -translate-x-1/2 w-5 h-5 sm:w-6 sm:h-6 bg-white dark:bg-gradient-to-br dark:from-purple-300 dark:to-purple-500 rounded-full border border-border grid place-items-center"
-        animate={{ top: active ? 2 : height - ballSize - 2 }}
-        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      <motion.button
+        type="button"
+        onClick={onClick}
+        whileHover={{ scale: 1.04 }}
+        whileTap={{ scale: 0.94 }}
+        className={cn(
+          "relative rounded-full border transition-colors overflow-hidden cursor-pointer",
+          active
+            ? "bg-chart-2/10 border-chart-2/20"
+            : "bg-surface-2 border-border",
+        )}
+        style={{ width: 28, height }}
+        aria-label="Toggle ULTRA"
       >
-        <ThunderIcon className="h-3 w-3 text-purple-600 dark:text-white" />
-      </motion.div>
+        <AnimatePresence>{burstKey > 0 && <ThunderBurst key={burstKey} />}</AnimatePresence>
 
-      {active && (
+        {active && (
+          <motion.div
+            className="absolute left-0 right-0 bottom-0 rounded-full"
+            style={{
+              background: "linear-gradient(to top, var(--color-chart-2), color-mix(in oklab, var(--color-chart-2) 60%, transparent))",
+            }}
+            animate={{ height: "100%" }}
+            initial={{ height: "0%" }}
+            transition={{ type: "spring", stiffness: 250, damping: 22 }}
+          />
+        )}
+
         <motion.div
-          className="absolute inset-0 rounded-full pointer-events-none"
-          animate={{
-            boxShadow: [
-              "0 0 12px rgba(168,85,247,0.4)",
-              "0 0 24px rgba(168,85,247,0.6)",
-              "0 0 12px rgba(168,85,247,0.4)",
-            ],
-          }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-      )}
-    </motion.button>
+          className="absolute left-1/2 -translate-x-1/2 w-5 h-5 sm:w-6 sm:h-6 bg-white dark:bg-gradient-to-br dark:from-chart-2/60 dark:to-chart-2/20 rounded-full border border-border grid place-items-center"
+          animate={{ top: active ? 0 : height - ballSize }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        >
+          <ThunderIcon className="h-3 w-3 text-chart-2" />
+        </motion.div>
+
+        {active && (
+          <motion.div
+            className="absolute inset-0 rounded-full pointer-events-none"
+            animate={{
+              boxShadow: [
+                "0 0 12px color-mix(in oklab, var(--color-chart-2) 40%, transparent)",
+                "0 0 24px color-mix(in oklab, var(--color-chart-2) 60%, transparent)",
+                "0 0 12px color-mix(in oklab, var(--color-chart-2) 40%, transparent)",
+              ],
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+        )}
+      </motion.button>
   );
 }
 
@@ -1255,13 +1260,13 @@ function ThunderBurst() {
         initial={{ scale: 0.3, opacity: 0.9 }}
         animate={{ scale: 2.4, opacity: 0 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
-        className="absolute inset-0 rounded-full border-2 border-purple-500 pointer-events-none"
+        className="absolute inset-0 rounded-full border-2 border-chart-2/30 pointer-events-none"
       />
       <motion.div
         initial={{ scale: 0.3, opacity: 0.7 }}
         animate={{ scale: 1.8, opacity: 0 }}
         transition={{ duration: 0.5, ease: "easeOut", delay: 0.05 }}
-        className="absolute inset-0 rounded-full border border-purple-400 pointer-events-none"
+        className="absolute inset-0 rounded-full border border-chart-2/20 pointer-events-none"
       />
 
       <svg
@@ -1272,7 +1277,7 @@ function ThunderBurst() {
           d="M40 0 L34 80 L46 80 L36 200"
           stroke="rgba(255,255,255,0.9)"
           strokeWidth="2.5"
-          fill="rgba(168,85,247,0.4)"
+          fill="color-mix(in oklab, var(--color-chart-2) 40%, transparent)"
           initial={{ pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: [0, 1, 0.6, 0] }}
           transition={{ duration: 0.45, ease: "easeOut" }}
@@ -1301,7 +1306,7 @@ function ThunderBurst() {
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 0.9, 0] }}
         transition={{ duration: 0.3 }}
-        className="absolute inset-0 rounded-full bg-purple-400/40 pointer-events-none"
+        className="absolute inset-0 rounded-full bg-chart-2/10 pointer-events-none"
       />
     </>
   );

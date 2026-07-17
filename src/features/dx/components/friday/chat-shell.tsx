@@ -18,7 +18,7 @@ import { loadFileSystem, saveFileSystem, type FileSystemState } from "@/lib/frid
 import type { Attachment } from "@/features/dx/components/friday/attachment-chip";
 import { ZEN_MODELS, type ZenModel } from "@/lib/friday/models";
 
-export function FridayChatShell() {
+export function FridayChatShell({ onModelPickerOpenChange }: { onModelPickerOpenChange?: (open: boolean) => void }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [streamingId, setStreamingId] = useState<string | null>(null);
   const [rightPane, setRightPane] = useState<RightPaneTab>("menu");
@@ -156,6 +156,7 @@ export function FridayChatShell() {
                 streaming={!!streamingId}
                 model={model}
                 onModelChange={setModel}
+                onMenuOpenChange={onModelPickerOpenChange}
               />
             </div>
           </div>

@@ -76,22 +76,22 @@ export function EmptyState({ onPrompt }: { onPrompt: (text: string) => void }) {
     {
       title: "Create",
       desc: "a sleek landing page with Tailwind",
-      tone: "from-blue-500/20 to-cyan-500/20",
+      tone: "from-foreground/15 to-foreground/5",
     },
     {
       title: "Write",
       desc: "a debounce hook in TypeScript",
-      tone: "from-purple-500/20 to-pink-500/20",
+      tone: "from-foreground/15 to-foreground/5",
     },
     {
       title: "Explain",
       desc: "React Server Components simply",
-      tone: "from-amber-500/20 to-rose-500/20",
+      tone: "from-foreground/15 to-foreground/5",
     },
     {
       title: "Brainstorm",
       desc: "names for a developer tool",
-      tone: "from-emerald-500/20 to-teal-500/20",
+      tone: "from-foreground/15 to-foreground/5",
     },
   ];
 
@@ -99,7 +99,7 @@ export function EmptyState({ onPrompt }: { onPrompt: (text: string) => void }) {
     <div className="mx-auto flex h-full w-full max-w-3xl flex-col items-center justify-center px-4 text-center sm:px-6">
       <motion.div initial={{ scale: 0.6, opacity: 0, y: 12 }} className="relative mb-5">
         <motion.div
-          className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 opacity-50 blur-2xl"
+          className="absolute inset-0 rounded-2xl bg-foreground/10 opacity-50 blur-2xl"
           animate={{
             scale: [1, 1.15, 1],
             rotate: [0, 12, 0],
@@ -107,7 +107,7 @@ export function EmptyState({ onPrompt }: { onPrompt: (text: string) => void }) {
           }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         />
-        <div className="relative grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-xl">
+        <div className="relative grid h-14 w-14 place-items-center rounded-2xl bg-foreground text-background shadow-xl">
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -159,7 +159,7 @@ export function EmptyState({ onPrompt }: { onPrompt: (text: string) => void }) {
             whileTap={{ scale: 0.99 }}
             className="group relative flex items-center gap-3 overflow-hidden rounded-xl border border-border bg-surface p-3.5 text-left shadow-sm transition-colors hover:bg-surface-2"
           >
-            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20 text-foreground">
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-foreground/10 text-foreground">
               <span className="text-base">&diams;</span>
             </div>
             <div className="min-w-0">

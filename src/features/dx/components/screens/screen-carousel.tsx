@@ -18,6 +18,8 @@ interface ScreenCarouselProps {
   onScreenResize: (id: string, width: number, height: number) => void
   onScreensUpdate: (screens: Screen[]) => void
   sidebarExpanded: boolean
+  disableDrag?: boolean
+  onModelPickerOpenChange?: (open: boolean) => void
   children?: React.ReactNode
 }
 
@@ -28,6 +30,8 @@ export function ScreenCarousel({
   onScreenResize,
   onScreensUpdate,
   sidebarExpanded,
+  disableDrag,
+  onModelPickerOpenChange,
   children,
 }: ScreenCarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -212,7 +216,7 @@ export function ScreenCarousel({
       case "welcome":
         return children || <WelcomeScreen sidebarExpanded={sidebarExpanded} />
       case "friday":
-        return <FridayScreen />
+        return <FridayScreen onModelPickerOpenChange={onModelPickerOpenChange} />
       case "custom":
         return <CustomScreen title={screen.title} dockIcon={screen.dockIcon} />
       default:
@@ -225,7 +229,7 @@ export function ScreenCarousel({
       <motion.div
         className="flex h-full"
         style={{ x }}
-        drag={!isResizing ? "x" : false}
+        drag={!isResizing && !disableDrag ? "x" : false}
         dragConstraints={{
           left: -(screens.length - 1) * (containerSize.width + GAP),
           right: 0,

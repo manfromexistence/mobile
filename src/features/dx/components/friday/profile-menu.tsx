@@ -37,8 +37,8 @@ export function ProfileMenu({ open, onClose }: { open: boolean; onClose: () => v
             className="fixed left-1/2 top-1/2 z-50 w-[480px] max-w-[94vw] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl"
           >
             <div className="grid grid-cols-1 md:grid-cols-[160px_1fr]">
-              <div className="bg-gradient-to-br from-blue-500/15 via-purple-500/15 to-pink-500/15 p-5 flex flex-col gap-3">
-                <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-white text-xl font-semibold shadow-lg">
+              <div className="bg-foreground/5 p-5 flex flex-col gap-3">
+                <div className="grid h-14 w-14 place-items-center rounded-2xl bg-foreground text-background text-xl font-semibold shadow-lg">
                   Y
                 </div>
                 <div>

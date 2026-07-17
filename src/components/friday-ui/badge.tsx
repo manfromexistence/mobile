@@ -9,7 +9,7 @@ const badgeVariants = cva(
         default:
           "border-border bg-surface text-muted-foreground hover:text-foreground",
         active:
-          "border-purple-500/50 bg-purple-500/10 text-purple-600 dark:text-purple-400",
+          "border-chart-2/50 bg-chart-2/10 text-chart-2",
         outline: "border-border text-muted-foreground",
       },
     },

@@ -930,7 +930,7 @@ export function AnimatedLogo() {
       transition={{ type: "spring", stiffness: 400, damping: 20 }}
     >
       <motion.div
-        className="absolute inset-0 rounded-lg bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 opacity-80 blur-md"
+        className="absolute inset-0 rounded-lg bg-foreground/20 blur-md"
         animate={{
           scale: [1, 1.15, 1],
           opacity: [0.5, 0.8, 0.5],
@@ -941,7 +941,7 @@ export function AnimatedLogo() {
           ease: "easeInOut",
         }}
       />
-      <div className="relative grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-lg">
+      <div className="relative grid h-8 w-8 place-items-center rounded-lg bg-foreground text-background shadow-lg">
         <SparklesIcon className="h-4 w-4" />
       </div>
     </motion.div>

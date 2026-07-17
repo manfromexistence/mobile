@@ -122,6 +122,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
   const [settingsTab, setSettingsTab] = React.useState("account")
   const [googleApiKey] = useLocalStorage("google_api_key", "")
   const [_openaiApiKey] = useLocalStorage("openai_api_key", "")
+  const [modelPickerOpen, setModelPickerOpen] = React.useState(false)
 
   const [activeScreenId, setActiveScreenId] = React.useState<string>("friday")
   const [screens, setScreens] = React.useState<Screen[]>([
@@ -451,6 +452,8 @@ export function Chat({ swapped }: { swapped?: boolean }) {
           onScreenResize={handleScreenResize}
           onScreensUpdate={setScreens}
           sidebarExpanded={!sidebarCollapsed}
+          disableDrag={modelPickerOpen}
+          onModelPickerOpenChange={setModelPickerOpen}
         >
           {/* Mobile Header */}
           <div className="absolute top-0 right-0 left-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background/80 px-2 backdrop-blur-md md:hidden">

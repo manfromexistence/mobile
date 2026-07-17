@@ -365,7 +365,7 @@ function FloatingWidget() {
             hoverContent={
               <div className="p-3 space-y-2.5">
                 <div className="flex items-center gap-2">
-                  <div className="grid h-8 w-8 place-items-center rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400">
+                  <div className="grid h-8 w-8 place-items-center rounded-lg bg-foreground/10 text-foreground">
                     <GitBranchIcon className="h-4 w-4" />
                   </div>
                   <div>
@@ -375,7 +375,7 @@ function FloatingWidget() {
                 </div>
                 <div className="rounded-md border border-border bg-surface-2/60 p-2 space-y-1.5">
                   <div className="flex items-start gap-2">
-                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-500" />
+                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/60" />
                     <div className="min-w-0 flex-1">
                       <p className="text-[11.5px] text-foreground truncate">feat: add ALDII self-attention block</p>
                       <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-muted-foreground">

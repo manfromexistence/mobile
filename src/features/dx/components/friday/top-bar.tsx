@@ -117,7 +117,7 @@ export function TopBar({ title, rightPane, setRightPane }: TopBarProps) {
             onClick={() => setProfileOpen(true)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-[11px] font-semibold text-white shadow-sm"
+            className="grid h-7 w-7 place-items-center rounded-full bg-foreground text-background text-[11px] font-semibold shadow-sm"
             aria-label="Open profile"
           >
             Y

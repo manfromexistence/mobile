@@ -94,7 +94,7 @@ export function Minimap({ sections, scrollContainerRef }: MinimapProps) {
                     className={cn(
                       "block rounded-full transition-all duration-300",
                       isActive
-                        ? "h-[3px] w-4 bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.85)]"
+                        ? "h-[3px] w-4 bg-foreground shadow-[0_0_10px_var(--color-foreground)]"
                         : "h-[2px] w-3 bg-border-strong",
                     )}
                   />
