@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { VoiceBar } from "@/features/dx/components/chat-voice"
-import { providers } from "@/lib/ai/providers"
+import { providers, type ProviderId } from "@/lib/ai/providers"
 import { cn } from "@/lib/utils"
 import { ImageControls, LiveControls } from "./media-controls"
 import { PdfIcon } from "@hugeicons/core-free-icons"
@@ -150,6 +150,13 @@ export function AIInputBar({
       }
     }
   }, [selectedModelId])
+
+  const handleProviderSelect = (providerId: ProviderId) => {
+    const providerConfig = providers[providerId as keyof typeof providers]
+    if (!providerConfig) return
+    setSelectedProvider(providerId)
+    setSelectedModel(providerConfig.defaultModel)
+  }
 
   const handleAttachFile = async () => {
     const input_ = document.createElement("input")
@@ -288,9 +295,9 @@ export function AIInputBar({
       id: Date.now().toString(),
     }
 
-    onMessagesChange([...messages, userMessage])
+    onMessagesChange?.([...messages, userMessage])
     setInput("")
-    onLoadingChange(true)
+    onLoadingChange?.(true)
 
     try {
       const googleApiKey =
@@ -321,7 +328,7 @@ export function AIInputBar({
       let assistantMessage = ""
 
       const assistantId = Date.now().toString()
-      onMessagesChange([
+      onMessagesChange?.([
         ...messages,
         userMessage,
         { role: "assistant", content: "", id: assistantId },
@@ -344,7 +351,7 @@ export function AIInputBar({
 
               if (parsed.type === "text-delta" && parsed.delta) {
                 assistantMessage += parsed.delta
-                onMessagesChange([
+                onMessagesChange?.([
                   ...messages,
                   userMessage,
                   {
@@ -363,7 +370,7 @@ export function AIInputBar({
     } catch (error) {
       console.error("Chat error:", error)
     } finally {
-      onLoadingChange(false)
+      onLoadingChange?.(false)
     }
   }
 
@@ -414,7 +421,10 @@ export function AIInputBar({
               <Paperclip className="h-4 w-4" />
             </Button>
           </motion.div>
-          <AiProvider />
+          <AiProvider
+            selectedProvider={selectedProvider}
+            onSelect={handleProviderSelect}
+          />
         </div>
 
         <div className="relative h-8 w-48 flex-1">

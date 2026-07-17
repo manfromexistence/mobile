@@ -1,15 +1,14 @@
 import fs from "node:fs"
 import path from "node:path"
-import type { Plugin } from "unified"
 import { visit } from "unist-util-visit"
 import { Index } from "@/registry/__index__"
 import type { UnistNode, UnistTree } from "@/types/unist"
 
 import { fixImport } from "./registry"
 
-export function remarkComponent(): Plugin {
-  return ((tree: UnistTree) => {
-    visit(tree, (node: UnistNode, index, parent) => {
+export function remarkComponent() {
+  return (tree: any) => {
+    visit(tree, (node: any, index, parent) => {
       // src prop overrides both name and fileName.
       const { value: srcPath } =
         (getNodeAttributeByName(node, "src") as {
@@ -122,7 +121,7 @@ export function remarkComponent(): Plugin {
         }
       }
     })
-  }) as Plugin
+  }
 }
 
 function getNodeAttributeByName(node: UnistNode, name: string) {

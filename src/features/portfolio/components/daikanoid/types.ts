@@ -1,9 +1,7 @@
-import type p5 from "p5"
-
 import type { Brick } from "./brick"
 
 export interface GameState {
-  canvas: p5.Renderer | null
+  canvas: any
 
   enableGame: boolean
   enableSounds: boolean
@@ -12,9 +10,9 @@ export interface GameState {
   bricks: Brick[]
   logoIndex: number
 
-  soundBounce: p5.MediaElement | null
-  soundBreak: p5.MediaElement | null
-  soundGameOver: p5.MediaElement | null
-  ballImage: p5.Image | null
-  paddleImage: p5.Image | null
+  soundBounce: any
+  soundBreak: any
+  soundGameOver: any
+  ballImage: any
+  paddleImage: any
 }

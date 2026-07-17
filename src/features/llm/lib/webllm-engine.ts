@@ -48,7 +48,7 @@ export class WebLLMEngine implements LLMEngine {
     return { message: reply.choices?.[0]?.message?.content ?? "" }
   }
 
-  exit(): void {
+  async exit(): Promise<void> {
     this.engine = null
   }
 }

@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Renderer, Program, Mesh, Color, Triangle, RenderTarget } from 'ogl';
 import { useEffect, useRef } from 'react';
 
@@ -169,7 +170,7 @@ void main() {
 }
 `;
 
-const buildPalette = colors => {
+const buildPalette = (colors: string[] | undefined) => {
   const filled = colors && colors.length ? colors : ['#ffffff'];
   const padded = [];
   for (let i = 0; i < MAX_COLORS; i++) {
@@ -179,6 +180,29 @@ const buildPalette = colors => {
   }
   return padded;
 };
+
+interface StrandsProps {
+  colors?: string[]
+  count?: number
+  speed?: number
+  amplitude?: number
+  waviness?: number
+  thickness?: number
+  glow?: number
+  taper?: number
+  spread?: number
+  hueShift?: number
+  intensity?: number
+  saturation?: number
+  opacity?: number
+  scale?: number
+  glass?: boolean
+  refraction?: number
+  dispersion?: number
+  glassSize?: number
+  className?: string
+  style?: React.CSSProperties
+}
 
 export default function Strands({
   colors = ['#FF4242', '#7C3AED', '#06B6D4', '#EAB308'],
@@ -200,9 +224,9 @@ export default function Strands({
   dispersion = 1,
   glassSize = 1,
   className = '',
-  style
-}) {
-  const propsRef = useRef({});
+  style,
+}: StrandsProps) {
+  const propsRef = useRef<StrandsProps>({} as StrandsProps);
   propsRef.current = {
     colors,
     count,
@@ -224,7 +248,7 @@ export default function Strands({
     glassSize
   };
 
-  const ctnDom = useRef(null);
+  const ctnDom = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const ctn = ctnDom.current;
@@ -252,9 +276,9 @@ export default function Strands({
       uniforms: {
         uTime: { value: 0 },
         uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
-        uColors: { value: buildPalette(propsRef.current.colors) },
-        uColorCount: { value: Math.min(propsRef.current.colors.length, MAX_COLORS) },
-        uStrandCount: { value: Math.min(propsRef.current.count, MAX_STRANDS) },
+        uColors: { value: buildPalette(colors) },
+        uColorCount: { value: Math.min(colors.length, MAX_COLORS) },
+        uStrandCount: { value: Math.min(count, MAX_STRANDS) },
         uSpeed: { value: speed },
         uAmplitude: { value: amplitude },
         uWaviness: { value: waviness },
@@ -305,32 +329,31 @@ export default function Strands({
     resize();
 
     let animateId = 0;
-    const update = t => {
+    const update = (t: number) => {
       animateId = requestAnimationFrame(update);
-      const current = propsRef.current;
       program.uniforms.uTime.value = t * 0.001;
-      program.uniforms.uColors.value = buildPalette(current.colors);
-      program.uniforms.uColorCount.value = Math.min(current.colors.length, MAX_COLORS);
-      program.uniforms.uStrandCount.value = Math.min(Math.max(Math.round(current.count), 1), MAX_STRANDS);
-      program.uniforms.uSpeed.value = current.speed;
-      program.uniforms.uAmplitude.value = current.amplitude;
-      program.uniforms.uWaviness.value = current.waviness;
-      program.uniforms.uThickness.value = current.thickness;
-      program.uniforms.uGlow.value = current.glow;
-      program.uniforms.uTaper.value = current.taper;
-      program.uniforms.uSpread.value = current.spread;
-      program.uniforms.uHueShift.value = current.hueShift;
-      program.uniforms.uIntensity.value = current.intensity;
-      program.uniforms.uOpacity.value = current.opacity;
-      program.uniforms.uScale.value = current.scale;
-      program.uniforms.uSaturation.value = current.saturation;
+      program.uniforms.uColors.value = buildPalette(colors);
+      program.uniforms.uColorCount.value = Math.min(colors.length, MAX_COLORS);
+      program.uniforms.uStrandCount.value = Math.min(Math.max(Math.round(count), 1), MAX_STRANDS);
+      program.uniforms.uSpeed.value = speed;
+      program.uniforms.uAmplitude.value = amplitude;
+      program.uniforms.uWaviness.value = waviness;
+      program.uniforms.uThickness.value = thickness;
+      program.uniforms.uGlow.value = glow;
+      program.uniforms.uTaper.value = taper;
+      program.uniforms.uSpread.value = spread;
+      program.uniforms.uHueShift.value = hueShift;
+      program.uniforms.uIntensity.value = intensity;
+      program.uniforms.uOpacity.value = opacity;
+      program.uniforms.uScale.value = scale;
+      program.uniforms.uSaturation.value = saturation;
 
-      if (current.glass) {
+      if (glass) {
         renderer.render({ scene: mesh, target: renderTarget });
         glassProgram.uniforms.uScene.value = renderTarget.texture;
-        glassProgram.uniforms.uRefraction.value = current.refraction;
-        glassProgram.uniforms.uDispersion.value = current.dispersion;
-        glassProgram.uniforms.uRadius.value = 0.46 * current.glassSize;
+        glassProgram.uniforms.uRefraction.value = refraction;
+        glassProgram.uniforms.uDispersion.value = dispersion;
+        glassProgram.uniforms.uRadius.value = 0.46 * glassSize;
         renderer.render({ scene: glassMesh });
       } else {
         renderer.render({ scene: mesh });

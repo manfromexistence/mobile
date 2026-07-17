@@ -5,7 +5,12 @@
 import { useReducedMotion } from "motion/react"
 import { useTheme } from "next-themes"
 // import p5 from "p5" // moved to dynamic import inside useEffect
+import type p5Default from "p5"
 import { useEffect, useRef } from "react"
+
+type p5Type = p5Default & {
+  [key: string]: unknown
+}
 
 import { cn } from "@/lib/utils"
 
@@ -62,13 +67,13 @@ export function Daikanoid({
       paddleImage: null,
     }
 
-    let font: p5.Font
-    let sketch: p5
+    let font: any
+    let sketch: p5Type
     let paddle: Paddle
     let ball: Ball
     let ui: UI
 
-    function game(p: p5) {
+    function game(p: any) {
       sketch = p
 
       p.preload = () => {

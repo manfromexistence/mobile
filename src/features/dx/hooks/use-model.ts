@@ -84,14 +84,15 @@ export function useModelInference() {
         // Detect if running inside Tauri (iOS/Android/Desktop)
         const isTauri =
           typeof window !== "undefined" &&
-          window.__TAURI_INTERNALS__ !== undefined
+          (window as unknown as { __TAURI_INTERNALS__?: unknown }).__TAURI_INTERNALS__ !==
+          undefined
 
         if (isTauri) {
           updateProgress(10, "Initializing dx-flow via Tauri...")
           // We don't need to load a full browser instance, just pass a dummy one
           instance = { isTauri: true }
           engineType = "tauri"
-        } else if (navigator.gpu) {
+        } else if ((navigator as Navigator & { gpu?: unknown }).gpu) {
           // Check for WebGPU support
           try {
             updateProgress(5, "Initializing WebGPU...")
@@ -118,6 +119,8 @@ export function useModelInference() {
           const { Wllama } = await import("@wllama/wllama")
 
           const CONFIG_PATHS = {
+            default:
+              "https://unpkg.com/@wllama/wllama/esm/wasm/multi-thread/wllama.wasm",
             "single-thread/wllama.js":
               "https://unpkg.com/@wllama/wllama/esm/wasm/single-thread/wllama.js",
             "single-thread/wllama.wasm":

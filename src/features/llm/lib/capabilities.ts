@@ -57,7 +57,7 @@ export async function detectCapabilities(): Promise<LLMEngineCapabilities> {
 }
 
 function estimateVRAM(adapter: GPUAdapter): number {
-  const info = adapter.info as Record<string, unknown>
+  const info = adapter.info as unknown as Record<string, unknown>
   const name = (info.description as string) ?? (info.device as string) ?? ""
 
   const limits = adapter.limits

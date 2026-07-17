@@ -164,7 +164,6 @@ export function ExperiencePositionItem({
       defaultOpen={position.isExpanded}
       onOpenChange={handleOpenChange}
       disabled={!position.description}
-      asChild
     >
       <div className="relative last:before:absolute last:before:h-full last:before:w-4 last:before:bg-background">
         <CollapsibleTrigger

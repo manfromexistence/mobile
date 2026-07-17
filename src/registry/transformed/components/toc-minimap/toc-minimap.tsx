@@ -40,13 +40,11 @@ export function TOCMinimap({ items, className }: TOCMinimapProps) {
   return (
     <div className={cn("ml-auto w-18", className)}>
       <HoverCard
-        openDelay={0}
-        closeDelay={0}
         onOpenChange={(open) => {
           if (open) play()
         }}
       >
-        <HoverCardTrigger asChild>
+        <HoverCardTrigger asChild delay={0} closeDelay={0}>
           <div className="flex max-h-[50dvh] flex-col gap-3 overflow-hidden py-3 pl-6 opacity-100 transition-opacity duration-200 data-popup-open:opacity-0">
             {items.map((item) => (
               <div

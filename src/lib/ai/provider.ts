@@ -53,7 +53,7 @@ export async function generateChatCompletion(
 
     let _buffer = ""
 
-    const streamer = new TextStreamer(generator.tokenizer, {
+    const streamer = new TextStreamer((generator as any).tokenizer, {
       skip_prompt: true,
       skip_special_tokens: true,
       callback_function: (text: string) => {
@@ -62,7 +62,7 @@ export async function generateChatCompletion(
       },
     })
 
-    await generator(prompt, {
+    await (generator as any)(prompt, {
       max_new_tokens: config.maxTokens,
       temperature: config.temperature,
       top_p: config.topP,

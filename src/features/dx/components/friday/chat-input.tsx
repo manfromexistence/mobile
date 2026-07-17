@@ -41,6 +41,20 @@ import { ScrollArea } from "@/components/friday-ui/scroll-area";
 import { Badge } from "@/components/friday-ui/badge";
 import { Avatar, AvatarFallback } from "@/components/friday-ui/avatar";
 import { Input } from "@/components/friday-ui/input";
+import {
+  DeepseekLogo,
+  NvidiaLogo,
+  ProviderMonogram,
+} from "@/features/dx/components/chat/provider-logos";
+
+const ZEN_PROVIDER_LOGOS: Record<string, React.ComponentType<{ className?: string; [key: string]: any }>> = {
+  DeepSeek: DeepseekLogo,
+  NVIDIA: NvidiaLogo,
+  Stealth: (p) => <ProviderMonogram name="S" {...p} />,
+  Xiaomi: (p) => <ProviderMonogram name="X" {...p} />,
+  "Tencent \u00B7 Hy": (p) => <ProviderMonogram name="T" {...p} />,
+  OpenCode: (p) => <ProviderMonogram name="OC" {...p} />,
+};
 
 type ChatInputProps = {
   onSend: (text: string, attachments: Attachment[]) => void;
@@ -955,14 +969,31 @@ function ModelSlot({
                         "ring-2 ring-chart-2 ring-offset-1 ring-offset-surface",
                     )}
                   >
-                    <AvatarFallback
-                      className={cn(
-                        "text-[11px] font-bold",
-                        isActive ? "text-chart-2" : "text-muted-foreground",
-                      )}
-                    >
-                      {p.provider.charAt(0).toUpperCase()}
-                    </AvatarFallback>
+                    {(() => {
+                      const Logo = ZEN_PROVIDER_LOGOS[p.provider];
+                      if (Logo) {
+                        return (
+                          <AvatarFallback
+                            className={cn(
+                              "flex items-center justify-center bg-transparent",
+                              isActive ? "text-chart-2" : "text-muted-foreground",
+                            )}
+                          >
+                            <Logo className="h-4 w-4" />
+                          </AvatarFallback>
+                        );
+                      }
+                      return (
+                        <AvatarFallback
+                          className={cn(
+                            "text-[11px] font-bold",
+                            isActive ? "text-chart-2" : "text-muted-foreground",
+                          )}
+                        >
+                          {p.provider.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      );
+                    })()}
                   </Avatar>
                   <span
                     className={cn(

@@ -54,7 +54,7 @@ import type { Screen } from "@/features/dx/components/screens/types"
 import { useChat } from "@/features/dx/hooks/use-chat"
 import { useGeminiLive } from "@/features/dx/hooks/use-gemini-live"
 import Strands from "@/features/dx/components/chat/strands"
-import type { Message } from "@/features/dx/types"
+import type { Message, ModelId } from "@/features/dx/types"
 import { generateImage, generateVideo } from "@/lib/muapi"
 import { cn } from "@/lib/utils"
 import { useLocalStorage } from "./chat-hooks"
@@ -167,7 +167,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
     isGenerating,
     selectedModel,
     setSelectedModel,
-    _conversations,
+    conversations,
     currentConversationId,
     sendMessage,
     stopGeneration,
@@ -178,8 +178,8 @@ export function Chat({ swapped }: { swapped?: boolean }) {
     updateConversation,
     modelReady,
     modelLoading,
-    _modelProgress,
-    _modelError,
+    modelProgress,
+    modelError,
     isMock,
   } = useChat()
 
@@ -410,7 +410,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
         className="relative z-10 flex h-full flex-1 flex-col overflow-hidden bg-background"
         style={
           swapped
-            ? {
+            ? ({
               "--color-background": "var(--color-sidebar)",
               "--color-foreground": "var(--color-sidebar-foreground)",
               "--color-border": "var(--color-sidebar-border)",
@@ -429,7 +429,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
                 "var(--color-sidebar-primary-foreground)",
               "--color-ring": "var(--color-sidebar-ring)",
               "--color-input": "var(--color-sidebar-accent)",
-            }
+            } as React.CSSProperties)
             : undefined
         }
       >
@@ -666,6 +666,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
             <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] pointer-events-auto min-w-full mx-auto">
               <div className="relative flex items-center justify-center mb-10 w-[300px] h-[300px] border rounded-full overflow-hidden mx-auto bg-background/90 hover:bg-background/80">
                 <Strands
+                  style={{}}
                   colors={["#f76500", "#5e00ff", "#00daff"]}
                   count={10}
                   speed={0.5}
@@ -697,7 +698,7 @@ export function Chat({ swapped }: { swapped?: boolean }) {
                 isVoiceMode={isVoiceMode}
                 onVoiceModeChange={setIsVoiceMode}
                 selectedModelId={selectedModel}
-                onModelChange={setSelectedModel}
+                onModelChange={(model) => setSelectedModel(model as ModelId)}
                 isLiveConnected={isLiveConnected}
                 isLiveSpeaking={isLiveSpeaking}
                 onLiveConnect={connectLive}

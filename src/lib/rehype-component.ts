@@ -1,6 +1,5 @@
 import fs from "node:fs"
 import path from "node:path"
-import type { Plugin } from "unified"
 import { u } from "unist-builder"
 import { visit } from "unist-util-visit"
 import { Index } from "@/registry/__index__"
@@ -17,12 +16,12 @@ type NodeToProcess = {
   srcPath?: string
 }
 
-export function rehypeComponent(): Plugin {
+export function rehypeComponent() {
   // Thanks @shadcn/ui
-  return (async (tree: UnistTree) => {
+  return async (tree: any) => {
     const nodesToProcess: NodeToProcess[] = []
 
-    visit(tree, (node: UnistNode) => {
+    visit(tree, (node: any) => {
       // src prop overrides both name and fileName.
       const { value: srcPath } =
         (getNodeAttributeByName(node, "src") as {
@@ -184,7 +183,7 @@ export function rehypeComponent(): Plugin {
         }
       })
     )
-  }) as Plugin
+  }
 }
 
 function getNodeAttributeByName(node: UnistNode, name: string) {

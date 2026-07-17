@@ -45,11 +45,13 @@ export class WllamaEngine implements LLMEngine {
     }
 
     const result = await this.wllama.createChatCompletion(
-      params as Parameters<typeof this.wllama.createChatCompletion>[0]
+      params as unknown as Parameters<typeof this.wllama.createChatCompletion>[0]
     )
 
     if (!options.stream) {
-      const response = result as { choices: { message: { content: string } }[] }
+      const response = result as unknown as {
+        choices: { message: { content: string } }[]
+      }
       return { message: response.choices?.[0]?.message?.content ?? "" }
     }
   }

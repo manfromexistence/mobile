@@ -1,11 +1,10 @@
-import type { Plugin } from "unified"
 import { visit } from "unist-util-visit"
 import { addQueryParams } from "@/lib/utils/url"
 import type { UnistNode, UnistTree } from "@/types/unist"
 
-export function rehypeAddQueryParams(params: Record<string, string>): Plugin {
-  return ((tree: UnistTree) => {
-    visit(tree, (node: UnistNode) => {
+export function rehypeAddQueryParams(params: Record<string, string>) {
+  return (tree: any) => {
+    visit(tree, (node: any) => {
       if (
         node.type !== "element" ||
         node?.tagName !== "a" ||
@@ -28,5 +27,5 @@ export function rehypeAddQueryParams(params: Record<string, string>): Plugin {
 
       node.properties.href = addQueryParams(href, params)
     })
-  }) as Plugin
+  }
 }
