@@ -16,7 +16,7 @@ import {
   AlertCircleIcon,
   ArrowUpIcon,
   ChevronDownIcon,
-  HashIcon,
+
   MicIcon,
   PlusIcon,
   StopIcon,
@@ -29,7 +29,6 @@ import {
   MentionMenu,
   PlusMenu,
   SlashMenu,
-  SpecialCharMenu,
   type SlashCommand,
 } from "@/features/dx/components/friday/input-popovers";
 import {
@@ -80,7 +79,6 @@ export function ChatInput({
   const [access, setAccess] = useState<"full" | "limited" | "read">("full");
   const [plusOpen, setPlusOpen] = useState(false);
   const [slashOpen, setSlashOpen] = useState(false);
-  const [specialOpen, setSpecialOpen] = useState(false);
   const [mentionOpen, setMentionOpen] = useState(false);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [recording, setRecording] = useState(false);
@@ -115,7 +113,6 @@ export function ChatInput({
         setAccessOpen(false);
         setPlusOpen(false);
         setSlashOpen(false);
-        setSpecialOpen(false);
         setMentionOpen(false);
       }
     };
@@ -169,7 +166,7 @@ export function ChatInput({
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey && !slashOpen && !mentionOpen && !specialOpen) {
+    if (e.key === "Enter" && !e.shiftKey && !slashOpen && !mentionOpen) {
       e.preventDefault();
       submit();
     }
@@ -380,16 +377,6 @@ export function ChatInput({
             onClose={() => setMentionOpen(false)}
           />
         )}
-        {specialOpen && (
-          <SpecialCharMenu
-            open={specialOpen}
-            onSelect={(c) => {
-              insertAtCursor(c);
-              setSpecialOpen(false);
-            }}
-            onClose={() => setSpecialOpen(false)}
-          />
-        )}
         {plusOpen && (
           <PlusMenu
             open={plusOpen}
@@ -506,7 +493,6 @@ export function ChatInput({
                 setPlusOpen((p) => !p);
                 setSlashOpen(false);
                 setMentionOpen(false);
-                setSpecialOpen(false);
               }}
               className={cn(
                 "grid h-7 w-7 place-items-center rounded-md transition-colors",
@@ -581,27 +567,6 @@ export function ChatInput({
                 )}
               </AnimatePresence>
             </div>
-
-            <motion.button
-              type="button"
-              onClick={() => {
-                setSpecialOpen((p) => !p);
-                setSlashOpen(false);
-                setMentionOpen(false);
-              }}
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              className={cn(
-                "hidden sm:grid h-7 w-7 place-items-center rounded-md text-muted-foreground transition-colors",
-                specialOpen
-                  ? "bg-foreground text-background"
-                  : "hover:bg-surface-2 hover:text-foreground",
-              )}
-              aria-label="Special characters"
-              title="Insert special characters"
-            >
-              <HashIcon className="h-4 w-4" />
-            </motion.button>
           </div>
 
           <div className="flex-1" />
@@ -791,6 +756,7 @@ function ModelSlot({
 }) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<"all" | "free">("all");
+  const [listScrollTop, setListScrollTop] = useState(0);
 
   const filtered = useMemo(
     () =>
@@ -804,6 +770,15 @@ function ModelSlot({
       }),
     [models, search, filter],
   );
+
+  const uniqueProviders = useMemo(() => {
+    const seen = new Set<string>();
+    return models.filter((m) => {
+      if (seen.has(m.provider)) return false;
+      seen.add(m.provider);
+      return true;
+    });
+  }, [models]);
 
   const ROWS = filtered.length;
   const COLS = tierLabels.length;
@@ -913,7 +888,6 @@ function ModelSlot({
 
   const selected = models[modelState.row] ?? models[0];
   const selectedTier = selected.tiers[tierLabels[modelState.col] as ModelTier] ?? selected.tiers.low;
-  const providerInitial = selected.provider.charAt(0).toUpperCase();
 
   return (
     <div
@@ -956,28 +930,53 @@ function ModelSlot({
         </Badge>
       </div>
 
-      <div className="flex items-center gap-2.5 mb-2 pb-2 border-b border-border/60">
-        <Avatar size="md">
-          <AvatarFallback className="text-[11px] font-bold text-chart-2">
-            {providerInitial}
-          </AvatarFallback>
-        </Avatar>
-        <div className="min-w-0 flex-1">
-          <div className="text-[12.5px] font-semibold text-foreground truncate">
-            {selected.label}
+      <div className="mb-2 pb-2 border-b border-border/60">
+        <ScrollArea orientation="horizontal" className="w-full -mx-1 px-1">
+          <div className="flex gap-1.5 pb-1 w-max">
+            {uniqueProviders.map((p) => {
+              const isActive = selected.provider === p.provider;
+              return (
+                <button
+                  key={p.provider}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const idx = models.findIndex((m) => m.id === p.id);
+                    if (idx >= 0) onModelChange({ ...modelState, row: idx });
+                    playClickSound();
+                  }}
+                  className="shrink-0 snap-center flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg transition-colors hover:bg-surface-2"
+                >
+                  <Avatar
+                    size="md"
+                    className={cn(
+                      "transition-all",
+                      isActive &&
+                        "ring-2 ring-chart-2 ring-offset-1 ring-offset-surface",
+                    )}
+                  >
+                    <AvatarFallback
+                      className={cn(
+                        "text-[11px] font-bold",
+                        isActive ? "text-chart-2" : "text-muted-foreground",
+                      )}
+                    >
+                      {p.provider.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span
+                    className={cn(
+                      "text-[9px] font-medium truncate max-w-[48px]",
+                      isActive ? "text-chart-2" : "text-muted-foreground",
+                    )}
+                  >
+                    {p.provider}
+                  </span>
+                </button>
+              );
+            })}
           </div>
-          <div className="text-[10.5px] text-muted-foreground truncate">
-            {selected.provider}
-          </div>
-        </div>
-        <div className="text-right shrink-0">
-          <div className="text-[10px] font-semibold text-foreground uppercase tracking-wider">
-            {TIER_LABELS_LIST[modelState.col] ?? "Low"}
-          </div>
-          <div className="text-[10px] text-muted-foreground">
-            ${selectedTier.pricePer1M.toFixed(2)}/1M
-          </div>
-        </div>
+        </ScrollArea>
       </div>
 
       <div className="flex gap-3">
