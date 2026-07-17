@@ -1,4 +1,4 @@
-export type ScreenType = "browser" | "terminal" | "code" | "welcome" | "custom"
+export type ScreenType = "browser" | "terminal" | "code" | "welcome" | "custom" | "friday"
 
 export interface Screen {
   id: string

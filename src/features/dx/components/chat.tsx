@@ -123,8 +123,9 @@ export function Chat({ swapped }: { swapped?: boolean }) {
   const [googleApiKey] = useLocalStorage("google_api_key", "")
   const [_openaiApiKey] = useLocalStorage("openai_api_key", "")
 
-  const [activeScreenId, setActiveScreenId] = React.useState<string>("welcome")
+  const [activeScreenId, setActiveScreenId] = React.useState<string>("friday")
   const [screens, setScreens] = React.useState<Screen[]>([
+    { id: "friday", type: "friday", title: "Friday", width: 0, height: 0 },
     { id: "welcome", type: "welcome", title: "Welcome", width: 0, height: 0 },
     {
       id: "terminal",

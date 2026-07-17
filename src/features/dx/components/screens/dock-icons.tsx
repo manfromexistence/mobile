@@ -79,6 +79,7 @@ const TYPE_ICON_MAP: Record<string, LucideIcon> = {
   terminal: Terminal,
   code: Code,
   browser: Globe,
+  friday: MessageSquare,
 }
 
 /** Icon component for a screen (fixed type or custom dockIcon). */

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react"
 import { BrowserScreen } from "./browser-screen"
 import { CodeScreen } from "./code-screen"
 import { CustomScreen } from "./custom-screen"
+import { FridayScreen } from "./friday-screen"
 import { TerminalScreen } from "./terminal-screen"
 import type { Screen } from "./types"
 import { WelcomeScreen } from "./welcome-screen"
@@ -210,6 +211,8 @@ export function ScreenCarousel({
         return <BrowserScreen />
       case "welcome":
         return children || <WelcomeScreen sidebarExpanded={sidebarExpanded} />
+      case "friday":
+        return <FridayScreen />
       case "custom":
         return <CustomScreen title={screen.title} dockIcon={screen.dockIcon} />
       default:
