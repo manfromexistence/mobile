@@ -21,32 +21,18 @@ export const META_THEME_COLORS = {
   dark: "#09090b",
 };
 
-export const MAIN_NAV: NavItem<Route>[] = [
-  {
-    title: "Components",
-    href: "/components",
-  },
-  {
-    title: "Blocks",
-    href: "/blocks",
-  },
-  {
-    title: "Blog",
-    href: "/blog",
-  },
-  {
-    title: "Sponsors",
-    href: "/sponsors",
-  },
-];
-
-export const MOBILE_NAV: NavItem<Route>[] = [
-  {
-    title: "Home",
-    href: "/",
-  },
-  ...MAIN_NAV,
-];
+// Commented out: removed with content pages
+// export const MAIN_NAV: NavItem<Route>[] = [
+//   { title: "Components", href: "/components" },
+//   { title: "Blocks", href: "/blocks" },
+//   { title: "Blog", href: "/blog" },
+//   { title: "Sponsors", href: "/sponsors" },
+// ];
+//
+// export const MOBILE_NAV: NavItem<Route>[] = [
+//   { title: "Home", href: "/" },
+//   ...MAIN_NAV,
+// ];
 
 export const X_HANDLE = SOCIAL.x.handle;
 export const GITHUB_USERNAME = SOCIAL.github.handle;

@@ -1,8 +1,7 @@
 "use client";
 
 import { useTiks } from "@rexa-developer/tiks/react";
-import { Download, SquareDashed, Type } from "lucide-react";
-import Link from "next/link";
+import { Download, Type } from "lucide-react";
 import { toast } from "sonner";
 import {
   ContextMenu,
@@ -48,12 +47,14 @@ export function BrandContextMenu({ children }: { children: React.ReactNode }) {
 
         <ContextMenuSeparator />
 
+        {/* Commented out: blog pages removed
         <ContextMenuItem asChild>
           <Link href="/blog/chanhdai-brand">
             <SquareDashed />
             Brand Guidelines
           </Link>
         </ContextMenuItem>
+        */}
 
         <ContextMenuItem asChild>
           <a href="https://assets.chanhdai.com/chanhdai-brand.zip" download>
