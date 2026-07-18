@@ -3,7 +3,7 @@ import {
   MarqueeContent,
   MarqueeFade,
   MarqueeItem,
-} from "@/components/vendor/kibo-ui/marquee"
+} from "@/components/vendor/kibo-ui/marquee";
 import {
   Testimonial,
   TestimonialAuthor,
@@ -13,28 +13,28 @@ import {
   TestimonialAvatarImg,
   TestimonialAvatarRing,
   TestimonialQuote,
-} from "@/registry/components/testimonial"
-import { TestimonialSpotlight } from "@/registry/components/testimonial-spotlight"
+} from "@/registry/components/testimonial";
+import { TestimonialSpotlight } from "@/registry/components/testimonial-spotlight";
 
 export type TestimonialType = {
   /** URL to the person's profile picture or avatar image */
-  authorAvatar: string
+  authorAvatar: string;
   /** Full display name of the person giving the testimonial */
-  authorName: string
+  authorName: string;
   /** Short tagline, title, or description of the person */
-  authorTagline: string
+  authorTagline: string;
   /** Link to the person's profile, website, or social media page */
-  url: string
+  url: string;
   /** The testimonial text content or recommendation message */
-  quote: string
-}
+  quote: string;
+};
 
 export function TestimonialList({
   direction,
   data,
 }: {
-  direction?: "right" | "left"
-  data: TestimonialType[]
+  direction?: "right" | "left";
+  data: TestimonialType[];
 }) {
   return (
     <Marquee>
@@ -44,12 +44,7 @@ export function TestimonialList({
       <MarqueeContent direction={direction}>
         {data.map((item) => (
           <MarqueeItem key={item.url} className="mx-1 h-full w-xs">
-            <a
-              className="block h-full"
-              href={item.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a className="block h-full" href={item.url} target="_blank" rel="noopener noreferrer">
               <TestimonialSpotlight className="h-full">
                 <TestimonialItem {...item} />
               </TestimonialSpotlight>
@@ -58,15 +53,10 @@ export function TestimonialList({
         ))}
       </MarqueeContent>
     </Marquee>
-  )
+  );
 }
 
-function TestimonialItem({
-  authorAvatar,
-  authorName,
-  authorTagline,
-  quote,
-}: TestimonialType) {
+function TestimonialItem({ authorAvatar, authorName, authorTagline, quote }: TestimonialType) {
   return (
     <Testimonial>
       <TestimonialQuote className="min-h-14">
@@ -83,5 +73,5 @@ function TestimonialItem({
         <TestimonialAuthorTagline>{authorTagline}</TestimonialAuthorTagline>
       </TestimonialAuthor>
     </Testimonial>
-  )
+  );
 }

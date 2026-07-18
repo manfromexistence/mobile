@@ -15,7 +15,7 @@ test("buildSlackPayload — request.failed produces Block Kit with model in titl
   assert.ok(
     sectionText.toLowerCase().includes("request failed") ||
       payload.text.toLowerCase().includes("request failed"),
-    "should include event label"
+    "should include event label",
   );
 });
 
@@ -26,7 +26,7 @@ test("buildSlackPayload — test.ping produces a ping/test message", () => {
     combined.toLowerCase().includes("ping") ||
       combined.toLowerCase().includes("test") ||
       combined.toLowerCase().includes("🏓"),
-    "should reference test/ping"
+    "should reference test/ping",
   );
 });
 
@@ -38,7 +38,7 @@ test("buildSlackPayload — provider.error includes provider context", () => {
       combined.includes("provider") ||
       combined.includes("error") ||
       combined.includes("⚠️"),
-    "should reference provider/error"
+    "should reference provider/error",
   );
 });
 
@@ -56,7 +56,7 @@ test("buildSlackPayload — all WEBHOOK_EVENTS produce valid payloads with text 
     const payload = buildSlackPayload(event, {});
     assert.ok(
       typeof payload.text === "string" && payload.text.length > 0,
-      `event ${event} must produce non-empty text`
+      `event ${event} must produce non-empty text`,
     );
   }
 });

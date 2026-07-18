@@ -1,10 +1,7 @@
 {
   "name": "selection-toolbar",
   "type": "registry:ui",
-  "dependencies": [
-    "@floating-ui/react-dom",
-    "radix-ui"
-  ],
+  "dependencies": ["@floating-ui/react-dom", "radix-ui"],
   "registryDependencies": [
     "button",
     "@diceui/use-as-ref",

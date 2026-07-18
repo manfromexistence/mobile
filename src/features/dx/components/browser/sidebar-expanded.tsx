@@ -1,10 +1,6 @@
-"use client"
+"use client";
 
-import {
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable"
+import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import {
   Archive,
   ChevronLeft,
@@ -23,109 +19,100 @@ import {
   Snowflake,
   Volume2,
   X,
-} from "lucide-react"
-import { AnimatePresence, motion } from "motion/react"
-import { Button } from "@/components/ui/button"
+} from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { Button } from "@/components/ui/button";
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu"
+} from "@/components/ui/context-menu";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Youtube } from "@/components/ui/svgs/youtube"
-import { cn } from "@/lib/utils"
-import { ArchivedChatsList } from "./archived-chats"
-import { DraggableTab } from "./draggable-tab"
-import { DraggableTabInFolder } from "./draggable-tab-in-folder"
-import { DroppableFolder } from "./droppable-folder"
-import { LogoContainer } from "./logo-container"
-import { SpaceSection } from "./space-section"
-import type { DropPosition, SVGLogo, Tab, TabFolder, Workspace } from "./types"
-import { WorkspaceIcon } from "./workspace-icon"
+} from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Youtube } from "@/components/ui/svgs/youtube";
+import { cn } from "@/lib/utils";
+import { ArchivedChatsList } from "./archived-chats";
+import { DraggableTab } from "./draggable-tab";
+import { DraggableTabInFolder } from "./draggable-tab-in-folder";
+import { DroppableFolder } from "./droppable-folder";
+import { LogoContainer } from "./logo-container";
+import { SpaceSection } from "./space-section";
+import type { DropPosition, SVGLogo, Tab, TabFolder, Workspace } from "./types";
+import { WorkspaceIcon } from "./workspace-icon";
 
 interface SidebarExpandedProps {
-  workspaces: Workspace[]
-  activeWorkspace: string
-  visibleWorkspaces: Workspace[]
-  canScrollLeft: boolean
-  canScrollRight: boolean
-  archivesOpen: boolean
-  plusMenuOpen: boolean
-  spaceCollapsed: boolean
-  isSpaceAreaHovered: boolean
-  dropdownOpen: boolean
-  mediaPlaying: boolean
-  mediaProgress: number
-  isMounted: boolean
-  logos: SVGLogo[]
-  logoContainerHovered: boolean
-  activeWorkspaceFolders: TabFolder[]
-  activeWorkspaceTabs: Tab[]
-  activeTab: string
-  overId: string | null
-  dropPosition: DropPosition
-  folders: TabFolder[]
-  onSetActiveWorkspace: (id: string) => void
-  onSetarchivesOpen: (open: boolean) => void
-  onSetPlusMenuOpen: (open: boolean) => void
-  onSetSpaceCollapsed: (collapsed: boolean) => void
-  onSetSpaceAreaHovered: (hovered: boolean) => void
-  onSetDropdownOpen: (open: boolean) => void
-  onSetMediaPlaying: (playing: boolean) => void
-  onStartScrolling: (direction: "left" | "right") => void
-  onStopScrolling: () => void
-  onCreateWorkspace: () => void
-  onOpenWorkspaceDialog: () => void
-  onCreateFolder: () => void
-  onAddNewTab: () => void
-  onClearAllTabs: () => void
-  onSetCommandOpen: (open: boolean) => void
-  onRemoveLogo: (logoId: number) => void
-  onRenameLogo: (logoId: number, newTitle: string) => void
-  onRenameTab?: (tabId: string, newTitle: string) => void
-  onArchiveTab?: (tabId: string) => void
-  onSetActiveTab: (tabId: string) => void
-  onCloseTab: (tabId: string) => void
-  onToggleFolder: (folderId: string) => void
-  onDeleteFolder: (folderId: string) => void
-  onRenameFolder: (folderId: string, newName: string) => void
-  onUnloadAllTabs: (folderId: string) => void
-  onCreateSubfolder: (parentId: string) => void
-  onUnpackFolder: (folderId: string) => void
-  onRenameWorkspace: () => void
-  onEditWorkspaceIcon: () => void
-  onUnloadSpace: () => void
-  onDeleteSpace: () => void
-  onCollapseAllFolders?: () => void
-  onExpandAllFolders?: () => void
-  renderWorkspaceIcon: (
-    workspace: Workspace,
-    isActive: boolean
-  ) => React.ReactElement
-  COLORS: string[]
+  workspaces: Workspace[];
+  activeWorkspace: string;
+  visibleWorkspaces: Workspace[];
+  canScrollLeft: boolean;
+  canScrollRight: boolean;
+  archivesOpen: boolean;
+  plusMenuOpen: boolean;
+  spaceCollapsed: boolean;
+  isSpaceAreaHovered: boolean;
+  dropdownOpen: boolean;
+  mediaPlaying: boolean;
+  mediaProgress: number;
+  isMounted: boolean;
+  logos: SVGLogo[];
+  logoContainerHovered: boolean;
+  activeWorkspaceFolders: TabFolder[];
+  activeWorkspaceTabs: Tab[];
+  activeTab: string;
+  overId: string | null;
+  dropPosition: DropPosition;
+  folders: TabFolder[];
+  onSetActiveWorkspace: (id: string) => void;
+  onSetarchivesOpen: (open: boolean) => void;
+  onSetPlusMenuOpen: (open: boolean) => void;
+  onSetSpaceCollapsed: (collapsed: boolean) => void;
+  onSetSpaceAreaHovered: (hovered: boolean) => void;
+  onSetDropdownOpen: (open: boolean) => void;
+  onSetMediaPlaying: (playing: boolean) => void;
+  onStartScrolling: (direction: "left" | "right") => void;
+  onStopScrolling: () => void;
+  onCreateWorkspace: () => void;
+  onOpenWorkspaceDialog: () => void;
+  onCreateFolder: () => void;
+  onAddNewTab: () => void;
+  onClearAllTabs: () => void;
+  onSetCommandOpen: (open: boolean) => void;
+  onRemoveLogo: (logoId: number) => void;
+  onRenameLogo: (logoId: number, newTitle: string) => void;
+  onRenameTab?: (tabId: string, newTitle: string) => void;
+  onArchiveTab?: (tabId: string) => void;
+  onSetActiveTab: (tabId: string) => void;
+  onCloseTab: (tabId: string) => void;
+  onToggleFolder: (folderId: string) => void;
+  onDeleteFolder: (folderId: string) => void;
+  onRenameFolder: (folderId: string, newName: string) => void;
+  onUnloadAllTabs: (folderId: string) => void;
+  onCreateSubfolder: (parentId: string) => void;
+  onUnpackFolder: (folderId: string) => void;
+  onRenameWorkspace: () => void;
+  onEditWorkspaceIcon: () => void;
+  onUnloadSpace: () => void;
+  onDeleteSpace: () => void;
+  onCollapseAllFolders?: () => void;
+  onExpandAllFolders?: () => void;
+  renderWorkspaceIcon: (workspace: Workspace, isActive: boolean) => React.ReactElement;
+  COLORS: string[];
 }
 
 export function SidebarExpanded(props: SidebarExpandedProps) {
   const { setNodeRef: setNewTabButtonRef } = useSortable({
     id: "new-tab-button",
     data: { type: "new-tab-button" },
-  })
+  });
 
-  const currentWorkspace = props.workspaces.find(
-    (w) => w.id === props.activeWorkspace
-  )
+  const currentWorkspace = props.workspaces.find((w) => w.id === props.activeWorkspace);
 
   return (
     <motion.div
@@ -173,9 +160,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
           dropPosition={props.dropPosition}
           workspaces={props.workspaces}
           activeWorkspace={props.activeWorkspace}
-          onToggleCollapse={() =>
-            props.onSetSpaceCollapsed(!props.spaceCollapsed)
-          }
+          onToggleCollapse={() => props.onSetSpaceCollapsed(!props.spaceCollapsed)}
           onSetSpaceAreaHovered={props.onSetSpaceAreaHovered}
           onSetDropdownOpen={props.onSetDropdownOpen}
           onSetActiveWorkspace={props.onSetActiveWorkspace}
@@ -270,10 +255,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
           )}
         </AnimatePresence>
 
-        <div
-          ref={setNewTabButtonRef}
-          className="shrink-0 px-2 pt-3 pb-3 overflow-x-hidden"
-        >
+        <div ref={setNewTabButtonRef} className="shrink-0 px-2 pt-3 pb-3 overflow-x-hidden">
           <div className="border-border/50 relative border-t border-dashed">
             <button
               onClick={props.onClearAllTabs}
@@ -289,9 +271,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
               variant="ghost"
             >
               <Plus className="h-4 w-4 shrink-0" />
-              <span className="min-w-0 flex-1 truncate text-sm text-left">
-                New Chat
-              </span>
+              <span className="min-w-0 flex-1 truncate text-sm text-left">New Chat</span>
             </Button>
           </div>
         </div>
@@ -325,9 +305,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                 className="group/item relative flex h-9 w-full cursor-pointer items-center gap-2 rounded-md px-2 text-sm select-none text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground"
               >
                 <div className="bg-destructive h-4 w-4 shrink-0 rounded-sm" />
-                <span className="min-w-0 flex-1 truncate pr-6 text-xs">
-                  {tab.title}
-                </span>
+                <span className="min-w-0 flex-1 truncate pr-6 text-xs">{tab.title}</span>
               </div>
             ))
           )}
@@ -346,9 +324,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                 <p className="text-secondary-foreground truncate text-xs font-medium">
                   Every Level Of Intelligence Explained in 5 Minutes
                 </p>
-                <p className="text-muted-foreground truncate text-xs">
-                  Nick Explains
-                </p>
+                <p className="text-muted-foreground truncate text-xs">Nick Explains</p>
               </div>
               <button
                 onClick={() => props.onSetMediaPlaying(false)}
@@ -361,10 +337,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
             <div className="text-muted-foreground flex items-center gap-1 text-xs">
               <span>1:40</span>
               <div className="bg-muted relative h-1 flex-1 overflow-hidden rounded-full">
-                <div
-                  className="bg-primary h-full"
-                  style={{ width: `${props.mediaProgress}%` }}
-                />
+                <div className="bg-primary h-full" style={{ width: `${props.mediaProgress}%` }} />
               </div>
               <span>5:07</span>
             </div>
@@ -421,18 +394,15 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                   mass: 0.5,
                 }}
               >
-                <Popover
-                  open={props.archivesOpen}
-                  onOpenChange={props.onSetarchivesOpen}
-                >
+                <Popover open={props.archivesOpen} onOpenChange={props.onSetarchivesOpen}>
                   <PopoverTrigger asChild>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
                       onClick={(e) => {
-                        e.stopPropagation()
-                        props.onSetarchivesOpen(true)
+                        e.stopPropagation();
+                        props.onSetarchivesOpen(true);
                       }}
                     >
                       <Archive className="h-4 w-4" />
@@ -443,9 +413,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                     align="start"
                     className="border-border bg-card w-80 p-4"
                   >
-                    <ArchivedChatsList
-                      onClose={() => props.onSetarchivesOpen(false)}
-                    />
+                    <ArchivedChatsList onClose={() => props.onSetarchivesOpen(false)} />
                   </PopoverContent>
                 </Popover>
               </motion.div>
@@ -461,19 +429,16 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                 className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                 onClick={() => {
                   try {
-                    const raw = localStorage.getItem("dx-conversations")
+                    const raw = localStorage.getItem("dx-conversations");
                     if (raw) {
                       const convs = (JSON.parse(raw) as any[]).map((c: any) => ({
                         ...c,
                         archived: false,
-                      }))
-                      localStorage.setItem(
-                        "dx-conversations",
-                        JSON.stringify(convs)
-                      )
+                      }));
+                      localStorage.setItem("dx-conversations", JSON.stringify(convs));
                     }
                   } catch {}
-                  props.onSetarchivesOpen(false)
+                  props.onSetarchivesOpen(false);
                 }}
               >
                 Clear Archive
@@ -484,20 +449,16 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
           <div className="relative flex w-38 shrink-0 items-center justify-center overflow-hidden">
             <motion.button
               whileTap={props.canScrollLeft ? { scale: 0.9 } : {}}
-              onMouseDown={() =>
-                props.canScrollLeft && props.onStartScrolling("left")
-              }
+              onMouseDown={() => props.canScrollLeft && props.onStartScrolling("left")}
               onMouseUp={props.onStopScrolling}
               onMouseLeave={props.onStopScrolling}
-              onTouchStart={() =>
-                props.canScrollLeft && props.onStartScrolling("left")
-              }
+              onTouchStart={() => props.canScrollLeft && props.onStartScrolling("left")}
               onTouchEnd={props.onStopScrolling}
               className={cn(
                 "bg-background text-primary absolute left-0 z-10 flex h-6 w-6 items-center justify-center rounded-full border transition-all duration-200",
                 props.canScrollLeft
                   ? "text-muted-foreground hover:text-accent-foreground cursor-pointer"
-                  : "hidden!"
+                  : "hidden!",
               )}
               aria-label="Scroll workspaces left"
               aria-disabled={!props.canScrollLeft}
@@ -525,13 +486,10 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                             opacity: { duration: 0.2 },
                             scale: { duration: 0.2 },
                           }}
-                          onClick={() =>
-                            props.onSetActiveWorkspace(workspace.id)
-                          }
+                          onClick={() => props.onSetActiveWorkspace(workspace.id)}
                           className={cn(
                             "group flex h-4 w-4 shrink-0 items-center justify-center rounded-md",
-                            props.activeWorkspace === workspace.id &&
-                              "scale-110"
+                            props.activeWorkspace === workspace.id && "scale-110",
                           )}
                           title={workspace.name}
                           aria-label={`Switch to ${workspace.name} workspace`}
@@ -583,9 +541,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                           <div className="mr-2 h-4 w-4 flex items-center justify-center shrink-0">
                             ✓
                           </div>
-                          <span className="max-w-[75%] truncate">
-                            {workspace.name}
-                          </span>
+                          <span className="max-w-[75%] truncate">{workspace.name}</span>
                         </ContextMenuItem>
                         {props.workspaces
                           .filter((w) => w.id !== workspace.id)
@@ -598,9 +554,7 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                               <div className="mr-2 h-4 w-4 flex items-center justify-center shrink-0">
                                 <WorkspaceIcon workspace={w} isActive={false} />
                               </div>
-                              <span className="max-w-[75%] truncate">
-                                {w.name}
-                              </span>
+                              <span className="max-w-[75%] truncate">{w.name}</span>
                             </ContextMenuItem>
                           ))}
                         <div className="border-border my-1 border-t" />
@@ -629,20 +583,16 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
 
             <motion.button
               whileTap={props.canScrollRight ? { scale: 0.9 } : {}}
-              onMouseDown={() =>
-                props.canScrollRight && props.onStartScrolling("right")
-              }
+              onMouseDown={() => props.canScrollRight && props.onStartScrolling("right")}
               onMouseUp={props.onStopScrolling}
               onMouseLeave={props.onStopScrolling}
-              onTouchStart={() =>
-                props.canScrollRight && props.onStartScrolling("right")
-              }
+              onTouchStart={() => props.canScrollRight && props.onStartScrolling("right")}
               onTouchEnd={props.onStopScrolling}
               className={cn(
                 "bg-background text-primary absolute right-0 z-50 flex h-6 w-6 items-center justify-center rounded-full border transition-all duration-200",
                 props.canScrollRight
                   ? "text-muted-foreground hover:text-accent-foreground cursor-pointer"
-                  : "hidden!"
+                  : "hidden!",
               )}
               aria-label="Scroll workspaces right"
               aria-disabled={!props.canScrollRight}
@@ -670,17 +620,14 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                 size="icon"
                 className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-none border-r border-border/50"
                 onClick={(e) => {
-                  e.stopPropagation()
-                  props.onCreateWorkspace()
+                  e.stopPropagation();
+                  props.onCreateWorkspace();
                 }}
                 title="Create Space"
               >
                 <Snowflake className="h-4 w-4" />
               </Button>
-              <DropdownMenu
-                open={props.plusMenuOpen}
-                onOpenChange={props.onSetPlusMenuOpen}
-              >
+              <DropdownMenu open={props.plusMenuOpen} onOpenChange={props.onSetPlusMenuOpen}>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
@@ -699,8 +646,8 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                 >
                   <DropdownMenuItem
                     onClick={() => {
-                      props.onCreateFolder()
-                      props.onSetPlusMenuOpen(false)
+                      props.onCreateFolder();
+                      props.onSetPlusMenuOpen(false);
                     }}
                     className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                   >
@@ -716,8 +663,8 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                   <div className="border-border my-1 border-t" />
                   <DropdownMenuItem
                     onClick={() => {
-                      props.onOpenWorkspaceDialog()
-                      props.onSetPlusMenuOpen(false)
+                      props.onOpenWorkspaceDialog();
+                      props.onSetPlusMenuOpen(false);
                     }}
                     className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                   >
@@ -732,8 +679,8 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
                   <div className="border-border my-1 border-t" />
                   <DropdownMenuItem
                     onClick={() => {
-                      props.onAddNewTab()
-                      props.onSetPlusMenuOpen(false)
+                      props.onAddNewTab();
+                      props.onSetPlusMenuOpen(false);
                     }}
                     className="text-accent-foreground focus:bg-accent focus:text-accent-foreground text-left"
                   >
@@ -747,5 +694,5 @@ export function SidebarExpanded(props: SidebarExpandedProps) {
         </motion.div>
       </div>
     </motion.div>
-  )
+  );
 }

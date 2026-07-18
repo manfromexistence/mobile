@@ -81,7 +81,7 @@ test("A: an EYE-hidden synced model is preserved (listed-but-hidden) across re-i
   assert.equal(
     getModelIsHidden(PROVIDER, "B"),
     true,
-    "#3782: eye-hidden B is NOT re-enabled (stays hidden) after re-sync"
+    "#3782: eye-hidden B is NOT re-enabled (stays hidden) after re-sync",
   );
   assert.equal(getModelIsHidden(PROVIDER, "A"), false, "A stays visible");
   assert.equal(getModelIsHidden(PROVIDER, "C"), false, "C stays visible");

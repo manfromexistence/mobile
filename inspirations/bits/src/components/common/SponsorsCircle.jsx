@@ -1,89 +1,91 @@
-import { useState } from 'react';
-import { Box, Text } from '@chakra-ui/react';
-import SimpleMarquee from './SimpleMarquee';
-import '../../css/category.css';
+import { useState } from "react";
+import { Box, Text } from "@chakra-ui/react";
+import SimpleMarquee from "./SimpleMarquee";
+import "../../css/category.css";
 import {
   diamondSponsors,
   platinumSponsors,
   silverSponsors,
   hasDiamondSponsors,
   hasPlatinumSponsors,
-  hasSilverSponsors
-} from '../../constants/Sponsors';
-import { colors } from '../../constants/colors';
+  hasSilverSponsors,
+} from "../../constants/Sponsors";
+import { colors } from "../../constants/colors";
 
 const createTierStyle = (overrides = {}) => {
   const base = {
     container: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: '10px',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: "10px",
       border: `1px solid ${colors.bgElevated}`,
       background: `${colors.bgBody}66`,
-      overflow: 'hidden',
+      overflow: "hidden",
       flexShrink: 0,
-      cursor: 'pointer',
-      transition: 'all 0.25s ease',
-      ...overrides.container
+      cursor: "pointer",
+      transition: "all 0.25s ease",
+      ...overrides.container,
     },
     containerHover: {
       borderColor: colors.accent,
       background: `${colors.primary}1a`,
       boxShadow: `0 0 12px ${colors.primary}40`,
-      ...overrides.containerHover
+      ...overrides.containerHover,
     },
     image: {
-      display: 'block',
-      width: '100%',
-      height: '100%',
-      objectFit: 'contain',
-      padding: '8px',
-      transition: 'transform 0.25s ease',
-      ...overrides.image
+      display: "block",
+      width: "100%",
+      height: "100%",
+      objectFit: "contain",
+      padding: "8px",
+      transition: "transform 0.25s ease",
+      ...overrides.image,
     },
-    imageHover: { transform: 'scale(1.05)' }
+    imageHover: { transform: "scale(1.05)" },
   };
   return base;
 };
 
 const tierStyles = {
   diamond: createTierStyle({
-    container: { width: '100%', height: '60px', borderRadius: '12px', background: 'transparent' },
+    container: { width: "100%", height: "60px", borderRadius: "12px", background: "transparent" },
     containerHover: { boxShadow: `0 0 16px ${colors.primary}4d` },
-    image: { padding: '10px 16px' }
+    image: { padding: "10px 16px" },
   }),
   platinum: createTierStyle({
-    container: { width: '120px', height: '60px', marginRight: '12px', position: 'relative' }
+    container: { width: "120px", height: "60px", marginRight: "12px", position: "relative" },
   }),
   silver: createTierStyle({
-    container: { width: '92px', height: '52px', position: 'relative' },
-    image: { padding: '6px' }
-  })
+    container: { width: "92px", height: "52px", position: "relative" },
+    image: { padding: "6px" },
+  }),
 };
 
 const buildSponsorUrl = (url, tier) => {
   if (!url) return null;
   try {
     const sponsorUrl = new URL(url);
-    sponsorUrl.searchParams.set('utm_source', 'reactbits');
-    sponsorUrl.searchParams.set('utm_medium', 'sponsor');
-    sponsorUrl.searchParams.set('utm_campaign', tier);
-    sponsorUrl.searchParams.set('ref', 'reactbits');
+    sponsorUrl.searchParams.set("utm_source", "reactbits");
+    sponsorUrl.searchParams.set("utm_medium", "sponsor");
+    sponsorUrl.searchParams.set("utm_campaign", tier);
+    sponsorUrl.searchParams.set("ref", "reactbits");
     return sponsorUrl.toString();
   } catch {
-    const separator = url.includes('?') ? '&' : '?';
+    const separator = url.includes("?") ? "&" : "?";
     return `${url}${separator}utm_source=reactbits&utm_medium=sponsor&utm_campaign=${tier}&ref=reactbits`;
   }
 };
 
 const SponsorItem = ({ sponsor, tier, fullWidth = false }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const showTooltip = tier === 'platinum' || tier === 'silver';
+  const showTooltip = tier === "platinum" || tier === "silver";
   const styles = tierStyles[tier];
 
   let containerStyle =
-    fullWidth && tier === 'diamond' ? { ...styles.container, flex: 1, width: '100%' } : { ...styles.container };
+    fullWidth && tier === "diamond"
+      ? { ...styles.container, flex: 1, width: "100%" }
+      : { ...styles.container };
 
   if (isHovered) {
     containerStyle = { ...containerStyle, ...styles.containerHover };
@@ -92,23 +94,27 @@ const SponsorItem = ({ sponsor, tier, fullWidth = false }) => {
   const imageStyle = isHovered ? { ...styles.image, ...styles.imageHover } : styles.image;
 
   const wrapperProps = {
-    className: 'sponsor-item-wrapper',
+    className: "sponsor-item-wrapper",
     style: {
-      position: 'relative',
-      display: tier === 'diamond' ? 'flex' : 'inline-block',
-      height: tier === 'diamond' ? '100%' : 'auto'
+      position: "relative",
+      display: tier === "diamond" ? "flex" : "inline-block",
+      height: tier === "diamond" ? "100%" : "auto",
     },
-    ...(showTooltip && { 'data-tooltip': sponsor.name })
+    ...(showTooltip && { "data-tooltip": sponsor.name }),
   };
 
   const content = (
     <div {...wrapperProps}>
-      <div style={containerStyle} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+      <div
+        style={containerStyle}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         <img
           src={sponsor.imageUrl}
           alt={sponsor.name}
-          width={tier === 'diamond' ? 220 : tier === 'platinum' ? 150 : 70}
-          height={tier === 'diamond' ? 70 : tier === 'platinum' ? 70 : 32}
+          width={tier === "diamond" ? 220 : tier === "platinum" ? 150 : 70}
+          height={tier === "diamond" ? 70 : tier === "platinum" ? 70 : 32}
           style={imageStyle}
           loading="eager"
         />
@@ -118,12 +124,12 @@ const SponsorItem = ({ sponsor, tier, fullWidth = false }) => {
 
   if (sponsor.url) {
     const trackedUrl = buildSponsorUrl(sponsor.url, tier);
-    let linkStyle = { textDecoration: 'none', display: 'block' };
+    let linkStyle = { textDecoration: "none", display: "block" };
 
-    if (fullWidth && tier === 'diamond') {
-      linkStyle = { ...linkStyle, flex: 1, width: '100%', height: '100%' };
-    } else if (tier === 'diamond') {
-      linkStyle = { ...linkStyle, height: '100%' };
+    if (fullWidth && tier === "diamond") {
+      linkStyle = { ...linkStyle, flex: 1, width: "100%", height: "100%" };
+    } else if (tier === "diamond") {
+      linkStyle = { ...linkStyle, height: "100%" };
     }
 
     return (
@@ -149,20 +155,20 @@ const TierSection = ({ label, children, hasSponsors }) => {
 };
 
 const StaticSponsorsRow = ({ sponsors, tier }) => {
-  const isDiamond = tier === 'diamond';
+  const isDiamond = tier === "diamond";
 
   const rowStyle = {
-    display: 'flex',
-    flexDirection: isDiamond ? 'column' : 'row',
-    alignItems: isDiamond ? 'stretch' : 'center',
-    gap: '10px',
-    padding: '0 1.25em',
-    flexWrap: isDiamond ? 'nowrap' : 'wrap'
+    display: "flex",
+    flexDirection: isDiamond ? "column" : "row",
+    alignItems: isDiamond ? "stretch" : "center",
+    gap: "10px",
+    padding: "0 1.25em",
+    flexWrap: isDiamond ? "nowrap" : "wrap",
   };
 
   return (
     <div style={rowStyle}>
-      {sponsors.map(sponsor => (
+      {sponsors.map((sponsor) => (
         <SponsorItem key={sponsor.id} sponsor={sponsor} tier={tier} fullWidth={isDiamond} />
       ))}
     </div>
@@ -191,7 +197,7 @@ const SponsorsCircle = () => {
               className="overflow-hidden"
             >
               <Box className="flex" userSelect="none">
-                {diamondSponsors.map(sponsor => (
+                {diamondSponsors.map((sponsor) => (
                   <SponsorItem key={sponsor.id} sponsor={sponsor} tier="diamond" />
                 ))}
               </Box>
@@ -215,7 +221,7 @@ const SponsorsCircle = () => {
               className="overflow-hidden"
             >
               <Box className="flex" userSelect="none">
-                {platinumSponsors.map(sponsor => (
+                {platinumSponsors.map((sponsor) => (
                   <SponsorItem key={sponsor.id} sponsor={sponsor} tier="platinum" />
                 ))}
               </Box>
@@ -239,7 +245,7 @@ const SponsorsCircle = () => {
               className="overflow-hidden"
             >
               <Box className="flex" userSelect="none">
-                {silverSponsors.map(sponsor => (
+                {silverSponsors.map((sponsor) => (
                   <SponsorItem key={sponsor.id} sponsor={sponsor} tier="silver" />
                 ))}
               </Box>

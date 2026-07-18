@@ -3,11 +3,7 @@
   "name": "dialog",
   "title": "Dialog",
   "description": "Animated modal dialog with spring-based scale and opacity transitions. Built on Radix UI Dialog with overlay, header, footer, title, and description sub-components.",
-  "dependencies": [
-    "framer-motion",
-    "@radix-ui/react-dialog",
-    "lucide-react"
-  ],
+  "dependencies": ["framer-motion", "@radix-ui/react-dialog", "lucide-react"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

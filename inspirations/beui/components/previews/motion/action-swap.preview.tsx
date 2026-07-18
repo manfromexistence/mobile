@@ -43,7 +43,7 @@ export function ActionSwapPreview() {
 
   useEffect(() => {
     const id = window.setInterval(() => {
-      setVariant((currentVariant) => currentVariant === "blur" ? "roll" : "blur");
+      setVariant((currentVariant) => (currentVariant === "blur" ? "roll" : "blur"));
     }, 2600);
     return () => window.clearInterval(id);
   }, []);

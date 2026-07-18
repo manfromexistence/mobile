@@ -1,9 +1,7 @@
 {
   "name": "rating-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "rating"
-  ],
+  "registryDependencies": ["rating"],
   "files": [
     {
       "path": "examples/rating-demo.tsx",

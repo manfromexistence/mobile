@@ -1,22 +1,22 @@
-import { useMemo } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box, Flex } from '@chakra-ui/react';
+import { useMemo } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box, Flex } from "@chakra-ui/react";
 
-import Customize from '../../components/common/Preview/Customize';
-import CodeExample from '../../components/code/CodeExample';
+import Customize from "../../components/common/Preview/Customize";
+import CodeExample from "../../components/code/CodeExample";
 
-import BackgroundContent from '../../components/common/Preview/BackgroundContent';
-import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '../../components/code/Dependencies';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import OpenInStudioButton from '../../components/common/Preview/OpenInStudioButton';
+import BackgroundContent from "../../components/common/Preview/BackgroundContent";
+import PropTable from "../../components/common/Preview/PropTable";
+import Dependencies from "../../components/code/Dependencies";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import OpenInStudioButton from "../../components/common/Preview/OpenInStudioButton";
 
-import Galaxy from '../../content/Backgrounds/Galaxy/Galaxy';
-import { galaxy } from '../../constants/code/Backgrounds/galaxyCode';
+import Galaxy from "../../content/Backgrounds/Galaxy/Galaxy";
+import { galaxy } from "../../constants/code/Backgrounds/galaxyCode";
 
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
 const DEFAULT_PROPS = {
   density: 1,
@@ -30,7 +30,7 @@ const DEFAULT_PROPS = {
   starSpeed: 0.5,
   speed: 1.0,
   mouseRepulsion: true,
-  mouseInteraction: true
+  mouseInteraction: true,
 };
 
 const GalaxyDemo = () => {
@@ -47,113 +47,118 @@ const GalaxyDemo = () => {
     starSpeed,
     speed,
     mouseRepulsion,
-    mouseInteraction
+    mouseInteraction,
   } = props;
 
   const propData = useMemo(
     () => [
       {
-        name: 'focal',
-        type: '[number, number]',
-        default: '[0.5, 0.5]',
-        description: 'Sets the focal point of the galaxy effect as [x, y] coordinates from 0 to 1'
+        name: "focal",
+        type: "[number, number]",
+        default: "[0.5, 0.5]",
+        description: "Sets the focal point of the galaxy effect as [x, y] coordinates from 0 to 1",
       },
       {
-        name: 'rotation',
-        type: '[number, number]',
-        default: '[1.0, 0.0]',
-        description: 'Controls the rotation matrix of the galaxy as [x, y] rotation values'
+        name: "rotation",
+        type: "[number, number]",
+        default: "[1.0, 0.0]",
+        description: "Controls the rotation matrix of the galaxy as [x, y] rotation values",
       },
       {
-        name: 'starSpeed',
-        type: 'number',
-        default: '0.5',
-        description: 'Controls the speed of star movement and animation'
+        name: "starSpeed",
+        type: "number",
+        default: "0.5",
+        description: "Controls the speed of star movement and animation",
       },
       {
-        name: 'density',
-        type: 'number',
-        default: '1',
-        description: 'Controls the density of stars in the galaxy'
+        name: "density",
+        type: "number",
+        default: "1",
+        description: "Controls the density of stars in the galaxy",
       },
       {
-        name: 'hueShift',
-        type: 'number',
-        default: '140',
-        description: 'Shifts the hue of all stars by the specified degrees (0-360)'
+        name: "hueShift",
+        type: "number",
+        default: "140",
+        description: "Shifts the hue of all stars by the specified degrees (0-360)",
       },
       {
-        name: 'disableAnimation',
-        type: 'boolean',
-        default: 'false',
-        description: 'When true, stops all time-based animations'
+        name: "disableAnimation",
+        type: "boolean",
+        default: "false",
+        description: "When true, stops all time-based animations",
       },
       {
-        name: 'speed',
-        type: 'number',
-        default: '1.0',
-        description: 'Global speed multiplier for all animations'
+        name: "speed",
+        type: "number",
+        default: "1.0",
+        description: "Global speed multiplier for all animations",
       },
       {
-        name: 'mouseInteraction',
-        type: 'boolean',
-        default: 'true',
-        description: 'Enables or disables mouse interaction with the galaxy'
+        name: "mouseInteraction",
+        type: "boolean",
+        default: "true",
+        description: "Enables or disables mouse interaction with the galaxy",
       },
       {
-        name: 'glowIntensity',
-        type: 'number',
-        default: '0.3',
-        description: 'Controls the intensity of the star glow effect'
+        name: "glowIntensity",
+        type: "number",
+        default: "0.3",
+        description: "Controls the intensity of the star glow effect",
       },
       {
-        name: 'saturation',
-        type: 'number',
-        default: '0.0',
-        description: 'Controls color saturation of stars (0 = grayscale, 1 = full color)'
+        name: "saturation",
+        type: "number",
+        default: "0.0",
+        description: "Controls color saturation of stars (0 = grayscale, 1 = full color)",
       },
       {
-        name: 'mouseRepulsion',
-        type: 'boolean',
-        default: 'true',
-        description: 'When true, stars are repelled by the mouse cursor'
+        name: "mouseRepulsion",
+        type: "boolean",
+        default: "true",
+        description: "When true, stars are repelled by the mouse cursor",
       },
       {
-        name: 'twinkleIntensity',
-        type: 'number',
-        default: '0.3',
-        description: 'Controls how much stars twinkle (0 = no twinkle, 1 = maximum twinkle)'
+        name: "twinkleIntensity",
+        type: "number",
+        default: "0.3",
+        description: "Controls how much stars twinkle (0 = no twinkle, 1 = maximum twinkle)",
       },
       {
-        name: 'rotationSpeed',
-        type: 'number',
-        default: '0.1',
-        description: 'Speed of automatic galaxy rotation'
+        name: "rotationSpeed",
+        type: "number",
+        default: "0.1",
+        description: "Speed of automatic galaxy rotation",
       },
       {
-        name: 'repulsionStrength',
-        type: 'number',
-        default: '2',
-        description: 'Strength of mouse repulsion effect when mouseRepulsion is enabled'
+        name: "repulsionStrength",
+        type: "number",
+        default: "2",
+        description: "Strength of mouse repulsion effect when mouseRepulsion is enabled",
       },
       {
-        name: 'autoCenterRepulsion',
-        type: 'number',
-        default: '0',
-        description: 'Creates repulsion from center of canvas. Overrides mouse repulsion when > 0'
+        name: "autoCenterRepulsion",
+        type: "number",
+        default: "0",
+        description: "Creates repulsion from center of canvas. Overrides mouse repulsion when > 0",
       },
       {
-        name: 'transparent',
-        type: 'boolean',
-        default: 'true',
-        description: 'Makes the black background transparent, showing only stars'
-      }
+        name: "transparent",
+        type: "boolean",
+        default: "true",
+        description: "Makes the black background transparent, showing only stars",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box position="relative" className="demo-container" h={500} overflow="hidden" p={0}>
@@ -172,7 +177,10 @@ const GalaxyDemo = () => {
               mouseInteraction={mouseInteraction}
             />
 
-            <BackgroundContent headline="Components you shall have, young padawan." pillText="New Background" />
+            <BackgroundContent
+              headline="Components you shall have, young padawan."
+              pillText="New Background"
+            />
           </Box>
 
           <Flex justify="flex-end" mt={2} mb={-2}>
@@ -188,7 +196,7 @@ const GalaxyDemo = () => {
                 repulsionStrength,
                 starSpeed,
                 speed,
-                mouseRepulsion
+                mouseRepulsion,
               }}
               defaultProps={{
                 starSpeed: 0.5,
@@ -201,7 +209,7 @@ const GalaxyDemo = () => {
                 repulsionStrength: 2,
                 twinkleIntensity: 0.3,
                 rotationSpeed: 0.1,
-                transparent: true
+                transparent: true,
               }}
             />
           </Flex>
@@ -210,13 +218,13 @@ const GalaxyDemo = () => {
             <PreviewSwitch
               title="Mouse Interaction"
               isChecked={mouseInteraction}
-              onChange={val => updateProp('mouseInteraction', val)}
+              onChange={(val) => updateProp("mouseInteraction", val)}
             />
 
             <PreviewSwitch
               title="Mouse Repulsion"
               isChecked={mouseRepulsion}
-              onChange={val => updateProp('mouseRepulsion', val)}
+              onChange={(val) => updateProp("mouseRepulsion", val)}
             />
 
             <PreviewSlider
@@ -225,7 +233,7 @@ const GalaxyDemo = () => {
               max={3}
               step={0.1}
               value={density}
-              onChange={val => updateProp('density', val)}
+              onChange={(val) => updateProp("density", val)}
               width={200}
             />
 
@@ -235,7 +243,7 @@ const GalaxyDemo = () => {
               max={1}
               step={0.1}
               value={glowIntensity}
-              onChange={val => updateProp('glowIntensity', val)}
+              onChange={(val) => updateProp("glowIntensity", val)}
               width={200}
             />
 
@@ -245,7 +253,7 @@ const GalaxyDemo = () => {
               max={1}
               step={0.1}
               value={saturation}
-              onChange={val => updateProp('saturation', val)}
+              onChange={(val) => updateProp("saturation", val)}
               width={200}
             />
 
@@ -256,7 +264,7 @@ const GalaxyDemo = () => {
               step={10}
               value={hueShift}
               valueUnit="°"
-              onChange={val => updateProp('hueShift', val)}
+              onChange={(val) => updateProp("hueShift", val)}
               width={200}
             />
 
@@ -266,7 +274,7 @@ const GalaxyDemo = () => {
               max={1}
               step={0.1}
               value={twinkleIntensity}
-              onChange={val => updateProp('twinkleIntensity', val)}
+              onChange={(val) => updateProp("twinkleIntensity", val)}
               width={200}
             />
 
@@ -276,7 +284,7 @@ const GalaxyDemo = () => {
               max={0.5}
               step={0.05}
               value={rotationSpeed}
-              onChange={val => updateProp('rotationSpeed', val)}
+              onChange={(val) => updateProp("rotationSpeed", val)}
               width={200}
             />
 
@@ -286,7 +294,7 @@ const GalaxyDemo = () => {
               max={10}
               step={0.5}
               value={repulsionStrength}
-              onChange={val => updateProp('repulsionStrength', val)}
+              onChange={(val) => updateProp("repulsionStrength", val)}
               width={200}
             />
 
@@ -296,7 +304,7 @@ const GalaxyDemo = () => {
               max={20}
               step={1}
               value={autoCenterRepulsion}
-              onChange={val => updateProp('autoCenterRepulsion', val)}
+              onChange={(val) => updateProp("autoCenterRepulsion", val)}
               width={200}
             />
 
@@ -306,7 +314,7 @@ const GalaxyDemo = () => {
               max={2}
               step={0.1}
               value={starSpeed}
-              onChange={val => updateProp('starSpeed', val)}
+              onChange={(val) => updateProp("starSpeed", val)}
               width={200}
             />
 
@@ -316,13 +324,13 @@ const GalaxyDemo = () => {
               max={3}
               step={0.1}
               value={speed}
-              onChange={val => updateProp('speed', val)}
+              onChange={(val) => updateProp("speed", val)}
               width={200}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['ogl']} />
+          <Dependencies dependencyList={["ogl"]} />
         </PreviewTab>
 
         <CodeTab>

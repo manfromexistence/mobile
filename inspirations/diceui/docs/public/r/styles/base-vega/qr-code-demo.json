@@ -1,9 +1,7 @@
 {
   "name": "qr-code-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "qr-code"
-  ],
+  "registryDependencies": ["qr-code"],
   "files": [
     {
       "path": "examples/qr-code-demo.tsx",

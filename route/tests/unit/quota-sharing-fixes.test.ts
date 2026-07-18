@@ -63,7 +63,7 @@ test("computeBurnRateFromWindow: returns non-zero rate for non-zero consumption"
   assert.ok(result.tokensPerSecond > 0, `rate should be >0, got ${result.tokensPerSecond}`);
   assert.ok(
     result.timeToExhaustionMs !== null && result.timeToExhaustionMs > 0,
-    `timeToExhaustion should be >0, got ${result.timeToExhaustionMs}`
+    `timeToExhaustion should be >0, got ${result.timeToExhaustionMs}`,
   );
 });
 
@@ -89,7 +89,7 @@ test("computeBurnRateFromWindow: rate is consumption / elapsed (not / full windo
   const lowerBound = consumed / (windowMs / 1000);
   assert.ok(
     result.tokensPerSecond >= lowerBound * 0.9, // allow 10% margin
-    `rate ${result.tokensPerSecond} should be >= lower bound ${lowerBound * 0.9}`
+    `rate ${result.tokensPerSecond} should be >= lower bound ${lowerBound * 0.9}`,
   );
 });
 
@@ -121,7 +121,7 @@ test("upsertAllocations: normalizes zero weights to equal distribution", async (
   for (const alloc of updated!.allocations) {
     assert.ok(
       Math.abs(alloc.weight - 100 / 3) < 0.01,
-      `weight should be ~33.33, got ${alloc.weight}`
+      `weight should be ~33.33, got ${alloc.weight}`,
     );
   }
 });
@@ -199,9 +199,7 @@ test("poolUsageWithDimensions: returns non-null burn rate for token dimensions",
   const pool = poolsDb.createPool({
     connectionId: "conn-burn-rate",
     name: "Burn Rate Pool",
-    allocations: [
-      { apiKeyId: "key-br-1", weight: 100, policy: "hard" },
-    ],
+    allocations: [{ apiKeyId: "key-br-1", weight: 100, policy: "hard" }],
   });
 
   const dim = { poolId: pool.id, unit: "tokens" as const, window: "hourly" as const };
@@ -214,11 +212,11 @@ test("poolUsageWithDimensions: returns non-null burn rate for token dimensions",
   assert.ok(snapshot.burnRate, "burnRate should be present");
   assert.ok(
     snapshot.burnRate!.tokensPerSecond > 0,
-    `tokensPerSecond should be >0, got ${snapshot.burnRate!.tokensPerSecond}`
+    `tokensPerSecond should be >0, got ${snapshot.burnRate!.tokensPerSecond}`,
   );
   assert.ok(
     snapshot.burnRate!.timeToExhaustionMs !== null && snapshot.burnRate!.timeToExhaustionMs > 0,
-    `timeToExhaustionMs should be >0, got ${snapshot.burnRate!.timeToExhaustionMs}`
+    `timeToExhaustionMs should be >0, got ${snapshot.burnRate!.timeToExhaustionMs}`,
   );
 });
 
@@ -229,9 +227,7 @@ test("poolUsageWithDimensions: no burn rate when consumedTotal is 0", async () =
   const pool = poolsDb.createPool({
     connectionId: "conn-no-burn",
     name: "No Burn Pool",
-    allocations: [
-      { apiKeyId: "key-nb-1", weight: 100, policy: "hard" },
-    ],
+    allocations: [{ apiKeyId: "key-nb-1", weight: 100, policy: "hard" }],
   });
 
   const snapshot = await store.poolUsageWithDimensions(pool.id, [
@@ -248,13 +244,17 @@ test("QuotaStore interface: poolUsageWithDimensions is on the interface", async 
   // We verify at runtime that both implementations have it.
   const { SqliteQuotaStore } = await import("../../src/lib/quota/sqliteQuotaStore.ts");
   const sqlite = new SqliteQuotaStore();
-  assert.equal(typeof sqlite.poolUsageWithDimensions, "function", "SqliteQuotaStore must have poolUsageWithDimensions");
+  assert.equal(
+    typeof sqlite.poolUsageWithDimensions,
+    "function",
+    "SqliteQuotaStore must have poolUsageWithDimensions",
+  );
 
   // Redis store (just check the prototype)
   const { RedisQuotaStore } = await import("../../src/lib/quota/redisQuotaStore.ts");
   assert.equal(
     typeof RedisQuotaStore.prototype.poolUsageWithDimensions,
     "function",
-    "RedisQuotaStore must have poolUsageWithDimensions"
+    "RedisQuotaStore must have poolUsageWithDimensions",
   );
 });

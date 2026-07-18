@@ -77,7 +77,8 @@ test("parseToolCallsFromText does not parse bare JSON without requested tools", 
 });
 
 test("parseToolCallsFromText tolerates Python-dict-ish bare tool JSON", () => {
-  const text = "{'command': 'get_weather', 'arguments': {'city': 'Paris', 'units': 'metric', 'fresh': True}}";
+  const text =
+    "{'command': 'get_weather', 'arguments': {'city': 'Paris', 'units': 'metric', 'fresh': True}}";
   const { toolCalls } = parseToolCallsFromText(text, "call", TOOLS);
 
   assert.equal(toolCalls?.length, 1);
@@ -106,7 +107,8 @@ test("parseToolCallsFromText fuzzy-matches emitted tool names to requested tools
 });
 
 test("parseToolCallsFromText strips bare JSON while preserving surrounding text", () => {
-  const text = 'I will check now.\n{"name":"get_weather","arguments":"{\\"city\\":\\"Paris\\"}"}\nDone.';
+  const text =
+    'I will check now.\n{"name":"get_weather","arguments":"{\\"city\\":\\"Paris\\"}"}\nDone.';
   const { content, toolCalls } = parseToolCallsFromText(text, "call", TOOLS);
 
   assert.equal(toolCalls?.length, 1);

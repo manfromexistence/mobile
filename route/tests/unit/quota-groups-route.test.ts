@@ -174,7 +174,9 @@ test("groups/[id]/route.ts: PATCH returns { group } shape", () => {
   const deleteIdx = idSrc.indexOf("export async function DELETE");
   const patchBody = deleteIdx >= 0 ? idSrc.slice(patchIdx, deleteIdx) : idSrc.slice(patchIdx);
   assert.ok(
-    patchBody.includes("{ group }") || patchBody.includes("{group}") || patchBody.includes("group:"),
+    patchBody.includes("{ group }") ||
+      patchBody.includes("{group}") ||
+      patchBody.includes("group:"),
     "PATCH must return { group } in the response body",
   );
 });

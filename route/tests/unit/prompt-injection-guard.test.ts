@@ -255,9 +255,9 @@ test("promptInjectionGuard: withInjectionGuard annotates downstream headers in w
             flagged: request.headers.get("X-Injection-Flagged"),
             detections: request.headers.get("X-Injection-Detections"),
           }),
-          { headers: { "Content-Type": "application/json" } }
+          { headers: { "Content-Type": "application/json" } },
         ),
-      { mode: "warn" }
+      { mode: "warn" },
     );
     const request = new Request("http://localhost/api/chat", {
       method: "POST",

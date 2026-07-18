@@ -16,7 +16,6 @@ import {
   AlertCircleIcon,
   ArrowUpIcon,
   ChevronDownIcon,
-
   MicIcon,
   PlusIcon,
   StopIcon,
@@ -31,12 +30,7 @@ import {
   SlashMenu,
   type SlashCommand,
 } from "@/features/dx/components/friday/input-popovers";
-import {
-  ZEN_MODELS,
-  TIER_LABELS_LIST,
-  type ZenModel,
-  type ModelTier,
-} from "@/lib/friday/models";
+import { ZEN_MODELS, TIER_LABELS_LIST, type ZenModel, type ModelTier } from "@/lib/friday/models";
 import { ScrollArea } from "@/components/friday-ui/scroll-area";
 import { Badge } from "@/components/friday-ui/badge";
 import { Avatar, AvatarFallback } from "@/components/friday-ui/avatar";
@@ -47,7 +41,10 @@ import {
   ProviderMonogram,
 } from "@/features/dx/components/chat/provider-logos";
 
-const ZEN_PROVIDER_LOGOS: Record<string, React.ComponentType<{ className?: string; [key: string]: any }>> = {
+const ZEN_PROVIDER_LOGOS: Record<
+  string,
+  React.ComponentType<{ className?: string; [key: string]: any }>
+> = {
   DeepSeek: DeepseekLogo,
   NVIDIA: NvidiaLogo,
   Stealth: (p) => <ProviderMonogram name="S" {...p} />,
@@ -230,7 +227,14 @@ export function ChatInput({
       } else {
         const ext = f.name.split(".").pop()?.toLowerCase() ?? "";
         const kind: Attachment["kind"] = [
-          "py", "ts", "tsx", "js", "json", "yaml", "yml", "md",
+          "py",
+          "ts",
+          "tsx",
+          "js",
+          "json",
+          "yaml",
+          "yml",
+          "md",
         ].includes(ext)
           ? "code"
           : ["mp3", "wav", "ogg"].includes(ext)
@@ -318,12 +322,7 @@ export function ChatInput({
       }
     }
     setSlashOpen(false);
-    if (
-      cmd.id === "image" ||
-      cmd.id === "video" ||
-      cmd.id === "upload" ||
-      cmd.id === "camera"
-    ) {
+    if (cmd.id === "image" || cmd.id === "video" || cmd.id === "upload" || cmd.id === "camera") {
       fileRef.current?.click();
     } else if (cmd.id === "link") {
       insertAtCursor("https://");
@@ -395,12 +394,7 @@ export function ChatInput({
           <PlusMenu
             open={plusOpen}
             onSelect={(id) => {
-              if (
-                id === "upload" ||
-                id === "image" ||
-                id === "camera" ||
-                id === "video"
-              ) {
+              if (id === "upload" || id === "image" || id === "camera" || id === "video") {
                 fileRef.current?.click();
               } else if (id === "link") {
                 insertAtCursor("https://");
@@ -493,10 +487,7 @@ export function ChatInput({
 
         <motion.div
           layout
-          className={cn(
-            "flex w-full items-center gap-1 sm:gap-2",
-            expanded ? "mt-0.5" : "mt-0",
-          )}
+          className={cn("flex w-full items-center gap-1 sm:gap-2", expanded ? "mt-0.5" : "mt-0")}
         >
           <div className="flex items-center gap-1 sm:gap-2 pl-1 sm:pl-2 shrink-0">
             <motion.button
@@ -516,11 +507,7 @@ export function ChatInput({
               )}
               aria-label="Add to chat"
             >
-              {plusOpen ? (
-                <XIcon className="h-4 w-4" />
-              ) : (
-                <PlusIcon className="h-5 w-5" />
-              )}
+              {plusOpen ? <XIcon className="h-4 w-4" /> : <PlusIcon className="h-5 w-5" />}
             </motion.button>
 
             <div className="relative">
@@ -535,11 +522,7 @@ export function ChatInput({
                 )}
               >
                 <AlertCircleIcon className="h-3.5 w-3.5" />
-                {access === "full"
-                  ? "Full access"
-                  : access === "limited"
-                    ? "Limited"
-                    : "Read-only"}
+                {access === "full" ? "Full access" : access === "limited" ? "Limited" : "Read-only"}
                 <ChevronDownIcon className="h-3 w-3 opacity-60" />
               </motion.button>
               <AnimatePresence>
@@ -569,12 +552,10 @@ export function ChatInput({
                         <span className="text-[12.5px] font-medium text-foreground flex items-center gap-2">
                           {opt.label}
                           {access === opt.id && (
-                            <span className="ml-auto text-accent">{'\u25CF'}</span>
+                            <span className="ml-auto text-accent">{"\u25CF"}</span>
                           )}
                         </span>
-                        <span className="text-[10.5px] text-muted-foreground">
-                          {opt.desc}
-                        </span>
+                        <span className="text-[10.5px] text-muted-foreground">{opt.desc}</span>
                       </button>
                     ))}
                   </motion.div>
@@ -600,9 +581,7 @@ export function ChatInput({
             >
               <span className="flex items-center gap-1.5">
                 <span className="truncate max-w-[120px]">{model.label}</span>
-                <span className="text-[10px] text-muted-foreground">
-                  {model.provider}
-                </span>
+                <span className="text-[10px] text-muted-foreground">{model.provider}</span>
               </span>
               {model.badge && (
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
@@ -654,12 +633,8 @@ export function ChatInput({
                   scale: value.trim() || attachments.length > 0 ? 1 : 0.9,
                   opacity: value.trim() || attachments.length > 0 ? 1 : 0.4,
                 }}
-                whileHover={
-                  value.trim() || attachments.length > 0 ? { scale: 1.06 } : undefined
-                }
-                whileTap={
-                  value.trim() || attachments.length > 0 ? { scale: 0.94 } : undefined
-                }
+                whileHover={value.trim() || attachments.length > 0 ? { scale: 1.06 } : undefined}
+                whileTap={value.trim() || attachments.length > 0 ? { scale: 0.94 } : undefined}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 className="grid h-9 w-9 place-items-center rounded-full bg-foreground text-background shadow-sm shrink-0"
                 aria-label="Send message"
@@ -837,17 +812,12 @@ function ModelSlot({
   };
 
   const snapToClosest = () => {
-    const col = Math.max(
-      0,
-      Math.min(COLS - 1, Math.round((center.x - COL_WIDTH / 2) / COL_WIDTH)),
-    );
+    const col = Math.max(0, Math.min(COLS - 1, Math.round((center.x - COL_WIDTH / 2) / COL_WIDTH)));
     const rowInFiltered = Math.max(
       0,
       Math.min(ROWS - 1, Math.round((center.y - ROW_HEIGHT / 2) / ROW_HEIGHT)),
     );
-    const origRow = models.findIndex(
-      (m) => m.id === filtered[rowInFiltered]?.id,
-    );
+    const origRow = models.findIndex((m) => m.id === filtered[rowInFiltered]?.id);
     setDrag({ dx: 0, dy: 0 });
     if (origRow >= 0) onModelChange({ ...modelState, row: origRow, col });
     playClickSound();
@@ -885,23 +855,16 @@ function ModelSlot({
     const rect = trackRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    const rowInFiltered = Math.max(
-      0,
-      Math.min(ROWS - 1, Math.floor(y / ROW_HEIGHT)),
-    );
-    const col = Math.max(
-      0,
-      Math.min(COLS - 1, Math.round((x - COL_WIDTH / 2) / COL_WIDTH)),
-    );
-    const origRow = models.findIndex(
-      (m) => m.id === filtered[rowInFiltered]?.id,
-    );
+    const rowInFiltered = Math.max(0, Math.min(ROWS - 1, Math.floor(y / ROW_HEIGHT)));
+    const col = Math.max(0, Math.min(COLS - 1, Math.round((x - COL_WIDTH / 2) / COL_WIDTH)));
+    const origRow = models.findIndex((m) => m.id === filtered[rowInFiltered]?.id);
     if (origRow >= 0) onModelChange({ ...modelState, row: origRow, col });
     playClickSound();
   };
 
   const selected = models[modelState.row] ?? models[0];
-  const selectedTier = selected.tiers[tierLabels[modelState.col] as ModelTier] ?? selected.tiers.low;
+  const selectedTier =
+    selected.tiers[tierLabels[modelState.col] as ModelTier] ?? selected.tiers.low;
 
   return (
     <div
@@ -965,8 +928,7 @@ function ModelSlot({
                     size="md"
                     className={cn(
                       "transition-all",
-                      isActive &&
-                        "ring-2 ring-chart-2 ring-offset-1 ring-offset-surface",
+                      isActive && "ring-2 ring-chart-2 ring-offset-1 ring-offset-surface",
                     )}
                   >
                     {(() => {
@@ -1043,9 +1005,7 @@ function ModelSlot({
                     }}
                     className={cn(
                       "absolute left-0 flex items-center pr-1 text-[11px] font-medium cursor-pointer pl-1 text-left transition-colors outline-none whitespace-nowrap",
-                      isActive
-                        ? "text-chart-2"
-                        : "text-muted-foreground hover:text-foreground",
+                      isActive ? "text-chart-2" : "text-muted-foreground hover:text-foreground",
                     )}
                     style={{
                       top: rIdx * ROW_HEIGHT,
@@ -1058,26 +1018,23 @@ function ModelSlot({
                 );
               })}
 
-                <div
-                  ref={trackRef}
-                  onClick={onTrackClick}
-                  className="absolute overflow-hidden rounded-lg bg-surface-2/50"
-                  style={{ left: LABEL_W, top: 0, right: 0, height: TRACK_H }}
-                >
-                  <motion.div
-                    className="absolute pointer-events-auto h-[3px] bg-chart-2/60 cursor-pointer"
-                    style={{ left: 0, top: center.y, width: center.x }}
-                    whileHover={{ scaleY: 2.5, opacity: 1 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                  />
+              <div
+                ref={trackRef}
+                onClick={onTrackClick}
+                className="absolute overflow-hidden rounded-lg bg-surface-2/50"
+                style={{ left: LABEL_W, top: 0, right: 0, height: TRACK_H }}
+              >
+                <motion.div
+                  className="absolute pointer-events-auto h-[3px] bg-chart-2/60 cursor-pointer"
+                  style={{ left: 0, top: center.y, width: center.x }}
+                  whileHover={{ scaleY: 2.5, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                />
 
                 {filtered.map((_, rIdx) =>
                   tierLabels.map((_, cIdx) => {
-                    const origRow = models.findIndex(
-                      (om) => om.id === filtered[rIdx]?.id,
-                    );
-                    const isActive =
-                      modelState.row === origRow && modelState.col === cIdx;
+                    const origRow = models.findIndex((om) => om.id === filtered[rIdx]?.id);
+                    const isActive = modelState.row === origRow && modelState.col === cIdx;
                     return (
                       <button
                         key={`${rIdx}-${cIdx}`}
@@ -1230,56 +1187,55 @@ function UltraButton({
   const ballSize = 24;
 
   return (
-      <motion.button
-        type="button"
-        onClick={onClick}
-        whileHover={{ scale: 1.04 }}
-        whileTap={{ scale: 0.94 }}
-        className={cn(
-          "relative rounded-full border transition-colors overflow-hidden cursor-pointer",
-          active
-            ? "bg-chart-2/10 border-chart-2/20"
-            : "bg-surface-2 border-border",
-        )}
-        style={{ width: 28, height }}
-        aria-label="Toggle ULTRA"
-      >
-        <AnimatePresence>{burstKey > 0 && <ThunderBurst key={burstKey} />}</AnimatePresence>
+    <motion.button
+      type="button"
+      onClick={onClick}
+      whileHover={{ scale: 1.04 }}
+      whileTap={{ scale: 0.94 }}
+      className={cn(
+        "relative rounded-full border transition-colors overflow-hidden cursor-pointer",
+        active ? "bg-chart-2/10 border-chart-2/20" : "bg-surface-2 border-border",
+      )}
+      style={{ width: 28, height }}
+      aria-label="Toggle ULTRA"
+    >
+      <AnimatePresence>{burstKey > 0 && <ThunderBurst key={burstKey} />}</AnimatePresence>
 
-        {active && (
-          <motion.div
-            className="absolute left-0 right-0 bottom-0 rounded-full"
-            style={{
-              background: "linear-gradient(to top, var(--color-chart-2), color-mix(in oklab, var(--color-chart-2) 60%, transparent))",
-            }}
-            animate={{ height: "100%" }}
-            initial={{ height: "0%" }}
-            transition={{ type: "spring", stiffness: 250, damping: 22 }}
-          />
-        )}
-
+      {active && (
         <motion.div
-          className="absolute left-1/2 -translate-x-1/2 w-5 h-5 sm:w-6 sm:h-6 bg-white dark:bg-gradient-to-br dark:from-chart-2/60 dark:to-chart-2/20 rounded-full border border-border grid place-items-center"
-          animate={{ top: active ? 0 : height - ballSize }}
-          transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        >
-          <ThunderIcon className="h-3 w-3 text-chart-2" />
-        </motion.div>
+          className="absolute left-0 right-0 bottom-0 rounded-full"
+          style={{
+            background:
+              "linear-gradient(to top, var(--color-chart-2), color-mix(in oklab, var(--color-chart-2) 60%, transparent))",
+          }}
+          animate={{ height: "100%" }}
+          initial={{ height: "0%" }}
+          transition={{ type: "spring", stiffness: 250, damping: 22 }}
+        />
+      )}
 
-        {active && (
-          <motion.div
-            className="absolute inset-0 rounded-full pointer-events-none"
-            animate={{
-              boxShadow: [
-                "0 0 12px color-mix(in oklab, var(--color-chart-2) 40%, transparent)",
-                "0 0 24px color-mix(in oklab, var(--color-chart-2) 60%, transparent)",
-                "0 0 12px color-mix(in oklab, var(--color-chart-2) 40%, transparent)",
-              ],
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
-        )}
-      </motion.button>
+      <motion.div
+        className="absolute left-1/2 -translate-x-1/2 w-5 h-5 sm:w-6 sm:h-6 bg-white dark:bg-gradient-to-br dark:from-chart-2/60 dark:to-chart-2/20 rounded-full border border-border grid place-items-center"
+        animate={{ top: active ? 0 : height - ballSize }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      >
+        <ThunderIcon className="h-3 w-3 text-chart-2" />
+      </motion.div>
+
+      {active && (
+        <motion.div
+          className="absolute inset-0 rounded-full pointer-events-none"
+          animate={{
+            boxShadow: [
+              "0 0 12px color-mix(in oklab, var(--color-chart-2) 40%, transparent)",
+              "0 0 24px color-mix(in oklab, var(--color-chart-2) 60%, transparent)",
+              "0 0 12px color-mix(in oklab, var(--color-chart-2) 40%, transparent)",
+            ],
+          }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+      )}
+    </motion.button>
   );
 }
 
@@ -1299,10 +1255,7 @@ function ThunderBurst() {
         className="absolute inset-0 rounded-full border border-chart-2/20 pointer-events-none"
       />
 
-      <svg
-        viewBox="0 0 80 200"
-        className="absolute inset-0 w-full h-full pointer-events-none"
-      >
+      <svg viewBox="0 0 80 200" className="absolute inset-0 w-full h-full pointer-events-none">
         <motion.path
           d="M40 0 L34 80 L46 80 L36 200"
           stroke="rgba(255,255,255,0.9)"

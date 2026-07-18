@@ -87,23 +87,14 @@ export default function KanbanDemo() {
   });
 
   return (
-    <Kanban
-      value={columns}
-      onValueChange={setColumns}
-      getItemValue={(item) => item.id}
-    >
+    <Kanban value={columns} onValueChange={setColumns} getItemValue={(item) => item.id}>
       <KanbanBoard className="grid auto-rows-fr sm:grid-cols-3">
         {Object.entries(columns).map(([columnValue, tasks]) => (
           <KanbanColumn key={columnValue} value={columnValue}>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm">
-                  {COLUMN_TITLES[columnValue]}
-                </span>
-                <Badge
-                  variant="secondary"
-                  className="pointer-events-none rounded-sm"
-                >
+                <span className="font-semibold text-sm">{COLUMN_TITLES[columnValue]}</span>
+                <Badge variant="secondary" className="pointer-events-none rounded-sm">
                   {tasks.length}
                 </Badge>
               </div>
@@ -119,9 +110,7 @@ export default function KanbanDemo() {
                   <div className="rounded-md border bg-card p-3 shadow-xs">
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="line-clamp-1 font-medium text-sm">
-                          {task.title}
-                        </span>
+                        <span className="line-clamp-1 font-medium text-sm">{task.title}</span>
                         <Badge
                           variant={
                             task.priority === "high"
@@ -139,15 +128,11 @@ export default function KanbanDemo() {
                         {task.assignee && (
                           <div className="flex items-center gap-1">
                             <div className="size-2 rounded-full bg-primary/20" />
-                            <span className="line-clamp-1">
-                              {task.assignee}
-                            </span>
+                            <span className="line-clamp-1">{task.assignee}</span>
                           </div>
                         )}
                         {task.dueDate && (
-                          <time className="text-[10px] tabular-nums">
-                            {task.dueDate}
-                          </time>
+                          <time className="text-[10px] tabular-nums">{task.dueDate}</time>
                         )}
                       </div>
                     </div>

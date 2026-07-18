@@ -6,7 +6,7 @@
   position: relative;
   width: 100%;
   padding: 80px 0 100px;
-  background: #120F17;
+  background: #120f17;
   z-index: 4;
 }
 
@@ -19,7 +19,7 @@
 /* ─── Title ─── */
 
 .ln-features-title {
-  font-family: 'Geist Pixel Line', sans-serif;
+  font-family: "Geist Pixel Line", sans-serif;
   font-size: clamp(28px, 4vw, 42px);
   font-weight: 500;
   line-height: 1.1;
@@ -36,9 +36,15 @@
   gap: 16px;
 }
 
-.ln-features-card--span-5 { grid-column: span 5; }
-.ln-features-card--span-4 { grid-column: span 4; }
-.ln-features-card--span-3 { grid-column: span 3; }
+.ln-features-card--span-5 {
+  grid-column: span 5;
+}
+.ln-features-card--span-4 {
+  grid-column: span 4;
+}
+.ln-features-card--span-3 {
+  grid-column: span 3;
+}
 
 /* ─── Card ─── */
 
@@ -50,9 +56,7 @@
   border-radius: 14px;
   display: flex;
   flex-direction: column;
-  box-shadow:
-    0 4px 32px rgba(0, 0, 0, 0.25),
-    inset 0 0.5px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25), inset 0 0.5px 0 rgba(255, 255, 255, 0.06);
   transition: border-color 0.3s ease, translate 0.3s ease;
   overflow: hidden;
 }
@@ -82,7 +86,7 @@
 }
 
 .ln-features-card-body h3 {
-  font-family: 'Geist', sans-serif;
+  font-family: "Geist", sans-serif;
   font-size: 15px;
   font-weight: 600;
   color: #fff;
@@ -91,7 +95,7 @@
 }
 
 .ln-features-card-body p {
-  font-family: 'Geist', sans-serif;
+  font-family: "Geist", sans-serif;
   font-size: 13px;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.5);
@@ -131,17 +135,25 @@
 }
 
 @keyframes marqueeScroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 @keyframes marqueeScrollRev {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .ln-feat-pill {
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
   text-decoration: none;
@@ -349,13 +361,21 @@
 }
 
 @keyframes spinCW {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes spinCCW {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(-360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
 }
 
 /* ═══════════════════════════════════════
@@ -391,7 +411,7 @@
 }
 
 .ln-feat-vrow-label {
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.7);
   white-space: nowrap;
@@ -458,7 +478,7 @@
 }
 
 .ln-feat-aichat-title {
-  font-family: 'Geist', sans-serif;
+  font-family: "Geist", sans-serif;
   font-size: 10px;
   color: rgba(255, 255, 255, 0.25);
   letter-spacing: 0.03em;
@@ -475,14 +495,14 @@
 }
 
 .ln-feat-aichat-chevron {
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.35);
   flex-shrink: 0;
 }
 
 .ln-feat-aichat-prompt {
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.45);
   white-space: nowrap;
@@ -516,12 +536,23 @@
   animation: thinkPulse 1.2s ease-in-out infinite;
 }
 
-.ln-feat-aichat-thinking span:nth-child(2) { animation-delay: 0.2s; }
-.ln-feat-aichat-thinking span:nth-child(3) { animation-delay: 0.4s; }
+.ln-feat-aichat-thinking span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.ln-feat-aichat-thinking span:nth-child(3) {
+  animation-delay: 0.4s;
+}
 
 @keyframes thinkPulse {
-  0%, 100% { opacity: 0.2; transform: scale(0.85); }
-  50% { opacity: 0.7; transform: scale(1); }
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
 }
 
 /* Code block */
@@ -538,7 +569,7 @@
   align-items: center;
   gap: 0;
   padding: 3px 12px;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 11px;
   line-height: 1.6;
   min-height: 22px;
@@ -555,17 +586,36 @@
 }
 
 /* Syntax tokens */
-.ac-kw { color: rgba(255, 255, 255, 0.5); }
-.ac-comp { color: rgba(255, 255, 255, 0.8); }
-.ac-tag { color: rgba(255, 255, 255, 0.45); }
-.ac-attr { color: rgba(255, 255, 255, 0.6); }
-.ac-punc { color: rgba(255, 255, 255, 0.3); }
-.ac-num { color: rgba(255, 255, 255, 0.7); }
-.ac-str { color: rgba(255, 255, 255, 0.55); }
+.ac-kw {
+  color: rgba(255, 255, 255, 0.5);
+}
+.ac-comp {
+  color: rgba(255, 255, 255, 0.8);
+}
+.ac-tag {
+  color: rgba(255, 255, 255, 0.45);
+}
+.ac-attr {
+  color: rgba(255, 255, 255, 0.6);
+}
+.ac-punc {
+  color: rgba(255, 255, 255, 0.3);
+}
+.ac-num {
+  color: rgba(255, 255, 255, 0.7);
+}
+.ac-str {
+  color: rgba(255, 255, 255, 0.55);
+}
 
 @keyframes cursorBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
 /* ═══════════════════════════════════════
@@ -582,14 +632,14 @@
 }
 
 .ln-feat-stars-label {
-  font-family: 'Geist', sans-serif;
+  font-family: "Geist", sans-serif;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.35);
   letter-spacing: 0.02em;
 }
 
 .ln-feat-stars-count {
-  font-family: 'Geist Pixel Line', sans-serif;
+  font-family: "Geist Pixel Line", sans-serif;
   font-size: 52px;
   color: rgba(255, 255, 255, 0.45);
   letter-spacing: -0.03em;

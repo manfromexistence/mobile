@@ -26,7 +26,7 @@ test("#3884 non-streaming request strips a client-sent stream_options", () => {
   assert.equal(
     result.stream_options,
     undefined,
-    "stream_options must be stripped when the outbound request is not streaming"
+    "stream_options must be stripped when the outbound request is not streaming",
   );
 });
 

@@ -97,7 +97,14 @@ const REDUCED_VARIANTS: Variants = {
 const WARM_WINDOW_MS = 300;
 let lastHiddenAt = 0;
 
-export function Tooltip({ content, children, side = "top", delay = 120, className, wrapperClassName }: TooltipProps) {
+export function Tooltip({
+  content,
+  children,
+  side = "top",
+  delay = 120,
+  className,
+  wrapperClassName,
+}: TooltipProps) {
   const [open, setOpen] = useState(false);
   const id = useId();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);

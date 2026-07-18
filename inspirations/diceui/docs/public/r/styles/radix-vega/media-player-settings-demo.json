@@ -1,10 +1,7 @@
 {
   "name": "media-player-settings-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react",
-    "media-chrome"
-  ],
+  "dependencies": ["lucide-react", "media-chrome"],
   "registryDependencies": [
     "badge",
     "button",

@@ -9,7 +9,7 @@ import { extractImportWarning } from "../../src/app/(dashboard)/dashboard/provid
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const enRaw = readFileSync(
   join(__dirname, "..", "..", "src", "i18n", "messages", "en.json"),
-  "utf8"
+  "utf8",
 );
 // en.json is namespaced (keys live nested under a parent object), so scan the raw text by
 // the exact `"key": "value"` pair rather than a top-level lookup.
@@ -37,7 +37,7 @@ for (const [key, stub] of STUB_KEYS) {
     assert.ok(enRaw.includes(`"${key}":`), `${key} must exist in en.json`);
     assert.ok(
       !enRaw.includes(`"${key}": "${stub}"`),
-      `${key} still ships the untranslated stub "${stub}"`
+      `${key} still ships the untranslated stub "${stub}"`,
     );
   });
 }
@@ -50,7 +50,7 @@ test("extractImportWarning returns the warning string when present", () => {
       models: [{ id: "x" }],
       warning: "API unavailable — using local catalog",
     }),
-    "API unavailable — using local catalog"
+    "API unavailable — using local catalog",
   );
 });
 

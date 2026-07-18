@@ -1,11 +1,8 @@
-"use client"
+"use client";
 
-import { useDialKit } from "dialkit"
+import { useDialKit } from "dialkit";
 
-import {
-  GlowCard,
-  GlowCardGrid,
-} from "@/registry/transformed/components/glow-card-grid"
+import { GlowCard, GlowCardGrid } from "@/registry/transformed/components/glow-card-grid";
 
 export default function GlowCardGridDialKit() {
   const params = useDialKit("GlowCard", {
@@ -24,7 +21,7 @@ export default function GlowCardGridDialKit() {
       brightness: [2.5, 0, 4, 0.1],
       contrast: [2.5, 0, 3, 0.1],
     },
-  })
+  });
 
   return (
     <div className="container px-4 py-8">
@@ -46,16 +43,11 @@ export default function GlowCardGridDialKit() {
         borderContrast={params.border.contrast}
       >
         {CARDS.map((card) => (
-          <GlowCard
-            key={card.name}
-            name={card.name}
-            handle={card.handle}
-            avatar={card.avatar}
-          />
+          <GlowCard key={card.name} name={card.name} handle={card.handle} avatar={card.avatar} />
         ))}
       </GlowCardGrid>
     </div>
-  )
+  );
 }
 
 const CARDS = [
@@ -99,4 +91,4 @@ const CARDS = [
     handle: "@iamncdai",
     avatar: "https://unavatar.io/x/iamncdai",
   },
-]
+];

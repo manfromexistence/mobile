@@ -2,11 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "music-player-01",
   "description": "Music player with playlist",
-  "registryDependencies": [
-    "https://ui.elevenlabs.io/r/audio-player.json",
-    "button",
-    "scroll-area"
-  ],
+  "registryDependencies": ["https://ui.elevenlabs.io/r/audio-player.json", "button", "scroll-area"],
   "files": [
     {
       "path": "blocks/music-player-01/page.tsx",
@@ -20,8 +16,6 @@
     "container": "w-full bg-surface min-h-svh flex px-4 py-12 items-center md:py-20 justify-center min-w-0",
     "mobile": "component"
   },
-  "categories": [
-    "audio"
-  ],
+  "categories": ["audio"],
   "type": "registry:block"
 }

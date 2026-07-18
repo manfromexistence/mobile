@@ -36,7 +36,7 @@ test("deliverWebhook clears the abort timer even when fetch rejects", async () =
       "https://example.com/webhook",
       { event: "test.event" as any, timestamp: new Date().toISOString(), data: {} },
       null,
-      0 // maxRetries=0 → single attempt, no exponential-backoff timers
+      0, // maxRetries=0 → single attempt, no exponential-backoff timers
     );
 
     assert.equal(res.success, false, "delivery should fail when fetch rejects");
@@ -46,7 +46,7 @@ test("deliverWebhook clears the abort timer even when fetch rejects", async () =
     for (const id of abortTimerIds) {
       assert.ok(
         clearedIds.has(id),
-        "abort timer must be cleared in finally even when fetch rejects (no dangling 10s timer)"
+        "abort timer must be cleared in finally even when fetch rejects (no dangling 10s timer)",
       );
     }
   } finally {

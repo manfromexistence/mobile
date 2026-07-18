@@ -69,7 +69,7 @@ test("#6799: archiveLegacyRequestLogs() must not delete the live app-logger dire
   assert.equal(
     fs.existsSync(APP_LOG_FILE),
     true,
-    "precondition: live app.log exists before migration runs"
+    "precondition: live app.log exists before migration runs",
   );
 
   await migrations.archiveLegacyRequestLogs();
@@ -77,12 +77,12 @@ test("#6799: archiveLegacyRequestLogs() must not delete the live app-logger dire
   assert.equal(
     fs.existsSync(APP_LOG_FILE),
     true,
-    "archiveLegacyRequestLogs() deleted the live app.log file — DATA_DIR/logs/application must be excluded from the legacy archive sweep"
+    "archiveLegacyRequestLogs() deleted the live app.log file — DATA_DIR/logs/application must be excluded from the legacy archive sweep",
   );
   assert.equal(
     fs.existsSync(CURRENT_REQUEST_LOGS_DIR),
     true,
-    "archiveLegacyRequestLogs() deleted the entire DATA_DIR/logs directory, including the live application log subtree"
+    "archiveLegacyRequestLogs() deleted the entire DATA_DIR/logs directory, including the live application log subtree",
   );
 });
 
@@ -133,7 +133,7 @@ test("#6401: archiveLegacyRequestLogs does not crash the process when a legacy t
   assert.equal(
     uncaught,
     null,
-    `archiveLegacyRequestLogs() let an uncaughtException escape instead of handling/rejecting it: ${String(uncaught)}`
+    `archiveLegacyRequestLogs() let an uncaughtException escape instead of handling/rejecting it: ${String(uncaught)}`,
   );
   // The function itself already has an outer try/catch at call sites; here we assert it
   // resolves or rejects cleanly rather than crashing the process via uncaughtException.

@@ -77,7 +77,7 @@ describe("ProviderIcon — custom remote icon URL (#2166)", () => {
     const img = container.querySelector("img");
     expect(img).not.toBeNull();
     expect(img?.getAttribute("src")).toBe(
-      "https://thesvg.org/icons/openai-compatible-test-node-xyz/default.svg"
+      "https://thesvg.org/icons/openai-compatible-test-node-xyz/default.svg",
     );
   });
 
@@ -91,7 +91,7 @@ describe("ProviderIcon — custom remote icon URL (#2166)", () => {
     const img = container.querySelector("img");
     expect(img).not.toBeNull();
     expect(img?.getAttribute("src")).toBe(
-      "https://thesvg.org/icons/openai-compatible-test-node-xyz/default.svg"
+      "https://thesvg.org/icons/openai-compatible-test-node-xyz/default.svg",
     );
 
     fireImgError(container);
@@ -121,7 +121,7 @@ describe("ProviderIcon — custom remote icon URL (#2166)", () => {
     const img = container.querySelector("img");
     expect(img).not.toBeNull();
     expect(img?.getAttribute("src")).toBe(
-      "https://thesvg.org/icons/openai-compatible-test-node-xyz/default.svg"
+      "https://thesvg.org/icons/openai-compatible-test-node-xyz/default.svg",
     );
   });
 });

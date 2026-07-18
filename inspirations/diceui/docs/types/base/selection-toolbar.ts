@@ -130,9 +130,7 @@ export interface SelectionToolbarProps extends RenderProps {
    *
    * @default 0
    */
-  collisionPadding?:
-    | number
-    | Partial<Record<"top" | "right" | "bottom" | "left", number>>;
+  collisionPadding?: number | Partial<Record<"top" | "right" | "bottom" | "left", number>>;
 
   /**
    * The sticky behavior on the alignment axis.

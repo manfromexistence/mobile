@@ -135,9 +135,7 @@ function CarouselBall({
   // (convex).
   const scale = useTransform(offset, (o) => {
     const t = Math.min(Math.abs(o) / edgeOffset, THETA_CLAMP / THETA_EDGE);
-    return convex
-      ? 1 - (1 - minScale) * t
-      : minScale + (1 - minScale) * t;
+    return convex ? 1 - (1 - minScale) * t : minScale + (1 - minScale) * t;
   });
   // Parabola centered on the stage — valley for concave (center ball dips
   // arc/2 below the midline, edges rise arc/2 above), arch for convex — and
@@ -216,9 +214,7 @@ export function CylinderCarousel({
   let scaleSum = 0;
   for (let i = 0; i < visibleItems; i++) {
     const t = Math.abs(i - (visibleItems - 1) / 2) / edgeOffset;
-    scaleSum += convex
-      ? 1 - (1 - minScale) * t
-      : minScale + (1 - minScale) * t;
+    scaleSum += convex ? 1 - (1 - minScale) * t : minScale + (1 - minScale) * t;
   }
   const size = Math.min(itemSize, (stageWidth * 0.65) / scaleSum);
 
@@ -231,8 +227,7 @@ export function CylinderCarousel({
   // projection stays monotonic up to THETA_CLAMP).
   const alpha = THETA_EDGE / edgeOffset;
   const k = Math.max(0.2, (minScale - Math.cos(THETA_EDGE)) / (1 - minScale));
-  const projection =
-    (halfWidth * (Math.cos(THETA_EDGE) + k)) / Math.sin(THETA_EDGE);
+  const projection = (halfWidth * (Math.cos(THETA_EDGE) + k)) / Math.sin(THETA_EDGE);
 
   // scroll is in item units (continuous); item i sits at x = (i - scroll) * gap.
   // Drags write it 1:1 so the wall sticks to the pointer; releases hand the
@@ -286,10 +281,7 @@ export function CylinderCarousel({
     (velocity: number) => {
       const projected =
         scroll.get() +
-        Math.max(
-          -MAX_FLICK_ITEMS,
-          Math.min(MAX_FLICK_ITEMS, velocity * FLICK_MOMENTUM),
-        );
+        Math.max(-MAX_FLICK_ITEMS, Math.min(MAX_FLICK_ITEMS, velocity * FLICK_MOMENTUM));
       glideTo(snap ? Math.round(projected) : projected, velocity);
     },
     [scroll, snap, glideTo],
@@ -362,14 +354,10 @@ export function CylinderCarousel({
   const onWheel = useCallback(
     (e: ReactWheelEvent) => {
       stopGlide();
-      const delta =
-        Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       scroll.set(scroll.get() + delta / gap);
       if (wheelSettleRef.current) window.clearTimeout(wheelSettleRef.current);
-      wheelSettleRef.current = window.setTimeout(
-        () => settle(scroll.getVelocity()),
-        140,
-      );
+      wheelSettleRef.current = window.setTimeout(() => settle(scroll.getVelocity()), 140);
     },
     [scroll, gap, settle, stopGlide],
   );

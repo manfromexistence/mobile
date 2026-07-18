@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { injectSystemPrompt, setSystemPromptConfig, getSystemPromptConfig } =
-  await import("../../open-sse/services/systemPrompt.ts");
+const { injectSystemPrompt, setSystemPromptConfig, getSystemPromptConfig } = await import(
+  "../../open-sse/services/systemPrompt.ts"
+);
 
 // ─── Config ─────────────────────────────────────────────────────────────────
 

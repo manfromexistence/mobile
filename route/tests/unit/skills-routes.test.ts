@@ -69,7 +69,7 @@ test("skills route GET loads skills from the database and lists them", async () 
   clearSkillRegistry();
 
   const response = await skillsRoute.GET(
-    new Request("http://localhost/api/skills?page=1&limit=50")
+    new Request("http://localhost/api/skills?page=1&limit=50"),
   );
   const body = (await response.json()) as any;
 
@@ -88,7 +88,7 @@ test("skills route GET returns 500 when the registry load fails", async () => {
 
   try {
     const response = await skillsRoute.GET(
-      new Request("http://localhost/api/skills?page=1&limit=50")
+      new Request("http://localhost/api/skills?page=1&limit=50"),
     );
     const body = (await response.json()) as any;
 
@@ -143,7 +143,7 @@ test("skills by-id PUT updates enabled state, validates input, and surfaces pars
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ enabled: true }),
     }),
-    { params: Promise.resolve({ id: created.id }) }
+    { params: Promise.resolve({ id: created.id }) },
   );
 
   clearSkillRegistry();
@@ -155,7 +155,7 @@ test("skills by-id PUT updates enabled state, validates input, and surfaces pars
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ enabled: "yes" }),
     }),
-    { params: Promise.resolve({ id: created.id }) }
+    { params: Promise.resolve({ id: created.id }) },
   );
 
   const malformed = await skillByIdRoute.PUT(
@@ -164,7 +164,7 @@ test("skills by-id PUT updates enabled state, validates input, and surfaces pars
       headers: { "content-type": "application/json" },
       body: "{",
     }),
-    { params: Promise.resolve({ id: created.id }) }
+    { params: Promise.resolve({ id: created.id }) },
   );
 
   const updatedBody = (await updated.json()) as any;

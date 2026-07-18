@@ -47,7 +47,7 @@ test("buildForwardHeaders drops hop-by-hop, keeps auth, and pins host", () => {
       authorization: "Bearer keep-me",
       accept: "application/json",
     },
-    "api.example.com"
+    "api.example.com",
   );
   assert.equal(out.host, "api.example.com");
   assert.equal(out.authorization, "Bearer keep-me"); // upstream still authenticates
@@ -84,7 +84,7 @@ async function startHttpsUpstream(): Promise<{ port: number; close: () => Promis
 function startEngineListener(
   certStore: DynamicCertStore,
   dest: { ip: string; port: number },
-  forward: ReturnType<typeof createForward>
+  forward: ReturnType<typeof createForward>,
 ): Promise<{ port: number; close: () => Promise<void> }> {
   const engine = createTlsCaptureServer(certStore, { forward });
   const listener = net.createServer((sock) => engine.terminate(sock, dest));
@@ -107,7 +107,7 @@ function tlsRequest(
   port: number,
   servername: string,
   ca: string,
-  rawRequest: string
+  rawRequest: string,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const client = tls.connect({ host: "127.0.0.1", port, ca, servername }, () => {
@@ -126,7 +126,7 @@ function tlsRequest(
     const resolveWithChunks = () => settle(() => resolve(Buffer.concat(chunks).toString("utf8")));
     const timeout = setTimeout(
       () => settle(() => reject(new Error("TLS capture test request timed out"))),
-      5_000
+      5_000,
     );
 
     client.on("data", (chunk) => {
@@ -151,7 +151,7 @@ test("decrypts an intercepted HTTPS request and captures it as source 'tproxy'",
   const engine = await startEngineListener(
     certStore,
     { ip: "127.0.0.1", port: upstream.port },
-    forward
+    forward,
   );
 
   try {
@@ -162,7 +162,7 @@ test("decrypts an intercepted HTTPS request and captures it as source 'tproxy'",
       "GET /v1/models HTTP/1.1\r\n" +
         "Host: api.example.com\r\n" +
         "authorization: Bearer sk-supersecret-token-abcdef0123456789\r\n" +
-        "Connection: close\r\n\r\n"
+        "Connection: close\r\n\r\n",
     );
 
     assert.match(body, /decrypted-roundtrip:\/v1\/models/, "client gets the upstream response");
@@ -179,7 +179,7 @@ test("decrypts an intercepted HTTPS request and captures it as source 'tproxy'",
     // the bearer token in the request must be masked in the buffer
     assert.ok(
       !JSON.stringify(entry.requestHeaders).includes("sk-supersecret-token-abcdef0123456789"),
-      "request secret is masked in the captured headers"
+      "request secret is masked in the captured headers",
     );
   } finally {
     await engine.close();
@@ -204,12 +204,12 @@ test("the forward dials its upstream through connectRaw — the bypass-marked se
       connectRawCalls += 1;
       return net.connect(port, ip);
     },
-    { rejectUnauthorized: false }
+    { rejectUnauthorized: false },
   );
   const engine = await startEngineListener(
     certStore,
     { ip: "127.0.0.1", port: upstream.port },
-    forward
+    forward,
   );
 
   try {
@@ -217,12 +217,12 @@ test("the forward dials its upstream through connectRaw — the bypass-marked se
       engine.port,
       "api.example.com",
       caPem,
-      "GET /seam HTTP/1.1\r\nHost: api.example.com\r\nConnection: close\r\n\r\n"
+      "GET /seam HTTP/1.1\r\nHost: api.example.com\r\nConnection: close\r\n\r\n",
     );
     assert.match(body, /decrypted-roundtrip:\/seam/, "client still gets the upstream response");
     assert.ok(
       connectRawCalls >= 1,
-      "the forward MUST dial through connectRaw (the bypass-marked seam), not a default socket"
+      "the forward MUST dial through connectRaw (the bypass-marked seam), not a default socket",
     );
   } finally {
     await engine.close();
@@ -238,7 +238,7 @@ test("a forward failure is recorded as an error entry and the client gets 502", 
   const engine = await startEngineListener(
     certStore,
     { ip: "127.0.0.1", port: 1 },
-    failingForward as ReturnType<typeof createForward>
+    failingForward as ReturnType<typeof createForward>,
   );
 
   try {
@@ -246,7 +246,7 @@ test("a forward failure is recorded as an error entry and the client gets 502", 
       engine.port,
       "api.example.com",
       caPem,
-      "GET /boom HTTP/1.1\r\nHost: api.example.com\r\nConnection: close\r\n\r\n"
+      "GET /boom HTTP/1.1\r\nHost: api.example.com\r\nConnection: close\r\n\r\n",
     );
     assert.match(body, /502 Bad Gateway/, "client receives a 502 status line");
 

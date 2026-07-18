@@ -36,7 +36,7 @@ test("stripStoredItemReferences drops object items with type=reasoning", () => {
   assert.equal(
     input.some((it) => it && it.type === "reasoning"),
     false,
-    "reasoning items must be stripped"
+    "reasoning items must be stripped",
   );
   // Non-reasoning items survive (message + function_call), id is sanitized.
   assert.equal(input.length, 2);

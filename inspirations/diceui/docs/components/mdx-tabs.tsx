@@ -2,12 +2,7 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/registry/bases/radix/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/registry/bases/radix/ui/tabs";
 
 type MdxTabsVariant = "line" | "default";
 
@@ -25,12 +20,7 @@ interface MdxTabsProps extends React.ComponentProps<typeof Tabs> {
   variant?: MdxTabsVariant;
 }
 
-function MdxTabs({
-  variant = "default",
-  className,
-  children,
-  ...props
-}: MdxTabsProps) {
+function MdxTabs({ variant = "default", className, children, ...props }: MdxTabsProps) {
   return (
     <MdxTabsContext value={variant}>
       <Tabs className={cn("flex-col", className)} {...props}>
@@ -40,28 +30,19 @@ function MdxTabs({
   );
 }
 
-function MdxTabsList({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsList>) {
+function MdxTabsList({ className, ...props }: React.ComponentProps<typeof TabsList>) {
   const variant = useMdxTabsContext("MdxTabsList");
 
   return (
     <TabsList
       variant={variant}
-      className={cn(
-        variant === "default" && "h-auto rounded-none bg-transparent p-0",
-        className,
-      )}
+      className={cn(variant === "default" && "h-auto rounded-none bg-transparent p-0", className)}
       {...props}
     />
   );
 }
 
-function MdxTabsTrigger({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsTrigger>) {
+function MdxTabsTrigger({ className, ...props }: React.ComponentProps<typeof TabsTrigger>) {
   const variant = useMdxTabsContext("MdxTabsTrigger");
 
   if (variant === "line") {
@@ -71,10 +52,7 @@ function MdxTabsTrigger({
   return <TabsTrigger className={cn("h-7 text-xs", className)} {...props} />;
 }
 
-function MdxTabsContent({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsContent>) {
+function MdxTabsContent({ className, ...props }: React.ComponentProps<typeof TabsContent>) {
   const variant = useMdxTabsContext("MdxTabsContent");
 
   return (

@@ -38,43 +38,38 @@ const ICONS_BASE_DIR = path.join(ROOT, "icons");
 
 /** O(1) lookup set of every legal icon name in either library. */
 const VALID_ICON_NAMES: ReadonlySet<string> = new Set([
-	...LUCIDE_ICON_LIST.map((i) => i.name),
-	...HUGE_ICON_LIST.map((i) => i.name),
+  ...LUCIDE_ICON_LIST.map((i) => i.name),
+  ...HUGE_ICON_LIST.map((i) => i.name),
 ]);
 
-const sanitize = (name: string): string =>
-	name.replace(/[^a-z0-9-]/gi, "").toLowerCase();
+const sanitize = (name: string): string => name.replace(/[^a-z0-9-]/gi, "").toLowerCase();
 
-const isLibrary = (v: string): v is IconLibrary =>
-	v === "lucide" || v === "huge";
+const isLibrary = (v: string): v is IconLibrary => v === "lucide" || v === "huge";
 
-export async function getIconCode(
-	iconName: string,
-	library: IconLibrary,
-): Promise<string | null> {
-	if (!isLibrary(library)) {
-		console.warn("[getIconCode] invalid library", { library });
-		return null;
-	}
+export async function getIconCode(iconName: string, library: IconLibrary): Promise<string | null> {
+  if (!isLibrary(library)) {
+    console.warn("[getIconCode] invalid library", { library });
+    return null;
+  }
 
-	const safeName = sanitize(iconName);
-	if (!safeName) return null;
+  const safeName = sanitize(iconName);
+  if (!safeName) return null;
 
-	// Whitelist guard - only icons in ICON_LIST can ever be read.
-	if (!VALID_ICON_NAMES.has(safeName)) {
-		console.warn("[getIconCode] unknown icon name", { iconName, safeName });
-		return null;
-	}
+  // Whitelist guard - only icons in ICON_LIST can ever be read.
+  if (!VALID_ICON_NAMES.has(safeName)) {
+    console.warn("[getIconCode] unknown icon name", { iconName, safeName });
+    return null;
+  }
 
-	try {
-		const filePath = path.join(ICONS_BASE_DIR, library, `${safeName}-icon.tsx`);
-		return await fs.readFile(filePath, "utf8");
-	} catch (err) {
-		console.error("[getIconCode] file read failed", {
-			iconName,
-			library,
-			err: err instanceof Error ? err.message : String(err),
-		});
-		return null;
-	}
+  try {
+    const filePath = path.join(ICONS_BASE_DIR, library, `${safeName}-icon.tsx`);
+    return await fs.readFile(filePath, "utf8");
+  } catch (err) {
+    console.error("[getIconCode] file read failed", {
+      iconName,
+      library,
+      err: err instanceof Error ? err.message : String(err),
+    });
+    return null;
+  }
 }

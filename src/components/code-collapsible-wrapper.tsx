@@ -1,10 +1,6 @@
-import { Button } from "@/components/ui/button"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { cn } from "@/lib/utils";
 
 export function CodeCollapsibleWrapper({
   className,
@@ -13,10 +9,7 @@ export function CodeCollapsibleWrapper({
 }: React.ComponentProps<typeof Collapsible>) {
   return (
     <Collapsible
-      className={cn(
-        "group/collapsible not-prose relative my-[1.25em]",
-        className
-      )}
+      className={cn("group/collapsible not-prose relative my-[1.25em]", className)}
       {...props}
     >
       <CollapsibleContent
@@ -40,5 +33,5 @@ export function CodeCollapsibleWrapper({
         </CollapsibleTrigger>
       </div>
     </Collapsible>
-  )
+  );
 }

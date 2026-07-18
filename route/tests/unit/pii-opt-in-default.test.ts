@@ -34,7 +34,7 @@ test("PII data-mutation flags are opt-in (default 'false')", async (t) => {
     assert.strictEqual(
       d!.defaultValue,
       "false",
-      "PII_REDACTION_ENABLED must default OFF — request-side masking is opt-in (operator owns the data)"
+      "PII_REDACTION_ENABLED must default OFF — request-side masking is opt-in (operator owns the data)",
     );
   });
 
@@ -44,7 +44,7 @@ test("PII data-mutation flags are opt-in (default 'false')", async (t) => {
     assert.strictEqual(
       d!.defaultValue,
       "false",
-      "PII_RESPONSE_SANITIZATION must default OFF — response/streaming masking is opt-in"
+      "PII_RESPONSE_SANITIZATION must default OFF — response/streaming masking is opt-in",
     );
   });
 

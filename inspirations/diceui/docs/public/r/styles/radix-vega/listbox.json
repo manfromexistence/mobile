@@ -1,9 +1,7 @@
 {
   "name": "listbox",
   "type": "registry:ui",
-  "dependencies": [
-    "@diceui/listbox"
-  ],
+  "dependencies": ["@diceui/listbox"],
   "files": [
     {
       "path": "ui/listbox.tsx",

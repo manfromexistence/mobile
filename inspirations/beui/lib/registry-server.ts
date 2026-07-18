@@ -1,7 +1,12 @@
 import { allComponents, findCategory, registry } from "@/lib/registry";
 import { pageUrlFor, withSignature } from "@/lib/signature";
 import { SITE_URL } from "@/lib/site";
-import { readOptionalSourceFile, readSourceFile, resolveSourceImport, type SourceFile } from "@/lib/source-files";
+import {
+  readOptionalSourceFile,
+  readSourceFile,
+  resolveSourceImport,
+  type SourceFile,
+} from "@/lib/source-files";
 
 export type RegistryFile = {
   path: string;
@@ -62,7 +67,8 @@ export type RegistryTarget = {
   previewFile?: string;
 };
 
-const STATIC_IMPORT_RE = /\b(?:import|export)\s+(?:type\s+)?(?:[^'";]*?\s+from\s*)?["']([^"']+)["']/g;
+const STATIC_IMPORT_RE =
+  /\b(?:import|export)\s+(?:type\s+)?(?:[^'";]*?\s+from\s*)?["']([^"']+)["']/g;
 const DYNAMIC_IMPORT_RE = /\bimport\s*\(\s*["']([^"']+)["']\s*\)/g;
 const SHADCN_DEP_SKIP = new Set(["next", "react", "react-dom"]);
 
@@ -87,9 +93,7 @@ function parseDeps(source: string) {
       internal.add(spec);
       continue;
     }
-    const pkg = spec.startsWith("@")
-      ? spec.split("/").slice(0, 2).join("/")
-      : spec.split("/")[0];
+    const pkg = spec.startsWith("@") ? spec.split("/").slice(0, 2).join("/") : spec.split("/")[0];
     if (pkg) external.add(pkg);
   }
   return {
@@ -178,15 +182,17 @@ export function allShadcnTargets(): RegistryTarget[] {
 
     if (variantTargets.length > 0) return variantTargets;
 
-    return [{
-      slug: component.slug,
-      name: component.name,
-      description: component.description,
-      file: component.file,
-      extraFiles: component.extraFiles,
-      categorySlug: component.category.slug,
-      pageSlug: component.slug,
-    }];
+    return [
+      {
+        slug: component.slug,
+        name: component.name,
+        description: component.description,
+        file: component.file,
+        extraFiles: component.extraFiles,
+        categorySlug: component.category.slug,
+        pageSlug: component.slug,
+      },
+    ];
   });
 }
 
@@ -239,7 +245,10 @@ async function collectSourceGraph(initialFiles: string[]): Promise<CollectedSour
   };
 }
 
-export async function buildEntry(categorySlug: string, slug: string): Promise<RegistryEntry | null> {
+export async function buildEntry(
+  categorySlug: string,
+  slug: string,
+): Promise<RegistryEntry | null> {
   const cat = findCategory(categorySlug);
   const comp = findRegistryTarget(slug);
   if (!cat || !comp || comp.categorySlug !== categorySlug) return null;
@@ -251,7 +260,13 @@ export async function buildEntry(categorySlug: string, slug: string): Promise<Re
   const previewGraph = previewSource ? await collectSourceGraph([previewPath]) : null;
   const componentFileSet = new Set(requiredFiles);
   const pageUrl = pageUrlFor(categorySlug, comp.pageSlug);
-  const files = mergeRegistryFiles(componentGraph.files, previewGraph?.files ?? [], componentFileSet, previewPath, pageUrl);
+  const files = mergeRegistryFiles(
+    componentGraph.files,
+    previewGraph?.files ?? [],
+    componentFileSet,
+    previewPath,
+    pageUrl,
+  );
 
   return {
     slug: comp.slug,
@@ -262,8 +277,12 @@ export async function buildEntry(categorySlug: string, slug: string): Promise<Re
     detail_url: `${SITE_URL}/r/${slug}`,
     raw_url: `${SITE_URL}/r/${slug}/raw`,
     page_url: `${SITE_URL}/components/${categorySlug}/${comp.pageSlug}`,
-    dependencies: Array.from(new Set([...componentGraph.external, ...(previewGraph?.external ?? [])])).sort(),
-    internal: Array.from(new Set([...componentGraph.internal, ...(previewGraph?.internal ?? [])])).sort(),
+    dependencies: Array.from(
+      new Set([...componentGraph.external, ...(previewGraph?.external ?? [])]),
+    ).sort(),
+    internal: Array.from(
+      new Set([...componentGraph.internal, ...(previewGraph?.internal ?? [])]),
+    ).sort(),
     files,
   };
 }
@@ -329,7 +348,9 @@ export async function buildShadcnItem(
 export async function buildShadcnRegistry(): Promise<ShadcnRegistry> {
   const items = await Promise.all(
     allShadcnTargets().map(async (component) => {
-      const item = await buildShadcnItem(component.categorySlug, component.slug, { includeContent: false });
+      const item = await buildShadcnItem(component.categorySlug, component.slug, {
+        includeContent: false,
+      });
       if (!item) return null;
       const { $schema: _schema, ...entry } = item;
       return entry;

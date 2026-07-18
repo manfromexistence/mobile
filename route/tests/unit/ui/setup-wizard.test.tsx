@@ -66,7 +66,7 @@ describe("SetupWizard", { timeout: 30000 }, () => {
           serverRunning: false,
           onClose: vi.fn(),
           onDnsToggle: vi.fn(),
-        })
+        }),
       );
     });
 
@@ -90,12 +90,12 @@ describe("SetupWizard", { timeout: 30000 }, () => {
           serverRunning: true,
           onClose: vi.fn(),
           onDnsToggle: vi.fn(),
-        })
+        }),
       );
     });
 
     const nextBtn = Array.from(document.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("next")
+      b.textContent?.includes("next"),
     );
     expect(nextBtn).not.toBeNull();
 
@@ -130,20 +130,20 @@ describe("SetupWizard", { timeout: 30000 }, () => {
           serverRunning: true,
           onClose: vi.fn(),
           onDnsToggle,
-        })
+        }),
       );
     });
 
     // Navigate to step 2
     const nextBtn = Array.from(document.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("next")
+      b.textContent?.includes("next"),
     );
     await act(async () => {
       nextBtn?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
 
     const enableDnsBtn = Array.from(document.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("wizardEnableDns")
+      b.textContent?.includes("wizardEnableDns"),
     );
     expect(enableDnsBtn).not.toBeNull();
 
@@ -171,12 +171,12 @@ describe("SetupWizard", { timeout: 30000 }, () => {
           serverRunning: false,
           onClose,
           onDnsToggle: vi.fn(),
-        })
+        }),
       );
     });
 
     const cancelBtn = Array.from(document.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("cancel")
+      b.textContent?.includes("cancel"),
     );
     await act(async () => {
       cancelBtn?.dispatchEvent(new MouseEvent("click", { bubbles: true }));

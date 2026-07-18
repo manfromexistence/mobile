@@ -100,7 +100,7 @@ export async function onRequest(ctx) {
   };
 }
 `,
-      "utf-8"
+      "utf-8",
     );
 
     loaded = await loadPlugin(entryPoint, {
@@ -128,7 +128,7 @@ export async function onRequest(ctx) {
       body: { model: "gpt-4", touchedByPlugin: true },
       metadata: { pluginHook: "onRequest" },
     });
-  }
+  },
 );
 
 // Regression (PR #3562, Hard Rule #18): the loader must build the plugin's
@@ -158,7 +158,7 @@ export async function onActivate(_payload) {}
 export async function onDeactivate(_payload) {}
 export async function onUninstall(_payload) {}
 `,
-      "utf-8"
+      "utf-8",
     );
 
     loaded = await loadPlugin(entryPoint, {
@@ -195,5 +195,5 @@ export async function onUninstall(_payload) {}
 
     // The wired method must bridge to the worker without throwing (fire-and-forget).
     await loaded.plugin.onActivate?.({ name: "lifecycle-test", version: "1.0.0" });
-  }
+  },
 );

@@ -11,7 +11,7 @@ const {
 
 test("extractThinkingFromContent separates think blocks from visible content", () => {
   const parsed = extractThinkingFromContent(
-    "Before<think>reasoning 1</think>middle<thinking>reasoning 2</thinking>after"
+    "Before<think>reasoning 1</think>middle<thinking>reasoning 2</thinking>after",
   );
 
   assert.equal(parsed.content, "Beforemiddleafter");
@@ -88,7 +88,7 @@ test("sanitizeOpenAIResponse preserves prompt-format thinking tags by default", 
   assert.equal((sanitized as any).choices[0].finish_reason, "tool_calls");
   (assert as any).equal(
     (sanitized as any).choices[0].message.content,
-    "Hello\n\n<think>visible protocol</think>\n\nworld"
+    "Hello\n\n<think>visible protocol</think>\n\nworld",
   );
   assert.equal((sanitized as any).choices[0].message.reasoning_content, undefined);
   (assert as any).deepEqual((sanitized as any).choices[0].message.tool_calls, [{ id: "call_1" }]);
@@ -108,7 +108,7 @@ test("sanitizeOpenAIResponse extracts textual reasoning only when explicitly ena
         },
       ],
     },
-    { parseTextualReasoningTags: true }
+    { parseTextualReasoningTags: true },
   );
 
   assert.equal((sanitized as any).choices[0].message.content, "Hello\n\nworld");
@@ -128,7 +128,7 @@ test("sanitizeOpenAIResponse extracts unclosed reasoning wrappers only when enab
         },
       ],
     },
-    { parseTextualReasoningTags: true }
+    { parseTextualReasoningTags: true },
   );
 
   assert.equal(((sanitized as any).choices[0].message as any).content, "");
@@ -149,12 +149,12 @@ test("sanitizeOpenAIResponse preserves native reasoning_content without strippin
         },
       ],
     },
-    { parseTextualReasoningTags: true }
+    { parseTextualReasoningTags: true },
   );
 
   assert.equal(
     ((sanitized as any).choices[0].message as any).content,
-    "<think>visible protocol</think>"
+    "<think>visible protocol</think>",
   );
   assert.equal((sanitized as any).choices[0].message.reasoning_content, "provider reasoning");
 });
@@ -281,7 +281,7 @@ test("sanitizeOpenAIResponse preserves OpenRouter native reasoning and signature
   ]);
   assert.equal(
     (sanitized as any).choices[0].message.content,
-    "<thinking>tag-derived</thinking><content>Visible answer</content>"
+    "<thinking>tag-derived</thinking><content>Visible answer</content>",
   );
 });
 
@@ -599,7 +599,7 @@ test("sanitizeOpenAIResponse preserves reasoning_content when tool_calls are pre
   assert.equal(
     message.reasoning_content,
     "I need to use the web search tool to find current information.",
-    "reasoning_content must be preserved when tool_calls are present"
+    "reasoning_content must be preserved when tool_calls are present",
   );
   assert.equal(message.tool_calls.length, 1);
   assert.equal(message.tool_calls[0].id, "call_search_1");
@@ -644,7 +644,7 @@ test("sanitizeOpenAIResponse preserves reasoning_content when legacy function_ca
   assert.equal(
     message.reasoning_content,
     "I need to use the calculator function.",
-    "reasoning_content must be preserved when legacy function_call is present"
+    "reasoning_content must be preserved when legacy function_call is present",
   );
   assert.deepEqual(message.function_call, { name: "calculate", arguments: '{"expr":"1+1"}' });
 });
@@ -662,7 +662,7 @@ test("shouldParseTextualReasoningTags is limited to tag-native model families", 
   assert.equal(shouldParseTextualReasoningTags(undefined, "antigravity/deepseek-r1"), false);
   assert.equal(
     shouldParseTextualReasoningTags("openai-compatible-custom", "claude-opus-4.7"),
-    false
+    false,
   );
 });
 
@@ -947,7 +947,7 @@ test("sanitizeStreamingChunk strips zero-width joiners from OpenAI chat tool-cal
 
   assert.equal(
     sanitized.choices[0].delta.tool_calls[0].function.arguments,
-    '{"command":"cd /tmp/opencode && pwd"}'
+    '{"command":"cd /tmp/opencode && pwd"}',
   );
   assert.equal(output.includes("\u200d"), false);
 });
@@ -983,7 +983,7 @@ test("sanitizeOpenAIResponse strips zero-width joiners from non-stream tool-call
 
   assert.equal(
     sanitized.choices[0].message.tool_calls[0].function.arguments,
-    '{"command":"opencode"}'
+    '{"command":"opencode"}',
   );
   assert.equal(output.includes("\u200d"), false);
 });

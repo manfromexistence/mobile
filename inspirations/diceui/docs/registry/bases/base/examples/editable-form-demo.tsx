@@ -49,9 +49,7 @@ export default function EditableFormDemo() {
   });
 
   const onSubmit = React.useCallback((input: FormSchema) => {
-    toast.success(
-      <pre className="w-full">{JSON.stringify(input, null, 2)}</pre>,
-    );
+    toast.success(<pre className="w-full">{JSON.stringify(input, null, 2)}</pre>);
   }, []);
 
   return (
@@ -69,10 +67,7 @@ export default function EditableFormDemo() {
                 <Editable
                   defaultValue={field.value}
                   onSubmit={field.onChange}
-                  invalid={
-                    !!form.formState.errors.name &&
-                    !!form.formState.touchedFields.name
-                  }
+                  invalid={!!form.formState.errors.name && !!form.formState.touchedFields.name}
                 >
                   <EditableLabel>Name</EditableLabel>
                   <div className="flex items-start gap-4">
@@ -80,11 +75,7 @@ export default function EditableFormDemo() {
                       <EditablePreview />
                       <EditableInput />
                     </EditableArea>
-                    <EditableTrigger
-                      render={
-                        <Button type="button" variant="outline" size="sm" />
-                      }
-                    >
+                    <EditableTrigger render={<Button type="button" variant="outline" size="sm" />}>
                       Edit
                     </EditableTrigger>
                   </div>
@@ -92,11 +83,7 @@ export default function EditableFormDemo() {
                     <EditableSubmit render={<Button type="button" size="sm" />}>
                       Save
                     </EditableSubmit>
-                    <EditableCancel
-                      render={
-                        <Button type="button" variant="outline" size="sm" />
-                      }
-                    >
+                    <EditableCancel render={<Button type="button" variant="outline" size="sm" />}>
                       Cancel
                     </EditableCancel>
                   </EditableToolbar>
@@ -115,10 +102,7 @@ export default function EditableFormDemo() {
                 <Editable
                   defaultValue={field.value}
                   onSubmit={field.onChange}
-                  invalid={
-                    !!form.formState.errors.title &&
-                    !!form.formState.touchedFields.title
-                  }
+                  invalid={!!form.formState.errors.title && !!form.formState.touchedFields.title}
                 >
                   <EditableLabel>Title</EditableLabel>
                   <div className="flex items-start gap-4">
@@ -126,11 +110,7 @@ export default function EditableFormDemo() {
                       <EditablePreview />
                       <EditableInput />
                     </EditableArea>
-                    <EditableTrigger
-                      render={
-                        <Button type="button" variant="outline" size="sm" />
-                      }
-                    >
+                    <EditableTrigger render={<Button type="button" variant="outline" size="sm" />}>
                       Edit
                     </EditableTrigger>
                   </div>
@@ -138,11 +118,7 @@ export default function EditableFormDemo() {
                     <EditableSubmit render={<Button type="button" size="sm" />}>
                       Save
                     </EditableSubmit>
-                    <EditableCancel
-                      render={
-                        <Button type="button" variant="outline" size="sm" />
-                      }
-                    >
+                    <EditableCancel render={<Button type="button" variant="outline" size="sm" />}>
                       Cancel
                     </EditableCancel>
                   </EditableToolbar>
@@ -153,12 +129,7 @@ export default function EditableFormDemo() {
           )}
         />
         <div className="flex w-fit gap-2 self-end">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-fit"
-            onClick={() => form.reset()}
-          >
+          <Button type="button" variant="outline" className="w-fit" onClick={() => form.reset()}>
             Reset
           </Button>
           <Button type="submit" className="w-fit">

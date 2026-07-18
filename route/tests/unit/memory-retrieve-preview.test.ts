@@ -45,11 +45,11 @@ function insertMemory(
   id: string,
   apiKeyId: string,
   content: string,
-  key?: string
+  key?: string,
 ) {
   db.prepare(
     `INSERT INTO memories (id, api_key_id, session_id, type, key, content, metadata, created_at, updated_at, expires_at)
-     VALUES (?, ?, ?, 'factual', ?, ?, '{}', datetime('now'), datetime('now'), NULL)`
+     VALUES (?, ?, ?, 'factual', ?, ?, '{}', datetime('now'), datetime('now'), NULL)`,
   ).run(id, apiKeyId, "", key ?? `key-${id}`, content);
 }
 
@@ -107,7 +107,7 @@ test("retrievePreview: each item has required fields (tier, score, tokens, memor
     // tier should be one of the valid values
     assert.ok(
       ["fts5", "vector", "hybrid-rrf", "qdrant"].includes(item.tier),
-      `tier '${item.tier}' must be a valid tier value`
+      `tier '${item.tier}' must be a valid tier value`,
     );
   }
 });
@@ -126,9 +126,8 @@ test("retrievePreview: semantic strategy with no vec store → fallbackReason is
 
   // No embedding source configured → fallback
   assert.ok(
-    bundle.resolution.fallbackReason !== null ||
-      bundle.resolution.strategyUsed !== "semantic",
-    "semantic preview with no vec store should indicate fallback"
+    bundle.resolution.fallbackReason !== null || bundle.resolution.strategyUsed !== "semantic",
+    "semantic preview with no vec store should indicate fallback",
   );
   assert.ok(Array.isArray(bundle.items), "items must be array even in fallback");
 });

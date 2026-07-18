@@ -36,7 +36,7 @@ async function renderModal(props: Partial<React.ComponentProps<typeof ModelSelec
         showCombos={false}
         activeProviders={[{ provider: "openai" }]}
         {...props}
-      />
+      />,
     );
   });
 
@@ -66,7 +66,7 @@ beforeEach(() => {
         return { ok: true, json: async () => ({ combos: [] }) };
       }
       return { ok: true, json: async () => ({}) };
-    })
+    }),
   );
 });
 
@@ -93,7 +93,7 @@ describe("ModelSelectModal — deselect / toggle behavior (upstream PR #889)", (
 
     // Find the first OpenAI model rendered (it must exist — openai is an active provider).
     const firstModelButton = container.querySelector(
-      "button[class*='hover:border-primary']"
+      "button[class*='hover:border-primary']",
     ) as HTMLButtonElement | null;
     expect(firstModelButton, "expected at least one openai model button to render").not.toBeNull();
 
@@ -119,14 +119,14 @@ describe("ModelSelectModal — deselect / toggle behavior (upstream PR #889)", (
     // Render once to discover the model value
     const probe = await renderModal({ onSelect: vi.fn(), onDeselect: vi.fn() });
     const probeButton = probe.container.querySelector(
-      "button[class*='hover:border-primary']"
+      "button[class*='hover:border-primary']",
     ) as HTMLButtonElement | null;
     expect(probeButton).not.toBeNull();
     // The on-click handler embeds the model value; trigger once to capture it.
     const tempSelect = vi.fn();
     const probe2 = await renderModal({ onSelect: tempSelect, addedModelValues: [] });
     const probeButton2 = probe2.container.querySelector(
-      "button[class*='hover:border-primary']"
+      "button[class*='hover:border-primary']",
     ) as HTMLButtonElement | null;
     await act(async () => {
       probeButton2!.click();
@@ -145,7 +145,7 @@ describe("ModelSelectModal — deselect / toggle behavior (upstream PR #889)", (
 
     // The already-added model now renders with the emerald/added class — look for ✓.
     const addedButton = Array.from(container.querySelectorAll("button")).find((b) =>
-      (b.textContent || "").includes("✓")
+      (b.textContent || "").includes("✓"),
     ) as HTMLButtonElement | undefined;
     expect(addedButton, "expected an added (✓) button to render").toBeDefined();
 
@@ -169,7 +169,7 @@ describe("ModelSelectModal — deselect / toggle behavior (upstream PR #889)", (
     });
 
     const firstModelButton = container.querySelector(
-      "button[class*='hover:border-primary']"
+      "button[class*='hover:border-primary']",
     ) as HTMLButtonElement | null;
     expect(firstModelButton).not.toBeNull();
 
@@ -188,7 +188,7 @@ describe("ModelSelectModal — deselect / toggle behavior (upstream PR #889)", (
     const { container } = await renderModal({ onSelect, onClose });
 
     const firstModelButton = container.querySelector(
-      "button[class*='hover:border-primary']"
+      "button[class*='hover:border-primary']",
     ) as HTMLButtonElement | null;
     expect(firstModelButton).not.toBeNull();
 

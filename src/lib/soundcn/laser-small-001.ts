@@ -1,4 +1,4 @@
-import type { SoundAsset } from "@/lib/soundcn/sound-types"
+import type { SoundAsset } from "@/lib/soundcn/sound-types";
 
 export const laserSmall001Sound: SoundAsset = {
   name: "laser-small-001",
@@ -8,4 +8,4 @@ export const laserSmall001Sound: SoundAsset = {
   format: "mp3",
   license: "CC0",
   author: "Kenney",
-}
+};

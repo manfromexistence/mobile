@@ -14,8 +14,9 @@ const {
   supportsSearchType,
 } = await import("../../open-sse/config/searchRegistry.ts");
 
-const { computeCacheKey, getOrCoalesce, getCacheStats, SEARCH_CACHE_DEFAULT_TTL_MS } =
-  await import("../../open-sse/services/searchCache.ts");
+const { computeCacheKey, getOrCoalesce, getCacheStats, SEARCH_CACHE_DEFAULT_TTL_MS } = await import(
+  "../../open-sse/services/searchCache.ts"
+);
 
 // ─── Registry Tests ──────────────────────────────────────────
 

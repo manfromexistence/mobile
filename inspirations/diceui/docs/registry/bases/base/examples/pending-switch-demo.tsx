@@ -25,9 +25,7 @@ export default function PendingSwitchDemo() {
         <div className="flex flex-col gap-1">
           <Label htmlFor="notifications">Email Notifications</Label>
           <p className="text-muted-foreground text-sm">
-            {isPending
-              ? "Saving..."
-              : "Receive email about your account activity"}
+            {isPending ? "Saving..." : "Receive email about your account activity"}
           </p>
         </div>
         <Pending isPending={isPending}>
@@ -43,9 +41,7 @@ export default function PendingSwitchDemo() {
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
           <Label htmlFor="marketing">Marketing Updates</Label>
-          <p className="text-muted-foreground text-sm">
-            Get tips, updates, and special offers
-          </p>
+          <p className="text-muted-foreground text-sm">Get tips, updates, and special offers</p>
         </div>
         <Switch id="marketing" />
       </div>

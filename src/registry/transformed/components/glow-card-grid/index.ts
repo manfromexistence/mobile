@@ -1,1 +1,1 @@
-export * from "./glow-card-grid"
+export * from "./glow-card-grid";

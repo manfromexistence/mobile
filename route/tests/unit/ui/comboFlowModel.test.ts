@@ -24,7 +24,7 @@ function mkAttempt(
   targetIndex: number,
   strategy = "priority",
   provider = `prov${targetIndex}`,
-  model = `model${targetIndex}`
+  model = `model${targetIndex}`,
 ): ComboEventInput {
   return {
     comboName: "test-combo",
@@ -41,7 +41,7 @@ function mkFailed(
   targetIndex: number,
   error: string,
   provider = `prov${targetIndex}`,
-  model = `model${targetIndex}`
+  model = `model${targetIndex}`,
 ): ComboEventInput {
   return {
     comboName: "test-combo",
@@ -58,7 +58,7 @@ function mkFailed(
 function mkSucceeded(
   targetIndex: number,
   provider = `prov${targetIndex}`,
-  model = `model${targetIndex}`
+  model = `model${targetIndex}`,
 ): ComboEventInput {
   return {
     comboName: "test-combo",
@@ -329,7 +329,7 @@ describe("comboRunToFlow", () => {
     assert.equal(
       style.stroke,
       FLOW_EDGE_COLORS.active,
-      "succeeded target edge should be active/green color"
+      "succeeded target edge should be active/green color",
     );
   });
 

@@ -37,15 +37,9 @@ export class Completions {
   }
 
   create(request: CompletionCreateParamsNonStreaming): Promise<Completion>;
-  create(
-    request: CompletionCreateParamsStreaming,
-  ): Promise<AsyncIterable<Completion>>;
-  create(
-    request: CompletionCreateParamsBase,
-  ): Promise<AsyncIterable<Completion> | Completion>;
-  create(
-    request: CompletionCreateParams,
-  ): Promise<AsyncIterable<Completion> | Completion> {
+  create(request: CompletionCreateParamsStreaming): Promise<AsyncIterable<Completion>>;
+  create(request: CompletionCreateParamsBase): Promise<AsyncIterable<Completion> | Completion>;
+  create(request: CompletionCreateParams): Promise<AsyncIterable<Completion> | Completion> {
     return this.engine.completion(request);
   }
 }
@@ -249,16 +243,14 @@ export type CompletionCreateParams =
   | CompletionCreateParamsNonStreaming
   | CompletionCreateParamsStreaming;
 
-export interface CompletionCreateParamsNonStreaming
-  extends CompletionCreateParamsBase {
+export interface CompletionCreateParamsNonStreaming extends CompletionCreateParamsBase {
   /**
    * If set, partial deltas will be sent. It will be terminated by an empty chunk.
    */
   stream?: false | null;
 }
 
-export interface CompletionCreateParamsStreaming
-  extends CompletionCreateParamsBase {
+export interface CompletionCreateParamsStreaming extends CompletionCreateParamsBase {
   /**
    * If set, partial deltas will be sent. It will be terminated by an empty chunk.
    */
@@ -332,11 +324,7 @@ export interface CompletionChoice {
 
 //////////////////////////////// 3. POST INIT ////////////////////////////////
 
-export const CompletionCreateParamsUnsupportedFields: Array<string> = [
-  "suffix",
-  "user",
-  "best_of",
-];
+export const CompletionCreateParamsUnsupportedFields: Array<string> = ["suffix", "user", "best_of"];
 
 /**
  * Post init and verify whether the input of the request is valid. Thus, this function can throw

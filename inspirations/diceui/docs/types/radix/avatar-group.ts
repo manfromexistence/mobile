@@ -1,10 +1,5 @@
 import type * as React from "react";
-import type {
-  CompositionProps,
-  Direction,
-  EmptyProps,
-  Orientation,
-} from "@/types";
+import type { CompositionProps, Direction, EmptyProps, Orientation } from "@/types";
 
 export interface AvatarGroupProps extends EmptyProps<"div">, CompositionProps {
   /**

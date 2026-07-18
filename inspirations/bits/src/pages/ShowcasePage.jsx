@@ -1,11 +1,11 @@
-import useScrollToTop from '../hooks/useScrollToTop';
-import Navbar from '../components/landingnew/Navbar/Navbar';
-import Footer from '../components/landingnew/Footer/Footer';
-import DotField from '../components/landingnew/Hero/DotField';
-import { SHOWCASE_ITEMS } from '../constants/Showcase';
-import { FaArrowRight } from 'react-icons/fa6';
+import useScrollToTop from "../hooks/useScrollToTop";
+import Navbar from "../components/landingnew/Navbar/Navbar";
+import Footer from "../components/landingnew/Footer/Footer";
+import DotField from "../components/landingnew/Hero/DotField";
+import { SHOWCASE_ITEMS } from "../constants/Showcase";
+import { FaArrowRight } from "react-icons/fa6";
 
-import '../css/showcase.css';
+import "../css/showcase.css";
 
 const ShowcasePage = () => {
   useScrollToTop();
@@ -37,7 +37,7 @@ const ShowcasePage = () => {
         </div>
 
         <div className="showcase-grid">
-          {SHOWCASE_ITEMS.map(item => (
+          {SHOWCASE_ITEMS.map((item) => (
             <a
               href={item.url}
               rel="noreferrer"
@@ -49,12 +49,12 @@ const ShowcasePage = () => {
                 <img
                   className="showcase-card-img"
                   src={item.image}
-                  alt={`Showcase website by ${item.name || 'Anonymous'}`}
+                  alt={`Showcase website by ${item.name || "Anonymous"}`}
                   loading="lazy"
                 />
               </div>
               <div className="showcase-card-info">
-                <span className="showcase-card-name">{item.name || 'Anonymous'}</span>
+                <span className="showcase-card-name">{item.name || "Anonymous"}</span>
                 <span className="showcase-card-using">{item.using}</span>
               </div>
             </a>

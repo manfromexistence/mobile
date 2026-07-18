@@ -46,7 +46,7 @@ function assertCostTelemetryHeaders(response: Response) {
   assert.match(
     cost as string,
     /^\d+\.\d{10}$/,
-    `cost header must be a fixed-10-decimal number, got: ${cost}`
+    `cost header must be a fixed-10-decimal number, got: ${cost}`,
   );
 
   const version = response.headers.get(OMNIROUTE_RESPONSE_HEADERS.version);
@@ -69,7 +69,7 @@ test("rerank handler success Response carries cost telemetry headers", async () 
           ],
           meta: { api_version: { version: "2" }, billed_units: { search_units: 1 } },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
     throw new Error(`Unexpected URL: ${stringUrl}`);
@@ -86,12 +86,12 @@ test("rerank handler success Response carries cost telemetry headers", async () 
   assert.equal(
     response.headers.get(OMNIROUTE_RESPONSE_HEADERS.provider),
     "cohere",
-    "provider header must reflect the resolved rerank provider"
+    "provider header must reflect the resolved rerank provider",
   );
   const body = (await response.json()) as { results?: unknown[] };
   assert.ok(
     Array.isArray(body.results) && body.results.length === 2,
-    "should return rerank results"
+    "should return rerank results",
   );
 });
 
@@ -121,7 +121,7 @@ test("rerank NVIDIA-format success Response reflects synthesized search unit in 
             { index: 1, logit: 0.4, text: "doc b" },
           ],
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
     throw new Error(`Unexpected URL: ${stringUrl}`);
@@ -138,14 +138,14 @@ test("rerank NVIDIA-format success Response reflects synthesized search unit in 
   assert.equal(
     response.headers.get(OMNIROUTE_RESPONSE_HEADERS.provider),
     "nvidia",
-    "provider header must reflect the resolved rerank provider"
+    "provider header must reflect the resolved rerank provider",
   );
   // 1 synthesized search unit × $0.002 = $0.002. With the OLD `data?.meta…`
   // read this would be "0.0000000000" (raw NVIDIA data carries no meta).
   assert.equal(
     response.headers.get(OMNIROUTE_RESPONSE_HEADERS.responseCost),
     "0.0020000000",
-    "NVIDIA rerank cost must reflect the synthesized 1 search unit read from result"
+    "NVIDIA rerank cost must reflect the synthesized 1 search unit read from result",
   );
 });
 
@@ -159,7 +159,7 @@ test("moderation handler success Response carries cost telemetry headers (cost 0
           model: "omni-moderation-latest",
           results: [{ flagged: false }],
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
     throw new Error(`Unexpected URL: ${stringUrl}`);
@@ -174,7 +174,7 @@ test("moderation handler success Response carries cost telemetry headers (cost 0
   assert.equal(
     response.headers.get(OMNIROUTE_RESPONSE_HEADERS.responseCost),
     "0.0000000000",
-    "moderation is free → cost must be exactly 0"
+    "moderation is free → cost must be exactly 0",
   );
 });
 
@@ -199,14 +199,14 @@ test("v1 audio speech success Response carries cost telemetry headers", async ()
         input: "telemetry speech text",
       }),
     }),
-    {}
+    {},
   );
 
   assertCostTelemetryHeaders(response);
   assert.equal(
     response.headers.get("Content-Type"),
     "audio/mpeg",
-    "audio Content-Type must be preserved"
+    "audio Content-Type must be preserved",
   );
 });
 
@@ -230,13 +230,13 @@ test("v1 audio transcription success Response carries cost telemetry headers (co
     new Request("http://localhost/api/v1/audio/transcriptions", {
       method: "POST",
       body: formData,
-    })
+    }),
   );
 
   assertCostTelemetryHeaders(response);
   assert.equal(
     response.headers.get(OMNIROUTE_RESPONSE_HEADERS.responseCost),
     "0.0000000000",
-    "transcription duration unavailable → cost must be 0"
+    "transcription duration unavailable → cost must be 0",
   );
 });

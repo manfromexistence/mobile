@@ -13,30 +13,8 @@ type Person = {
   mrr: number;
 };
 
-const FIRST = [
-  "Ava",
-  "Leo",
-  "Mia",
-  "Kai",
-  "Zoe",
-  "Eli",
-  "Noa",
-  "Ren",
-  "Ivy",
-  "Jude",
-];
-const LAST = [
-  "Cole",
-  "Frost",
-  "Vale",
-  "Reyes",
-  "Okafor",
-  "Sato",
-  "Lund",
-  "Marsh",
-  "Bose",
-  "Quinn",
-];
+const FIRST = ["Ava", "Leo", "Mia", "Kai", "Zoe", "Eli", "Noa", "Ren", "Ivy", "Jude"];
+const LAST = ["Cole", "Frost", "Vale", "Reyes", "Okafor", "Sato", "Lund", "Marsh", "Bose", "Quinn"];
 const ROLES = ["Owner", "Admin", "Member", "Viewer"];
 const STATUSES: Person["status"][] = ["active", "invited", "suspended"];
 
@@ -104,9 +82,7 @@ export function TablePreview() {
         sortable: true,
         align: "right",
         width: "110px",
-        cell: (row) => (
-          <span className="tabular-nums">${row.mrr.toLocaleString()}</span>
-        ),
+        cell: (row) => <span className="tabular-nums">${row.mrr.toLocaleString()}</span>,
       },
     ],
     [],
@@ -117,9 +93,7 @@ export function TablePreview() {
       <div className="flex w-full flex-col gap-2">
         <div className="flex items-center justify-between px-1 text-muted-foreground text-xs">
           <span>{data.length.toLocaleString()} rows</span>
-          {selected.length > 0 ? (
-            <span>{selected.length.toLocaleString()} selected</span>
-          ) : null}
+          {selected.length > 0 ? <span>{selected.length.toLocaleString()} selected</span> : null}
         </div>
         <Table
           data={data}

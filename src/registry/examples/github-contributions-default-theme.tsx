@@ -1,17 +1,17 @@
-import { Suspense } from "react"
+import { Suspense } from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 import {
   GitHubContributions,
   GitHubContributionsFallback,
-} from "@/registry/transformed/components/github-contributions"
-import { getCachedContributions } from "@/registry/transformed/components/github-contributions/lib/get-cached-contributions"
+} from "@/registry/transformed/components/github-contributions";
+import { getCachedContributions } from "@/registry/transformed/components/github-contributions/lib/get-cached-contributions";
 
-const GITHUB_USERNAME = "ncdai"
-const GITHUB_PROFILE_URL = "https://github.com/ncdai"
+const GITHUB_USERNAME = "ncdai";
+const GITHUB_PROFILE_URL = "https://github.com/ncdai";
 
 export default function GitHubContributionsDefaultTheme() {
-  const contributions = getCachedContributions(GITHUB_USERNAME)
+  const contributions = getCachedContributions(GITHUB_USERNAME);
 
   return (
     <Suspense fallback={<GitHubContributionsFallback />}>
@@ -24,9 +24,9 @@ export default function GitHubContributionsDefaultTheme() {
           '**:data-[level="1"]:fill-[#aceebb] dark:**:data-[level="1"]:fill-[#033a16]',
           '**:data-[level="2"]:fill-[#4ac26b] dark:**:data-[level="2"]:fill-[#196c2e]',
           '**:data-[level="3"]:fill-[#2da44e] dark:**:data-[level="3"]:fill-[#2ea043]',
-          '**:data-[level="4"]:fill-[#116329] dark:**:data-[level="4"]:fill-[#56d364]'
+          '**:data-[level="4"]:fill-[#116329] dark:**:data-[level="4"]:fill-[#56d364]',
         )}
       />
     </Suspense>
-  )
+  );
 }

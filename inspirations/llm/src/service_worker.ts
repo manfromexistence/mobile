@@ -3,11 +3,7 @@ import log from "loglevel";
 import { ChatOptions, MLCEngineConfig } from "./config";
 import { ReloadParams, WorkerRequest, WorkerResponse } from "./message";
 import { InitProgressReport } from "./types";
-import {
-  WebWorkerMLCEngineHandler,
-  WebWorkerMLCEngine,
-  ChatWorker,
-} from "./web_worker";
+import { WebWorkerMLCEngineHandler, WebWorkerMLCEngine, ChatWorker } from "./web_worker";
 import { areArraysEqual, areChatOptionsListEqual } from "./utils";
 import {
   NoServiceWorkerAPIError,
@@ -36,10 +32,7 @@ type IServiceWorker = globalThis.ServiceWorker;
  * });
  */
 export class ServiceWorkerMLCEngineHandler extends WebWorkerMLCEngineHandler {
-  private clientRegistry = new Map<
-    string,
-    IServiceWorker | Client | MessagePort
-  >();
+  private clientRegistry = new Map<string, IServiceWorker | Client | MessagePort>();
   private initRequestUuid?: string;
 
   constructor() {
@@ -90,9 +83,7 @@ export class ServiceWorkerMLCEngineHandler extends WebWorkerMLCEngineHandler {
     onError?: () => void,
   ): void {
     const msg = event.data as WorkerRequest;
-    log.trace(
-      `ServiceWorker message: [${msg.kind}] ${JSON.stringify(msg.content)}`,
-    );
+    log.trace(`ServiceWorker message: [${msg.kind}] ${JSON.stringify(msg.content)}`);
 
     // Special case message handling different from WebWorkerMLCEngineHandler
     if (msg.kind === "keepAlive") {
@@ -169,8 +160,7 @@ export class ServiceWorker implements ChatWorker {
     if (!("serviceWorker" in navigator)) {
       throw new NoServiceWorkerAPIError();
     }
-    const serviceWorker = (navigator.serviceWorker as ServiceWorkerContainer)
-      .controller;
+    const serviceWorker = (navigator.serviceWorker as ServiceWorkerContainer).controller;
     if (!serviceWorker) {
       throw new Error("There is no active service worker");
     }
@@ -204,10 +194,7 @@ export async function CreateServiceWorkerMLCEngine(
   if (!serviceWorker) {
     throw new ServiceWorkerInitializationError();
   }
-  const serviceWorkerMLCEngine = new ServiceWorkerMLCEngine(
-    engineConfig,
-    keepAliveMs,
-  );
+  const serviceWorkerMLCEngine = new ServiceWorkerMLCEngine(engineConfig, keepAliveMs);
   await serviceWorkerMLCEngine.reload(modelId, chatOpts);
   return serviceWorkerMLCEngine;
 }
@@ -234,9 +221,7 @@ export class ServiceWorkerMLCEngine extends WebWorkerMLCEngine {
 
   onmessage(event: any): void {
     const msg = event.data;
-    log.trace(
-      `MLC client message: [${msg.kind}] ${JSON.stringify(msg.content)}`,
-    );
+    log.trace(`MLC client message: [${msg.kind}] ${JSON.stringify(msg.content)}`);
     try {
       if (msg.kind === "heartbeat") {
         this.missedHeartbeat = 0;

@@ -77,13 +77,13 @@ test("provider nodes route rejects malformed JSON and schema validation failures
       method: "POST",
       headers: { "content-type": "application/json" },
       body: "{",
-    })
+    }),
   );
   const invalid = await providerNodesRoute.POST(
     makeRequest({
       name: "Missing API Type",
       prefix: "missing-api-type",
-    })
+    }),
   );
 
   const malformedBody = (await malformed.json()) as any;
@@ -97,7 +97,7 @@ test("provider nodes route rejects malformed JSON and schema validation failures
   assert.equal(invalidBody.error.message, "Invalid request");
   assert.match(
     invalidBody.error.details.find((detail) => detail.field === "apiType")?.message || "",
-    /Invalid OpenAI compatible API type/
+    /Invalid OpenAI compatible API type/,
   );
 });
 
@@ -110,7 +110,7 @@ test("provider nodes route creates OpenAI-compatible nodes with normalized defau
       baseUrl: " https://proxy.example.com/v1 ",
       chatPath: "",
       modelsPath: "",
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -133,7 +133,7 @@ test("provider nodes route allows local OpenAI-compatible base URLs by default",
       prefix: "local-proxy",
       apiType: "chat",
       baseUrl: "http://127.0.0.1:11434/v1",
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -151,7 +151,7 @@ test("provider nodes route blocks local base URLs when local provider URLs are d
       prefix: "local-proxy",
       apiType: "chat",
       baseUrl: "http://127.0.0.1:11434/v1",
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -173,7 +173,7 @@ test("provider nodes route blocks cloud metadata base URLs by default", async ()
       prefix: "metadata-proxy",
       apiType: "chat",
       baseUrl: "http://169.254.169.254/latest/meta-data",
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -192,7 +192,7 @@ test("provider nodes route sanitizes invalid base URL errors", async () => {
       prefix: "bad-url",
       apiType: "chat",
       baseUrl: "not a url with secret-token",
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -212,7 +212,7 @@ test("provider nodes route creates Anthropics-compatible nodes and sanitizes mes
       prefix: "  anthropicx  ",
       baseUrl: " https://anthropic.example.com/v1/messages?beta=1 ",
       modelsPath: "/models",
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -233,7 +233,7 @@ test("provider nodes route blocks CC-compatible nodes when the feature flag is d
       name: "Claude Code Disabled",
       prefix: "cc-disabled",
       baseUrl: "https://cc.example.com/v1/messages?beta=1",
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -253,7 +253,7 @@ test("provider nodes route creates CC-compatible nodes with CC-specific URL norm
       baseUrl: " https://cc.example.com/v1/messages?beta=1 ",
       chatPath: "/chat",
       modelsPath: "/models",
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -290,7 +290,7 @@ test("provider nodes update route allows local base URLs by default", async () =
         baseUrl: "http://localhost:11434/v1",
       }),
     }),
-    { params: Promise.resolve({ id: created.id as string }) }
+    { params: Promise.resolve({ id: created.id as string }) },
   );
   const body = (await response.json()) as any;
   const stored = await providersDb.getProviderNodeById(created.id as string);
@@ -324,7 +324,7 @@ test("provider nodes update route blocks cloud metadata base URLs by default", a
         baseUrl: "http://metadata.google.internal/computeMetadata/v1",
       }),
     }),
-    { params: Promise.resolve({ id: created.id as string }) }
+    { params: Promise.resolve({ id: created.id as string }) },
   );
   const body = (await response.json()) as any;
   const stored = await providersDb.getProviderNodeById(created.id as string);

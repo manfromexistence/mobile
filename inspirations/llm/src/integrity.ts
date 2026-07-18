@@ -130,8 +130,7 @@ export async function verifyIntegrity(
     const actualSRI = `${algo}-${actualHash}`;
     if (onFailure === "warn") {
       log.warn(
-        `Integrity check failed for ${url}. ` +
-          `Expected: ${expectedSRI}, Got: ${actualSRI}`,
+        `Integrity check failed for ${url}. ` + `Expected: ${expectedSRI}, Got: ${actualSRI}`,
       );
       return;
     }

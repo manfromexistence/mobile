@@ -1,9 +1,4 @@
-import {
-  composeEventHandlers,
-  createContext,
-  Primitive,
-  useId,
-} from "@diceui/shared";
+import { composeEventHandlers, createContext, Primitive, useId } from "@diceui/shared";
 import * as React from "react";
 import { useComboboxBadgeListContext } from "./combobox-badge-list";
 import { useComboboxContext } from "./combobox-root";
@@ -21,8 +16,7 @@ interface ComboboxBadgeItemContextValue {
 const [ComboboxBadgeItemProvider, useComboboxBadgeItemContext] =
   createContext<ComboboxBadgeItemContextValue>(BADGE_ITEM_NAME);
 
-interface ComboboxBadgeItemProps
-  extends React.ComponentPropsWithoutRef<typeof Primitive.div> {
+interface ComboboxBadgeItemProps extends React.ComponentPropsWithoutRef<typeof Primitive.div> {
   /** The value of the badge item. */
   value: string;
 
@@ -42,9 +36,7 @@ const ComboboxBadgeItem = React.forwardRef<
   const context = useComboboxContext(BADGE_ITEM_NAME);
   const badgeListContext = useComboboxBadgeListContext(BADGE_ITEM_NAME);
 
-  const index = Array.isArray(context.value)
-    ? context.value.indexOf(value)
-    : -1;
+  const index = Array.isArray(context.value) ? context.value.indexOf(value) : -1;
   const isHighlighted = index === context.highlightedBadgeIndex;
   const position = index + 1;
 

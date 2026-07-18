@@ -29,10 +29,12 @@ test("every server-ws.mjs local import survives the prepublish prune (allowlist)
 });
 
 test("every server-ws.mjs local import is enforced by check:pack-artifact (required)", () => {
-  const missing = localImports().filter(
-    (f) => !PACK_ARTIFACT_REQUIRED_PATHS.includes(`dist/${f}`)
+  const missing = localImports().filter((f) => !PACK_ARTIFACT_REQUIRED_PATHS.includes(`dist/${f}`));
+  assert.deepEqual(
+    missing,
+    [],
+    `add dist/<file> to PACK_ARTIFACT_REQUIRED_PATHS: ${missing.join(", ")}`,
   );
-  assert.deepEqual(missing, [], `add dist/<file> to PACK_ARTIFACT_REQUIRED_PATHS: ${missing.join(", ")}`);
 });
 
 test("sanity: the wrapper actually has local imports (regex not silently broken)", () => {

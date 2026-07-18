@@ -124,7 +124,10 @@ test("quota-share: 403 quota_exhausted → NO wait, error propagated immediately
   // that we didn't accidentally wait out a real (multi-second-to-hours)
   // quota_exhausted lock, so a generous bound still catches a real
   // regression while tolerating CI-runner DB/import contention.
-  assert.ok(elapsed < 10000, `quota_exhausted must not wait out a cooldown, but ${elapsed}ms elapsed`);
+  assert.ok(
+    elapsed < 10000,
+    `quota_exhausted must not wait out a cooldown, but ${elapsed}ms elapsed`,
+  );
 });
 
 test("non quota-share (priority): 429 propagated immediately, NO wait", async () => {
@@ -149,5 +152,8 @@ test("non quota-share (priority): 429 propagated immediately, NO wait", async ()
   assert.equal(res.status, 429, "priority combo must propagate the 429 unchanged");
   assert.equal(calls, 1, "priority combo must NOT wait+redispatch");
   // Widened from 1500ms (#6803) — see the sibling test above for rationale.
-  assert.ok(elapsed < 10000, `priority combo must not wait out a cooldown, but ${elapsed}ms elapsed`);
+  assert.ok(
+    elapsed < 10000,
+    `priority combo must not wait out a cooldown, but ${elapsed}ms elapsed`,
+  );
 });

@@ -34,7 +34,7 @@ await test("scheduleRecordConsumption — returns synchronously (fire-and-forget
       provider: "test-provider",
       cost: { tokens: 100, requests: 1 },
     },
-    null
+    null,
   );
   const elapsed = Date.now() - start;
 
@@ -70,7 +70,7 @@ await test("scheduleRecordConsumption — no pool for key → silent no-op (no c
       provider: "no-provider",
       cost: { tokens: 50 },
     },
-    fakeLog
+    fakeLog,
   );
 
   // Wait for setImmediate callback to fire and recordConsumption to settle/reject
@@ -110,7 +110,7 @@ await test("scheduleRecordConsumption — recordConsumption rejection → caught
       provider: "__force-error-provider__",
       cost: { tokens: 999 },
     },
-    fakeLog
+    fakeLog,
   );
 
   await new Promise((resolve) => setTimeout(resolve, 80));

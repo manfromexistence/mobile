@@ -1,8 +1,8 @@
-import code from '@content/Animations/Cubes/Cubes.jsx?raw';
-import css from '@content/Animations/Cubes/Cubes.css?raw';
-import tailwind from '@tailwind/Animations/Cubes/Cubes.jsx?raw';
-import tsCode from '@ts-default/Animations/Cubes/Cubes.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/Cubes/Cubes.tsx?raw';
+import code from "@content/Animations/Cubes/Cubes.jsx?raw";
+import css from "@content/Animations/Cubes/Cubes.css?raw";
+import tailwind from "@tailwind/Animations/Cubes/Cubes.jsx?raw";
+import tsCode from "@ts-default/Animations/Cubes/Cubes.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/Cubes/Cubes.tsx?raw";
 
 export const cubes = {
   dependencies: `gsap`,
@@ -29,5 +29,5 @@ import Cubes from './Cubes'
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

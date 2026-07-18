@@ -148,20 +148,16 @@
   border-radius: var(--radius-lg);
   width: 50%;
   padding: 2.5rem 2rem;
-  transition:
-    background-color var(--transition-slow),
-    border-color var(--transition-slow),
-    color var(--transition-slow);
+  transition: background-color var(--transition-slow), border-color var(--transition-slow), color
+    var(--transition-slow);
 }
 
 .installation-method:hover {
   cursor: pointer;
   border-color: var(--color-accent-muted);
   color: var(--color-accent);
-  transition:
-    background-color var(--transition-slow),
-    border-color var(--transition-slow),
-    color var(--transition-slow);
+  transition: background-color var(--transition-slow), border-color var(--transition-slow), color
+    var(--transition-slow);
 }
 
 .method-active {
@@ -330,14 +326,12 @@
   border-radius: 10px;
   letter-spacing: -0.3px;
   cursor: pointer;
-  transition:
-    background-color var(--transition-base),
-    border-color var(--transition-base),
-    color var(--transition-base);
+  transition: background-color var(--transition-base), border-color var(--transition-base), color
+    var(--transition-base);
 }
 
 .cli-install .pkg-buttons {
-  font-family: 'Geist', sans-serif;
+  font-family: "Geist", sans-serif;
   font-size: 16px;
   display: flex;
   gap: 1rem;
@@ -350,7 +344,7 @@
   padding-bottom: 0.6em;
 }
 
-.cli-install .cli-toggle-button[data-active='true'] {
+.cli-install .cli-toggle-button[data-active="true"] {
   background-color: var(--bg-elevated);
   color: var(--color-accent);
 }
@@ -364,8 +358,8 @@
   border-style: dashed;
 }
 
-.cli-install .cli-tool-tab[data-active='true']::before {
-  content: '';
+.cli-install .cli-tool-tab[data-active="true"]::before {
+  content: "";
   height: 1px;
   width: 125%;
   border-radius: 50px;
@@ -376,7 +370,7 @@
   transform: translateX(-50%);
 }
 
-.cli-install .cli-tool-tab[data-active='true'] {
+.cli-install .cli-tool-tab[data-active="true"] {
   color: var(--color-accent);
 }
 
@@ -404,7 +398,7 @@
 }
 
 .cli-install code {
-  font-family: 'Google Sans Code', monospace;
+  font-family: "Google Sans Code", monospace;
   white-space: pre;
   overflow-x: auto;
   overflow-y: hidden;
@@ -482,7 +476,7 @@
   gap: 0.75rem;
 }
 
-.cli-install [data-row='cli'] .right-group {
+.cli-install [data-row="cli"] .right-group {
   align-items: center;
 }
 

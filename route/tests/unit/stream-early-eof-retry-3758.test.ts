@@ -86,7 +86,7 @@ test("single-model early-close: retries once then succeeds; double early-close s
   assert.equal(
     recovered.markAccountUnavailableCalls,
     0,
-    "early-close must not mark account unavailable"
+    "early-close must not mark account unavailable",
   );
 
   // attempt 1 + attempt 2 both early-close → surfaces the 502 (bounded, no loop)

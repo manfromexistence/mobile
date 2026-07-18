@@ -34,14 +34,14 @@ test("undici is called exactly twice then native fallback fires once (both undic
   const res = await proxyFetch(
     "https://example.invalid/test",
     { method: "GET" },
-    { undiciFetch: mockUndici, nativeFetch: mockNative }
+    { undiciFetch: mockUndici, nativeFetch: mockNative },
   );
 
   assert.equal(undiciCalls, 2, "undici must be called exactly twice (initial + retry)");
   assert.equal(
     nativeCalls,
     1,
-    "native fallback must fire exactly once after both undici attempts fail"
+    "native fallback must fire exactly once after both undici attempts fail",
   );
   assert.equal(await res.text(), "native-fallback-body");
 });
@@ -66,13 +66,13 @@ test("retry-succeeds: undici fails once then succeeds, native fallback is NOT in
   const res = await proxyFetch(
     "https://example.invalid/test",
     { method: "GET" },
-    { undiciFetch: mockUndici, nativeFetch: mockNative }
+    { undiciFetch: mockUndici, nativeFetch: mockNative },
   );
 
   assert.equal(
     undiciCalls,
     2,
-    "undici must be called exactly twice (initial fail + retry success)"
+    "undici must be called exactly twice (initial fail + retry success)",
   );
   assert.equal(nativeCalls, 0, "native fallback must NOT be invoked when retry succeeds");
   assert.equal(await res.text(), "undici-retry-success");
@@ -107,14 +107,14 @@ test("#2463 — undici error with a NON-STRING code must not crash on errCode.st
   const res = await proxyFetch(
     "https://integrate.api.nvidia.com/v1/chat/completions",
     { method: "POST" },
-    { undiciFetch: mockUndici, nativeFetch: mockNative }
+    { undiciFetch: mockUndici, nativeFetch: mockNative },
   );
 
   assert.equal(undiciCalls, 2, "undici must retry once before falling back (UND_ERR is retryable)");
   assert.equal(
     nativeCalls,
     1,
-    "native fallback must fire — a numeric error code must not crash on errCode.startsWith"
+    "native fallback must fire — a numeric error code must not crash on errCode.startsWith",
   );
   assert.equal(await res.text(), "native-fallback-body");
 });
@@ -145,19 +145,19 @@ test("does not retry or native-fallback when body is a ReadableStream (non-repla
     proxyFetch(
       "https://example.invalid/test",
       { method: "POST", body: stream },
-      { undiciFetch: mockUndici, nativeFetch: mockNative }
+      { undiciFetch: mockUndici, nativeFetch: mockNative },
     ),
     (err: Error & { proxyFetchDetail?: string }) => {
       assert.equal(err, dispatcherError, "must rethrow the original dispatcher error");
       assert.match(err.proxyFetchDetail ?? "", /native=\[skipped: non-replayable request body\]/);
       return true;
-    }
+    },
   );
 
   assert.equal(
     undiciCalls,
     1,
-    "undici must NOT retry when body is a ReadableStream (called exactly once)"
+    "undici must NOT retry when body is a ReadableStream (called exactly once)",
   );
   assert.equal(nativeCalls, 0, "native fallback must NOT consume a non-replayable body");
 });
@@ -188,7 +188,7 @@ test("does not retry or native-fallback when input is a Request with a body", as
       assert.equal(err, dispatcherError, "must rethrow the original dispatcher error");
       assert.match(err.proxyFetchDetail ?? "", /native=\[skipped: non-replayable request body\]/);
       return true;
-    }
+    },
   );
 
   assert.equal(undiciCalls, 1, "undici must NOT retry a Request body");
@@ -261,7 +261,7 @@ test("#4252 both undici AND native fetch fail → rejects fast with cause detail
     proxyFetch(
       "https://example.invalid/x",
       { method: "GET" },
-      { undiciFetch: mockUndici, nativeFetch: mockNative }
+      { undiciFetch: mockUndici, nativeFetch: mockNative },
     ),
     (err: Error & { proxyFetchDetail?: string }) => {
       assert.ok(err.proxyFetchDetail, "propagated error must carry proxyFetchDetail");
@@ -269,6 +269,6 @@ test("#4252 both undici AND native fetch fail → rejects fast with cause detail
       assert.match(err.proxyFetchDetail, /native=\[/);
       assert.match(err.proxyFetchDetail, /ECONNREFUSED/);
       return true;
-    }
+    },
   );
 });

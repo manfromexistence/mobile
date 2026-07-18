@@ -38,7 +38,7 @@ function render(steps: { engine: string; intensity?: string }[], onChange: (s: u
         steps={steps}
         onChange={onChange}
         engineIntensities={TABLE as unknown as Record<string, readonly string[]>}
-      />
+      />,
     );
   });
 }
@@ -50,7 +50,7 @@ describe("CompressionPipelineEditor (T06)", () => {
         { engine: "rtk", intensity: "standard" },
         { engine: "caveman", intensity: "full" },
       ],
-      () => {}
+      () => {},
     );
     expect(container.querySelector('[data-testid="compression-pipeline-editor"]')).toBeTruthy();
     expect(container.querySelectorAll('[data-testid^="pipeline-row-"]').length).toBe(2);
@@ -63,7 +63,9 @@ describe("CompressionPipelineEditor (T06)", () => {
     render([{ engine: "rtk", intensity: "standard" }], (s) => {
       received = s as typeof received;
     });
-    const addBtn = container.querySelector('[data-testid="pipeline-add-step"]') as HTMLButtonElement;
+    const addBtn = container.querySelector(
+      '[data-testid="pipeline-add-step"]',
+    ) as HTMLButtonElement;
     act(() => addBtn.dispatchEvent(new MouseEvent("click", { bubbles: true })));
     expect(received).not.toBeNull();
     expect(received!.length).toBe(2);
@@ -81,10 +83,10 @@ describe("CompressionPipelineEditor (T06)", () => {
       ],
       (s) => {
         received = s as unknown[];
-      }
+      },
     );
     const removeBtn = container.querySelector(
-      '[data-testid="pipeline-remove-0"]'
+      '[data-testid="pipeline-remove-0"]',
     ) as HTMLButtonElement;
     expect(removeBtn.disabled).toBe(false);
     act(() => removeBtn.dispatchEvent(new MouseEvent("click", { bubbles: true })));
@@ -93,7 +95,7 @@ describe("CompressionPipelineEditor (T06)", () => {
     // single-step pipeline: remove is disabled (never below minLength 1)
     render([{ engine: "rtk", intensity: "standard" }], () => {});
     const onlyRemove = container.querySelector(
-      '[data-testid="pipeline-remove-0"]'
+      '[data-testid="pipeline-remove-0"]',
     ) as HTMLButtonElement;
     expect(onlyRemove.disabled).toBe(true);
   });
@@ -104,7 +106,7 @@ describe("CompressionPipelineEditor (T06)", () => {
       received = s as typeof received;
     });
     const engineSelect = container.querySelector(
-      '[data-testid="pipeline-row-0"] select[aria-label="Engine"]'
+      '[data-testid="pipeline-row-0"] select[aria-label="Engine"]',
     ) as HTMLSelectElement;
     act(() => {
       engineSelect.value = "caveman";

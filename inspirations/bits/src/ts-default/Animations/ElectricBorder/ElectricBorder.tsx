@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useCallback, CSSProperties, ReactNode } from 'react';
-import './ElectricBorder.css';
+import React, { useEffect, useRef, useCallback, CSSProperties, ReactNode } from "react";
+import "./ElectricBorder.css";
 
 interface ElectricBorderProps {
   children?: ReactNode;
@@ -13,12 +13,12 @@ interface ElectricBorderProps {
 
 const ElectricBorder: React.FC<ElectricBorderProps> = ({
   children,
-  color = '#5227FF',
+  color = "#5227FF",
   speed = 1,
   chaos = 0.12,
   borderRadius = 24,
   className,
-  style
+  style,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -47,7 +47,7 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
 
       return a * (1 - ux) * (1 - uy) + b * ux * (1 - uy) + c * (1 - ux) * uy + d * ux * uy;
     },
-    [random]
+    [random],
   );
 
   const octavedNoise = useCallback(
@@ -60,7 +60,7 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
       baseFrequency: number,
       time: number,
       seed: number,
-      baseFlatness: number
+      baseFlatness: number,
     ): number => {
       let y = 0;
       let amplitude = baseAmplitude;
@@ -78,7 +78,7 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
 
       return y;
     },
-    [noise2D]
+    [noise2D],
   );
 
   const getCornerPoint = useCallback(
@@ -88,19 +88,26 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
       radius: number,
       startAngle: number,
       arcLength: number,
-      progress: number
+      progress: number,
     ): { x: number; y: number } => {
       const angle = startAngle + progress * arcLength;
       return {
         x: centerX + radius * Math.cos(angle),
-        y: centerY + radius * Math.sin(angle)
+        y: centerY + radius * Math.sin(angle),
       };
     },
-    []
+    [],
   );
 
   const getRoundedRectPoint = useCallback(
-    (t: number, left: number, top: number, width: number, height: number, radius: number): { x: number; y: number } => {
+    (
+      t: number,
+      left: number,
+      top: number,
+      width: number,
+      height: number,
+      radius: number,
+    ): { x: number; y: number } => {
       const straightWidth = width - 2 * radius;
       const straightHeight = height - 2 * radius;
       const cornerArc = (Math.PI * radius) / 2;
@@ -117,7 +124,14 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
 
       if (distance <= accumulated + cornerArc) {
         const progress = (distance - accumulated) / cornerArc;
-        return getCornerPoint(left + width - radius, top + radius, radius, -Math.PI / 2, Math.PI / 2, progress);
+        return getCornerPoint(
+          left + width - radius,
+          top + radius,
+          radius,
+          -Math.PI / 2,
+          Math.PI / 2,
+          progress,
+        );
       }
       accumulated += cornerArc;
 
@@ -129,7 +143,14 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
 
       if (distance <= accumulated + cornerArc) {
         const progress = (distance - accumulated) / cornerArc;
-        return getCornerPoint(left + width - radius, top + height - radius, radius, 0, Math.PI / 2, progress);
+        return getCornerPoint(
+          left + width - radius,
+          top + height - radius,
+          radius,
+          0,
+          Math.PI / 2,
+          progress,
+        );
       }
       accumulated += cornerArc;
 
@@ -141,7 +162,14 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
 
       if (distance <= accumulated + cornerArc) {
         const progress = (distance - accumulated) / cornerArc;
-        return getCornerPoint(left + radius, top + height - radius, radius, Math.PI / 2, Math.PI / 2, progress);
+        return getCornerPoint(
+          left + radius,
+          top + height - radius,
+          radius,
+          Math.PI / 2,
+          Math.PI / 2,
+          progress,
+        );
       }
       accumulated += cornerArc;
 
@@ -154,7 +182,7 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
       const progress = (distance - accumulated) / cornerArc;
       return getCornerPoint(left + radius, top + radius, radius, Math.PI, Math.PI / 2, progress);
     },
-    [getCornerPoint]
+    [getCornerPoint],
   );
 
   useEffect(() => {
@@ -162,7 +190,7 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
     const container = containerRef.current;
     if (!canvas || !container) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     const octaves = 10;
@@ -213,8 +241,8 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
 
       ctx.strokeStyle = color;
       ctx.lineWidth = 1;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
 
       const scale = displacement;
       const left = borderOffset;
@@ -243,7 +271,7 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
           frequency,
           timeRef.current,
           0,
-          baseFlatness
+          baseFlatness,
         );
         const yNoise = octavedNoise(
           progress * 8,
@@ -254,7 +282,7 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
           frequency,
           timeRef.current,
           1,
-          baseFlatness
+          baseFlatness,
         );
 
         const displacedX = point.x + xNoise * scale;
@@ -291,12 +319,16 @@ const ElectricBorder: React.FC<ElectricBorderProps> = ({
   }, [color, speed, chaos, borderRadius, octavedNoise, getRoundedRectPoint]);
 
   const vars = {
-    '--electric-border-color': color,
-    borderRadius
+    "--electric-border-color": color,
+    borderRadius,
   } as CSSProperties;
 
   return (
-    <div ref={containerRef} className={`electric-border ${className ?? ''}`} style={{ ...vars, ...style }}>
+    <div
+      ref={containerRef}
+      className={`electric-border ${className ?? ""}`}
+      style={{ ...vars, ...style }}
+    >
       <div className="eb-canvas-container">
         <canvas ref={canvasRef} className="eb-canvas" />
       </div>

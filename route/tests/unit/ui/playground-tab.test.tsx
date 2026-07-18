@@ -53,7 +53,16 @@ vi.mock("@/shared/components", () => ({
     max?: string;
     step?: string;
   }) =>
-    React.createElement("input", { value, onChange, "data-testid": testId, onKeyDown, type, min, max, step }),
+    React.createElement("input", {
+      value,
+      onChange,
+      "data-testid": testId,
+      onKeyDown,
+      type,
+      min,
+      max,
+      step,
+    }),
   Select: ({
     children,
     value,
@@ -69,17 +78,23 @@ vi.mock("@/shared/components", () => ({
     React.createElement("span", { "data-variant": variant }, children),
 }));
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/memory/components/RetrievePreview",
-  () => ({
-    default: ({ result }: { result: { memories: unknown[]; resolution: Record<string, unknown>; totalTokensUsed: number; budgetMaxTokens: number } }) =>
-      React.createElement(
-        "div",
-        { "data-testid": "retrieve-preview" },
-        `results:${result.memories.length}`,
-      ),
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/memory/components/RetrievePreview", () => ({
+  default: ({
+    result,
+  }: {
+    result: {
+      memories: unknown[];
+      resolution: Record<string, unknown>;
+      totalTokensUsed: number;
+      budgetMaxTokens: number;
+    };
+  }) =>
+    React.createElement(
+      "div",
+      { "data-testid": "retrieve-preview" },
+      `results:${result.memories.length}`,
+    ),
+}));
 
 const MOCK_RESULT = {
   memories: [
@@ -118,8 +133,9 @@ function makeContainer(): HTMLElement {
 
 describe("PlaygroundTab", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-      true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
     globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => MOCK_RESULT,

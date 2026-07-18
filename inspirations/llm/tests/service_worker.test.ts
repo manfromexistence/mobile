@@ -6,9 +6,7 @@ import {
 } from "../src/service_worker";
 import { jest, test, expect, afterEach } from "@jest/globals";
 
-type ServiceWorkerHandlerEvent = Parameters<
-  ServiceWorkerMLCEngineHandler["onmessage"]
->[0];
+type ServiceWorkerHandlerEvent = Parameters<ServiceWorkerMLCEngineHandler["onmessage"]>[0];
 
 jest.mock("@mlc-ai/web-runtime", () => ({
   detectGPUDevice: jest.fn(async () => ({
@@ -132,9 +130,7 @@ test("reload with the same model skips engine reload", async () => {
   } as ServiceWorkerHandlerEvent);
   await handleTaskMock.mock.results[0].value;
   expect(reloadMock).not.toHaveBeenCalled();
-  expect(initCallback).toHaveBeenCalledWith(
-    expect.objectContaining({ progress: 1 }),
-  );
+  expect(initCallback).toHaveBeenCalledWith(expect.objectContaining({ progress: 1 }));
 });
 
 test("reload with new parameters calls engine reload", async () => {
@@ -172,9 +168,9 @@ test("ServiceWorker postMessage throws if controller missing", () => {
   const { container } = setupNavigator(undefined);
   container.controller = undefined as any;
   const client = new ServiceWorker();
-  expect(() =>
-    client.postMessage({ kind: "reload", uuid: "client-msg" } as any),
-  ).toThrow("There is no active service worker");
+  expect(() => client.postMessage({ kind: "reload", uuid: "client-msg" } as any)).toThrow(
+    "There is no active service worker",
+  );
 });
 
 test("ServiceWorkerMLCEngine heartbeats reset missed counter", () => {

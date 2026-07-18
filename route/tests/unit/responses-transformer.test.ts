@@ -4,8 +4,9 @@ import { mkdtempSync, readdirSync, readFileSync, rmSync, unlinkSync, writeFileSy
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const { createResponsesApiTransformStream, createResponsesLogger } =
-  await import("../../open-sse/transformer/responsesTransformer.ts");
+const { createResponsesApiTransformStream, createResponsesLogger } = await import(
+  "../../open-sse/transformer/responsesTransformer.ts"
+);
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -62,13 +63,13 @@ test("createResponsesApiTransformStream converts plain chat deltas into Response
     .filter((event) => event.event === "response.output_text.delta")
     .map((event) => JSON.parse(event.data));
   const completed = JSON.parse(
-    events.find((event) => event.event === "response.completed").data
+    events.find((event) => event.event === "response.completed").data,
   ).response;
   const doneMarker = events.at(-1);
 
   assert.deepEqual(
     deltas.map((delta) => delta.delta),
-    ["Hel", "lo"]
+    ["Hel", "lo"],
   );
   assert.ok(types.includes("response.created"));
   assert.ok(types.includes("response.in_progress"));
@@ -95,7 +96,7 @@ test("createResponsesApiTransformStream preserves prompt-format think tags by de
     .filter((event) => event.event === "response.reasoning_summary_text.delta")
     .map((event) => JSON.parse(event.data).delta);
   const completed = JSON.parse(
-    events.find((event) => event.event === "response.completed").data
+    events.find((event) => event.event === "response.completed").data,
   ).response;
 
   assert.deepEqual(reasoningDeltas, []);
@@ -116,7 +117,7 @@ test("createResponsesApiTransformStream extracts think tags for tag-native model
     .filter((event) => event.event === "response.reasoning_summary_text.delta")
     .map((event) => JSON.parse(event.data).delta);
   const completed = JSON.parse(
-    events.find((event) => event.event === "response.completed").data
+    events.find((event) => event.event === "response.completed").data,
   ).response;
 
   assert.deepEqual(reasoningDeltas, ["plan", "ning"]);
@@ -144,7 +145,7 @@ test("createResponsesApiTransformStream handles native reasoning content and too
     .map((event) => JSON.parse(event.data).item)
     .filter((item) => item.type === "function_call");
   const completed = JSON.parse(
-    events.find((event) => event.event === "response.completed").data
+    events.find((event) => event.event === "response.completed").data,
   ).response;
 
   assert.deepEqual(
@@ -152,14 +153,14 @@ test("createResponsesApiTransformStream handles native reasoning content and too
     [
       { id: "fc_call_1", call_id: "call_1", name: "search" },
       { id: "fc_call_2", call_id: "call_2", name: "lookup" },
-    ]
+    ],
   );
   assert.deepEqual(
     doneCalls.map((item) => ({ id: item.id, call_id: item.call_id, name: item.name })),
     [
       { id: "fc_call_1", call_id: "call_1", name: "search" },
       { id: "fc_call_2", call_id: "call_2", name: "lookup" },
-    ]
+    ],
   );
   assert.equal(completed.output[0].type, "reasoning");
   assert.deepEqual(
@@ -171,7 +172,7 @@ test("createResponsesApiTransformStream handles native reasoning content and too
         name: item.name,
         arguments: item.arguments,
       })),
-    [{ id: "fc_call_2", call_id: "call_2", name: "lookup", arguments: "{}" }]
+    [{ id: "fc_call_2", call_id: "call_2", name: "lookup", arguments: "{}" }],
   );
 });
 
@@ -183,7 +184,7 @@ test("createResponsesLogger persists input and output event logs on flush", asyn
 
   const output = await runTransformStream(
     ['data: {"choices":[{"index":0,"delta":{"content":"hi"},"finish_reason":"stop"}]}\n\n'],
-    logger
+    logger,
   );
 
   const logRoot = join(logsDir, "logs");
@@ -208,7 +209,7 @@ test("createResponsesApiTransformStream ignores malformed events and preserves u
 
   const events = parseSseOutput(output);
   const completed = JSON.parse(
-    events.find((event) => event.event === "response.completed").data
+    events.find((event) => event.event === "response.completed").data,
   ).response;
 
   assert.equal(completed.id, "resp_chatcmpl_edge");
@@ -261,7 +262,7 @@ test("createResponsesApiTransformStream deduplicates repeated tool argument snap
 
   const events = parseSseOutput(output);
   const completed = JSON.parse(
-    events.find((event) => event.event === "response.completed").data
+    events.find((event) => event.event === "response.completed").data,
   ).response;
   const toolCall = completed.output.find((item) => item.type === "function_call");
 
@@ -288,7 +289,7 @@ test("createResponsesApiTransformStream concatenates incremental tool argument f
 
   const events = parseSseOutput(output);
   const completed = JSON.parse(
-    events.find((event) => event.event === "response.completed").data
+    events.find((event) => event.event === "response.completed").data,
   ).response;
   const toolCall = completed.output.find((item) => item.type === "function_call");
 
@@ -330,7 +331,7 @@ test("createResponsesApiTransformStream clears the keepalive timer when the stre
     assert.equal(live.size, 1, "keepalive interval should be active while streaming");
 
     await writer.write(
-      encoder.encode('data: {"choices":[{"index":0,"delta":{"content":"hi"}}]}\n\n')
+      encoder.encode('data: {"choices":[{"index":0,"delta":{"content":"hi"}}]}\n\n'),
     );
     await reader.read();
 

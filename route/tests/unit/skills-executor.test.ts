@@ -60,7 +60,7 @@ test("skillExecutor executes a registered handler and persists execution history
   const execution = await skillExecutor.execute(
     "echo@1.0.0",
     { value: "hello" },
-    { apiKeyId: "key-a", sessionId: "session-1" }
+    { apiKeyId: "key-a", sessionId: "session-1" },
   );
 
   assert.equal(execution.skillId, skill.id);
@@ -84,7 +84,7 @@ test("skillExecutor blocks execution when Skills are disabled in settings", asyn
 
   await assert.rejects(
     skillExecutor.execute("echo@1.0.0", { value: "hello" }, { apiKeyId: "key-a" }),
-    /Skills execution is disabled/
+    /Skills execution is disabled/,
   );
 });
 
@@ -93,7 +93,7 @@ test("skillExecutor records handler lookup failures as errored executions", asyn
 
   await assert.rejects(
     skillExecutor.execute("echo@1.0.0", { value: "hello" }, { apiKeyId: "key-a" }),
-    /Handler not found: echo-handler/
+    /Handler not found: echo-handler/,
   );
 
   const executions = skillExecutor.listExecutions("key-a");
@@ -108,11 +108,11 @@ test("skillExecutor records disabled skills and missing skills as direct failure
 
   await assert.rejects(
     skillExecutor.execute("echo@1.0.0", { value: "hello" }, { apiKeyId: "key-a" }),
-    /Skill is disabled/
+    /Skill is disabled/,
   );
   await assert.rejects(
     skillExecutor.execute("missing@1.0.0", { value: "hello" }, { apiKeyId: "key-a" }),
-    /Skill not found/
+    /Skill not found/,
   );
 
   assert.equal(skillExecutor.listExecutions("key-a").length, 0);
@@ -128,7 +128,7 @@ test("skillExecutor turns handler errors and timeouts into error executions", as
   const failed = await skillExecutor.execute(
     "echo@1.0.0",
     { value: "boom" },
-    { apiKeyId: "key-a", sessionId: "session-2" }
+    { apiKeyId: "key-a", sessionId: "session-2" },
   );
 
   assert.equal(failed.status, "error");
@@ -140,7 +140,7 @@ test("skillExecutor turns handler errors and timeouts into error executions", as
     async () =>
       new Promise((resolve) => {
         setTimeout(() => resolve({ late: true }), 25);
-      })
+      }),
   );
   skillExecutor.setTimeout(5);
   skillExecutor.setMaxRetries(7);
@@ -148,7 +148,7 @@ test("skillExecutor turns handler errors and timeouts into error executions", as
   const timedOut = await skillExecutor.execute(
     "echo@1.0.0",
     { value: "slow" },
-    { apiKeyId: "key-a", sessionId: "session-3" }
+    { apiKeyId: "key-a", sessionId: "session-3" },
   );
 
   assert.equal(skillExecutor["maxRetries"], 7);

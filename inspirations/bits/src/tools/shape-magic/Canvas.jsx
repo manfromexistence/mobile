@@ -1,7 +1,21 @@
-import { useRef, useState, useCallback, useEffect, useMemo, forwardRef, useImperativeHandle } from 'react';
-import { Box, Flex, Text, Icon } from '@chakra-ui/react';
-import { Eye, EyeOff, Maximize2 } from 'lucide-react';
-import { getBridgePathAt, getRoundedRectPath, getFillSpec, getFxSpec, computeShapesBBox } from './svgRenderers';
+import {
+  useRef,
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
+import { Box, Flex, Text, Icon } from "@chakra-ui/react";
+import { Eye, EyeOff, Maximize2 } from "lucide-react";
+import {
+  getBridgePathAt,
+  getRoundedRectPath,
+  getFillSpec,
+  getFxSpec,
+  computeShapesBBox,
+} from "./svgRenderers";
 
 const Canvas = forwardRef(
   (
@@ -21,9 +35,9 @@ const Canvas = forwardRef(
       gridSize,
       showGrid = true,
       showBridgeDebug = false,
-      onShowBridgeDebugChange
+      onShowBridgeDebugChange,
     },
-    ref
+    ref,
   ) => {
     const containerRef = useRef(null);
     const hasCenteredRef = useRef(false);
@@ -51,10 +65,10 @@ const Canvas = forwardRef(
       const rect = container.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) return;
 
-      const minX = Math.min(...shapes.map(s => s.x));
-      const minY = Math.min(...shapes.map(s => s.y));
-      const maxX = Math.max(...shapes.map(s => s.x + s.w));
-      const maxY = Math.max(...shapes.map(s => s.y + s.h));
+      const minX = Math.min(...shapes.map((s) => s.x));
+      const minY = Math.min(...shapes.map((s) => s.y));
+      const maxX = Math.max(...shapes.map((s) => s.x + s.w));
+      const maxY = Math.max(...shapes.map((s) => s.y + s.h));
 
       const shapesWidth = maxX - minX;
       const shapesHeight = maxY - minY;
@@ -75,16 +89,16 @@ const Canvas = forwardRef(
       setZoom(newZoom);
       setPan({
         x: containerCenterX - shapesCenterX * newZoom,
-        y: containerCenterY - shapesCenterY * newZoom
+        y: containerCenterY - shapesCenterY * newZoom,
       });
     }, [shapes]);
 
     useImperativeHandle(
       ref,
       () => ({
-        fitToView
+        fitToView,
       }),
-      [fitToView]
+      [fitToView],
     );
 
     useEffect(() => {
@@ -97,10 +111,10 @@ const Canvas = forwardRef(
         const rect = container.getBoundingClientRect();
         if (rect.width === 0 || rect.height === 0) return;
 
-        const minX = Math.min(...shapes.map(s => s.x));
-        const minY = Math.min(...shapes.map(s => s.y));
-        const maxX = Math.max(...shapes.map(s => s.x + s.w));
-        const maxY = Math.max(...shapes.map(s => s.y + s.h));
+        const minX = Math.min(...shapes.map((s) => s.x));
+        const minY = Math.min(...shapes.map((s) => s.y));
+        const maxX = Math.max(...shapes.map((s) => s.x + s.w));
+        const maxY = Math.max(...shapes.map((s) => s.y + s.h));
 
         const shapesWidth = maxX - minX;
         const shapesHeight = maxY - minY;
@@ -112,7 +126,7 @@ const Canvas = forwardRef(
 
         setPan({
           x: containerCenterX - shapesCenterX,
-          y: containerCenterY - shapesCenterY
+          y: containerCenterY - shapesCenterY,
         });
 
         hasCenteredRef.current = true;
@@ -125,43 +139,43 @@ const Canvas = forwardRef(
         if (!rect) return { x: 0, y: 0 };
         return {
           x: (screenX - rect.left - pan.x) / zoom,
-          y: (screenY - rect.top - pan.y) / zoom
+          y: (screenY - rect.top - pan.y) / zoom,
         };
       },
-      [pan, zoom]
+      [pan, zoom],
     );
 
     const snapValue = useCallback(
-      value => {
+      (value) => {
         if (!snapToGrid) return value;
         return Math.round(value / gridSize) * gridSize;
       },
-      [snapToGrid, gridSize]
+      [snapToGrid, gridSize],
     );
 
     useEffect(() => {
-      const handleKeyDown = e => {
-        if (e.code === 'Space' && !e.repeat && document.activeElement?.tagName !== 'INPUT') {
+      const handleKeyDown = (e) => {
+        if (e.code === "Space" && !e.repeat && document.activeElement?.tagName !== "INPUT") {
           e.preventDefault();
           setSpaceHeld(true);
         }
       };
-      const handleKeyUp = e => {
-        if (e.code === 'Space') {
+      const handleKeyUp = (e) => {
+        if (e.code === "Space") {
           setSpaceHeld(false);
           setIsPanning(false);
         }
       };
-      window.addEventListener('keydown', handleKeyDown);
-      window.addEventListener('keyup', handleKeyUp);
+      window.addEventListener("keydown", handleKeyDown);
+      window.addEventListener("keyup", handleKeyUp);
       return () => {
-        window.removeEventListener('keydown', handleKeyDown);
-        window.removeEventListener('keyup', handleKeyUp);
+        window.removeEventListener("keydown", handleKeyDown);
+        window.removeEventListener("keyup", handleKeyUp);
       };
     }, []);
 
     const handleWheel = useCallback(
-      e => {
+      (e) => {
         e.preventDefault();
         const delta = e.deltaY > 0 ? 0.9 : 1.1;
         const newZoom = Math.min(Math.max(zoom * delta, 0.25), 4);
@@ -179,11 +193,11 @@ const Canvas = forwardRef(
 
         setZoom(newZoom);
       },
-      [zoom, pan]
+      [zoom, pan],
     );
 
     const handleMouseDown = useCallback(
-      e => {
+      (e) => {
         const canvasPos = screenToCanvas(e.clientX, e.clientY);
 
         if (spaceHeld) {
@@ -194,12 +208,12 @@ const Canvas = forwardRef(
 
         if (e.target.dataset.handle) {
           const shapeId = e.target.dataset.shapeId;
-          const shape = shapes.find(s => s.id === shapeId);
+          const shape = shapes.find((s) => s.id === shapeId);
           if (shape) {
             const states = {};
             const selected = selectedIds.includes(shapeId) ? selectedIds : [shapeId];
-            selected.forEach(id => {
-              const s = shapes.find(sh => sh.id === id);
+            selected.forEach((id) => {
+              const s = shapes.find((sh) => sh.id === id);
               if (s) states[id] = { ...s };
             });
 
@@ -215,22 +229,24 @@ const Canvas = forwardRef(
         const clickedShape = [...shapes]
           .reverse()
           .find(
-            shape =>
+            (shape) =>
               canvasPos.x >= shape.x &&
               canvasPos.x <= shape.x + shape.w &&
               canvasPos.y >= shape.y &&
-              canvasPos.y <= shape.y + shape.h
+              canvasPos.y <= shape.y + shape.h,
           );
 
         if (clickedShape) {
           if (e.altKey && onAltDragDuplicate) {
-            const shapesToDuplicate = selectedIds.includes(clickedShape.id) ? selectedIds : [clickedShape.id];
+            const shapesToDuplicate = selectedIds.includes(clickedShape.id)
+              ? selectedIds
+              : [clickedShape.id];
             altDragDuplicatedRef.current = false;
             setIsAltDragging(true);
 
             const states = {};
-            shapesToDuplicate.forEach(id => {
-              const s = shapes.find(sh => sh.id === id);
+            shapesToDuplicate.forEach((id) => {
+              const s = shapes.find((sh) => sh.id === id);
               if (s) states[id] = { ...s };
             });
 
@@ -243,7 +259,7 @@ const Canvas = forwardRef(
 
           if (e.shiftKey) {
             if (selectedIds.includes(clickedShape.id)) {
-              onSelectionChange(selectedIds.filter(id => id !== clickedShape.id));
+              onSelectionChange(selectedIds.filter((id) => id !== clickedShape.id));
             } else {
               onSelectionChange([...selectedIds, clickedShape.id]);
             }
@@ -251,10 +267,12 @@ const Canvas = forwardRef(
             onSelectionChange([clickedShape.id]);
           }
 
-          const shapesToMove = selectedIds.includes(clickedShape.id) ? selectedIds : [clickedShape.id];
+          const shapesToMove = selectedIds.includes(clickedShape.id)
+            ? selectedIds
+            : [clickedShape.id];
           const states = {};
-          shapesToMove.forEach(id => {
-            const s = shapes.find(sh => sh.id === id);
+          shapesToMove.forEach((id) => {
+            const s = shapes.find((sh) => sh.id === id);
             if (s) states[id] = { ...s };
           });
 
@@ -275,15 +293,15 @@ const Canvas = forwardRef(
           }
         }
       },
-      [shapes, selectedIds, screenToCanvas, onSelectionChange, spaceHeld, onAltDragDuplicate]
+      [shapes, selectedIds, screenToCanvas, onSelectionChange, spaceHeld, onAltDragDuplicate],
     );
 
     const handleMouseMove = useCallback(
-      e => {
+      (e) => {
         if (isPanning && dragStart) {
           const dx = e.clientX - dragStart.x;
           const dy = e.clientY - dragStart.y;
-          setPan(prev => ({ x: prev.x + dx, y: prev.y + dy }));
+          setPan((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
           setDragStart({ x: e.clientX, y: e.clientY });
           return;
         }
@@ -309,17 +327,17 @@ const Canvas = forwardRef(
 
               if (duplicates && duplicates.length > 0) {
                 const newStates = {};
-                duplicates.forEach(dup => {
+                duplicates.forEach((dup) => {
                   newStates[dup.id] = { ...dup };
                 });
                 setInitialShapeStates(newStates);
                 setDraggedShape(duplicates[0]);
                 altDragDuplicatedRef.current = true;
 
-                duplicates.forEach(dup => {
+                duplicates.forEach((dup) => {
                   onShapeUpdate(dup.id, {
                     x: snapValue(dup.x + dx),
-                    y: snapValue(dup.y + dy)
+                    y: snapValue(dup.y + dy),
                   });
                 });
               }
@@ -339,18 +357,18 @@ const Canvas = forwardRef(
               let newW = initial.w;
               let newH = initial.h;
 
-              if (resizeHandle.includes('w')) {
+              if (resizeHandle.includes("w")) {
                 newX = snapValue(initial.x + dx);
                 newW = initial.w - (newX - initial.x);
               }
-              if (resizeHandle.includes('e')) {
+              if (resizeHandle.includes("e")) {
                 newW = snapValue(initial.w + dx);
               }
-              if (resizeHandle.includes('n')) {
+              if (resizeHandle.includes("n")) {
                 newY = snapValue(initial.y + dy);
                 newH = initial.h - (newY - initial.y);
               }
-              if (resizeHandle.includes('s')) {
+              if (resizeHandle.includes("s")) {
                 newH = snapValue(initial.h + dy);
               }
 
@@ -358,13 +376,17 @@ const Canvas = forwardRef(
                 x: snapValue(newX),
                 y: snapValue(newY),
                 w: snapValue(Math.max(20, newW)),
-                h: snapValue(Math.max(20, newH))
+                h: snapValue(Math.max(20, newH)),
               });
             } else {
-              const minX = Math.min(...ids.map(id => initialShapeStates[id].x));
-              const minY = Math.min(...ids.map(id => initialShapeStates[id].y));
-              const maxX = Math.max(...ids.map(id => initialShapeStates[id].x + initialShapeStates[id].w));
-              const maxY = Math.max(...ids.map(id => initialShapeStates[id].y + initialShapeStates[id].h));
+              const minX = Math.min(...ids.map((id) => initialShapeStates[id].x));
+              const minY = Math.min(...ids.map((id) => initialShapeStates[id].y));
+              const maxX = Math.max(
+                ...ids.map((id) => initialShapeStates[id].x + initialShapeStates[id].w),
+              );
+              const maxY = Math.max(
+                ...ids.map((id) => initialShapeStates[id].y + initialShapeStates[id].h),
+              );
               const boxW = maxX - minX;
               const boxH = maxY - minY;
 
@@ -373,15 +395,15 @@ const Canvas = forwardRef(
                 newMaxX = maxX,
                 newMaxY = maxY;
 
-              if (resizeHandle.includes('w')) newMinX = snapValue(minX + dx);
-              if (resizeHandle.includes('e')) newMaxX = snapValue(maxX + dx);
-              if (resizeHandle.includes('n')) newMinY = snapValue(minY + dy);
-              if (resizeHandle.includes('s')) newMaxY = snapValue(maxY + dy);
+              if (resizeHandle.includes("w")) newMinX = snapValue(minX + dx);
+              if (resizeHandle.includes("e")) newMaxX = snapValue(maxX + dx);
+              if (resizeHandle.includes("n")) newMinY = snapValue(minY + dy);
+              if (resizeHandle.includes("s")) newMaxY = snapValue(maxY + dy);
 
               const newBoxW = Math.max(gridSize * 2, newMaxX - newMinX);
               const newBoxH = Math.max(gridSize * 2, newMaxY - newMinY);
 
-              ids.forEach(id => {
+              ids.forEach((id) => {
                 const initial = initialShapeStates[id];
                 const relX = (initial.x - minX) / (boxW || 1);
                 const relY = (initial.y - minY) / (boxH || 1);
@@ -392,16 +414,16 @@ const Canvas = forwardRef(
                   x: snapValue(newMinX + relX * newBoxW),
                   y: snapValue(newMinY + relY * newBoxH),
                   w: snapValue(Math.max(gridSize * 2, relW * newBoxW)),
-                  h: snapValue(Math.max(gridSize * 2, relH * newBoxH))
+                  h: snapValue(Math.max(gridSize * 2, relH * newBoxH)),
                 });
               });
             }
           } else {
-            Object.keys(initialShapeStates).forEach(id => {
+            Object.keys(initialShapeStates).forEach((id) => {
               const initial = initialShapeStates[id];
               onShapeUpdate(id, {
                 x: snapValue(initial.x + dx),
-                y: snapValue(initial.y + dy)
+                y: snapValue(initial.y + dy),
               });
             });
           }
@@ -422,13 +444,13 @@ const Canvas = forwardRef(
         screenToCanvas,
         gridSize,
         isAltDragging,
-        onAltDragDuplicate
-      ]
+        onAltDragDuplicate,
+      ],
     );
 
     const handleMouseUp = useCallback(() => {
       if (marquee && marqueeStart) {
-        const selected = shapes.filter(shape => {
+        const selected = shapes.filter((shape) => {
           const shapeRight = shape.x + shape.w;
           const shapeBottom = shape.y + shape.h;
           const marqueeRight = marquee.x + marquee.w;
@@ -443,7 +465,7 @@ const Canvas = forwardRef(
         });
 
         if (selected.length > 0) {
-          onSelectionChange(selected.map(s => s.id));
+          onSelectionChange(selected.map((s) => s.id));
         }
       }
 
@@ -467,54 +489,54 @@ const Canvas = forwardRef(
       const container = containerRef.current;
       if (!container) return;
 
-      container.addEventListener('wheel', handleWheel, { passive: false });
-      return () => container.removeEventListener('wheel', handleWheel);
+      container.addEventListener("wheel", handleWheel, { passive: false });
+      return () => container.removeEventListener("wheel", handleWheel);
     }, [handleWheel]);
 
     const shapesBBox = useMemo(() => computeShapesBBox(shapes), [shapes]);
-    const fillSpec = useMemo(() => getFillSpec(style, shapesBBox, 'canvas'), [style, shapesBBox]);
-    const fxSpec = useMemo(() => getFxSpec(style, 'canvas'), [style]);
+    const fillSpec = useMemo(() => getFillSpec(style, shapesBBox, "canvas"), [style, shapesBBox]);
+    const fxSpec = useMemo(() => getFxSpec(style, "canvas"), [style]);
 
-    const renderResizeHandles = shape => {
+    const renderResizeHandles = (shape) => {
       if (!selectedIds.includes(shape.id)) return null;
 
       const handleSize = 8 / zoom;
-      const handles = ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'];
+      const handles = ["nw", "n", "ne", "e", "se", "s", "sw", "w"];
 
-      return handles.map(handle => {
+      return handles.map((handle) => {
         let x, y;
         const half = handleSize / 2;
 
         switch (handle) {
-          case 'nw':
+          case "nw":
             x = shape.x - half;
             y = shape.y - half;
             break;
-          case 'n':
+          case "n":
             x = shape.x + shape.w / 2 - half;
             y = shape.y - half;
             break;
-          case 'ne':
+          case "ne":
             x = shape.x + shape.w - half;
             y = shape.y - half;
             break;
-          case 'e':
+          case "e":
             x = shape.x + shape.w - half;
             y = shape.y + shape.h / 2 - half;
             break;
-          case 'se':
+          case "se":
             x = shape.x + shape.w - half;
             y = shape.y + shape.h - half;
             break;
-          case 's':
+          case "s":
             x = shape.x + shape.w / 2 - half;
             y = shape.y + shape.h - half;
             break;
-          case 'sw':
+          case "sw":
             x = shape.x - half;
             y = shape.y + shape.h - half;
             break;
-          case 'w':
+          case "w":
             x = shape.x - half;
             y = shape.y + shape.h / 2 - half;
             break;
@@ -546,7 +568,7 @@ const Canvas = forwardRef(
         h="100%"
         bg="var(--bg-body)"
         overflow="hidden"
-        cursor={isPanning || spaceHeld ? 'grab' : 'default'}
+        cursor={isPanning || spaceHeld ? "grab" : "default"}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -567,17 +589,24 @@ const Canvas = forwardRef(
             linear-gradient(90deg, var(--border-primary) 1px, transparent 1px)
           `,
             backgroundSize: `${gridSize * zoom}px ${gridSize * zoom}px`,
-            backgroundPosition: `${pan.x}px ${pan.y}px`
+            backgroundPosition: `${pan.x}px ${pan.y}px`,
           }}
         />
 
         {style.backgroundEnabled && (
-          <Box position="absolute" left={0} top={0} right={0} bottom={0} bg={style.backgroundColor} />
+          <Box
+            position="absolute"
+            left={0}
+            top={0}
+            right={0}
+            bottom={0}
+            bg={style.backgroundColor}
+          />
         )}
 
-        <svg width="100%" height="100%" style={{ position: 'absolute', left: 0, top: 0 }}>
+        <svg width="100%" height="100%" style={{ position: "absolute", left: 0, top: 0 }}>
           <defs>
-            {fillSpec.type === 'linear' && (
+            {fillSpec.type === "linear" && (
               <linearGradient
                 id={fillSpec.id}
                 gradientUnits="userSpaceOnUse"
@@ -591,7 +620,7 @@ const Canvas = forwardRef(
                 ))}
               </linearGradient>
             )}
-            {fillSpec.type === 'radial' && (
+            {fillSpec.type === "radial" && (
               <radialGradient
                 id={fillSpec.id}
                 gradientUnits="userSpaceOnUse"
@@ -608,8 +637,17 @@ const Canvas = forwardRef(
               <filter id={fxSpec.id} x="-50%" y="-50%" width="200%" height="200%">
                 {fxSpec.hasShadow && (
                   <>
-                    <feGaussianBlur in="SourceAlpha" stdDeviation={fxSpec.shadowBlur} result="smBlur" />
-                    <feOffset in="smBlur" dx={fxSpec.shadowOffsetX} dy={fxSpec.shadowOffsetY} result="smOff" />
+                    <feGaussianBlur
+                      in="SourceAlpha"
+                      stdDeviation={fxSpec.shadowBlur}
+                      result="smBlur"
+                    />
+                    <feOffset
+                      in="smBlur"
+                      dx={fxSpec.shadowOffsetX}
+                      dy={fxSpec.shadowOffsetY}
+                      result="smOff"
+                    />
                     <feFlood
                       floodColor={fxSpec.shadowColor}
                       floodOpacity={fxSpec.shadowOpacity}
@@ -620,9 +658,19 @@ const Canvas = forwardRef(
                 )}
                 {fxSpec.hasStroke && (
                   <>
-                    <feMorphology in="SourceAlpha" operator="dilate" radius={fxSpec.strokeWidth} result="smDilated" />
+                    <feMorphology
+                      in="SourceAlpha"
+                      operator="dilate"
+                      radius={fxSpec.strokeWidth}
+                      result="smDilated"
+                    />
                     <feFlood floodColor={fxSpec.strokeColor} result="smStrokeColor" />
-                    <feComposite in="smStrokeColor" in2="smDilated" operator="in" result="smOutline" />
+                    <feComposite
+                      in="smStrokeColor"
+                      in2="smDilated"
+                      operator="in"
+                      result="smOutline"
+                    />
                   </>
                 )}
                 <feMerge>
@@ -639,22 +687,30 @@ const Canvas = forwardRef(
               fillOpacity={style.opacity ?? 1}
               filter={fxSpec ? `url(#${fxSpec.id})` : undefined}
             >
-              {shapes.map(shape => {
+              {shapes.map((shape) => {
                 const corners = cornerRadii[shape.id] || {
                   tl: globalRadius,
                   tr: globalRadius,
                   br: globalRadius,
-                  bl: globalRadius
+                  bl: globalRadius,
                 };
-                return <path key={shape.id} d={getRoundedRectPath(shape.x, shape.y, shape.w, shape.h, corners)} />;
+                return (
+                  <path
+                    key={shape.id}
+                    d={getRoundedRectPath(shape.x, shape.y, shape.w, shape.h, corners)}
+                  />
+                );
               })}
 
-              {bridges.map(bridge => (
-                <path key={bridge.id} d={getBridgePathAt(bridge.x, bridge.y, bridge.r, bridge.rotation, smoothing)} />
+              {bridges.map((bridge) => (
+                <path
+                  key={bridge.id}
+                  d={getBridgePathAt(bridge.x, bridge.y, bridge.r, bridge.rotation, smoothing)}
+                />
               ))}
             </g>
 
-            {shapes.map(shape => {
+            {shapes.map((shape) => {
               const isSelected = selectedIds.includes(shape.id);
               if (!isSelected) return null;
               return (
@@ -673,11 +729,17 @@ const Canvas = forwardRef(
             })}
 
             {showBridgeDebug &&
-              bridges.map(bridge => (
-                <circle key={`dbg-${bridge.id}`} cx={bridge.x} cy={bridge.y} r={3 / zoom} fill="#ff0" />
+              bridges.map((bridge) => (
+                <circle
+                  key={`dbg-${bridge.id}`}
+                  cx={bridge.x}
+                  cy={bridge.y}
+                  r={3 / zoom}
+                  fill="#ff0"
+                />
               ))}
 
-            {shapes.map(shape => renderResizeHandles(shape))}
+            {shapes.map((shape) => renderResizeHandles(shape))}
 
             {marquee && marquee.w > 0 && marquee.h > 0 && (
               <rect
@@ -699,15 +761,17 @@ const Canvas = forwardRef(
             as="button"
             align="center"
             gap={1.5}
-            bg={showBridgeDebug ? 'rgba(168, 85, 247, 0.15)' : 'rgba(13, 7, 22, 0.9)'}
-            border={showBridgeDebug ? '1px solid var(--color-primary)' : '1px solid var(--border-primary)'}
+            bg={showBridgeDebug ? "rgba(168, 85, 247, 0.15)" : "rgba(13, 7, 22, 0.9)"}
+            border={
+              showBridgeDebug ? "1px solid var(--color-primary)" : "1px solid var(--border-primary)"
+            }
             borderRadius="6px"
             px={2.5}
             py={1.5}
             cursor="pointer"
             onClick={() => onShowBridgeDebugChange?.(!showBridgeDebug)}
             transition="all 0.15s"
-            _hover={{ borderColor: 'var(--color-primary)' }}
+            _hover={{ borderColor: "var(--color-primary)" }}
           >
             <Icon as={showBridgeDebug ? Eye : EyeOff} boxSize={3.5} color="var(--text-muted)" />
             <Text fontSize="11px" color="var(--text-muted)" fontWeight={500}>
@@ -726,7 +790,7 @@ const Canvas = forwardRef(
             cursor="pointer"
             onClick={fitToView}
             transition="all 0.15s"
-            _hover={{ borderColor: 'var(--color-primary)' }}
+            _hover={{ borderColor: "var(--color-primary)" }}
           >
             <Icon as={Maximize2} boxSize={3.5} color="var(--text-muted)" />
             <Text fontSize="11px" color="var(--text-muted)" fontWeight={500}>
@@ -752,9 +816,9 @@ const Canvas = forwardRef(
         </Box>
       </Box>
     );
-  }
+  },
 );
 
-Canvas.displayName = 'Canvas';
+Canvas.displayName = "Canvas";
 
 export default Canvas;

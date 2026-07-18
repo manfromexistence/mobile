@@ -17,9 +17,7 @@ export default function CheckboxGroupValidationDemo() {
     <CheckboxGroup
       value={tricks}
       onValueChange={setTricks}
-      onValidate={(value) =>
-        value.includes("indy") ? "Indy is not allowed" : null
-      }
+      onValidate={(value) => (value.includes("indy") ? "Indy is not allowed" : null)}
     >
       <CheckboxGroupLabel>Tricks</CheckboxGroupLabel>
       <CheckboxGroupList>
@@ -27,9 +25,7 @@ export default function CheckboxGroupValidationDemo() {
         <CheckboxGroupItem value="stalefish">Stalefish</CheckboxGroupItem>
         <CheckboxGroupItem value="fs-540">FS 540</CheckboxGroupItem>
       </CheckboxGroupList>
-      <CheckboxGroupDescription hideOnError>
-        Select grab tricks
-      </CheckboxGroupDescription>
+      <CheckboxGroupDescription hideOnError>Select grab tricks</CheckboxGroupDescription>
       <CheckboxGroupMessage />
     </CheckboxGroup>
   );

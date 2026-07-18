@@ -4,8 +4,9 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-const { applyPayloadRules, getPayloadRulesConfig, resetPayloadRulesConfigForTests } =
-  await import("../../open-sse/services/payloadRules.ts");
+const { applyPayloadRules, getPayloadRulesConfig, resetPayloadRulesConfigForTests } = await import(
+  "../../open-sse/services/payloadRules.ts"
+);
 
 const ORIGINAL_PAYLOAD_RULES_PATH = process.env.OMNIROUTE_PAYLOAD_RULES_PATH;
 const ORIGINAL_PAYLOAD_RULES_RELOAD_MS = process.env.OMNIROUTE_PAYLOAD_RULES_RELOAD_MS;
@@ -67,7 +68,7 @@ test("payload rules apply default, default-raw, override, and filter operations"
           params: ["dangerous", "metadata.removeMe"],
         },
       ],
-    }
+    },
   );
 
   assert.equal(payload.temperature, 0.4);
@@ -90,7 +91,7 @@ test("payload rules apply default, default-raw, override, and filter operations"
       "override:reasoning.effort",
       "filter:dangerous",
       "filter:metadata.removeMe",
-    ]
+    ],
   );
 });
 
@@ -110,7 +111,7 @@ test("payload rules load from JSON file and reload changed content", async () =>
         },
       ],
     }),
-    "utf-8"
+    "utf-8",
   );
 
   const first = await getPayloadRulesConfig({ forceRefresh: true });
@@ -130,7 +131,7 @@ test("payload rules load from JSON file and reload changed content", async () =>
         },
       ],
     }),
-    "utf-8"
+    "utf-8",
   );
 
   const second = await getPayloadRulesConfig({ forceRefresh: true });

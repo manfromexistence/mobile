@@ -1,4 +1,4 @@
-import { createMDX } from "fumadocs-mdx/next"
+import { createMDX } from "fumadocs-mdx/next";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -82,7 +82,7 @@ const nextConfig = {
         destination: "/docs/mcp",
         permanent: false,
       },
-    ]
+    ];
   },
   rewrites() {
     return [
@@ -90,10 +90,10 @@ const nextConfig = {
         source: "/docs/:path*.md",
         destination: "/llm/:path*",
       },
-    ]
+    ];
   },
-}
+};
 
-const withMDX = createMDX({})
+const withMDX = createMDX({});
 
-export default withMDX(nextConfig)
+export default withMDX(nextConfig);

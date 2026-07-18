@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { gsap } from 'gsap';
+import React, { useRef, useEffect, useState } from "react";
+import { gsap } from "gsap";
 
-import './FlowingMenu.css';
+import "./FlowingMenu.css";
 
 interface MenuItemData {
   link: string;
@@ -31,11 +31,11 @@ interface MenuItemProps extends MenuItemData {
 const FlowingMenu: React.FC<FlowingMenuProps> = ({
   items = [],
   speed = 15,
-  textColor = '#fff',
-  bgColor = '#120F17',
-  marqueeBgColor = '#fff',
-  marqueeTextColor = '#120F17',
-  borderColor = '#fff'
+  textColor = "#fff",
+  bgColor = "#120F17",
+  marqueeBgColor = "#fff",
+  marqueeTextColor = "#120F17",
+  borderColor = "#fff",
 }) => {
   return (
     <div className="menu-wrap" style={{ backgroundColor: bgColor }}>
@@ -66,7 +66,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
   marqueeBgColor,
   marqueeTextColor,
   borderColor,
-  isFirst
+  isFirst,
 }) => {
   const itemRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
@@ -74,7 +74,7 @@ const MenuItem: React.FC<MenuItemProps> = ({
   const animationRef = useRef<gsap.core.Tween | null>(null);
   const [repetitions, setRepetitions] = useState(4);
 
-  const animationDefaults: gsap.TweenVars = { duration: 0.6, ease: 'expo' };
+  const animationDefaults: gsap.TweenVars = { duration: 0.6, ease: "expo" };
 
   const distMetric = (x: number, y: number, x2: number, y2: number): number => {
     const xDiff = x - x2;
@@ -82,16 +82,21 @@ const MenuItem: React.FC<MenuItemProps> = ({
     return xDiff * xDiff + yDiff * yDiff;
   };
 
-  const findClosestEdge = (mouseX: number, mouseY: number, width: number, height: number): 'top' | 'bottom' => {
+  const findClosestEdge = (
+    mouseX: number,
+    mouseY: number,
+    width: number,
+    height: number,
+  ): "top" | "bottom" => {
     const topEdgeDist = distMetric(mouseX, mouseY, width / 2, 0);
     const bottomEdgeDist = distMetric(mouseX, mouseY, width / 2, height);
-    return topEdgeDist < bottomEdgeDist ? 'top' : 'bottom';
+    return topEdgeDist < bottomEdgeDist ? "top" : "bottom";
   };
 
   useEffect(() => {
     const calculateRepetitions = () => {
       if (!marqueeInnerRef.current) return;
-      const marqueeContent = marqueeInnerRef.current.querySelector('.marquee__part') as HTMLElement;
+      const marqueeContent = marqueeInnerRef.current.querySelector(".marquee__part") as HTMLElement;
       if (!marqueeContent) return;
       const contentWidth = marqueeContent.offsetWidth;
       const viewportWidth = window.innerWidth;
@@ -100,14 +105,14 @@ const MenuItem: React.FC<MenuItemProps> = ({
     };
 
     calculateRepetitions();
-    window.addEventListener('resize', calculateRepetitions);
-    return () => window.removeEventListener('resize', calculateRepetitions);
+    window.addEventListener("resize", calculateRepetitions);
+    return () => window.removeEventListener("resize", calculateRepetitions);
   }, [text, image]);
 
   useEffect(() => {
     const setupMarquee = () => {
       if (!marqueeInnerRef.current) return;
-      const marqueeContent = marqueeInnerRef.current.querySelector('.marquee__part') as HTMLElement;
+      const marqueeContent = marqueeInnerRef.current.querySelector(".marquee__part") as HTMLElement;
       if (!marqueeContent) return;
       const contentWidth = marqueeContent.offsetWidth;
       if (contentWidth === 0) return;
@@ -119,8 +124,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
       animationRef.current = gsap.to(marqueeInnerRef.current, {
         x: -contentWidth,
         duration: speed,
-        ease: 'none',
-        repeat: -1
+        ease: "none",
+        repeat: -1,
       });
     };
 
@@ -142,9 +147,9 @@ const MenuItem: React.FC<MenuItemProps> = ({
 
     gsap
       .timeline({ defaults: animationDefaults })
-      .set(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' }, 0)
-      .set(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' }, 0)
-      .to([marqueeRef.current, marqueeInnerRef.current], { y: '0%' }, 0);
+      .set(marqueeRef.current, { y: edge === "top" ? "-101%" : "101%" }, 0)
+      .set(marqueeInnerRef.current, { y: edge === "top" ? "101%" : "-101%" }, 0)
+      .to([marqueeRef.current, marqueeInnerRef.current], { y: "0%" }, 0);
   };
 
   const handleMouseLeave = (ev: React.MouseEvent<HTMLAnchorElement>) => {
@@ -156,12 +161,16 @@ const MenuItem: React.FC<MenuItemProps> = ({
 
     gsap
       .timeline({ defaults: animationDefaults })
-      .to(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' }, 0)
-      .to(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' }, 0);
+      .to(marqueeRef.current, { y: edge === "top" ? "-101%" : "101%" }, 0)
+      .to(marqueeInnerRef.current, { y: edge === "top" ? "101%" : "-101%" }, 0);
   };
 
   return (
-    <div className="menu__item" ref={itemRef} style={{ borderColor, borderTop: isFirst ? 'none' : undefined }}>
+    <div
+      className="menu__item"
+      ref={itemRef}
+      style={{ borderColor, borderTop: isFirst ? "none" : undefined }}
+    >
       <a
         className="menu__item-link"
         href={link}

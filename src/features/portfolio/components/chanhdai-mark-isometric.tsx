@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import type { Transition } from "motion/react"
+import type { Transition } from "motion/react";
 import {
   motion,
   useInView,
@@ -8,71 +8,71 @@ import {
   useReducedMotion,
   useSpring,
   useTransform,
-} from "motion/react"
-import { useEffect, useId, useRef } from "react"
-import { useSound } from "@/lib/soundcn/hooks/use-sound"
-import { metalClickSound } from "@/lib/soundcn/metal-click"
+} from "motion/react";
+import { useEffect, useId, useRef } from "react";
+import { useSound } from "@/lib/soundcn/hooks/use-sound";
+import { metalClickSound } from "@/lib/soundcn/metal-click";
 
 const transition: Transition = {
   type: "spring",
   mass: 0.5,
   damping: 18,
   stiffness: 200,
-}
+};
 
 /**
  * Designed by ncdai on Figma with [Fast Isometric Plugin](https://www.figma.com/community/plugin/1249759048471403961).
  * Inspired by tailwindcss.com.
  */
 export function ChanhDaiMarkIsometric() {
-  const id = useId()
+  const id = useId();
   const ids = {
     facePattern: `ncdai-face-pattern-${id}`,
     faceFill: `ncdai-face-fill-${id}`,
     stroke: `ncdai-stroke-${id}`,
     radialGradient: `ncdai-radial-gradient-${id}`,
-  }
+  };
 
-  const ref = useRef<SVGSVGElement>(null)
+  const ref = useRef<SVGSVGElement>(null);
 
-  const [play] = useSound(metalClickSound)
+  const [play] = useSound(metalClickSound);
 
-  const shouldReduceMotion = useReducedMotion()
-  const isInView = useInView(ref, { margin: "80px" })
+  const shouldReduceMotion = useReducedMotion();
+  const isInView = useInView(ref, { margin: "80px" });
 
-  const mouseX = useMotionValue(0.5)
-  const mouseY = useMotionValue(0.5)
+  const mouseX = useMotionValue(0.5);
+  const mouseY = useMotionValue(0.5);
 
   const cx = useSpring(useTransform(mouseX, [0, 1], [0, 556]), {
     stiffness: 150,
     damping: 25,
-  })
+  });
 
   const cy = useSpring(useTransform(mouseY, [0, 1], [0, 354]), {
     stiffness: 150,
     damping: 25,
-  })
+  });
 
   useEffect(() => {
     if (shouldReduceMotion || !isInView) {
-      return
+      return;
     }
 
     if (window.matchMedia("(hover: none)").matches) {
-      return
+      return;
     }
 
     const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX / window.innerWidth)
-      mouseY.set(e.clientY / window.innerHeight)
-    }
+      mouseX.set(e.clientX / window.innerWidth);
+      mouseY.set(e.clientY / window.innerHeight);
+    };
 
-    window.addEventListener("mousemove", handleMouseMove)
+    window.addEventListener("mousemove", handleMouseMove);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
-    }
-  }, [shouldReduceMotion, isInView, mouseX, mouseY])
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, [shouldReduceMotion, isInView, mouseX, mouseY]);
 
   return (
     <motion.svg
@@ -95,11 +95,7 @@ export function ChanhDaiMarkIsometric() {
           height="10"
           patternUnits="userSpaceOnUse"
         >
-          <path
-            d="M-1 1l2 -2M0 10l10 -10M9 11l2 -2"
-            stroke="var(--pattern)"
-            strokeWidth="1"
-          />
+          <path d="M-1 1l2 -2M0 10l10 -10M9 11l2 -2" stroke="var(--pattern)" strokeWidth="1" />
         </pattern>
 
         <motion.g
@@ -171,10 +167,7 @@ export function ChanhDaiMarkIsometric() {
           r="200"
           gradientUnits="userSpaceOnUse"
         >
-          <stop
-            className="dark:[stop-color:#fff]"
-            stopColor="var(--color-zinc-700)"
-          />
+          <stop className="dark:[stop-color:#fff]" stopColor="var(--color-zinc-700)" />
           <stop
             className="dark:[stop-color:var(--color-zinc-600)]"
             offset="1"
@@ -288,5 +281,5 @@ export function ChanhDaiMarkIsometric() {
       <use href={`#${ids.stroke}`} stroke="var(--stroke)" />
       <use href={`#${ids.stroke}`} stroke={`url(#${ids.radialGradient})`} />
     </motion.svg>
-  )
+  );
 }

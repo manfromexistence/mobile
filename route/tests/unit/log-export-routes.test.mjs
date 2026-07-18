@@ -45,7 +45,7 @@ test("GET /api/logs/export returns explicit detailed payloads from artifact stor
   });
 
   const response = await exportRoute.GET(
-    new Request("http://localhost/api/logs/export?hours=24&type=call-logs")
+    new Request("http://localhost/api/logs/export?hours=24&type=call-logs"),
   );
   const body = await response.json();
 
@@ -72,7 +72,7 @@ test("GET /api/db-backups/exportAll includes call_logs artifacts in the archive"
   });
 
   const response = await exportAllRoute.GET(
-    new Request("http://localhost/api/db-backups/exportAll")
+    new Request("http://localhost/api/db-backups/exportAll"),
   );
   assert.equal(response.status, 200);
 

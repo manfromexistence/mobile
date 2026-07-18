@@ -17,12 +17,13 @@ const db = core.getDbInstance();
 db.prepare(
   `INSERT OR IGNORE INTO version_manager
      (tool, status, port, auto_start, auto_update, provider_expose)
-   VALUES ('9router', 'stopped', 20130, 0, 1, 0)`
+   VALUES ('9router', 'stopped', 20130, 0, 1, 0)`,
 ).run();
 
 // ─── Registry helpers ─────────────────────────────────────────────────────────
-const { registerSupervisor, unregisterSupervisor } =
-  await import("../../src/lib/services/registry.ts");
+const { registerSupervisor, unregisterSupervisor } = await import(
+  "../../src/lib/services/registry.ts"
+);
 const { ServiceSupervisor } = await import("../../src/lib/services/ServiceSupervisor.ts");
 
 function makeFakeSupervisor(state: "running" | "stopped" | "error" | "starting" = "running") {
@@ -66,7 +67,9 @@ afterEach(() => {
 });
 
 describe("NineRouterExecutor", () => {
-  let NineRouterExecutor: typeof import("../../open-sse/executors/ninerouter.ts").NineRouterExecutor;
+  let NineRouterExecutor: typeof import(
+    "../../open-sse/executors/ninerouter.ts",
+  ).NineRouterExecutor;
   let NINEROUTER_FALLBACK_HINT: string;
   let NINEROUTER_FALLBACK_HINT_HEADER: string;
 
@@ -154,7 +157,7 @@ describe("NineRouterExecutor", () => {
         "new-model",
         { model: "old", messages: [] },
         true,
-        {}
+        {},
       ) as Record<string, unknown>;
       assert.equal(result.model, "new-model");
       assert.deepEqual(result.messages, []);
@@ -166,7 +169,7 @@ describe("NineRouterExecutor", () => {
         "same",
         { model: "same", messages: [] },
         true,
-        {}
+        {},
       ) as Record<string, unknown>;
       assert.equal(result.model, "same");
     });
@@ -288,7 +291,7 @@ describe("NineRouterExecutor", () => {
       assert.equal(result.response.status, 503);
       assert.equal(
         result.response.headers.get(NINEROUTER_FALLBACK_HINT_HEADER),
-        NINEROUTER_FALLBACK_HINT
+        NINEROUTER_FALLBACK_HINT,
       );
     });
 
@@ -348,7 +351,7 @@ describe("NineRouterExecutor", () => {
       // Should use port from supervisor.getStatus().port (20130) not constructor
       assert.ok(
         capturedUrls[0].includes(":20130"),
-        `Expected port 20130 in URL, got: ${capturedUrls[0]}`
+        `Expected port 20130 in URL, got: ${capturedUrls[0]}`,
       );
     });
 
@@ -378,7 +381,7 @@ describe("NineRouterExecutor", () => {
       // Both calls must have a Bearer nr_ token (never undefined)
       assert.ok(
         capturedAuthHeaders.every((h) => h.startsWith("Bearer nr_")),
-        `Expected all auth headers to start with 'Bearer nr_', got: ${capturedAuthHeaders.join(", ")}`
+        `Expected all auth headers to start with 'Bearer nr_', got: ${capturedAuthHeaders.join(", ")}`,
       );
       // Both calls get the same key (stable getOrCreate)
       assert.equal(capturedAuthHeaders[0], capturedAuthHeaders[1]);

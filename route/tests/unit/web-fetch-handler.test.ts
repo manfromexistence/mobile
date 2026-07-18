@@ -17,7 +17,7 @@ test("handleWebFetch routes to firecrawl when provider=firecrawl", async () => {
           metadata: { title: "Hello", description: "A test page" },
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -25,7 +25,7 @@ test("handleWebFetch routes to firecrawl when provider=firecrawl", async () => {
     const result = await handleWebFetch(
       { url: "https://example.com", format: "markdown" },
       { apiKey: "test-key" },
-      "firecrawl"
+      "firecrawl",
     );
 
     assert.equal(result.success, true, "should succeed");
@@ -52,7 +52,7 @@ test("handleWebFetch routes to jina-reader when provider=jina-reader", async () 
           links: [],
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -60,7 +60,7 @@ test("handleWebFetch routes to jina-reader when provider=jina-reader", async () 
     const result = await handleWebFetch(
       { url: "https://example.com", format: "markdown" },
       { apiKey: "jina-key" },
-      "jina-reader"
+      "jina-reader",
     );
 
     assert.equal(result.success, true);
@@ -79,7 +79,7 @@ test("handleWebFetch routes to tinyfish when provider=tinyfish", async () => {
         results: [{ url: "https://example.com", title: "Test", text: "# TinyFish content" }],
         errors: [],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -87,7 +87,7 @@ test("handleWebFetch routes to tinyfish when provider=tinyfish", async () => {
     const result = await handleWebFetch(
       { url: "https://example.com", format: "markdown" },
       { apiKey: "tf-key" },
-      "tinyfish"
+      "tinyfish",
     );
 
     assert.equal(result.success, true);
@@ -126,7 +126,7 @@ test("handleWebFetch wraps fetch errors via buildErrorBody (no raw stack)", asyn
     const result = await handleWebFetch(
       { url: "https://example.com" },
       { apiKey: "test-key" },
-      "firecrawl"
+      "firecrawl",
     );
 
     assert.equal(result.success, false);
@@ -154,7 +154,7 @@ test("handleWebFetch passes depth and wait_for_selector to firecrawl", async () 
     await handleWebFetch(
       { url: "https://example.com", depth: 2, wait_for_selector: "main" },
       { apiKey: "test-key" },
-      "firecrawl"
+      "firecrawl",
     );
 
     assert.equal(captured.body.maxDepth, 2, "should forward depth");

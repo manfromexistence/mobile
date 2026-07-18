@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import type { TOCItemType } from "fumadocs-core/toc"
-import { TextIcon } from "lucide-react"
+import type { TOCItemType } from "fumadocs-core/toc";
+import { TextIcon } from "lucide-react";
 import {
   Collapsible,
   CollapsibleChevronDownIcon,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/base/collapsible-animated"
-import { trackEvent } from "@/lib/events"
-import { cn } from "@/lib/utils"
+} from "@/components/base/collapsible-animated";
+import { trackEvent } from "@/lib/events";
+import { cn } from "@/lib/utils";
 
 export function TOCInline({
   items,
@@ -18,21 +18,21 @@ export function TOCInline({
   onOpenChange,
   ...props
 }: React.ComponentProps<typeof Collapsible> & {
-  items: TOCItemType[]
+  items: TOCItemType[];
 }) {
   if (!items.length) {
-    return null
+    return null;
   }
 
   return (
     <Collapsible
       className={cn(
         "not-prose group/inline-toc rounded-xl bg-surface font-sans inset-ring-1 inset-ring-border/64",
-        className
+        className,
       )}
       onOpenChange={(open, eventDetails) => {
-        trackEvent({ name: "toc_inline_toggle", properties: { open } })
-        onOpenChange?.(open, eventDetails)
+        trackEvent({ name: "toc_inline_toggle", properties: { open } });
+        onOpenChange?.(open, eventDetails);
       }}
       {...props}
     >
@@ -61,15 +61,15 @@ export function TOCInline({
         </ul>
       </CollapsibleContent>
     </Collapsible>
-  )
+  );
 }
 
 function handleItemClick(e: React.MouseEvent<HTMLAnchorElement>) {
-  const url = e.currentTarget.getAttribute("href") ?? ""
-  const title = e.currentTarget.textContent ?? ""
-  const depth = Number(e.currentTarget.getAttribute("data-depth"))
+  const url = e.currentTarget.getAttribute("href") ?? "";
+  const title = e.currentTarget.textContent ?? "";
+  const depth = Number(e.currentTarget.getAttribute("data-depth"));
   trackEvent({
     name: "toc_inline_item_click",
     properties: { url, title, depth },
-  })
+  });
 }

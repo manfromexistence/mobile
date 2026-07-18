@@ -40,9 +40,7 @@ export default function AngleSliderFormDemo() {
   });
 
   const onSubmit = React.useCallback((data: FormSchema) => {
-    toast.success(
-      <pre className="w-full">{JSON.stringify(data, null, 2)}</pre>,
-    );
+    toast.success(<pre className="w-full">{JSON.stringify(data, null, 2)}</pre>);
   }, []);
 
   const onReset = React.useCallback(() => {
@@ -51,10 +49,7 @@ export default function AngleSliderFormDemo() {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -79,9 +74,7 @@ export default function AngleSliderFormDemo() {
                     <AngleSliderValue />
                   </AngleSlider>
                 </FormControl>
-                <FormDescription>
-                  Set the rotation angle in degrees (0-360°)
-                </FormDescription>
+                <FormDescription>Set the rotation angle in degrees (0-360°)</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -111,9 +104,7 @@ export default function AngleSliderFormDemo() {
                     <AngleSliderValue />
                   </AngleSlider>
                 </FormControl>
-                <FormDescription>
-                  Define a range of angles for the operation
-                </FormDescription>
+                <FormDescription>Define a range of angles for the operation</FormDescription>
                 <FormMessage />
               </FormItem>
             )}

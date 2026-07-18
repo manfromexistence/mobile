@@ -7,9 +7,7 @@
   "bin": {
     "lildax": "./bin/lildax.cjs"
   },
-  "files": [
-    "bin"
-  ],
+  "files": ["bin"],
   "scripts": {
     "build": "bun run script/build.ts",
     "dev": "bun run src/index.ts",

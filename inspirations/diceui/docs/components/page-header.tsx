@@ -37,21 +37,18 @@ function PageHeader({
   );
 }
 
-const headingVariants = cva(
-  "font-bold leading-tight tracking-tighter lg:leading-[1.1]",
-  {
-    variants: {
-      size: {
-        default: "text-3xl md:text-4xl",
-        sm: "text-xl md:text-2xl",
-        lg: "text-3xl sm:text-4xl md:text-5xl lg:text-6xl",
-      },
-    },
-    defaultVariants: {
-      size: "default",
+const headingVariants = cva("font-bold leading-tight tracking-tighter lg:leading-[1.1]", {
+  variants: {
+    size: {
+      default: "text-3xl md:text-4xl",
+      sm: "text-xl md:text-2xl",
+      lg: "text-3xl sm:text-4xl md:text-5xl lg:text-6xl",
     },
   },
-);
+  defaultVariants: {
+    size: "default",
+  },
+});
 
 interface PageHeaderHeadingProps
   extends React.HTMLAttributes<HTMLHeadingElement>,
@@ -59,15 +56,8 @@ interface PageHeaderHeadingProps
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
-function PageHeaderHeading({
-  className,
-  size,
-  as: Comp = "h1",
-  ...props
-}: PageHeaderHeadingProps) {
-  return (
-    <Comp className={cn(headingVariants({ size, className }))} {...props} />
-  );
+function PageHeaderHeading({ className, size, as: Comp = "h1", ...props }: PageHeaderHeadingProps) {
+  return <Comp className={cn(headingVariants({ size, className }))} {...props} />;
 }
 
 const descriptionVariants = cva("max-w-2xl text-balance", {
@@ -87,26 +77,14 @@ interface PageHeaderDescriptionProps
   extends React.HTMLAttributes<HTMLParagraphElement>,
     VariantProps<typeof descriptionVariants> {}
 
-function PageHeaderDescription({
-  className,
-  size,
-  ...props
-}: PageHeaderDescriptionProps) {
-  return (
-    <p className={cn(descriptionVariants({ size, className }))} {...props} />
-  );
+function PageHeaderDescription({ className, size, ...props }: PageHeaderDescriptionProps) {
+  return <p className={cn(descriptionVariants({ size, className }))} {...props} />;
 }
 
-function PageActions({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+function PageActions({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn(
-        "flex w-full items-center justify-start gap-2 py-2",
-        className,
-      )}
+      className={cn("flex w-full items-center justify-start gap-2 py-2", className)}
       {...props}
     />
   );

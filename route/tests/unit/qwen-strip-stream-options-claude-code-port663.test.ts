@@ -31,12 +31,12 @@ test("port#663 qwen: body.stream===false → no stream_options even when executo
     "qwen3-coder-plus",
     body,
     /* stream */ true,
-    {}
+    {},
   ) as Record<string, unknown>;
   assert.equal(
     result.stream_options,
     undefined,
-    "stream_options must not be injected when body.stream === false"
+    "stream_options must not be injected when body.stream === false",
   );
 });
 
@@ -47,16 +47,14 @@ test("port#663 qwen: body.thinking truthy → no stream_options injection", () =
     messages: [{ role: "user", content: "hi" }],
     thinking: { type: "enabled" },
   };
-  const result = executor.transformRequest(
-    "qwen3-coder-plus",
-    body,
-    true,
-    {}
-  ) as Record<string, unknown>;
+  const result = executor.transformRequest("qwen3-coder-plus", body, true, {}) as Record<
+    string,
+    unknown
+  >;
   assert.equal(
     result.stream_options,
     undefined,
-    "stream_options must not be injected when thinking mode is requested"
+    "stream_options must not be injected when thinking mode is requested",
   );
 });
 
@@ -67,16 +65,14 @@ test("port#663 qwen: body.enable_thinking truthy → no stream_options injection
     messages: [{ role: "user", content: "hi" }],
     enable_thinking: true,
   };
-  const result = executor.transformRequest(
-    "qwen3-coder-plus",
-    body,
-    true,
-    {}
-  ) as Record<string, unknown>;
+  const result = executor.transformRequest("qwen3-coder-plus", body, true, {}) as Record<
+    string,
+    unknown
+  >;
   assert.equal(
     result.stream_options,
     undefined,
-    "stream_options must not be injected when enable_thinking is true"
+    "stream_options must not be injected when enable_thinking is true",
   );
 });
 
@@ -86,15 +82,13 @@ test("port#663 qwen: normal streaming request still injects stream_options.inclu
     model: "qwen3-coder-plus",
     messages: [{ role: "user", content: "hi" }],
   };
-  const result = executor.transformRequest(
-    "qwen3-coder-plus",
-    body,
-    true,
-    {}
-  ) as Record<string, unknown>;
+  const result = executor.transformRequest("qwen3-coder-plus", body, true, {}) as Record<
+    string,
+    unknown
+  >;
   assert.deepEqual(
     result.stream_options,
     { include_usage: true },
-    "regular qwen streaming requests must keep the include_usage injection"
+    "regular qwen streaming requests must keep the include_usage injection",
   );
 });

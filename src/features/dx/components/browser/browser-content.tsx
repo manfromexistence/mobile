@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { getRandomDockIconName } from "@/features/dx/components/screens/dock-icons"
-import { MacOSDock } from "@/features/dx/components/screens/macos-dock"
-import { ScreenCarousel } from "@/features/dx/components/screens/screen-carousel"
-import { ScreenGridDialog } from "@/features/dx/components/screens/screen-grid-dialog"
-import type { Screen } from "@/features/dx/components/screens/types"
+import { useState } from "react";
+import { getRandomDockIconName } from "@/features/dx/components/screens/dock-icons";
+import { MacOSDock } from "@/features/dx/components/screens/macos-dock";
+import { ScreenCarousel } from "@/features/dx/components/screens/screen-carousel";
+import { ScreenGridDialog } from "@/features/dx/components/screens/screen-grid-dialog";
+import type { Screen } from "@/features/dx/components/screens/types";
 
 interface BrowserContentProps {
-  sidebarExpanded: boolean
+  sidebarExpanded: boolean;
 }
 
 const INITIAL_SCREENS: Screen[] = [
@@ -16,23 +16,21 @@ const INITIAL_SCREENS: Screen[] = [
   { id: "terminal", type: "terminal", title: "Terminal", width: 0, height: 0 },
   { id: "code", type: "code", title: "Code Editor", width: 0, height: 0 },
   { id: "browser", type: "browser", title: "Browser", width: 0, height: 0 },
-]
+];
 
 export function BrowserContent({ sidebarExpanded }: BrowserContentProps) {
-  const [activeScreenId, setActiveScreenId] = useState<string>("welcome")
-  const [screens, setScreens] = useState<Screen[]>(INITIAL_SCREENS)
-  const [gridOpen, setGridOpen] = useState(false)
+  const [activeScreenId, setActiveScreenId] = useState<string>("welcome");
+  const [screens, setScreens] = useState<Screen[]>(INITIAL_SCREENS);
+  const [gridOpen, setGridOpen] = useState(false);
 
   const handleScreenResize = (id: string, width: number, height: number) => {
     setScreens((prev) =>
-      prev.map((screen) =>
-        screen.id === id ? { ...screen, width, height } : screen
-      )
-    )
-  }
+      prev.map((screen) => (screen.id === id ? { ...screen, width, height } : screen)),
+    );
+  };
 
   const handleAddScreen = () => {
-    const number = screens.length + 1
+    const number = screens.length + 1;
     const newScreen: Screen = {
       id: `screen-${Date.now()}`,
       type: "custom",
@@ -40,10 +38,10 @@ export function BrowserContent({ sidebarExpanded }: BrowserContentProps) {
       width: 0,
       height: 0,
       dockIcon: getRandomDockIconName(),
-    }
-    setScreens((prev) => [...prev, newScreen])
-    setActiveScreenId(newScreen.id)
-  }
+    };
+    setScreens((prev) => [...prev, newScreen]);
+    setActiveScreenId(newScreen.id);
+  };
 
   return (
     <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
@@ -71,5 +69,5 @@ export function BrowserContent({ sidebarExpanded }: BrowserContentProps) {
         onSelectScreen={setActiveScreenId}
       />
     </div>
-  )
+  );
 }

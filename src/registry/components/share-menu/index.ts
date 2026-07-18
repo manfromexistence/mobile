@@ -1,1 +1,1 @@
-export * from "./share-menu"
+export * from "./share-menu";

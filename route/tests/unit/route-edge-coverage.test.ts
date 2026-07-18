@@ -145,7 +145,7 @@ test("api keys route covers auth, create, masking, pagination fallback and cloud
   const invalidToken = await listKeysRoute.GET(
     new Request("http://localhost/api/keys", {
       headers: { authorization: "Bearer sk-invalid" },
-    })
+    }),
   );
   await createManagementKey();
 
@@ -163,7 +163,7 @@ test("api keys route covers auth, create, masking, pagination fallback and cloud
       await makeManagementSessionRequest("http://localhost/api/keys", {
         method: "POST",
         body: { name: "Key / Prod #1", noLog: true },
-      })
+      }),
     );
     const createdBody = (await created.json()) as any;
     const stored = await apiKeysDb.getApiKeyById(createdBody.id);
@@ -172,7 +172,7 @@ test("api keys route covers auth, create, masking, pagination fallback and cloud
     await apiKeysDb.createApiKey("Beta", MACHINE_ID);
 
     const paged = await listKeysRoute.GET(
-      await makeManagementSessionRequest("http://localhost/api/keys?limit=0&offset=-25")
+      await makeManagementSessionRequest("http://localhost/api/keys?limit=0&offset=-25"),
     );
 
     const unauthenticatedBody = (await unauthenticated.json()) as any;
@@ -210,7 +210,7 @@ test("api keys route rejects invalid payloads and malformed JSON", async () => {
     await makeManagementSessionRequest("http://localhost/api/keys", {
       method: "POST",
       body: {},
-    })
+    }),
   );
 
   const malformed = await listKeysRoute.POST(
@@ -218,7 +218,7 @@ test("api keys route rejects invalid payloads and malformed JSON", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: "{",
-    })
+    }),
   );
 
   const malformedBody = (await malformed.json()) as any;
@@ -241,14 +241,14 @@ test("settings proxy route covers full config, resolve, validation, delete and g
       method: "PUT",
       headers: { "content-type": "application/json" },
       body: "{",
-    })
+    }),
   );
 
   const invalidBody = await settingsProxyRoute.PUT(
     makeRequest("http://localhost/api/settings/proxy", {
       method: "PUT",
       body: { level: "provider", proxy: "bad-shape" },
-    })
+    }),
   );
 
   const validPut = await settingsProxyRoute.PUT(
@@ -266,7 +266,7 @@ test("settings proxy route covers full config, resolve, validation, delete and g
           key1: { type: "https", host: "key.local", port: "9443" },
         },
       },
-    })
+    }),
   );
   const legacyPut = await settingsProxyRoute.PUT(
     makeRequest("http://localhost/api/settings/proxy", {
@@ -280,17 +280,17 @@ test("settings proxy route covers full config, resolve, validation, delete and g
           key1: { type: "https", host: "key.local", port: "9443" },
         },
       },
-    })
+    }),
   );
 
   const providerGet = await settingsProxyRoute.GET(
-    new Request("http://localhost/api/settings/proxy?level=provider&id=openai")
+    new Request("http://localhost/api/settings/proxy?level=provider&id=openai"),
   );
   const resolveGet = await settingsProxyRoute.GET(
-    new Request(`http://localhost/api/settings/proxy?resolve=${providerConnection.id}`)
+    new Request(`http://localhost/api/settings/proxy?resolve=${providerConnection.id}`),
   );
   const fullConfig = await settingsProxyRoute.GET(
-    new Request("http://localhost/api/settings/proxy")
+    new Request("http://localhost/api/settings/proxy"),
   );
 
   const registryProviderProxy = await localDb.createProxy({
@@ -302,22 +302,22 @@ test("settings proxy route covers full config, resolve, validation, delete and g
   });
   await localDb.assignProxyToScope("provider", "anthropic", registryProviderProxy.id);
   const registryProviderGet = await settingsProxyRoute.GET(
-    new Request("http://localhost/api/settings/proxy?level=provider&id=anthropic")
+    new Request("http://localhost/api/settings/proxy?level=provider&id=anthropic"),
   );
   const fullConfigWithRegistryProvider = await settingsProxyRoute.GET(
-    new Request("http://localhost/api/settings/proxy")
+    new Request("http://localhost/api/settings/proxy"),
   );
 
   const deleted = await settingsProxyRoute.DELETE(
     new Request("http://localhost/api/settings/proxy?level=provider&id=openai", {
       method: "DELETE",
-    })
+    }),
   );
   const resolveAfterDelete = await settingsProxyRoute.GET(
-    new Request(`http://localhost/api/settings/proxy?resolve=${providerConnection.id}`)
+    new Request(`http://localhost/api/settings/proxy?resolve=${providerConnection.id}`),
   );
   const missingLevel = await settingsProxyRoute.DELETE(
-    new Request("http://localhost/api/settings/proxy", { method: "DELETE" })
+    new Request("http://localhost/api/settings/proxy", { method: "DELETE" }),
   );
 
   const invalidJsonBody = (await invalidJson.json()) as any;
@@ -353,7 +353,7 @@ test("settings proxy route covers full config, resolve, validation, delete and g
   assert.equal(fullConfigWithRegistryProvider.status, 200);
   assert.equal(
     fullConfigWithRegistryProviderBody.providers.anthropic.host,
-    "registry-provider.local"
+    "registry-provider.local",
   );
   assert.equal(deleted.status, 200);
   assert.equal(Object.prototype.hasOwnProperty.call(deletedBody.providers, "openai"), false);
@@ -376,14 +376,14 @@ test("settings proxy route resolves combo and key registry assignments with lega
           accountA: { type: "https", host: "legacy-key.local", port: "9444" },
         },
       },
-    })
+    }),
   );
 
   const legacyComboGet = await settingsProxyRoute.GET(
-    new Request("http://localhost/api/settings/proxy?level=combo&id=comboA")
+    new Request("http://localhost/api/settings/proxy?level=combo&id=comboA"),
   );
   const legacyKeyGet = await settingsProxyRoute.GET(
-    new Request("http://localhost/api/settings/proxy?level=key&id=accountA")
+    new Request("http://localhost/api/settings/proxy?level=key&id=accountA"),
   );
 
   const comboProxy = await localDb.createProxy({
@@ -406,10 +406,10 @@ test("settings proxy route resolves combo and key registry assignments with lega
   await localDb.assignProxyToScope("account", "accountA", accountProxy.id);
 
   const registryComboGet = await settingsProxyRoute.GET(
-    new Request("http://localhost/api/settings/proxy?level=combo&id=comboA")
+    new Request("http://localhost/api/settings/proxy?level=combo&id=comboA"),
   );
   const registryKeyGet = await settingsProxyRoute.GET(
-    new Request("http://localhost/api/settings/proxy?level=key&id=accountA")
+    new Request("http://localhost/api/settings/proxy?level=key&id=accountA"),
   );
 
   const legacyPutBody = (await legacyPut.json()) as any;
@@ -451,7 +451,7 @@ test("settings proxy route prefers proxy registry assignments and enforces socks
   await localDb.assignProxyToScope("global", null, created.id);
 
   const registryBacked = await settingsProxyRoute.GET(
-    new Request("http://localhost/api/settings/proxy?level=global")
+    new Request("http://localhost/api/settings/proxy?level=global"),
   );
   const registryBackedBody = (await registryBacked.json()) as any;
 
@@ -463,7 +463,7 @@ test("settings proxy route prefers proxy registry assignments and enforces socks
         level: "global",
         proxy: { type: "socks5", host: "127.0.0.1", port: "1080" },
       },
-    })
+    }),
   );
 
   process.env.ENABLE_SOCKS5_PROXY = "true";
@@ -474,7 +474,7 @@ test("settings proxy route prefers proxy registry assignments and enforces socks
         level: "global",
         proxy: { type: "SOCKS5", host: "127.0.0.1", port: "1080" },
       },
-    })
+    }),
   );
 
   const disabledSocksBody = (await disabledSocks.json()) as any;
@@ -497,7 +497,7 @@ test("settings proxy route covers default types, null maps, registry fallback, a
         level: "global",
         proxy: { host: "default-type.local", port: "8088" },
       },
-    })
+    }),
   );
   assert.equal(defaultTypePut.status, 200);
   const defaultTypeBody = (await defaultTypePut.json()) as any;
@@ -510,7 +510,7 @@ test("settings proxy route covers default types, null maps, registry fallback, a
         global: null,
         providers: { openai: null },
       },
-    })
+    }),
   );
   assert.equal(clearMapPut.status, 200);
   const clearMapBody = (await clearMapPut.json()) as any;
@@ -524,7 +524,7 @@ test("settings proxy route covers default types, null maps, registry fallback, a
         level: "global",
         proxy: { type: "https", host: "legacy-fallback.local", port: "9443" },
       },
-    })
+    }),
   );
 
   const missingRegistryProxy = await localDb.createProxy({
@@ -545,13 +545,13 @@ test("settings proxy route covers default types, null maps, registry fallback, a
     }),
     async () => {
       const response = await settingsProxyRoute.GET(
-        new Request("http://localhost/api/settings/proxy?level=global")
+        new Request("http://localhost/api/settings/proxy?level=global"),
       );
       assert.equal(response.status, 200);
       const body = (await response.json()) as any;
       assert.equal(body.level, "global");
       assert.equal(body.proxy.host, "legacy-fallback.local");
-    }
+    },
   );
 
   await withPrepareFailure(
@@ -559,11 +559,11 @@ test("settings proxy route covers default types, null maps, registry fallback, a
     "proxy config read failure",
     async () => {
       const response = await settingsProxyRoute.GET(
-        new Request("http://localhost/api/settings/proxy")
+        new Request("http://localhost/api/settings/proxy"),
       );
       assert.equal(response.status, 500);
       assert.match((await response.json()).error.message, /proxy config read failure/i);
-    }
+    },
   );
 
   await withPrepareFailure(
@@ -577,13 +577,13 @@ test("settings proxy route covers default types, null maps, registry fallback, a
             level: "global",
             proxy: { host: "broken-write.local", port: "8080" },
           },
-        })
+        }),
       );
       assert.equal(response.status, 500);
       const body = (await response.json()) as any;
       assert.equal(body.error.type, "server_error");
       assert.match(body.error.message, /proxy config write failure/i);
-    }
+    },
   );
 
   await withPrepareFailure(
@@ -593,11 +593,11 @@ test("settings proxy route covers default types, null maps, registry fallback, a
       const response = await settingsProxyRoute.DELETE(
         new Request("http://localhost/api/settings/proxy?level=global", {
           method: "DELETE",
-        })
+        }),
       );
       assert.equal(response.status, 500);
       assert.match((await response.json()).error.message, /proxy config delete failure/i);
-    }
+    },
   );
 });
 
@@ -606,12 +606,12 @@ test("management proxies route covers auth, pagination, lookup, where-used, patc
   await createManagementKey();
 
   const unauthenticated = await managementProxiesRoute.GET(
-    new Request("http://localhost/api/v1/management/proxies")
+    new Request("http://localhost/api/v1/management/proxies"),
   );
   const invalidToken = await managementProxiesRoute.GET(
     new Request("http://localhost/api/v1/management/proxies", {
       headers: { authorization: "Bearer sk-invalid" },
-    })
+    }),
   );
 
   const createdResponse = await managementProxiesRoute.POST(
@@ -623,68 +623,68 @@ test("management proxies route covers auth, pagination, lookup, where-used, patc
         host: "branch.local",
         port: 8080,
       },
-    })
+    }),
   );
   const created = (await createdResponse.json()) as any;
   await localDb.assignProxyToScope("provider", "openai", created.id);
 
   const pagedList = await managementProxiesRoute.GET(
     await makeManagementSessionRequest(
-      "http://localhost/api/v1/management/proxies?limit=999&offset=-5"
-    )
+      "http://localhost/api/v1/management/proxies?limit=999&offset=-5",
+    ),
   );
   const byId = await managementProxiesRoute.GET(
     await makeManagementSessionRequest(
-      `http://localhost/api/v1/management/proxies?id=${created.id}`
-    )
+      `http://localhost/api/v1/management/proxies?id=${created.id}`,
+    ),
   );
   const whereUsed = await managementProxiesRoute.GET(
     await makeManagementSessionRequest(
-      `http://localhost/api/v1/management/proxies?id=${created.id}&where_used=1`
-    )
+      `http://localhost/api/v1/management/proxies?id=${created.id}&where_used=1`,
+    ),
   );
   const missingGet = await managementProxiesRoute.GET(
-    await makeManagementSessionRequest("http://localhost/api/v1/management/proxies?id=missing")
+    await makeManagementSessionRequest("http://localhost/api/v1/management/proxies?id=missing"),
   );
   const invalidJsonPatch = await managementProxiesRoute.PATCH(
     await makeManagementSessionRequest("http://localhost/api/v1/management/proxies", {
       method: "PATCH",
       headers: { "content-type": "application/json" },
       body: "{",
-    })
+    }),
   );
   const invalidPatch = await managementProxiesRoute.PATCH(
     await makeManagementSessionRequest("http://localhost/api/v1/management/proxies", {
       method: "PATCH",
       body: {},
-    })
+    }),
   );
   const patched = await managementProxiesRoute.PATCH(
     await makeManagementSessionRequest("http://localhost/api/v1/management/proxies", {
       method: "PATCH",
       body: { id: created.id, host: "patched.local", notes: "updated" },
-    })
+    }),
   );
   const missingDelete = await managementProxiesRoute.DELETE(
     await makeManagementSessionRequest("http://localhost/api/v1/management/proxies", {
       method: "DELETE",
-    })
+    }),
   );
   const conflictDelete = await managementProxiesRoute.DELETE(
     await makeManagementSessionRequest(
       `http://localhost/api/v1/management/proxies?id=${created.id}`,
       {
         method: "DELETE",
-      }
-    )
+      },
+    ),
   );
   const forcedDelete = await managementProxiesRoute.DELETE(
     await makeManagementSessionRequest(
       `http://localhost/api/v1/management/proxies?id=${created.id}&force=1`,
       {
         method: "DELETE",
-      }
-    )
+      },
+    ),
   );
 
   const unauthenticatedBody = (await unauthenticated.json()) as any;
@@ -736,7 +736,7 @@ test("embeddings route covers options, custom-model listing and defensive POST b
     "Custom Embedder",
     "manual",
     "responses",
-    ["embeddings"]
+    ["embeddings"],
   );
 
   const optionsResponse = await embeddingsRoute.OPTIONS();
@@ -748,19 +748,19 @@ test("embeddings route covers options, custom-model listing and defensive POST b
       method: "POST",
       headers: { "content-type": "application/json" },
       body: "{",
-    })
+    }),
   );
   const validationFailure = await embeddingsRoute.POST(
     makeRequest("http://localhost/v1/embeddings", {
       method: "POST",
       body: {},
-    })
+    }),
   );
   const invalidModel = await embeddingsRoute.POST(
     makeRequest("http://localhost/v1/embeddings", {
       method: "POST",
       body: { model: "unknown/model", input: "hello" },
-    })
+    }),
   );
 
   const optionsHeaders = Object.fromEntries(optionsResponse.headers.entries());
@@ -773,7 +773,7 @@ test("embeddings route covers options, custom-model listing and defensive POST b
   assert.equal(getResponse.status, 200);
   assert.equal(
     getBody.data.some((model) => model.id === "custom-embedder/text-embed-1"),
-    true
+    true,
   );
   assert.equal(invalidJson.status, 400);
   assert.equal(invalidJsonBody.error.message, "Invalid JSON body");
@@ -782,7 +782,7 @@ test("embeddings route covers options, custom-model listing and defensive POST b
   assert.equal(invalidModel.status, 400);
   assert.match(
     invalidModelBody.error.message,
-    /Invalid embedding model|Unknown embedding provider/
+    /Invalid embedding model|Unknown embedding provider/,
   );
 });
 
@@ -796,7 +796,7 @@ test("embeddings route surfaces missing-credentials and provider-rate-limit erro
         authorization: `Bearer ${validApiKey.key}`,
       },
       body: JSON.stringify({ model: "openai/text-embedding-3-small", input: "hello" }),
-    })
+    }),
   );
 
   await seedOpenAIConnection({
@@ -812,7 +812,7 @@ test("embeddings route surfaces missing-credentials and provider-rate-limit erro
         authorization: `Bearer ${validApiKey.key}`,
       },
       body: JSON.stringify({ model: "openai/text-embedding-3-small", input: "hello" }),
-    })
+    }),
   );
 
   const missingCredentialsBody = (await missingCredentials.json()) as any;
@@ -854,42 +854,42 @@ test("v1 routes surface provider-rate-limit sentinels instead of missing credent
         method: "POST",
         token,
         body: { model: "openai/omni-moderation-latest", input: "hello" },
-      })
+      }),
     ),
     await audioSpeechRoute.POST(
       makeRequest("http://localhost/v1/audio/speech", {
         method: "POST",
         token,
         body: { model: "openai/tts-1", input: "hello" },
-      })
+      }),
     ),
     await audioTranscriptionsRoute.POST(
       new Request("http://localhost/v1/audio/transcriptions", {
         method: "POST",
         headers: { authorization: `Bearer ${token}` },
         body: transcriptionForm,
-      })
+      }),
     ),
     await videosRoute.POST(
       makeRequest("http://localhost/v1/videos/generations", {
         method: "POST",
         token,
         body: { model: "runwayml/gen4.5", prompt: "a quiet wave" },
-      })
+      }),
     ),
     await rerankRoute.POST(
       makeRequest("http://localhost/v1/rerank", {
         method: "POST",
         token,
         body: { model: "cohere/rerank-v3.5", query: "hello", documents: ["hello world"] },
-      })
+      }),
     ),
     await searchRoute.POST(
       makeRequest("http://localhost/v1/search", {
         method: "POST",
         token,
         body: { provider: "serper-search", query: "hello", search_type: "web" },
-      })
+      }),
     ),
   ];
 
@@ -921,7 +921,7 @@ test("embeddings route tolerates custom-model and provider-node lookup failures"
 
         assert.equal(response.status, 200);
         assert.ok(body.data.some((model) => model.id === "openai/text-embedding-3-small"));
-      }
+      },
     );
 
     await withPrepareFailure(
@@ -932,13 +932,13 @@ test("embeddings route tolerates custom-model and provider-node lookup failures"
           makeRequest("http://localhost/v1/embeddings", {
             method: "POST",
             body: { model: "openai/text-embedding-3-small", input: "hello" },
-          })
+          }),
         );
         const body = (await response.json()) as any;
 
         assert.equal(response.status, 200);
         assert.equal(body.model, "openai/text-embedding-3-small");
-      }
+      },
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -978,7 +978,7 @@ test("embeddings route supports local provider nodes without credentials and enf
           input: "hello",
           user: "user-123",
         },
-      })
+      }),
     );
     const localBody = (await localResponse.json()) as any;
 
@@ -1007,7 +1007,7 @@ test("embeddings route supports local provider nodes without credentials and enf
           model: "openai/text-embedding-3-small",
           input: "hello",
         }),
-      })
+      }),
     );
     const rejectedBody = (await rejected.json()) as any;
 
@@ -1029,7 +1029,7 @@ test("embeddings route returns normalized upstream failures", async () => {
       makeRequest("http://localhost/v1/embeddings", {
         method: "POST",
         body: { model: "openai/text-embedding-3-small", input: "hello" },
-      })
+      }),
     );
     const body = (await response.json()) as any;
 
@@ -1053,22 +1053,22 @@ test("embeddings route GET skips malformed, non-embedding, and duplicate custom 
     "Duplicate OpenAI Embed",
     "manual",
     "responses",
-    ["embeddings"]
+    ["embeddings"],
   );
 
   const db = core.getDbInstance();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('customModels', ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('customModels', ?, ?)",
   ).run("broken-embed-provider", JSON.stringify({ invalid: true }));
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('customModels', ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('customModels', ?, ?)",
   ).run(
     "mixed-embed-provider",
     JSON.stringify([
       { name: "Missing Id", supportedEndpoints: ["embeddings"] },
       { id: "chat-only", supportedEndpoints: ["chat"] },
       { id: "edge-embed", supportedEndpoints: ["embeddings"] },
-    ])
+    ]),
   );
 
   const response = await embeddingsRoute.GET();
@@ -1109,10 +1109,10 @@ test("embeddings route tolerates non-array provider nodes and remote fallback lo
           makeRequest("http://localhost/v1/embeddings", {
             method: "POST",
             body: { model: "openai/text-embedding-3-small", input: "hello" },
-          })
+          }),
         );
         assert.equal(response.status, 200);
-      }
+      },
     );
 
     let providerNodeSelects = 0;
@@ -1138,8 +1138,8 @@ test("embeddings route tolerates non-array provider nodes and remote fallback lo
           makeRequest("http://localhost/v1/embeddings", {
             method: "POST",
             body: { model: "remote/demo-embed", input: "hello" },
-          })
-        )
+          }),
+        ),
     );
     const remoteFallbackBody = (await remoteFallback.json()) as any;
 
@@ -1198,7 +1198,7 @@ test("embeddings route handles responses provider nodes, invalid local nodes, an
       makeRequest("http://localhost/v1/embeddings", {
         method: "POST",
         body: { model: "localresponses/demo-embed", input: "hello" },
-      })
+      }),
     );
     assert.equal(localResponse.status, 200);
     assert.equal(fetchCalls[0].url, "http://localhost:7790/v1/embeddings");
@@ -1225,8 +1225,8 @@ test("embeddings route handles responses provider nodes, invalid local nodes, an
           makeRequest("http://localhost/v1/embeddings", {
             method: "POST",
             body: { model: "remoteprefix/demo-embed", input: "hello" },
-          })
-        )
+          }),
+        ),
     );
     const remoteBody = (await remoteResponse.json()) as any;
 

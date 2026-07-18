@@ -1,8 +1,8 @@
-import code from '@content/Components/StaggeredMenu/StaggeredMenu.jsx?raw';
-import css from '@content/Components/StaggeredMenu/StaggeredMenu.css?raw';
-import tailwind from '@tailwind/Components/StaggeredMenu/StaggeredMenu.jsx?raw';
-import tsCode from '@ts-default/Components/StaggeredMenu/StaggeredMenu.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/StaggeredMenu/StaggeredMenu.tsx?raw';
+import code from "@content/Components/StaggeredMenu/StaggeredMenu.jsx?raw";
+import css from "@content/Components/StaggeredMenu/StaggeredMenu.css?raw";
+import tailwind from "@tailwind/Components/StaggeredMenu/StaggeredMenu.jsx?raw";
+import tsCode from "@ts-default/Components/StaggeredMenu/StaggeredMenu.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/StaggeredMenu/StaggeredMenu.tsx?raw";
 
 export const staggeredMenu = {
   dependencies: `gsap`,
@@ -42,5 +42,5 @@ const socialItems = [
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

@@ -1,8 +1,8 @@
-import code from '@content/Components/ReflectiveCard/ReflectiveCard.jsx?raw';
-import css from '@content/Components/ReflectiveCard/ReflectiveCard.css?raw';
-import tailwind from '@tailwind/Components/ReflectiveCard/ReflectiveCard.jsx?raw';
-import tsCode from '@ts-default/Components/ReflectiveCard/ReflectiveCard.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/ReflectiveCard/ReflectiveCard.tsx?raw';
+import code from "@content/Components/ReflectiveCard/ReflectiveCard.jsx?raw";
+import css from "@content/Components/ReflectiveCard/ReflectiveCard.css?raw";
+import tailwind from "@tailwind/Components/ReflectiveCard/ReflectiveCard.jsx?raw";
+import tsCode from "@ts-default/Components/ReflectiveCard/ReflectiveCard.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/ReflectiveCard/ReflectiveCard.tsx?raw";
 
 export const reflectiveCard = {
   dependencies: `lucide-react`,
@@ -27,5 +27,5 @@ export const reflectiveCard = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

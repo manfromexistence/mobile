@@ -88,10 +88,7 @@ export interface ActionBarSelectionProps extends RenderProps {}
 export interface ActionBarGroupProps extends RenderProps {}
 
 export interface ActionBarItemProps
-  extends Omit<
-    React.ComponentProps<typeof Button>,
-    keyof React.ComponentProps<"button">
-  > {
+  extends Omit<React.ComponentProps<typeof Button>, keyof React.ComponentProps<"button">> {
   /**
    * Event handler called when the item is selected.
    * When provided, the action bar will automatically close after selection

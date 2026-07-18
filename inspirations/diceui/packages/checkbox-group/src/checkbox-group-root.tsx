@@ -80,10 +80,7 @@ interface CheckboxGroupRootProps
   orientation?: "horizontal" | "vertical";
 }
 
-const CheckboxGroupRoot = React.forwardRef<
-  HTMLDivElement,
-  CheckboxGroupRootProps
->((props, ref) => {
+const CheckboxGroupRoot = React.forwardRef<HTMLDivElement, CheckboxGroupRootProps>((props, ref) => {
   const {
     value: valueProp,
     defaultValue,
@@ -99,9 +96,7 @@ const CheckboxGroupRoot = React.forwardRef<
     ...rootProps
   } = props;
 
-  const [validationMessage, setValidationMessage] = React.useState<
-    string | string[]
-  >();
+  const [validationMessage, setValidationMessage] = React.useState<string | string[]>();
   const isInvalid = invalid || !!validationMessage;
 
   const [value = [], setValue] = useControllableState({
@@ -110,10 +105,7 @@ const CheckboxGroupRoot = React.forwardRef<
     onChange: (newValue) => {
       if (onValidate) {
         const validationResult = onValidate(newValue);
-        if (
-          typeof validationResult === "string" ||
-          Array.isArray(validationResult)
-        ) {
+        if (typeof validationResult === "string" || Array.isArray(validationResult)) {
           setValidationMessage(validationResult);
         } else if (validationResult === true || validationResult == null) {
           setValidationMessage(undefined);
@@ -134,9 +126,7 @@ const CheckboxGroupRoot = React.forwardRef<
     (payload: string, checked: boolean) => {
       if (readOnly) return;
 
-      const newValue = checked
-        ? [...value, payload]
-        : value.filter((v) => v !== payload);
+      const newValue = checked ? [...value, payload] : value.filter((v) => v !== payload);
 
       setValue(newValue);
     },

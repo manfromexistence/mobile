@@ -30,15 +30,14 @@ export const FOCUSABLE_SELECTOR = [
 export function routeKeyboardOnMouseDown(
   e: MouseEvent,
   scope: HTMLElement | null,
-  fallback?: HTMLElement | null
+  fallback?: HTMLElement | null,
 ) {
   if (!scope) return;
   const target = e.target as HTMLElement;
   if (target.closest(FOCUSABLE_SELECTOR)) return; // let the element focus itself
   e.preventDefault(); // don't blur to <body> on an empty-space click
   const region = fallback ?? scope;
-  if (region.contains(document.activeElement) && document.activeElement !== region)
-    return; // already keyboard-active here — keep the current focus
+  if (region.contains(document.activeElement) && document.activeElement !== region) return; // already keyboard-active here — keep the current focus
   const focusable = firstInteractive(scope);
   (focusable ?? fallback ?? scope).focus();
 }

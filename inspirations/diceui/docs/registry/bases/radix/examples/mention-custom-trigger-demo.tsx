@@ -44,11 +44,7 @@ export default function MentionCustomTriggerDemo() {
       </MentionInput>
       <MentionContent>
         {users.map((user) => (
-          <MentionItem
-            key={user.id}
-            value={user.name}
-            className="flex-col items-start gap-0.5"
-          >
+          <MentionItem key={user.id} value={user.name} className="flex-col items-start gap-0.5">
             <span className="text-sm">{user.name}</span>
             <span className="text-muted-foreground text-xs">{user.email}</span>
           </MentionItem>

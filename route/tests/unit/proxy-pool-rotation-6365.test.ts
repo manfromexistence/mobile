@@ -120,7 +120,7 @@ test("all-dead pool on a connection → fail-closed (#6246), never direct egress
   assert.equal(
     proxiesDb.hasBlockingProxyAssignment(connId),
     true,
-    "an all-dead assigned pool must block, not leak the real IP via direct egress"
+    "an all-dead assigned pool must block, not leak the real IP via direct egress",
   );
 });
 
@@ -176,7 +176,10 @@ test("random strategy always returns a member of the alive set", async () => {
   // The random strategy uses crypto.randomInt (not Math.random — CodeQL js/insecure-randomness).
   // Over 30 picks from a 3-member alive pool it must vary, not stick on one member
   // (P(all 30 identical) ≈ (1/3)^29 ≈ 0). Guards that randomInt selection is uniform-ish.
-  assert.ok(seen.size >= 2, `random strategy must vary its pick (saw only: ${[...seen].join(", ")})`);
+  assert.ok(
+    seen.size >= 2,
+    `random strategy must vary its pick (saw only: ${[...seen].join(", ")})`,
+  );
 });
 
 test("setScopeRotationStrategy round-trips via getScopeRotationStrategy", async () => {
@@ -184,7 +187,7 @@ test("setScopeRotationStrategy round-trips via getScopeRotationStrategy", async 
   assert.equal(
     await proxiesDb.getScopeRotationStrategy("provider", "cohere"),
     "round-robin",
-    "default strategy is round-robin"
+    "default strategy is round-robin",
   );
   await proxiesDb.setScopeRotationStrategy("provider", "cohere", "random");
   assert.equal(await proxiesDb.getScopeRotationStrategy("provider", "cohere"), "random");

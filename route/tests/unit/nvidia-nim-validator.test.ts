@@ -22,7 +22,7 @@ const { validateProviderApiKey } = await import("../../src/lib/providers/validat
 
 async function withMockServer(
   handler: (req: http.IncomingMessage, res: http.ServerResponse) => void,
-  fn: (baseUrl: string) => Promise<void>
+  fn: (baseUrl: string) => Promise<void>,
 ): Promise<void> {
   const server = http.createServer(handler);
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
@@ -52,11 +52,11 @@ test("normalizeBaseUrl tolerates non-string baseUrl without throwing", async () 
   if (!result.valid && typeof result.error === "string") {
     assert.ok(
       !result.error.includes("startsWith"),
-      `error must not mention startsWith TypeError, got: ${result.error}`
+      `error must not mention startsWith TypeError, got: ${result.error}`,
     );
     assert.ok(
       !result.error.includes("is not a function"),
-      `error must not mention TypeError, got: ${result.error}`
+      `error must not mention TypeError, got: ${result.error}`,
     );
   }
 });
@@ -75,7 +75,7 @@ test("nvidia specialty validator returns Invalid API key on 401", async () => {
       });
       assert.equal(result.valid, false);
       assert.equal(result.error, "Invalid API key");
-    }
+    },
   );
 });
 
@@ -96,13 +96,13 @@ test("nvidia specialty validator accepts a successful chat probe", async () => {
       assert.equal(result.valid, true);
       assert.ok(
         calls.every((u) => !u.endsWith("/v1/models")),
-        `should not call /v1/models, called: ${JSON.stringify(calls)}`
+        `should not call /v1/models, called: ${JSON.stringify(calls)}`,
       );
       assert.ok(
         calls.some((u) => u.endsWith("/chat/completions")),
-        `should call /chat/completions, called: ${JSON.stringify(calls)}`
+        `should call /chat/completions, called: ${JSON.stringify(calls)}`,
       );
-    }
+    },
   );
 });
 
@@ -133,9 +133,9 @@ test("nvidia specialty validator falls back to stable chat validation model", as
       assert.equal(result.valid, true);
       assert.ok(
         calls.some((u) => u.endsWith("/chat/completions")),
-        `should fall back to /chat/completions, called: ${JSON.stringify(calls)}`
+        `should fall back to /chat/completions, called: ${JSON.stringify(calls)}`,
       );
       assert.equal(payload?.model, "meta/llama-3.1-8b-instruct");
-    }
+    },
   );
 });

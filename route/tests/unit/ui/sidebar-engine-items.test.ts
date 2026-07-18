@@ -19,7 +19,7 @@ describe("HIDEABLE_SIDEBAR_ITEM_IDS includes all 4 engine items", () => {
     it(`includes "${id}"`, () => {
       assert.ok(
         (HIDEABLE_SIDEBAR_ITEM_IDS as readonly string[]).includes(id),
-        `Expected HIDEABLE_SIDEBAR_ITEM_IDS to include "${id}"`
+        `Expected HIDEABLE_SIDEBAR_ITEM_IDS to include "${id}"`,
       );
     });
   }

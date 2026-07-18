@@ -16,7 +16,7 @@
     "lint:fix": "biome lint --apply .",
     "ci": "bun run lint && bun run typecheck && bun run test"
   },
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": ["apps/*", "packages/*", "route/open-sse", "route/packages/*"],
   "dependencies": {
     "@ai-sdk/amazon-bedrock": "^5.0.11",
     "@ai-sdk/anthropic": "^4.0.8",
@@ -47,6 +47,8 @@
     "@number-flow/react": "^0.6.1",
     "@openpanel/web": "^1.4.1",
     "@openrouter/ai-sdk-provider": "^2.10.0",
+    "@dx-serializer/core": "workspace:*",
+    "@omniroute/open-sse": "workspace:*",
     "@phosphor-icons/react": "^2.1.10",
     "@radix-ui/react-hover-card": "^1.1.19",
     "@radix-ui/react-tooltip": "^1.2.12",

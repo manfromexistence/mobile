@@ -31,12 +31,24 @@ export function AnimatedBadgePreview() {
       </div>
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-        <AnimatedBadge status="neutral" size="sm">Queued</AnimatedBadge>
-        <AnimatedBadge status="info" size="sm">Live</AnimatedBadge>
-        <AnimatedBadge status="loading" size="sm">Indexing</AnimatedBadge>
-        <AnimatedBadge status="success" size="sm">Verified</AnimatedBadge>
-        <AnimatedBadge status="warning" size="sm">Pending</AnimatedBadge>
-        <AnimatedBadge status="danger" size="sm">Blocked</AnimatedBadge>
+        <AnimatedBadge status="neutral" size="sm">
+          Queued
+        </AnimatedBadge>
+        <AnimatedBadge status="info" size="sm">
+          Live
+        </AnimatedBadge>
+        <AnimatedBadge status="loading" size="sm">
+          Indexing
+        </AnimatedBadge>
+        <AnimatedBadge status="success" size="sm">
+          Verified
+        </AnimatedBadge>
+        <AnimatedBadge status="warning" size="sm">
+          Pending
+        </AnimatedBadge>
+        <AnimatedBadge status="danger" size="sm">
+          Blocked
+        </AnimatedBadge>
       </div>
     </div>
   );

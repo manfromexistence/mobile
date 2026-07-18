@@ -678,8 +678,7 @@ export interface DataGridContextMenuProps<TData> {
   table: Table<TData>;
 }
 
-export interface DataGridSortMenuProps<TData>
-  extends EmptyProps<typeof PopoverContent> {
+export interface DataGridSortMenuProps<TData> extends EmptyProps<typeof PopoverContent> {
   /**
    * The table instance from useDataGrid hook.
    * Used to read and update sorting state with drag-and-drop reordering.
@@ -697,8 +696,7 @@ export interface DataGridSortMenuProps<TData>
   disabled?: boolean;
 }
 
-export interface DataGridRowHeightMenuProps<TData>
-  extends EmptyProps<typeof PopoverContent> {
+export interface DataGridRowHeightMenuProps<TData> extends EmptyProps<typeof PopoverContent> {
   /**
    * The table instance from useDataGrid hook.
    * Used to read and update the row height setting.
@@ -716,8 +714,7 @@ export interface DataGridRowHeightMenuProps<TData>
   disabled?: boolean;
 }
 
-export interface DataGridViewMenuProps<TData>
-  extends EmptyProps<typeof PopoverContent> {
+export interface DataGridViewMenuProps<TData> extends EmptyProps<typeof PopoverContent> {
   /**
    * The table instance from useDataGrid hook.
    * Used to read and update column visibility settings.
@@ -735,8 +732,7 @@ export interface DataGridViewMenuProps<TData>
   disabled?: boolean;
 }
 
-export interface DataGridFilterMenuProps<TData>
-  extends EmptyProps<typeof PopoverContent> {
+export interface DataGridFilterMenuProps<TData> extends EmptyProps<typeof PopoverContent> {
   /**
    * The table instance from useDataGrid hook.
    * Used to read and update column filter state with support for multiple operators and values.

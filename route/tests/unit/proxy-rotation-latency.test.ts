@@ -39,10 +39,10 @@ function insertLog(
   host: string,
   port: number,
   latencyMs: number,
-  timestampIso: string
+  timestampIso: string,
 ) {
   db.prepare(
-    "INSERT INTO proxy_logs (id, timestamp, proxy_host, proxy_port, latency_ms) VALUES (?, ?, ?, ?, ?)"
+    "INSERT INTO proxy_logs (id, timestamp, proxy_host, proxy_port, latency_ms) VALUES (?, ?, ?, ?, ?)",
   ).run(`log-${Date.now()}-${Math.random()}`, timestampIso, host, port, latencyMs);
 }
 
@@ -79,7 +79,7 @@ test("latency strategy chooses proxy with lowest average latency within the wind
   assert.equal(
     (resolved as { proxy: { host: string } }).proxy.host,
     "10.0.0.1",
-    "Should pick the one with lower average latency"
+    "Should pick the one with lower average latency",
   );
 });
 
@@ -103,7 +103,7 @@ test("latency strategy prioritizes untested proxies (no logs)", async () => {
   assert.equal(
     (resolved as { proxy: { host: string } }).proxy.host,
     "10.0.0.2",
-    "Should prioritize untested proxy over tested one"
+    "Should prioritize untested proxy over tested one",
   );
 });
 
@@ -135,7 +135,7 @@ test("latency strategy ignores logs outside the configured time window", async (
   assert.equal(
     (resolved as { proxy: { host: string } }).proxy.host,
     "10.0.0.2",
-    "p2 should be prioritized as untested within the 6h window"
+    "p2 should be prioritized as untested within the 6h window",
   );
 });
 
@@ -152,6 +152,6 @@ test("latency strategy works normally with empty proxy_logs table", async () => 
   const resolved = await proxiesDb.resolveProxyForScopeFromRegistry("provider", "openai");
   assert.ok(resolved);
   assert.ok(
-    ["10.0.0.1", "10.0.0.2"].includes((resolved as { proxy: { host: string } }).proxy.host)
+    ["10.0.0.1", "10.0.0.2"].includes((resolved as { proxy: { host: string } }).proxy.host),
   );
 });

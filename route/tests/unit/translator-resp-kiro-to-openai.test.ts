@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { convertKiroToOpenAI } =
-  await import("../../open-sse/translator/response/kiro-to-openai.ts");
+const { convertKiroToOpenAI } = await import(
+  "../../open-sse/translator/response/kiro-to-openai.ts"
+);
 
 test("Kiro -> OpenAI: first assistantResponseEvent emits role and content", () => {
   const state = {};
@@ -19,7 +20,7 @@ test("Kiro -> OpenAI: subsequent assistantResponseEvent omits role", () => {
   convertKiroToOpenAI('event:assistantResponseEvent\ndata:{"content":"Hel"}\n\n', state);
   const result = convertKiroToOpenAI(
     'event:assistantResponseEvent\ndata:{"content":"lo"}\n\n',
-    state
+    state,
   );
 
   assert.equal(result.choices[0].delta.role, undefined);
@@ -29,7 +30,7 @@ test("Kiro -> OpenAI: subsequent assistantResponseEvent omits role", () => {
 test("Kiro -> OpenAI: reasoningContentEvent emits native reasoning_content", () => {
   const result = convertKiroToOpenAI(
     'event:reasoningContentEvent\ndata:{"content":"Need to inspect first"}\n\n',
-    {}
+    {},
   );
 
   assert.equal(result.choices[0].delta.reasoning_content, "Need to inspect first");
@@ -44,14 +45,14 @@ test("Kiro -> OpenAI: toolUseEvent becomes OpenAI tool_calls", () => {
       name: "read_file",
       input: { path: "/tmp/a" },
     },
-    {}
+    {},
   );
 
   assert.equal(result.choices[0].delta.tool_calls[0].id, "call_1");
   assert.equal(result.choices[0].delta.tool_calls[0].function.name, "read_file");
   assert.equal(
     result.choices[0].delta.tool_calls[0].function.arguments,
-    JSON.stringify({ path: "/tmp/a" })
+    JSON.stringify({ path: "/tmp/a" }),
   );
 });
 
@@ -59,7 +60,7 @@ test("Kiro -> OpenAI: usageEvent is stored and final done event includes usage",
   const state = {};
   const usage = convertKiroToOpenAI(
     'event:usageEvent\ndata:{"inputTokens":4,"outputTokens":6}\n\n',
-    state
+    state,
   );
   const done = convertKiroToOpenAI("event:done\ndata:{}\n\n", state);
 

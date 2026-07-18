@@ -2,20 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import {
-  findCategory,
-  findComponent,
-  registry,
-  type ComponentExample,
-} from "@/lib/registry";
+import { findCategory, findComponent, registry, type ComponentExample } from "@/lib/registry";
 import { CodeBlock } from "@/components/app/code-block";
 import { InstallBlock } from "@/components/app/install-block";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/motion/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/motion/tabs";
 import { NewBadge } from "@/components/app/new-badge";
 import { ComponentCard } from "@/components/app/component-card";
 import { JsonLd } from "@/components/app/json-ld";
@@ -49,15 +39,9 @@ export async function generateMetadata({
   const comp = findComponent(category, slug);
   if (!cat || !comp) return {};
   const installSlugs =
-    comp.examples?.flatMap((example) =>
-      example.installSlug ? [example.installSlug] : [],
-    ) ?? [];
-  const registryItem = installSlugs[0]
-    ? `/r/${installSlugs[0]}.json`
-    : `/r/${comp.slug}.json`;
-  const directoryItem = installSlugs[0]
-    ? `/${installSlugs[0]}.json`
-    : `/${comp.slug}.json`;
+    comp.examples?.flatMap((example) => (example.installSlug ? [example.installSlug] : [])) ?? [];
+  const registryItem = installSlugs[0] ? `/r/${installSlugs[0]}.json` : `/r/${comp.slug}.json`;
+  const directoryItem = installSlugs[0] ? `/${installSlugs[0]}.json` : `/${comp.slug}.json`;
 
   const title = `${comp.name} · React motion component`;
   const ogTitle = `${title} · beUI`;
@@ -94,8 +78,7 @@ export async function generateMetadata({
     alternates: {
       canonical: pageUrl,
       types: {
-        "application/json":
-          installSlugs.length > 0 ? `/r/${comp.slug}` : `/r/${comp.slug}.json`,
+        "application/json": installSlugs.length > 0 ? `/r/${comp.slug}` : `/r/${comp.slug}.json`,
         "text/plain": `/r/${comp.slug}/raw`,
       },
     },
@@ -128,8 +111,7 @@ export default async function ComponentPage({
   const cat = findCategory(category);
   const comp = findComponent(category, slug);
   if (!cat || !comp) notFound();
-  const hasVariantInstallCommands =
-    comp.examples?.some((example) => example.installSlug) ?? false;
+  const hasVariantInstallCommands = comp.examples?.some((example) => example.installSlug) ?? false;
   const related = relatedComponents(cat.slug, comp.slug, 3);
 
   return (
@@ -144,10 +126,7 @@ export default async function ComponentPage({
           componentJsonLd(cat, comp),
         ]}
       />
-      <nav
-        aria-label="Breadcrumb"
-        className="flex items-center gap-1.5 text-sm"
-      >
+      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm">
         <Link
           href={`/components/${cat.slug}`}
           className="text-muted-foreground transition-colors hover:text-foreground"
@@ -158,14 +137,10 @@ export default async function ComponentPage({
         <span className="font-medium text-foreground">{comp.name}</span>
       </nav>
       <div className="mt-4 flex items-center gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-          {comp.name}
-        </h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground">{comp.name}</h1>
         {comp.badge === "new" ? <NewBadge className="mt-1" /> : null}
       </div>
-      <p className="mt-2 max-w-2xl text-muted-foreground">
-        {comp.description}
-      </p>
+      <p className="mt-2 max-w-2xl text-muted-foreground">{comp.description}</p>
 
       {comp.examples?.length ? (
         <div className="mt-10 flex flex-col gap-12">
@@ -193,9 +168,7 @@ export default async function ComponentPage({
 
       {related.length ? (
         <section className="mt-12 border-t border-border pt-8">
-          <h2 className="text-sm font-semibold text-foreground">
-            Related components
-          </h2>
+          <h2 className="text-sm font-semibold text-foreground">Related components</h2>
           <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {related.map((rel) => (
               <ComponentCard
@@ -231,17 +204,13 @@ async function ExampleBlock({
   return (
     <section>
       <div className="mb-4 flex items-baseline justify-between gap-3">
-        <h2 className="text-xl font-semibold tracking-tight text-foreground">
-          {example.name}
-        </h2>
+        <h2 className="text-xl font-semibold tracking-tight text-foreground">{example.name}</h2>
         <code className="rounded-md bg-foreground/5 px-2 py-0.5 font-mono text-[11px] text-muted-foreground">
           {example.file.split("/").pop()}
         </code>
       </div>
       {example.description ? (
-        <p className="mb-4 text-sm text-muted-foreground">
-          {example.description}
-        </p>
+        <p className="mb-4 text-sm text-muted-foreground">{example.description}</p>
       ) : null}
       <Tabs defaultValue="preview" variant="pill">
         <TabsList>
@@ -306,10 +275,7 @@ async function DefaultTabs({
         <CodeBlock code={usage} filename={previewFile} />
       </TabsContent>
       <TabsContent value="source" className="mt-4">
-        <CodeBlock
-          code={withSignature(source, file, pageUrlFor(category, slug))}
-          filename={file}
-        />
+        <CodeBlock code={withSignature(source, file, pageUrlFor(category, slug))} filename={file} />
       </TabsContent>
     </Tabs>
   );

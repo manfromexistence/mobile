@@ -31,16 +31,16 @@ describe("#6205 A — embed panel root no longer 404s", () => {
   it("the proxy route folder is an OPTIONAL catch-all ([[...path]])", () => {
     const optional = path.join(
       repoRoot,
-      "src/app/(dashboard)/dashboard/providers/services/[name]/embed/[[...path]]/route.ts"
+      "src/app/(dashboard)/dashboard/providers/services/[name]/embed/[[...path]]/route.ts",
     );
     const required = path.join(
       repoRoot,
-      "src/app/(dashboard)/dashboard/providers/services/[name]/embed/[...path]/route.ts"
+      "src/app/(dashboard)/dashboard/providers/services/[name]/embed/[...path]/route.ts",
     );
     assert.ok(existsSync(optional), "optional catch-all [[...path]]/route.ts must exist");
     assert.ok(
       !existsSync(required),
-      "required catch-all [...path]/route.ts must be gone (it cannot match /embed/)"
+      "required catch-all [...path]/route.ts must be gone (it cannot match /embed/)",
     );
   });
 

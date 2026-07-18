@@ -2,13 +2,7 @@
 
 import { AlertCircle, MessageSquare, X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import {
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { Button, StatefulButton } from "@/components/motion/button";
 import { EASE_OUT } from "@/lib/ease";
 import { cn } from "@/lib/utils";
@@ -100,11 +94,7 @@ export function FeedbackWidget({
       if (e.key === "Escape" && !busy) close();
     };
     const onPointer = (e: PointerEvent) => {
-      if (
-        !busy &&
-        rootRef.current &&
-        !rootRef.current.contains(e.target as Node)
-      ) {
+      if (!busy && rootRef.current && !rootRef.current.contains(e.target as Node)) {
         close();
       }
     };
@@ -136,9 +126,7 @@ export function FeedbackWidget({
 
   const left = position === "bottom-left";
   const morph = reduce ? { duration: 0.15 } : MORPH;
-  const viewInitial = reduce
-    ? { opacity: 0 }
-    : { opacity: 0, y: 8, filter: "blur(4px)" };
+  const viewInitial = reduce ? { opacity: 0 } : { opacity: 0, y: 8, filter: "blur(4px)" };
   const viewAnimate = reduce
     ? {
         opacity: 1,
@@ -247,9 +235,7 @@ export function FeedbackWidget({
                                 strokeWidth={2.5}
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                initial={
-                                  reduce ? { pathLength: 1 } : { pathLength: 0 }
-                                }
+                                initial={reduce ? { pathLength: 1 } : { pathLength: 0 }}
                                 animate={{ pathLength: 1 }}
                                 transition={{
                                   duration: 0.35,
@@ -260,9 +246,7 @@ export function FeedbackWidget({
                             </motion.svg>
                           </motion.div>
                         </div>
-                        <h3 className="text-sm font-semibold text-foreground">
-                          Thanks!
-                        </h3>
+                        <h3 className="text-sm font-semibold text-foreground">Thanks!</h3>
                         <p className="text-xs leading-relaxed text-muted-foreground">
                           Your feedback helps us build something better.
                         </p>
@@ -302,9 +286,7 @@ export function FeedbackWidget({
                     >
                       <div className="min-h-[150px] rounded-[20px] bg-border/60 px-4 py-3.5">
                         <div className="flex items-start justify-between gap-3">
-                          <h3 className="text-sm font-semibold text-foreground">
-                            {title}
-                          </h3>
+                          <h3 className="text-sm font-semibold text-foreground">{title}</h3>
                           <button
                             type="button"
                             onClick={close}

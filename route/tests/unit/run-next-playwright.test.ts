@@ -17,7 +17,7 @@ test("resolvePlaywrightAppBackupDir uses a per-run backup when a stale backup al
       pid: 123,
       now: 456,
     }),
-    path.join(cwd, "app.__qa_backup")
+    path.join(cwd, "app.__qa_backup"),
   );
 
   assert.equal(
@@ -28,7 +28,7 @@ test("resolvePlaywrightAppBackupDir uses a per-run backup when a stale backup al
       pid: 123,
       now: 456,
     }),
-    path.join(cwd, "app.__qa_backup.123.456")
+    path.join(cwd, "app.__qa_backup.123.456"),
   );
 });
 
@@ -38,7 +38,7 @@ test("shouldUseWebpackForPlaywrightDev only opts into webpack when turbopack is 
       mode: "dev",
       env: { OMNIROUTE_USE_TURBOPACK: "1" },
     }),
-    false
+    false,
   );
 
   assert.equal(
@@ -46,7 +46,7 @@ test("shouldUseWebpackForPlaywrightDev only opts into webpack when turbopack is 
       mode: "dev",
       env: { OMNIROUTE_USE_TURBOPACK: "0" },
     }),
-    true
+    true,
   );
 
   assert.equal(
@@ -54,7 +54,7 @@ test("shouldUseWebpackForPlaywrightDev only opts into webpack when turbopack is 
       mode: "start",
       env: { OMNIROUTE_USE_TURBOPACK: "1" },
     }),
-    false
+    false,
   );
 
   // Turbopack is the default: an unset env var must NOT fall back to webpack.
@@ -63,7 +63,7 @@ test("shouldUseWebpackForPlaywrightDev only opts into webpack when turbopack is 
       mode: "dev",
       env: {},
     }),
-    false
+    false,
   );
 });
 
@@ -88,7 +88,7 @@ test("standalone asset helpers detect and rehydrate missing standalone static as
       rootStaticDirPath,
       standaloneStaticDirPath,
     }),
-    true
+    true,
   );
 
   const logs = [];
@@ -108,11 +108,11 @@ test("standalone asset helpers detect and rehydrate missing standalone static as
   assert.equal(changed, true);
   assert.equal(
     fs.readFileSync(path.join(standaloneStaticDirPath, "chunk.js"), "utf8"),
-    "console.log('chunk');"
+    "console.log('chunk');",
   );
   assert.equal(
     fs.readFileSync(path.join(standalonePublicDirPath, "favicon.svg"), "utf8"),
-    "<svg />"
+    "<svg />",
   );
   assert.equal(
     playwrightRunner.standaloneAssetsNeedSync({
@@ -120,7 +120,7 @@ test("standalone asset helpers detect and rehydrate missing standalone static as
       rootStaticDirPath,
       standaloneStaticDirPath,
     }),
-    false
+    false,
   );
   assert.match(logs[0] || "", /Rehydrated standalone static\/public assets/);
 

@@ -1,1 +1,1 @@
-export * from "./middle-truncation"
+export * from "./middle-truncation";

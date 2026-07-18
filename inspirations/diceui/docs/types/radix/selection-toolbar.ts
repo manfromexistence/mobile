@@ -1,9 +1,7 @@
 import type React from "react";
 import type { ButtonProps, CompositionProps, EmptyProps } from "@/types";
 
-export interface SelectionToolbarProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface SelectionToolbarProps extends EmptyProps<"div">, CompositionProps {
   /**
    * Whether the toolbar is open.
    * Use this prop to control the component externally.
@@ -132,9 +130,7 @@ export interface SelectionToolbarProps
    *
    * @default 0
    */
-  collisionPadding?:
-    | number
-    | Partial<Record<"top" | "right" | "bottom" | "left", number>>;
+  collisionPadding?: number | Partial<Record<"top" | "right" | "bottom" | "left", number>>;
 
   /**
    * The sticky behavior on the alignment axis.
@@ -183,6 +179,4 @@ export interface SelectionToolbarItemProps
   onSelect?: (text: string, event: Event) => void;
 }
 
-export interface SelectionToolbarSeparatorProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface SelectionToolbarSeparatorProps extends EmptyProps<"div">, CompositionProps {}

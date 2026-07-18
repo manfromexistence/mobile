@@ -37,7 +37,7 @@ test("#5777: setCustomAliases writes through globalThis (store is not a per-modu
   assert.deepEqual(
     g[GLOBAL_KEY],
     { "old-model": "new-model" },
-    "custom aliases must live on globalThis so both webpack module graphs share them"
+    "custom aliases must live on globalThis so both webpack module graphs share them",
   );
 });
 
@@ -55,7 +55,7 @@ test("#5777: reads reflect a value written by another module instance via global
   assert.equal(
     modelDeprecation.getAllAliases()["claude-opus-4-8"],
     "mimo/mimo-v2.5-pro",
-    "getAllAliases must merge the globalThis-backed custom aliases over built-ins"
+    "getAllAliases must merge the globalThis-backed custom aliases over built-ins",
   );
 });
 

@@ -3,10 +3,7 @@ import type * as React from "react";
 import type { CompositionProps } from "@/types";
 
 export interface MasonryProps
-  extends Omit<
-      React.ComponentProps<typeof Slot.Root>,
-      keyof React.ComponentProps<"div">
-    >,
+  extends Omit<React.ComponentProps<typeof Slot.Root>, keyof React.ComponentProps<"div">>,
     CompositionProps {
   /**
    * The width of each column in pixels.
@@ -104,8 +101,5 @@ export interface MasonryProps
 }
 
 export interface MasonryItemProps
-  extends Omit<
-      React.ComponentProps<typeof Slot.Root>,
-      keyof React.ComponentProps<"div">
-    >,
+  extends Omit<React.ComponentProps<typeof Slot.Root>, keyof React.ComponentProps<"div">>,
     CompositionProps {}

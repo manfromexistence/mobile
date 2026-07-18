@@ -101,7 +101,7 @@ function PrimitiveToggle() {
             className={cn(
               "relative px-5 py-2 text-[13px] rounded-full outline-none transition-colors duration-150",
               "focus-visible:ring-1 focus-visible:ring-[#6B97FF] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-              selected ? "text-background" : "text-muted-foreground hover:text-foreground"
+              selected ? "text-background" : "text-muted-foreground hover:text-foreground",
             )}
             style={{ fontVariationSettings: "'wght' 500" }}
             aria-pressed={selected}
@@ -195,12 +195,8 @@ export default function CompareBasesPage() {
 
       <div className="grid grid-cols-[180px_1fr_1fr] gap-6 items-end pb-2">
         <div />
-        <div className="text-xs uppercase tracking-wide text-muted-foreground">
-          Radix
-        </div>
-        <div className="text-xs uppercase tracking-wide text-muted-foreground">
-          Base UI
-        </div>
+        <div className="text-xs uppercase tracking-wide text-muted-foreground">Radix</div>
+        <div className="text-xs uppercase tracking-wide text-muted-foreground">Base UI</div>
       </div>
 
       <Row label="Button">
@@ -219,7 +215,11 @@ export default function CompareBasesPage() {
       </Row>
 
       <Row label="Switch">
-        <RadixSwitch label="Notifications" checked={switchA} onToggle={() => setSwitchA(!switchA)} />
+        <RadixSwitch
+          label="Notifications"
+          checked={switchA}
+          onToggle={() => setSwitchA(!switchA)}
+        />
         <BaseSwitch label="Notifications" checked={switchB} onToggle={() => setSwitchB(!switchB)} />
       </Row>
 
@@ -274,9 +274,7 @@ export default function CompareBasesPage() {
           </RadixDialogContent>
         </RadixDialog>
         <BaseDialog>
-          <BaseDialogTrigger
-            render={<BaseButton variant="secondary">Open dialog</BaseButton>}
-          />
+          <BaseDialogTrigger render={<BaseButton variant="secondary">Open dialog</BaseButton>} />
           <BaseDialogContent>
             <BaseDialogHeader>
               <BaseDialogTitle>Base Dialog</BaseDialogTitle>
@@ -295,9 +293,15 @@ export default function CompareBasesPage() {
             <RadixTabItem value="two" label="Two" />
             <RadixTabItem value="three" label="Three" />
           </RadixTabsList>
-          <RadixTabPanel value="one" className="pt-3 text-sm text-muted-foreground">First panel</RadixTabPanel>
-          <RadixTabPanel value="two" className="pt-3 text-sm text-muted-foreground">Second panel</RadixTabPanel>
-          <RadixTabPanel value="three" className="pt-3 text-sm text-muted-foreground">Third panel</RadixTabPanel>
+          <RadixTabPanel value="one" className="pt-3 text-sm text-muted-foreground">
+            First panel
+          </RadixTabPanel>
+          <RadixTabPanel value="two" className="pt-3 text-sm text-muted-foreground">
+            Second panel
+          </RadixTabPanel>
+          <RadixTabPanel value="three" className="pt-3 text-sm text-muted-foreground">
+            Third panel
+          </RadixTabPanel>
         </RadixTabs>
         <BaseTabs defaultValue="one">
           <BaseTabsList>
@@ -305,31 +309,79 @@ export default function CompareBasesPage() {
             <BaseTabItem value="two" label="Two" />
             <BaseTabItem value="three" label="Three" />
           </BaseTabsList>
-          <BaseTabPanel value="one" className="pt-3 text-sm text-muted-foreground">First panel</BaseTabPanel>
-          <BaseTabPanel value="two" className="pt-3 text-sm text-muted-foreground">Second panel</BaseTabPanel>
-          <BaseTabPanel value="three" className="pt-3 text-sm text-muted-foreground">Third panel</BaseTabPanel>
+          <BaseTabPanel value="one" className="pt-3 text-sm text-muted-foreground">
+            First panel
+          </BaseTabPanel>
+          <BaseTabPanel value="two" className="pt-3 text-sm text-muted-foreground">
+            Second panel
+          </BaseTabPanel>
+          <BaseTabPanel value="three" className="pt-3 text-sm text-muted-foreground">
+            Third panel
+          </BaseTabPanel>
         </BaseTabs>
       </Row>
 
       <Row label="Slider">
         <div className="pt-1">
-          <RadixSlider value={sliderA} onChange={(v) => setSliderA(v as number)} min={0} max={100} step={1} />
+          <RadixSlider
+            value={sliderA}
+            onChange={(v) => setSliderA(v as number)}
+            min={0}
+            max={100}
+            step={1}
+          />
         </div>
         <div className="pt-1">
-          <BaseSlider value={sliderB} onChange={(v) => setSliderB(v as number)} min={0} max={100} step={1} />
+          <BaseSlider
+            value={sliderB}
+            onChange={(v) => setSliderB(v as number)}
+            min={0}
+            max={100}
+            step={1}
+          />
         </div>
       </Row>
 
       <Row label="Checkbox Group">
         <RadixCheckboxGroup checkedIndices={checkedA}>
-          <RadixCheckboxItem label="Option A" index={0} checked={checkedA.has(0)} onToggle={() => toggle(checkedA, setCheckedA)(0)} />
-          <RadixCheckboxItem label="Option B" index={1} checked={checkedA.has(1)} onToggle={() => toggle(checkedA, setCheckedA)(1)} />
-          <RadixCheckboxItem label="Option C" index={2} checked={checkedA.has(2)} onToggle={() => toggle(checkedA, setCheckedA)(2)} />
+          <RadixCheckboxItem
+            label="Option A"
+            index={0}
+            checked={checkedA.has(0)}
+            onToggle={() => toggle(checkedA, setCheckedA)(0)}
+          />
+          <RadixCheckboxItem
+            label="Option B"
+            index={1}
+            checked={checkedA.has(1)}
+            onToggle={() => toggle(checkedA, setCheckedA)(1)}
+          />
+          <RadixCheckboxItem
+            label="Option C"
+            index={2}
+            checked={checkedA.has(2)}
+            onToggle={() => toggle(checkedA, setCheckedA)(2)}
+          />
         </RadixCheckboxGroup>
         <BaseCheckboxGroup checkedIndices={checkedB}>
-          <BaseCheckboxItem label="Option A" index={0} checked={checkedB.has(0)} onToggle={() => toggle(checkedB, setCheckedB)(0)} />
-          <BaseCheckboxItem label="Option B" index={1} checked={checkedB.has(1)} onToggle={() => toggle(checkedB, setCheckedB)(1)} />
-          <BaseCheckboxItem label="Option C" index={2} checked={checkedB.has(2)} onToggle={() => toggle(checkedB, setCheckedB)(2)} />
+          <BaseCheckboxItem
+            label="Option A"
+            index={0}
+            checked={checkedB.has(0)}
+            onToggle={() => toggle(checkedB, setCheckedB)(0)}
+          />
+          <BaseCheckboxItem
+            label="Option B"
+            index={1}
+            checked={checkedB.has(1)}
+            onToggle={() => toggle(checkedB, setCheckedB)(1)}
+          />
+          <BaseCheckboxItem
+            label="Option C"
+            index={2}
+            checked={checkedB.has(2)}
+            onToggle={() => toggle(checkedB, setCheckedB)(2)}
+          />
         </BaseCheckboxGroup>
       </Row>
 

@@ -124,7 +124,7 @@ test("injectEmptyReasoningContentForToolCalls supports DeepSeek V4 models across
     const result = injectEmptyReasoningContentForToolCalls(
       messages,
       provider,
-      "accounts/fireworks/models/deepseek-v4-pro"
+      "accounts/fireworks/models/deepseek-v4-pro",
     ) as Array<{ reasoning_content?: string }>;
 
     assert.equal(result[1].reasoning_content, "");
@@ -155,7 +155,7 @@ test("injectEmptyReasoningContentForToolCalls supports Kimi K2 via Qoder provide
   const result = injectEmptyReasoningContentForToolCalls(
     messages,
     "qoder",
-    "kimi-k2-thinking"
+    "kimi-k2-thinking",
   ) as Array<{ reasoning_content?: string }>;
 
   assert.equal(result[1].reasoning_content, "");
@@ -185,7 +185,7 @@ test("injectEmptyReasoningContentForToolCalls supports all reasoning replay prov
     assert.equal(
       result[1].reasoning_content,
       "",
-      `should inject reasoning_content for ${provider}/${model}`
+      `should inject reasoning_content for ${provider}/${model}`,
     );
   }
 });
@@ -210,7 +210,7 @@ test("injectEmptyReasoningContentForToolCalls skips non-reasoning models", () =>
     assert.equal(
       result[0].reasoning_content,
       undefined,
-      `should NOT inject reasoning_content for ${provider}/${model}`
+      `should NOT inject reasoning_content for ${provider}/${model}`,
     );
   }
 });

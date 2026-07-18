@@ -48,7 +48,7 @@ test("#222: a Responses tool reaching the catch-all without a name is dropped, n
   assert.equal(
     out.tools.some((t) => !t.function?.name || t.function.name.trim() === ""),
     false,
-    "no nameless functionDeclaration must be emitted"
+    "no nameless functionDeclaration must be emitted",
   );
 });
 

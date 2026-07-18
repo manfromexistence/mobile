@@ -33,30 +33,20 @@ export default function EditableTodoListDemo() {
 
   const onToggleTodo = React.useCallback((id: string) => {
     setTodos((prev) =>
-      prev.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
-      ),
+      prev.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)),
     );
   }, []);
 
   const onUpdateTodo = React.useCallback((id: string, newText: string) => {
-    setTodos((prev) =>
-      prev.map((todo) => (todo.id === id ? { ...todo, text: newText } : todo)),
-    );
+    setTodos((prev) => prev.map((todo) => (todo.id === id ? { ...todo, text: newText } : todo)));
   }, []);
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-2">
       <span className="font-semibold text-lg">Tricks to learn</span>
       {todos.map((todo) => (
-        <div
-          key={todo.id}
-          className="flex items-center gap-2 rounded-lg border bg-card px-4 py-2"
-        >
-          <Checkbox
-            checked={todo.completed}
-            onCheckedChange={() => onToggleTodo(todo.id)}
-          />
+        <div key={todo.id} className="flex items-center gap-2 rounded-lg border bg-card px-4 py-2">
+          <Checkbox checked={todo.completed} onCheckedChange={() => onToggleTodo(todo.id)} />
           <Editable
             key={todo.id}
             defaultValue={todo.text}

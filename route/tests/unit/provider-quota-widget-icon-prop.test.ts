@@ -12,11 +12,11 @@ const providerQuotaWidgetSrc = readFileSync(PROVIDER_QUOTA_WIDGET_PATH, "utf8");
 test("ProviderQuotaWidget passes provider IDs using ProviderIcon's providerId prop", () => {
   assert.ok(
     providerQuotaWidgetSrc.includes("<ProviderIcon providerId={provider} size={18} />"),
-    "ProviderQuotaWidget must pass provider through ProviderIcon's providerId prop"
+    "ProviderQuotaWidget must pass provider through ProviderIcon's providerId prop",
   );
   assert.equal(
     providerQuotaWidgetSrc.includes("<ProviderIcon provider={provider}"),
     false,
-    "ProviderQuotaWidget must not pass an unsupported provider prop to ProviderIcon"
+    "ProviderQuotaWidget must not pass an unsupported provider prop to ProviderIcon",
   );
 });

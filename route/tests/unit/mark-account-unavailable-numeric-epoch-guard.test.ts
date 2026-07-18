@@ -63,7 +63,7 @@ test("markAccountUnavailable does not shorten an existing numeric-epoch cooldown
   const before = readConnectionRow(connId);
   assert.ok(
     /^\d+(\.\d+)?$/.test(String(before?.rate_limited_until)),
-    `expected numeric epoch string, got ${String(before?.rate_limited_until)}`
+    `expected numeric epoch string, got ${String(before?.rate_limited_until)}`,
   );
 
   // A second, concurrent 429 hits the SAME connection while it is still cooling.
@@ -76,11 +76,11 @@ test("markAccountUnavailable does not shorten an existing numeric-epoch cooldown
 
   assert.ok(
     afterUntilMs >= longCooldownUntil - 1_000,
-    `guard must not shorten the cooldown: expected >= ${longCooldownUntil}, got ${afterUntilMs}`
+    `guard must not shorten the cooldown: expected >= ${longCooldownUntil}, got ${afterUntilMs}`,
   );
   assert.equal(
     Number(after?.backoff_level ?? 0),
     Number(before?.backoff_level ?? 0),
-    "backoff level must not be double-incremented by a deduped duplicate mark"
+    "backoff level must not be double-incremented by a deduped duplicate mark",
   );
 });

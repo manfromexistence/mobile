@@ -1,8 +1,8 @@
-import code from '@content/Animations/ElectricBorder/ElectricBorder.jsx?raw';
-import css from '@content/Animations/ElectricBorder/ElectricBorder.css?raw';
-import tailwind from '@tailwind/Animations/ElectricBorder/ElectricBorder.jsx?raw';
-import tsCode from '@ts-default/Animations/ElectricBorder/ElectricBorder.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/ElectricBorder/ElectricBorder.tsx?raw';
+import code from "@content/Animations/ElectricBorder/ElectricBorder.jsx?raw";
+import css from "@content/Animations/ElectricBorder/ElectricBorder.css?raw";
+import tailwind from "@tailwind/Animations/ElectricBorder/ElectricBorder.jsx?raw";
+import tsCode from "@ts-default/Animations/ElectricBorder/ElectricBorder.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/ElectricBorder/ElectricBorder.tsx?raw";
 
 export const electricBorder = {
   usage: `// CREDIT
@@ -28,5 +28,5 @@ import ElectricBorder from './ElectricBorder'
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

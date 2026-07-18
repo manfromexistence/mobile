@@ -18,7 +18,9 @@ test("stripOrphanedToolResults: matched OpenAI tool_calls + role:tool preserved"
       {
         role: "assistant",
         content: null,
-        tool_calls: [{ id: "call_1", type: "function", function: { name: "foo", arguments: "{}" } }],
+        tool_calls: [
+          { id: "call_1", type: "function", function: { name: "foo", arguments: "{}" } },
+        ],
       },
       { role: "tool", tool_call_id: "call_1", content: "result" },
       { role: "user", content: "next" },
@@ -39,7 +41,10 @@ test("stripOrphanedToolResults: orphan role:tool stripped", () => {
     ],
   };
   const out = stripOrphanedToolResults(body);
-  assert.equal(out.messages.some((m: { role: string }) => m.role === "tool"), false);
+  assert.equal(
+    out.messages.some((m: { role: string }) => m.role === "tool"),
+    false,
+  );
   assert.equal(out.messages.length, 2);
 });
 
@@ -128,7 +133,9 @@ test("stripOrphanedToolResults: mixed matched+orphan — matched kept, orphan st
       {
         role: "assistant",
         content: null,
-        tool_calls: [{ id: "call_valid", type: "function", function: { name: "fn", arguments: "{}" } }],
+        tool_calls: [
+          { id: "call_valid", type: "function", function: { name: "fn", arguments: "{}" } },
+        ],
       },
       { role: "tool", tool_call_id: "call_valid", content: "ok" },
       { role: "tool", tool_call_id: "call_orphan", content: "stale" },

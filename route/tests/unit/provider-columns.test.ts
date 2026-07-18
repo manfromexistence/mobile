@@ -1,10 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const providerColumns =
-  await import("../../src/app/(dashboard)/dashboard/usage/components/ProviderLimits/providerColumns.ts");
-const utils =
-  await import("../../src/app/(dashboard)/dashboard/usage/components/ProviderLimits/utils.tsx");
+const providerColumns = await import(
+  "../../src/app/(dashboard)/dashboard/usage/components/ProviderLimits/providerColumns.ts"
+);
+const utils = await import(
+  "../../src/app/(dashboard)/dashboard/usage/components/ProviderLimits/utils.tsx"
+);
 
 test("getProviderColumns: Codex surfaces all OpenAI Codex quota columns in fixed order", () => {
   const quotas = utils.parseQuotaData("codex", {
@@ -27,7 +29,7 @@ test("getProviderColumns: Codex surfaces all OpenAI Codex quota columns in fixed
       "gpt_5_3_codex_spark_session",
       "gpt_5_3_codex_spark_weekly",
       "banked_reset_credits",
-    ]
+    ],
   );
   assert.equal(schema.columns[0].label, "Session");
   assert.equal(schema.columns[0].quota?.name, "session");
@@ -76,7 +78,7 @@ test("getProviderColumns: MiniMax `session (5h)` matches the `session` column vi
   assert.equal(
     schema.columns[0].quota?.name,
     "session (5h)",
-    "the original quota object is attached, not a normalized clone"
+    "the original quota object is attached, not a normalized clone",
   );
   assert.equal(schema.overflowCount, 0);
 });
@@ -145,15 +147,15 @@ test("groupConnectionsByProvider: preserves input order inside each group", () =
   assert.deepEqual(
     [...groups.keys()],
     ["codex", "antigravity"],
-    "group order reflects first appearance"
+    "group order reflects first appearance",
   );
   assert.deepEqual(
     groups.get("codex")!.map((c) => c.id),
-    ["a", "c", "e"]
+    ["a", "c", "e"],
   );
   assert.deepEqual(
     groups.get("antigravity")!.map((c) => c.id),
-    ["b", "d"]
+    ["b", "d"],
   );
 });
 
@@ -167,6 +169,6 @@ test("groupConnectionsByProvider: missing provider key collapses into 'unknown'"
   assert.equal(groups.size, 1);
   assert.deepEqual(
     groups.get("unknown")!.map((c) => c.id),
-    ["x", "y"]
+    ["x", "y"],
   );
 });

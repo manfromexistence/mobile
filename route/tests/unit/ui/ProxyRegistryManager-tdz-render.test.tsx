@@ -18,8 +18,9 @@ vi.mock("next-intl", () => ({
 
 describe("ProxyRegistryManager (TDZ regression #5918)", () => {
   it("server-renders without a use-before-init ReferenceError", { timeout: 30000 }, async () => {
-    const { default: ProxyRegistryManager } =
-      await import("@/app/(dashboard)/dashboard/settings/components/ProxyRegistryManager");
+    const { default: ProxyRegistryManager } = await import(
+      "@/app/(dashboard)/dashboard/settings/components/ProxyRegistryManager"
+    );
     const html = renderToString(React.createElement(ProxyRegistryManager));
     // The heading key is rendered via the mocked translator (key echo).
     expect(html).toContain("title");

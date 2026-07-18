@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-import { ScrollArea, ScrollBar } from "@/registry/elevenlabs-ui/ui/scroll-area"
-import { registryCategories } from "@/registry/registry-categories"
+import { ScrollArea, ScrollBar } from "@/registry/elevenlabs-ui/ui/scroll-area";
+import { registryCategories } from "@/registry/registry-categories";
 
 export function BlocksNav() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <div className="relative overflow-hidden">
@@ -28,18 +28,18 @@ export function BlocksNav() {
         <ScrollBar orientation="horizontal" className="invisible" />
       </ScrollArea>
     </div>
-  )
+  );
 }
 
 function BlocksNavLink({
   category,
   isActive,
 }: {
-  category: (typeof registryCategories)[number]
-  isActive: boolean
+  category: (typeof registryCategories)[number];
+  isActive: boolean;
 }) {
   if (category.hidden) {
-    return null
+    return null;
   }
 
   return (
@@ -51,5 +51,5 @@ function BlocksNavLink({
     >
       {category.name}
     </Link>
-  )
+  );
 }

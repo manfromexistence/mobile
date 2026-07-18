@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { ChevronDown, Globe } from "lucide-react"
+import { useState } from "react";
+import { ChevronDown, Globe } from "lucide-react";
 
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -11,16 +11,12 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/registry/elevenlabs-ui/ui/command"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/registry/elevenlabs-ui/ui/popover"
+} from "@/registry/elevenlabs-ui/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/registry/elevenlabs-ui/ui/popover";
 
 interface LanguageOption {
-  code: string
-  name: string
+  code: string;
+  name: string;
 }
 
 const LANGUAGE_OPTIONS: LanguageOption[] = [
@@ -83,12 +79,12 @@ const LANGUAGE_OPTIONS: LanguageOption[] = [
   { code: "uk", name: "Ukrainian" },
   { code: "ur", name: "Urdu" },
   { code: "vi", name: "Vietnamese" },
-]
+];
 
 interface LanguageSelectorProps {
-  value: string | null
-  onValueChange: (code: string | null) => void
-  disabled?: boolean
+  value: string | null;
+  onValueChange: (code: string | null) => void;
+  disabled?: boolean;
 }
 
 export function LanguageSelector({
@@ -96,11 +92,11 @@ export function LanguageSelector({
   onValueChange,
   disabled = false,
 }: LanguageSelectorProps) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   const selectedName = value
     ? LANGUAGE_OPTIONS.find((l) => l.code === value)?.name || value
-    : "Auto-detect"
+    : "Auto-detect";
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -128,8 +124,8 @@ export function LanguageSelector({
               <CommandItem
                 value="auto-detect"
                 onSelect={() => {
-                  onValueChange(null)
-                  setOpen(false)
+                  onValueChange(null);
+                  setOpen(false);
                 }}
               >
                 <Globe className="mr-2 h-4 w-4" />
@@ -140,8 +136,8 @@ export function LanguageSelector({
                   key={language.code}
                   value={`${language.name} ${language.code}`}
                   onSelect={() => {
-                    onValueChange(language.code)
-                    setOpen(false)
+                    onValueChange(language.code);
+                    setOpen(false);
                   }}
                 >
                   {language.name} ({language.code})
@@ -152,5 +148,5 @@ export function LanguageSelector({
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

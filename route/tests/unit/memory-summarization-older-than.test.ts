@@ -62,12 +62,12 @@ function insertOldMemory(
   id: string,
   apiKeyId: string,
   content: string,
-  daysAgo: number
+  daysAgo: number,
 ) {
   const createdAt = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000).toISOString();
   db.prepare(
     `INSERT INTO memories (id, api_key_id, session_id, type, key, content, metadata, created_at, updated_at, expires_at)
-     VALUES (?, ?, ?, 'factual', ?, ?, '{}', ?, ?, NULL)`
+     VALUES (?, ?, ?, 'factual', ?, ?, '{}', ?, ?, NULL)`,
   ).run(id, apiKeyId, "", `key-${id}`, content, createdAt, createdAt);
 }
 
@@ -123,7 +123,7 @@ test("summarizeMemoriesOlderThan: dryRun=false creates summary and deletes candi
   assert.equal(summary.type, "semantic", "summary memory must have type='semantic'");
   assert.ok(
     summary.content.includes("5"),
-    "summary content should mention the count of summarized memories"
+    "summary content should mention the count of summarized memories",
   );
 });
 
@@ -134,7 +134,7 @@ test("summarizeMemoriesOlderThan: no candidates → returns empty result without
   const db = core.getDbInstance();
   db.prepare(
     `INSERT INTO memories (id, api_key_id, session_id, type, key, content, metadata, created_at, updated_at, expires_at)
-     VALUES (?, ?, ?, 'factual', ?, ?, '{}', datetime('now'), datetime('now'), NULL)`
+     VALUES (?, ?, ?, 'factual', ?, ?, '{}', datetime('now'), datetime('now'), NULL)`,
   ).run("recent-1", "api-recent", "", "recent-key", "Recent memory content.");
 
   const result = await summarizeMemoriesOlderThan("api-recent", 30, false);
@@ -173,9 +173,13 @@ test("summarizeMemoriesOlderThan: totalTokens equals sum of candidates' content 
 
   const expectedTokens = result.candidates.reduce(
     (sum, m) => sum + Math.ceil(m.content.length / 4),
-    0
+    0,
   );
-  assert.equal(result.totalTokens, expectedTokens, "totalTokens must equal sum of candidate tokens");
+  assert.equal(
+    result.totalTokens,
+    expectedTokens,
+    "totalTokens must equal sum of candidate tokens",
+  );
 });
 
 test("summarizeMemoriesOlderThan: apiKeyId=undefined scopes to ALL memories", async () => {

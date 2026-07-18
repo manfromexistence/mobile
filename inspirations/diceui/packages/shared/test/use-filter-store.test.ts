@@ -4,10 +4,7 @@ import type { CollectionItem } from "../src/hooks/use-collection";
 import { useFilterStore } from "../src/hooks/use-filter-store";
 
 describe("useFilterStore", () => {
-  let itemMap: Map<
-    React.RefObject<HTMLElement>,
-    CollectionItem<HTMLElement, { value: string }>
-  >;
+  let itemMap: Map<React.RefObject<HTMLElement>, CollectionItem<HTMLElement, { value: string }>>;
   let groupMap: Map<string, Set<React.RefObject<HTMLElement>>>;
 
   beforeEach(() => {
@@ -18,10 +15,7 @@ describe("useFilterStore", () => {
     // Create refs and items
     const createRef = (_id: string, value: string) => {
       const ref = { current: { id: value } } as React.RefObject<HTMLElement>;
-      const item = { value, ref } as CollectionItem<
-        HTMLElement,
-        { value: string }
-      >;
+      const item = { value, ref } as CollectionItem<HTMLElement, { value: string }>;
       itemMap.set(ref, item);
       return ref;
     };
@@ -77,9 +71,7 @@ describe("useFilterStore", () => {
   });
 
   it("filters items based on exact match", () => {
-    const { result } = renderHook(() =>
-      useFilterStore({ itemMap, exactMatch: true }),
-    );
+    const { result } = renderHook(() => useFilterStore({ itemMap, exactMatch: true }));
 
     result.current.filterStore.search = "Kickflip";
     result.current.onItemsFilter();
@@ -111,9 +103,7 @@ describe("useFilterStore", () => {
     const customFilter = (options: string[], term: string) =>
       options.filter((opt) => opt.toLowerCase() === term.toLowerCase());
 
-    const { result } = renderHook(() =>
-      useFilterStore({ itemMap, onFilter: customFilter }),
-    );
+    const { result } = renderHook(() => useFilterStore({ itemMap, onFilter: customFilter }));
 
     result.current.filterStore.search = "kickflip";
     result.current.onItemsFilter();
@@ -163,9 +153,7 @@ describe("useFilterStore", () => {
   });
 
   it("respects manual filtering flag", () => {
-    const { result } = renderHook(() =>
-      useFilterStore({ itemMap, manualFiltering: true }),
-    );
+    const { result } = renderHook(() => useFilterStore({ itemMap, manualFiltering: true }));
 
     result.current.filterStore.search = "Kickflip";
     result.current.onItemsFilter();

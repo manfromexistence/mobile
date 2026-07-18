@@ -9,14 +9,8 @@ import { visit } from "unist-util-visit";
 import { DEFAULT_BASE } from "@/lib/constants";
 import type { UnistNode, UnistTree } from "@/types/unist";
 
-function resolveExamplePath(
-  name: string,
-  base: string = DEFAULT_BASE,
-): string | null {
-  const p = path.join(
-    process.cwd(),
-    `registry/bases/${base}/examples/${name}.tsx`,
-  );
+function resolveExamplePath(name: string, base: string = DEFAULT_BASE): string | null {
+  const p = path.join(process.cwd(), `registry/bases/${base}/examples/${name}.tsx`);
   return fs.existsSync(p) ? p : null;
 }
 
@@ -37,9 +31,7 @@ export function rehypeComponent() {
       try {
         const filePath = resolveExamplePath(name, DEFAULT_BASE);
         if (!filePath) {
-          console.warn(
-            `[rehype-component] Could not resolve example "${name}"`,
-          );
+          console.warn(`[rehype-component] Could not resolve example "${name}"`);
           return;
         }
 

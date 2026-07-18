@@ -87,7 +87,7 @@ test("muse-spark-web: follow-up turn continues the cached conversation", async (
   const original = globalThis.fetch;
   let nthReply = 0;
   const { fetchFn, captured } = captureFetch(() =>
-    metaAiSseResponse(nthReply++ === 0 ? "pong" : "pong-again")
+    metaAiSseResponse(nthReply++ === 0 ? "pong" : "pong-again"),
   );
   globalThis.fetch = fetchFn;
   try {
@@ -99,7 +99,7 @@ test("muse-spark-web: follow-up turn continues the cached conversation", async (
         { role: "user", content: "ping" },
         { role: "assistant", content: "pong" },
         { role: "user", content: "ping again" },
-      ])
+      ]),
     );
     assert.equal(captured.length, 2, "two upstream calls");
     const turn1 = (captured[0].body as { variables: Record<string, unknown> }).variables;
@@ -109,7 +109,7 @@ test("muse-spark-web: follow-up turn continues the cached conversation", async (
     assert.equal(
       turn2.conversationId,
       turn1.conversationId,
-      "second turn reuses first turn's conversation id"
+      "second turn reuses first turn's conversation id",
     );
     assert.equal(turn2.content, "ping again", "second turn → only the latest user content");
   } finally {
@@ -199,7 +199,7 @@ test("muse-spark-web: meta error during continuation evicts the stale cache entr
         { role: "user", content: "ping" },
         { role: "assistant", content: "pong" },
         { role: "user", content: "again" },
-      ])
+      ]),
     );
     // Turn 3 — same prior-assistant content, retried by the user. Cache
     // should have been evicted on turn 2, so this turn opens a new
@@ -209,7 +209,7 @@ test("muse-spark-web: meta error during continuation evicts the stale cache entr
         { role: "user", content: "ping" },
         { role: "assistant", content: "pong" },
         { role: "user", content: "again" },
-      ])
+      ]),
     );
     const t1 = (captured[0].body as { variables: Record<string, unknown> }).variables;
     const t2 = (captured[1].body as { variables: Record<string, unknown> }).variables;
@@ -220,12 +220,12 @@ test("muse-spark-web: meta error during continuation evicts the stale cache entr
     assert.equal(
       t3.isNewConversation,
       true,
-      "turn 3 must open a fresh conversation after the stale entry was evicted"
+      "turn 3 must open a fresh conversation after the stale entry was evicted",
     );
     assert.notEqual(
       t3.conversationId,
       t1.conversationId,
-      "turn 3 must not reuse the dead conversation id"
+      "turn 3 must not reuse the dead conversation id",
     );
   } finally {
     globalThis.fetch = original;
@@ -258,7 +258,7 @@ test("muse-spark-web: parallel chats with identical assistant text but different
         { role: "user", content: "what's the weather" },
         { role: "assistant", content: COMMON_REPLY },
         { role: "user", content: "any forecast at all?" },
-      ])
+      ]),
     );
     // Chat B — turn 2 should continue conversation B.
     await executor.execute(
@@ -266,7 +266,7 @@ test("muse-spark-web: parallel chats with identical assistant text but different
         { role: "user", content: "stock price for AAPL" },
         { role: "assistant", content: COMMON_REPLY },
         { role: "user", content: "any market info at all?" },
-      ])
+      ]),
     );
     const a2 = (captured[2].body as { variables: Record<string, unknown> }).variables;
     const b2 = (captured[3].body as { variables: Record<string, unknown> }).variables;
@@ -278,7 +278,7 @@ test("muse-spark-web: parallel chats with identical assistant text but different
     assert.notEqual(
       a2.conversationId,
       b2.conversationId,
-      "the two chats must not collide despite identical assistant text"
+      "the two chats must not collide despite identical assistant text",
     );
   } finally {
     globalThis.fetch = original;
@@ -304,45 +304,42 @@ test("muse-spark-web: empty latestUserContent (no `user` role) falls back to fre
       executeInputs([
         { role: "system", content: "you are helpful" },
         { role: "assistant", content: "ack" },
-      ])
+      ]),
     );
     const t2 = (captured[1].body as { variables: Record<string, unknown> }).variables;
 
     assert.equal(
       t2.isNewConversation,
       true,
-      "empty latestUserContent must NOT use the cache-hit path"
+      "empty latestUserContent must NOT use the cache-hit path",
     );
     assert.notEqual(t2.content, "", "must not POST empty content");
     assert.match(
       String(t2.content),
       /assistant: ack/,
-      "should fall through to the folded-history prompt"
+      "should fall through to the folded-history prompt",
     );
   } finally {
     globalThis.fetch = original;
   }
 });
 
-test(
-  "muse-spark-web: outgoing variables must NOT declare 'attachments' " +
-    "(AttachmentInput type removed upstream, regression for #6935)",
-  async () => {
-    __resetMuseSparkConversationCacheForTesting();
-    const executor = new MuseSparkWebExecutor();
-    const original = globalThis.fetch;
-    const { fetchFn, captured } = captureFetch(() => metaAiSseResponse("pong"));
-    globalThis.fetch = fetchFn;
-    try {
-      await executor.execute(executeInputs([{ role: "user", content: "hi" }]));
-      const sentVars = (captured[0].body as { variables: Record<string, unknown> }).variables;
-      assert.equal(
-        Object.prototype.hasOwnProperty.call(sentVars, "attachments"),
-        false,
-        "variables must omit 'attachments' entirely — Meta removed AttachmentInput from schema"
-      );
-    } finally {
-      globalThis.fetch = original;
-    }
+test("muse-spark-web: outgoing variables must NOT declare 'attachments' " +
+  "(AttachmentInput type removed upstream, regression for #6935)", async () => {
+  __resetMuseSparkConversationCacheForTesting();
+  const executor = new MuseSparkWebExecutor();
+  const original = globalThis.fetch;
+  const { fetchFn, captured } = captureFetch(() => metaAiSseResponse("pong"));
+  globalThis.fetch = fetchFn;
+  try {
+    await executor.execute(executeInputs([{ role: "user", content: "hi" }]));
+    const sentVars = (captured[0].body as { variables: Record<string, unknown> }).variables;
+    assert.equal(
+      Object.prototype.hasOwnProperty.call(sentVars, "attachments"),
+      false,
+      "variables must omit 'attachments' entirely — Meta removed AttachmentInput from schema",
+    );
+  } finally {
+    globalThis.fetch = original;
   }
-);
+});

@@ -1,5 +1,5 @@
-import { Renderer, Program, Mesh, Color, Triangle, RenderTarget } from 'ogl';
-import { useEffect, useRef, CSSProperties } from 'react';
+import { Renderer, Program, Mesh, Color, Triangle, RenderTarget } from "ogl";
+import { useEffect, useRef, CSSProperties } from "react";
 
 const MAX_STRANDS = 12;
 const MAX_COLORS = 8;
@@ -193,7 +193,7 @@ export interface StrandsProps {
 }
 
 const buildPalette = (colors: string[]): number[][] => {
-  const filled = colors && colors.length ? colors : ['#ffffff'];
+  const filled = colors && colors.length ? colors : ["#ffffff"];
   const padded: number[][] = [];
   for (let i = 0; i < MAX_COLORS; i++) {
     const hex = filled[i] ?? filled[filled.length - 1];
@@ -204,7 +204,7 @@ const buildPalette = (colors: string[]): number[][] => {
 };
 
 export default function Strands({
-  colors = ['#FF4242', '#7C3AED', '#06B6D4', '#EAB308'],
+  colors = ["#FF4242", "#7C3AED", "#06B6D4", "#EAB308"],
   count = 3,
   speed = 0.5,
   amplitude = 1,
@@ -222,10 +222,10 @@ export default function Strands({
   refraction = 1,
   dispersion = 1,
   glassSize = 1,
-  className = '',
-  style
+  className = "",
+  style,
 }: StrandsProps) {
-  const propsRef = useRef<Required<Omit<StrandsProps, 'className' | 'style'>>>({
+  const propsRef = useRef<Required<Omit<StrandsProps, "className" | "style">>>({
     colors,
     count,
     speed,
@@ -243,7 +243,7 @@ export default function Strands({
     glass,
     refraction,
     dispersion,
-    glassSize
+    glassSize,
   });
   propsRef.current = {
     colors,
@@ -263,7 +263,7 @@ export default function Strands({
     glass,
     refraction,
     dispersion,
-    glassSize
+    glassSize,
   };
 
   const ctnDom = useRef<HTMLDivElement>(null);
@@ -275,13 +275,13 @@ export default function Strands({
     const renderer = new Renderer({
       alpha: true,
       premultipliedAlpha: true,
-      antialias: true
+      antialias: true,
     });
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 0);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-    gl.canvas.style.backgroundColor = 'transparent';
+    gl.canvas.style.backgroundColor = "transparent";
 
     const geometry = new Triangle(gl);
     if (geometry.attributes.uv) {
@@ -308,15 +308,15 @@ export default function Strands({
         uIntensity: { value: intensity },
         uOpacity: { value: opacity },
         uScale: { value: scale },
-        uSaturation: { value: saturation }
-      }
+        uSaturation: { value: saturation },
+      },
     });
 
     const mesh = new Mesh(gl, { geometry, program });
 
     const renderTarget = new RenderTarget(gl, {
       width: ctn.offsetWidth,
-      height: ctn.offsetHeight
+      height: ctn.offsetHeight,
     });
 
     const glassProgram = new Program(gl, {
@@ -327,8 +327,8 @@ export default function Strands({
         uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
         uRadius: { value: 0.46 * glassSize },
         uRefraction: { value: refraction },
-        uDispersion: { value: dispersion }
-      }
+        uDispersion: { value: dispersion },
+      },
     });
     const glassMesh = new Mesh(gl, { geometry, program: glassProgram });
 
@@ -343,7 +343,7 @@ export default function Strands({
       renderTarget.setSize(width, height);
       glassProgram.uniforms.uResolution.value = [width, height];
     }
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
     resize();
 
     let animateId = 0;
@@ -353,7 +353,10 @@ export default function Strands({
       program.uniforms.uTime.value = t * 0.001;
       program.uniforms.uColors.value = buildPalette(current.colors);
       program.uniforms.uColorCount.value = Math.min(current.colors.length, MAX_COLORS);
-      program.uniforms.uStrandCount.value = Math.min(Math.max(Math.round(current.count), 1), MAX_STRANDS);
+      program.uniforms.uStrandCount.value = Math.min(
+        Math.max(Math.round(current.count), 1),
+        MAX_STRANDS,
+      );
       program.uniforms.uSpeed.value = current.speed;
       program.uniforms.uAmplitude.value = current.amplitude;
       program.uniforms.uWaviness.value = current.waviness;
@@ -382,14 +385,20 @@ export default function Strands({
 
     return () => {
       cancelAnimationFrame(animateId);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener("resize", resize);
       if (ctn && gl.canvas.parentNode === ctn) {
         ctn.removeChild(gl.canvas);
       }
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <div ref={ctnDom} className={`relative w-full h-full bg-transparent ${className}`} style={style} />;
+  return (
+    <div
+      ref={ctnDom}
+      className={`relative w-full h-full bg-transparent ${className}`}
+      style={style}
+    />
+  );
 }

@@ -8,7 +8,12 @@ export interface TextShimmerProps {
   className?: string;
 }
 
-export function TextShimmer({ children, as: Comp = "span", duration = 2.5, className }: TextShimmerProps) {
+export function TextShimmer({
+  children,
+  as: Comp = "span",
+  duration = 2.5,
+  className,
+}: TextShimmerProps) {
   return (
     <>
       <style>

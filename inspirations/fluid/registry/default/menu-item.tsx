@@ -44,7 +44,7 @@ const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
       onClick,
       ...props
     },
-    ref
+    ref,
   ) => {
     const internalRef = useRef<HTMLDivElement>(null);
     const hasMounted = useRef(false);
@@ -78,7 +78,7 @@ const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
     const itemClassName = cn(
       `relative z-10 flex items-center gap-2 ${shape.item} px-2 py-2 cursor-pointer outline-none`,
       disabled && "opacity-50 pointer-events-none",
-      className
+      className,
     );
 
     const content = (
@@ -93,9 +93,7 @@ const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
               strokeWidth={isActive || checked ? 2 : 1.5}
               className={cn(
                 "col-start-1 row-start-1 transition-[color,stroke-width] duration-80",
-                isActive || checked
-                  ? "text-foreground"
-                  : "text-muted-foreground"
+                isActive || checked ? "text-foreground" : "text-muted-foreground",
               )}
             />
           </span>
@@ -111,14 +109,10 @@ const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
           <span
             className={cn(
               "col-start-1 row-start-1 transition-[color,font-variation-settings] duration-80",
-              isActive || checked
-                ? "text-foreground"
-                : "text-muted-foreground"
+              isActive || checked ? "text-foreground" : "text-muted-foreground",
             )}
             style={{
-              fontVariationSettings: checked
-                ? fontWeights.semibold
-                : fontWeights.normal,
+              fontVariationSettings: checked ? fontWeights.semibold : fontWeights.normal,
             }}
           >
             {label}
@@ -222,7 +216,7 @@ const MenuItem = forwardRef<HTMLDivElement, MenuItemProps>(
         {content}
       </div>
     );
-  }
+  },
 );
 
 MenuItem.displayName = "MenuItem";

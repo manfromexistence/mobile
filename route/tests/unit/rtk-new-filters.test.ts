@@ -15,11 +15,7 @@ const MATCH_CASES: Array<[string, string, string]> = [
     "NAME       READY   STATUS             RESTARTS   AGE\nweb-2c4    0/1     CrashLoopBackOff   5          12m",
     "kubectl get pods",
   ],
-  [
-    "docker-build",
-    "Step 1/2 : FROM node:20\nSuccessfully built abc123",
-    "docker build -t myapp .",
-  ],
+  ["docker-build", "Step 1/2 : FROM node:20\nSuccessfully built abc123", "docker build -t myapp ."],
   [
     "composer",
     "Package operations: 5 installs, 0 updates, 0 removals\nGenerating optimized autoload files",
@@ -51,12 +47,16 @@ describe("RTK new-filter catalog (kubectl, docker-build, composer, gh)", () => {
   it("kubectl skips arbitrary-content commands (logs, exec, top)", () => {
     const logOutput =
       "2026-05-28T10:00:00 INFO request handled\n2026-05-28T10:00:01 INFO request handled";
-    for (const cmd of ["kubectl logs api-pod", "kubectl exec api-pod -- npm test", "kubectl top nodes"]) {
+    for (const cmd of [
+      "kubectl logs api-pod",
+      "kubectl exec api-pod -- npm test",
+      "kubectl top nodes",
+    ]) {
       const filter = matchRtkFilter(logOutput, cmd, { customFiltersEnabled: false });
       assert.notEqual(
         filter?.id,
         "kubectl",
-        `kubectl filter must not claim "${cmd}" (arbitrary content)`
+        `kubectl filter must not claim "${cmd}" (arbitrary content)`,
       );
     }
   });
@@ -73,7 +73,7 @@ describe("RTK new-filter catalog (kubectl, docker-build, composer, gh)", () => {
       assert.notEqual(
         filter?.id,
         "kubectl",
-        `kubectl filter must not claim structured output: "${cmd}"`
+        `kubectl filter must not claim structured output: "${cmd}"`,
       );
     }
   });
@@ -87,17 +87,18 @@ describe("RTK new-filter catalog (kubectl, docker-build, composer, gh)", () => {
       "gh issue list --json number,title,author",
     ]) {
       const filter = matchRtkFilter(jsonOutput, cmd, { customFiltersEnabled: false });
-      assert.notEqual(
-        filter?.id,
-        "gh",
-        `gh filter must not claim structured output: "${cmd}"`
-      );
+      assert.notEqual(filter?.id, "gh", `gh filter must not claim structured output: "${cmd}"`);
     }
   });
 
   it("docker-build matches both v2 (docker compose) and legacy (docker-compose) build", () => {
     const output = "Step 1/2 : FROM node:20\nSuccessfully built abc123";
-    for (const cmd of ["docker build .", "docker compose build", "docker-compose build", "docker buildx build ."]) {
+    for (const cmd of [
+      "docker build .",
+      "docker compose build",
+      "docker-compose build",
+      "docker buildx build .",
+    ]) {
       const filter = matchRtkFilter(output, cmd, { customFiltersEnabled: false });
       assert.equal(filter?.id, "docker-build", `expected docker-build to match "${cmd}"`);
     }
@@ -106,14 +107,14 @@ describe("RTK new-filter catalog (kubectl, docker-build, composer, gh)", () => {
   it("inline tests for new filters all pass", () => {
     const result = runRtkFilterTests({ requireAll: false, customFiltersEnabled: false });
     const newFilterOutcomes = result.outcomes.filter((o) =>
-      NEW_FILTERS.includes(o.filterId as (typeof NEW_FILTERS)[number])
+      NEW_FILTERS.includes(o.filterId as (typeof NEW_FILTERS)[number]),
     );
     assert.ok(newFilterOutcomes.length > 0, "expected inline tests from new filters to run");
     const failed = newFilterOutcomes.filter((o) => !o.passed);
     assert.deepEqual(
       failed,
       [],
-      `inline tests failed: ${failed.map((f) => `${f.filterId}/${f.testName}`).join(", ")}`
+      `inline tests failed: ${failed.map((f) => `${f.filterId}/${f.testName}`).join(", ")}`,
     );
   });
 });

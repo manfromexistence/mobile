@@ -28,8 +28,9 @@ const defaultSettings = {
 
 describe("RerankConfigCard", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-      true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {
@@ -63,9 +64,7 @@ describe("RerankConfigCard", () => {
     {
       provider: "cohere",
       hasKey: true,
-      models: [
-        { id: "cohere/rerank-english-v3.0", name: "Rerank English v3", dimensions: null },
-      ],
+      models: [{ id: "cohere/rerank-english-v3.0", name: "Rerank English v3", dimensions: null }],
     },
   ];
 
@@ -106,13 +105,7 @@ describe("RerankConfigCard", () => {
     const container = makeContainer();
     const root = createRoot(container);
     await act(async () => {
-      root.render(
-        <RerankConfigCard
-          settings={defaultSettings}
-          providers={[]}
-          onSave={onSave}
-        />,
-      );
+      root.render(<RerankConfigCard settings={defaultSettings} providers={[]} onSave={onSave} />);
     });
 
     const toggleBtn = container.querySelector(
@@ -216,9 +209,7 @@ describe("RerankConfigCard", () => {
       {
         provider: "cohere",
         hasKey: true,
-        models: [
-          { id: "cohere/rerank-english-v3", name: "rerank-english-v3", dimensions: 0 },
-        ],
+        models: [{ id: "cohere/rerank-english-v3", name: "rerank-english-v3", dimensions: 0 }],
       },
     ];
     const container = makeContainer();
@@ -246,9 +237,7 @@ describe("RerankConfigCard", () => {
       {
         provider: "cohere",
         hasKey: true,
-        models: [
-          { id: "cohere/rerank-english-v3", name: "rerank-english-v3", dimensions: 0 },
-        ],
+        models: [{ id: "cohere/rerank-english-v3", name: "rerank-english-v3", dimensions: 0 }],
       },
     ];
     const { default: RerankConfigCard } = await import(

@@ -137,7 +137,7 @@ test("extractFactsFromText: produces stable keys", () => {
   assert.ok(facts.length > 0);
   assert.ok(
     facts[0].key.startsWith("preference:"),
-    `Key should start with category: ${facts[0].key}`
+    `Key should start with category: ${facts[0].key}`,
   );
 });
 
@@ -176,10 +176,10 @@ test("extractFactsFromText scans only the bounded tail of very large text", () =
 
   assert.equal(
     contents.some((content) => content.includes("prefix-only-editor")),
-    false
+    false,
   );
   assert.equal(
     contents.some((content) => content.includes("tail-only-editor")),
-    true
+    true,
   );
 });

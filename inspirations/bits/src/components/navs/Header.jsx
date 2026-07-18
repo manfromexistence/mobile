@@ -1,5 +1,5 @@
-import { useRef, useMemo, useState, useCallback } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { useRef, useMemo, useState, useCallback } from "react";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import {
   Box,
   Drawer,
@@ -10,33 +10,25 @@ import {
   Kbd,
   Separator,
   Text,
-  createListCollection
-} from '@chakra-ui/react';
-import {
-  User2,
-  HeartIcon,
-  ArrowRight,
-  MenuIcon,
-  SearchIcon,
-  X,
-  ToolCase
-} from 'lucide-react';
-import { TbLibrary } from 'react-icons/tb';
+  createListCollection,
+} from "@chakra-ui/react";
+import { User2, HeartIcon, ArrowRight, MenuIcon, SearchIcon, X, ToolCase } from "lucide-react";
+import { TbLibrary } from "react-icons/tb";
 
-import { TOOLS } from '../../constants/Tools';
-import { GITHUB_URL } from '../../constants/Site';
-import { colors } from '../../constants/colors';
-import { useStars } from '../../hooks/useStars';
-import { useSearch } from '../context/SearchContext/useSearch';
-import { useOptions } from '../context/OptionsContext/useOptions';
-import FadeContent from '../../content/Animations/FadeContent/FadeContent';
+import { TOOLS } from "../../constants/Tools";
+import { GITHUB_URL } from "../../constants/Site";
+import { colors } from "../../constants/colors";
+import { useStars } from "../../hooks/useStars";
+import { useSearch } from "../context/SearchContext/useSearch";
+import { useOptions } from "../context/OptionsContext/useOptions";
+import FadeContent from "../../content/Animations/FadeContent/FadeContent";
 
-import Logo from '../../assets/logos/react-bits-logo.svg';
-import Star from '../../assets/common/star.svg';
-import jsIcon from '../../assets/icons/js.svg';
-import tsIcon from '../../assets/icons/ts.svg';
-import cssIcon from '../../assets/icons/css.svg';
-import twIcon from '../../assets/icons/tw.svg';
+import Logo from "../../assets/logos/react-bits-logo.svg";
+import Star from "../../assets/common/star.svg";
+import jsIcon from "../../assets/icons/js.svg";
+import tsIcon from "../../assets/icons/ts.svg";
+import cssIcon from "../../assets/icons/css.svg";
+import twIcon from "../../assets/icons/tw.svg";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 const PREFS_CLOSE_DELAY = 150;
@@ -46,18 +38,18 @@ const ICON_MAP = { JS: jsIcon, TS: tsIcon, CSS: cssIcon, TW: twIcon };
 const BUTTON_STYLES = {
   bg: colors.bgBody,
   border: `1px solid ${colors.borderPrimary}`,
-  transition: 'background 0.3s',
-  _hover: { background: colors.bgElevated }
+  transition: "background 0.3s",
+  _hover: { background: colors.bgElevated },
 };
 
 const OPTION_ROW_STYLES = {
-  align: 'center',
-  justify: 'space-between',
+  align: "center",
+  justify: "space-between",
   px: 2,
   py: 2,
-  borderRadius: '10px',
+  borderRadius: "10px",
   _hover: { bg: colors.bgElevated },
-  transition: 'background 0.15s'
+  transition: "background 0.15s",
 };
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
@@ -100,9 +92,9 @@ const SearchButton = ({ onClick }) => (
 );
 
 const ToolsLink = ({ isToolsPage, onMouseEnter, onMouseLeave, showMenu }) => {
-  const linkTo = isToolsPage ? '/get-started/index' : '/tools';
+  const linkTo = isToolsPage ? "/get-started/index" : "/tools";
   const linkIcon = isToolsPage ? TbLibrary : ToolCase;
-  const linkText = isToolsPage ? 'Back to Docs' : 'Tools';
+  const linkText = isToolsPage ? "Back to Docs" : "Tools";
 
   return (
     <Box position="relative" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
@@ -119,7 +111,7 @@ const ToolsLink = ({ isToolsPage, onMouseEnter, onMouseLeave, showMenu }) => {
         cursor="pointer"
         userSelect="none"
         textDecoration="none"
-        _hover={{ textDecoration: 'none' }}
+        _hover={{ textDecoration: "none" }}
         {...BUTTON_STYLES}
       >
         <Icon as={linkIcon} boxSize={4} color={colors.accent} />
@@ -137,10 +129,10 @@ const ToolsLink = ({ isToolsPage, onMouseEnter, onMouseLeave, showMenu }) => {
             letterSpacing="0.5px"
             animation="pulse 2s ease-in-out infinite"
             sx={{
-              '@keyframes pulse': {
-                '0%, 100%': { opacity: 1, transform: 'scale(1)' },
-                '50%': { opacity: 0.7, transform: 'scale(0.95)' }
-              }
+              "@keyframes pulse": {
+                "0%, 100%": { opacity: 1, transform: "scale(1)" },
+                "50%": { opacity: 0.7, transform: "scale(0.95)" },
+              },
             }}
           >
             New
@@ -160,8 +152,8 @@ const ToolsMenu = ({ isOpen }) => (
     left={0}
     pt={2}
     opacity={isOpen ? 1 : 0}
-    visibility={isOpen ? 'visible' : 'hidden'}
-    transform={isOpen ? 'translateY(0)' : 'translateY(-8px)'}
+    visibility={isOpen ? "visible" : "hidden"}
+    transform={isOpen ? "translateY(0)" : "translateY(-8px)"}
     transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
     zIndex={1000}
   >
@@ -174,18 +166,18 @@ const ToolsMenu = ({ isOpen }) => (
       boxShadow="0 8px 32px rgba(0, 0, 0, 0.4)"
     >
       <Flex direction="column" gap={1}>
-        {TOOLS.map(tool => (
+        {TOOLS.map((tool) => (
           <Flex
             key={tool.id}
-            as={tool.comingSoon ? 'div' : RouterLink}
+            as={tool.comingSoon ? "div" : RouterLink}
             to={tool.comingSoon ? undefined : tool.path}
             gap={2}
             p={2}
             borderRadius="12px"
             alignItems="center"
-            cursor={tool.comingSoon ? 'not-allowed' : 'pointer'}
+            cursor={tool.comingSoon ? "not-allowed" : "pointer"}
             opacity={tool.comingSoon ? 0.5 : 1}
-            _hover={tool.comingSoon ? {} : { bg: colors.bgElevated, textDecoration: 'none' }}
+            _hover={tool.comingSoon ? {} : { bg: colors.bgElevated, textDecoration: "none" }}
           >
             <Flex
               align="center"
@@ -193,8 +185,12 @@ const ToolsMenu = ({ isOpen }) => (
               w={7}
               h={7}
               borderRadius="8px"
-              bg={tool.comingSoon ? colors.bgHover : `linear-gradient(135deg, ${colors.primary} 0%, #7B4FFF 100%)`}
-              boxShadow={tool.comingSoon ? 'none' : `0 2px 8px rgba(82, 39, 255, 0.4)`}
+              bg={
+                tool.comingSoon
+                  ? colors.bgHover
+                  : `linear-gradient(135deg, ${colors.primary} 0%, #7B4FFF 100%)`
+              }
+              boxShadow={tool.comingSoon ? "none" : `0 2px 8px rgba(82, 39, 255, 0.4)`}
             >
               <Icon as={tool.icon} boxSize={4} color="#fff" />
             </Flex>
@@ -217,15 +213,15 @@ const ToolsMenu = ({ isOpen }) => (
 
 const OptionToggle = ({ items, value, onChange }) => (
   <Flex gap={1}>
-    {items.map(item => (
+    {items.map((item) => (
       <Box
         key={item}
         as="button"
         onClick={() => onChange(item)}
         p={1.5}
         borderRadius="8px"
-        bg={value === item ? colors.bgHover : 'transparent'}
-        border={value === item ? `1px solid ${colors.borderSecondary}` : '1px solid transparent'}
+        bg={value === item ? colors.bgHover : "transparent"}
+        border={value === item ? `1px solid ${colors.borderSecondary}` : "1px solid transparent"}
         transition="all 0.15s"
         _hover={{ bg: colors.bgHover }}
         display="flex"
@@ -245,7 +241,7 @@ const PreferencesMenu = ({
   languagePreset,
   stylePreset,
   onLanguageChange,
-  onStyleChange
+  onStyleChange,
 }) => (
   <Box
     position="absolute"
@@ -253,8 +249,8 @@ const PreferencesMenu = ({
     right={0}
     pt={2}
     opacity={isOpen ? 1 : 0}
-    visibility={isOpen ? 'visible' : 'hidden'}
-    transform={isOpen ? 'translateY(0)' : 'translateY(-8px)'}
+    visibility={isOpen ? "visible" : "hidden"}
+    transform={isOpen ? "translateY(0)" : "translateY(-8px)"}
     transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
     zIndex={1000}
   >
@@ -294,7 +290,7 @@ const PreferencesMenu = ({
           alignItems="center"
           as={RouterLink}
           to="/favorites"
-          _hover={{ bg: colors.bgElevated, textDecoration: 'none' }}
+          _hover={{ bg: colors.bgElevated, textDecoration: "none" }}
         >
           <Flex align="center" justify="center" w={6} h={6} borderRadius="6px" bg={colors.primary}>
             <Icon as={HeartIcon} color="#fff" boxSize={3} />
@@ -315,7 +311,14 @@ const MobileDrawer = ({ isOpen, onClose }) => (
       <Drawer.Content bg={colors.bgBody} h="100%" w="100vw">
         <Drawer.Body p={0}>
           <Flex direction="column">
-            <Flex align="center" justify="space-between" h="57px" px={6} mb={6} borderBottom="1px solid #ffffff1c">
+            <Flex
+              align="center"
+              justify="space-between"
+              h="57px"
+              px={6}
+              mb={6}
+              borderBottom="1px solid #ffffff1c"
+            >
               <Image src={Logo} alt="Logo" h="25px" />
               <IconButton
                 aria-label="Close Menu"
@@ -333,24 +336,30 @@ const MobileDrawer = ({ isOpen, onClose }) => (
               <Text fontWeight="bold" color="#fff">
                 Tools
               </Text>
-              {TOOLS.map(tool => (
+              {TOOLS.map((tool) => (
                 <RouterLink
                   key={tool.id}
-                  to={tool.comingSoon ? '#' : tool.path}
-                  onClick={tool.comingSoon ? e => e.preventDefault() : onClose}
+                  to={tool.comingSoon ? "#" : tool.path}
+                  onClick={tool.comingSoon ? (e) => e.preventDefault() : onClose}
                   style={{
                     opacity: tool.comingSoon ? 0.5 : 1,
-                    cursor: tool.comingSoon ? 'not-allowed' : 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    color: colors.accentMuted
+                    cursor: tool.comingSoon ? "not-allowed" : "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    color: colors.accentMuted,
                   }}
                 >
                   <Icon as={tool.icon} boxSize={4} color={colors.accent} />
                   {tool.label}
                   {tool.comingSoon && (
-                    <Box as="span" fontSize="10px" color={colors.accentMuted} fontWeight={600} ml={1}>
+                    <Box
+                      as="span"
+                      fontSize="10px"
+                      color={colors.accentMuted}
+                      fontWeight={600}
+                      ml={1}
+                    >
                       SOON
                     </Box>
                   )}
@@ -363,7 +372,11 @@ const MobileDrawer = ({ isOpen, onClose }) => (
                 Useful Links
               </Text>
 
-              <RouterLink to="/get-started/index" onClick={onClose} style={{ color: colors.accentMuted }}>
+              <RouterLink
+                to="/get-started/index"
+                onClick={onClose}
+                style={{ color: colors.accentMuted }}
+              >
                 Back to Docs
               </RouterLink>
 
@@ -376,10 +389,20 @@ const MobileDrawer = ({ isOpen, onClose }) => (
               <Text fontWeight="bold" color="#fff">
                 Other
               </Text>
-              <RouterLink to={GITHUB_URL} target="_blank" onClick={onClose} style={{ color: colors.accentMuted }}>
+              <RouterLink
+                to={GITHUB_URL}
+                target="_blank"
+                onClick={onClose}
+                style={{ color: colors.accentMuted }}
+              >
                 GitHub <Icon boxSize={4} as={ArrowRight} transform="rotate(-45deg)" />
               </RouterLink>
-              <RouterLink to="https://x.com/davidhdev" target="_blank" onClick={onClose} style={{ color: colors.accentMuted }}>
+              <RouterLink
+                to="https://x.com/davidhdev"
+                target="_blank"
+                onClick={onClose}
+                style={{ color: colors.accentMuted }}
+              >
                 Who made this? <Icon boxSize={4} as={ArrowRight} transform="rotate(-45deg)" />
               </RouterLink>
             </Flex>
@@ -393,10 +416,10 @@ const MobileDrawer = ({ isOpen, onClose }) => (
 // ─── Main Component ──────────────────────────────────────────────────────────
 const Header = () => {
   const location = useLocation();
-  const isToolsPage = location.pathname.startsWith('/tools');
+  const isToolsPage = location.pathname.startsWith("/tools");
 
-  const langCollection = useMemo(() => createListCollection({ items: ['JS', 'TS'] }), []);
-  const styleCollection = useMemo(() => createListCollection({ items: ['CSS', 'TW'] }), []);
+  const langCollection = useMemo(() => createListCollection({ items: ["JS", "TS"] }), []);
+  const styleCollection = useMemo(() => createListCollection({ items: ["CSS", "TW"] }), []);
 
   const { languagePreset, setLanguagePreset, stylePreset, setStylePreset } = useOptions();
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -429,7 +452,7 @@ const Header = () => {
     toolsTimeoutRef.current = setTimeout(() => setToolsOpen(false), PREFS_CLOSE_DELAY);
   }, []);
 
-  const openGitHub = useCallback(() => window.open(GITHUB_URL, '_blank'), []);
+  const openGitHub = useCallback(() => window.open(GITHUB_URL, "_blank"), []);
 
   return (
     <Box zIndex={100} className="main-nav">
@@ -441,7 +464,7 @@ const Header = () => {
         <IconButton
           aria-label="Open Menu"
           size="md"
-          display={{ md: 'none' }}
+          display={{ md: "none" }}
           onClick={() => setDrawerOpen(true)}
           bg="transparent"
           color={colors.accent}
@@ -450,7 +473,7 @@ const Header = () => {
           <MenuIcon size="1.3em" />
         </IconButton>
 
-        <Flex display={{ base: 'none', md: 'flex' }} alignItems="center" gap={2}>
+        <Flex display={{ base: "none", md: "flex" }} alignItems="center" gap={2}>
           <FadeContent blur>
             <ToolsLink
               isToolsPage={isToolsPage}
@@ -465,7 +488,11 @@ const Header = () => {
           </FadeContent>
 
           <FadeContent blur>
-            <Box position="relative" onMouseEnter={handlePrefsEnter} onMouseLeave={handlePrefsLeave}>
+            <Box
+              position="relative"
+              onMouseEnter={handlePrefsEnter}
+              onMouseLeave={handlePrefsLeave}
+            >
               <Flex
                 as="button"
                 align="center"

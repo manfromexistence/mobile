@@ -1,35 +1,31 @@
-"use client"
+"use client";
 
-import { EllipsisIcon, LinkIcon, ShareIcon } from "lucide-react"
-import { toast } from "sonner"
-import { LinkedInIcon, XIcon } from "@/components/icons"
+import { EllipsisIcon, LinkIcon, ShareIcon } from "lucide-react";
+import { toast } from "sonner";
+import { LinkedInIcon, XIcon } from "@/components/icons";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { copyText } from "@/lib/utils/copy"
+} from "@/components/ui/dropdown-menu";
+import { copyText } from "@/lib/utils/copy";
 
 export function DocShareMenu({ title, url }: { title: string; url: string }) {
   const absoluteUrl = url.startsWith("http")
     ? url
     : typeof window !== "undefined"
       ? new URL(url, window.location.origin).toString()
-      : url
+      : url;
 
-  const urlEncoded = encodeURIComponent(absoluteUrl)
+  const urlEncoded = encodeURIComponent(absoluteUrl);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          className="size-7 border-none active:scale-none"
-          variant="secondary"
-          size="icon-sm"
-        >
+        <Button className="size-7 border-none active:scale-none" variant="secondary" size="icon-sm">
           <ShareIcon />
         </Button>
       </DropdownMenuTrigger>
@@ -43,8 +39,8 @@ export function DocShareMenu({ title, url }: { title: string; url: string }) {
       >
         <DropdownMenuItem
           onClick={() => {
-            copyText(absoluteUrl)
-            toast.success("Link copied")
+            copyText(absoluteUrl);
+            toast.success("Link copied");
           }}
         >
           <LinkIcon />
@@ -52,11 +48,7 @@ export function DocShareMenu({ title, url }: { title: string; url: string }) {
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <a
-            href={`https://x.com/intent/tweet?url=${urlEncoded}`}
-            target="_blank"
-            rel="noopener"
-          >
+          <a href={`https://x.com/intent/tweet?url=${urlEncoded}`} target="_blank" rel="noopener">
             <XIcon />
             Share on X
           </a>
@@ -76,8 +68,8 @@ export function DocShareMenu({ title, url }: { title: string; url: string }) {
         {typeof navigator !== "undefined" && "share" in navigator && (
           <DropdownMenuItem
             onClick={(e) => {
-              e.preventDefault() // Prevent the menu from closing
-              navigator.share({ title, url: absoluteUrl }).catch(() => {})
+              e.preventDefault(); // Prevent the menu from closing
+              navigator.share({ title, url: absoluteUrl }).catch(() => {});
             }}
           >
             <EllipsisIcon />
@@ -86,5 +78,5 @@ export function DocShareMenu({ title, url }: { title: string; url: string }) {
         )}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

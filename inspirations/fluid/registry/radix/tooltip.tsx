@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -149,23 +143,23 @@ function Tooltip({
   // An explicit delayDuration overrides the ambient provider's delay; left
   // undefined, the Root inherits it from the nearest provider.
   const tooltip = (
-    <TooltipPrimitive.Root delayDuration={delayDuration} open={open} onOpenChange={(v) => { setInternalOpen(v); onOpenChangeProp?.(v); }}>
-      <TooltipPrimitive.Trigger asChild>
-        {children}
-      </TooltipPrimitive.Trigger>
+    <TooltipPrimitive.Root
+      delayDuration={delayDuration}
+      open={open}
+      onOpenChange={(v) => {
+        setInternalOpen(v);
+        onOpenChangeProp?.(v);
+      }}
+    >
+      <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
       {mounted && (
         <TooltipPrimitive.Portal forceMount container={portalContainer ?? undefined}>
-          <TooltipPrimitive.Content
-            side={side}
-            sideOffset={sideOffset}
-            forceMount
-            className="z-50"
-          >
+          <TooltipPrimitive.Content side={side} sideOffset={sideOffset} forceMount className="z-50">
             <motion.div
               className={cn(
                 "bg-foreground text-background text-[12px] px-2 py-1",
                 shape.bg,
-                className
+                className,
               )}
               style={{ fontVariationSettings: fontWeights.medium }}
               initial={{ opacity: 0, ...slideOffset }}

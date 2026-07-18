@@ -83,7 +83,9 @@ export class BeUiMcp extends McpAgent<Env, Record<string, never>, Record<string,
         description:
           "Search beUI components by keyword. Matches name, slug, description and category. Returns the best matches first.",
         inputSchema: {
-          query: z.string().describe("Search term, e.g. 'bottom sheet', 'toast', 'command palette'."),
+          query: z
+            .string()
+            .describe("Search term, e.g. 'bottom sheet', 'toast', 'command palette'."),
         },
       },
       async ({ query }) => {
@@ -112,7 +114,11 @@ export class BeUiMcp extends McpAgent<Env, Record<string, never>, Record<string,
         description:
           "Get full details for a beUI component by slug: description, npm dependencies, every source file (path + contents) and the install command. Use this to copy the component into a project.",
         inputSchema: {
-          slug: z.string().describe("Component slug, e.g. 'bottom-sheet' (from list_components/search_components)."),
+          slug: z
+            .string()
+            .describe(
+              "Component slug, e.g. 'bottom-sheet' (from list_components/search_components).",
+            ),
         },
       },
       async ({ slug }) => {
@@ -157,7 +163,10 @@ export class BeUiMcp extends McpAgent<Env, Record<string, never>, Record<string,
           slug,
           packageManager: pm,
           command: installCommand(slug, pm),
-          all: PACKAGE_MANAGERS.map((p) => ({ packageManager: p, command: installCommand(slug, p) })),
+          all: PACKAGE_MANAGERS.map((p) => ({
+            packageManager: p,
+            command: installCommand(slug, p),
+          })),
         });
       },
     );

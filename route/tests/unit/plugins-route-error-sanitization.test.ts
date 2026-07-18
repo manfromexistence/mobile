@@ -51,7 +51,7 @@ for (const { rel, label } of PLUGIN_ROUTES) {
     // Pattern: NextResponse.json({ error: err.message } — the raw anti-pattern
     assert.ok(
       !/NextResponse\.json\(\s*\{[^}]*error:\s*err\.message/.test(src),
-      `${rel}: must not contain NextResponse.json({ error: err.message, ... })`
+      `${rel}: must not contain NextResponse.json({ error: err.message, ... })`,
     );
 
     // Broader check: err.message must not appear anywhere in a response body context
@@ -67,7 +67,7 @@ for (const { rel, label } of PLUGIN_ROUTES) {
       // Flag err.message appearing on non-log lines inside response-building context
       if (/err\.message/.test(line) && /NextResponse\.json|return.*json\(/.test(line)) {
         assert.fail(
-          `${rel} line ${i + 1}: raw err.message found in response body:\n  ${line.trim()}`
+          `${rel} line ${i + 1}: raw err.message found in response body:\n  ${line.trim()}`,
         );
       }
     }
@@ -83,7 +83,7 @@ for (const { rel, label } of PLUGIN_ROUTES) {
       if (/log\.(error|warn|info|debug)/.test(line)) continue;
       if (/err\.stack/.test(line) && /NextResponse\.json|return.*json\(/.test(line)) {
         assert.fail(
-          `${rel} line ${i + 1}: raw err.stack found in response body:\n  ${line.trim()}`
+          `${rel} line ${i + 1}: raw err.stack found in response body:\n  ${line.trim()}`,
         );
       }
     }
@@ -94,7 +94,7 @@ for (const { rel, label } of PLUGIN_ROUTES) {
     assert.match(
       src,
       /import \{[^}]*buildErrorBody[^}]*\} from ["']@omniroute\/open-sse\/utils\/error["']/,
-      `${rel}: must import buildErrorBody from @omniroute/open-sse/utils/error`
+      `${rel}: must import buildErrorBody from @omniroute/open-sse/utils/error`,
     );
   });
 
@@ -103,7 +103,7 @@ for (const { rel, label } of PLUGIN_ROUTES) {
     assert.match(
       src,
       /buildErrorBody\s*\(/,
-      `${rel}: must call buildErrorBody() to build error response bodies`
+      `${rel}: must call buildErrorBody() to build error response bodies`,
     );
   });
 }
@@ -133,6 +133,6 @@ test("all /api/plugins route files are covered by this test suite", () => {
     covered,
     `Route files on disk differ from those listed in PLUGIN_ROUTES.\n` +
       `On disk: ${JSON.stringify(found)}\n` +
-      `Covered: ${JSON.stringify(covered)}`
+      `Covered: ${JSON.stringify(covered)}`,
   );
 });

@@ -21,10 +21,7 @@ test("OpenAI sanitizer keeps generic MCP wrapper args open-world", () => {
     },
   }) as any;
 
-  assert.equal(
-    sanitized.function.parameters.properties.args.additionalProperties,
-    true
-  );
+  assert.equal(sanitized.function.parameters.properties.args.additionalProperties, true);
   assert.deepEqual(sanitized.function.parameters.properties.args.properties, {});
 });
 
@@ -69,7 +66,7 @@ test("schema coercion opens opaque nested objects after translation", () => {
 
   assert.equal(
     coerced[0].function.parameters.properties.additional_vars.additionalProperties,
-    true
+    true,
   );
 });
 
@@ -91,8 +88,5 @@ test("explicitly closed object schemas stay closed", () => {
     },
   }) as any;
 
-  assert.equal(
-    sanitized.function.parameters.properties.payload.additionalProperties,
-    false
-  );
+  assert.equal(sanitized.function.parameters.properties.payload.additionalProperties, false);
 });

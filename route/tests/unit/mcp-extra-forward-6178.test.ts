@@ -25,7 +25,10 @@ const { storeBlock, resetCcrStore } = await import(
 const { resetDbInstance } = await import("../../src/lib/db/core.ts");
 
 type RegisteredTool = {
-  handler: (args: unknown, extra?: unknown) => Promise<{
+  handler: (
+    args: unknown,
+    extra?: unknown,
+  ) => Promise<{
     content?: Array<{ type: string; text: string }>;
     isError?: boolean;
   }>;
@@ -67,12 +70,12 @@ test("static tool loops forward `extra` so stdio callers keep their scope/identi
   assert.equal(
     result.isError,
     undefined,
-    `retrieve must not error; got: ${payload.error ?? "(no error)"}`
+    `retrieve must not error; got: ${payload.error ?? "(no error)"}`,
   );
   assert.equal(
     payload.content,
     verbatim,
-    "the forwarded `extra` principal must match the stored block and return it verbatim"
+    "the forwarded `extra` principal must match the stored block and return it verbatim",
   );
 });
 

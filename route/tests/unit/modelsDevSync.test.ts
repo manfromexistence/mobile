@@ -266,7 +266,7 @@ describe("modelsDevSync — transformModelsDevToPricing", () => {
     const pricing = transformModelsDevToPricing(MOCK_MODELS_DEV_DATA);
     const totalModels = Object.values(pricing).reduce(
       (sum, models) => sum + Object.keys(models).length,
-      0
+      0,
     );
     // openai: 2 models × 2 providers (openai, cx) = 4
     // anthropic: 1 model × 2 providers (anthropic, cc) = 2

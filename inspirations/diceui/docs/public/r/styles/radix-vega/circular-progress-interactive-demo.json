@@ -1,10 +1,7 @@
 {
   "name": "circular-progress-interactive-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "button",
-    "circular-progress"
-  ],
+  "registryDependencies": ["button", "circular-progress"],
   "files": [
     {
       "path": "examples/circular-progress-interactive-demo.tsx",

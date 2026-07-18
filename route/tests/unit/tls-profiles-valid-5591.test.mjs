@@ -17,7 +17,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", ".
 function supportedProfiles() {
   const dts = fs.readFileSync(
     path.join(ROOT, "node_modules", "wreq-js", "dist", "wreq-js.d.ts"),
-    "utf8"
+    "utf8",
   );
   return new Set([...dts.matchAll(/chrome_(\d+)/g)].map((m) => `chrome_${m[1]}`));
 }
@@ -49,7 +49,7 @@ test("#5591 all configured chrome_* TLS profiles exist in wreq-js", () => {
         assert.ok(
           supported.has(profile),
           `${rel}:${i + 1} uses ${profile} which is NOT a wreq-js BrowserProfile ` +
-            `(supported: ${[...supported].sort().join(", ")})`
+            `(supported: ${[...supported].sort().join(", ")})`,
         );
       }
     });

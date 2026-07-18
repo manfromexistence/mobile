@@ -1,8 +1,4 @@
-import {
-  MLCEngineInterface,
-  ChatCompletionMessageParam,
-  CompletionUsage,
-} from "@mlc-ai/web-llm";
+import { MLCEngineInterface, ChatCompletionMessageParam, CompletionUsage } from "@mlc-ai/web-llm";
 
 export default class ChatUI {
   private engine: MLCEngineInterface;
@@ -58,9 +54,7 @@ export default class ChatUI {
     return this.chatRequestChain;
   }
 
-  async asyncInitChat(
-    messageUpdate: (kind: string, text: string, append: boolean) => void,
-  ) {
+  async asyncInitChat(messageUpdate: (kind: string, text: string, append: boolean) => void) {
     if (this.chatLoaded) return;
     this.requestInProgress = true;
     messageUpdate("init", "", true);
@@ -142,11 +136,7 @@ export default class ChatUI {
         setRuntimeStats(runtimeStats);
       }
     } catch (err: unknown) {
-      messageUpdate(
-        "error",
-        "Generate error, " + (err?.toString() ?? ""),
-        true,
-      );
+      messageUpdate("error", "Generate error, " + (err?.toString() ?? ""), true);
       console.log(err);
       await this.unloadChat();
     }

@@ -20,11 +20,7 @@ function getServerSnapshot() {
 }
 
 function ClientOnly({ children, fallback = null }: ClientOnlyProps) {
-  const mounted = React.useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot,
-  );
+  const mounted = React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   if (!mounted) return fallback;
 

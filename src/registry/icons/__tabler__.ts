@@ -17,4 +17,4 @@ export {
   IconSun,
   IconTerminal,
   IconX,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";

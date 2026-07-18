@@ -1,16 +1,16 @@
-import { CollapsibleList } from "@/components/collapsible-list"
+import { CollapsibleList } from "@/components/collapsible-list";
 import {
   Panel,
   PanelHeader,
   PanelTitle,
   PanelTitleSup,
-} from "@/features/portfolio/components/panel"
-import { PanelTitleCopy } from "@/features/portfolio/components/panel-title-copy"
-import { PROJECTS } from "@/features/portfolio/data/projects"
+} from "@/features/portfolio/components/panel";
+import { PanelTitleCopy } from "@/features/portfolio/components/panel-title-copy";
+import { PROJECTS } from "@/features/portfolio/data/projects";
 
-import { ProjectItem } from "./project-item"
+import { ProjectItem } from "./project-item";
 
-const ID = "projects"
+const ID = "projects";
 
 export function Projects() {
   return (
@@ -29,5 +29,5 @@ export function Projects() {
         renderItem={(item) => <ProjectItem project={item} />}
       />
     </Panel>
-  )
+  );
 }

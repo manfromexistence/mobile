@@ -109,7 +109,7 @@ test("syncQuotaCombos: creates one combo per glm model with correct name and tar
     const expectedName = quotaModelName("GroupDemo", "glm", model.id);
     assert.ok(
       quotaComboNames.has(expectedName),
-      `Missing combo for model ${model.id}: ${expectedName}`
+      `Missing combo for model ${model.id}: ${expectedName}`,
     );
   }
 
@@ -149,14 +149,14 @@ test("syncQuotaCombos: each combo has a single step with provider=glm and connec
     const modelStr = typeof step.model === "string" ? step.model : "";
     assert.ok(
       modelStr.startsWith("glm/") || modelStr === parsed.model,
-      `step.model "${modelStr}" should contain the model id "${parsed.model}"`
+      `step.model "${modelStr}" should contain the model id "${parsed.model}"`,
     );
 
     // connectionId is pinned to the pool's connection
     assert.equal(
       step.connectionId,
       connId,
-      `step.connectionId should be pinned to pool connection ${connId}`
+      `step.connectionId should be pinned to pool connection ${connId}`,
     );
   }
 });
@@ -230,7 +230,7 @@ test("syncQuotaCombos: prunes stale combos for same pool slug", async () => {
   assert.equal(
     afterPrune.length,
     initialCount,
-    "combo count should return to initial after pruning stale"
+    "combo count should return to initial after pruning stale",
   );
 });
 
@@ -312,14 +312,18 @@ test("syncQuotaCombos: does not affect quota combos for a different provider in 
   });
 
   assert.equal(remainingForA.length, 0, "PoolAlpha (glm) combos should all be removed");
-  assert.equal(remainingForB.length, forB.length, "PoolBeta (openrouter) combos should be untouched");
+  assert.equal(
+    remainingForB.length,
+    forB.length,
+    "PoolBeta (openrouter) combos should be untouched",
+  );
 });
 
 test("syncQuotaCombos: unknown pool id — no throw, prunes nothing (no combos exist)", async () => {
   // Should not throw
   await assert.doesNotReject(
     () => syncQuotaCombos("nonexistent-pool-id"),
-    "syncQuotaCombos with unknown poolId should not throw"
+    "syncQuotaCombos with unknown poolId should not throw",
   );
 
   const quotaCombos = await listQuotaCombos();
@@ -329,7 +333,7 @@ test("syncQuotaCombos: unknown pool id — no throw, prunes nothing (no combos e
 test("removeQuotaCombosForPool: unknown pool id — no throw", async () => {
   await assert.doesNotReject(
     () => removeQuotaCombosForPool("nonexistent-pool-id"),
-    "removeQuotaCombosForPool with unknown poolId should not throw"
+    "removeQuotaCombosForPool with unknown poolId should not throw",
   );
 });
 
@@ -367,7 +371,7 @@ test("syncQuotaCombos: pool with no resolvable connection does NOT prune existin
   assert.equal(
     await providersDb.getProviderConnectionById(connId),
     null,
-    "connection must no longer resolve"
+    "connection must no longer resolve",
   );
 
   // 3. Re-sync. With no resolvable connection, poolProvider is undefined → the
@@ -378,7 +382,7 @@ test("syncQuotaCombos: pool with no resolvable connection does NOT prune existin
   assert.equal(
     after.length,
     before.length,
-    "combos must NOT be pruned when the pool has no resolvable connection"
+    "combos must NOT be pruned when the pool has no resolvable connection",
   );
   for (const name of beforeNames) {
     const stillThere = after.some((c) => c.name === name);
@@ -416,6 +420,6 @@ test("syncQuotaCombos: pool whose join table is emptied (truly no connectionIds)
   assert.equal(
     after.length,
     before.length,
-    "combos must survive when the pool has an empty/unresolvable connection set"
+    "combos must survive when the pool has an empty/unresolvable connection set",
   );
 });

@@ -26,9 +26,7 @@ export default function EditableDoubleClickDemo() {
         </EditableArea>
         <EditableToolbar>
           <EditableSubmit render={<Button size="sm" />}>Save</EditableSubmit>
-          <EditableCancel render={<Button variant="outline" size="sm" />}>
-            Cancel
-          </EditableCancel>
+          <EditableCancel render={<Button variant="outline" size="sm" />}>Cancel</EditableCancel>
         </EditableToolbar>
       </Editable>
     </div>

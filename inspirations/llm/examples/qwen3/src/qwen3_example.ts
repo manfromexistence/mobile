@@ -36,10 +36,9 @@ async function main() {
     setLabel("init-label", report.text);
   };
   const selectedModel = "Qwen3-4B-q4f16_1-MLC";
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    { initProgressCallback: initProgressCallback },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+  });
 
   /**
    * 1. Default behavior: enable thinking
@@ -113,8 +112,7 @@ async function main() {
     },
     {
       role: "assistant",
-      content:
-        "<think>Dummy thinking content here...</think>\n\nThe answer is 3.",
+      content: "<think>Dummy thinking content here...</think>\n\nThe answer is 3.",
     },
   ];
   // Preprocess history to remove thinking content

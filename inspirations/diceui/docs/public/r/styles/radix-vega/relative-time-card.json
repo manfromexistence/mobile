@@ -1,12 +1,8 @@
 {
   "name": "relative-time-card",
   "type": "registry:ui",
-  "dependencies": [
-    "radix-ui"
-  ],
-  "registryDependencies": [
-    "hover-card"
-  ],
+  "dependencies": ["radix-ui"],
+  "registryDependencies": ["hover-card"],
   "files": [
     {
       "path": "ui/relative-time-card.tsx",

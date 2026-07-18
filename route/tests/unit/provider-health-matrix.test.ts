@@ -100,7 +100,7 @@ test("provider health matrix combines connections, synced models, logs and locko
     "matrix-locked-model",
     "quota_exhausted",
     60_000,
-    {}
+    {},
   );
 
   const report = await matrix.buildProviderHealthMatrix({
@@ -177,7 +177,7 @@ test("provider health matrix treats recovered models as degraded instead of erro
     includeHealthy: true,
   });
   const model = report.providers[0]?.accounts[0]?.models.find(
-    (candidate) => candidate.model === "matrix-recovered-model"
+    (candidate) => candidate.model === "matrix-recovered-model",
   );
 
   assert.ok(model);
@@ -198,14 +198,14 @@ test("provider health matrix route requires management auth", async () => {
   });
 
   const unauthenticated = await route.GET(
-    new Request("http://localhost/api/providers/health-matrix?includeHealthy=true")
+    new Request("http://localhost/api/providers/health-matrix?includeHealthy=true"),
   );
   assert.equal(unauthenticated.status, 401);
 
   const authenticated = await route.GET(
     await makeManagementSessionRequest(
-      "http://localhost/api/providers/health-matrix?includeHealthy=true"
-    )
+      "http://localhost/api/providers/health-matrix?includeHealthy=true",
+    ),
   );
   assert.equal(authenticated.status, 200);
   const body = await authenticated.json();
@@ -217,15 +217,15 @@ test("provider health matrix route rejects invalid query parameters", async () =
 
   const invalidRange = await route.GET(
     await makeManagementSessionRequest(
-      "http://localhost/api/providers/health-matrix?range=forever&includeHealthy=true"
-    )
+      "http://localhost/api/providers/health-matrix?range=forever&includeHealthy=true",
+    ),
   );
   assert.equal(invalidRange.status, 400);
 
   const invalidBoolean = await route.GET(
     await makeManagementSessionRequest(
-      "http://localhost/api/providers/health-matrix?range=24h&includeHealthy=yes"
-    )
+      "http://localhost/api/providers/health-matrix?range=24h&includeHealthy=yes",
+    ),
   );
   assert.equal(invalidBoolean.status, 400);
 });

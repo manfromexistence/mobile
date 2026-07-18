@@ -50,7 +50,7 @@ test("OAuth connection test does not hang when the probe never returns (#1449)",
   assert.match(
     String(result.error),
     /tim(ed )?out/i,
-    `error should indicate a timeout, got: ${result.error}`
+    `error should indicate a timeout, got: ${result.error}`,
   );
   // Same failure shape the route returns for every other OAuth test error.
   assert.equal(result.refreshed, false);
@@ -68,7 +68,10 @@ function withDeadline<T>(p: Promise<T>, ms: number): Promise<T> {
   return Promise.race([
     p,
     new Promise<T>((_resolve, reject) =>
-      setTimeout(() => reject(new Error(`test deadline exceeded (${ms}ms) — probe hung`)), ms).unref()
+      setTimeout(
+        () => reject(new Error(`test deadline exceeded (${ms}ms) — probe hung`)),
+        ms,
+      ).unref(),
     ),
   ]);
 }

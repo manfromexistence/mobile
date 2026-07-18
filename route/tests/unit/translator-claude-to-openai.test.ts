@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { claudeToOpenAIRequest } =
-  await import("../../open-sse/translator/request/claude-to-openai.ts");
+const { claudeToOpenAIRequest } = await import(
+  "../../open-sse/translator/request/claude-to-openai.ts"
+);
 const { translateRequest } = await import("../../open-sse/translator/index.ts");
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 
@@ -22,7 +23,7 @@ test("Claude -> OpenAI maps system blocks, parameters, tool declarations and too
       top_p: 0.7,
       stop_sequences: ["DONE"],
     },
-    true
+    true,
   );
 
   assert.equal(result.model, "gpt-4o");
@@ -54,8 +55,6 @@ test("Claude -> OpenAI maps system blocks, parameters, tool declarations and too
   });
 });
 
-
-
 test("Claude -> OpenAI maps Claude server WebSearch to native Responses web_search", () => {
   const result = claudeToOpenAIRequest(
     "gpt-5.5",
@@ -74,7 +73,7 @@ test("Claude -> OpenAI maps Claude server WebSearch to native Responses web_sear
       tool_choice: { type: "tool", name: "web_search" },
     },
     true,
-    { _targetFormat: FORMATS.OPENAI_RESPONSES }
+    { _targetFormat: FORMATS.OPENAI_RESPONSES },
   );
 
   assert.deepEqual(result.tools, [
@@ -102,7 +101,7 @@ test("translateRequest maps Claude server WebSearch natively only for Responses 
     FORMATS.OPENAI_RESPONSES,
     "gpt-5.5",
     structuredClone(body),
-    true
+    true,
   );
   assert.deepEqual(responses.tools, [{ type: "web_search" }]);
   assert.deepEqual(responses.tool_choice, { type: "web_search" });
@@ -112,7 +111,7 @@ test("translateRequest maps Claude server WebSearch natively only for Responses 
     FORMATS.OPENAI,
     "gpt-4o",
     structuredClone(body),
-    true
+    true,
   );
   assert.deepEqual(chat.tools, [
     {
@@ -137,7 +136,7 @@ test("Claude -> OpenAI skips invalid tool payloads without crashing", () => {
       messages: [{ role: "user", content: "hi" }],
       tools: [null, "bad", 42, [], { name: "", input_schema: { type: "object" } }, { name: "ok" }],
     },
-    false
+    false,
   );
 
   assert.deepEqual(result.tools, [
@@ -167,7 +166,7 @@ test("Claude -> OpenAI leaves ordinary web_search function tools as functions", 
       ],
       tool_choice: { type: "tool", name: "web_search" },
     },
-    false
+    false,
   );
 
   assert.deepEqual(result.tools[0], {
@@ -205,7 +204,7 @@ test("Claude -> OpenAI converts assistant text and both base64 and URL images", 
         },
       ],
     },
-    false
+    false,
   );
 
   assert.equal(result.messages.length, 1);
@@ -236,7 +235,7 @@ test("Claude -> OpenAI turns thinking and tool_use blocks into assistant tool_ca
         },
       ],
     },
-    false
+    false,
   );
 
   assert.equal(result.messages[0].role, "assistant");
@@ -280,7 +279,7 @@ test("Claude -> OpenAI passes pre-stringified tool_use input through verbatim (n
         },
       ],
     },
-    false
+    false,
   );
 
   assert.deepEqual(result.messages[0].tool_calls, [
@@ -327,7 +326,7 @@ test("Claude -> OpenAI converts tool_result blocks into tool messages and preser
         },
       ],
     },
-    false
+    false,
   );
 
   assert.deepEqual(result.messages[0], {
@@ -352,7 +351,7 @@ test("Claude -> OpenAI maps output_config.effort to reasoning_effort", () => {
       messages: [{ role: "user", content: "hi" }],
       output_config: { effort: "high" },
     },
-    false
+    false,
   );
 
   assert.equal(result.reasoning_effort, "high");
@@ -365,7 +364,7 @@ test("Claude -> OpenAI normalizes output_config.effort casing", () => {
       messages: [{ role: "user", content: "hi" }],
       output_config: { effort: "MEDIUM" },
     },
-    false
+    false,
   );
 
   assert.equal(result.reasoning_effort, "medium");
@@ -379,7 +378,7 @@ test("Claude -> OpenAI prefers output_config.effort over thinking.budget_tokens"
       output_config: { effort: "low" },
       thinking: { type: "enabled", budget_tokens: 131072 },
     },
-    false
+    false,
   );
 
   assert.equal(result.reasoning_effort, "low");
@@ -402,7 +401,7 @@ test("Claude -> OpenAI maps thinking.budget_tokens to reasoning_effort buckets",
         messages: [{ role: "user", content: "hi" }],
         thinking: { type: "enabled", budget_tokens: budget },
       },
-      false
+      false,
     );
     assert.equal(result.reasoning_effort, expected, `budget ${budget} should map to ${expected}`);
   }
@@ -415,7 +414,7 @@ test("Claude -> OpenAI normalizes output_config.effort=max to xhigh", () => {
       messages: [{ role: "user", content: "hi" }],
       output_config: { effort: "max" },
     },
-    false
+    false,
   );
 
   assert.equal(result.reasoning_effort, "xhigh");
@@ -428,7 +427,7 @@ test("Claude -> OpenAI ignores disabled thinking and leaves reasoning_effort uns
       messages: [{ role: "user", content: "hi" }],
       thinking: { type: "enabled", budget_tokens: 0 },
     },
-    false
+    false,
   );
 
   assert.equal(result.reasoning_effort, undefined);
@@ -438,7 +437,7 @@ test("Claude -> OpenAI leaves reasoning_effort unset when no thinking/output_con
   const result = claudeToOpenAIRequest(
     "gpt-5",
     { messages: [{ role: "user", content: "hi" }] },
-    false
+    false,
   );
 
   assert.equal(result.reasoning_effort, undefined);
@@ -463,7 +462,7 @@ test("Claude -> OpenAI handles redacted thinking, empty arrays and unknown block
         },
       ],
     },
-    false
+    false,
   );
 
   assert.deepEqual(result.messages[0], {

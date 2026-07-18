@@ -60,35 +60,35 @@ test("model cooldown reset requires management auth", async () => {
     "cooldown-auth-model",
     "quota_exhausted",
     60_000,
-    {}
+    {},
   );
 
   const unauthenticated = await route.DELETE(
     new Request("http://localhost/api/resilience/model-cooldowns", {
       method: "DELETE",
       body: JSON.stringify({ all: true }),
-    })
+    }),
   );
 
   assert.equal(unauthenticated.status, 401);
   assert.ok(
     getAvailabilityReport().some(
       (entry) =>
-        entry.provider === "cooldown-auth-provider" && entry.model === "cooldown-auth-model"
-    )
+        entry.provider === "cooldown-auth-provider" && entry.model === "cooldown-auth-model",
+    ),
   );
 
   const authenticated = await route.DELETE(
     await makeManagementSessionRequest("http://localhost/api/resilience/model-cooldowns", {
       method: "DELETE",
       body: { all: true },
-    })
+    }),
   );
 
   assert.equal(authenticated.status, 200);
   assert.deepEqual(await authenticated.json(), { ok: true, clearedAll: true });
   assert.equal(
     getAvailabilityReport().some((entry) => entry.provider === "cooldown-auth-provider"),
-    false
+    false,
   );
 });

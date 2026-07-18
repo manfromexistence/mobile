@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/Radar/Radar.jsx?raw';
-import css from '@content/Backgrounds/Radar/Radar.css?raw';
-import tailwind from '@tailwind/Backgrounds/Radar/Radar.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/Radar/Radar.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/Radar/Radar.tsx?raw';
+import code from "@content/Backgrounds/Radar/Radar.jsx?raw";
+import css from "@content/Backgrounds/Radar/Radar.css?raw";
+import tailwind from "@tailwind/Backgrounds/Radar/Radar.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/Radar/Radar.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/Radar/Radar.tsx?raw";
 
 export const radar = {
   dependencies: `ogl`,
@@ -29,5 +29,5 @@ export const radar = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

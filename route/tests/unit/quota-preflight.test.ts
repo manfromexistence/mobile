@@ -38,7 +38,7 @@ test("preflightQuota passes through when no fetcher is registered for the provid
   const result = await preflightQuota(
     "provider-missing-fetcher",
     "conn-2",
-    createConnection({ quotaPreflightEnabled: true })
+    createConnection({ quotaPreflightEnabled: true }),
   );
 
   assert.deepEqual(result, { proceed: true });
@@ -75,7 +75,7 @@ test("preflightQuota (legacy single-signal): warns at 20% remaining by default",
     "warn",
     (message: string) => warnings.push(message),
     async () =>
-      preflightQuota("provider-warn", "conn-5", createConnection({ quotaPreflightEnabled: true }))
+      preflightQuota("provider-warn", "conn-5", createConnection({ quotaPreflightEnabled: true })),
   );
 
   assert.deepEqual(result, { proceed: true, quotaPercent: 0.8 });
@@ -95,7 +95,7 @@ test("preflightQuota (legacy single-signal): blocks at 2% remaining by default",
   const result = await preflightQuota(
     "provider-exhausted",
     "conn-6",
-    createConnection({ quotaPreflightEnabled: true })
+    createConnection({ quotaPreflightEnabled: true }),
   );
 
   assert.equal(result.proceed, false);
@@ -118,7 +118,7 @@ test("preflightQuota (legacy single-signal): resolver override drives the decisi
     {
       resolveMinRemainingPercent: () => 10,
       resolveWarnRemainingPercent: () => 20,
-    }
+    },
   );
   assert.equal(result.proceed, false);
   assert.equal(result.reason, "quota_exhausted");
@@ -136,7 +136,7 @@ test("preflightQuota (legacy single-signal): proceeds when remaining is above th
     "provider-override-pass",
     "conn-override-2",
     createConnection({ quotaPreflightEnabled: true }),
-    { resolveMinRemainingPercent: () => 10 }
+    { resolveMinRemainingPercent: () => 10 },
   );
 
   assert.equal(result.proceed, true);
@@ -169,8 +169,8 @@ test("preflightQuota (per-window): blocks if ANY window falls to its cutoff", as
         {
           resolveMinRemainingPercent: (window) =>
             window === "session" ? 5 : window === "weekly" ? 20 : 2,
-        }
-      )
+        },
+      ),
   );
 
   assert.equal(result.proceed, false);
@@ -201,7 +201,7 @@ test("preflightQuota (per-window): both above cutoffs → proceed", async () => 
     createConnection({ quotaPreflightEnabled: true }),
     {
       resolveMinRemainingPercent: (window) => (window === "session" ? 5 : 20),
-    }
+    },
   );
 
   assert.equal(result.proceed, true);
@@ -228,7 +228,7 @@ test("preflightQuota (per-window): resolver receives the window name, not null",
         seenWindows.push(window);
         return 2;
       },
-    }
+    },
   );
 
   assert.deepEqual(seenWindows.sort(), ["session", "weekly"]);
@@ -249,7 +249,7 @@ test("preflightQuota (per-window): omitted resolver falls back to the 2% remaini
   const result = await preflightQuota(
     "provider-windows-default",
     "conn-windows-4",
-    createConnection({ quotaPreflightEnabled: true })
+    createConnection({ quotaPreflightEnabled: true }),
   );
 
   assert.equal(result.proceed, false);

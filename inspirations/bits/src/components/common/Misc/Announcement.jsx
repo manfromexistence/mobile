@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
-import { FiX, FiShare2 } from 'react-icons/fi';
+import { useState, useEffect } from "react";
+import { FiX, FiShare2 } from "react-icons/fi";
 
-const ANNOUNCEMENT_MESSAGE = '';
+const ANNOUNCEMENT_MESSAGE = "";
 
 const STORAGE_KEYS = {
-  lastMessage: 'announcement-last-message',
-  userClosed: 'announcement-user-closed'
+  lastMessage: "announcement-last-message",
+  userClosed: "announcement-user-closed",
 };
 
-const checkIfMobile = () => window.innerWidth < 768 || 'ontouchstart' in window;
+const checkIfMobile = () => window.innerWidth < 768 || "ontouchstart" in window;
 
 const parseMessageWithLinks = (message) => {
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
@@ -27,11 +27,11 @@ const parseMessageWithLinks = (message) => {
         key={match.index}
         href={linkUrl}
         className="announcement-link"
-        target={linkUrl.startsWith('http') ? '_blank' : '_self'}
-        rel={linkUrl.startsWith('http') ? 'noopener noreferrer' : undefined}
+        target={linkUrl.startsWith("http") ? "_blank" : "_self"}
+        rel={linkUrl.startsWith("http") ? "noopener noreferrer" : undefined}
       >
         {linkText}
-      </a>
+      </a>,
     );
 
     lastIndex = linkRegex.lastIndex;
@@ -50,7 +50,7 @@ const Announcement = () => {
 
   useEffect(() => {
     const lastStoredMessage = localStorage.getItem(STORAGE_KEYS.lastMessage);
-    const userClosed = localStorage.getItem(STORAGE_KEYS.userClosed) === 'true';
+    const userClosed = localStorage.getItem(STORAGE_KEYS.userClosed) === "true";
 
     const shouldShow =
       lastStoredMessage !== ANNOUNCEMENT_MESSAGE ||
@@ -71,48 +71,48 @@ const Announcement = () => {
 
   const closeAnnouncement = () => {
     setIsVisible(false);
-    localStorage.setItem(STORAGE_KEYS.userClosed, 'true');
+    localStorage.setItem(STORAGE_KEYS.userClosed, "true");
   };
 
   const shareToX = (text) => {
     const tweetText = encodeURIComponent(text);
-    window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, '_blank');
+    window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, "_blank");
   };
 
   const handleShare = async () => {
-    const shareText = ANNOUNCEMENT_MESSAGE.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1 ($2)');
+    const shareText = ANNOUNCEMENT_MESSAGE.replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1 ($2)");
 
     if (isMobile) {
       if (navigator.share) {
         try {
-          const response = await fetch('/vue-bits.jpg');
+          const response = await fetch("/vue-bits.jpg");
           const blob = await response.blob();
-          const file = new File([blob], 'vue-bits.jpg', { type: 'image/jpeg' });
+          const file = new File([blob], "vue-bits.jpg", { type: "image/jpeg" });
 
           await navigator.share({
-            title: 'Vue Bits - Official Vue Port of React Bits',
+            title: "Vue Bits - Official Vue Port of React Bits",
             text: shareText,
-            files: [file]
+            files: [file],
           });
         } catch (error) {
           try {
             await navigator.share({
-              title: 'Vue Bits - Official Vue Port of React Bits',
+              title: "Vue Bits - Official Vue Port of React Bits",
               text: shareText,
-              url: window.location.origin
+              url: window.location.origin,
             });
           } catch (fallbackError) {
-            console.log('Sharing failed:', fallbackError);
+            console.log("Sharing failed:", fallbackError);
           }
         }
       }
     } else {
-      const twitterText = ANNOUNCEMENT_MESSAGE.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$2');
+      const twitterText = ANNOUNCEMENT_MESSAGE.replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$2");
       shareToX(twitterText);
     }
   };
 
-  if (!ANNOUNCEMENT_MESSAGE || ANNOUNCEMENT_MESSAGE.trim() === '') {
+  if (!ANNOUNCEMENT_MESSAGE || ANNOUNCEMENT_MESSAGE.trim() === "") {
     return null;
   }
 
@@ -122,11 +122,19 @@ const Announcement = () => {
     <div className="announcement-bar">
       <div className="announcement-content">{parseMessageWithLinks(ANNOUNCEMENT_MESSAGE)}</div>
       <div className="announcement-actions">
-        <button onClick={handleShare} className="announcement-share" aria-label={isMobile ? 'Share' : 'Share on X'}>
+        <button
+          onClick={handleShare}
+          className="announcement-share"
+          aria-label={isMobile ? "Share" : "Share on X"}
+        >
           <FiShare2 size={16} />
-          <span className="announcement-share-text">{isMobile ? 'Share' : 'Share on X'}</span>
+          <span className="announcement-share-text">{isMobile ? "Share" : "Share on X"}</span>
         </button>
-        <button onClick={closeAnnouncement} className="announcement-close" aria-label="Close announcement">
+        <button
+          onClick={closeAnnouncement}
+          className="announcement-close"
+          aria-label="Close announcement"
+        >
           <FiX size={18} />
         </button>
       </div>

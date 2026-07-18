@@ -1,9 +1,7 @@
 {
   "name": "segmented-input-rgb-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "segmented-input"
-  ],
+  "registryDependencies": ["segmented-input"],
   "files": [
     {
       "path": "examples/segmented-input-rgb-demo.tsx",

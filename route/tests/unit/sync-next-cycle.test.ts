@@ -11,7 +11,7 @@ import {
 
 const SCRIPT_PATH = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
-  "../../scripts/release/sync-next-cycle.mjs"
+  "../../scripts/release/sync-next-cycle.mjs",
 );
 
 // Pure-function guards for the parallel-cycle sync-back (generate-release
@@ -112,15 +112,15 @@ test("i18n resync also propagates the FINALIZED [prevVersion] section into the m
   const src = readFileSync(SCRIPT_PATH, "utf8");
   assert.ok(
     src.includes('"release:sync-changelog-i18n", "--", NEXT, prevVersion'),
-    "syncs the new cycle section"
+    "syncs the new cycle section",
   );
   assert.ok(
     src.includes("versionAfter(mainChangelog, prevVersion)"),
-    "computes the boundary below the shipped section"
+    "computes the boundary below the shipped section",
   );
   assert.ok(
     src.includes('"release:sync-changelog-i18n", "--", prevVersion, belowPrev'),
-    "syncs the shipped (finalized) section — without this all 42 mirrors keep it as TBD"
+    "syncs the shipped (finalized) section — without this all 42 mirrors keep it as TBD",
   );
 });
 

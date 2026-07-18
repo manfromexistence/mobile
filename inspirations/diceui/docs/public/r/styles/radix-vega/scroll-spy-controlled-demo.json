@@ -1,10 +1,7 @@
 {
   "name": "scroll-spy-controlled-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "scroll-spy",
-    "button"
-  ],
+  "registryDependencies": ["scroll-spy", "button"],
   "files": [
     {
       "path": "examples/scroll-spy-controlled-demo.tsx",

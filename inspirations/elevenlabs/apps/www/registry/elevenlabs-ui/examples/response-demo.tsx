@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
-import { Response } from "@/registry/elevenlabs-ui/ui/response"
+import { Response } from "@/registry/elevenlabs-ui/ui/response";
 
 const tokens = [
   "### Welcome",
@@ -108,33 +108,33 @@ const tokens = [
   "\n",
   "$$",
   "\n\n",
-]
+];
 
 const Example = () => {
-  const [content, setContent] = useState("")
+  const [content, setContent] = useState("");
 
   useEffect(() => {
-    let currentContent = ""
-    let index = 0
+    let currentContent = "";
+    let index = 0;
 
     const interval = setInterval(() => {
       if (index < tokens.length) {
-        currentContent += tokens[index]
-        setContent(currentContent)
-        index++
+        currentContent += tokens[index];
+        setContent(currentContent);
+        index++;
       } else {
-        clearInterval(interval)
+        clearInterval(interval);
       }
-    }, 100)
+    }, 100);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="h-full min-h-0 w-full overflow-hidden">
       <Response className="h-full overflow-auto p-10">{content}</Response>
     </div>
-  )
-}
+  );
+};
 
-export default Example
+export default Example;

@@ -9,8 +9,9 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 
 const coreDb = await import("../../src/lib/db/core.ts");
 const { skillRegistry } = await import("../../src/lib/skills/registry.ts");
-const { injectSkills, injectSkillTools, detectProvider } =
-  await import("../../src/lib/skills/injection.ts");
+const { injectSkills, injectSkillTools, detectProvider } = await import(
+  "../../src/lib/skills/injection.ts"
+);
 
 function resetRegistryState() {
   skillRegistry["registeredSkills"].clear();
@@ -103,7 +104,7 @@ test("injectSkillTools only injects into the last user message without tools", a
       { role: "user", content: "search docs" },
     ],
     "openai",
-    "key-a"
+    "key-a",
   );
 
   assert.equal(injected.length, 2);
@@ -113,17 +114,17 @@ test("injectSkillTools only injects into the last user message without tools", a
   const unchangedWhenToolsExist = injectSkillTools(
     [{ role: "user", content: "already has tools", tools: [{ name: "existing" }] }],
     "openai",
-    "key-a"
+    "key-a",
   );
   const unchangedAssistant = injectSkillTools(
     [{ role: "assistant", content: "no user tail" }],
     "openai",
-    "key-a"
+    "key-a",
   );
   const unchangedWithoutSkills = injectSkillTools(
     [{ role: "user", content: "nothing to inject" }],
     "openai",
-    "missing-key"
+    "missing-key",
   );
 
   assert.deepEqual(unchangedWhenToolsExist, [
@@ -224,7 +225,7 @@ test("injectSkills auto mode prefers provider-matching tagged skills", async () 
   const injectedNames = tools
     .filter(
       (tool): tool is { function: { name: string } } =>
-        !!tool && typeof tool === "object" && "function" in tool
+        !!tool && typeof tool === "object" && "function" in tool,
     )
     .map((tool) => tool.function.name);
   assert.equal(injectedNames[0], "openaiDocTool@1.0.0");

@@ -1,8 +1,9 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-const { sanitizeOpenAITool, sanitizeOpenAITools } =
-  await import("../../open-sse/services/toolSchemaSanitizer.ts");
+const { sanitizeOpenAITool, sanitizeOpenAITools } = await import(
+  "../../open-sse/services/toolSchemaSanitizer.ts"
+);
 
 describe("toolSchemaSanitizer", () => {
   describe("enum null filter (the actual fix)", () => {
@@ -458,7 +459,7 @@ describe("toolSchemaSanitizer", () => {
 });
 
 describe("root type coercion (#6359)", () => {
-  it("coerces root `type: null` to \"object\" (Codex codex_app__automation_update reproduction)", () => {
+  it('coerces root `type: null` to "object" (Codex codex_app__automation_update reproduction)', () => {
     const tool = {
       type: "function",
       function: {
@@ -475,7 +476,7 @@ describe("root type coercion (#6359)", () => {
     assert.deepEqual(out.function.parameters.properties.schedule, { type: "string" });
   });
 
-  it("adds `type: \"object\"` when the root schema has properties but no type", () => {
+  it('adds `type: "object"` when the root schema has properties but no type', () => {
     const tool = {
       type: "function",
       function: { name: "x", parameters: { properties: { a: { type: "number" } } } },
@@ -506,10 +507,13 @@ describe("root type coercion (#6359)", () => {
     assert.equal(out.function.parameters.type, undefined);
   });
 
-  it("leaves an explicit root `type: \"object\"` untouched", () => {
+  it('leaves an explicit root `type: "object"` untouched', () => {
     const tool = {
       type: "function",
-      function: { name: "w", parameters: { type: "object", properties: { b: { type: "boolean" } } } },
+      function: {
+        name: "w",
+        parameters: { type: "object", properties: { b: { type: "boolean" } } },
+      },
     };
     const out = sanitizeOpenAITool(tool);
     assert.equal(out.function.parameters.type, "object");

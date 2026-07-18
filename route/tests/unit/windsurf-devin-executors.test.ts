@@ -45,7 +45,7 @@ describe("Windsurf MODEL_ALIAS_MAP", () => {
     const fs = await import("node:fs/promises");
     const src = await fs.readFile(
       new URL("../../open-sse/executors/windsurf.ts", import.meta.url),
-      "utf8"
+      "utf8",
     );
     const match = src.match(/const MODEL_ALIAS_MAP[^=]*=\s*(\{[\s\S]*?\n\})/);
     assert.ok(match, "MODEL_ALIAS_MAP block should be found in source");
@@ -81,7 +81,7 @@ describe("Windsurf MODEL_ALIAS_MAP", () => {
 // exported, we test via a re-implementation that mirrors the source exactly.
 
 function openAIMessagesToWsLocal(
-  messages: Array<{ role?: string; content?: unknown; tool_call_id?: string }>
+  messages: Array<{ role?: string; content?: unknown; tool_call_id?: string }>,
 ): Array<{ role: string; content: string; toolCallId?: string }> {
   const out: Array<{ role: string; content: string; toolCallId?: string }> = [];
   for (const m of messages) {
@@ -143,7 +143,7 @@ describe("openAIMessagesToWs", () => {
 // ─── gRPC-web frame parser (Windsurf) ────────────────────────────────────────
 
 function* parseGrpcWebFramesLocal(
-  buf: Uint8Array
+  buf: Uint8Array,
 ): Generator<{ flag: number; payload: Uint8Array }> {
   let offset = 0;
   while (offset + 5 <= buf.length) {

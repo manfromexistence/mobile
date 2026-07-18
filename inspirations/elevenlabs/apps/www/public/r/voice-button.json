@@ -1,10 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "voice-button",
-  "registryDependencies": [
-    "button",
-    "https://ui.elevenlabs.io/r/live-waveform.json"
-  ],
+  "registryDependencies": ["button", "https://ui.elevenlabs.io/r/live-waveform.json"],
   "files": [
     {
       "path": "components/ui/voice-button.tsx",

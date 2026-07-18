@@ -1,39 +1,39 @@
-"use client"
+"use client";
 
-import { useRef } from "react"
-import { useHotkeys } from "react-hotkeys-hook"
-import type { VolumeIconHandle } from "@/features/portfolio/components/animated-icons/volume-icon"
-import { VolumeIcon } from "@/features/portfolio/components/animated-icons/volume-icon"
-import { trackEvent } from "@/lib/events"
-import { cn } from "@/lib/utils"
-import { useSound } from "@/registry/hooks/sound/use-sound"
+import { useRef } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import type { VolumeIconHandle } from "@/features/portfolio/components/animated-icons/volume-icon";
+import { VolumeIcon } from "@/features/portfolio/components/animated-icons/volume-icon";
+import { trackEvent } from "@/lib/events";
+import { cn } from "@/lib/utils";
+import { useSound } from "@/registry/hooks/sound/use-sound";
 
 export function PronounceMyName({
   className,
   namePronunciationUrl,
 }: {
-  className?: string
-  namePronunciationUrl: string
+  className?: string;
+  namePronunciationUrl: string;
 }) {
-  const [play] = useSound(namePronunciationUrl)
+  const [play] = useSound(namePronunciationUrl);
 
-  const volumeIconRef = useRef<VolumeIconHandle>(null)
+  const volumeIconRef = useRef<VolumeIconHandle>(null);
 
   const handlePlayClick = () => {
-    volumeIconRef.current?.startAnimation()
-    play()
+    volumeIconRef.current?.startAnimation();
+    play();
     trackEvent({
       name: "play_name_pronunciation",
-    })
-  }
+    });
+  };
 
-  useHotkeys("p", handlePlayClick)
+  useHotkeys("p", handlePlayClick);
 
   return (
     <button
       className={cn(
         "relative flex touch-manipulation items-center justify-center text-muted-foreground transition-[color,scale] will-change-[scale] select-none hover:text-foreground active:scale-[0.9]",
-        className
+        className,
       )}
       onClick={handlePlayClick}
       aria-label="Pronounce my name"
@@ -41,5 +41,5 @@ export function PronounceMyName({
       <span className="absolute size-12 pointer-fine:hidden" aria-hidden />
       <VolumeIcon ref={volumeIconRef} className="size-4.5" aria-hidden />
     </button>
-  )
+  );
 }

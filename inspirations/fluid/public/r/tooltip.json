@@ -3,10 +3,7 @@
   "name": "tooltip",
   "title": "Tooltip",
   "description": "Floating tooltip with spring-based animations, configurable placement, and rich content support.",
-  "dependencies": [
-    "framer-motion",
-    "@radix-ui/react-tooltip"
-  ],
+  "dependencies": ["framer-motion", "@radix-ui/react-tooltip"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

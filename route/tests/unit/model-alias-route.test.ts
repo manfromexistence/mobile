@@ -38,7 +38,7 @@ test("model alias route resolves a stored alias and emits diagnostics headers", 
   const response = await route.GET(
     await makeManagementSessionRequest("http://localhost/api/models/alias?alias=fast-default", {
       headers: { "x-request-id": "req-model-alias-1" },
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -52,7 +52,7 @@ test("model alias route resolves a stored alias and emits diagnostics headers", 
 
 test("model alias route returns typed ambiguity errors for ambiguous aliases", async () => {
   const response = await route.GET(
-    await makeManagementSessionRequest("http://localhost/api/models/alias?alias=claude-sonnet-4-6")
+    await makeManagementSessionRequest("http://localhost/api/models/alias?alias=claude-sonnet-4-6"),
   );
   const body = (await response.json()) as any;
 
@@ -67,12 +67,12 @@ test("model alias route requires a dashboard session when management auth is ena
   await localDb.updateSettings({ requireLogin: true, password: "" });
 
   const unauthenticated = await route.GET(
-    new Request("http://localhost/api/models/alias?alias=fast-default")
+    new Request("http://localhost/api/models/alias?alias=fast-default"),
   );
   const invalidToken = await route.GET(
     new Request("http://localhost/api/models/alias?alias=fast-default", {
       headers: { authorization: "Bearer sk-invalid" },
-    })
+    }),
   );
 
   const unauthenticatedBody = (await unauthenticated.json()) as any;
@@ -89,7 +89,7 @@ test("api models catalog route reuses the unified catalog diagnostics headers", 
   const response = await catalogRoute.GET(
     new Request("http://localhost/api/models/catalog", {
       headers: { "x-request-id": "req-model-catalog-1" },
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -104,7 +104,7 @@ test("v1 models catalog emits diagnostics headers alongside the OpenAI-compatibl
   const response = await v1Catalog.getUnifiedModelsResponse(
     new Request("http://localhost/api/v1/models", {
       headers: { "x-request-id": "req-v1-models-1" },
-    })
+    }),
   );
   const body = (await response.json()) as any;
 

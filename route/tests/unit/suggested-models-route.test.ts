@@ -57,7 +57,7 @@ test("GET suggested-models: returns sorted+shaped suggestions for type=image", a
   });
 
   const response = await route.GET(
-    new Request("http://localhost:20128/api/v1/providers/suggested-models?type=image")
+    new Request("http://localhost:20128/api/v1/providers/suggested-models?type=image"),
   );
   const body = (await response.json()) as {
     object: string;
@@ -89,8 +89,8 @@ test("GET suggested-models: respects sortBy=likes and limit", async () => {
 
   const response = await route.GET(
     new Request(
-      "http://localhost:20128/api/v1/providers/suggested-models?type=image&sortBy=likes&limit=2"
-    )
+      "http://localhost:20128/api/v1/providers/suggested-models?type=image&sortBy=likes&limit=2",
+    ),
   );
   const body = (await response.json()) as { data: Array<{ id: string }> };
 
@@ -102,7 +102,7 @@ test("GET suggested-models: respects sortBy=likes and limit", async () => {
 
 test("GET suggested-models: rejects an unsupported type with a 400 and no stack leak", async () => {
   const response = await route.GET(
-    new Request("http://localhost:20128/api/v1/providers/suggested-models?type=video")
+    new Request("http://localhost:20128/api/v1/providers/suggested-models?type=video"),
   );
   const body = (await response.json()) as { error: { message: string } };
 
@@ -116,7 +116,7 @@ test("GET suggested-models: upstream failure surfaces a sanitized 502 (no raw er
   mockFetchOnce({ ok: false, status: 503, text: "upstream unavailable" });
 
   const response = await route.GET(
-    new Request("http://localhost:20128/api/v1/providers/suggested-models?type=image")
+    new Request("http://localhost:20128/api/v1/providers/suggested-models?type=image"),
   );
   const body = (await response.json()) as { error: { message: string } };
 
@@ -133,7 +133,7 @@ test("GET suggested-models: a thrown fetch error never leaks err.stack/err.messa
   }) as typeof fetch;
 
   const response = await route.GET(
-    new Request("http://localhost:20128/api/v1/providers/suggested-models?type=image")
+    new Request("http://localhost:20128/api/v1/providers/suggested-models?type=image"),
   );
   const body = (await response.json()) as { error: { message: string } };
 
@@ -148,12 +148,12 @@ test("GET suggested-models: a thrown fetch error never leaks err.stack/err.messa
 test("route source: imports and uses buildErrorBody (Hard Rule #12)", async () => {
   const src = fs.readFileSync(
     path.join(process.cwd(), "src/app/api/v1/providers/suggested-models/route.ts"),
-    "utf8"
+    "utf8",
   );
   assert.match(
     src,
     /import \{[^}]*buildErrorBody[^}]*\} from ["']@omniroute\/open-sse\/utils\/error(\.ts)?["']/,
-    "must import buildErrorBody from @omniroute/open-sse/utils/error"
+    "must import buildErrorBody from @omniroute/open-sse/utils/error",
   );
   assert.match(src, /buildErrorBody\s*\(/, "must call buildErrorBody() in error responses");
 

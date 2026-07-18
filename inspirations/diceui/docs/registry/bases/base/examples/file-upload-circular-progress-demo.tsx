@@ -43,9 +43,7 @@ export default function FileUploadCircularProgressDemo() {
             // Simulate chunk upload with delays
             for (let i = 0; i < totalChunks; i++) {
               // Simulate network delay (100-300ms per chunk)
-              await new Promise((resolve) =>
-                setTimeout(resolve, Math.random() * 200 + 100),
-              );
+              await new Promise((resolve) => setTimeout(resolve, Math.random() * 200 + 100));
 
               // Update progress for this specific file
               uploadedChunks++;
@@ -57,10 +55,7 @@ export default function FileUploadCircularProgressDemo() {
             await new Promise((resolve) => setTimeout(resolve, 500));
             onSuccess(file);
           } catch (error) {
-            onError(
-              file,
-              error instanceof Error ? error : new Error("Upload failed"),
-            );
+            onError(file, error instanceof Error ? error : new Error("Upload failed"));
           }
         });
 
@@ -103,12 +98,7 @@ export default function FileUploadCircularProgressDemo() {
         </div>
         <FileUploadTrigger
           render={(props) => (
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-2 w-fit"
-              {...props}
-            >
+            <Button variant="outline" size="sm" className="mt-2 w-fit" {...props}>
               Browse files
             </Button>
           )}

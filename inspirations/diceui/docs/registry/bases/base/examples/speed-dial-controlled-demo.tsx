@@ -26,11 +26,7 @@ export default function SpeedDialControlledDemo() {
         <SpeedDialContent
           onInteractOutside={(event) => {
             // Prevent closing when clicking the external trigger
-            if (
-              externalTriggerRef.current?.contains(
-                event.detail.originalEvent.target as Node,
-              )
-            ) {
+            if (externalTriggerRef.current?.contains(event.detail.originalEvent.target as Node)) {
               event.preventDefault();
             }
           }}
@@ -55,11 +51,7 @@ export default function SpeedDialControlledDemo() {
           </SpeedDialItem>
         </SpeedDialContent>
       </SpeedDial>
-      <Button
-        ref={externalTriggerRef}
-        variant="outline"
-        onClick={() => setOpen(!open)}
-      >
+      <Button ref={externalTriggerRef} variant="outline" onClick={() => setOpen(!open)}>
         Toggle
       </Button>
     </div>

@@ -57,11 +57,11 @@ describe("buildRelayFunction — generated Vercel worker has no string-concat SS
     const worker = __buildRelayFunctionForTest("deadbeefcafe");
     assert.ok(
       !worker.includes("+ relayPath"),
-      "Vercel worker must not contain `+ relayPath` string concatenation"
+      "Vercel worker must not contain `+ relayPath` string concatenation",
     );
     assert.ok(
       !/\.replace\(\s*\/\\?\/\$\/\s*,\s*["']{2}\s*\)\s*\+\s*relayPath/.test(worker),
-      "Vercel worker must not append relayPath to target by string concatenation"
+      "Vercel worker must not append relayPath to target by string concatenation",
     );
   });
 
@@ -69,11 +69,11 @@ describe("buildRelayFunction — generated Vercel worker has no string-concat SS
     const worker = __buildRelayFunctionForTest("deadbeefcafe");
     assert.ok(
       worker.includes("resolveRelayTarget"),
-      "the Vercel worker must call the shared resolveRelayTarget guard"
+      "the Vercel worker must call the shared resolveRelayTarget guard",
     );
     assert.ok(
       worker.includes("resolved.url"),
-      "the Vercel worker must fetch the SSRF-validated resolved url"
+      "the Vercel worker must fetch the SSRF-validated resolved url",
     );
   });
 
@@ -81,7 +81,7 @@ describe("buildRelayFunction — generated Vercel worker has no string-concat SS
     const worker = __buildRelayFunctionForTest("deadbeefcafe");
     assert.ok(
       worker.includes('runtime: "edge"'),
-      "the Vercel edge runtime config must be preserved"
+      "the Vercel edge runtime config must be preserved",
     );
   });
 });

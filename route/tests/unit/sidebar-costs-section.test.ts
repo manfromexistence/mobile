@@ -65,7 +65,7 @@ test("costs item was removed from analytics section", () => {
   assert.equal(
     analyticsItemIds.includes("costs" as sidebarVisibility.HideableSidebarItemId),
     false,
-    "costs item must not be in analytics section"
+    "costs item must not be in analytics section",
   );
 });
 
@@ -81,11 +81,11 @@ test("costs section is positioned between analytics and monitoring", () => {
 
   assert.ok(
     analyticsIdx < costsIdx,
-    `analytics (${analyticsIdx}) must come before costs (${costsIdx})`
+    `analytics (${analyticsIdx}) must come before costs (${costsIdx})`,
   );
   assert.ok(
     costsIdx < monitoringIdx,
-    `costs (${costsIdx}) must come before monitoring (${monitoringIdx})`
+    `costs (${costsIdx}) must come before monitoring (${monitoringIdx})`,
   );
 });
 

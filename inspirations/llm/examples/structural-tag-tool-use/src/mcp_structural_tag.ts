@@ -79,9 +79,7 @@ function appendLog(text: string) {
   console.log(text);
 }
 
-function parseToolCallBlocks(
-  content: string | null | undefined,
-): ToolInvocation[] {
+function parseToolCallBlocks(content: string | null | undefined): ToolInvocation[] {
   if (!content) {
     throw new Error("Assistant reply did not contain a tool call.");
   }
@@ -128,10 +126,10 @@ async function main() {
   try {
     appendLog("Loading model...");
     const selectedModel = "Llama-3.2-1B-Instruct-q4f16_1-MLC";
-    const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-      selectedModel,
-      { initProgressCallback: initProgressCallback, logLevel: "INFO" },
-    );
+    const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+      initProgressCallback: initProgressCallback,
+      logLevel: "INFO",
+    });
 
     const systemPrompt =
       "You are a MCP assistant. " +
@@ -196,9 +194,7 @@ async function main() {
         tool_call_id: id,
         content: JSON.stringify(toolResult),
       });
-      appendLog(
-        `Tool response for ${call.name}:\n${JSON.stringify(toolResult, null, 2)}`,
-      );
+      appendLog(`Tool response for ${call.name}:\n${JSON.stringify(toolResult, null, 2)}`);
     }
 
     messages.push({

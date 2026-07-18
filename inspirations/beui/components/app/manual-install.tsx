@@ -45,9 +45,7 @@ export async function ManualInstall({
 
       {deps.length > 0 ? (
         <section>
-          <h3 className="text-sm font-semibold text-foreground">
-            Install dependencies
-          </h3>
+          <h3 className="text-sm font-semibold text-foreground">Install dependencies</h3>
           <div className="mt-3">
             <CodeBlock code={`npm i ${deps.join(" ")}`} lang="bash" />
           </div>
@@ -68,9 +66,7 @@ export async function ManualInstall({
       ) : null}
 
       <section>
-        <h3 className="text-sm font-semibold text-foreground">
-          Copy the source code
-        </h3>
+        <h3 className="text-sm font-semibold text-foreground">Copy the source code</h3>
         <div className="mt-3 flex flex-col gap-4">
           {sourceFiles.map((file) => (
             <CodeBlock key={file.path} code={file.content} filename={file.path} />

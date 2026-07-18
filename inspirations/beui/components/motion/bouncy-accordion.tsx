@@ -1,19 +1,8 @@
 "use client";
 
-import {
-  motion,
-  useReducedMotion,
-  type Transition,
-} from "motion/react";
+import { motion, useReducedMotion, type Transition } from "motion/react";
 import { ChevronDown } from "lucide-react";
-import {
-  useCallback,
-  useId,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { useCallback, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { EASE_OUT } from "@/lib/ease";
 import { cn } from "@/lib/utils";
 
@@ -78,7 +67,6 @@ const CHEVRON_TRANSITION: Transition = {
   duration: 0.42,
   bounce: 0.28,
 };
-
 
 function useControllableAccordionValue({
   value,
@@ -228,11 +216,7 @@ function BouncyAccordionRow({
             height: open && item.description ? contentHeight : 0,
           }}
           transition={
-            reduce
-              ? { duration: 0 }
-              : open
-                ? CONTENT_OPEN_TRANSITION
-                : CONTENT_CLOSE_TRANSITION
+            reduce ? { duration: 0 } : open ? CONTENT_OPEN_TRANSITION : CONTENT_CLOSE_TRANSITION
           }
           className={cn("overflow-hidden", classNames?.content)}
         >
@@ -245,10 +229,7 @@ function BouncyAccordionRow({
             className="px-5 pb-5"
           >
             <div
-              className={cn(
-                "text-[15px] leading-6 text-muted-foreground",
-                classNames?.description,
-              )}
+              className={cn("text-[15px] leading-6 text-muted-foreground", classNames?.description)}
             >
               {item.description}
             </div>

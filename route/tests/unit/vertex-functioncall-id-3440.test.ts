@@ -116,7 +116,7 @@ test("#3440 OpenAI->Gemini: public gemini provider PRESERVES id (Gemini 3+ signa
   assert.equal(
     findFunctionCall(result)?.id,
     "call_weather_1",
-    "functionCall.id must be preserved for the public Gemini API"
+    "functionCall.id must be preserved for the public Gemini API",
   );
 });
 
@@ -129,11 +129,15 @@ test("#3440 Claude->Gemini: vertex provider omits id from functionCall and funct
   const result = claudeToGeminiRequest("gemini-2.5-pro", CLAUDE_TOOL_BODY, false, {
     _provider: "vertex",
   });
-  assert.equal(findFunctionCall(result)?.id, undefined, "functionCall.id must be omitted for Vertex");
+  assert.equal(
+    findFunctionCall(result)?.id,
+    undefined,
+    "functionCall.id must be omitted for Vertex",
+  );
   assert.equal(
     findFunctionResponse(result)?.id,
     undefined,
-    "functionResponse.id must be omitted for Vertex"
+    "functionResponse.id must be omitted for Vertex",
   );
 });
 

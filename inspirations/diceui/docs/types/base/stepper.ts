@@ -1,11 +1,5 @@
 import type * as React from "react";
-import type {
-  ButtonProps,
-  Direction,
-  EmptyProps,
-  Orientation,
-  RenderProps,
-} from "@/types";
+import type { ButtonProps, Direction, EmptyProps, Orientation, RenderProps } from "@/types";
 
 export interface StepperProps extends RenderProps {
   /**
@@ -61,10 +55,7 @@ export interface StepperProps extends RenderProps {
    * }}
    * ```
    */
-  onValidate?: (
-    value: string,
-    direction: "next" | "prev",
-  ) => boolean | Promise<boolean>;
+  onValidate?: (value: string, direction: "next" | "prev") => boolean | Promise<boolean>;
 
   /**
    * Event handler called when a step is added to the stepper.

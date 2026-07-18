@@ -49,7 +49,7 @@ function assertCostTelemetryHeaders(response: Response) {
   assert.match(
     cost as string,
     /^\d+\.\d{10}$/,
-    `cost header must be a fixed-10-decimal number, got: ${cost}`
+    `cost header must be a fixed-10-decimal number, got: ${cost}`,
   );
 
   const version = response.headers.get(OMNIROUTE_RESPONSE_HEADERS.version);
@@ -79,7 +79,7 @@ test("v1 images generation success Response carries cost telemetry headers", asy
         model: "sdwebui/stable-diffusion-v1-5",
         prompt: "telemetry image",
       }),
-    })
+    }),
   );
 
   assertCostTelemetryHeaders(response);
@@ -104,7 +104,7 @@ test("v1 videos generation success Response carries cost telemetry headers", asy
             outputs: { 7: { gifs: [{ filename: "clip.webp", subfolder: "out", type: "output" }] } },
           },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
     if (stringUrl.includes("/view?")) {
@@ -122,7 +122,7 @@ test("v1 videos generation success Response carries cost telemetry headers", asy
         prompt: "telemetry video",
         duration: 6,
       }),
-    })
+    }),
   );
 
   assertCostTelemetryHeaders(response);
@@ -142,10 +142,12 @@ test("v1 music generation success Response carries cost telemetry headers", asyn
       return new Response(
         JSON.stringify({
           "music-cost-1": {
-            outputs: { 7: { audio: [{ filename: "track.wav", subfolder: "out", type: "output" }] } },
+            outputs: {
+              7: { audio: [{ filename: "track.wav", subfolder: "out", type: "output" }] },
+            },
           },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
     if (stringUrl.includes("/view?")) {
@@ -163,7 +165,7 @@ test("v1 music generation success Response carries cost telemetry headers", asyn
         prompt: "telemetry music",
         duration: 18,
       }),
-    })
+    }),
   );
 
   assertCostTelemetryHeaders(response);

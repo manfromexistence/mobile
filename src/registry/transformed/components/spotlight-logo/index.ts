@@ -1,1 +1,1 @@
-export * from "./spotlight-logo"
+export * from "./spotlight-logo";

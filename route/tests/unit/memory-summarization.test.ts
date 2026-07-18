@@ -36,7 +36,7 @@ function insertMemory({ id, apiKeyId = "key-a", sessionId = "session-a", content
   db.prepare(
     `INSERT INTO memories (
       id, api_key_id, session_id, type, key, content, metadata, created_at, updated_at, expires_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     apiKeyId,
@@ -47,7 +47,7 @@ function insertMemory({ id, apiKeyId = "key-a", sessionId = "session-a", content
     "{}",
     createdAt,
     createdAt,
-    null
+    null,
   );
 }
 

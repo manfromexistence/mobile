@@ -14,11 +14,11 @@
 }
 
 .scroll-list::-webkit-scrollbar-track {
-  background: #120F17;
+  background: #120f17;
 }
 
 .scroll-list::-webkit-scrollbar-thumb {
-  background: #2F293A;
+  background: #2f293a;
   border-radius: 4px;
 }
 
@@ -33,13 +33,13 @@
 
 .item {
   padding: 16px;
-  background-color: #2F293A;
+  background-color: #2f293a;
   border-radius: 8px;
   margin-bottom: 1rem;
 }
 
 .item.selected {
-  background-color: #2F293A;
+  background-color: #2f293a;
 }
 
 .item-text {
@@ -53,7 +53,7 @@
   left: 0;
   right: 0;
   height: 50px;
-  background: linear-gradient(to bottom, #120F17, transparent);
+  background: linear-gradient(to bottom, #120f17, transparent);
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
@@ -64,7 +64,7 @@
   left: 0;
   right: 0;
   height: 100px;
-  background: linear-gradient(to top, #120F17, transparent);
+  background: linear-gradient(to top, #120f17, transparent);
   pointer-events: none;
   transition: opacity 0.3s ease;
 }

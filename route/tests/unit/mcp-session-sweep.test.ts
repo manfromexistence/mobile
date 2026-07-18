@@ -43,7 +43,7 @@ test("StreamableSession type includes lastActivityAt field", () => {
   assert.ok(typeBlock, "StreamableSession type definition must exist");
   assert.ok(
     typeBlock[1].includes("lastActivityAt"),
-    "StreamableSession must have lastActivityAt field"
+    "StreamableSession must have lastActivityAt field",
   );
 });
 
@@ -51,12 +51,12 @@ test("StreamableSession type includes lastActivityAt field", () => {
 
 test("sweep interval compares against lastActivityAt, not startedAt", () => {
   const sweepBlock = src.match(
-    /_mcpSessionSweep\s*=\s*setInterval\(\(\)\s*=>\s*\{([\s\S]*?)\},\s*60_000\)/
+    /_mcpSessionSweep\s*=\s*setInterval\(\(\)\s*=>\s*\{([\s\S]*?)\},\s*60_000\)/,
   );
   assert.ok(sweepBlock, "sweep interval block must exist");
   assert.ok(
     sweepBlock[1].includes("session.lastActivityAt"),
-    "sweep must check session.lastActivityAt"
+    "sweep must check session.lastActivityAt",
   );
   assert.ok(!sweepBlock[1].includes("session.startedAt"), "sweep must NOT check session.startedAt");
 });
@@ -74,7 +74,7 @@ test("createStreamableSession initializes lastActivityAt to Date.now()", () => {
   assert.ok(fnBlock, "createStreamableSession function must exist");
   assert.ok(
     fnBlock[0].includes("lastActivityAt: Date.now()"),
-    "createStreamableSession must set lastActivityAt: Date.now()"
+    "createStreamableSession must set lastActivityAt: Date.now()",
   );
 });
 
@@ -82,12 +82,12 @@ test("createStreamableSession initializes lastActivityAt to Date.now()", () => {
 
 test("handleStreamableRequest updates lastActivityAt on every request", () => {
   const fnBlock = src.match(
-    /async function handleStreamableRequest[\s\S]*?(?=\n(?:async )?function |\nexport )/
+    /async function handleStreamableRequest[\s\S]*?(?=\n(?:async )?function |\nexport )/,
   );
   assert.ok(fnBlock, "handleStreamableRequest function must exist");
   assert.ok(
     fnBlock[0].includes("session.lastActivityAt = Date.now()"),
-    "handleStreamableRequest must update session.lastActivityAt on each request"
+    "handleStreamableRequest must update session.lastActivityAt on each request",
   );
 });
 
@@ -134,7 +134,7 @@ test("shutdownMcpHttp can be called multiple times without error", () => {
 test("sweep interval runs every 60 seconds", () => {
   assert.ok(
     src.includes("}, 60_000)") || src.includes("}, 60000)"),
-    "sweep interval must be 60_000ms (60 seconds)"
+    "sweep interval must be 60_000ms (60 seconds)",
   );
 });
 
@@ -143,7 +143,7 @@ test("sweep interval runs every 60 seconds", () => {
 test("sweep timer is unref'd to avoid preventing process exit", () => {
   assert.ok(
     src.includes("_mcpSessionSweep") && src.includes(".unref?.()"),
-    "sweep timer must be unref'd"
+    "sweep timer must be unref'd",
   );
 });
 
@@ -151,12 +151,12 @@ test("sweep timer is unref'd to avoid preventing process exit", () => {
 
 test("sweep closes idle sessions via closeStreamableSession", () => {
   const sweepBlock = src.match(
-    /_mcpSessionSweep\s*=\s*setInterval\(\(\)\s*=>\s*\{([\s\S]*?)\},\s*60_000\)/
+    /_mcpSessionSweep\s*=\s*setInterval\(\(\)\s*=>\s*\{([\s\S]*?)\},\s*60_000\)/,
   );
   assert.ok(sweepBlock, "sweep block must exist");
   assert.ok(
     sweepBlock[1].includes("closeStreamableSession(sessionId)"),
-    "sweep must call closeStreamableSession for idle sessions"
+    "sweep must call closeStreamableSession for idle sessions",
   );
 });
 
@@ -403,11 +403,11 @@ test("handleMcpStreamableHTTP auto-recovers when stale session id is sent with i
   assert.notEqual(
     recoveryRes.status,
     404,
-    "Stale session + initialize must NOT return 404 — server should auto-recover"
+    "Stale session + initialize must NOT return 404 — server should auto-recover",
   );
   assert.ok(
     recoveryRes.status >= 200 && recoveryRes.status < 300,
-    `Expected 2xx response on auto-recovery, got ${recoveryRes.status}`
+    `Expected 2xx response on auto-recovery, got ${recoveryRes.status}`,
   );
 
   const newSessionId = recoveryRes.headers.get("mcp-session-id");
@@ -415,7 +415,7 @@ test("handleMcpStreamableHTTP auto-recovers when stale session id is sent with i
   assert.equal(
     mod.isMcpHttpActive(),
     true,
-    "Server must have an active session after auto-recovery"
+    "Server must have an active session after auto-recovery",
   );
 
   mod.shutdownMcpHttp();

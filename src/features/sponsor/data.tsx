@@ -1,4 +1,4 @@
-import type { Sponsor } from "./types"
+import type { Sponsor } from "./types";
 
 export const SPONSORS: Sponsor[] = [
   {
@@ -149,4 +149,4 @@ export const SPONSORS: Sponsor[] = [
     ),
     tier: "silver",
   },
-]
+];

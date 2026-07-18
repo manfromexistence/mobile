@@ -1,11 +1,7 @@
 {
   "name": "mask-input-card-information-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "card",
-    "label",
-    "mask-input"
-  ],
+  "registryDependencies": ["card", "label", "mask-input"],
   "files": [
     {
       "path": "examples/mask-input-card-information-demo.tsx",

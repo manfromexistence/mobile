@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 import {
   Testimonial,
   TestimonialAuthor,
@@ -8,7 +8,7 @@ import {
   TestimonialAvatarImg,
   TestimonialAvatarRing,
   TestimonialQuote,
-} from "@/registry/components/testimonial"
+} from "@/registry/components/testimonial";
 
 export function DocTestimonial2({
   className,
@@ -18,20 +18,15 @@ export function DocTestimonial2({
   url,
   quote,
 }: {
-  className?: string
-  authorAvatar: string
-  authorName: string
-  authorTagline: string
-  url: string
-  quote: string
+  className?: string;
+  authorAvatar: string;
+  authorName: string;
+  authorTagline: string;
+  url: string;
+  quote: string;
 }) {
   return (
-    <Testimonial
-      className={cn(
-        "not-prose relative my-[2.5em] items-center gap-3",
-        className
-      )}
-    >
+    <Testimonial className={cn("not-prose relative my-[2.5em] items-center gap-3", className)}>
       <TestimonialQuote className="p-0 font-serif text-lg">
         <p>
           <span
@@ -41,10 +36,7 @@ export function DocTestimonial2({
             “
           </span>
           {quote}
-          <span
-            className="inline-block text-muted-foreground/80 select-none"
-            aria-hidden="true"
-          >
+          <span className="inline-block text-muted-foreground/80 select-none" aria-hidden="true">
             ”
           </span>
         </p>
@@ -65,9 +57,7 @@ export function DocTestimonial2({
         <TestimonialAuthorTagline>{authorTagline}</TestimonialAuthorTagline>
       </TestimonialAuthor>
 
-      <p className="mx-auto text-center font-mono text-sm text-muted-foreground opacity-25">
-        ***
-      </p>
+      <p className="mx-auto text-center font-mono text-sm text-muted-foreground opacity-25">***</p>
     </Testimonial>
-  )
+  );
 }

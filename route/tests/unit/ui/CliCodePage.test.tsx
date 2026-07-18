@@ -148,8 +148,9 @@ globalThis.fetch = vi.fn().mockImplementation((url: string, init?: RequestInit) 
 
 // ── Import after mocks ────────────────────────────────────────────────────────
 
-const { default: CliCodePageClient } =
-  await import("@/app/(dashboard)/dashboard/cli-code/CliCodePageClient");
+const { default: CliCodePageClient } = await import(
+  "@/app/(dashboard)/dashboard/cli-code/CliCodePageClient"
+);
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -271,10 +272,10 @@ describe("CliCodePageClient", () => {
     expect(container.textContent).not.toContain("HTTP");
 
     const codexToggle = container.querySelector(
-      'button[role="switch"][aria-label="Codex profiles"]'
+      'button[role="switch"][aria-label="Codex profiles"]',
     );
     const claudeToggle = container.querySelector(
-      'button[role="switch"][aria-label="Claude Code profiles"]'
+      'button[role="switch"][aria-label="Claude Code profiles"]',
     );
 
     expect(codexToggle?.getAttribute("aria-checked")).toBe("true");
@@ -285,7 +286,7 @@ describe("CliCodePageClient", () => {
   it("2c. persists CLI profile auto-sync toggle changes", async () => {
     const container = await renderPage();
     const codexToggle = container.querySelector(
-      'button[role="switch"][aria-label="Codex profiles"]'
+      'button[role="switch"][aria-label="Codex profiles"]',
     ) as HTMLButtonElement;
 
     expect(codexToggle).not.toBeNull();
@@ -311,7 +312,7 @@ describe("CliCodePageClient", () => {
 
     // All code tools initially visible
     expect(container.querySelectorAll('[data-testid="cli-tool-card"]').length).toBe(
-      EXPECTED_CODE_COUNT
+      EXPECTED_CODE_COUNT,
     );
 
     const input = container.querySelector('[data-testid="search-input"]') as HTMLInputElement;
@@ -332,7 +333,7 @@ describe("CliCodePageClient", () => {
         input.dispatchEvent(
           Object.assign(new Event("change", { bubbles: true }), {
             target: input,
-          })
+          }),
         );
       }
       void syntheticEvent;
@@ -347,7 +348,7 @@ describe("CliCodePageClient", () => {
       root2.render(
         <TestWrapper search="claude">
           <CliCodePageClient machineId="test" />
-        </TestWrapper>
+        </TestWrapper>,
       );
     });
 
@@ -363,7 +364,7 @@ describe("CliCodePageClient", () => {
       // Simulate React change event
       const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        "value"
+        "value",
       )?.set;
       nativeInputValueSetter?.call(input, "claude code");
       input.dispatchEvent(new Event("change", { bubbles: true }));

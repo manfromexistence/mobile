@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  useEffect,
-  useRef,
-  useState,
-  type ComponentProps,
-  type ReactNode,
-} from "react";
+import { useEffect, useRef, useState, type ComponentProps, type ReactNode } from "react";
 import { DocPage, DocSection } from "@/lib/docs/DocPage";
 import { fontWeights } from "@/registry/default/lib/font-weight";
 import { useShape } from "@/registry/default/lib/shape-context";
@@ -15,10 +9,7 @@ import { Elevated } from "@/lib/elevated";
 import { Dropdown, useDropdown } from "@/registry/default/dropdown";
 import { MenuItem } from "@/registry/default/menu-item";
 import { Slider } from "@/registry/radix/slider";
-import {
-  ColorPicker,
-  ColorPickerPortalContainer,
-} from "@/registry/default/color-picker";
+import { ColorPicker, ColorPickerPortalContainer } from "@/registry/default/color-picker";
 import { useIcon, type IconComponent } from "@/registry/default/lib/icon-context";
 import { useThemeContext } from "@/registry/default/lib/theme-context";
 import { surfaceClasses } from "@/registry/default/lib/surface-classes";
@@ -170,13 +161,8 @@ function SurfaceChip({ level }: { level: number }) {
   const shape = useShape();
   return (
     <div className="flex flex-col items-center gap-2 shrink-0">
-      <div
-        className={cn("w-14 h-14", shape.container, surfaceClasses(level))}
-        aria-hidden
-      />
-      <span className="text-[11px] text-muted-foreground font-mono">
-        {level}
-      </span>
+      <div className={cn("w-14 h-14", shape.container, surfaceClasses(level))} aria-hidden />
+      <span className="text-[11px] text-muted-foreground font-mono">{level}</span>
     </div>
   );
 }
@@ -240,7 +226,7 @@ function StaticRoleItem({
       className={cn(
         "group relative flex items-start gap-3 px-3 py-2.5 cursor-pointer transition-colors duration-80",
         shape.item,
-        checked ? "bg-active" : "hover:bg-hover"
+        checked ? "bg-active" : "hover:bg-hover",
       )}
     >
       <Icon
@@ -248,37 +234,25 @@ function StaticRoleItem({
         strokeWidth={checked ? 2 : 1.5}
         className={cn(
           "shrink-0 mt-0.5 transition-colors duration-80",
-          checked
-            ? "text-foreground"
-            : "text-muted-foreground group-hover:text-foreground"
+          checked ? "text-foreground" : "text-muted-foreground group-hover:text-foreground",
         )}
       />
       <div className="flex flex-col gap-0.5 min-w-0 flex-1">
         <span
           className={cn(
             "text-[13px] transition-colors duration-80",
-            checked
-              ? "text-foreground"
-              : "text-muted-foreground group-hover:text-foreground"
+            checked ? "text-foreground" : "text-muted-foreground group-hover:text-foreground",
           )}
           style={{
-            fontVariationSettings: checked
-              ? fontWeights.semibold
-              : fontWeights.medium,
+            fontVariationSettings: checked ? fontWeights.semibold : fontWeights.medium,
           }}
         >
           {label}
         </span>
-        <span className="text-[12px] text-muted-foreground leading-snug">
-          {description}
-        </span>
+        <span className="text-[12px] text-muted-foreground leading-snug">{description}</span>
       </div>
       {checked && (
-        <CheckIcon
-          size={16}
-          strokeWidth={2}
-          className="text-foreground shrink-0 mt-0.5"
-        />
+        <CheckIcon size={16} strokeWidth={2} className="text-foreground shrink-0 mt-0.5" />
       )}
     </div>
   );
@@ -362,7 +336,7 @@ const ARROW_VALUES: Record<ArrowKey, ArrowDial> = {
 function buildArrowPath(
   start: { x: number; y: number },
   end: { x: number; y: number },
-  dial: { x: number; y: number; rotation: number; curve: number }
+  dial: { x: number; y: number; rotation: number; curve: number },
 ) {
   const mx = (start.x + end.x) / 2;
   const my = (start.y + end.y) / 2;
@@ -436,7 +410,7 @@ function ProblemAnnotations() {
           key={a.title}
           className={cn(
             "absolute flex flex-col gap-0.5",
-            a.label.align === "right" ? "items-end text-right" : "items-start"
+            a.label.align === "right" ? "items-end text-right" : "items-start",
           )}
           style={{
             left: a.label.left + ARROW_VALUES[a.key].labelX,
@@ -459,10 +433,7 @@ function ProblemAnnotations() {
               className="w-2.5 h-2.5 rounded-[3px] border border-white/15 shrink-0"
               style={{ backgroundColor: a.swatch }}
             />
-            <span
-              className="text-[11px] font-mono leading-tight"
-              style={{ color: a.color }}
-            >
+            <span className="text-[11px] font-mono leading-tight" style={{ color: a.color }}>
               {a.hex}
             </span>
           </span>
@@ -492,7 +463,7 @@ function ProblemDemo() {
             <div
               className={cn(
                 "absolute left-1/2 -translate-x-1/2 top-8 w-[320px] rounded-2xl p-6 flex flex-col gap-5",
-                surfaceClasses(5)
+                surfaceClasses(5),
               )}
             >
               <div className="flex items-start justify-between gap-3">
@@ -560,7 +531,7 @@ function ProblemDemo() {
                 <div
                   className={cn(
                     "-mt-px rounded-2xl p-1 flex flex-col gap-0.5",
-                    surfaceClasses(5, 3)
+                    surfaceClasses(5, 3),
                   )}
                 >
                   <StaticRoleItem
@@ -721,16 +692,13 @@ function ElevatedDemo() {
         <div
           className={cn(
             "flex flex-col gap-3 p-5 rounded-2xl w-full max-w-[480px] mx-auto",
-            surfaceClasses(1)
+            surfaceClasses(1),
           )}
         >
           <span className="text-[12px] text-muted-foreground">Page</span>
           <Elevated offset={2} className="rounded-2xl p-5 flex flex-col gap-3">
             <span className="text-[12px] text-muted-foreground">Card</span>
-            <Elevated
-              offset={2}
-              className="rounded-2xl p-5 flex flex-col gap-3"
-            >
+            <Elevated offset={2} className="rounded-2xl p-5 flex flex-col gap-3">
               <span className="text-[12px] text-muted-foreground">Popover</span>
               <Elevated offset={2} className="rounded-2xl p-5">
                 <span className="text-[12px] text-muted-foreground">Menu</span>
@@ -779,10 +747,7 @@ function buildStack(low: number, high: number): ReactNode {
   }
   return (
     <SurfaceProvider value={low}>
-      <div
-        data-surface
-        className={cn(boxClass, surfaceClasses(low), node === null && "size-24")}
-      >
+      <div data-surface className={cn(boxClass, surfaceClasses(low), node === null && "size-24")}>
         <span className={labelClass}>surface-{low}</span>
         {node}
       </div>
@@ -878,7 +843,7 @@ function RoleItem({
       tabIndex={index === (checkedIndex ?? 0) ? 0 : -1}
       className={cn(
         "relative z-10 flex items-start gap-3 px-3 py-2.5 cursor-pointer outline-none transition-colors duration-80",
-        shape.item
+        shape.item,
       )}
     >
       <Icon
@@ -886,33 +851,25 @@ function RoleItem({
         strokeWidth={highlighted ? 2 : 1.5}
         className={cn(
           "shrink-0 mt-0.5 transition-[color,stroke-width] duration-80",
-          highlighted ? "text-foreground" : "text-muted-foreground"
+          highlighted ? "text-foreground" : "text-muted-foreground",
         )}
       />
       <div className="flex flex-col gap-0.5 min-w-0 flex-1">
         <span
           className={cn(
             "text-[13px] transition-colors duration-80",
-            highlighted ? "text-foreground" : "text-muted-foreground"
+            highlighted ? "text-foreground" : "text-muted-foreground",
           )}
           style={{
-            fontVariationSettings: checked
-              ? fontWeights.semibold
-              : fontWeights.medium,
+            fontVariationSettings: checked ? fontWeights.semibold : fontWeights.medium,
           }}
         >
           {label}
         </span>
-        <span className="text-[12px] text-muted-foreground leading-snug">
-          {description}
-        </span>
+        <span className="text-[12px] text-muted-foreground leading-snug">{description}</span>
       </div>
       {checked && (
-        <CheckIcon
-          size={16}
-          strokeWidth={2}
-          className="text-foreground shrink-0 mt-0.5"
-        />
+        <CheckIcon size={16} strokeWidth={2} className="text-foreground shrink-0 mt-0.5" />
       )}
     </div>
   );
@@ -1012,11 +969,7 @@ function SolutionAnnotations({
     labelW: dLabelW,
     left: dlg.left - dLabelW - 16 + SOLUTION_VALUES.dialog.labelX,
     top: dEnd.y + 6 + SOLUTION_VALUES.dialog.labelY,
-    path: buildArrowPath(
-      { x: dlg.left - 16, y: dEnd.y + 26 },
-      dEnd,
-      SOLUTION_VALUES.dialog
-    ),
+    path: buildArrowPath({ x: dlg.left - 16, y: dEnd.y + 26 }, dEnd, SOLUTION_VALUES.dialog),
   };
 
   // Role dropdown callout — label in the right margin, arrow into the menu.
@@ -1033,7 +986,7 @@ function SolutionAnnotations({
     path: buildArrowPath(
       { x: geo.w - mLabelW - 4, y: mEnd.y + 24 },
       mEnd,
-      SOLUTION_VALUES.dropdown
+      SOLUTION_VALUES.dropdown,
     ),
   };
 
@@ -1103,10 +1056,7 @@ function SolutionAnnotations({
               className="w-2.5 h-2.5 rounded-[3px] border border-white/15 shrink-0"
               style={{ backgroundColor: c.hex }}
             />
-            <span
-              className="text-[11px] font-mono leading-tight"
-              style={{ color }}
-            >
+            <span className="text-[11px] font-mono leading-tight" style={{ color }}>
               {c.hex}
             </span>
           </span>
@@ -1137,7 +1087,7 @@ function InviteDialogDemo() {
             ref={dialogRef}
             className={cn(
               "relative w-full max-w-[320px] rounded-2xl p-6 flex flex-col gap-5",
-              surfaceClasses(5)
+              surfaceClasses(5),
             )}
           >
             <div className="flex items-start justify-between gap-3">
@@ -1298,25 +1248,21 @@ export default function SurfacesDoc() {
       installSlug="elevated"
       description={
         <>
-          Eight surface levels that nest. Components read their substrate from
-          context and lift relative to it, so popovers, dropdowns, and dialogs
-          stay visible at any depth — in both{" "}
-          <UseLightLink>light</UseLightLink> and{" "}
-          <UseDarkLink>dark</UseDarkLink> mode.
+          Eight surface levels that nest. Components read their substrate from context and lift
+          relative to it, so popovers, dropdowns, and dialogs stay visible at any depth — in both{" "}
+          <UseLightLink>light</UseLightLink> and <UseDarkLink>dark</UseDarkLink> mode.
         </>
       }
     >
       <DocSection title="The problem">
         <div className="flex flex-col gap-3 text-[13px] text-muted-foreground leading-relaxed">
           <p>
-            In light mode, we use shadow behind white surfaces to signify
-            elevation. In dark mode, we use progressively lighter backgrounds
-            instead.
+            In light mode, we use shadow behind white surfaces to signify elevation. In dark mode,
+            we use progressively lighter backgrounds instead.
           </p>
           <p>
-            But traditional components have a fixed background — a dropdown
-            often ends up the same color as the dialog it sits in. That makes
-            your interface look like this:
+            But traditional components have a fixed background — a dropdown often ends up the same
+            color as the dialog it sits in. That makes your interface look like this:
           </p>
         </div>
         <ProblemDemo />
@@ -1334,9 +1280,8 @@ export default function SurfacesDoc() {
           Tokens
         </h3>
         <p className="text-[13px] text-muted-foreground leading-relaxed">
-          Eight bg/shadow pairs. Light mode flattens to white after step 2
-          (shadow alone carries elevation). Dark mode keeps adding white-opacity
-          plus a layered shadow recipe.
+          Eight bg/shadow pairs. Light mode flattens to white after step 2 (shadow alone carries
+          elevation). Dark mode keeps adding white-opacity plus a layered shadow recipe.
         </p>
         <TokensDemo />
 
@@ -1347,9 +1292,9 @@ export default function SurfacesDoc() {
           Substrate
         </h3>
         <p className="text-[13px] text-muted-foreground leading-relaxed">
-          Each container knows its own level and tells whatever opens inside.
-          A popover on the page and the same popover inside a dialog both
-          end up at the right depth, without anything passed between them.
+          Each container knows its own level and tells whatever opens inside. A popover on the page
+          and the same popover inside a dialog both end up at the right depth, without anything
+          passed between them.
         </p>
         <SubstrateDemo />
 
@@ -1360,9 +1305,8 @@ export default function SurfacesDoc() {
           Elevated
         </h3>
         <p className="text-[13px] text-muted-foreground leading-relaxed">
-          Wrap a panel and the background settles at the level it belongs to.
-          The shadow doesn&apos;t change, so a popover still reads as a popover
-          three layers down.
+          Wrap a panel and the background settles at the level it belongs to. The shadow
+          doesn&apos;t change, so a popover still reads as a popover three layers down.
         </p>
         <ElevatedDemo />
 
@@ -1373,9 +1317,8 @@ export default function SurfacesDoc() {
           Move through levels
         </h3>
         <p className="text-[13px] text-muted-foreground leading-relaxed">
-          Drag both knobs to choose which slice of the ladder to nest. Each
-          layer lifts a single step off the one it sits in — whether you span
-          two levels or all eight.
+          Drag both knobs to choose which slice of the ladder to nest. Each layer lifts a single
+          step off the one it sits in — whether you span two levels or all eight.
         </p>
         <ElevationStackDemo />
       </DocSection>
@@ -1388,8 +1331,7 @@ export default function SurfacesDoc() {
           Invite dialog
         </h3>
         <p className="text-[13px] text-muted-foreground leading-relaxed">
-          Dialog at surface 5, role picker at surface 7 — no props passed
-          between them.
+          Dialog at surface 5, role picker at surface 7 — no props passed between them.
         </p>
         <InviteDialogDemo />
 

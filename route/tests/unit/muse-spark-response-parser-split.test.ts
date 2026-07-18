@@ -26,8 +26,9 @@ test("host imports the parser back from the leaf", () => {
 });
 
 test("parseMetaAiResponseText tolerates empty input", async () => {
-  const { parseMetaAiResponseText } =
-    await import("../../open-sse/executors/muse-spark-web/response-parser.ts");
+  const { parseMetaAiResponseText } = await import(
+    "../../open-sse/executors/muse-spark-web/response-parser.ts"
+  );
   const out = parseMetaAiResponseText("", false);
   assert.equal(typeof out, "object");
 });

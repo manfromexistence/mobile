@@ -1,19 +1,19 @@
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box, Text } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box, Text } from "@chakra-ui/react";
+import { useMemo } from "react";
 
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
-import Customize from '../../components/common/Preview/Customize';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import CodeExample from '../../components/code/CodeExample';
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
+import Customize from "../../components/common/Preview/Customize";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import CodeExample from "../../components/code/CodeExample";
 
-import PropTable from '../../components/common/Preview/PropTable';
-import logo from '../../assets/logos/react-bits-sticker.png';
-import Dependencies from '../../components/code/Dependencies';
+import PropTable from "../../components/common/Preview/PropTable";
+import logo from "../../assets/logos/react-bits-sticker.png";
+import Dependencies from "../../components/code/Dependencies";
 
-import StickerPeel from '../../content/Animations/StickerPeel/StickerPeel';
-import { stickerPeel } from '../../constants/code/Animations/stickerPeelCode';
+import StickerPeel from "../../content/Animations/StickerPeel/StickerPeel";
+import { stickerPeel } from "../../constants/code/Animations/stickerPeelCode";
 
 const DEFAULT_PROPS = {
   rotate: 0,
@@ -22,95 +22,107 @@ const DEFAULT_PROPS = {
   peelBackActivePct: 40,
   lightingIntensity: 0.1,
   shadowIntensity: 0.5,
-  peelDirection: 0
+  peelDirection: 0,
 };
 
 const StickerPeelDemo = () => {
   const { props, updateProp, resetProps, hasChanges } = useComponentProps(DEFAULT_PROPS);
-  const { rotate, width, peelBackHoverPct, peelBackActivePct, lightingIntensity, shadowIntensity, peelDirection } =
-    props;
+  const {
+    rotate,
+    width,
+    peelBackHoverPct,
+    peelBackActivePct,
+    lightingIntensity,
+    shadowIntensity,
+    peelDirection,
+  } = props;
 
   const propData = useMemo(
     () => [
       {
-        name: 'imageSrc',
-        type: 'string',
-        default: 'required',
-        description: 'The source URL for the sticker image'
+        name: "imageSrc",
+        type: "string",
+        default: "required",
+        description: "The source URL for the sticker image",
       },
       {
-        name: 'rotate',
-        type: 'number',
-        default: '30',
-        description: 'The rotation angle in degrees when dragging'
+        name: "rotate",
+        type: "number",
+        default: "30",
+        description: "The rotation angle in degrees when dragging",
       },
       {
-        name: 'peelBackHoverPct',
-        type: 'number',
-        default: '30',
-        description: 'Percentage of peel effect on hover (0-100)'
+        name: "peelBackHoverPct",
+        type: "number",
+        default: "30",
+        description: "Percentage of peel effect on hover (0-100)",
       },
       {
-        name: 'peelBackActivePct',
-        type: 'number',
-        default: '40',
-        description: 'Percentage of peel effect when active/clicked (0-100)'
+        name: "peelBackActivePct",
+        type: "number",
+        default: "40",
+        description: "Percentage of peel effect when active/clicked (0-100)",
       },
       {
-        name: 'peelDirection',
-        type: 'number',
-        default: '0',
-        description: 'Direction of the peel effect in degrees (0-360)'
+        name: "peelDirection",
+        type: "number",
+        default: "0",
+        description: "Direction of the peel effect in degrees (0-360)",
       },
       {
-        name: 'peelEasing',
-        type: 'string',
-        default: 'power3.out',
-        description: 'GSAP easing function for peel animations'
+        name: "peelEasing",
+        type: "string",
+        default: "power3.out",
+        description: "GSAP easing function for peel animations",
       },
       {
-        name: 'peelHoverEasing',
-        type: 'string',
-        default: 'power2.out',
-        description: 'GSAP easing function for hover transitions'
+        name: "peelHoverEasing",
+        type: "string",
+        default: "power2.out",
+        description: "GSAP easing function for hover transitions",
       },
       {
-        name: 'width',
-        type: 'number',
-        default: '200',
-        description: 'Width of the sticker in pixels'
+        name: "width",
+        type: "number",
+        default: "200",
+        description: "Width of the sticker in pixels",
       },
       {
-        name: 'shadowIntensity',
-        type: 'number',
-        default: '0.6',
-        description: 'Intensity of the shadow effect (0-1)'
+        name: "shadowIntensity",
+        type: "number",
+        default: "0.6",
+        description: "Intensity of the shadow effect (0-1)",
       },
       {
-        name: 'lightingIntensity',
-        type: 'number',
-        default: '0.1',
-        description: 'Intensity of the lighting effect (0-1)'
+        name: "lightingIntensity",
+        type: "number",
+        default: "0.1",
+        description: "Intensity of the lighting effect (0-1)",
       },
       {
-        name: 'initialPosition',
-        type: 'string',
-        default: 'center',
+        name: "initialPosition",
+        type: "string",
+        default: "center",
         description:
-          "Initial position of the sticker ('center', 'top-left', 'top-right', 'bottom-left', 'bottom-right')"
+          "Initial position of the sticker ('center', 'top-left', 'top-right', 'bottom-left', 'bottom-right')",
       },
       {
-        name: 'className',
-        type: 'string',
-        default: '',
-        description: 'Custom class name for additional styling'
-      }
+        name: "className",
+        type: "string",
+        default: "",
+        description: "Custom class name for additional styling",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box
@@ -155,7 +167,7 @@ const StickerPeelDemo = () => {
               value={peelDirection}
               valueUnit="°"
               width={200}
-              onChange={v => updateProp('peelDirection', v)}
+              onChange={(v) => updateProp("peelDirection", v)}
             />
 
             <PreviewSlider
@@ -166,7 +178,7 @@ const StickerPeelDemo = () => {
               value={rotate}
               valueUnit="°"
               width={200}
-              onChange={v => updateProp('rotate', v)}
+              onChange={(v) => updateProp("rotate", v)}
             />
 
             <PreviewSlider
@@ -177,7 +189,7 @@ const StickerPeelDemo = () => {
               value={width}
               valueUnit="px"
               width={200}
-              onChange={v => updateProp('width', v)}
+              onChange={(v) => updateProp("width", v)}
             />
 
             <PreviewSlider
@@ -188,7 +200,7 @@ const StickerPeelDemo = () => {
               value={peelBackHoverPct}
               valueUnit="%"
               width={200}
-              onChange={v => updateProp('peelBackHoverPct', v)}
+              onChange={(v) => updateProp("peelBackHoverPct", v)}
             />
 
             <PreviewSlider
@@ -199,7 +211,7 @@ const StickerPeelDemo = () => {
               value={peelBackActivePct}
               valueUnit="%"
               width={200}
-              onChange={v => updateProp('peelBackActivePct', v)}
+              onChange={(v) => updateProp("peelBackActivePct", v)}
             />
 
             <PreviewSlider
@@ -210,7 +222,7 @@ const StickerPeelDemo = () => {
               value={lightingIntensity}
               valueUnit=""
               width={200}
-              onChange={v => updateProp('lightingIntensity', v)}
+              onChange={(v) => updateProp("lightingIntensity", v)}
             />
 
             <PreviewSlider
@@ -221,12 +233,12 @@ const StickerPeelDemo = () => {
               value={shadowIntensity}
               valueUnit=""
               width={200}
-              onChange={v => updateProp('shadowIntensity', v)}
+              onChange={(v) => updateProp("shadowIntensity", v)}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['gsap']} />
+          <Dependencies dependencyList={["gsap"]} />
         </PreviewTab>
 
         <CodeTab>

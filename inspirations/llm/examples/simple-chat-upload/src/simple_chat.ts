@@ -33,9 +33,7 @@ class ChatUI {
     // get the elements
     chatUI.uiChat = getElementAndCheck("chatui-chat");
     chatUI.uiChatInput = getElementAndCheck("chatui-input") as HTMLInputElement;
-    chatUI.uiChatInfoLabel = getElementAndCheck(
-      "chatui-info-label",
-    ) as HTMLLabelElement;
+    chatUI.uiChatInfoLabel = getElementAndCheck("chatui-info-label") as HTMLLabelElement;
     // register event handlers
     getElementAndCheck("chatui-reset-btn").onclick = () => {
       chatUI.onReset();
@@ -75,16 +73,13 @@ class ChatUI {
     ) {
       chatUI.appendMessage(
         "init",
-        "Your device seems to have " +
-          "limited resources, so we restrict the selectable models.",
+        "Your device seems to have " + "limited resources, so we restrict the selectable models.",
       );
       restrictModels = true;
     }
 
     // Populate modelSelector
-    const modelSelector = getElementAndCheck(
-      "chatui-select",
-    ) as HTMLSelectElement;
+    const modelSelector = getElementAndCheck("chatui-select") as HTMLSelectElement;
     for (let i = 0; i < chatUI.config.model_list.length; ++i) {
       const item = chatUI.config.model_list[i];
       const opt = document.createElement("option");
@@ -93,8 +88,7 @@ class ChatUI {
       opt.selected = i == 0;
       if (
         (restrictModels &&
-          (item.low_resource_required === undefined ||
-            !item.low_resource_required)) ||
+          (item.low_resource_required === undefined || !item.low_resource_required)) ||
         (item.buffer_size_required_bytes &&
           maxStorageBufferBindingSize < item.buffer_size_required_bytes)
       ) {
@@ -104,11 +98,7 @@ class ChatUI {
         opt.disabled = !params.has("bypassRestrictions");
         opt.selected = false;
       }
-      if (
-        !modelSelector.lastChild?.textContent?.startsWith(
-          opt.value.split("-")[0],
-        )
-      ) {
+      if (!modelSelector.lastChild?.textContent?.startsWith(opt.value.split("-")[0])) {
         modelSelector.appendChild(document.createElement("hr"));
       }
       modelSelector.appendChild(opt);
@@ -332,10 +322,7 @@ ChatUI.CreateAsync(engine);
 function getFileType(file: File) {
   if (file.name.includes("wasm")) {
     return "webllm/wasm";
-  } else if (
-    file.name.includes(".bin") ||
-    file.name.includes("ndarray-cache.json")
-  ) {
+  } else if (file.name.includes(".bin") || file.name.includes("ndarray-cache.json")) {
     return "webllm/model";
   } else if (file.name.includes("mlc-chat-config.json")) {
     return "webllm/config";
@@ -418,10 +405,7 @@ async function uploadFiles(): Promise<void> {
         });
         await cacheFile(file, response);
       };
-      if (
-        file.name.includes("mlc-chat-config.json") ||
-        file.name.includes("ndarray-cache.json")
-      ) {
+      if (file.name.includes("mlc-chat-config.json") || file.name.includes("ndarray-cache.json")) {
         reader.readAsText(file);
       } else {
         reader.readAsArrayBuffer(file);

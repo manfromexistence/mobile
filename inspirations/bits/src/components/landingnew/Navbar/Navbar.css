@@ -8,7 +8,7 @@
   flex-direction: column;
   align-items: center;
   padding: 0 24px;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   pointer-events: none;
 }
 
@@ -156,10 +156,18 @@
   align-items: center;
   border-radius: 10px;
   border: 5px solid rgba(255, 255, 255, 0.08);
-  background: linear-gradient(125deg, var(--pro-dark, #7c3aed), var(--pro-base, #a855f7), var(--pro-light, #d946ef), var(--pro-base, #a855f7), var(--pro-dark, #7c3aed));
+  background: linear-gradient(
+    125deg,
+    var(--pro-dark, #7c3aed),
+    var(--pro-base, #a855f7),
+    var(--pro-light, #d946ef),
+    var(--pro-base, #a855f7),
+    var(--pro-dark, #7c3aed)
+  );
   background-size: 400% 100%;
   animation: ln-pro-flow 3s ease infinite;
-  box-shadow: 0 0 16px rgba(var(--pro-glow, 168, 85, 247), 0.5), 0 0 40px rgba(var(--pro-glow, 168, 85, 247), 0.2);
+  box-shadow: 0 0 16px rgba(var(--pro-glow, 168, 85, 247), 0.5), 0 0 40px
+    rgba(var(--pro-glow, 168, 85, 247), 0.2);
   overflow: hidden;
   isolation: isolate;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
@@ -167,19 +175,25 @@
 }
 
 .ln-navbar-pro::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   z-index: 1;
   border-radius: 6px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.25) 50%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 100%
+  );
   background-size: 200% 100%;
   animation: ln-pro-shine 10s ease-in-out infinite;
   pointer-events: none;
 }
 
 .ln-navbar-pro:hover {
-  box-shadow: 0 0 24px rgba(var(--pro-glow, 168, 85, 247), 0.7), 0 0 56px rgba(var(--pro-glow, 168, 85, 247), 0.35);
+  box-shadow: 0 0 24px rgba(var(--pro-glow, 168, 85, 247), 0.7), 0 0 56px
+    rgba(var(--pro-glow, 168, 85, 247), 0.35);
 }
 
 .ln-navbar-pro:active {
@@ -187,14 +201,24 @@
 }
 
 @keyframes ln-pro-flow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @keyframes ln-pro-shine {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 .ln-navbar-github {
@@ -350,8 +374,12 @@
 }
 
 @keyframes ln-menu-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .ln-navbar-mobile-section {
@@ -408,7 +436,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 13px;
   font-weight: 500;
   text-transform: uppercase;
@@ -420,7 +448,7 @@
 }
 
 .ln-navbar-mobile-link::after {
-  content: '→';
+  content: "→";
   font-size: 16px;
   color: inherit;
   opacity: 0;
@@ -445,7 +473,12 @@
   padding: 14px;
   margin-bottom: 6px;
   border-radius: 12px;
-  background: linear-gradient(125deg, rgba(124, 58, 237, 0.35), rgba(168, 85, 247, 0.35), rgba(217, 70, 239, 0.3));
+  background: linear-gradient(
+    125deg,
+    rgba(124, 58, 237, 0.35),
+    rgba(168, 85, 247, 0.35),
+    rgba(217, 70, 239, 0.3)
+  );
   border: 1px solid rgba(168, 85, 247, 0.35);
   box-shadow: 0 0 24px rgba(168, 85, 247, 0.22);
   text-decoration: none;
@@ -581,7 +614,7 @@
   height: 18px;
   font-size: 10px;
   font-weight: 700;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   color: rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
@@ -663,7 +696,7 @@
   height: 32px;
   font-size: 12px;
   font-weight: 500;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   color: rgba(255, 255, 255, 0.45);
   border-radius: 8px;
   border: 1px solid transparent;

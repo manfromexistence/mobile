@@ -53,7 +53,7 @@ test("createPiiSseTransform redacts email in delta.content", async () => {
   // Should contain some form of redaction marker
   assert.ok(
     output.includes("REDACTED") || output.includes("[EMAIL"),
-    "output should contain redaction marker"
+    "output should contain redaction marker",
   );
 });
 
@@ -65,7 +65,7 @@ test("createPiiSseTransform passes non-PII content through unchanged", async () 
 
   assert.ok(
     output.includes("hello world no secrets here"),
-    "non-PII content should pass through unchanged"
+    "non-PII content should pass through unchanged",
   );
 });
 
@@ -80,7 +80,7 @@ test("createPiiSseTransform redacts PII split across chunk boundaries", async ()
   assert.ok(!output.includes("john@example.com"), "email split across chunks should be redacted");
   assert.ok(
     output.includes("REDACTED") || output.includes("[EMAIL"),
-    "redaction marker should be present in final stream"
+    "redaction marker should be present in final stream",
   );
 });
 
@@ -121,7 +121,7 @@ test("createPiiSseTransform flushes final redacted content before [DONE] sentine
   assert.equal(doneIndex, lines.length - 1, "nothing should be enqueued after the [DONE] sentinel");
 
   const redactedLine = lines.find(
-    (l, idx) => idx < doneIndex && (l.includes("REDACTED") || l.includes("[EMAIL"))
+    (l, idx) => idx < doneIndex && (l.includes("REDACTED") || l.includes("[EMAIL")),
   );
   assert.ok(redactedLine, "redacted content chunk should be enqueued before the [DONE] sentinel");
 });
@@ -137,7 +137,7 @@ test("content flushed when last chunk is metadata-only (no delta.content)", asyn
 
   assert.ok(
     output.includes("hello world"),
-    "buffered content must be flushed even when last chunk has no delta.content"
+    "buffered content must be flushed even when last chunk has no delta.content",
   );
 });
 
@@ -192,7 +192,7 @@ test("PII split across sliding window boundary is still redacted", async () => {
 
   assert.ok(
     !output.includes("user@example.com"),
-    "email spanning window boundary should be redacted"
+    "email spanning window boundary should be redacted",
   );
 });
 
@@ -223,7 +223,7 @@ test("do not leak custom event name to subsequent default message events on flus
   assert.strictEqual(
     occurrences,
     1,
-    "custom event name should only appear once and not leak to the flushed chunk of the default message"
+    "custom event name should only appear once and not leak to the flushed chunk of the default message",
   );
 });
 
@@ -256,13 +256,13 @@ test("reset event line on empty line message boundary", async () => {
   // parts[0] should have the custom event name
   assert.ok(
     parts[0].includes("event: response.output_text.delta"),
-    "first block should have custom event name"
+    "first block should have custom event name",
   );
 
   // parts[1] should NOT have the custom event name
   assert.ok(
     !parts[1].includes("event: response.output_text.delta"),
-    "second block should reset event name and not leak it"
+    "second block should reset event name and not leak it",
   );
 });
 
@@ -277,7 +277,7 @@ test("sanitize compressed IPv6 addresses", async () => {
   assert.ok(!outputLoopback.includes("::1"), "compressed loopback IPv6 should be redacted");
   assert.ok(
     outputLoopback.includes("[IP_REDACTED]"),
-    "redaction marker should be present for loopback IPv6"
+    "redaction marker should be present for loopback IPv6",
   );
 
   const transform2 = createPiiSseTransform();
@@ -285,7 +285,7 @@ test("sanitize compressed IPv6 addresses", async () => {
   assert.ok(!outputCompressed.includes("2001:db8::1"), "compressed IPv6 should be redacted");
   assert.ok(
     outputCompressed.includes("[IP_REDACTED]"),
-    "redaction marker should be present for compressed IPv6"
+    "redaction marker should be present for compressed IPv6",
   );
 });
 
@@ -302,7 +302,7 @@ test("no event: prefix in flushed chunk when no event line was seen", async () =
   // The flushed chunk (last 10 chars "klmnopqrst") must NOT be preceded by any "event:" line.
   assert.ok(
     !output.includes("event:"),
-    "no event: prefix should appear when no event line was seen"
+    "no event: prefix should appear when no event line was seen",
   );
 });
 
@@ -319,7 +319,7 @@ test("event name preserved when stream closes without [DONE] sentinel", async ()
 
   assert.ok(
     output.includes("event: response.output_text.delta"),
-    "event name should be preserved even when stream closes without [DONE]"
+    "event name should be preserved even when stream closes without [DONE]",
   );
 });
 
@@ -337,7 +337,7 @@ test("event: line without trailing space is tracked as currentEventLine", async 
 
   assert.ok(
     output.includes("event:custom.event"),
-    "no-space event: form should be tracked and prepended on flush"
+    "no-space event: form should be tracked and prepended on flush",
   );
 });
 
@@ -367,14 +367,14 @@ test("lastEventLine is not updated when processing a stop-signal chunk", async (
   // "response.output_text.delta", not "response.done".
   assert.ok(
     output.includes("event: response.output_text.delta"),
-    "flushed chunk should carry the content event name, not the stop-signal event name"
+    "flushed chunk should carry the content event name, not the stop-signal event name",
   );
   // "response.done" may appear in the pass-through of the stop event line itself,
   // but should NOT be the event name attached to the flushed data payload.
   const flushedSection = output.slice(output.lastIndexOf("event: response.output_text.delta"));
   assert.ok(
     !flushedSection.startsWith("event: response.done"),
-    "flushed payload must not be tagged with the stop-signal event name"
+    "flushed payload must not be tagged with the stop-signal event name",
   );
 });
 
@@ -418,7 +418,7 @@ test("stop signal event name is enqueued correctly without misattribution or los
   const lastEventBeforeStop = sectionBeforeStop.slice(sectionBeforeStop.lastIndexOf("event:"));
   assert.ok(
     lastEventBeforeStop.includes("event: response.done"),
-    "stop signal payload must be immediately preceded by event: response.done"
+    "stop signal payload must be immediately preceded by event: response.done",
   );
 });
 
@@ -439,7 +439,7 @@ test("verify event line flushed before other non-data lines (e.g. id, retry)", a
 
   assert.ok(
     output.includes("event: foo\nid: 123\ndata: bar"),
-    "event line must be flushed before non-data lines like id"
+    "event line must be flushed before non-data lines like id",
   );
 });
 
@@ -451,7 +451,7 @@ test("verify trailing event line is flushed on stream close", async () => {
 
   assert.ok(
     output.includes("event: some-trailing-event"),
-    "trailing event line should be flushed on stream close"
+    "trailing event line should be flushed on stream close",
   );
 });
 

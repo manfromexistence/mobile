@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation";
 
-import { Daikanoid } from "@/features/portfolio/components/daikanoid"
+import { Daikanoid } from "@/features/portfolio/components/daikanoid";
 
 export function Game() {
-  const searchParams = useSearchParams()
-  const defaultLogo = searchParams.get("logo")
+  const searchParams = useSearchParams();
+  const defaultLogo = searchParams.get("logo");
 
-  return <Daikanoid defaultLogo={defaultLogo ?? undefined} />
+  return <Daikanoid defaultLogo={defaultLogo ?? undefined} />;
 }

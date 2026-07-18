@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  forwardRef,
-  type ReactNode,
-  type HTMLAttributes,
-} from "react";
+import { forwardRef, type ReactNode, type HTMLAttributes } from "react";
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -25,13 +21,7 @@ interface DialogProps {
   children?: ReactNode;
 }
 
-function Dialog({
-  children,
-  open,
-  defaultOpen,
-  onOpenChange,
-  modal,
-}: DialogProps) {
+function Dialog({ children, open, defaultOpen, onOpenChange, modal }: DialogProps) {
   // Base UI's Root handles controlled/uncontrolled state internally. We only
   // narrow the (open, eventDetails) callback to (open) for our public prop.
   return (
@@ -90,7 +80,7 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
                 {...rest}
                 className={cn(
                   container ? "absolute" : "fixed",
-                  "inset-0 z-50 bg-black/40 dark:bg-black/80"
+                  "inset-0 z-50 bg-black/40 dark:bg-black/80",
                 )}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: exiting ? 0 : 1 }}
@@ -138,7 +128,7 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
                   size === "sm" && "max-w-[400px]",
                   size === "lg" && "max-w-[540px]",
                   shape.container,
-                  className
+                  className,
                 )}
                 style={{
                   ...(baseStyle as React.CSSProperties | undefined),
@@ -157,11 +147,7 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
                   {children}
                   <DialogPrimitive.Close
                     render={
-                      <Button
-                        variant="ghost"
-                        size="icon-sm"
-                        className="absolute right-3 top-3"
-                      >
+                      <Button variant="ghost" size="icon-sm" className="absolute right-3 top-3">
                         <XIcon />
                         <span className="sr-only">Close</span>
                       </Button>
@@ -174,51 +160,39 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
         />
       </DialogPrimitive.Portal>
     );
-  }
+  },
 );
 DialogContent.displayName = "DialogContent";
 
 function DialogHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn("flex flex-col gap-1.5 mb-4", className)}
-      {...props}
-    />
-  );
+  return <div className={cn("flex flex-col gap-1.5 mb-4", className)} {...props} />;
 }
 
 function DialogFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn("flex justify-end gap-2 mt-6", className)}
-      {...props}
-    />
-  );
+  return <div className={cn("flex justify-end gap-2 mt-6", className)} {...props} />;
 }
 
-const DialogTitle = forwardRef<
-  HTMLHeadingElement,
-  HTMLAttributes<HTMLHeadingElement>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title
-    ref={ref}
-    className={cn("text-[16px] text-foreground leading-tight", className)}
-    style={{ fontVariationSettings: "'wght' 700" }}
-    {...props}
-  />
-));
+const DialogTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => (
+    <DialogPrimitive.Title
+      ref={ref}
+      className={cn("text-[16px] text-foreground leading-tight", className)}
+      style={{ fontVariationSettings: "'wght' 700" }}
+      {...props}
+    />
+  ),
+);
 DialogTitle.displayName = "DialogTitle";
 
-const DialogDescription = forwardRef<
-  HTMLParagraphElement,
-  HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description
-    ref={ref}
-    className={cn("text-[13px] text-muted-foreground", className)}
-    {...props}
-  />
-));
+const DialogDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(
+  ({ className, ...props }, ref) => (
+    <DialogPrimitive.Description
+      ref={ref}
+      className={cn("text-[13px] text-muted-foreground", className)}
+      {...props}
+    />
+  ),
+);
 DialogDescription.displayName = "DialogDescription";
 
 export {

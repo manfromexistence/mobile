@@ -172,7 +172,7 @@ describe("RuntimePageClient", () => {
             lockouts: {},
             sessions: { activeCount: 0, stickyBoundCount: 0, byApiKey: {}, top: [] },
             quotaMonitor: { active: 0, alerting: 0, exhausted: 0, errors: 0, monitors: [] },
-          })
+          }),
         );
       }
       if (path === "/api/providers/client") {

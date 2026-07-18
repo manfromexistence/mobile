@@ -18,7 +18,7 @@ test("Responses -> OpenAI: truncation is stripped (never forwarded to Chat Compl
       truncation: "auto",
     },
     false,
-    {}
+    {},
   ) as Record<string, unknown>;
 
   assert.equal("truncation" in result, false);
@@ -35,7 +35,7 @@ test("Responses -> OpenAI: full Responses-only field set is stripped together", 
       safety_identifier: "lobehub-user",
     },
     false,
-    {}
+    {},
   ) as Record<string, unknown>;
 
   for (const field of ["truncation", "client_metadata", "background", "safety_identifier"]) {

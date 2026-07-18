@@ -19,17 +19,14 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-const source = readFileSync(
-  resolve(process.cwd(), "src/lib/plugins/pluginWorker.ts"),
-  "utf8"
-);
+const source = readFileSync(resolve(process.cwd(), "src/lib/plugins/pluginWorker.ts"), "utf8");
 
 describe("pluginWorker sandbox — exec permission gating", () => {
   it("gates child_process behind OMNIROUTE_PLUGINS_ALLOW_EXEC === '1'", () => {
     assert.ok(
       source.includes('OMNIROUTE_PLUGINS_ALLOW_EXEC !== "1"') ||
         source.includes("OMNIROUTE_PLUGINS_ALLOW_EXEC !== '1'"),
-      "exec block must check process.env.OMNIROUTE_PLUGINS_ALLOW_EXEC !== \"1\""
+      'exec block must check process.env.OMNIROUTE_PLUGINS_ALLOW_EXEC !== "1"',
     );
   });
 
@@ -43,7 +40,7 @@ describe("pluginWorker sandbox — exec permission gating", () => {
     const envIdxInBlock = source.indexOf("OMNIROUTE_PLUGINS_ALLOW_EXEC", execIdx);
     assert.ok(
       envIdxInBlock !== -1,
-      "OMNIROUTE_PLUGINS_ALLOW_EXEC check must appear inside the exec permission block"
+      "OMNIROUTE_PLUGINS_ALLOW_EXEC check must appear inside the exec permission block",
     );
   });
 
@@ -55,7 +52,7 @@ describe("pluginWorker sandbox — exec permission gating", () => {
     assert.ok(throwIdx !== -1, "a throw must exist after the exec permission check");
     assert.ok(
       throwIdx < childProcessIdx,
-      "the throw must appear before sandbox.child_process is wired"
+      "the throw must appear before sandbox.child_process is wired",
     );
   });
 
@@ -63,11 +60,11 @@ describe("pluginWorker sandbox — exec permission gating", () => {
     // Message must be operator-readable, not expose stack/paths
     assert.ok(
       source.includes("exec' permission, which is disabled"),
-      "throw message must mention the exec permission being disabled"
+      "throw message must mention the exec permission being disabled",
     );
     assert.ok(
       source.includes("OMNIROUTE_PLUGINS_ALLOW_EXEC=1"),
-      "throw message must reference the opt-in env var"
+      "throw message must reference the opt-in env var",
     );
   });
 
@@ -82,24 +79,17 @@ describe("pluginWorker sandbox — exec permission gating", () => {
 
 describe("pluginWorker sandbox — vm.runInContext timeout", () => {
   it("passes a finite timeout to vm.runInContext", () => {
-    assert.ok(
-      source.includes("vm.runInContext"),
-      "vm.runInContext must be present in the source"
-    );
+    assert.ok(source.includes("vm.runInContext"), "vm.runInContext must be present in the source");
     // The call must include a timeout option
     assert.match(
       source,
       /vm\.runInContext\([^)]*timeout\s*:/,
-      "vm.runInContext must be called with a timeout option"
+      "vm.runInContext must be called with a timeout option",
     );
   });
 
   it("timeout value is 10000 ms (10 seconds)", () => {
-    assert.match(
-      source,
-      /timeout\s*:\s*10000/,
-      "timeout must be 10000 ms"
-    );
+    assert.match(source, /timeout\s*:\s*10000/, "timeout must be 10000 ms");
   });
 });
 
@@ -107,21 +97,21 @@ describe("pluginWorker sandbox — trust-model comment", () => {
   it("documents that vm is NOT a security boundary", () => {
     assert.ok(
       source.includes("vm is NOT a security boundary"),
-      "createSandbox must have a trust-model comment stating vm is NOT a security boundary"
+      "createSandbox must have a trust-model comment stating vm is NOT a security boundary",
     );
   });
 
   it("references the loopback-only routeGuard classification", () => {
     assert.ok(
       source.includes("LOCAL_ONLY") || source.includes("routeGuard"),
-      "trust-model comment must reference LOCAL_ONLY or routeGuard"
+      "trust-model comment must reference LOCAL_ONLY or routeGuard",
     );
   });
 
   it("references the OMNIROUTE_PLUGINS_ALLOW_EXEC opt-in in the comment", () => {
     assert.ok(
       source.includes("OMNIROUTE_PLUGINS_ALLOW_EXEC"),
-      "trust-model comment must reference OMNIROUTE_PLUGINS_ALLOW_EXEC"
+      "trust-model comment must reference OMNIROUTE_PLUGINS_ALLOW_EXEC",
     );
   });
 });

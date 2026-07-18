@@ -18,7 +18,7 @@ import os from "node:os";
 import path from "node:path";
 
 const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-startup-cooldown-recovery-")
+  path.join(os.tmpdir(), "omniroute-startup-cooldown-recovery-"),
 );
 process.env.DATA_DIR = TEST_DATA_DIR;
 
@@ -85,7 +85,7 @@ test("clearStaleCrashCooldowns clears far-future transient cooldown on restart",
   const pre = await providersDb.getProviderConnectionById(conn.id);
   assert.ok(
     pre?.rateLimitedUntil && new Date(pre.rateLimitedUntil as string).getTime() > Date.now(),
-    "connection should have a future rate_limited_until before recovery"
+    "connection should have a future rate_limited_until before recovery",
   );
 
   // Run startup recovery
@@ -149,7 +149,7 @@ test("clearStaleCrashCooldowns does NOT clear terminal states (banned)", async (
   assert.equal(updated?.testStatus, "banned", "banned connection must not be touched");
   assert.ok(
     updated?.rateLimitedUntil,
-    "rate_limited_until on a banned connection must not be cleared"
+    "rate_limited_until on a banned connection must not be cleared",
   );
   // cleared count should be 0 (only the banned conn exists in this test)
   assert.equal(result.cleared, 0, "no transient connections to clear");
@@ -196,7 +196,7 @@ test("clearStaleCrashCooldowns does NOT clear terminal states (credits_exhausted
   assert.equal(
     updated?.testStatus,
     "credits_exhausted",
-    "credits_exhausted connection must not be touched"
+    "credits_exhausted connection must not be touched",
   );
 });
 
@@ -270,8 +270,5 @@ test("clearStaleCrashCooldowns handles mixed transient + terminal connections co
 
   const updatedTerminal = await providersDb.getProviderConnectionById(terminal.id);
   assert.equal(updatedTerminal?.testStatus, "banned", "terminal connection untouched");
-  assert.ok(
-    updatedTerminal?.rateLimitedUntil,
-    "terminal rate_limited_until preserved"
-  );
+  assert.ok(updatedTerminal?.rateLimitedUntil, "terminal rate_limited_until preserved");
 });

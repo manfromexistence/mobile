@@ -51,7 +51,7 @@ const {
 } = mod;
 
 function makeTarget(
-  connectionId: string
+  connectionId: string,
 ): import("../../open-sse/services/combo/types.ts").ResolvedComboTarget {
   return {
     kind: "model",
@@ -121,12 +121,12 @@ test("BUG #6692: sticky pin survives a terminal (credits_exhausted) account — 
     result.stuck,
     false,
     "sticky pin must release once the bound connection is terminally exhausted, " +
-      "not only when 5h/weekly headroom is low (issue #6692)"
+      "not only when 5h/weekly headroom is low (issue #6692)",
   );
   assert.equal(
     result.targets[0].connectionId,
     "conn-healthy",
-    "the terminally dead sticky pin must NOT be force-promoted over the naturally-ordered healthy target"
+    "the terminally dead sticky pin must NOT be force-promoted over the naturally-ordered healthy target",
   );
 });
 

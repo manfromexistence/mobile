@@ -17,4 +17,4 @@ export {
   TextAlignLeftIcon,
   TextIcon,
   Tick02Icon,
-} from "@hugeicons/core-free-icons"
+} from "@hugeicons/core-free-icons";

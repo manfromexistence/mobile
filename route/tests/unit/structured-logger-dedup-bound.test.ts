@@ -1,9 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { __structuredLoggerInternals } = await import(
-  "../../src/shared/utils/structuredLogger.ts"
-);
+const { __structuredLoggerInternals } = await import("../../src/shared/utils/structuredLogger.ts");
 
 test("pruneRecentErrors enforces a hard cap during a unique-message burst", () => {
   const { recentErrors, pruneRecentErrors, MAX_TRACKED_ERRORS } = __structuredLoggerInternals;
@@ -20,13 +18,13 @@ test("pruneRecentErrors enforces a hard cap during a unique-message burst", () =
 
   assert.ok(
     recentErrors.size <= MAX_TRACKED_ERRORS,
-    `map should be bounded by ${MAX_TRACKED_ERRORS}, got ${recentErrors.size}`
+    `map should be bounded by ${MAX_TRACKED_ERRORS}, got ${recentErrors.size}`,
   );
 
   // The cap evicts the OLDEST entries, so the most recent ones survive.
   assert.ok(
     recentErrors.has(`unique-error-${MAX_TRACKED_ERRORS * 2 - 1}`),
-    "the newest entry should be retained"
+    "the newest entry should be retained",
   );
 
   recentErrors.clear();

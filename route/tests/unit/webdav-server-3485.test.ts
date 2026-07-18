@@ -28,7 +28,7 @@ import { pathToFileURL } from "node:url";
 
 const HANDLER_PATH = path.resolve(
   path.dirname(new URL(import.meta.url).pathname),
-  "../../scripts/dev/webdav-handler.mjs"
+  "../../scripts/dev/webdav-handler.mjs",
 );
 
 /** Import the handler module fresh (bust module cache for env-dependent tests). */
@@ -55,7 +55,7 @@ function fakeReq(
   method: string,
   url: string,
   headers: Record<string, string> = {},
-  body: Buffer | null = null
+  body: Buffer | null = null,
 ): http.IncomingMessage {
   const req = Object.assign(new EventEmitter(), {
     method,
@@ -82,7 +82,7 @@ function fakeReq(
 /** Capture a ServerResponse into { status, headers, body }. */
 async function captureRes(
   req: http.IncomingMessage,
-  handler: (req: http.IncomingMessage, res: http.ServerResponse) => Promise<boolean>
+  handler: (req: http.IncomingMessage, res: http.ServerResponse) => Promise<boolean>,
 ): Promise<{ status: number; headers: http.OutgoingHttpHeaders; body: string }> {
   return new Promise((resolve) => {
     const chunks: Buffer[] = [];
@@ -162,7 +162,7 @@ test("resolveVaultPath: ../ traversal is rejected with 403", async () => {
   const { resolveVaultPath } = await importHandler();
   assert.throws(
     () => resolveVaultPath(VAULT_ROOT, "/api/v1/webdav/../../../etc/passwd"),
-    (err: { status: number }) => err.status === 403
+    (err: { status: number }) => err.status === 403,
   );
 });
 
@@ -170,7 +170,7 @@ test("resolveVaultPath: encoded %2e%2e%2f traversal is rejected with 403", async
   const { resolveVaultPath } = await importHandler();
   assert.throws(
     () => resolveVaultPath(VAULT_ROOT, "/api/v1/webdav/%2e%2e%2fetc/passwd"),
-    (err: { status: number }) => err.status === 403
+    (err: { status: number }) => err.status === 403,
   );
 });
 
@@ -178,7 +178,7 @@ test("resolveVaultPath: encoded %2e%2e traversal variant is rejected", async () 
   const { resolveVaultPath } = await importHandler();
   assert.throws(
     () => resolveVaultPath(VAULT_ROOT, "/api/v1/webdav/%2e%2e/secret"),
-    (err: { status: number }) => err.status === 403
+    (err: { status: number }) => err.status === 403,
   );
 });
 
@@ -196,7 +196,7 @@ test("resolveVaultPath: absolute path injection outside vault is rejected", asyn
   // path.resolve(deepVault, "../../secret") → VAULT_ROOT/secret which is OUTSIDE deepVault
   assert.throws(
     () => resolveVaultPath(deepVault, "/api/v1/webdav/../../secret"),
-    (err: { status: number }) => err.status === 403
+    (err: { status: number }) => err.status === 403,
   );
 });
 
@@ -208,7 +208,7 @@ test("resolveDestinationPath: raw path that escapes vault is rejected", async ()
   // A raw Destination header path that resolves outside deepVault
   assert.throws(
     () => resolveDestinationPath(deepVault, "/api/v1/webdav/../../escape-target"),
-    (err: { status: number }) => err.status === 403
+    (err: { status: number }) => err.status === 403,
   );
 });
 
@@ -243,10 +243,7 @@ test("verifyBasicAuth: empty header returns false", async () => {
 
 test("verifyBasicAuth: non-Basic scheme returns false", async () => {
   const { verifyBasicAuth } = await importHandler();
-  assert.equal(
-    verifyBasicAuth("Bearer some-token", "alice", "s3cr3t"),
-    false
-  );
+  assert.equal(verifyBasicAuth("Bearer some-token", "alice", "s3cr3t"), false);
 });
 
 test("verifyBasicAuth: malformed base64 returns false", async () => {
@@ -325,7 +322,7 @@ test("buildPropfindXml: produces valid XML with entries", async () => {
         mtime: now,
       },
     ],
-    "/api/v1/webdav/"
+    "/api/v1/webdav/",
   );
 
   assert.match(xml, /<?xml version="1.0"/);
@@ -349,7 +346,7 @@ test("buildPropfindXml: escapes XML special chars in names", async () => {
         mtime: new Date(),
       },
     ],
-    "/api/v1/webdav/"
+    "/api/v1/webdav/",
   );
 
   // Unescaped < > & ' " must not appear inside element content
@@ -362,8 +359,16 @@ test("buildPropfindXml: escapes XML special chars in names", async () => {
 test("buildPropfindXml: file entry has no D:collection resourcetype", async () => {
   const { buildPropfindXml } = await importHandler();
   const xml = buildPropfindXml(
-    [{ name: "note.md", href: "/api/v1/webdav/note.md", isDir: false, size: 99, mtime: new Date() }],
-    "/api/v1/webdav/"
+    [
+      {
+        name: "note.md",
+        href: "/api/v1/webdav/note.md",
+        isDir: false,
+        size: 99,
+        mtime: new Date(),
+      },
+    ],
+    "/api/v1/webdav/",
   );
   // File should have empty resourcetype, not a collection
   assert.doesNotMatch(xml, /D:collection/);
@@ -389,7 +394,7 @@ test("buildPropfindXml: file entry has no D:collection resourcetype", async () =
 // Create a minimal SQLite DB for integration tests
 async function createTestDb(
   dataDir: string,
-  opts: { enabled: boolean; username: string; password: string; vaultPath: string }
+  opts: { enabled: boolean; username: string; password: string; vaultPath: string },
 ) {
   const { createRequire } = await import("node:module");
   const _require = createRequire(import.meta.url);
@@ -407,7 +412,7 @@ async function createTestDb(
   `);
 
   const upsert = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)",
   );
 
   upsert.run("obsidian", "webdav_enabled", JSON.stringify(opts.enabled));
@@ -771,7 +776,7 @@ test("resolveDataDir: parity with src/lib/dataPaths.ts across env combos", async
       assert.equal(
         fromMjs,
         fromTs,
-        `DATA_DIR resolver diverged for ${JSON.stringify(combo)}: mjs=${fromMjs} ts=${fromTs}`
+        `DATA_DIR resolver diverged for ${JSON.stringify(combo)}: mjs=${fromMjs} ts=${fromTs}`,
       );
     }
   } finally {

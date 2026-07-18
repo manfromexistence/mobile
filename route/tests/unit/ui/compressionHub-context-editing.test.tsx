@@ -113,7 +113,7 @@ function setupFetchMock(opts: { contextEditingEnabled?: boolean }): FetchCall[] 
         return json({ packs: [] });
       }
       return json({}, 404);
-    }
+    },
   );
 
   return calls;
@@ -130,8 +130,9 @@ async function flush() {
 describe("CompressionHub — Context Editing", () => {
   it("renders the delegated-compression section with the Context Editing toggle", async () => {
     setupFetchMock({ contextEditingEnabled: false });
-    const { default: CompressionHub } =
-      await import("../../../src/app/(dashboard)/dashboard/context/combos/CompressionHub");
+    const { default: CompressionHub } = await import(
+      "../../../src/app/(dashboard)/dashboard/context/combos/CompressionHub"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -149,8 +150,9 @@ describe("CompressionHub — Context Editing", () => {
 
   it("renders the Claude-only delegated note", async () => {
     setupFetchMock({ contextEditingEnabled: false });
-    const { default: CompressionHub } =
-      await import("../../../src/app/(dashboard)/dashboard/context/combos/CompressionHub");
+    const { default: CompressionHub } = await import(
+      "../../../src/app/(dashboard)/dashboard/context/combos/CompressionHub"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -165,8 +167,9 @@ describe("CompressionHub — Context Editing", () => {
 
   it("PUTs contextEditing: { enabled: true } when the toggle is flipped on", async () => {
     const calls = setupFetchMock({ contextEditingEnabled: false });
-    const { default: CompressionHub } =
-      await import("../../../src/app/(dashboard)/dashboard/context/combos/CompressionHub");
+    const { default: CompressionHub } = await import(
+      "../../../src/app/(dashboard)/dashboard/context/combos/CompressionHub"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -175,7 +178,7 @@ describe("CompressionHub — Context Editing", () => {
     await flush();
 
     const toggle = container.querySelector(
-      'button[role="switch"][aria-label="Context Editing"]'
+      'button[role="switch"][aria-label="Context Editing"]',
     ) as HTMLButtonElement | null;
     expect(toggle).not.toBeNull();
     expect(toggle?.getAttribute("aria-checked")).toBe("false");
@@ -186,7 +189,7 @@ describe("CompressionHub — Context Editing", () => {
     await flush();
 
     const put = calls.find(
-      (c) => c.method === "PUT" && c.url.includes("/api/settings/compression")
+      (c) => c.method === "PUT" && c.url.includes("/api/settings/compression"),
     );
     expect(put).toBeTruthy();
     expect((put?.body as { contextEditing?: { enabled?: boolean } })?.contextEditing).toEqual({

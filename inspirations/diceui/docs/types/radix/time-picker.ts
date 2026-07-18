@@ -215,21 +215,13 @@ export interface TimePickerProps extends EmptyProps<"div">, CompositionProps {
       };
 }
 
-export interface TimePickerLabelProps
-  extends EmptyProps<"label">,
-    CompositionProps {}
+export interface TimePickerLabelProps extends EmptyProps<"label">, CompositionProps {}
 
-export interface TimePickerInputGroupProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface TimePickerInputGroupProps extends EmptyProps<"div">, CompositionProps {}
 
-export interface TimePickerTriggerProps
-  extends EmptyProps<"button">,
-    CompositionProps {}
+export interface TimePickerTriggerProps extends EmptyProps<"button">, CompositionProps {}
 
-export interface TimePickerContentProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface TimePickerContentProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The preferred side of the trigger to render against when open.
    * @default "bottom"
@@ -249,9 +241,7 @@ export interface TimePickerContentProps
   sideOffset?: number;
 }
 
-export interface TimePickerHourProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface TimePickerHourProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The format for displaying hours.
    * @default "numeric"
@@ -259,9 +249,7 @@ export interface TimePickerHourProps
   format?: "numeric" | "2-digit";
 }
 
-export interface TimePickerMinuteProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface TimePickerMinuteProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The format for displaying minutes.
    * @default "2-digit"
@@ -269,9 +257,7 @@ export interface TimePickerMinuteProps
   format?: "numeric" | "2-digit";
 }
 
-export interface TimePickerSecondProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface TimePickerSecondProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The format for displaying seconds.
    * @default "2-digit"
@@ -279,21 +265,13 @@ export interface TimePickerSecondProps
   format?: "numeric" | "2-digit";
 }
 
-export interface TimePickerPeriodProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface TimePickerPeriodProps extends EmptyProps<"div">, CompositionProps {}
 
-export interface TimePickerSeparatorProps
-  extends EmptyProps<"span">,
-    CompositionProps {}
+export interface TimePickerSeparatorProps extends EmptyProps<"span">, CompositionProps {}
 
-export interface TimePickerClearProps
-  extends EmptyProps<"button">,
-    CompositionProps {}
+export interface TimePickerClearProps extends EmptyProps<"button">, CompositionProps {}
 
-export interface TimePickerInputProps
-  extends EmptyProps<"input">,
-    CompositionProps {
+export interface TimePickerInputProps extends EmptyProps<"input">, CompositionProps {
   /**
    * The time segment for the input.
    * - `hour`: The hour segment

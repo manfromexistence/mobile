@@ -1,66 +1,60 @@
-"use client"
+"use client";
 
-import { Archive, ArchiveRestore, Trash2 } from "lucide-react"
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { Archive, ArchiveRestore, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ArchivedConversation {
-  id: string
-  title: string
-  messages: { role: string; content: string }[]
-  archived?: boolean
-  updatedAt?: number
+  id: string;
+  title: string;
+  messages: { role: string; content: string }[];
+  archived?: boolean;
+  updatedAt?: number;
 }
 
 function loadArchived(): ArchivedConversation[] {
-  if (typeof localStorage === "undefined") return []
+  if (typeof localStorage === "undefined") return [];
   try {
-    const raw = localStorage.getItem("dx-conversations")
-    if (!raw) return []
-    const convs: ArchivedConversation[] = JSON.parse(raw) as ArchivedConversation[]
-    return convs.filter((c) => c.archived)
+    const raw = localStorage.getItem("dx-conversations");
+    if (!raw) return [];
+    const convs: ArchivedConversation[] = JSON.parse(raw) as ArchivedConversation[];
+    return convs.filter((c) => c.archived);
   } catch {
-    return []
+    return [];
   }
 }
 
-function saveAndReload(
-  updater: (convs: ArchivedConversation[]) => ArchivedConversation[]
-) {
+function saveAndReload(updater: (convs: ArchivedConversation[]) => ArchivedConversation[]) {
   try {
-    const raw = localStorage.getItem("dx-conversations")
-    const convs: ArchivedConversation[] = raw
-      ? (JSON.parse(raw) as ArchivedConversation[])
-      : []
-    const updated = updater(convs)
-    localStorage.setItem("dx-conversations", JSON.stringify(updated))
+    const raw = localStorage.getItem("dx-conversations");
+    const convs: ArchivedConversation[] = raw ? (JSON.parse(raw) as ArchivedConversation[]) : [];
+    const updated = updater(convs);
+    localStorage.setItem("dx-conversations", JSON.stringify(updated));
   } catch {}
 }
 
 interface ArchivedChatsListProps {
-  onClose: () => void
+  onClose: () => void;
 }
 
 export function ArchivedChatsList({ onClose }: ArchivedChatsListProps) {
-  const [archived, setArchived] = useState<ArchivedConversation[]>([])
+  const [archived, setArchived] = useState<ArchivedConversation[]>([]);
 
   useEffect(() => {
-    setArchived(loadArchived())
-  }, [])
+    setArchived(loadArchived());
+  }, []);
 
   const handleUnarchive = (id: string) => {
-    saveAndReload((convs) =>
-      convs.map((c) => (c.id === id ? { ...c, archived: false } : c))
-    )
-    setArchived((prev) => prev.filter((c) => c.id !== id))
-  }
+    saveAndReload((convs) => convs.map((c) => (c.id === id ? { ...c, archived: false } : c)));
+    setArchived((prev) => prev.filter((c) => c.id !== id));
+  };
 
   const handleClearAll = () => {
-    saveAndReload((convs) => convs.map((c) => ({ ...c, archived: false })))
-    setArchived([])
-    onClose()
-  }
+    saveAndReload((convs) => convs.map((c) => ({ ...c, archived: false })));
+    setArchived([]);
+    onClose();
+  };
 
   if (archived.length === 0) {
     return (
@@ -75,15 +69,13 @@ export function ArchivedChatsList({ onClose }: ArchivedChatsListProps) {
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-foreground">
-          Archived ({archived.length})
-        </span>
+        <span className="text-sm font-medium text-foreground">Archived ({archived.length})</span>
         <Button
           variant="ghost"
           size="sm"
@@ -127,5 +119,5 @@ export function ArchivedChatsList({ onClose }: ArchivedChatsListProps) {
         </button>
       </div>
     </div>
-  )
+  );
 }

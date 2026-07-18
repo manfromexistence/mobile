@@ -1,8 +1,8 @@
-import type { TOCItemType } from "@/registry/transformed/components/toc-minimap"
-import { TOCMinimap } from "@/registry/transformed/components/toc-minimap"
+import type { TOCItemType } from "@/registry/transformed/components/toc-minimap";
+import { TOCMinimap } from "@/registry/transformed/components/toc-minimap";
 
 export default function TOCMinimapDemo() {
-  return <TOCMinimap items={ITEMS} />
+  return <TOCMinimap items={ITEMS} />;
 }
 
 const ITEMS: TOCItemType[] = [
@@ -12,4 +12,4 @@ const ITEMS: TOCItemType[] = [
   { title: "TOCMinimap", url: "#tocminimap", depth: 3 },
   { title: "TOCItemType", url: "#tocitemtype", depth: 3 },
   { title: "References", url: "#references", depth: 2 },
-]
+];

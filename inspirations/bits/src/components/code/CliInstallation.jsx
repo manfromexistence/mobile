@@ -9,23 +9,23 @@ import {
   Icon,
   Box,
   Tooltip,
-} from '@chakra-ui/react';
-import { TbCopy, TbCopyCheckFilled } from 'react-icons/tb';
-import { useActiveRoute } from '../../hooks/useActiveRoute';
-import { useOptions } from '../context/OptionsContext/useOptions';
-import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
-import { generateCliCommands } from '../../utils/cli';
-import { useInstallation } from '../../hooks/useInstallation';
-import { colors } from '../../constants/colors';
-import IconSelect from './IconSelect';
+} from "@chakra-ui/react";
+import { TbCopy, TbCopyCheckFilled } from "react-icons/tb";
+import { useActiveRoute } from "../../hooks/useActiveRoute";
+import { useOptions } from "../context/OptionsContext/useOptions";
+import { useMemo, useState, useEffect, useRef, useCallback } from "react";
+import { generateCliCommands } from "../../utils/cli";
+import { useInstallation } from "../../hooks/useInstallation";
+import { colors } from "../../constants/colors";
+import IconSelect from "./IconSelect";
 
-import jsrepoIcon from '../../assets/icons/jsrepo-outline.svg';
-import shadcnIcon from '../../assets/icons/shadcn-outline.svg';
+import jsrepoIcon from "../../assets/icons/jsrepo-outline.svg";
+import shadcnIcon from "../../assets/icons/shadcn-outline.svg";
 
-const PKG_MANAGERS = ['pnpm', 'npm', 'yarn', 'bun'];
-const CLI_TOOLS = ['shadcn', 'jsrepo'];
+const PKG_MANAGERS = ["pnpm", "npm", "yarn", "bun"];
+const CLI_TOOLS = ["shadcn", "jsrepo"];
 const CLI_ICON_MAP = { jsrepo: jsrepoIcon, shadcn: shadcnIcon };
-const CLI_LABEL_MAP = { shadcn: 'shadcn', jsrepo: 'jsrepo' };
+const CLI_LABEL_MAP = { shadcn: "shadcn", jsrepo: "jsrepo" };
 
 const CliInstallation = ({ deps }) => {
   const { category, subcategory } = useActiveRoute();
@@ -37,23 +37,21 @@ const CliInstallation = ({ deps }) => {
     cliTool: cliLib,
     setCliTool: setCliLib,
     packageManager: pkg,
-    setPackageManager: setPkg
+    setPackageManager: setPkg,
   } = useInstallation();
 
   const commands = useMemo(
     () => generateCliCommands(languagePreset, stylePreset, category, subcategory, deps),
-    [languagePreset, stylePreset, category, subcategory, deps]
+    [languagePreset, stylePreset, category, subcategory, deps],
   );
 
   const hasManual = !!commands?.manual;
 
   useEffect(() => {
-    if (!hasManual && mode === 'manual') {
-      setMode('cli');
+    if (!hasManual && mode === "manual") {
+      setMode("cli");
     }
   }, [hasManual, mode, setMode]);
-
-
 
   const [copied, setCopied] = useState(false);
   const codeRef = useRef(null);
@@ -65,10 +63,10 @@ const CliInstallation = ({ deps }) => {
   const thumbWidthRef = useRef(0);
 
   const currentCommand = useMemo(() => {
-    if (!commands) return '';
-    if (mode === 'manual') return commands.manual?.[pkg] || '';
-    const key = pkg === 'npm' ? 'npx' : pkg;
-    return cliLib === 'jsrepo' ? commands.jsrepo[key] : commands.shadcn[key];
+    if (!commands) return "";
+    if (mode === "manual") return commands.manual?.[pkg] || "";
+    const key = pkg === "npm" ? "npx" : pkg;
+    return cliLib === "jsrepo" ? commands.jsrepo[key] : commands.shadcn[key];
   }, [commands, mode, pkg, cliLib]);
 
   const updateScrollMeta = useCallback(() => {
@@ -96,17 +94,17 @@ const CliInstallation = ({ deps }) => {
     const el = codeRef.current;
     if (!el) return;
     const onScroll = () => updateScrollMeta();
-    window.addEventListener('resize', updateScrollMeta);
-    el.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener("resize", updateScrollMeta);
+    el.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      window.removeEventListener('resize', updateScrollMeta);
-      el.removeEventListener('scroll', onScroll);
+      window.removeEventListener("resize", updateScrollMeta);
+      el.removeEventListener("scroll", onScroll);
     };
   }, [updateScrollMeta]);
 
   useEffect(() => {
     if (!dragging) return;
-    const handleMove = e => {
+    const handleMove = (e) => {
       const el = codeRef.current;
       const trackEl = trackRef.current;
       if (!el || !trackEl) return;
@@ -117,18 +115,18 @@ const CliInstallation = ({ deps }) => {
       const scrollable = el.scrollWidth - el.clientWidth;
       const scrollLeft = (newLeft / maxThumbLeft) * scrollable;
       el.scrollLeft = scrollLeft;
-      setScrollMeta(m => ({ ...m, l: newLeft }));
+      setScrollMeta((m) => ({ ...m, l: newLeft }));
     };
     const handleUp = () => setDragging(false);
-    window.addEventListener('mousemove', handleMove);
-    window.addEventListener('mouseup', handleUp, { once: true });
+    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mouseup", handleUp, { once: true });
     return () => {
-      window.removeEventListener('mousemove', handleMove);
-      window.removeEventListener('mouseup', handleUp);
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("mouseup", handleUp);
     };
   }, [dragging]);
 
-  const handleScrollbarMouseDown = e => {
+  const handleScrollbarMouseDown = (e) => {
     const el = codeRef.current;
     const trackEl = trackRef.current;
     if (!el || !trackEl) return;
@@ -146,7 +144,7 @@ const CliInstallation = ({ deps }) => {
       const scrollLeft = (newLeft / maxLeft) * scrollable;
       el.scrollLeft = scrollLeft;
       dragOffsetRef.current = clickX - newLeft;
-      setScrollMeta(m => ({ ...m, l: newLeft }));
+      setScrollMeta((m) => ({ ...m, l: newLeft }));
     }
     setDragging(true);
   };
@@ -170,7 +168,7 @@ const CliInstallation = ({ deps }) => {
 
   const renderPkgButtons = () => (
     <div className="pkg-buttons" data-role="pkg-buttons">
-      {PKG_MANAGERS.map(m => (
+      {PKG_MANAGERS.map((m) => (
         <button key={m} className="cli-tool-tab" data-active={pkg === m} onClick={() => setPkg(m)}>
           {m}
         </button>
@@ -189,7 +187,7 @@ const CliInstallation = ({ deps }) => {
       fontWeight={500}
       bg={copied ? colors.primary : colors.bgBody}
       border={`1px solid ${colors.borderSecondary}`}
-      color={copied ? 'black' : 'white'}
+      color={copied ? "black" : "white"}
       _hover={{ bg: copied ? colors.primary : colors.bgElevated }}
       _active={{ bg: colors.primary }}
       transition="background-color 0.3s ease"
@@ -205,18 +203,18 @@ const CliInstallation = ({ deps }) => {
       <div className="cli-row" data-row="manual">
         {renderPkgButtons()}
       </div>
-      <div className="code-wrapper" style={{ position: 'relative' }}>
+      <div className="code-wrapper" style={{ position: "relative" }}>
         <Code
-          ref={mode === 'manual' ? codeRef : undefined}
+          ref={mode === "manual" ? codeRef : undefined}
           whiteSpace="pre"
           w="100%"
-          onScroll={mode === 'manual' ? updateScrollMeta : undefined}
+          onScroll={mode === "manual" ? updateScrollMeta : undefined}
         >
           {commands.manual[pkg]}
         </Code>
-        {scrollMeta.show && mode === 'manual' && (
+        {scrollMeta.show && mode === "manual" && (
           <div
-            className={`cli-custom-scrollbar${dragging ? ' dragging' : ''}`}
+            className={`cli-custom-scrollbar${dragging ? " dragging" : ""}`}
             aria-hidden
             ref={trackRef}
             onMouseDown={handleScrollbarMouseDown}
@@ -237,20 +235,20 @@ const CliInstallation = ({ deps }) => {
       <div className="cli-row" data-row="cli">
         {renderPkgButtons()}
       </div>
-      <div className="code-wrapper" style={{ position: 'relative' }}>
+      <div className="code-wrapper" style={{ position: "relative" }}>
         <Code
-          ref={mode === 'cli' ? codeRef : undefined}
+          ref={mode === "cli" ? codeRef : undefined}
           whiteSpace="pre"
           w="100%"
-          onScroll={mode === 'cli' ? updateScrollMeta : undefined}
+          onScroll={mode === "cli" ? updateScrollMeta : undefined}
         >
-          {cliLib === 'jsrepo'
-            ? commands.jsrepo[pkg === 'npm' ? 'npx' : pkg]
-            : commands.shadcn[pkg === 'npm' ? 'npx' : pkg]}
+          {cliLib === "jsrepo"
+            ? commands.jsrepo[pkg === "npm" ? "npx" : pkg]
+            : commands.shadcn[pkg === "npm" ? "npx" : pkg]}
         </Code>
-        {scrollMeta.show && mode === 'cli' && (
+        {scrollMeta.show && mode === "cli" && (
           <div
-            className={`cli-custom-scrollbar${dragging ? ' dragging' : ''}`}
+            className={`cli-custom-scrollbar${dragging ? " dragging" : ""}`}
             aria-hidden
             ref={trackRef}
             onMouseDown={handleScrollbarMouseDown}
@@ -272,23 +270,27 @@ const CliInstallation = ({ deps }) => {
       <Stack my={2}>
         <Flex className="mode-switch" data-mode-switch w="100%" align="center" gap={0}>
           <HStack>
-            <button data-active={mode === 'cli'} onClick={() => setMode('cli')} className="cli-toggle-button">
+            <button
+              data-active={mode === "cli"}
+              onClick={() => setMode("cli")}
+              className="cli-toggle-button"
+            >
               CLI
             </button>
             {hasManual ? (
               <button
-                data-active={mode === 'manual'}
-                onClick={() => hasManual && setMode('manual')}
-                className={`cli-toggle-button${!hasManual ? ' disabled' : ''}`}
+                data-active={mode === "manual"}
+                onClick={() => hasManual && setMode("manual")}
+                className={`cli-toggle-button${!hasManual ? " disabled" : ""}`}
                 disabled={!hasManual}
                 aria-disabled={!hasManual}
               >
                 Manual
               </button>
             ) : (
-              <Tooltip.Root openDelay={200} positioning={{ placement: 'right' }}>
+              <Tooltip.Root openDelay={200} positioning={{ placement: "right" }}>
                 <Tooltip.Trigger asChild>
-                  <span style={{ display: 'inline-block' }}>
+                  <span style={{ display: "inline-block" }}>
                     <button
                       data-active={false}
                       className="cli-toggle-button disabled"
@@ -318,7 +320,7 @@ const CliInstallation = ({ deps }) => {
               </Tooltip.Root>
             )}
           </HStack>
-          {mode === 'cli' && (
+          {mode === "cli" && (
             <Box ml="auto">
               <IconSelect
                 collection={CLI_TOOLS}
@@ -332,7 +334,7 @@ const CliInstallation = ({ deps }) => {
             </Box>
           )}
         </Flex>
-        {hasManual && mode === 'manual' ? manualSection : cliSection}
+        {hasManual && mode === "manual" ? manualSection : cliSection}
       </Stack>
     </div>
   );

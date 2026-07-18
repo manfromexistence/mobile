@@ -26,19 +26,19 @@ const core = await import("../../../src/lib/db/core.ts");
 const db = core.getDbInstance();
 db.prepare(
   `INSERT OR IGNORE INTO version_manager (tool, status, port, auto_start, auto_update, provider_expose)
-   VALUES ('test-svc', 'stopped', 29999, 0, 0, 0)`
+   VALUES ('test-svc', 'stopped', 29999, 0, 0, 0)`,
 ).run();
 db.prepare(
   `INSERT OR IGNORE INTO version_manager (tool, status, port, auto_start, auto_update, provider_expose)
-   VALUES ('test-crash', 'stopped', 29998, 0, 0, 0)`
+   VALUES ('test-crash', 'stopped', 29998, 0, 0, 0)`,
 ).run();
 db.prepare(
   `INSERT OR IGNORE INTO version_manager (tool, status, port, auto_start, auto_update, provider_expose)
-   VALUES ('test-lock', 'stopped', 29997, 0, 0, 0)`
+   VALUES ('test-lock', 'stopped', 29997, 0, 0, 0)`,
 ).run();
 db.prepare(
   `INSERT OR IGNORE INTO version_manager (tool, status, port, auto_start, auto_update, provider_expose)
-   VALUES ('test-adopt', 'stopped', 29996, 0, 0, 0)`
+   VALUES ('test-adopt', 'stopped', 29996, 0, 0, 0)`,
 ).run();
 
 const { ServiceSupervisor } = await import("../../../src/lib/services/ServiceSupervisor.ts");
@@ -89,7 +89,7 @@ test("start spawns process and captures logs in ring buffer", async () => {
     assert.ok(snap.length > 0, "ring buffer should have log entries");
     assert.ok(
       snap.some((e) => e.line.includes("tick")),
-      "should capture stdout lines"
+      "should capture stdout lines",
     );
   } finally {
     await sup.stop();
@@ -149,7 +149,7 @@ test("crash sets state=error and lastError (no auto-restart)", async () => {
     assert.ok(
       !stateChanges.filter((s) => s === "starting").length ||
         stateChanges[stateChanges.length - 1] !== "starting",
-      "supervisor must not restart after crash"
+      "supervisor must not restart after crash",
     );
   } finally {
     healthServer.close();
@@ -202,7 +202,7 @@ test("does NOT auto-restart on crash", async () => {
     // After crash: state must be "error" or "stopped", never "starting" again
     assert.ok(
       status.state === "error" || status.state === "stopped",
-      `supervisor should not auto-restart: state was "${status.state}"`
+      `supervisor should not auto-restart: state was "${status.state}"`,
     );
   } finally {
     healthServer.close();

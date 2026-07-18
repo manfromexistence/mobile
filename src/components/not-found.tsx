@@ -1,8 +1,8 @@
-import { ArrowRightIcon } from "lucide-react"
-import Link from "next/link"
+import { ArrowRightIcon } from "lucide-react";
+import Link from "next/link";
 
-import { Button } from "@/components/base/ui/button"
-import { Daikanoid } from "@/features/portfolio/components/daikanoid"
+import { Button } from "@/components/base/ui/button";
+import { Daikanoid } from "@/features/portfolio/components/daikanoid";
 
 export function NotFound() {
   return (
@@ -25,5 +25,5 @@ export function NotFound() {
         />
       </section>
     </div>
-  )
+  );
 }

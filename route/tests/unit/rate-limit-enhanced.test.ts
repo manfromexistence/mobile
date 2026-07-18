@@ -290,6 +290,6 @@ test("filterAvailableAccounts: filters out rate-limited", () => {
   assert.equal(available.length, 2); // a and c (expired)
   assert.deepEqual(
     available.map((a) => a.id),
-    ["a", "c"]
+    ["a", "c"],
   );
 });

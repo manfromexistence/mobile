@@ -88,14 +88,14 @@ test("#6524: with only the (wrong) synced catalog data, the buffer still inflate
 test("#6524: an operator-set max_token override now clamps the reasoning buffer to the real cap", () => {
   assert.ok(
     setModelCapabilityOverride(TARGET, "max_token", REAL_UPSTREAM_OUTPUT_CAP),
-    "expected the max_token override to be written"
+    "expected the max_token override to be written",
   );
   try {
     const result = resolveReasoningBufferedMaxTokens(TARGET, 64000);
     assert.ok(
       result === null || result <= REAL_UPSTREAM_OUTPUT_CAP,
       `expected max_tokens to stay <= ${REAL_UPSTREAM_OUTPUT_CAP}, got ${result} ` +
-        `(reproduces reported 64000 -> 96000 inflation, upstream then 400s)`
+        `(reproduces reported 64000 -> 96000 inflation, upstream then 400s)`,
     );
   } finally {
     removeModelCapabilityOverride(TARGET, "max_token");

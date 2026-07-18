@@ -1,1 +1,1 @@
-export * from "./dot-grid-spotlight"
+export * from "./dot-grid-spotlight";

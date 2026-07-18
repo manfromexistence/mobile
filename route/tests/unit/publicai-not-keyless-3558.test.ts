@@ -10,7 +10,7 @@ import { FREE_MODEL_BUDGETS } from "../../open-sse/config/freeModelCatalog.data.
 
 test("#3558 PublicAI has no freeType:keyless catalog entries", () => {
   const keyless = FREE_MODEL_BUDGETS.filter(
-    (b) => b.provider === "publicai" && b.freeType === "keyless"
+    (b) => b.provider === "publicai" && b.freeType === "keyless",
   );
   assert.equal(keyless.length, 0, `publicai must not be keyless; found ${keyless.length}`);
 });

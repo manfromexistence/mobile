@@ -146,7 +146,10 @@ test("batch-activate can bulk-disable with status=inactive", async () => {
   });
   const res = await batchActivatePost(req);
   assert.equal(res.status, 200);
-  assert.equal((await proxiesDb.getProxyById(a!.id, { includeSecrets: false }))?.status, "inactive");
+  assert.equal(
+    (await proxiesDb.getProxyById(a!.id, { includeSecrets: false }))?.status,
+    "inactive",
+  );
 });
 
 test("batch-activate rejects an empty ids array with 400", async () => {

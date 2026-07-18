@@ -48,11 +48,11 @@ function insertMemory(
   db: ReturnType<typeof core.getDbInstance>,
   id: string,
   apiKeyId: string,
-  content: string
+  content: string,
 ) {
   db.prepare(
     `INSERT INTO memories (id, api_key_id, session_id, type, key, content, metadata, created_at, updated_at, expires_at)
-     VALUES (?, ?, ?, 'factual', ?, ?, '{}', datetime('now'), datetime('now'), NULL)`
+     VALUES (?, ?, ?, 'factual', ?, ?, '{}', datetime('now'), datetime('now'), NULL)`,
   ).run(id, apiKeyId, "", `key-${id}`, content);
 }
 
@@ -109,17 +109,17 @@ test("applyRerank fails silently: LOOPBACK_URL is 127.0.0.1 (not external)", () 
   const source = fs.readFileSync(
     path.join(
       import.meta.dirname ?? path.dirname(new URL(import.meta.url).pathname),
-      "../../src/lib/memory/retrieval.ts"
+      "../../src/lib/memory/retrieval.ts",
     ),
-    "utf8"
+    "utf8",
   );
   assert.ok(
     source.includes("127.0.0.1"),
-    "RERANK_LOOPBACK_URL must use 127.0.0.1 (loopback-only per security note)"
+    "RERANK_LOOPBACK_URL must use 127.0.0.1 (loopback-only per security note)",
   );
   assert.ok(
     source.includes("nosemgrep"),
-    "rerank URL must have semgrep suppression comment (known loopback exception)"
+    "rerank URL must have semgrep suppression comment (known loopback exception)",
   );
 });
 
@@ -144,7 +144,12 @@ test("retrieveMemories: large result set is token-budget capped before any reran
   const db = core.getDbInstance();
   // Insert 20 memories
   for (let i = 1; i <= 20; i++) {
-    insertMemory(db, `large-${i}`, "api-large", `Content number ${i} with enough words to use tokens.`);
+    insertMemory(
+      db,
+      `large-${i}`,
+      "api-large",
+      `Content number ${i} with enough words to use tokens.`,
+    );
   }
 
   const { retrieveMemories } = await import("../../src/lib/memory/retrieval.ts");
@@ -158,6 +163,6 @@ test("retrieveMemories: large result set is token-budget capped before any reran
   // Budget enforced: either fits budget or has exactly 1 item (minimum guarantee)
   assert.ok(
     total <= 100 || result.length === 1,
-    `token total ${total} should be ≤ 100 (budget enforced)`
+    `token total ${total} should be ≤ 100 (budget enforced)`,
   );
 });

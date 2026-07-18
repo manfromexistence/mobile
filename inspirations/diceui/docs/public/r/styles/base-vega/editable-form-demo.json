@@ -1,16 +1,8 @@
 {
   "name": "editable-form-demo",
   "type": "registry:example",
-  "dependencies": [
-    "react-hook-form",
-    "@hookform/resolvers",
-    "zod",
-    "sonner"
-  ],
-  "registryDependencies": [
-    "editable",
-    "form"
-  ],
+  "dependencies": ["react-hook-form", "@hookform/resolvers", "zod", "sonner"],
+  "registryDependencies": ["editable", "form"],
   "files": [
     {
       "path": "examples/editable-form-demo.tsx",

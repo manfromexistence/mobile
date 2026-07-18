@@ -36,16 +36,14 @@ const testimonials = [
     name: "Emily Davis",
     role: "Product Manager",
     company: "InnovateLab",
-    content:
-      "Our team productivity increased significantly after adopting this component library.",
+    content: "Our team productivity increased significantly after adopting this component library.",
     avatar: "ED",
   },
   {
     name: "David Kim",
     role: "Senior Developer",
     company: "CodeCraft",
-    content:
-      "Clean, modern components with excellent TypeScript support. Highly recommended!",
+    content: "Clean, modern components with excellent TypeScript support. Highly recommended!",
     avatar: "DK",
   },
   {

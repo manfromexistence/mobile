@@ -170,13 +170,10 @@ test("commentary-phase output text is NOT forwarded when dropping is enabled (#6
 
   assert.ok(
     !output.includes(COMMENTARY_TEXT),
-    "commentary-phase text must be dropped from the passthrough stream"
+    "commentary-phase text must be dropped from the passthrough stream",
   );
   // The commentary item announcement / completion must not leak either.
-  assert.ok(
-    !output.includes("msg_commentary"),
-    "commentary item events must be dropped entirely"
-  );
+  assert.ok(!output.includes("msg_commentary"), "commentary item events must be dropped entirely");
   // The real answer must always be forwarded.
   assert.ok(output.includes(FINAL_TEXT), "the final answer text must be forwarded");
   assert.ok(output.includes("msg_final"), "the final answer item must be forwarded");
@@ -190,7 +187,7 @@ test("commentary passes through when dropping is disabled (gate/regression) (#61
 
   assert.ok(
     output.includes(COMMENTARY_TEXT),
-    "with the flag disabled, commentary text must pass through untouched"
+    "with the flag disabled, commentary text must pass through untouched",
   );
   assert.ok(output.includes(FINAL_TEXT), "the final answer text must still be forwarded");
 });

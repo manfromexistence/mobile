@@ -4,6 +4,6 @@
  * (e.g. `BellRingIconHandle`) for ergonomic typing at the call site.
  */
 export type IconHandle = {
-	startAnimation: () => void;
-	stopAnimation: () => void;
+  startAnimation: () => void;
+  stopAnimation: () => void;
 };

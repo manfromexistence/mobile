@@ -33,7 +33,7 @@ describe("model capability overrides", () => {
 
     assert.equal(
       overrides.setModelCapabilityOverride("openai/gpt-4o", "max_token", distinct),
-      true
+      true,
     );
     assert.deepEqual(
       overrides.listModelCapabilityOverrides().map((entry) => ({
@@ -41,36 +41,36 @@ describe("model capability overrides", () => {
         key: entry.key,
         value: entry.value,
       })),
-      [{ target: "openai/gpt-4o", key: "max_token", value: distinct }]
+      [{ target: "openai/gpt-4o", key: "max_token", value: distinct }],
     );
 
     assert.equal(
       caps.getResolvedModelCapabilities({ provider: "openai", model: "gpt-4o" }).maxOutputTokens,
-      distinct
+      distinct,
     );
     assert.notEqual(
       caps.getResolvedModelCapabilities({ provider: "anthropic", model: "gpt-4o" }).maxOutputTokens,
       distinct,
-      "override must be scoped by provider/model, not bare model id"
+      "override must be scoped by provider/model, not bare model id",
     );
 
     assert.equal(overrides.removeModelCapabilityOverride("openai/gpt-4o", "max_token"), true);
     assert.equal(
       caps.getResolvedModelCapabilities({ provider: "openai", model: "gpt-4o" }).maxOutputTokens,
-      withoutOverride
+      withoutOverride,
     );
   });
 
   it("applies overrides stored under provider-scoped model aliases", () => {
     assert.equal(
       overrides.setModelCapabilityOverride("github/claude-opus-4.5", "max_token", 77777),
-      true
+      true,
     );
 
     assert.equal(
       caps.getResolvedModelCapabilities({ provider: "github", model: "claude-opus-4.5" })
         .maxOutputTokens,
-      77777
+      77777,
     );
   });
 

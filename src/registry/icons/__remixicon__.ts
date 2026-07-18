@@ -17,4 +17,4 @@ export {
   RiSunLine,
   RiTerminalLine,
   RiText,
-} from "@remixicon/react"
+} from "@remixicon/react";

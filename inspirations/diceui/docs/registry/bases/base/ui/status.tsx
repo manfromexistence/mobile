@@ -70,13 +70,7 @@ function StatusIndicator(props: React.ComponentProps<"div">) {
 function StatusLabel(props: React.ComponentProps<"div">) {
   const { className, ...labelProps } = props;
 
-  return (
-    <div
-      data-slot="status-label"
-      {...labelProps}
-      className={cn("leading-none", className)}
-    />
-  );
+  return <div data-slot="status-label" {...labelProps} className={cn("leading-none", className)} />;
 }
 
 export { Status, StatusIndicator, StatusLabel, statusVariants };

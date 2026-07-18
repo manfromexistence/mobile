@@ -57,7 +57,7 @@ async function seedConnection(provider: string, overrides: Record<string, unknow
 async function callRoute(connectionId: string, search = "") {
   return providerModelsRoute.GET(
     new Request(`http://localhost/api/providers/${connectionId}/models${search}`),
-    { params: { id: connectionId } }
+    { params: { id: connectionId } },
   );
 }
 
@@ -85,7 +85,7 @@ test("#6939: getProviderOutboundGuard() and getProviderValidationGuard() agree f
   assert.notEqual(
     validationGuard,
     "public-only",
-    "sanity: validation guard should allow LAN under the local-first default"
+    "sanity: validation guard should allow LAN under the local-first default",
   );
 });
 
@@ -111,12 +111,12 @@ test("#6939: LM Studio (LAN host, local OpenAI-compatible provider) model-list f
   // test-connection call for the same host succeeds under the same default settings.
   assert.ok(
     fetchCalled,
-    `expected the LAN model-list fetch to reach the network layer, got status=${response.status} body=${JSON.stringify(body)}`
+    `expected the LAN model-list fetch to reach the network layer, got status=${response.status} body=${JSON.stringify(body)}`,
   );
   assert.notEqual(response.status, 400);
   assert.ok(
     !String(body?.error || "").includes(outboundUrlGuard.PROVIDER_URL_BLOCKED_MESSAGE),
-    `LAN host must not be SSRF-blocked by default: ${JSON.stringify(body)}`
+    `LAN host must not be SSRF-blocked by default: ${JSON.stringify(body)}`,
   );
 });
 

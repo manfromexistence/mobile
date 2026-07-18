@@ -27,7 +27,7 @@ test("buildDiscordPayload — all WEBHOOK_EVENTS return object with content or e
     const payload = buildDiscordPayload(event, {});
     assert.ok(
       payload.content || (Array.isArray(payload.embeds) && payload.embeds.length > 0),
-      `event ${event} must have content or embeds`
+      `event ${event} must have content or embeds`,
     );
   }
 });

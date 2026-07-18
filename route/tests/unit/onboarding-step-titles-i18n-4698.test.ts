@@ -12,9 +12,7 @@ import { fileURLToPath } from "node:url";
 const STEP_IDS = ["welcome", "tiers", "security", "provider", "test", "done"];
 const titleKeyFor = (id: string) => (id === "done" ? "ready" : id);
 
-const enPath = fileURLToPath(
-  new URL("../../src/i18n/messages/en.json", import.meta.url)
-);
+const enPath = fileURLToPath(new URL("../../src/i18n/messages/en.json", import.meta.url));
 const en = JSON.parse(readFileSync(enPath, "utf8"));
 
 test("every onboarding step has a string title key in en.json (#4698)", () => {
@@ -24,7 +22,7 @@ test("every onboarding step has a string title key in en.json (#4698)", () => {
     assert.equal(
       typeof onboarding[key],
       "string",
-      `onboarding.${key} (for step "${id}") must be a string title`
+      `onboarding.${key} (for step "${id}") must be a string title`,
     );
   }
 });

@@ -34,7 +34,7 @@ function createStatusSequenceHandler(sequence) {
       {
         status: step.status,
         headers: step.headers || { "content-type": "application/json" },
-      }
+      },
     );
   };
 }

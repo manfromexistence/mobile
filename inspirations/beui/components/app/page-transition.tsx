@@ -12,7 +12,9 @@ export function PageTransition({ children }: { children: ReactNode }) {
   // Skip enter animation on first load so LCP element is visible immediately.
   // After mount, navigations animate normally.
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <motion.div

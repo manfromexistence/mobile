@@ -38,7 +38,7 @@ test("runWithCapture captures the actual JSON provider fetch body", async () => 
           messages: [{ role: "user", content: "hi" }],
           reasoning_effort: "high",
         }),
-      })
+      }),
     );
 
     assert.equal(prepared.length, 1);

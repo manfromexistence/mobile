@@ -17,8 +17,7 @@ const tricks = {
     },
     {
       label: "Heelflip",
-      description:
-        "Flip the board 360° along its long axis in the opposite direction",
+      description: "Flip the board 360° along its long axis in the opposite direction",
     },
   ],
   advanced: [
@@ -44,9 +43,7 @@ export default function ListboxGroupDemo() {
           <ListboxItem key={trick.label} value={trick.label}>
             <div className="flex flex-col items-start">
               <span>{trick.label}</span>
-              <span className="text-muted-foreground text-xs">
-                {trick.description}
-              </span>
+              <span className="text-muted-foreground text-xs">{trick.description}</span>
             </div>
             <ListboxItemIndicator />
           </ListboxItem>
@@ -58,9 +55,7 @@ export default function ListboxGroupDemo() {
           <ListboxItem key={trick.label} value={trick.label}>
             <div className="flex flex-col items-start">
               <span>{trick.label}</span>
-              <span className="text-muted-foreground text-xs">
-                {trick.description}
-              </span>
+              <span className="text-muted-foreground text-xs">{trick.description}</span>
             </div>
             <ListboxItemIndicator />
           </ListboxItem>

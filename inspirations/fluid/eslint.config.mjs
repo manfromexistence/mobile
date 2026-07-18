@@ -18,8 +18,7 @@ const shadcnRestrictedRules = {
     },
     {
       selector: `TemplateElement[value.raw=/${SHADCN_RESERVED_REGEX}/]`,
-      message:
-        "Tailwind utility reserved for /compare's shadcn theme. Use FF tokens instead.",
+      message: "Tailwind utility reserved for /compare's shadcn theme. Use FF tokens instead.",
     },
   ],
 };
@@ -69,11 +68,7 @@ export default [
   // are explicitly exempt because they need these utilities by design.
   {
     files: ["**/*.{ts,tsx}"],
-    ignores: [
-      "components/shadcn/**",
-      "app/compare/**",
-      "app/components/shadcn-previews.tsx",
-    ],
+    ignores: ["components/shadcn/**", "app/compare/**", "app/components/shadcn-previews.tsx"],
     rules: shadcnRestrictedRules,
   },
 ];

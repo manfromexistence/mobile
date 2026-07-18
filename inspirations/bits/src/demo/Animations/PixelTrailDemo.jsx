@@ -1,32 +1,32 @@
-import { useMemo } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box, Text } from '@chakra-ui/react';
+import { useMemo } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box, Text } from "@chakra-ui/react";
 
-import RefreshButton from '../../components/common/Preview/RefreshButton';
-import CodeExample from '../../components/code/CodeExample';
-import Dependencies from '../../components/code/Dependencies';
-import useForceRerender from '../../hooks/useForceRerender';
-import PropTable from '../../components/common/Preview/PropTable';
+import RefreshButton from "../../components/common/Preview/RefreshButton";
+import CodeExample from "../../components/code/CodeExample";
+import Dependencies from "../../components/code/Dependencies";
+import useForceRerender from "../../hooks/useForceRerender";
+import PropTable from "../../components/common/Preview/PropTable";
 
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
-import Customize from '../../components/common/Preview/Customize';
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
+import Customize from "../../components/common/Preview/Customize";
 
-import PixelTrail from '../../content/Animations/PixelTrail/PixelTrail';
-import { pixelTrail } from '../../constants/code/Animations/pixelTrailCode';
+import PixelTrail from "../../content/Animations/PixelTrail/PixelTrail";
+import { pixelTrail } from "../../constants/code/Animations/pixelTrailCode";
 
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
 const DEFAULT_PROPS = {
   gridSize: 50,
   trailSize: 0.1,
   maxAge: 250,
   interpolate: 5,
-  color: '#5227FF',
+  color: "#5227FF",
   gooeyEnabled: true,
-  gooStrength: 2
+  gooStrength: 2,
 };
 
 const PixelTrailDemo = () => {
@@ -37,23 +37,38 @@ const PixelTrailDemo = () => {
 
   const propData = useMemo(
     () => [
-      { name: 'gridSize', type: 'number', default: '40', description: 'Number of pixels in grid.' },
-      { name: 'trailSize', type: 'number', default: '0.1', description: 'Size of each trail dot.' },
-      { name: 'maxAge', type: 'number', default: '500', description: 'Duration of the trail effect.' },
-      { name: 'interpolate', type: 'number', default: '5', description: 'Interpolation factor for pointer movement.' },
-      { name: 'color', type: 'string', default: '#ffffff', description: 'Pixel color.' },
+      { name: "gridSize", type: "number", default: "40", description: "Number of pixels in grid." },
+      { name: "trailSize", type: "number", default: "0.1", description: "Size of each trail dot." },
       {
-        name: 'gooeyFilter',
-        type: 'object',
+        name: "maxAge",
+        type: "number",
+        default: "500",
+        description: "Duration of the trail effect.",
+      },
+      {
+        name: "interpolate",
+        type: "number",
+        default: "5",
+        description: "Interpolation factor for pointer movement.",
+      },
+      { name: "color", type: "string", default: "#ffffff", description: "Pixel color." },
+      {
+        name: "gooeyFilter",
+        type: "object",
         default: "{ id: 'custom-goo-filter', strength: 5 }",
-        description: 'Configuration for gooey filter.'
-      }
+        description: "Configuration for gooey filter.",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box position="relative" className="demo-container" h={400} p={0} overflow="hidden">
@@ -65,9 +80,17 @@ const PixelTrailDemo = () => {
               maxAge={maxAge}
               interpolate={interpolate}
               color={color}
-              gooeyFilter={gooeyEnabled ? { id: 'custom-goo-filter', strength: gooStrength } : undefined}
+              gooeyFilter={
+                gooeyEnabled ? { id: "custom-goo-filter", strength: gooStrength } : undefined
+              }
             />
-            <Text position="absolute" zIndex={0} fontSize="clamp(2rem, 6vw, 6rem)" color="#2F293A" fontWeight={900}>
+            <Text
+              position="absolute"
+              zIndex={0}
+              fontSize="clamp(2rem, 6vw, 6rem)"
+              color="#2F293A"
+              fontWeight={900}
+            >
               Move Cursor.
             </Text>
           </Box>
@@ -79,8 +102,8 @@ const PixelTrailDemo = () => {
               max={100}
               step={1}
               value={gridSize}
-              onChange={val => {
-                updateProp('gridSize', val);
+              onChange={(val) => {
+                updateProp("gridSize", val);
                 forceRerender();
               }}
             />
@@ -91,8 +114,8 @@ const PixelTrailDemo = () => {
               max={0.5}
               step={0.01}
               value={trailSize}
-              onChange={val => {
-                updateProp('trailSize', val);
+              onChange={(val) => {
+                updateProp("trailSize", val);
                 forceRerender();
               }}
             />
@@ -103,8 +126,8 @@ const PixelTrailDemo = () => {
               max={1000}
               step={50}
               value={maxAge}
-              onChange={val => {
-                updateProp('maxAge', val);
+              onChange={(val) => {
+                updateProp("maxAge", val);
                 forceRerender();
               }}
             />
@@ -115,19 +138,26 @@ const PixelTrailDemo = () => {
               max={10}
               step={0.1}
               value={interpolate}
-              onChange={val => {
-                updateProp('interpolate', val);
+              onChange={(val) => {
+                updateProp("interpolate", val);
                 forceRerender();
               }}
             />
 
-            <PreviewColorPickerCustom title="Color" color={color} onChange={val => { updateProp('color', val); forceRerender(); }} />
+            <PreviewColorPickerCustom
+              title="Color"
+              color={color}
+              onChange={(val) => {
+                updateProp("color", val);
+                forceRerender();
+              }}
+            />
 
             <PreviewSwitch
               title="Gooey Filter"
               isChecked={gooeyEnabled}
-              onChange={checked => {
-                updateProp('gooeyEnabled', checked);
+              onChange={(checked) => {
+                updateProp("gooeyEnabled", checked);
                 forceRerender();
               }}
             />
@@ -139,8 +169,8 @@ const PixelTrailDemo = () => {
                 max={20}
                 step={1}
                 value={gooStrength}
-                onChange={val => {
-                  updateProp('gooStrength', val);
+                onChange={(val) => {
+                  updateProp("gooStrength", val);
                   forceRerender();
                 }}
               />
@@ -148,7 +178,7 @@ const PixelTrailDemo = () => {
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['@react-three/fiber', '@react-three/drei', 'three']} />
+          <Dependencies dependencyList={["@react-three/fiber", "@react-three/drei", "three"]} />
         </PreviewTab>
 
         <CodeTab>

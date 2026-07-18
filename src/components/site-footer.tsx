@@ -1,14 +1,14 @@
-import { DmcaIcon, GitHubIcon, LinkedInIcon, XIcon } from "@/components/icons"
-import { SiteFooterInteractiveLogotype } from "@/components/site-footer-brand"
-import { LICENSE, SOURCE_CODE_GITHUB_URL } from "@/config/site"
-import { SOCIAL } from "@/features/portfolio/data/social-links"
-import { USER } from "@/features/portfolio/data/user"
-import { cn } from "@/lib/utils"
+import { DmcaIcon, GitHubIcon, LinkedInIcon, XIcon } from "@/components/icons";
+import { SiteFooterInteractiveLogotype } from "@/components/site-footer-brand";
+import { LICENSE, SOURCE_CODE_GITHUB_URL } from "@/config/site";
+import { SOCIAL } from "@/features/portfolio/data/social-links";
+import { USER } from "@/features/portfolio/data/user";
+import { cn } from "@/lib/utils";
 
 export function SiteFooter() {
-  const xLink = SOCIAL.x
-  const githubLink = SOCIAL.github
-  const linkedinLink = SOCIAL.linkedin
+  const xLink = SOCIAL.x;
+  const githubLink = SOCIAL.github;
+  const linkedinLink = SOCIAL.linkedin;
 
   return (
     <footer className="max-w-screen overflow-x-clip px-2">
@@ -21,12 +21,7 @@ export function SiteFooter() {
           <Item>
             <dt>Crafted by</dt>
             <dd>
-              <a
-                className="link-underline"
-                href={xLink.href}
-                target="_blank"
-                rel="noopener"
-              >
+              <a className="link-underline" href={xLink.href} target="_blank" rel="noopener">
                 {USER.displayName}
               </a>
             </dd>
@@ -79,12 +74,7 @@ export function SiteFooter() {
           <Item>
             <dt>License</dt>
             <dd>
-              <a
-                className="link-underline"
-                href={LICENSE.url}
-                target="_blank"
-                rel="noopener"
-              >
+              <a className="link-underline" href={LICENSE.url} target="_blank" rel="noopener">
                 {LICENSE.name}
               </a>
             </dd>
@@ -131,10 +121,7 @@ export function SiteFooter() {
 
             <a
               className="flex text-muted-foreground transition-[color] hover:text-foreground"
-              href={
-                process.env.NEXT_PUBLIC_DMCA_URL ||
-                "https://www.dmca.com/ProtectionPro.aspx"
-              }
+              href={process.env.NEXT_PUBLIC_DMCA_URL || "https://www.dmca.com/ProtectionPro.aspx"}
               target="_blank"
               rel="noopener"
               aria-label="DMCA.com Protection Status"
@@ -155,13 +142,13 @@ export function SiteFooter() {
       <div className="h-(--fade-bottom-height)" />
       <div className="pb-[env(safe-area-inset-bottom,0)]" />
     </footer>
-  )
+  );
 }
 
 function Separator({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("flex h-11 w-px bg-line", className)} {...props} />
+  return <div className={cn("flex h-11 w-px bg-line", className)} {...props} />;
 }
 
 function Item({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("grid grid-cols-2 gap-4", className)} {...props} />
+  return <div className={cn("grid grid-cols-2 gap-4", className)} {...props} />;
 }

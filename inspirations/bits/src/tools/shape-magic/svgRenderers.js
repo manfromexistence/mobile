@@ -84,18 +84,18 @@ export const getRoundedRectPath = (x, y, w, h, corners) => {
     Z
   `
     .trim()
-    .replace(/\s+/g, ' ');
+    .replace(/\s+/g, " ");
 };
 
 const cornersFor = (cornerRadii, id, globalRadius) =>
   cornerRadii[id] || { tl: globalRadius, tr: globalRadius, br: globalRadius, bl: globalRadius };
 
-export const computeShapesBBox = shapes => {
+export const computeShapesBBox = (shapes) => {
   let minX = Infinity,
     minY = Infinity,
     maxX = -Infinity,
     maxY = -Infinity;
-  shapes.forEach(s => {
+  shapes.forEach((s) => {
     minX = Math.min(minX, s.x);
     minY = Math.min(minY, s.y);
     maxX = Math.max(maxX, s.x + s.w);
@@ -105,12 +105,13 @@ export const computeShapesBBox = shapes => {
 };
 
 // How much extra room the shadow / stroke effects need outside the shape bounds.
-export const effectPadding = style => {
+export const effectPadding = (style) => {
   let pad = 0;
   if (style?.shadowEnabled) {
     pad = Math.max(
       pad,
-      (style.shadowBlur || 0) + Math.max(Math.abs(style.shadowOffsetX || 0), Math.abs(style.shadowOffsetY || 0))
+      (style.shadowBlur || 0) +
+        Math.max(Math.abs(style.shadowOffsetX || 0), Math.abs(style.shadowOffsetY || 0)),
     );
   }
   if (style?.strokeEnabled) {
@@ -122,11 +123,11 @@ export const effectPadding = style => {
 // Build a renderer-agnostic description of the fill (solid color or gradient).
 // `bbox` must be in the same coordinate space as the drawn paths so a gradient
 // spans the whole merged silhouette seamlessly (gradientUnits=userSpaceOnUse).
-export const getFillSpec = (style, bbox, idSuffix = '') => {
+export const getFillSpec = (style, bbox, idSuffix = "") => {
   const id = `sm-fill-${idSuffix}`;
-  const type = style.fillType || 'solid';
-  if (type === 'solid') {
-    return { type: 'solid', id, paint: style.fill };
+  const type = style.fillType || "solid";
+  if (type === "solid") {
+    return { type: "solid", id, paint: style.fill };
   }
 
   const c1 = style.fill;
@@ -134,13 +135,13 @@ export const getFillSpec = (style, bbox, idSuffix = '') => {
   const cx = bbox.x + bbox.w / 2;
   const cy = bbox.y + bbox.h / 2;
 
-  if (type === 'linear') {
+  if (type === "linear") {
     const angle = (((style.gradientAngle ?? 135) - 90) * Math.PI) / 180;
     const half = (Math.abs(Math.cos(angle)) * bbox.w + Math.abs(Math.sin(angle)) * bbox.h) / 2;
     const dx = Math.cos(angle) * half;
     const dy = Math.sin(angle) * half;
     return {
-      type: 'linear',
+      type: "linear",
       id,
       paint: `url(#${id})`,
       x1: cx - dx,
@@ -149,14 +150,14 @@ export const getFillSpec = (style, bbox, idSuffix = '') => {
       y2: cy + dy,
       stops: [
         { offset: 0, color: c1 },
-        { offset: 1, color: c2 }
-      ]
+        { offset: 1, color: c2 },
+      ],
     };
   }
 
   // radial
   return {
-    type: 'radial',
+    type: "radial",
     id,
     paint: `url(#${id})`,
     cx,
@@ -164,13 +165,13 @@ export const getFillSpec = (style, bbox, idSuffix = '') => {
     r: Math.max(bbox.w, bbox.h) / 2,
     stops: [
       { offset: 0, color: c1 },
-      { offset: 1, color: c2 }
-    ]
+      { offset: 1, color: c2 },
+    ],
   };
 };
 
 // Description of the shadow + outer-stroke filter applied to the merged group.
-export const getFxSpec = (style, idSuffix = '') => {
+export const getFxSpec = (style, idSuffix = "") => {
   const hasShadow = !!style.shadowEnabled;
   const hasStroke = !!style.strokeEnabled && (style.strokeWidth || 0) > 0;
   if (!hasShadow && !hasStroke) return null;
@@ -184,45 +185,63 @@ export const getFxSpec = (style, idSuffix = '') => {
     shadowOffsetY: style.shadowOffsetY,
     shadowOpacity: style.shadowOpacity,
     strokeColor: style.strokeColor,
-    strokeWidth: style.strokeWidth
+    strokeWidth: style.strokeWidth,
   };
 };
 
 // String builders (used by the export generators).
-export const fillDefsString = spec => {
-  if (!spec || spec.type === 'solid') return '';
-  const stops = spec.stops.map(s => `<stop offset="${s.offset}" stop-color="${s.color}" />`).join('');
-  if (spec.type === 'linear') {
+export const fillDefsString = (spec) => {
+  if (!spec || spec.type === "solid") return "";
+  const stops = spec.stops
+    .map((s) => `<stop offset="${s.offset}" stop-color="${s.color}" />`)
+    .join("");
+  if (spec.type === "linear") {
     return `<linearGradient id="${spec.id}" gradientUnits="userSpaceOnUse" x1="${spec.x1}" y1="${spec.y1}" x2="${spec.x2}" y2="${spec.y2}">${stops}</linearGradient>`;
   }
   return `<radialGradient id="${spec.id}" gradientUnits="userSpaceOnUse" cx="${spec.cx}" cy="${spec.cy}" r="${spec.r}">${stops}</radialGradient>`;
 };
 
-export const fxFilterString = spec => {
-  if (!spec) return '';
+export const fxFilterString = (spec) => {
+  if (!spec) return "";
   const parts = [];
   if (spec.hasShadow) {
-    parts.push(`<feGaussianBlur in="SourceAlpha" stdDeviation="${spec.shadowBlur}" result="smBlur" />`);
-    parts.push(`<feOffset in="smBlur" dx="${spec.shadowOffsetX}" dy="${spec.shadowOffsetY}" result="smOff" />`);
     parts.push(
-      `<feFlood flood-color="${spec.shadowColor}" flood-opacity="${spec.shadowOpacity}" result="smShadowColor" />`
+      `<feGaussianBlur in="SourceAlpha" stdDeviation="${spec.shadowBlur}" result="smBlur" />`,
+    );
+    parts.push(
+      `<feOffset in="smBlur" dx="${spec.shadowOffsetX}" dy="${spec.shadowOffsetY}" result="smOff" />`,
+    );
+    parts.push(
+      `<feFlood flood-color="${spec.shadowColor}" flood-opacity="${spec.shadowOpacity}" result="smShadowColor" />`,
     );
     parts.push(`<feComposite in="smShadowColor" in2="smOff" operator="in" result="smShadow" />`);
   }
   if (spec.hasStroke) {
-    parts.push(`<feMorphology in="SourceAlpha" operator="dilate" radius="${spec.strokeWidth}" result="smDilated" />`);
+    parts.push(
+      `<feMorphology in="SourceAlpha" operator="dilate" radius="${spec.strokeWidth}" result="smDilated" />`,
+    );
     parts.push(`<feFlood flood-color="${spec.strokeColor}" result="smStrokeColor" />`);
-    parts.push(`<feComposite in="smStrokeColor" in2="smDilated" operator="in" result="smOutline" />`);
+    parts.push(
+      `<feComposite in="smStrokeColor" in2="smDilated" operator="in" result="smOutline" />`,
+    );
   }
   const merge = [
-    spec.hasShadow ? '<feMergeNode in="smShadow" />' : '',
-    spec.hasStroke ? '<feMergeNode in="smOutline" />' : '',
-    '<feMergeNode in="SourceGraphic" />'
-  ].join('');
-  return `<filter id="${spec.id}" x="-50%" y="-50%" width="200%" height="200%">${parts.join('')}<feMerge>${merge}</feMerge></filter>`;
+    spec.hasShadow ? '<feMergeNode in="smShadow" />' : "",
+    spec.hasStroke ? '<feMergeNode in="smOutline" />' : "",
+    '<feMergeNode in="SourceGraphic" />',
+  ].join("");
+  return `<filter id="${spec.id}" x="-50%" y="-50%" width="200%" height="200%">${parts.join("")}<feMerge>${merge}</feMerge></filter>`;
 };
 
-export const generateMergedSVG = (shapes, bridges, cornerRadii, style, globalRadius, smoothing = 0.6, opts = {}) => {
+export const generateMergedSVG = (
+  shapes,
+  bridges,
+  cornerRadii,
+  style,
+  globalRadius,
+  smoothing = 0.6,
+  opts = {},
+) => {
   const basePad = 10;
   const userPad = opts.padding ?? 0;
   const fxPad = effectPadding(style);
@@ -235,37 +254,44 @@ export const generateMergedSVG = (shapes, bridges, cornerRadii, style, globalRad
   const offsetY = -bb.y + padding;
 
   const drawnBBox = { x: padding, y: padding, w: bb.w, h: bb.h };
-  const fillSpec = getFillSpec(style, drawnBBox, 'merged');
-  const fxSpec = getFxSpec(style, 'merged');
+  const fillSpec = getFillSpec(style, drawnBBox, "merged");
+  const fxSpec = getFxSpec(style, "merged");
 
   const shapePaths = shapes
-    .map(s => {
+    .map((s) => {
       const corners = cornersFor(cornerRadii, s.id, globalRadius);
       return `<path d="${getRoundedRectPath(s.x + offsetX, s.y + offsetY, s.w, s.h, corners)}" />`;
     })
-    .join('\n      ');
+    .join("\n      ");
 
   const bridgePaths = bridges
-    .map(b => {
+    .map((b) => {
       return `<path d="${getBridgePathAt(b.x + offsetX, b.y + offsetY, b.r, b.rotation, smoothing)}" />`;
     })
-    .join('\n      ');
+    .join("\n      ");
 
   const defs = `${fillDefsString(fillSpec)}${fxFilterString(fxSpec)}`;
   const bg =
     style.backgroundEnabled || opts.forceBackground
       ? `<rect x="0" y="0" width="${width}" height="${height}" fill="${style.backgroundColor}" />\n  `
-      : '';
+      : "";
 
   return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-  ${defs ? `<defs>${defs}</defs>\n  ` : ''}${bg}<g fill="${fillSpec.paint}" fill-opacity="${style.opacity ?? 1}"${fxSpec ? ` filter="url(#${fxSpec.id})"` : ''}>
+  ${defs ? `<defs>${defs}</defs>\n  ` : ""}${bg}<g fill="${fillSpec.paint}" fill-opacity="${style.opacity ?? 1}"${fxSpec ? ` filter="url(#${fxSpec.id})"` : ""}>
       ${shapePaths}
       ${bridgePaths}
   </g>
 </svg>`;
 };
 
-export const generateMergedClipPathSVG = (shapes, bridges, cornerRadii, style, globalRadius, smoothing = 0.6) => {
+export const generateMergedClipPathSVG = (
+  shapes,
+  bridges,
+  cornerRadii,
+  style,
+  globalRadius,
+  smoothing = 0.6,
+) => {
   const padding = 10;
   const bb = computeShapesBBox(shapes);
   const width = bb.w + padding * 2;
@@ -275,17 +301,17 @@ export const generateMergedClipPathSVG = (shapes, bridges, cornerRadii, style, g
 
   const allPaths = [];
 
-  shapes.forEach(s => {
+  shapes.forEach((s) => {
     const corners = cornersFor(cornerRadii, s.id, globalRadius);
     allPaths.push(getRoundedRectPath(s.x + offsetX, s.y + offsetY, s.w, s.h, corners));
   });
 
-  bridges.forEach(b => {
+  bridges.forEach((b) => {
     allPaths.push(getBridgePathAt(b.x + offsetX, b.y + offsetY, b.r, b.rotation, smoothing));
   });
 
-  const combinedPath = allPaths.join(' ');
-  const fillSpec = getFillSpec(style, { x: padding, y: padding, w: bb.w, h: bb.h }, 'clip');
+  const combinedPath = allPaths.join(" ");
+  const fillSpec = getFillSpec(style, { x: padding, y: padding, w: bb.w, h: bb.h }, "clip");
   const defs = fillDefsString(fillSpec);
 
   return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
@@ -306,7 +332,13 @@ export const generateMergedClipPathSVG = (shapes, bridges, cornerRadii, style, g
 </svg>`;
 };
 
-export const generateCSSClipPath = (shapes, bridges, cornerRadii, globalRadius, smoothing = 0.6) => {
+export const generateCSSClipPath = (
+  shapes,
+  bridges,
+  cornerRadii,
+  globalRadius,
+  smoothing = 0.6,
+) => {
   const padding = 10;
   const bb = computeShapesBBox(shapes);
   const width = bb.w + padding * 2;
@@ -316,16 +348,16 @@ export const generateCSSClipPath = (shapes, bridges, cornerRadii, globalRadius, 
 
   const allPaths = [];
 
-  shapes.forEach(s => {
+  shapes.forEach((s) => {
     const corners = cornersFor(cornerRadii, s.id, globalRadius);
     allPaths.push(getRoundedRectPath(s.x + offsetX, s.y + offsetY, s.w, s.h, corners));
   });
 
-  bridges.forEach(b => {
+  bridges.forEach((b) => {
     allPaths.push(getBridgePathAt(b.x + offsetX, b.y + offsetY, b.r, b.rotation, smoothing));
   });
 
-  const combinedPath = allPaths.join(' ').replace(/\s+/g, ' ').trim();
+  const combinedPath = allPaths.join(" ").replace(/\s+/g, " ").trim();
 
   return `/* Container dimensions: ${Math.round(width)}px × ${Math.round(height)}px */
 .clipped-element {
@@ -428,7 +460,7 @@ const computeNegativeSpaces = (shapes, bridges, globalRadius, minX, minY, maxX, 
         y: nsTop,
         w: width,
         h: height,
-        rotation: bridge.rotation
+        rotation: bridge.rotation,
       };
 
       let shouldAdd = true;
@@ -484,13 +516,13 @@ export const generateReactComponent = (
   style,
   globalRadius,
   smoothing = 0.6,
-  name = 'MergedShape'
+  name = "MergedShape",
 ) => {
   let minX = Infinity,
     minY = Infinity,
     maxX = -Infinity,
     maxY = -Infinity;
-  shapes.forEach(s => {
+  shapes.forEach((s) => {
     minX = Math.min(minX, s.x);
     minY = Math.min(minY, s.y);
     maxX = Math.max(maxX, s.x + s.w);
@@ -500,7 +532,15 @@ export const generateReactComponent = (
   const width = maxX - minX;
   const height = maxY - minY;
 
-  const negativeSpaces = computeNegativeSpaces(shapes, bridges, globalRadius, minX, minY, maxX, maxY);
+  const negativeSpaces = computeNegativeSpaces(
+    shapes,
+    bridges,
+    globalRadius,
+    minX,
+    minY,
+    maxX,
+    maxY,
+  );
 
   const shapeElements = shapes
     .map((s, i) => {
@@ -523,7 +563,7 @@ export const generateReactComponent = (
         {/* Add content here */}
       </div>`;
     })
-    .join('\n');
+    .join("\n");
 
   const negativeSpaceElements = negativeSpaces
     .map((ns, i) => {
@@ -544,7 +584,7 @@ export const generateReactComponent = (
         {/* Add content here */}
       </div>`;
     })
-    .join('\n');
+    .join("\n");
 
   const bridgeElements = bridges
     .map((b, i) => {
@@ -591,7 +631,7 @@ export const generateReactComponent = (
         <path d="${getBridgePath(b.r, b.rotation, smoothing)}" fill={fill} />
       </svg>`;
     })
-    .join('\n');
+    .join("\n");
 
   return `const ${name} = ({ fill = "${style.fill}", children, style: containerStyle, ...props }) => (
   <div

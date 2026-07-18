@@ -19,16 +19,13 @@ async function main() {
     setLabel("init-label", report.text);
   };
   const selectedModel = "Llama-3.1-8B-Instruct-q4f32_1-MLC";
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    { initProgressCallback: initProgressCallback },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+  });
 
   const request: webllm.ChatCompletionRequest = {
     stream: false, // works with streaming as well
-    messages: [
-      { role: "user", content: "Write a creative Haiku about Pittsburgh" },
-    ],
+    messages: [{ role: "user", content: "Write a creative Haiku about Pittsburgh" }],
     n: 3,
     temperature: 1.2, // high temperature gives much more random results
     max_tokens: 128, // To save time; enough to demonstrate the effect
@@ -49,11 +46,7 @@ async function main() {
     const id = choice0.index;
     const choice1 = reply1.choices[id];
     if (choice0.message.content !== choice1.message.content) {
-      throw Error(
-        "Chocie " +
-          id +
-          " of the two generations are different despite seeding",
-      );
+      throw Error("Chocie " + id + " of the two generations are different despite seeding");
     }
   }
 

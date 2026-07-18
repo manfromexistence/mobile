@@ -4,24 +4,22 @@ import { useCheckboxGroup } from "./checkbox-group-root";
 
 const LABEL_NAME = "CheckboxGroupLabel";
 
-interface CheckboxGroupLabelProps
-  extends React.ComponentPropsWithoutRef<typeof Primitive.label> {}
+interface CheckboxGroupLabelProps extends React.ComponentPropsWithoutRef<typeof Primitive.label> {}
 
-const CheckboxGroupLabel = React.forwardRef<
-  HTMLLabelElement,
-  CheckboxGroupLabelProps
->((props, ref) => {
-  const context = useCheckboxGroup(LABEL_NAME);
+const CheckboxGroupLabel = React.forwardRef<HTMLLabelElement, CheckboxGroupLabelProps>(
+  (props, ref) => {
+    const context = useCheckboxGroup(LABEL_NAME);
 
-  return (
-    <Primitive.label
-      data-disabled={context.disabled ? "" : undefined}
-      id={context.labelId}
-      {...props}
-      ref={ref}
-    />
-  );
-});
+    return (
+      <Primitive.label
+        data-disabled={context.disabled ? "" : undefined}
+        id={context.labelId}
+        {...props}
+        ref={ref}
+      />
+    );
+  },
+);
 
 CheckboxGroupLabel.displayName = LABEL_NAME;
 

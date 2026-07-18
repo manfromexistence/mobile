@@ -23,9 +23,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { buildKiroPayload } = await import(
-  "../../open-sse/translator/request/openai-to-kiro.ts"
-);
+const { buildKiroPayload } = await import("../../open-sse/translator/request/openai-to-kiro.ts");
 
 test("[repro #6576] buildKiroPayload must not attach additionalModelRequestFields for claude-sonnet-4.5 (Kiro rejects it)", () => {
   const body = {
@@ -42,7 +40,7 @@ test("[repro #6576] buildKiroPayload must not attach additionalModelRequestField
     undefined,
     "additionalModelRequestFields must not be sent for claude-sonnet-4.5 — " +
       "Kiro/CodeWhisperer rejects it upstream with " +
-      "'[400]: additionalModelRequestFields is not supported for this model' (issue #6576)"
+      "'[400]: additionalModelRequestFields is not supported for this model' (issue #6576)",
   );
 });
 
@@ -59,6 +57,6 @@ test("[repro #6576] buildKiroPayload must not attach additionalModelRequestField
     undefined,
     "additionalModelRequestFields must not be sent for claude-haiku-4.5 — " +
       "Kiro/CodeWhisperer rejects it upstream (issue #6576 comment by fenix007: " +
-      "9/9 production requests with reasoning params 400'd for this exact model)"
+      "9/9 production requests with reasoning params 400'd for this exact model)",
   );
 });

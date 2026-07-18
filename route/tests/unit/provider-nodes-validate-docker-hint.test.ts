@@ -37,7 +37,7 @@ test("ECONNREFUSED against localhost surfaces a Docker host-IP hint", () => {
   const message = augmentDockerLocalhostHint(
     networkError("ECONNREFUSED"),
     "http://localhost:11434",
-    FALLBACK
+    FALLBACK,
   );
   assert.match(message, /Connection refused/);
   assert.match(message, /Docker/);
@@ -49,7 +49,7 @@ test("ECONNREFUSED against 127.0.0.1 surfaces the Docker hint", () => {
   const message = augmentDockerLocalhostHint(
     networkError("ECONNREFUSED"),
     "http://127.0.0.1:11434/v1",
-    FALLBACK
+    FALLBACK,
   );
   assert.match(message, /Connection refused/);
   assert.match(message, /Docker/);
@@ -66,7 +66,7 @@ test("connection error against a NON-localhost host keeps the original message",
   const message = augmentDockerLocalhostHint(
     networkError("ECONNREFUSED"),
     "http://192.168.1.50:11434",
-    FALLBACK
+    FALLBACK,
   );
   assert.equal(message, FALLBACK);
 });
@@ -75,7 +75,7 @@ test("a localhost-substring host that is not actually localhost is not hinted", 
   const message = augmentDockerLocalhostHint(
     networkError("ECONNREFUSED"),
     "http://localhost.evil.example.com:11434",
-    FALLBACK
+    FALLBACK,
   );
   assert.equal(message, FALLBACK);
 });
@@ -84,7 +84,7 @@ test("a non-connection error against localhost keeps the original message", () =
   const message = augmentDockerLocalhostHint(
     networkError("CERT_HAS_EXPIRED"),
     "http://localhost:11434",
-    FALLBACK
+    FALLBACK,
   );
   assert.equal(message, FALLBACK);
 });

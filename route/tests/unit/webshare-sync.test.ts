@@ -128,7 +128,7 @@ test("WebshareProvider.sync paginates via `next` and upserts proxies", async () 
             last_verification: "2026-01-01T00:00:00.000Z",
           },
         ],
-        "https://proxy.webshare.io/api/v2/proxy/list/?page=2"
+        "https://proxy.webshare.io/api/v2/proxy/list/?page=2",
       );
     }
     return webshareResponse(
@@ -141,7 +141,7 @@ test("WebshareProvider.sync paginates via `next` and upserts proxies", async () 
           last_verification: "2026-01-01T00:00:00.000Z",
         },
       ],
-      null
+      null,
     );
   }) as typeof fetch;
 
@@ -152,7 +152,7 @@ test("WebshareProvider.sync paginates via `next` and upserts proxies", async () 
     assert.deepEqual(seenPages, ["1", "2"]);
     assert.ok(
       seenAuthHeaders.every((h) => h === `Token ${FAKE_API_KEY}`),
-      "every request must carry the Webshare Authorization token"
+      "every request must carry the Webshare Authorization token",
     );
     assert.equal(result.fetched, 3);
     assert.equal(result.added, 3);
@@ -291,8 +291,7 @@ test("WebshareProvider.sync never leaks the API key in error messages on an HTTP
   const originalFetch = globalThis.fetch;
   process.env.FREE_PROXY_WEBSHARE_API_KEY = FAKE_API_KEY;
 
-  globalThis.fetch = (async () =>
-    new Response("Unauthorized", { status: 401 })) as typeof fetch;
+  globalThis.fetch = (async () => new Response("Unauthorized", { status: 401 })) as typeof fetch;
 
   try {
     const p = getProvider("webshare")!;
@@ -302,7 +301,10 @@ test("WebshareProvider.sync never leaks the API key in error messages on an HTTP
     assert.ok(result.errors.length > 0);
     for (const err of result.errors) {
       assert.ok(!err.includes(FAKE_API_KEY), `error must not leak the API key: ${err}`);
-      assert.ok(!err.toLowerCase().includes("authorization"), `error must not leak the auth header: ${err}`);
+      assert.ok(
+        !err.toLowerCase().includes("authorization"),
+        `error must not leak the auth header: ${err}`,
+      );
     }
   } finally {
     globalThis.fetch = originalFetch;

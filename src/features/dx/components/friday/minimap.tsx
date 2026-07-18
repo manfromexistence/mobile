@@ -2,11 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/friday-ui/hover-card";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/friday-ui/hover-card";
 import { cn } from "@/lib/friday/utils";
 
 type Section = {
@@ -100,16 +96,9 @@ export function Minimap({ sections, scrollContainerRef }: MinimapProps) {
                   />
                 </motion.button>
               </HoverCardTrigger>
-              <HoverCardContent
-                side="right"
-                align="center"
-                sideOffset={10}
-                className="w-64 p-3"
-              >
+              <HoverCardContent side="right" align="center" sideOffset={10} className="w-64 p-3">
                 <div className="space-y-1.5">
-                  <p className="text-[11px] font-semibold text-foreground truncate">
-                    {s.label}
-                  </p>
+                  <p className="text-[11px] font-semibold text-foreground truncate">{s.label}</p>
                   <p className="text-[11px] text-muted-foreground line-clamp-3 leading-relaxed">
                     {s.preview}
                   </p>

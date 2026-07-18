@@ -20,14 +20,10 @@ export default function EditableDemo() {
         <EditablePreview />
         <EditableInput />
       </EditableArea>
-      <EditableTrigger render={<Button size="sm" className="w-fit" />}>
-        Edit
-      </EditableTrigger>
+      <EditableTrigger render={<Button size="sm" className="w-fit" />}>Edit</EditableTrigger>
       <EditableToolbar>
         <EditableSubmit render={<Button size="sm" />}>Save</EditableSubmit>
-        <EditableCancel render={<Button variant="outline" size="sm" />}>
-          Cancel
-        </EditableCancel>
+        <EditableCancel render={<Button variant="outline" size="sm" />}>Cancel</EditableCancel>
       </EditableToolbar>
     </Editable>
   );

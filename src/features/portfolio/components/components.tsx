@@ -1,24 +1,24 @@
-import { ArrowRightIcon } from "lucide-react"
-import type { Route } from "next"
-import Link from "next/link"
+import { ArrowRightIcon } from "lucide-react";
+import type { Route } from "next";
+import Link from "next/link";
 import {
   ComponentItem,
   ComponentItemDot,
   ComponentItemIcon,
   ComponentItemTitle,
-} from "@/app/(app)/(pages)/components/component-item"
-import { Button } from "@/components/base/ui/button"
-import { ComponentIcon } from "@/features/doc/components/component-icon"
-import { getComponentDocs } from "@/features/doc/data/documents"
-import { cn } from "@/lib/utils"
+} from "@/app/(app)/(pages)/components/component-item";
+import { Button } from "@/components/base/ui/button";
+import { ComponentIcon } from "@/features/doc/components/component-icon";
+import { getComponentDocs } from "@/features/doc/data/documents";
+import { cn } from "@/lib/utils";
 
-import { Panel, PanelHeader, PanelTitle, PanelTitleSup } from "./panel"
-import { PanelTitleCopy } from "./panel-title-copy"
+import { Panel, PanelHeader, PanelTitle, PanelTitleSup } from "./panel";
+import { PanelTitleCopy } from "./panel-title-copy";
 
-const ID = "components"
+const ID = "components";
 
 export function Components() {
-  const components = getComponentDocs()
+  const components = getComponentDocs();
 
   return (
     <Panel id={ID}>
@@ -45,21 +45,17 @@ export function Components() {
               className={cn(
                 "max-sm:screen-line-bottom",
                 "sm:max-md:nth-[2n+1]:screen-line-bottom",
-                "md:nth-[3n+1]:screen-line-bottom"
+                "md:nth-[3n+1]:screen-line-bottom",
               )}
             >
               <ComponentItem href={`/components/${c.slug}` as Route}>
                 <ComponentItemIcon>
                   <ComponentIcon slug={c.slug} />
                   {(c.metadata.new || c.metadata.updated) && (
-                    <ComponentItemDot
-                      aria-label={c.metadata.new ? "New" : "Updated"}
-                    />
+                    <ComponentItemDot aria-label={c.metadata.new ? "New" : "Updated"} />
                   )}
                 </ComponentItemIcon>
-                <ComponentItemTitle as="h3">
-                  {c.metadata.title}
-                </ComponentItemTitle>
+                <ComponentItemTitle as="h3">{c.metadata.title}</ComponentItemTitle>
               </ComponentItem>
             </li>
           ))}
@@ -81,5 +77,5 @@ export function Components() {
         </Button>
       </div>
     </Panel>
-  )
+  );
 }

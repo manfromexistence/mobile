@@ -1,13 +1,9 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import type * as React from "react"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
+import { motion } from "framer-motion";
+import type * as React from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 export function SidebarItem({
   icon: Icon,
@@ -17,12 +13,12 @@ export function SidebarItem({
   badge,
   onClick,
 }: {
-  icon: React.ElementType
-  label: string
-  collapsed: boolean
-  active?: boolean
-  badge?: string
-  onClick?: () => void
+  icon: React.ElementType;
+  label: string;
+  collapsed: boolean;
+  active?: boolean;
+  badge?: string;
+  onClick?: () => void;
 }) {
   return (
     <Tooltip>
@@ -34,7 +30,7 @@ export function SidebarItem({
             collapsed ? "w-auto justify-center px-3" : "w-full px-3",
             active
               ? "bg-muted text-foreground"
-              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground",
           )}
         >
           <motion.span
@@ -72,7 +68,7 @@ export function SidebarItem({
         </button>
       </TooltipTrigger>
     </Tooltip>
-  )
+  );
 }
 
 export function SidebarSubItem({
@@ -80,9 +76,9 @@ export function SidebarSubItem({
   label,
   collapsed,
 }: {
-  icon: React.ElementType
-  label: string
-  collapsed: boolean
+  icon: React.ElementType;
+  label: string;
+  collapsed: boolean;
 }) {
   return (
     <Tooltip>
@@ -90,7 +86,7 @@ export function SidebarSubItem({
         <button
           className={cn(
             "group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-[15px] text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:py-1.5 md:text-sm",
-            collapsed && "justify-center px-0"
+            collapsed && "justify-center px-0",
           )}
         >
           <motion.span
@@ -110,7 +106,7 @@ export function SidebarSubItem({
       </TooltipTrigger>
       {collapsed && <TooltipContent side="right">{label}</TooltipContent>}
     </Tooltip>
-  )
+  );
 }
 
 export function HistoryItem({
@@ -120,11 +116,11 @@ export function HistoryItem({
   active,
   onClick,
 }: {
-  icon?: React.ElementType
-  label: string
-  collapsed: boolean
-  active?: boolean
-  onClick?: () => void
+  icon?: React.ElementType;
+  label: string;
+  collapsed: boolean;
+  active?: boolean;
+  onClick?: () => void;
 }) {
   return (
     <button
@@ -133,7 +129,7 @@ export function HistoryItem({
         "flex w-full items-center gap-3 truncate rounded-lg px-3 py-2 text-left text-[15px] transition-colors md:py-1.5 md:text-sm",
         active
           ? "bg-muted font-medium text-foreground"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          : "text-muted-foreground hover:bg-muted hover:text-foreground",
       )}
     >
       {Icon && (
@@ -149,5 +145,5 @@ export function HistoryItem({
       {!Icon && collapsed === false && <span className="pl-7" />}
       <span className="truncate">{label}</span>
     </button>
-  )
+  );
 }

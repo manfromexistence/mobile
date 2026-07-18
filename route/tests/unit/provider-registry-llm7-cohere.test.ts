@@ -37,10 +37,10 @@ test("#2360 cohere routes via the OpenAI-compatible compatibility layer", () => 
   assert.ok(
     typeof entry.baseUrl === "string" &&
       entry.baseUrl.includes("/compatibility/v1/chat/completions"),
-    `cohere baseUrl must use the OpenAI-compatible compatibility layer, got: ${entry.baseUrl}`
+    `cohere baseUrl must use the OpenAI-compatible compatibility layer, got: ${entry.baseUrl}`,
   );
   assert.ok(
     typeof entry.modelsUrl === "string" && entry.modelsUrl.includes("/compatibility/v1/models"),
-    "cohere modelsUrl must use the compatibility endpoint so /v1/models import works"
+    "cohere modelsUrl must use the compatibility endpoint so /v1/models import works",
   );
 });

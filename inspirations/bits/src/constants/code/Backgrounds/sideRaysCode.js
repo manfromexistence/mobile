@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/SideRays/SideRays.jsx?raw';
-import css from '@content/Backgrounds/SideRays/SideRays.css?raw';
-import tailwind from '@tailwind/Backgrounds/SideRays/SideRays.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/SideRays/SideRays.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/SideRays/SideRays.tsx?raw';
+import code from "@content/Backgrounds/SideRays/SideRays.jsx?raw";
+import css from "@content/Backgrounds/SideRays/SideRays.css?raw";
+import tailwind from "@tailwind/Backgrounds/SideRays/SideRays.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/SideRays/SideRays.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/SideRays/SideRays.tsx?raw";
 
 export const sideRays = {
   dependencies: `ogl`,
@@ -27,5 +27,5 @@ export const sideRays = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

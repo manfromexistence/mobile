@@ -103,7 +103,7 @@ describe("transformToOmniRoute", () => {
     assert.strictEqual(
       Object.keys(openaiModels).length,
       0,
-      "Should skip models carrying no pricing of any kind"
+      "Should skip models carrying no pricing of any kind",
     );
   });
 

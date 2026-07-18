@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { SafeOutboundFetchError, safeOutboundFetch } =
-  await import("../../src/shared/network/safeOutboundFetch.ts");
+const { SafeOutboundFetchError, safeOutboundFetch } = await import(
+  "../../src/shared/network/safeOutboundFetch.ts"
+);
 
 const originalFetch = globalThis.fetch;
 
@@ -46,7 +47,7 @@ test("safeOutboundFetch normalizes timeout failures", async () => {
           error.name = "AbortError";
           reject(error);
         },
-        { once: true }
+        { once: true },
       );
     });
 
@@ -62,7 +63,7 @@ test("safeOutboundFetch normalizes timeout failures", async () => {
       (assert as any).equal((error as any).timeoutMs, 5);
       (assert as any).equal((error as any).url, "https://example.test/slow");
       return true;
-    }
+    },
   );
 });
 
@@ -85,7 +86,7 @@ test("safeOutboundFetch blocks redirects when allowRedirect is disabled", async 
       assert.equal((error as any).status, 302);
       assert.equal((error as any).location, "https://redirect.example.test/login");
       return true;
-    }
+    },
   );
 });
 
@@ -107,6 +108,6 @@ test("safeOutboundFetch blocks private hosts when public-only guard is enabled",
       assert.equal((error as any).code, "URL_GUARD_BLOCKED");
       assert.equal(called, false);
       return true;
-    }
+    },
   );
 });

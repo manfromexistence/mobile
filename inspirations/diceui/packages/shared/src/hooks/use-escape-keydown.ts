@@ -7,11 +7,7 @@ interface UseEscapeKeydownParams {
   enabled?: boolean;
 }
 
-function useEscapeKeydown({
-  document,
-  onEscapeKeyDown,
-  enabled,
-}: UseEscapeKeydownParams) {
+function useEscapeKeydown({ document, onEscapeKeyDown, enabled }: UseEscapeKeydownParams) {
   const onEscapeKeyDownCallback = useCallbackRef(onEscapeKeyDown);
 
   React.useEffect(() => {

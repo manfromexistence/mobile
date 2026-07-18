@@ -59,7 +59,8 @@ export function Controls({
         }
 
         if (c.kind === "select") {
-          const v = typeof values[c.key] === "string" ? (values[c.key] as string) : c.options[0]?.value;
+          const v =
+            typeof values[c.key] === "string" ? (values[c.key] as string) : c.options[0]?.value;
           return (
             <div key={c.key} className="block">
               <span className="text-sm font-medium text-foreground">{c.label}</span>
@@ -83,9 +84,7 @@ export function Controls({
         }
 
         if (c.kind === "numberlist") {
-          const list = Array.isArray(values[c.key])
-            ? (values[c.key] as number[])
-            : [];
+          const list = Array.isArray(values[c.key]) ? (values[c.key] as number[]) : [];
           const minItems = c.minItems ?? 2;
           const maxItems = c.maxItems ?? 8;
           const b = c.bounds?.(values) ?? { min: 0, max: 100, step: 1 };
@@ -100,14 +99,11 @@ export function Controls({
               c.key,
               list.filter((_, idx) => idx !== i),
             );
-          const add = () =>
-            onChange(c.key, [...list, list[list.length - 1] ?? b.min]);
+          const add = () => onChange(c.key, [...list, list[list.length - 1] ?? b.min]);
 
           return (
             <div key={c.key} className="block">
-              <span className="text-sm font-medium text-foreground">
-                {c.label}
-              </span>
+              <span className="text-sm font-medium text-foreground">{c.label}</span>
               <div className="mt-3 flex flex-col gap-4">
                 {list.map((n, i) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: positional checkpoint slots
@@ -115,11 +111,7 @@ export function Controls({
                     <span className="flex items-baseline justify-between text-xs">
                       <span className="font-medium text-muted-foreground">
                         Checkpoint {i + 1}
-                        {i === 0
-                          ? " (start)"
-                          : i === list.length - 1
-                            ? " (end)"
-                            : ""}
+                        {i === 0 ? " (start)" : i === list.length - 1 ? " (end)" : ""}
                       </span>
                       <span className="flex items-center gap-1.5">
                         <span className="font-mono text-muted-foreground tabular-nums">
@@ -147,9 +139,7 @@ export function Controls({
                       onValueChange={(val) => setAt(i, val)}
                     />
                     {c.describe ? (
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {c.describe(n, values)}
-                      </p>
+                      <p className="mt-1 text-xs text-muted-foreground">{c.describe(n, values)}</p>
                     ) : null}
                   </div>
                 ))}
@@ -191,7 +181,5 @@ export function Controls({
 }
 
 function Hint({ children }: { children: ReactNode }) {
-  return (
-    <p className="mt-1.5 text-xs leading-5 text-muted-foreground">{children}</p>
-  );
+  return <p className="mt-1.5 text-xs leading-5 text-muted-foreground">{children}</p>;
 }

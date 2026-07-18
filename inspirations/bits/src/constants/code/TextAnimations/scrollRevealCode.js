@@ -1,8 +1,8 @@
-import code from '@content/TextAnimations/ScrollReveal/ScrollReveal.jsx?raw';
-import css from '@content/TextAnimations/ScrollReveal/ScrollReveal.css?raw';
-import tailwind from '@tailwind/TextAnimations/ScrollReveal/ScrollReveal.jsx?raw';
-import tsCode from '@ts-default/TextAnimations/ScrollReveal/ScrollReveal.tsx?raw';
-import tsTailwind from '@ts-tailwind/TextAnimations/ScrollReveal/ScrollReveal.tsx?raw';
+import code from "@content/TextAnimations/ScrollReveal/ScrollReveal.jsx?raw";
+import css from "@content/TextAnimations/ScrollReveal/ScrollReveal.css?raw";
+import tailwind from "@tailwind/TextAnimations/ScrollReveal/ScrollReveal.jsx?raw";
+import tsCode from "@ts-default/TextAnimations/ScrollReveal/ScrollReveal.tsx?raw";
+import tsTailwind from "@ts-tailwind/TextAnimations/ScrollReveal/ScrollReveal.tsx?raw";
 
 export const scrollReveal = {
   dependencies: `gsap`,
@@ -22,5 +22,5 @@ export const scrollReveal = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

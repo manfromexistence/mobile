@@ -9,11 +9,7 @@
 import { afterEach, describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-import {
-  acquire,
-  getStats,
-  resetAll,
-} from "../../open-sse/services/rateLimitSemaphore.ts";
+import { acquire, getStats, resetAll } from "../../open-sse/services/rateLimitSemaphore.ts";
 
 afterEach(() => {
   resetAll();
@@ -61,7 +57,7 @@ describe("rateLimitSemaphore queue depth (#3872)", () => {
         assert.ok(err instanceof Error);
         assert.equal((err as Error & { code?: string }).code, "SEMAPHORE_QUEUE_FULL");
         return true;
-      }
+      },
     );
 
     releaseA();
@@ -81,7 +77,7 @@ describe("rateLimitSemaphore queue depth (#3872)", () => {
         assert.ok(err instanceof Error);
         assert.equal((err as Error & { code?: string }).code, "SEMAPHORE_QUEUE_FULL");
         return true;
-      }
+      },
     );
 
     assert.equal(getStats()[model].queued, 0);

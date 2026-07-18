@@ -44,9 +44,7 @@ export default function MaskInputCardInformationDemo() {
       }
 
       toast.success(
-        <pre className="w-full">
-          {JSON.stringify({ cardNumber, expiryDate, cvc }, null, 2)}
-        </pre>,
+        <pre className="w-full">{JSON.stringify({ cardNumber, expiryDate, cvc }, null, 2)}</pre>,
       );
     },
     [cardNumber, expiryDate, cvc, isFormValid],
@@ -72,9 +70,7 @@ export default function MaskInputCardInformationDemo() {
             invalid={!cardNumberValid}
           />
           {!cardNumberValid && cardNumber && (
-            <p className="text-destructive text-sm">
-              Please enter a valid credit card number.
-            </p>
+            <p className="text-destructive text-sm">Please enter a valid credit card number.</p>
           )}
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -91,9 +87,7 @@ export default function MaskInputCardInformationDemo() {
               invalid={!expiryValid}
             />
             {!expiryValid && expiryDate && (
-              <p className="text-destructive text-sm">
-                Your card's expiration date is invalid.
-              </p>
+              <p className="text-destructive text-sm">Your card's expiration date is invalid.</p>
             )}
           </div>
           <div className="flex flex-col gap-2">
@@ -112,9 +106,7 @@ export default function MaskInputCardInformationDemo() {
               onValidate={setCvcValid}
               invalid={!cvcValid}
             />
-            {!cvcValid && cvc && (
-              <p className="text-destructive text-sm">CVC must be 3 digits.</p>
-            )}
+            {!cvcValid && cvc && <p className="text-destructive text-sm">CVC must be 3 digits.</p>}
           </div>
         </div>
       </CardContent>

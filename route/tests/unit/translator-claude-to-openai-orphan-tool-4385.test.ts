@@ -10,8 +10,9 @@ import assert from "node:assert/strict";
 // the assistant turn but kept the tool_result). OpenAI-compatible upstreams reject it.
 // This mirrors the orphan filter already on the Responses->Chat path (#2893).
 
-const { claudeToOpenAIRequest } =
-  await import("../../open-sse/translator/request/claude-to-openai.ts");
+const { claudeToOpenAIRequest } = await import(
+  "../../open-sse/translator/request/claude-to-openai.ts"
+);
 
 type Msg = { role: string; tool_call_id?: string; tool_calls?: { id?: string }[] };
 
@@ -31,7 +32,7 @@ test("#4385 drops an orphan tool_result with no preceding assistant tool_call", 
         },
       ],
     },
-    false
+    false,
   );
 
   const toolMsgs = (result.messages as Msg[]).filter((m) => m.role === "tool");
@@ -51,7 +52,7 @@ test("#4385 preserves a tool_result paired with its assistant tool_call", () => 
         { role: "user", content: [{ type: "tool_result", tool_use_id: "tu_1", content: "a.ts" }] },
       ],
     },
-    false
+    false,
   );
 
   const toolMsgs = (result.messages as Msg[]).filter((m) => m.role === "tool");
@@ -59,7 +60,7 @@ test("#4385 preserves a tool_result paired with its assistant tool_call", () => 
   assert.equal(toolMsgs[0].tool_call_id, "tu_1");
   // The assistant.tool_calls is still present and precedes the tool message.
   const assistantIdx = (result.messages as Msg[]).findIndex(
-    (m) => m.role === "assistant" && Array.isArray(m.tool_calls)
+    (m) => m.role === "assistant" && Array.isArray(m.tool_calls),
   );
   const toolIdx = (result.messages as Msg[]).findIndex((m) => m.role === "tool");
   assert.ok(assistantIdx >= 0 && assistantIdx < toolIdx);
@@ -84,7 +85,7 @@ test("#4385 keeps valid tool_results and drops orphans in the same user turn", (
         },
       ],
     },
-    false
+    false,
   );
 
   const toolMsgs = (result.messages as Msg[]).filter((m) => m.role === "tool");
@@ -113,7 +114,7 @@ function assertToolOrdering(messages: Msg[]) {
     } else if (m.role === "tool") {
       assert.ok(
         activeIds && activeIds.has(String(m.tool_call_id)),
-        `role:'tool' ${m.tool_call_id} is not preceded by a matching assistant tool_calls`
+        `role:'tool' ${m.tool_call_id} is not preceded by a matching assistant tool_calls`,
       );
     } else {
       activeIds = null;
@@ -148,7 +149,7 @@ test("#4714 regroups parallel tool_results split across user turns next to their
         },
       ],
     },
-    false
+    false,
   );
 
   const messages = result.messages as Msg[];
@@ -157,7 +158,7 @@ test("#4714 regroups parallel tool_results split across user turns next to their
 
   // Both real tool results survive, adjacent to the assistant, in tool_calls order.
   const assistantIdx = messages.findIndex(
-    (m) => m.role === "assistant" && Array.isArray(m.tool_calls)
+    (m) => m.role === "assistant" && Array.isArray(m.tool_calls),
   );
   assert.equal((messages[assistantIdx + 1] as Msg).tool_call_id, "callA");
   assert.equal((messages[assistantIdx + 2] as Msg).tool_call_id, "callB");
@@ -190,7 +191,7 @@ test("#4714 still inserts a placeholder for a genuinely unanswered parallel tool
         },
       ],
     },
-    false
+    false,
   );
 
   const messages = result.messages as Msg[];

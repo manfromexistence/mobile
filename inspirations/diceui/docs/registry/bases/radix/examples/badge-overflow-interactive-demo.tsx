@@ -29,12 +29,9 @@ export default function BadgeOverflowInteractiveDemo() {
   ]);
   const [input, setInput] = React.useState("");
 
-  const onInputChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setInput(event.target.value);
-    },
-    [],
-  );
+  const onInputChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(event.target.value);
+  }, []);
 
   const onTagAdd = React.useCallback(() => {
     if (input.trim()) {

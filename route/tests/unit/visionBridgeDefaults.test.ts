@@ -17,7 +17,7 @@ test("VISION_BRIDGE_DEFAULTS exports correct values", () => {
   assert.strictEqual(VISION_BRIDGE_DEFAULTS.model, "openai/gpt-4o-mini");
   assert.strictEqual(
     VISION_BRIDGE_DEFAULTS.prompt,
-    "Describe this image concisely in 2-3 sentences. Focus on the most relevant visual details."
+    "Describe this image concisely in 2-3 sentences. Focus on the most relevant visual details.",
   );
   assert.strictEqual(VISION_BRIDGE_DEFAULTS.timeoutMs, 30000);
   assert.strictEqual(VISION_BRIDGE_DEFAULTS.maxImagesPerRequest, 10);

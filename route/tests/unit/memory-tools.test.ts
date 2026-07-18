@@ -167,11 +167,11 @@ test("memory clear deletes only older filtered entries and reports the deleted c
   const cutoff = new Date("2025-01-01T00:00:00.000Z");
   db.prepare("UPDATE memories SET created_at = ? WHERE id = ?").run(
     "2024-01-01T00:00:00.000Z",
-    older.id
+    older.id,
   );
   db.prepare("UPDATE memories SET created_at = ? WHERE id = ?").run(
     "2025-06-01T00:00:00.000Z",
-    newer.id
+    newer.id,
   );
 
   const result = await memoryTools.omniroute_memory_clear.handler({

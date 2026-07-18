@@ -27,8 +27,9 @@ describe("CombosError boundary", () => {
   });
 
   it("renders a recoverable fallback instead of throwing", async () => {
-    const { default: CombosError } =
-      await import("../../../src/app/(dashboard)/dashboard/combos/error");
+    const { default: CombosError } = await import(
+      "../../../src/app/(dashboard)/dashboard/combos/error"
+    );
     const container = makeContainer();
     const root = createRoot(container);
     const reset = vi.fn();
@@ -43,8 +44,9 @@ describe("CombosError boundary", () => {
   });
 
   it("calls reset() exactly once when Try Again is clicked", async () => {
-    const { default: CombosError } =
-      await import("../../../src/app/(dashboard)/dashboard/combos/error");
+    const { default: CombosError } = await import(
+      "../../../src/app/(dashboard)/dashboard/combos/error"
+    );
     const container = makeContainer();
     const root = createRoot(container);
     const reset = vi.fn();
@@ -55,7 +57,7 @@ describe("CombosError boundary", () => {
     });
 
     const button = Array.from(container.querySelectorAll("button")).find(
-      (b) => b.textContent === "Try Again"
+      (b) => b.textContent === "Try Again",
     ) as HTMLButtonElement | undefined;
     expect(button).toBeTruthy();
 

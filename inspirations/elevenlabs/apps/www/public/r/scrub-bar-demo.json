@@ -1,9 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "scrub-bar-demo",
-  "registryDependencies": [
-    "https://ui.elevenlabs.io/r/scrub-bar.json"
-  ],
+  "registryDependencies": ["https://ui.elevenlabs.io/r/scrub-bar.json"],
   "files": [
     {
       "path": "examples/scrub-bar-demo.tsx",

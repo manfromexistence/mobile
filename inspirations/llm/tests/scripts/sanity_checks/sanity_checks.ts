@@ -22,10 +22,7 @@ async function deleteModel(modelId: string, appConfig: webllm.AppConfig) {
   await webllm.deleteModelAllInfoInCache(modelId, appConfig);
 }
 
-async function testLogitProcessor(
-  modelId: string,
-  appConfig: webllm.AppConfig,
-) {
+async function testLogitProcessor(modelId: string, appConfig: webllm.AppConfig) {
   // Set up a logit processor that sets logits[0] = 100.0, rest -100.0
   const logitProcessor = {
     processLogits: (logits: Float32Array) => {
@@ -57,8 +54,7 @@ async function testLogitProcessor(
     logprobs &&
     Array.isArray(logprobs.content) &&
     logprobs.content.every(
-      (lp: webllm.ChatCompletionTokenLogprob) =>
-        lp.top_logprobs[0].logprob === 0,
+      (lp: webllm.ChatCompletionTokenLogprob) => lp.top_logprobs[0].logprob === 0,
     )
   );
 
@@ -71,10 +67,7 @@ async function testLogitProcessor(
 async function testLogitBias(modelId: string, appConfig: webllm.AppConfig) {
   // Set logit_bias to strongly favor token 0
   const prompt = "Test logit bias.";
-  const engine: webllm.MLCEngineInterface = await createEngine(
-    modelId,
-    appConfig,
-  );
+  const engine: webllm.MLCEngineInterface = await createEngine(modelId, appConfig);
   const reply = await engine.chat.completions.create({
     messages: [{ role: "user", content: prompt }],
     temperature: 1.0,
@@ -88,8 +81,7 @@ async function testLogitBias(modelId: string, appConfig: webllm.AppConfig) {
     logprobs &&
     Array.isArray(logprobs.content) &&
     logprobs.content.every(
-      (lp: webllm.ChatCompletionTokenLogprob) =>
-        lp.top_logprobs[0].logprob === 0,
+      (lp: webllm.ChatCompletionTokenLogprob) => lp.top_logprobs[0].logprob === 0,
     )
   );
 
@@ -101,10 +93,7 @@ async function testLogitBias(modelId: string, appConfig: webllm.AppConfig) {
 
 async function testPenalties(modelId: string, appConfig: webllm.AppConfig) {
   const prompt = "Test presence and frequency penalties.";
-  const engine: webllm.MLCEngineInterface = await createEngine(
-    modelId,
-    appConfig,
-  );
+  const engine: webllm.MLCEngineInterface = await createEngine(modelId, appConfig);
   const reply = await engine.chat.completions.create({
     messages: [{ role: "user", content: prompt }],
     temperature: 1.0,
@@ -127,10 +116,7 @@ async function testPenalties(modelId: string, appConfig: webllm.AppConfig) {
 async function testLogprobs(modelId: string, appConfig: webllm.AppConfig) {
   // Test logprobs: check that logprobs are returned and sum to ~1 after exp
   const prompt = "Test logprobs.";
-  const engine: webllm.MLCEngineInterface = await createEngine(
-    modelId,
-    appConfig,
-  );
+  const engine: webllm.MLCEngineInterface = await createEngine(modelId, appConfig);
   const reply = await engine.chat.completions.create({
     messages: [{ role: "user", content: prompt }],
     temperature: 1.0,
@@ -171,14 +157,8 @@ async function main() {
   if (await testLogprobs(modelId, appConfig)) passed++;
   total++;
 
-  setLabel(
-    "gpu-test-label",
-    `GPU sampleTokenFromLogits tests: ${passed}/${total} passed.`,
-  );
-  setLabel(
-    "gpu-test-label",
-    `Tests complete. Model deleted. ${passed}/${total} passed.`,
-  );
+  setLabel("gpu-test-label", `GPU sampleTokenFromLogits tests: ${passed}/${total} passed.`);
+  setLabel("gpu-test-label", `Tests complete. Model deleted. ${passed}/${total} passed.`);
 }
 
 main();

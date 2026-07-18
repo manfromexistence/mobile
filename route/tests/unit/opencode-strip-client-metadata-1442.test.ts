@@ -34,7 +34,7 @@ describe("OpencodeExecutor — strips client_metadata (#1442)", () => {
     assert.equal(
       Object.prototype.hasOwnProperty.call(out, "client_metadata"),
       false,
-      "opencode forward body must not carry client_metadata"
+      "opencode forward body must not carry client_metadata",
     );
     assert.ok(Array.isArray(out.messages), "messages preserved");
   });

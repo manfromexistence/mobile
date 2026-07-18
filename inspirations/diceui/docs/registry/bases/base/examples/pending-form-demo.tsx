@@ -40,13 +40,7 @@ export default function PendingFormDemo() {
 
       <div className="space-y-2">
         <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          type="password"
-          placeholder="••••••••"
-          required
-          disabled={isPending}
-        />
+        <Input id="password" type="password" placeholder="••••••••" required disabled={isPending} />
       </div>
 
       <Button type="submit" className="w-full" {...pendingProps}>

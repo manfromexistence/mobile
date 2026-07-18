@@ -32,14 +32,14 @@ describe("BDD: proxy egress isolation", () => {
       assertHostnameSupportsFamily("proxy.example.com", 6, async () => [
         { address: "203.0.113.7", family: 4 },
       ]),
-      /no IPv6/i
+      /no IPv6/i,
     );
   });
 
   it("Scenario: family directive contradicting a literal is rejected", () => {
     assert.throws(
       () => __resolveDispatcherFamilyForTest("http://203.0.113.7:8080?family=ipv6"),
-      /family/i
+      /family/i,
     );
   });
 
@@ -49,7 +49,7 @@ describe("BDD: proxy egress isolation", () => {
         resolveTlsClientProxyUrl("https://grok.com", undefined, () => {
           throw new Error("SOCKS5 disabled");
         }),
-      /fail-closed/i
+      /fail-closed/i,
     );
   });
 });

@@ -22,7 +22,7 @@ import { dirname, resolve } from "node:path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CARD_PATH = resolve(
   __dirname,
-  "../../../src/app/(dashboard)/dashboard/cli-code/components/HermesAgentToolCard.tsx"
+  "../../../src/app/(dashboard)/dashboard/cli-code/components/HermesAgentToolCard.tsx",
 );
 
 describe("HermesAgentToolCard model alias wiring (#7151)", () => {

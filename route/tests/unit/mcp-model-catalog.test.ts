@@ -31,7 +31,7 @@ test("getMcpModelsCatalog aggregates only active connection model endpoints", as
 
         throw new Error(`Unexpected path: ${path}`);
       },
-    }
+    },
   );
 
   assert.deepEqual(calls, ["/api/providers/conn-github/models?excludeHidden=true"]);
@@ -72,7 +72,7 @@ test("getMcpModelsCatalog exposes codex default thinking effort when no override
         source: "api",
         models: [{ id: "gpt-5.5", owned_by: "codex", supportedEndpoints: ["chat"] }],
       }),
-    }
+    },
   );
 
   assert.equal(result.models.length, 1);
@@ -95,7 +95,7 @@ test("getMcpModelsCatalog exposes stored thinking effort overrides", async () =>
         source: "api",
         models: [{ id: "gpt-5", owned_by: "chatgpt-web", supportedEndpoints: ["chat"] }],
       }),
-    }
+    },
   );
 
   assert.equal(result.models.length, 1);
@@ -119,7 +119,7 @@ test("getMcpModelsCatalog resolves provider aliases to active connection ids", a
           models: [{ id: "gpt-4.1", owned_by: "github", supportedEndpoints: ["chat"] }],
         };
       },
-    }
+    },
   );
 
   assert.deepEqual(calls, ["/api/providers/conn-github/models?excludeHidden=true"]);
@@ -132,11 +132,13 @@ test("getMcpModelsCatalog returns empty result when requested provider has no ac
   const result = await getMcpModelsCatalog(
     { provider: "github" },
     {
-      listProviderConnections: async () => [{ id: "conn-codex", provider: "codex", isActive: true }],
+      listProviderConnections: async () => [
+        { id: "conn-codex", provider: "codex", isActive: true },
+      ],
       fetchJson: async () => {
         throw new Error("fetchJson should not be called without a matching active provider");
       },
-    }
+    },
   );
 
   assert.deepEqual(result, {

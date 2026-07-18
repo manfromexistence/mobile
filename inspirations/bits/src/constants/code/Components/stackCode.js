@@ -1,8 +1,8 @@
-import code from '@content/Components/Stack/Stack.jsx?raw';
-import css from '@content/Components/Stack/Stack.css?raw';
-import tailwind from '@tailwind/Components/Stack/Stack.jsx?raw';
-import tsCode from '@ts-default/Components/Stack/Stack.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/Stack/Stack.tsx?raw';
+import code from "@content/Components/Stack/Stack.jsx?raw";
+import css from "@content/Components/Stack/Stack.css?raw";
+import tailwind from "@tailwind/Components/Stack/Stack.jsx?raw";
+import tsCode from "@ts-default/Components/Stack/Stack.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/Stack/Stack.tsx?raw";
 
 export const stack = {
   dependencies: `motion`,
@@ -34,5 +34,5 @@ const images = [
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

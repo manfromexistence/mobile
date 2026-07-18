@@ -1,14 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "audio-player",
-  "dependencies": [
-    "@radix-ui/react-slider",
-    "@radix-ui/react-dropdown-menu"
-  ],
-  "registryDependencies": [
-    "button",
-    "dropdown-menu"
-  ],
+  "dependencies": ["@radix-ui/react-slider", "@radix-ui/react-dropdown-menu"],
+  "registryDependencies": ["button", "dropdown-menu"],
   "files": [
     {
       "path": "components/ui/audio-player.tsx",

@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiToOpenAIResponsesResponse, openaiResponsesToOpenAIResponse } =
-  await import("../../open-sse/translator/response/openai-responses.ts");
+const { openaiToOpenAIResponsesResponse, openaiResponsesToOpenAIResponse } = await import(
+  "../../open-sse/translator/response/openai-responses.ts"
+);
 const { initState } = await import("../../open-sse/translator/index.ts");
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 
@@ -76,15 +77,15 @@ test("OpenAI -> Responses: emits lifecycle, reasoning, text, tool calls and comp
   assert.ok(events.some((event) => event.event === "response.reasoning_summary_text.delta"));
   assert.ok(
     events.some(
-      (event) => event.event === "response.output_text.delta" && event.data.delta === "hello"
-    )
+      (event) => event.event === "response.output_text.delta" && event.data.delta === "hello",
+    ),
   );
   assert.ok(
     events.some(
       (event) =>
         event.event === "response.function_call_arguments.done" &&
-        event.data.arguments === '{"path":"/tmp/a"}'
-    )
+        event.data.arguments === '{"path":"/tmp/a"}',
+    ),
   );
 
   const completed = events.find((event) => event.event === "response.completed");
@@ -129,14 +130,14 @@ test("OpenAI -> Responses: prompt-format <think> tags remain text by default", (
 
   assert.equal(
     events.some((event) => event.event === "response.reasoning_summary_text.delta"),
-    false
+    false,
   );
   assert.ok(
     events.some(
       (event) =>
         event.event === "response.output_text.delta" &&
-        event.data.delta === "<think>Plan it</think>Done."
-    )
+        event.data.delta === "<think>Plan it</think>Done.",
+    ),
   );
 });
 
@@ -158,13 +159,13 @@ test("OpenAI -> Responses: tag-native models still emit <think> text as reasonin
   assert.ok(
     events.some(
       (event) =>
-        event.event === "response.reasoning_summary_text.delta" && event.data.delta === "Plan it"
-    )
+        event.event === "response.reasoning_summary_text.delta" && event.data.delta === "Plan it",
+    ),
   );
   assert.ok(
     events.some(
-      (event) => event.event === "response.output_text.delta" && event.data.delta === "Done."
-    )
+      (event) => event.event === "response.output_text.delta" && event.data.delta === "Done.",
+    ),
   );
 });
 
@@ -216,14 +217,14 @@ test("OpenAI -> Responses: changing tool id at same index closes previous call b
     events.some(
       (event) =>
         event.event === "response.function_call_arguments.done" &&
-        event.data.item_id === "fc_call_1"
-    )
+        event.data.item_id === "fc_call_1",
+    ),
   );
   assert.ok(
     events.some(
       (event) =>
-        event.event === "response.output_item.added" && event.data.item.call_id === "call_2"
-    )
+        event.event === "response.output_item.added" && event.data.item.call_id === "call_2",
+    ),
   );
 });
 
@@ -231,7 +232,7 @@ test("Responses -> OpenAI: text delta streams as content and flush sends stop fi
   const state = {};
   const first = openaiResponsesToOpenAIResponse(
     { type: "response.output_text.delta", delta: "hi" },
-    state
+    state,
   );
   const final = openaiResponsesToOpenAIResponse(null, state);
 
@@ -246,7 +247,7 @@ test("Responses -> OpenAI: empty-name tool call is deferred until output_item.do
       type: "response.output_item.added",
       item: { type: "function_call", call_id: "call_1", name: "" },
     },
-    state
+    state,
   );
   const done = openaiResponsesToOpenAIResponse(
     {
@@ -258,7 +259,7 @@ test("Responses -> OpenAI: empty-name tool call is deferred until output_item.do
         arguments: { path: "/tmp/a" },
       },
     },
-    state
+    state,
   );
 
   assert.equal(started, null);
@@ -266,7 +267,7 @@ test("Responses -> OpenAI: empty-name tool call is deferred until output_item.do
   assert.equal(done.choices[0].delta.tool_calls[0].function.name, "read_file");
   assert.equal(
     done.choices[0].delta.tool_calls[0].function.arguments,
-    JSON.stringify({ path: "/tmp/a" })
+    JSON.stringify({ path: "/tmp/a" }),
   );
 });
 
@@ -277,7 +278,7 @@ test("Responses -> OpenAI: preserves non-Read JSON-string tool arguments", () =>
       type: "response.output_item.added",
       item: { type: "function_call", call_id: "call_note", name: "save_note" },
     },
-    state
+    state,
   );
   const done = openaiResponsesToOpenAIResponse(
     {
@@ -289,7 +290,7 @@ test("Responses -> OpenAI: preserves non-Read JSON-string tool arguments", () =>
         arguments: '{"text":"","tags":[]}',
       },
     },
-    state
+    state,
   );
 
   assert.equal(done.choices[0].delta.tool_calls[0].function.arguments, '{"text":"","tags":[]}');
@@ -302,14 +303,14 @@ test("Responses -> OpenAI: preserves falsy JSON-string tool arguments while clea
       type: "response.output_item.added",
       item: { type: "function_call", call_id: "call_flag", name: "set_flag" },
     },
-    state
+    state,
   );
   const done = openaiResponsesToOpenAIResponse(
     {
       type: "response.output_item.done",
       item: { type: "function_call", call_id: "call_flag", name: "set_flag", arguments: "false" },
     },
-    state
+    state,
   );
 
   assert.equal(done.choices[0].delta.tool_calls[0].function.arguments, "false");
@@ -322,14 +323,14 @@ test("Responses -> OpenAI: preserves non-object Read JSON-string arguments", () 
       type: "response.output_item.added",
       item: { type: "function_call", call_id: "call_read", name: "Read" },
     },
-    state
+    state,
   );
   const done = openaiResponsesToOpenAIResponse(
     {
       type: "response.output_item.done",
       item: { type: "function_call", call_id: "call_read", name: "Read", arguments: "null" },
     },
-    state
+    state,
   );
 
   assert.equal(done.choices[0].delta.tool_calls[0].function.arguments, "null");
@@ -342,7 +343,7 @@ test("Responses -> OpenAI: strips empty optional args from JSON-string output_it
       type: "response.output_item.added",
       item: { type: "function_call", call_id: "call_read", name: "Read" },
     },
-    state
+    state,
   );
   const done = openaiResponsesToOpenAIResponse(
     {
@@ -354,12 +355,12 @@ test("Responses -> OpenAI: strips empty optional args from JSON-string output_it
         arguments: '{"file_path":"/etc/hosts","offset":1,"limit":5,"pages":"","empty":[]}',
       },
     },
-    state
+    state,
   );
 
   assert.equal(
     done.choices[0].delta.tool_calls[0].function.arguments,
-    JSON.stringify({ file_path: "/etc/hosts", offset: 1, limit: 5 })
+    JSON.stringify({ file_path: "/etc/hosts", offset: 1, limit: 5 }),
   );
 });
 
@@ -370,28 +371,28 @@ test("Responses -> OpenAI: tool-call delta, reasoning delta and completed usage 
       type: "response.output_item.added",
       item: { type: "function_call", call_id: "call_2", name: "weather" },
     },
-    state
+    state,
   );
   const args = openaiResponsesToOpenAIResponse(
     {
       type: "response.function_call_arguments.delta",
       delta: '{"city":"SP"}',
     },
-    state
+    state,
   );
   const reasoning = openaiResponsesToOpenAIResponse(
     {
       type: "response.reasoning_summary_text.delta",
       delta: "Need weather info.",
     },
-    state
+    state,
   );
   openaiResponsesToOpenAIResponse(
     {
       type: "response.output_item.done",
       item: { type: "function_call", call_id: "call_2", name: "weather" },
     },
-    state
+    state,
   );
   const completed = openaiResponsesToOpenAIResponse(
     {
@@ -405,7 +406,7 @@ test("Responses -> OpenAI: tool-call delta, reasoning delta and completed usage 
         },
       },
     },
-    state
+    state,
   );
 
   assert.equal(added.choices[0].delta.tool_calls[0].function.name, "weather");
@@ -439,11 +440,11 @@ test("Responses -> OpenAI: preserves upstream model instead of defaulting to gpt
         output: [],
       },
     },
-    state
+    state,
   );
   const text = openaiResponsesToOpenAIResponse(
     { type: "response.output_text.delta", delta: "hello" },
-    state
+    state,
   );
   const final = openaiResponsesToOpenAIResponse(
     {
@@ -452,7 +453,7 @@ test("Responses -> OpenAI: preserves upstream model instead of defaulting to gpt
         model: "gpt-5.4",
       },
     },
-    state
+    state,
   );
 
   assert.equal(text.model, "gpt-5.4");
@@ -502,7 +503,7 @@ test("OpenAI -> Responses: tool call arguments with newlines are preserved in fu
   ]);
 
   const done = events.find(
-    (e) => e.event === "response.output_item.done" && e.data.item?.type === "function_call"
+    (e) => e.event === "response.output_item.done" && e.data.item?.type === "function_call",
   );
   assert.ok(done, "should emit output_item.done for function_call");
 
@@ -558,7 +559,7 @@ test("OpenAI -> Responses: Python multi-line content with indentation survives t
   ]);
 
   const done = events.find(
-    (e) => e.event === "response.output_item.done" && e.data.item?.type === "function_call"
+    (e) => e.event === "response.output_item.done" && e.data.item?.type === "function_call",
   );
   assert.ok(done, "should emit output_item.done for function_call");
 
@@ -617,7 +618,7 @@ test("OpenAI -> Responses: parallel tool calls with mixed content survive transl
   ]);
 
   const doneEvents = events.filter(
-    (e) => e.event === "response.output_item.done" && e.data.item?.type === "function_call"
+    (e) => e.event === "response.output_item.done" && e.data.item?.type === "function_call",
   );
   assert.equal(doneEvents.length, 2, "should emit output_item.done for both tool calls");
 

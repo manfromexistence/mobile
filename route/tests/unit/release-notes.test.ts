@@ -20,7 +20,7 @@ test("parseActiveNewsPayload returns only valid active announcements", () => {
       link: "https://github.com/diegosouzapw/tOmni",
       linkLabel: "Learn more",
       icon: "campaign",
-    }
+    },
   );
 
   assert.equal(releaseNotes.parseActiveNewsPayload({ active: false }), null);
@@ -31,7 +31,7 @@ test("parseActiveNewsPayload returns only valid active announcements", () => {
       message: "Invalid icon names are rejected",
       icon: "campaign<script>",
     }),
-    null
+    null,
   );
 });
 

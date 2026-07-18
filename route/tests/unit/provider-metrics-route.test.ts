@@ -56,15 +56,15 @@ test("GET /api/provider-metrics includes provider recency and error topology", a
   const db = core.getDbInstance();
   db.prepare(
     `INSERT INTO call_logs (id, timestamp, provider, status, duration, error_summary)
-     VALUES (?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?)`,
   ).run("openai-success", "2026-05-22T10:00:00.000Z", "openai", 200, 120, null);
   db.prepare(
     `INSERT INTO call_logs (id, timestamp, provider, status, duration, error_summary)
-     VALUES (?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?)`,
   ).run("anthropic-success", "2026-05-22T10:05:00.000Z", "anthropic", 200, 240, null);
   db.prepare(
     `INSERT INTO call_logs (id, timestamp, provider, status, duration, error_summary)
-     VALUES (?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?)`,
   ).run("openai-error", "2026-05-22T10:10:00.000Z", "openai", 500, 80, "upstream error");
 
   const response = await providerMetricsRoute.GET();
@@ -93,15 +93,15 @@ test("GET /api/provider-metrics errorProvider must NOT flag a provider whose mos
   const db = core.getDbInstance();
   db.prepare(
     `INSERT INTO call_logs (id, timestamp, provider, status, duration, error_summary)
-     VALUES (?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?)`,
   ).run("a-old-error", "2026-01-01T00:00:00.000Z", "providerA", 500, 100, "old error");
   db.prepare(
     `INSERT INTO call_logs (id, timestamp, provider, status, duration, error_summary)
-     VALUES (?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?)`,
   ).run("a-recent-ok", "2026-06-01T00:00:00.000Z", "providerA", 200, 80, null);
   db.prepare(
     `INSERT INTO call_logs (id, timestamp, provider, status, duration, error_summary)
-     VALUES (?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?)`,
   ).run("b-ok", "2026-05-01T00:00:00.000Z", "providerB", 200, 60, null);
 
   const response = await providerMetricsRoute.GET();
@@ -112,13 +112,13 @@ test("GET /api/provider-metrics errorProvider must NOT flag a provider whose mos
   assert.notEqual(
     body.topology.errorProvider,
     "providerA",
-    "providerA recovered (lastStatus=200) and must not be marked as errorProvider"
+    "providerA recovered (lastStatus=200) and must not be marked as errorProvider",
   );
   // No provider is currently in error — errorProvider should be empty
   assert.equal(
     body.topology.errorProvider,
     "",
-    "errorProvider must be empty when no provider's most recent request was a failure"
+    "errorProvider must be empty when no provider's most recent request was a failure",
   );
 });
 

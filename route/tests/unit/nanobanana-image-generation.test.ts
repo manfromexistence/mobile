@@ -53,7 +53,7 @@ test("nanobanana async flow (submit->poll->url) normalizes to OpenAI-style url i
           {
             status: 200,
             headers: { "content-type": "application/json" },
-          }
+          },
         );
       }
 
@@ -69,7 +69,7 @@ test("nanobanana async flow (submit->poll->url) normalizes to OpenAI-style url i
         {
           status: 200,
           headers: { "content-type": "application/json" },
-        }
+        },
       );
     }
 
@@ -91,7 +91,7 @@ test("nanobanana async flow (submit->poll->url) normalizes to OpenAI-style url i
     let finalData;
     for (let i = 0; i < 5; i++) {
       const poll = await fetch(
-        `https://api.nanobananaapi.ai/api/v1/nanobanana/record-info?taskId=${encodeURIComponent(taskId)}`
+        `https://api.nanobananaapi.ai/api/v1/nanobanana/record-info?taskId=${encodeURIComponent(taskId)}`,
       );
       const pollData = (await poll.json()) as any;
       if (pollData.data.successFlag === 1) {

@@ -10,11 +10,13 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const core = await import("../../src/lib/db/core.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 const proxyV1Route = await import("../../src/app/api/v1/management/proxies/route.ts");
-const proxyAssignmentsV1Route =
-  await import("../../src/app/api/v1/management/proxies/assignments/route.ts");
+const proxyAssignmentsV1Route = await import(
+  "../../src/app/api/v1/management/proxies/assignments/route.ts"
+);
 const proxyHealthV1Route = await import("../../src/app/api/v1/management/proxies/health/route.ts");
-const proxyBulkAssignV1Route =
-  await import("../../src/app/api/v1/management/proxies/bulk-assign/route.ts");
+const proxyBulkAssignV1Route = await import(
+  "../../src/app/api/v1/management/proxies/bulk-assign/route.ts"
+);
 const proxyLogger = await import("../../src/lib/proxyLogger.ts");
 
 async function withEnv(name, value, fn) {
@@ -81,7 +83,7 @@ test("v1 management proxies supports create/list/pagination", async () => {
         host: "proxy-a.local",
         port: 8080,
       }),
-    })
+    }),
   );
   assert.equal(createA.status, 201);
 
@@ -95,12 +97,12 @@ test("v1 management proxies supports create/list/pagination", async () => {
         host: "proxy-b.local",
         port: 443,
       }),
-    })
+    }),
   );
   assert.equal(createB.status, 201);
 
   const listRes = await proxyV1Route.GET(
-    new Request("http://localhost/api/v1/management/proxies?limit=1&offset=0")
+    new Request("http://localhost/api/v1/management/proxies?limit=1&offset=0"),
   );
   assert.equal(listRes.status, 200);
   const listPayload = (await listRes.json()) as any;
@@ -114,7 +116,7 @@ test("v1 management proxies main route covers auth, lookup variants, update and 
 
   await withEnv("INITIAL_PASSWORD", "secret", async () => {
     const getAuthRes = await proxyV1Route.GET(
-      new Request("http://localhost/api/v1/management/proxies")
+      new Request("http://localhost/api/v1/management/proxies"),
     );
     assert.equal(getAuthRes.status, 401);
 
@@ -131,7 +133,7 @@ test("v1 management proxies main route covers auth, lookup variants, update and 
           host: "denied.local",
           port: 8080,
         }),
-      })
+      }),
     );
     assert.equal(postAuthRes.status, 403);
 
@@ -140,14 +142,14 @@ test("v1 management proxies main route covers auth, lookup variants, update and 
         method: "PATCH",
         headers: { Authorization: "Bearer invalid-management-token" },
         body: JSON.stringify({ id: "proxy-1", notes: "denied" }),
-      })
+      }),
     );
     assert.equal(patchAuthRes.status, 403);
 
     const deleteAuthRes = await proxyV1Route.DELETE(
       new Request("http://localhost/api/v1/management/proxies?id=proxy-1", {
         method: "DELETE",
-      })
+      }),
     );
     assert.equal(deleteAuthRes.status, 401);
   });
@@ -169,13 +171,13 @@ test("v1 management proxies main route covers auth, lookup variants, update and 
         host: "primary.local",
         port: 8080,
       }),
-    })
+    }),
   );
   assert.equal(createdRes.status, 201);
   const created = (await createdRes.json()) as any;
 
   const defaultListRes = await proxyV1Route.GET(
-    new Request("http://localhost/api/v1/management/proxies")
+    new Request("http://localhost/api/v1/management/proxies"),
   );
   assert.equal(defaultListRes.status, 200);
   const defaultListBody = (await defaultListRes.json()) as any;
@@ -184,7 +186,7 @@ test("v1 management proxies main route covers auth, lookup variants, update and 
   assert.equal(defaultListBody.items.length, 1);
 
   const byIdRes = await proxyV1Route.GET(
-    new Request(`http://localhost/api/v1/management/proxies?id=${created.id}`)
+    new Request(`http://localhost/api/v1/management/proxies?id=${created.id}`),
   );
   assert.equal(byIdRes.status, 200);
   const byIdBody = (await byIdRes.json()) as any;
@@ -199,12 +201,12 @@ test("v1 management proxies main route covers auth, lookup variants, update and 
         scopeId: providerConn.id,
         proxyId: created.id,
       }),
-    })
+    }),
   );
   assert.equal(assignRes.status, 200);
 
   const whereUsedRes = await proxyV1Route.GET(
-    new Request(`http://localhost/api/v1/management/proxies?id=${created.id}&where_used=1`)
+    new Request(`http://localhost/api/v1/management/proxies?id=${created.id}&where_used=1`),
   );
   assert.equal(whereUsedRes.status, 200);
   const whereUsedBody = (await whereUsedRes.json()) as any;
@@ -212,7 +214,7 @@ test("v1 management proxies main route covers auth, lookup variants, update and 
   assert.equal(whereUsedBody.assignments[0].scopeId, providerConn.id);
 
   const missingGetRes = await proxyV1Route.GET(
-    new Request("http://localhost/api/v1/management/proxies?id=missing-proxy")
+    new Request("http://localhost/api/v1/management/proxies?id=missing-proxy"),
   );
   assert.equal(missingGetRes.status, 404);
 
@@ -226,7 +228,7 @@ test("v1 management proxies main route covers auth, lookup variants, update and 
         port: 9090,
         notes: "updated via patch",
       }),
-    })
+    }),
   );
   assert.equal(updatedRes.status, 200);
   const updatedBody = (await updatedRes.json()) as any;
@@ -241,28 +243,28 @@ test("v1 management proxies main route covers auth, lookup variants, update and 
         id: "missing-proxy",
         notes: "not found",
       }),
-    })
+    }),
   );
   assert.equal(missingPatchRes.status, 404);
 
   const missingIdDeleteRes = await proxyV1Route.DELETE(
     new Request("http://localhost/api/v1/management/proxies", {
       method: "DELETE",
-    })
+    }),
   );
   assert.equal(missingIdDeleteRes.status, 400);
 
   const missingDeleteRes = await proxyV1Route.DELETE(
     new Request("http://localhost/api/v1/management/proxies?id=missing-proxy", {
       method: "DELETE",
-    })
+    }),
   );
   assert.equal(missingDeleteRes.status, 404);
 
   const inUseDeleteRes = await proxyV1Route.DELETE(
     new Request(`http://localhost/api/v1/management/proxies?id=${created.id}`, {
       method: "DELETE",
-    })
+    }),
   );
   assert.equal(inUseDeleteRes.status, 409);
   const inUseDeleteBody = (await inUseDeleteRes.json()) as any;
@@ -271,7 +273,7 @@ test("v1 management proxies main route covers auth, lookup variants, update and 
   const forceDeleteRes = await proxyV1Route.DELETE(
     new Request(`http://localhost/api/v1/management/proxies?id=${created.id}&force=1`, {
       method: "DELETE",
-    })
+    }),
   );
   assert.equal(forceDeleteRes.status, 200);
   assert.deepEqual(await forceDeleteRes.json(), { success: true });
@@ -285,7 +287,7 @@ test("v1 management proxies main route validates malformed and invalid payloads"
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "{",
-    })
+    }),
   );
   assert.equal(invalidPostJsonRes.status, 400);
 
@@ -298,7 +300,7 @@ test("v1 management proxies main route validates malformed and invalid payloads"
         type: "http",
         port: 8080,
       }),
-    })
+    }),
   );
   assert.equal(invalidPostBodyRes.status, 400);
 
@@ -307,7 +309,7 @@ test("v1 management proxies main route validates malformed and invalid payloads"
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: "{",
-    })
+    }),
   );
   assert.equal(invalidPatchJsonRes.status, 400);
 
@@ -319,7 +321,7 @@ test("v1 management proxies main route validates malformed and invalid payloads"
         id: "",
         port: 70000,
       }),
-    })
+    }),
   );
   assert.equal(invalidPatchBodyRes.status, 400);
 });
@@ -332,11 +334,11 @@ test("v1 management proxies main route returns server errors when persistence fa
     "list proxy failure",
     async () => {
       const response = await proxyV1Route.GET(
-        new Request("http://localhost/api/v1/management/proxies")
+        new Request("http://localhost/api/v1/management/proxies"),
       );
       assert.equal(response.status, 500);
       assert.match((await response.json()).error.message, /list proxy failure/i);
-    }
+    },
   );
 
   await withPrepareFailure("INSERT INTO proxy_registry", "create proxy failure", async () => {
@@ -350,7 +352,7 @@ test("v1 management proxies main route returns server errors when persistence fa
           host: "broken-create.local",
           port: 8080,
         }),
-      })
+      }),
     );
     assert.equal(response.status, 500);
     assert.match((await response.json()).error.message, /create proxy failure/i);
@@ -366,7 +368,7 @@ test("v1 management proxies main route returns server errors when persistence fa
         host: "broken-update.local",
         port: 8081,
       }),
-    })
+    }),
   );
   assert.equal(createdRes.status, 201);
   const created = (await createdRes.json()) as any;
@@ -380,7 +382,7 @@ test("v1 management proxies main route returns server errors when persistence fa
           id: created.id,
           notes: "should fail",
         }),
-      })
+      }),
     );
     assert.equal(response.status, 500);
     assert.match((await response.json()).error.message, /update proxy failure/i);
@@ -390,7 +392,7 @@ test("v1 management proxies main route returns server errors when persistence fa
     const response = await proxyV1Route.DELETE(
       new Request(`http://localhost/api/v1/management/proxies?id=${created.id}`, {
         method: "DELETE",
-      })
+      }),
     );
     assert.equal(response.status, 500);
     assert.match((await response.json()).error.message, /delete proxy failure/i);
@@ -417,7 +419,7 @@ test("v1 management assignments supports put and filtered get", async () => {
         host: "assign.local",
         port: 8000,
       }),
-    })
+    }),
   );
   const created = (await createdRes.json()) as any;
 
@@ -430,14 +432,14 @@ test("v1 management assignments supports put and filtered get", async () => {
         scopeId: providerConn.id,
         proxyId: created.id,
       }),
-    })
+    }),
   );
   assert.equal(assignRes.status, 200);
 
   const filteredRes = await proxyAssignmentsV1Route.GET(
     new Request(
-      `http://localhost/api/v1/management/proxies/assignments?scope=account&scope_id=${providerConn.id}`
-    )
+      `http://localhost/api/v1/management/proxies/assignments?scope=account&scope_id=${providerConn.id}`,
+    ),
   );
   assert.equal(filteredRes.status, 200);
   const payload = (await filteredRes.json()) as any;
@@ -449,7 +451,7 @@ test("v1 management assignments covers unfiltered listing and error branches", a
   await resetStorage();
 
   const listRes = await proxyAssignmentsV1Route.GET(
-    new Request("http://localhost/api/v1/management/proxies/assignments?limit=5&offset=0")
+    new Request("http://localhost/api/v1/management/proxies/assignments?limit=5&offset=0"),
   );
   assert.equal(listRes.status, 200);
   const listPayload = (await listRes.json()) as any;
@@ -463,11 +465,11 @@ test("v1 management assignments covers unfiltered listing and error branches", a
     "assignment list failure",
     async () => {
       const response = await proxyAssignmentsV1Route.GET(
-        new Request("http://localhost/api/v1/management/proxies/assignments")
+        new Request("http://localhost/api/v1/management/proxies/assignments"),
       );
       assert.equal(response.status, 500);
       assert.match((await response.json()).error.message, /assignment list failure/i);
-    }
+    },
   );
 
   const invalidJsonRes = await proxyAssignmentsV1Route.PUT(
@@ -475,7 +477,7 @@ test("v1 management assignments covers unfiltered listing and error branches", a
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: "{",
-    })
+    }),
   );
   assert.equal(invalidJsonRes.status, 400);
   assert.match((await invalidJsonRes.json()).error.message, /invalid json body/i);
@@ -487,7 +489,7 @@ test("v1 management assignments covers unfiltered listing and error branches", a
       body: JSON.stringify({
         scope: "account",
       }),
-    })
+    }),
   );
   assert.equal(invalidPayloadRes.status, 400);
   const invalidPayloadBody = (await invalidPayloadRes.json()) as any;
@@ -502,7 +504,7 @@ test("v1 management assignments covers unfiltered listing and error branches", a
         scope: "global",
         proxyId: null,
       }),
-    })
+    }),
   );
   assert.equal(clearGlobalRes.status, 200);
   assert.deepEqual(await clearGlobalRes.json(), { success: true, assignment: null });
@@ -515,7 +517,7 @@ test("v1 management assignments covers unfiltered listing and error branches", a
         scope: "global",
         proxyId: "missing-proxy",
       }),
-    })
+    }),
   );
   assert.equal(missingProxyRes.status, 404);
   assert.match((await missingProxyRes.json()).error.message, /proxy not found/i);
@@ -534,7 +536,7 @@ test("v1 management health endpoint aggregates proxy log metrics", async () => {
         host: "health.local",
         port: 8080,
       }),
-    })
+    }),
   );
   const created = (await createdRes.json()) as any;
 
@@ -556,7 +558,7 @@ test("v1 management health endpoint aggregates proxy log metrics", async () => {
   });
 
   const healthRes = await proxyHealthV1Route.GET(
-    new Request("http://localhost/api/v1/management/proxies/health?hours=24")
+    new Request("http://localhost/api/v1/management/proxies/health?hours=24"),
   );
   assert.equal(healthRes.status, 200);
   const healthPayload = (await healthRes.json()) as any;
@@ -579,12 +581,12 @@ test("v1 management health endpoint covers default window and error handling", a
         host: "health-default.local",
         port: 8080,
       }),
-    })
+    }),
   );
   assert.equal(createdRes.status, 201);
 
   const defaultRes = await proxyHealthV1Route.GET(
-    new Request("http://localhost/api/v1/management/proxies/health")
+    new Request("http://localhost/api/v1/management/proxies/health"),
   );
   assert.equal(defaultRes.status, 200);
   const defaultBody = (await defaultRes.json()) as any;
@@ -593,7 +595,7 @@ test("v1 management health endpoint covers default window and error handling", a
 
   await withPrepareFailure("FROM proxy_registry p", "proxy health failure", async () => {
     const errorRes = await proxyHealthV1Route.GET(
-      new Request("http://localhost/api/v1/management/proxies/health")
+      new Request("http://localhost/api/v1/management/proxies/health"),
     );
     assert.equal(errorRes.status, 500);
     assert.match((await errorRes.json()).error.message, /proxy health failure/i);
@@ -613,7 +615,7 @@ test("v1 bulk assignment updates multiple scope IDs in one request", async () =>
         host: "bulk.local",
         port: 8080,
       }),
-    })
+    }),
   );
   const proxy = (await proxyRes.json()) as any;
 
@@ -626,14 +628,14 @@ test("v1 bulk assignment updates multiple scope IDs in one request", async () =>
         scopeIds: ["openai", "anthropic"],
         proxyId: proxy.id,
       }),
-    })
+    }),
   );
   assert.equal(bulkRes.status, 200);
   const bulkPayload = (await bulkRes.json()) as any;
   assert.equal(bulkPayload.updated, 2);
 
   const checkRes = await proxyAssignmentsV1Route.GET(
-    new Request("http://localhost/api/v1/management/proxies/assignments?scope=provider")
+    new Request("http://localhost/api/v1/management/proxies/assignments?scope=provider"),
   );
   const checkPayload = (await checkRes.json()) as any;
   assert.equal(checkPayload.items.length >= 2, true);
@@ -644,7 +646,7 @@ test("v1 proxy management companion routes require auth when login protection is
 
   await withEnv("INITIAL_PASSWORD", "secret", async () => {
     const assignmentsGetRes = await proxyAssignmentsV1Route.GET(
-      new Request("http://localhost/api/v1/management/proxies/assignments")
+      new Request("http://localhost/api/v1/management/proxies/assignments"),
     );
     assert.equal(assignmentsGetRes.status, 401);
 
@@ -659,7 +661,7 @@ test("v1 proxy management companion routes require auth when login protection is
           scope: "global",
           proxyId: null,
         }),
-      })
+      }),
     );
     // Invalid bearer → deterministic 403 "Invalid management token". The old
     // [401, 503] accommodation existed because a stale schema memo in apiKeys.ts
@@ -672,7 +674,7 @@ test("v1 proxy management companion routes require auth when login protection is
         headers: {
           Authorization: "Bearer invalid-management-token",
         },
-      })
+      }),
     );
     // Same contract as above: invalid bearer → 403 (no longer 503 via the
     // stale-schema throw).
@@ -686,7 +688,7 @@ test("v1 proxy management companion routes require auth when login protection is
           scope: "global",
           proxyId: null,
         }),
-      })
+      }),
     );
     assert.equal(bulkRes.status, 401);
   });
@@ -712,7 +714,7 @@ test("v1 assignments route resolves connection proxies and bulk assignment cover
         host: "resolve.local",
         port: 9000,
       }),
-    })
+    }),
   );
   const proxy = (await proxyRes.json()) as any;
 
@@ -725,14 +727,14 @@ test("v1 assignments route resolves connection proxies and bulk assignment cover
         scopeId: providerConn.id,
         proxyId: proxy.id,
       }),
-    })
+    }),
   );
   assert.equal(assignRes.status, 200);
 
   const resolveRes = await proxyAssignmentsV1Route.GET(
     new Request(
-      `http://localhost/api/v1/management/proxies/assignments?resolve_connection_id=${providerConn.id}`
-    )
+      `http://localhost/api/v1/management/proxies/assignments?resolve_connection_id=${providerConn.id}`,
+    ),
   );
   assert.equal(resolveRes.status, 200);
   const resolvePayload = (await resolveRes.json()) as any;
@@ -744,7 +746,7 @@ test("v1 assignments route resolves connection proxies and bulk assignment cover
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: "{",
-    })
+    }),
   );
   assert.equal(invalidJsonRes.status, 400);
 
@@ -756,7 +758,7 @@ test("v1 assignments route resolves connection proxies and bulk assignment cover
         scope: "provider",
         scopeIds: [],
       }),
-    })
+    }),
   );
   assert.equal(invalidPayloadRes.status, 400);
 
@@ -769,7 +771,7 @@ test("v1 assignments route resolves connection proxies and bulk assignment cover
         scopeIds: [providerConn.id, providerConn.id],
         proxyId: proxy.id,
       }),
-    })
+    }),
   );
   assert.equal(normalizedRes.status, 200);
   const normalizedPayload = (await normalizedRes.json()) as any;
@@ -785,7 +787,7 @@ test("v1 assignments route resolves connection proxies and bulk assignment cover
         scope: "global",
         proxyId: proxy.id,
       }),
-    })
+    }),
   );
   assert.equal(globalRes.status, 200);
   const globalPayload = (await globalRes.json()) as any;

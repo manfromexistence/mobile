@@ -36,7 +36,7 @@ vi.mock("next-intl", () => ({
     if (!values) return raw;
     return Object.entries(values).reduce(
       (acc, [k, v]) => acc.replaceAll(`{${k}}`, String(v ?? "")),
-      raw
+      raw,
     );
   },
   useLocale: () => "en",
@@ -140,7 +140,7 @@ async function renderExpanded() {
         cloudEnabled={false}
         batchStatus={null}
         lastConfiguredAt={null}
-      />
+      />,
     );
   });
   // Allow microtasks for the fetch() promise + state update to flush.
@@ -163,7 +163,7 @@ describe("ClaudeToolCard — manual-config CTA when CLI is not detected", () => 
   it("opens the ManualConfigModal when the Manual Config button is clicked", async () => {
     const container = await renderExpanded();
     const manualBtn = Array.from(container.querySelectorAll("button")).find((b) =>
-      (b.textContent ?? "").includes("Manual Config")
+      (b.textContent ?? "").includes("Manual Config"),
     );
     expect(manualBtn).toBeTruthy();
 

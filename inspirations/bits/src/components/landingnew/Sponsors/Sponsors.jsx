@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
-import { ArrowRight, Gem, Crown, Medal } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { motion } from "motion/react";
+import { ArrowRight, Gem, Crown, Medal } from "lucide-react";
 import {
   diamondSponsors,
   platinumSponsors,
@@ -8,20 +8,20 @@ import {
   hasDiamondSponsors,
   hasPlatinumSponsors,
   hasSilverSponsors,
-} from '../../../constants/Sponsors';
-import './Sponsors.css';
+} from "../../../constants/Sponsors";
+import "./Sponsors.css";
 
 const buildSponsorUrl = (url, tier) => {
   if (!url) return null;
   try {
     const u = new URL(url);
-    u.searchParams.set('utm_source', 'reactbits');
-    u.searchParams.set('utm_medium', 'sponsor');
-    u.searchParams.set('utm_campaign', tier);
-    u.searchParams.set('ref', 'reactbits');
+    u.searchParams.set("utm_source", "reactbits");
+    u.searchParams.set("utm_medium", "sponsor");
+    u.searchParams.set("utm_campaign", tier);
+    u.searchParams.set("ref", "reactbits");
     return u.toString();
   } catch {
-    return `${url}${url.includes('?') ? '&' : '?'}utm_source=reactbits&utm_medium=sponsor&utm_campaign=${tier}&ref=reactbits`;
+    return `${url}${url.includes("?") ? "&" : "?"}utm_source=reactbits&utm_medium=sponsor&utm_campaign=${tier}&ref=reactbits`;
   }
 };
 
@@ -33,12 +33,7 @@ const SponsorCard = ({ sponsor, tier }) => (
     className={`ln-sp-card ln-sp-card--${tier}`}
   >
     <div className={`ln-sp-card-visual ln-sp-card-visual--${tier}`}>
-      <img
-        className="ln-sp-card-logo"
-        src={sponsor.imageUrl}
-        alt={sponsor.name}
-        loading="lazy"
-      />
+      <img className="ln-sp-card-logo" src={sponsor.imageUrl} alt={sponsor.name} loading="lazy" />
     </div>
     <div className="ln-sp-card-info">
       <span className="ln-sp-card-name">{sponsor.name}</span>
@@ -68,16 +63,18 @@ const Sponsors = () => (
         className="ln-sp-title"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-60px' }}
+        viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.5, ease: [0.21, 0.47, 0.32, 0.98] }}
-      >Sponsors</motion.h2>
+      >
+        Sponsors
+      </motion.h2>
 
       {hasDiamondSponsors && (
         <motion.div
           className="ln-sp-tier"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
+          viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, delay: 0.07, ease: [0.21, 0.47, 0.32, 0.98] }}
         >
           <div className="ln-sp-tier-header">
@@ -98,7 +95,7 @@ const Sponsors = () => (
           className="ln-sp-tier"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
+          viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, delay: 0.14, ease: [0.21, 0.47, 0.32, 0.98] }}
         >
           <div className="ln-sp-tier-header">
@@ -122,7 +119,7 @@ const Sponsors = () => (
           className="ln-sp-tier"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
+          viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.5, delay: 0.21, ease: [0.21, 0.47, 0.32, 0.98] }}
         >
           <div className="ln-sp-tier-header">
@@ -139,14 +136,13 @@ const Sponsors = () => (
             ))}
           </div>
         </motion.div>
-      )
-      }
+      )}
 
       <motion.div
         className="ln-sp-footer"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-60px' }}
+        viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.5, delay: 0.28, ease: [0.21, 0.47, 0.32, 0.98] }}
       >
         <Link to="/sponsors" className="ln-sp-footer-link">

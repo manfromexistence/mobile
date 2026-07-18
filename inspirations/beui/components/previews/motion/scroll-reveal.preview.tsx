@@ -17,9 +17,7 @@ export function ScrollRevealPreview() {
       className="h-80 w-full max-w-lg overflow-y-auto scrollbar-hide rounded-2xl border border-border bg-card"
     >
       <div className="flex flex-col gap-16 p-6">
-        <div className="text-center text-sm text-muted-foreground">
-          Scroll ↓
-        </div>
+        <div className="text-center text-sm text-muted-foreground">Scroll ↓</div>
         {CARDS.map((label, i) => (
           <ScrollReveal
             key={label}

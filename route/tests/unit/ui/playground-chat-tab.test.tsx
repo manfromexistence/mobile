@@ -102,15 +102,13 @@ const containers: Array<{ root: ReturnType<typeof createRoot>; el: HTMLDivElemen
 
 function renderChatTab(
   config = makeConfig(),
-  onMetricsUpdate?: (m: unknown) => void
+  onMetricsUpdate?: (m: unknown) => void,
 ): HTMLDivElement {
   const el = document.createElement("div");
   document.body.appendChild(el);
   const root = createRoot(el);
   act(() => {
-    root.render(
-      <ChatTab configState={config} onMetricsUpdate={onMetricsUpdate} />
-    );
+    root.render(<ChatTab configState={config} onMetricsUpdate={onMetricsUpdate} />);
   });
   containers.push({ root, el });
   return el;
@@ -128,8 +126,9 @@ async function waitFor(fn: () => boolean, timeout = 3000): Promise<void> {
 
 describe("ChatTab", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean })
-      .IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {
@@ -162,9 +161,9 @@ describe("ChatTab", () => {
   });
 
   it("sends message and renders assistant response with markdown", async () => {
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      buildSseResponse("Hello from assistant!")
-    );
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(buildSseResponse("Hello from assistant!"));
 
     const el = renderChatTab();
     const textarea = el.querySelector("textarea") as HTMLTextAreaElement;
@@ -174,8 +173,8 @@ describe("ChatTab", () => {
     });
 
     // Find and click send button
-    const sendBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.includes("Send")
+    const sendBtn = Array.from(el.querySelectorAll("button")).find((b) =>
+      b.textContent?.includes("Send"),
     ) as HTMLButtonElement | undefined;
 
     await act(async () => {
@@ -206,8 +205,8 @@ describe("ChatTab", () => {
       setInputValue(textarea, "Test message");
     });
 
-    const sendBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.includes("Send")
+    const sendBtn = Array.from(el.querySelectorAll("button")).find((b) =>
+      b.textContent?.includes("Send"),
     ) as HTMLButtonElement | undefined;
 
     await act(async () => {
@@ -223,9 +222,9 @@ describe("ChatTab", () => {
   });
 
   it("calls onMetricsUpdate after stream completes", async () => {
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      buildSseResponse("Some response text")
-    );
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(buildSseResponse("Some response text"));
     const onMetricsUpdate = vi.fn();
 
     const el = renderChatTab(makeConfig(), onMetricsUpdate);
@@ -235,8 +234,8 @@ describe("ChatTab", () => {
       setInputValue(textarea, "Hello");
     });
 
-    const sendBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.includes("Send")
+    const sendBtn = Array.from(el.querySelectorAll("button")).find((b) =>
+      b.textContent?.includes("Send"),
     ) as HTMLButtonElement | undefined;
 
     await act(async () => {
@@ -250,9 +249,9 @@ describe("ChatTab", () => {
   });
 
   it("shows regenerate button after first response", async () => {
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      buildSseResponse("Assistant response")
-    );
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValue(buildSseResponse("Assistant response"));
 
     const el = renderChatTab();
     const textarea = el.querySelector("textarea") as HTMLTextAreaElement;
@@ -261,8 +260,8 @@ describe("ChatTab", () => {
       setInputValue(textarea, "Generate something");
     });
 
-    const sendBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.includes("Send")
+    const sendBtn = Array.from(el.querySelectorAll("button")).find((b) =>
+      b.textContent?.includes("Send"),
     ) as HTMLButtonElement | undefined;
 
     await act(async () => {
@@ -271,8 +270,8 @@ describe("ChatTab", () => {
 
     await waitFor(() => el.querySelector("[data-testid='markdown-content']") !== null);
 
-    const regenBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.includes("Regenerate")
+    const regenBtn = Array.from(el.querySelectorAll("button")).find((b) =>
+      b.textContent?.includes("Regenerate"),
     );
     expect(regenBtn).toBeTruthy();
 
@@ -293,8 +292,8 @@ describe("ChatTab", () => {
       setInputValue(textarea, "Hello");
     });
 
-    const sendBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.includes("Send")
+    const sendBtn = Array.from(el.querySelectorAll("button")).find((b) =>
+      b.textContent?.includes("Send"),
     ) as HTMLButtonElement | undefined;
 
     await act(async () => {
@@ -305,8 +304,8 @@ describe("ChatTab", () => {
 
     const countBefore = fetchCount;
 
-    const regenBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.includes("Regenerate")
+    const regenBtn = Array.from(el.querySelectorAll("button")).find((b) =>
+      b.textContent?.includes("Regenerate"),
     ) as HTMLButtonElement | undefined;
 
     await act(async () => {

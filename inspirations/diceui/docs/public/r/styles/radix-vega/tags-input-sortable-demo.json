@@ -9,10 +9,7 @@
     "@dnd-kit/utilities",
     "lucide-react"
   ],
-  "registryDependencies": [
-    "button",
-    "tags-input"
-  ],
+  "registryDependencies": ["button", "tags-input"],
   "files": [
     {
       "path": "examples/tags-input-sortable-demo.tsx",

@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { Copy, Pencil, Share2 } from "lucide-react"
-import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import type { Message } from "@/features/dx/types"
-import { BotMessageActions } from "./chat-message-actions"
+import { Copy, Pencil, Share2 } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import type { Message } from "@/features/dx/types";
+import { BotMessageActions } from "./chat-message-actions";
 
 export function ChatMessage({
   message,
   isGenerating,
 }: {
-  message: Message
-  isGenerating?: boolean
+  message: Message;
+  isGenerating?: boolean;
 }) {
-  const isUser = message.role === "user"
+  const isUser = message.role === "user";
 
   if (isUser) {
     return (
@@ -41,8 +41,8 @@ export function ChatMessage({
             size="icon-xs"
             className="text-muted-foreground"
             onClick={() => {
-              navigator.clipboard.writeText(message.content)
-              toast.success("Copied to clipboard")
+              navigator.clipboard.writeText(message.content);
+              toast.success("Copied to clipboard");
             }}
           >
             <Copy className="size-3.5" />
@@ -53,10 +53,10 @@ export function ChatMessage({
             className="text-muted-foreground"
             onClick={() => {
               if (navigator.share) {
-                navigator.share({ text: message.content }).catch(() => {})
+                navigator.share({ text: message.content }).catch(() => {});
               } else {
-                navigator.clipboard.writeText(message.content)
-                toast.success("Content copied to clipboard")
+                navigator.clipboard.writeText(message.content);
+                toast.success("Content copied to clipboard");
               }
             }}
           >
@@ -64,7 +64,7 @@ export function ChatMessage({
           </Button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -87,9 +87,7 @@ export function ChatMessage({
           </div>
         ) : null}
       </div>
-      {message.content && !isGenerating && (
-        <BotMessageActions message={message} />
-      )}
+      {message.content && !isGenerating && <BotMessageActions message={message} />}
     </div>
-  )
+  );
 }

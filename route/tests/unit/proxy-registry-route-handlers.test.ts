@@ -51,7 +51,7 @@ test("resolveProxyLookupResponse returns the proxy when id matches", async () =>
 
   const result = await resolveProxyLookupResponse(
     new URLSearchParams({ id: created.id }),
-    "whereUsed"
+    "whereUsed",
   );
   assert.ok(result instanceof Response);
   assert.equal(result.status, 200);
@@ -64,7 +64,7 @@ test("resolveProxyLookupResponse returns 404 for an unknown id", async () => {
   await resetStorage();
   const result = await resolveProxyLookupResponse(
     new URLSearchParams({ id: "does-not-exist" }),
-    "whereUsed"
+    "whereUsed",
   );
   assert.ok(result instanceof Response);
   assert.equal(result.status, 404);
@@ -83,7 +83,7 @@ test("resolveProxyLookupResponse honors the caller's whereUsed param name (where
   // management route uses the snake_case param name; the usage branch must fire.
   const result = await resolveProxyLookupResponse(
     new URLSearchParams({ id: created.id, where_used: "1" }),
-    "where_used"
+    "where_used",
   );
   assert.ok(result instanceof Response);
   assert.equal(result.status, 200);

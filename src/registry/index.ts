@@ -1,11 +1,11 @@
-import type { Registry } from "shadcn/schema"
+import type { Registry } from "shadcn/schema";
 
-import { blocks } from "./blocks/_registry"
-import { components } from "./components/_registry"
-import { examples } from "./examples/_registry"
-import { hook } from "./hooks/_registry"
-import { lib } from "./lib/_registry"
-import { styles } from "./styles/_registry"
+import { blocks } from "./blocks/_registry";
+import { components } from "./components/_registry";
+import { examples } from "./examples/_registry";
+import { hook } from "./hooks/_registry";
+import { lib } from "./lib/_registry";
+import { styles } from "./styles/_registry";
 
 export const registry = {
   name: "ncdai",
@@ -20,4 +20,4 @@ export const registry = {
     // Internal use only
     ...examples,
   ],
-} satisfies Registry
+} satisfies Registry;

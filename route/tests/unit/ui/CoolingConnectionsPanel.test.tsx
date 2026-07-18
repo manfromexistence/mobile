@@ -56,13 +56,13 @@ describe("CoolingConnectionsPanel", () => {
       root.render(
         React.createElement(CoolingConnectionsPanel, {
           connections: [{ id: "conn-abc12345", displayName: "My Key", rateLimitedUntil: future }],
-        })
+        }),
       );
     });
     const panel = container.querySelector("[data-testid='cooling-connections-panel']");
     expect(panel).toBeTruthy();
     expect(container.querySelector("[data-testid='cooling-countdown']")?.textContent).toContain(
-      "in 5m"
+      "in 5m",
     );
     expect(panel?.textContent).toContain("My Key");
   });
@@ -76,7 +76,7 @@ describe("CoolingConnectionsPanel", () => {
       root.render(
         React.createElement(CoolingConnectionsPanel, {
           connections: [{ id: "conn-old", displayName: "Expired", rateLimitedUntil: past }],
-        })
+        }),
       );
     });
     expect(container.querySelector("[data-testid='cooling-connections-panel']")).toBeNull();

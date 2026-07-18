@@ -30,24 +30,24 @@ import {
   TILT_SHIFT_FRAGMENT_SHADER,
   EXPOSURE_FRAGMENT_SHADER,
   VIBRANCE_FRAGMENT_SHADER,
-  DOT_DITHER_FRAGMENT_SHADER
-} from './shaders';
-import { EFFECT_TYPES, BLEND_MODES, DITHER_METHODS, ASCII_PRESETS } from './types';
+  DOT_DITHER_FRAGMENT_SHADER,
+} from "./shaders";
+import { EFFECT_TYPES, BLEND_MODES, DITHER_METHODS, ASCII_PRESETS } from "./types";
 
 function generateCharacterAtlas(charset, cellSize = 16) {
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   const charCount = charset.length;
   canvas.width = cellSize * charCount;
   canvas.height = cellSize;
 
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#000000';
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#000000";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = "#ffffff";
   ctx.font = `${cellSize * 0.9}px monospace`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
 
   for (let i = 0; i < charCount; i++) {
     const x = i * cellSize + cellSize / 2;
@@ -61,10 +61,10 @@ function generateCharacterAtlas(charset, cellSize = 16) {
 export class WebGLRenderer {
   constructor(canvas) {
     this.canvas = canvas;
-    this.gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+    this.gl = canvas.getContext("webgl2") || canvas.getContext("webgl");
 
     if (!this.gl) {
-      throw new Error('WebGL not supported');
+      throw new Error("WebGL not supported");
     }
 
     this.programs = {};
@@ -83,11 +83,19 @@ export class WebGLRenderer {
 
     this.quadBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.quadBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW,
+    );
 
     this.texCoordBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.texCoordBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]),
+      gl.STATIC_DRAW,
+    );
   }
 
   _compileShader(source, type) {
@@ -130,8 +138,8 @@ export class WebGLRenderer {
     gl.deleteShader(fragmentShader);
 
     program.attributes = {
-      position: gl.getAttribLocation(program, 'a_position'),
-      texCoord: gl.getAttribLocation(program, 'a_texCoord')
+      position: gl.getAttribLocation(program, "a_position"),
+      texCoord: gl.getAttribLocation(program, "a_texCoord"),
     };
 
     program.uniforms = {};
@@ -340,18 +348,21 @@ export class WebGLRenderer {
       this.framebuffers[0].width !== width ||
       this.framebuffers[0].height !== height
     ) {
-      this.framebuffers.forEach(fb => {
+      this.framebuffers.forEach((fb) => {
         gl.deleteFramebuffer(fb.framebuffer);
         gl.deleteTexture(fb.texture);
       });
-      this.framebuffers = [this._createFramebuffer(width, height), this._createFramebuffer(width, height)];
+      this.framebuffers = [
+        this._createFramebuffer(width, height),
+        this._createFramebuffer(width, height),
+      ];
     }
 
     let inputTexture = this.textures.source;
     let currentFB = 0;
     let isReadingFromSource = true;
 
-    const enabledEffects = effects.filter(e => e.enabled);
+    const enabledEffects = effects.filter((e) => e.enabled);
 
     if (enabledEffects.length === 0) {
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -539,8 +550,8 @@ export class WebGLRenderer {
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, inputTexture);
 
-    const dotColor = this._hexToRgb(params.dotColor || '#000000');
-    const bgColor = this._hexToRgb(params.backgroundColor || '#ffffff');
+    const dotColor = this._hexToRgb(params.dotColor || "#000000");
+    const bgColor = this._hexToRgb(params.backgroundColor || "#ffffff");
 
     // Map shape to int
     const shapeMap = {
@@ -550,7 +561,7 @@ export class WebGLRenderer {
       line: 3,
       ellipse: 4,
       cross: 5,
-      ring: 6
+      ring: 6,
     };
     const shapeInt = shapeMap[params.shape] || 0;
 
@@ -559,7 +570,7 @@ export class WebGLRenderer {
       original: 0,
       monochrome: 1,
       duotone: 2,
-      cmyk: 3
+      cmyk: 3,
     };
     const colorModeInt = colorModeMap[params.colorMode] || 0;
 
@@ -601,8 +612,8 @@ export class WebGLRenderer {
     // Scale cellSize proportionally to render resolution so export matches preview
     const scaledCellSize = params.cellSize * renderScale;
 
-    const charColor = this._hexToRgb(params.charColor || '#ffffff');
-    const bgColorRgb = this._hexToRgb(params.backgroundColor || '#000000');
+    const charColor = this._hexToRgb(params.charColor || "#ffffff");
+    const bgColorRgb = this._hexToRgb(params.backgroundColor || "#000000");
 
     gl.uniform1i(program.uniforms.u_image, 0);
     gl.uniform1i(program.uniforms.u_charAtlas, 1);
@@ -918,7 +929,12 @@ export class WebGLRenderer {
 
     gl.uniform1i(program.uniforms.u_image, 0);
     gl.uniform3f(program.uniforms.u_shadowColor, shadowColor[0], shadowColor[1], shadowColor[2]);
-    gl.uniform3f(program.uniforms.u_highlightColor, highlightColor[0], highlightColor[1], highlightColor[2]);
+    gl.uniform3f(
+      program.uniforms.u_highlightColor,
+      highlightColor[0],
+      highlightColor[1],
+      highlightColor[2],
+    );
     gl.uniform1f(program.uniforms.u_contrast, params.contrast);
     gl.uniform1f(program.uniforms.u_intensity, params.intensity);
 
@@ -1196,19 +1212,23 @@ export class WebGLRenderer {
   }
 
   _hexToRgb(hex) {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '#000000');
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || "#000000");
     if (!result) return [0, 0, 0];
-    return [parseInt(result[1], 16) / 255, parseInt(result[2], 16) / 255, parseInt(result[3], 16) / 255];
+    return [
+      parseInt(result[1], 16) / 255,
+      parseInt(result[2], 16) / 255,
+      parseInt(result[3], 16) / 255,
+    ];
   }
 
   destroy() {
     const gl = this.gl;
 
-    Object.values(this.programs).forEach(program => gl.deleteProgram(program));
-    Object.values(this.textures).forEach(texture => {
+    Object.values(this.programs).forEach((program) => gl.deleteProgram(program));
+    Object.values(this.textures).forEach((texture) => {
       if (texture) gl.deleteTexture(texture);
     });
-    this.framebuffers.forEach(fb => {
+    this.framebuffers.forEach((fb) => {
       gl.deleteFramebuffer(fb.framebuffer);
       gl.deleteTexture(fb.texture);
     });
@@ -1221,7 +1241,7 @@ export class WebGLRenderer {
 export class CPURenderer {
   constructor(canvas) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
+    this.ctx = canvas.getContext("2d");
     this.imageData = null;
   }
 
@@ -1251,7 +1271,7 @@ export class CPURenderer {
 
     this.ctx.drawImage(this.image, 0, 0, width, height);
 
-    const enabledEffects = effects.filter(e => e.enabled);
+    const enabledEffects = effects.filter((e) => e.enabled);
     if (enabledEffects.length === 0) return;
 
     this.imageData = this.ctx.getImageData(0, 0, width, height);
@@ -1301,21 +1321,33 @@ export class CPURenderer {
       } else {
         data[i] = Math.max(
           0,
-          Math.min(255, data[i] + (this._hash(x / params.scale, y / params.scale, seed) - 0.5) * 2 * intensity * 255)
+          Math.min(
+            255,
+            data[i] +
+              (this._hash(x / params.scale, y / params.scale, seed) - 0.5) * 2 * intensity * 255,
+          ),
         );
         data[i + 1] = Math.max(
           0,
           Math.min(
             255,
-            data[i + 1] + (this._hash(x / params.scale, y / params.scale, seed + 100) - 0.5) * 2 * intensity * 255
-          )
+            data[i + 1] +
+              (this._hash(x / params.scale, y / params.scale, seed + 100) - 0.5) *
+                2 *
+                intensity *
+                255,
+          ),
         );
         data[i + 2] = Math.max(
           0,
           Math.min(
             255,
-            data[i + 2] + (this._hash(x / params.scale, y / params.scale, seed + 200) - 0.5) * 2 * intensity * 255
-          )
+            data[i + 2] +
+              (this._hash(x / params.scale, y / params.scale, seed + 200) - 0.5) *
+                2 *
+                intensity *
+                255,
+          ),
         );
       }
     }
@@ -1325,7 +1357,7 @@ export class CPURenderer {
     if (size === 2) {
       const matrix = [
         [0, 2],
-        [3, 1]
+        [3, 1],
       ];
       return matrix[y % 2][x % 2] / 4;
     } else if (size === 4) {
@@ -1333,7 +1365,7 @@ export class CPURenderer {
         [0, 8, 2, 10],
         [12, 4, 14, 6],
         [3, 11, 1, 9],
-        [15, 7, 13, 5]
+        [15, 7, 13, 5],
       ];
       return matrix[y % 4][x % 4] / 16;
     } else {
@@ -1347,7 +1379,11 @@ export class CPURenderer {
     const levels = params.levels;
     const threshold = params.threshold;
     const methodSize =
-      params.method === DITHER_METHODS.BAYER_2X2 ? 2 : params.method === DITHER_METHODS.BAYER_4X4 ? 4 : 8;
+      params.method === DITHER_METHODS.BAYER_2X2
+        ? 2
+        : params.method === DITHER_METHODS.BAYER_4X4
+          ? 4
+          : 8;
 
     for (let i = 0; i < data.length; i += 4) {
       const x = (i / 4) % width;
@@ -1384,9 +1420,13 @@ export class CPURenderer {
         const dist = Math.sqrt(Math.pow(rx - cellX, 2) + Math.pow(ry - cellY, 2));
         const origX = Math.round(cos * cellX + sin * cellY);
         const origY = Math.round(-sin * cellX + cos * cellY);
-        const idx = (Math.max(0, Math.min(height - 1, origY)) * width + Math.max(0, Math.min(width - 1, origX))) * 4;
+        const idx =
+          (Math.max(0, Math.min(height - 1, origY)) * width +
+            Math.max(0, Math.min(width - 1, origX))) *
+          4;
 
-        const brightness = (data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114) / 255;
+        const brightness =
+          (data[idx] * 0.299 + data[idx + 1] * 0.587 + data[idx + 2] * 0.114) / 255;
         const radius = dotSize * 0.5 * Math.sqrt(brightness);
 
         const i = (y * width + x) * 4;
@@ -1414,17 +1454,17 @@ export class CPURenderer {
     const cols = Math.floor(width / cellSize);
     const rows = Math.floor(height / cellSize);
 
-    this.ctx.fillStyle = params.showBackground ? params.backgroundColor : '#000';
+    this.ctx.fillStyle = params.showBackground ? params.backgroundColor : "#000";
     this.ctx.fillRect(0, 0, width, height);
 
     this.ctx.font = `${cellSize}px monospace`;
-    this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'middle';
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
 
-    const tempCanvas = document.createElement('canvas');
+    const tempCanvas = document.createElement("canvas");
     tempCanvas.width = width;
     tempCanvas.height = height;
-    const tempCtx = tempCanvas.getContext('2d');
+    const tempCtx = tempCanvas.getContext("2d");
     tempCtx.drawImage(this.image, 0, 0, width, height);
 
     for (let row = 0; row < rows; row++) {
@@ -1432,7 +1472,12 @@ export class CPURenderer {
         const x = col * cellSize + cellSize / 2;
         const y = row * cellSize + cellSize / 2;
 
-        const imgData = tempCtx.getImageData(col * cellSize, row * cellSize, cellSize, cellSize).data;
+        const imgData = tempCtx.getImageData(
+          col * cellSize,
+          row * cellSize,
+          cellSize,
+          cellSize,
+        ).data;
         let totalR = 0,
           totalG = 0,
           totalB = 0,
@@ -1459,7 +1504,7 @@ export class CPURenderer {
         if (params.color) {
           this.ctx.fillStyle = `rgb(${Math.round(avgR)}, ${Math.round(avgG)}, ${Math.round(avgB)})`;
         } else {
-          this.ctx.fillStyle = '#fff';
+          this.ctx.fillStyle = "#fff";
         }
 
         this.ctx.fillText(char, x, y);
@@ -1480,7 +1525,7 @@ export function createRenderer(canvas) {
   try {
     return new WebGLRenderer(canvas);
   } catch (e) {
-    console.warn('WebGL not available, falling back to CPU renderer:', e);
+    console.warn("WebGL not available, falling back to CPU renderer:", e);
     return new CPURenderer(canvas);
   }
 }

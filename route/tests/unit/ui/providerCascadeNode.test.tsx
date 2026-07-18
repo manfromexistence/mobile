@@ -33,8 +33,9 @@ vi.mock("next/image", () => ({
 
 // ── Import after mocks ─────────────────────────────────────────────────────
 
-const { ProviderCascadeNode } =
-  await import("@/app/(dashboard)/dashboard/combos/live/nodes/ProviderCascadeNode");
+const { ProviderCascadeNode } = await import(
+  "@/app/(dashboard)/dashboard/combos/live/nodes/ProviderCascadeNode"
+);
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -112,7 +113,7 @@ describe("ProviderCascadeNode", () => {
     const container = mount(
       <ProviderCascadeNode
         {...makeNodeProps({ state: "failed", failKind: "rate-limit", error: "429 rate limit" })}
-      />
+      />,
     );
     const badge = container.querySelector("[data-testid='fail-kind-badge']");
     expect(badge).toBeTruthy();
@@ -127,7 +128,7 @@ describe("ProviderCascadeNode", () => {
           failKind: "circuit-open",
           error: "circuit open",
         })}
-      />
+      />,
     );
     const badge = container.querySelector("[data-testid='fail-kind-badge']");
     expect(badge).toBeTruthy();
@@ -138,7 +139,7 @@ describe("ProviderCascadeNode", () => {
     const container = mount(
       <ProviderCascadeNode
         {...makeNodeProps({ state: "failed", failKind: "cooldown", error: "cooldown" })}
-      />
+      />,
     );
     const badge = container.querySelector("[data-testid='fail-kind-badge']");
     expect(badge?.textContent).toContain("cooldown");
@@ -146,7 +147,7 @@ describe("ProviderCascadeNode", () => {
 
   it("does NOT show failKind badge in succeeded state", () => {
     const container = mount(
-      <ProviderCascadeNode {...makeNodeProps({ state: "succeeded", failKind: "rate-limit" })} />
+      <ProviderCascadeNode {...makeNodeProps({ state: "succeeded", failKind: "rate-limit" })} />,
     );
     expect(container.querySelector("[data-testid='fail-kind-badge']")).toBeNull();
   });
@@ -158,14 +159,14 @@ describe("ProviderCascadeNode", () => {
 
   it("does NOT show failKind badge when state is failed but failKind is absent", () => {
     const container = mount(
-      <ProviderCascadeNode {...makeNodeProps({ state: "failed", error: "some error" })} />
+      <ProviderCascadeNode {...makeNodeProps({ state: "failed", error: "some error" })} />,
     );
     expect(container.querySelector("[data-testid='fail-kind-badge']")).toBeNull();
   });
 
   it("renders latency when provided", () => {
     const container = mount(
-      <ProviderCascadeNode {...makeNodeProps({ state: "succeeded", latencyMs: 320 })} />
+      <ProviderCascadeNode {...makeNodeProps({ state: "succeeded", latencyMs: 320 })} />,
     );
     expect(container.textContent).toContain("320ms");
   });
@@ -174,11 +175,11 @@ describe("ProviderCascadeNode", () => {
     const container = mount(
       <ProviderCascadeNode
         {...makeNodeProps({ provider: "anthropic", model: "claude-3-opus", state: "idle" })}
-      />
+      />,
     );
     expect(container.querySelector("[data-testid='provider-name']")?.textContent).toBe("anthropic");
     expect(container.querySelector("[data-testid='model-name']")?.textContent).toBe(
-      "claude-3-opus"
+      "claude-3-opus",
     );
   });
 
@@ -188,7 +189,7 @@ describe("ProviderCascadeNode", () => {
     const container = mount(
       <ProviderCascadeNode
         {...makeNodeProps({ state: "skipped", cbState: "OPEN", cbRetryAfterMs: 41000 })}
-      />
+      />,
     );
     const badge = container.querySelector("[data-testid='cb-state-badge']");
     expect(badge).toBeTruthy();
@@ -200,25 +201,25 @@ describe("ProviderCascadeNode", () => {
     const container = mount(
       <ProviderCascadeNode
         {...makeNodeProps({ state: "idle", cbState: "HALF_OPEN", cbRetryAfterMs: 5000 })}
-      />
+      />,
     );
     expect(container.querySelector("[data-testid='cb-state-badge']")?.textContent).toContain(
-      "CB: HALF_OPEN"
+      "CB: HALF_OPEN",
     );
   });
 
   it("omits the retry hint when cbRetryAfterMs is absent", () => {
     const container = mount(
-      <ProviderCascadeNode {...makeNodeProps({ state: "skipped", cbState: "DEGRADED" })} />
+      <ProviderCascadeNode {...makeNodeProps({ state: "skipped", cbState: "DEGRADED" })} />,
     );
     expect(container.querySelector("[data-testid='cb-state-badge']")?.textContent?.trim()).toBe(
-      "CB: DEGRADED"
+      "CB: DEGRADED",
     );
   });
 
   it("does NOT show the CB badge when cbState is absent", () => {
     const container = mount(
-      <ProviderCascadeNode {...makeNodeProps({ state: "failed", failKind: "other" })} />
+      <ProviderCascadeNode {...makeNodeProps({ state: "failed", failKind: "other" })} />,
     );
     expect(container.querySelector("[data-testid='cb-state-badge']")).toBeNull();
   });
@@ -234,7 +235,7 @@ describe("ProviderCascadeNode", () => {
           cooldownTotal: 3,
           cooldownRetryAfterMs: 28000,
         })}
-      />
+      />,
     );
     const badge = container.querySelector("[data-testid='cooldown-badge']");
     expect(badge).toBeTruthy();
@@ -246,10 +247,10 @@ describe("ProviderCascadeNode", () => {
     const container = mount(
       <ProviderCascadeNode
         {...makeNodeProps({ state: "succeeded", cooldownCount: 1, cooldownTotal: 4 })}
-      />
+      />,
     );
     expect(container.querySelector("[data-testid='cooldown-badge']")?.textContent).toContain(
-      "cooldown 1/4"
+      "cooldown 1/4",
     );
   });
 
@@ -257,10 +258,10 @@ describe("ProviderCascadeNode", () => {
     const container = mount(
       <ProviderCascadeNode
         {...makeNodeProps({ state: "idle", cooldownCount: 1, cooldownTotal: 2 })}
-      />
+      />,
     );
     expect(container.querySelector("[data-testid='cooldown-badge']")?.textContent?.trim()).toBe(
-      "cooldown 1/2"
+      "cooldown 1/2",
     );
   });
 
@@ -270,7 +271,7 @@ describe("ProviderCascadeNode", () => {
     const zero = mount(
       <ProviderCascadeNode
         {...makeNodeProps({ state: "idle", cooldownCount: 0, cooldownTotal: 3 })}
-      />
+      />,
     );
     expect(zero.querySelector("[data-testid='cooldown-badge']")).toBeNull();
   });
@@ -286,13 +287,13 @@ describe("ProviderCascadeNode", () => {
           cooldownTotal: 2,
           cooldownRetryAfterMs: 9000,
         })}
-      />
+      />,
     );
     expect(container.querySelector("[data-testid='cb-state-badge']")?.textContent).toContain(
-      "CB: OPEN"
+      "CB: OPEN",
     );
     expect(container.querySelector("[data-testid='cooldown-badge']")?.textContent).toContain(
-      "cooldown 1/2"
+      "cooldown 1/2",
     );
   });
 });

@@ -1,9 +1,7 @@
 {
   "name": "key-value-validation-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "key-value"
-  ],
+  "registryDependencies": ["key-value"],
   "files": [
     {
       "path": "examples/key-value-validation-demo.tsx",

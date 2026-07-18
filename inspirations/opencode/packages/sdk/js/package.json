@@ -19,9 +19,7 @@
     "./v2/server": "./src/v2/server.ts",
     "./v2/types": "./src/v2/gen/types.gen.ts"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "devDependencies": {
     "@hey-api/openapi-ts": "0.90.10",
     "@tsconfig/node22": "catalog:",

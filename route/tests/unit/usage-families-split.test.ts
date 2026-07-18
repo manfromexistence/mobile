@@ -30,11 +30,11 @@ test("each family leaf exposes its usage fetcher(s)", () => {
 test("host re-exports the kiro symbols the kiro-* tests import, with the same identity", () => {
   assert.equal(
     (HOST as Record<string, unknown>).buildKiroUsageResult,
-    (KIRO as Record<string, unknown>).buildKiroUsageResult
+    (KIRO as Record<string, unknown>).buildKiroUsageResult,
   );
   assert.equal(
     (HOST as Record<string, unknown>).discoverKiroProfileArn,
-    (KIRO as Record<string, unknown>).discoverKiroProfileArn
+    (KIRO as Record<string, unknown>).discoverKiroProfileArn,
   );
 });
 

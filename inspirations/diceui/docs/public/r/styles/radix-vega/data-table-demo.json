@@ -1,12 +1,8 @@
 {
   "name": "data-table-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "data-table"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["data-table"],
   "files": [
     {
       "path": "examples/data-table-demo.tsx",

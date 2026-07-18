@@ -1,72 +1,72 @@
-import { useEffect, useMemo } from 'react';
-import { Box } from '@chakra-ui/react';
+import { useEffect, useMemo } from "react";
+import { Box } from "@chakra-ui/react";
 
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
-import CodeExample from '../../components/code/CodeExample';
+import CodeExample from "../../components/code/CodeExample";
 
-import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '../../components/code/Dependencies';
-import Customize from '../../components/common/Preview/Customize';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import PreviewInput from '../../components/common/Preview/PreviewInput';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import useForceRerender from '../../hooks/useForceRerender';
-import useComponentProps from '../../hooks/useComponentProps';
+import PropTable from "../../components/common/Preview/PropTable";
+import Dependencies from "../../components/code/Dependencies";
+import Customize from "../../components/common/Preview/Customize";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import PreviewInput from "../../components/common/Preview/PreviewInput";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import useForceRerender from "../../hooks/useForceRerender";
+import useComponentProps from "../../hooks/useComponentProps";
 
-import ASCIIText from '@content/TextAnimations/ASCIIText/ASCIIText';
-import { asciiText } from '../../constants/code/TextAnimations/asciiTextCode';
+import ASCIIText from "@content/TextAnimations/ASCIIText/ASCIIText";
+import { asciiText } from "../../constants/code/TextAnimations/asciiTextCode";
 
 const DEFAULT_PROPS = {
-  text: 'Hey!',
+  text: "Hey!",
   enableWaves: true,
-  asciiFontSize: 8
+  asciiFontSize: 8,
 };
 
 const propData = [
   {
-    name: 'text',
-    type: 'string',
+    name: "text",
+    type: "string",
     default: '"Hello World!"',
-    description: 'The text displayed on the plane in the ASCII scene.'
+    description: "The text displayed on the plane in the ASCII scene.",
   },
   {
-    name: 'enableWaves',
-    type: 'boolean',
-    default: 'true',
-    description: 'If false, disables the wavy text animation.'
+    name: "enableWaves",
+    type: "boolean",
+    default: "true",
+    description: "If false, disables the wavy text animation.",
   },
   {
-    name: 'asciiFontSize',
-    type: 'number',
-    default: '12',
-    description: 'Size of the ASCII glyphs in the overlay.'
+    name: "asciiFontSize",
+    type: "number",
+    default: "12",
+    description: "Size of the ASCII glyphs in the overlay.",
   },
   {
-    name: 'textFontSize',
-    type: 'number',
-    default: '200',
-    description: "Pixel size for the text that's drawn onto the plane texture."
+    name: "textFontSize",
+    type: "number",
+    default: "200",
+    description: "Pixel size for the text that's drawn onto the plane texture.",
   },
   {
-    name: 'planeBaseHeight',
-    type: 'number',
-    default: '8',
-    description: 'How tall the plane is in 3D. The plane width is auto-based on text aspect.'
+    name: "planeBaseHeight",
+    type: "number",
+    default: "8",
+    description: "How tall the plane is in 3D. The plane width is auto-based on text aspect.",
   },
   {
-    name: 'textColor',
-    type: 'string',
-    default: '#fdf9f3',
-    description: 'The color of the text drawn onto the plane texture.'
+    name: "textColor",
+    type: "string",
+    default: "#fdf9f3",
+    description: "The color of the text drawn onto the plane texture.",
   },
   {
-    name: 'strokeColor',
-    type: 'string',
-    default: 'N/A',
-    description: 'Not used here, but you could add it if you want an outline effect.'
-  }
+    name: "strokeColor",
+    type: "string",
+    default: "N/A",
+    description: "Not used here, but you could add it if you want an outline effect.",
+  },
 ];
 
 const ASCIITextDemo = () => {
@@ -74,17 +74,29 @@ const ASCIITextDemo = () => {
   const { text, enableWaves, asciiFontSize } = props;
 
   const [key, forceRerender] = useForceRerender();
-  const dependencyList = useMemo(() => ['three'], []);
+  const dependencyList = useMemo(() => ["three"], []);
 
   useEffect(() => {
     forceRerender();
   }, [forceRerender]);
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
-          <Box position="relative" className="demo-container" minH={400} maxH={400} overflow="hidden" mb={6}>
+          <Box
+            position="relative"
+            className="demo-container"
+            minH={400}
+            maxH={400}
+            overflow="hidden"
+            mb={6}
+          >
             <ASCIIText
               key={key}
               text={text}
@@ -102,7 +114,7 @@ const ASCIITextDemo = () => {
               placeholder="Enter text..."
               width={200}
               maxLength={10}
-              onChange={val => updateProp('text', val)}
+              onChange={(val) => updateProp("text", val)}
             />
 
             <PreviewSlider
@@ -111,8 +123,8 @@ const ASCIITextDemo = () => {
               max={64}
               step={1}
               value={asciiFontSize}
-              onChange={val => {
-                updateProp('asciiFontSize', Number(val) || 1);
+              onChange={(val) => {
+                updateProp("asciiFontSize", Number(val) || 1);
                 forceRerender();
               }}
             />
@@ -120,8 +132,8 @@ const ASCIITextDemo = () => {
             <PreviewSwitch
               title="Waves"
               isChecked={enableWaves}
-              onChange={checked => {
-                updateProp('enableWaves', checked);
+              onChange={(checked) => {
+                updateProp("enableWaves", checked);
                 forceRerender();
               }}
             />

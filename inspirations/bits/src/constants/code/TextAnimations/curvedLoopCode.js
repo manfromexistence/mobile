@@ -1,8 +1,8 @@
-import code from '@content/TextAnimations/CurvedLoop/CurvedLoop.jsx?raw';
-import css from '@content/TextAnimations/CurvedLoop/CurvedLoop.css?raw';
-import tailwind from '@tailwind/TextAnimations/CurvedLoop/CurvedLoop.jsx?raw';
-import tsCode from '@ts-default/TextAnimations/CurvedLoop/CurvedLoop.tsx?raw';
-import tsTailwind from '@ts-tailwind/TextAnimations/CurvedLoop/CurvedLoop.tsx?raw';
+import code from "@content/TextAnimations/CurvedLoop/CurvedLoop.jsx?raw";
+import css from "@content/TextAnimations/CurvedLoop/CurvedLoop.css?raw";
+import tailwind from "@tailwind/TextAnimations/CurvedLoop/CurvedLoop.jsx?raw";
+import tsCode from "@ts-default/TextAnimations/CurvedLoop/CurvedLoop.tsx?raw";
+import tsTailwind from "@ts-tailwind/TextAnimations/CurvedLoop/CurvedLoop.tsx?raw";
 
 export const curvedLoop = {
   usage: `import CurvedLoop from './CurvedLoop';
@@ -31,5 +31,5 @@ export const curvedLoop = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

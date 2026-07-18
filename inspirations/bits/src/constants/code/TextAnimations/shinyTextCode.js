@@ -1,8 +1,8 @@
-import code from '@content/TextAnimations/ShinyText/ShinyText.jsx?raw';
-import css from '@content/TextAnimations/ShinyText/ShinyText.css?raw';
-import tailwind from '@tailwind/TextAnimations/ShinyText/ShinyText.jsx?raw';
-import tsCode from '@ts-default/TextAnimations/ShinyText/ShinyText.tsx?raw';
-import tsTailwind from '@ts-tailwind/TextAnimations/ShinyText/ShinyText.tsx?raw';
+import code from "@content/TextAnimations/ShinyText/ShinyText.jsx?raw";
+import css from "@content/TextAnimations/ShinyText/ShinyText.css?raw";
+import tailwind from "@tailwind/TextAnimations/ShinyText/ShinyText.jsx?raw";
+import tsCode from "@ts-default/TextAnimations/ShinyText/ShinyText.tsx?raw";
+import tsTailwind from "@ts-tailwind/TextAnimations/ShinyText/ShinyText.tsx?raw";
 
 export const shinyText = {
   dependencies: `motion`,
@@ -23,5 +23,5 @@ export const shinyText = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

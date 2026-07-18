@@ -13,7 +13,7 @@ import { dirname, resolve } from "node:path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CARD_PATH = resolve(
   __dirname,
-  "../../../src/app/(dashboard)/dashboard/cli-code/components/AntigravityToolCard.tsx"
+  "../../../src/app/(dashboard)/dashboard/cli-code/components/AntigravityToolCard.tsx",
 );
 
 describe("AntigravityToolCard model alias wiring", () => {

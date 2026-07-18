@@ -56,24 +56,20 @@ const mockUsePools = vi.fn(() => ({
   mutate: mockMutate,
 }));
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/costs/quota-share/hooks/usePools",
-  () => ({ usePools: mockUsePools })
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/costs/quota-share/hooks/usePools", () => ({
+  usePools: mockUsePools,
+}));
 
 // ── usePoolUsage mock ──────────────────────────────────────────────────────
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/costs/quota-share/hooks/usePoolUsage",
-  () => ({
-    usePoolUsage: () => ({ usage: null, loading: false, error: null }),
-  })
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/costs/quota-share/hooks/usePoolUsage", () => ({
+  usePoolUsage: () => ({ usage: null, loading: false, error: null }),
+}));
 
 // ── useLocalStoragePoolMigration mock ──────────────────────────────────────
 const mockMigration = vi.fn();
 vi.mock(
   "../../../src/app/(dashboard)/dashboard/costs/quota-share/hooks/useLocalStoragePoolMigration",
-  () => ({ useLocalStoragePoolMigration: mockMigration })
+  () => ({ useLocalStoragePoolMigration: mockMigration }),
 );
 
 // ── usePoolsUsageAggregate mock ────────────────────────────────────────────
@@ -86,15 +82,15 @@ vi.mock(
       loading: false,
       error: null,
     }),
-  })
+  }),
 );
 
 // ── fetch stub ─────────────────────────────────────────────────────────────
 vi.stubGlobal(
   "fetch",
   vi.fn(() =>
-    Promise.resolve({ ok: true, json: () => Promise.resolve([]) } as unknown as Response)
-  )
+    Promise.resolve({ ok: true, json: () => Promise.resolve([]) } as unknown as Response),
+  ),
 );
 
 // ── Lazy import after mocks ────────────────────────────────────────────────

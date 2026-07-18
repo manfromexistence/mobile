@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiToOpenAIResponsesResponse, openaiResponsesToOpenAIResponse } =
-  await import("../../open-sse/translator/response/openai-responses.ts");
+const { openaiToOpenAIResponsesResponse, openaiResponsesToOpenAIResponse } = await import(
+  "../../open-sse/translator/response/openai-responses.ts"
+);
 const { initState } = await import("../../open-sse/translator/index.ts");
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 
@@ -33,14 +34,14 @@ test("Responses -> OpenAI -> Responses: round-trip preserves newlines in tool ca
         arguments: JSON.stringify({ path: "/tmp/f.txt", content: originalContent }),
       },
     },
-    state1
+    state1,
   );
   openaiResponsesToOpenAIResponse(
     {
       type: "response.function_call_arguments.delta",
       delta: "",
     },
-    state1
+    state1,
   );
 
   const doneChunk = openaiResponsesToOpenAIResponse(
@@ -53,7 +54,7 @@ test("Responses -> OpenAI -> Responses: round-trip preserves newlines in tool ca
         arguments: JSON.stringify({ path: "/tmp/f.txt", content: originalContent }),
       },
     },
-    state1
+    state1,
   );
   assert.ok(doneChunk, "should produce Chat Completions chunk");
   const toolCall = doneChunk.choices[0].delta.tool_calls[0];
@@ -96,7 +97,7 @@ test("Responses -> OpenAI -> Responses: round-trip preserves newlines in tool ca
   ]);
 
   const doneRt = respEvents.find(
-    (e) => e.event === "response.output_item.done" && e.data.item?.type === "function_call"
+    (e) => e.event === "response.output_item.done" && e.data.item?.type === "function_call",
   );
   assert.ok(doneRt, "round-trip should produce output_item.done");
   const finalArgs = JSON.parse(doneRt.data.item.arguments);
@@ -128,7 +129,7 @@ print("Done")
         }),
       },
     },
-    state1
+    state1,
   );
 
   const done1 = openaiResponsesToOpenAIResponse(
@@ -144,7 +145,7 @@ print("Done")
         }),
       },
     },
-    state1
+    state1,
   );
 
   // The Chat Completions format tool call arguments must be valid parseable JSON
@@ -181,7 +182,7 @@ print("Done")
   ]);
 
   const done2 = respEvents2.find(
-    (e) => e.event === "response.output_item.done" && e.data.item?.type === "function_call"
+    (e) => e.event === "response.output_item.done" && e.data.item?.type === "function_call",
   );
   assert.ok(done2, "round-trip should produce output_item.done");
 
@@ -254,7 +255,7 @@ test("OpenAI -> Responses: escapeJsonStringValues fixes literal newlines in tool
     (e) =>
       e.event === "response.output_item.done" &&
       e.data?.item?.type === "function_call" &&
-      e.data.item.name === "write"
+      e.data.item.name === "write",
   );
   assert.ok(doneEvent);
   const doneArgs = doneEvent.data.item.arguments;
@@ -264,7 +265,7 @@ test("OpenAI -> Responses: escapeJsonStringValues fixes literal newlines in tool
   const completedEvent = events.find((e) => e.event === "response.completed");
   if (completedEvent) {
     const completedFc = (completedEvent.data.response?.output || []).find(
-      (item: { type?: string }) => item.type === "function_call"
+      (item: { type?: string }) => item.type === "function_call",
     );
     if (completedFc) {
       assert.doesNotThrow(() => JSON.parse(completedFc.arguments));
@@ -290,7 +291,7 @@ test("Responses -> OpenAI: response.failed records upstream error", () => {
         },
       },
     },
-    state
+    state,
   );
 
   assert.equal(result, null);
@@ -397,7 +398,7 @@ test("OpenAI -> Responses: no double-escaping of already-escaped JSON arguments"
   // Verify no literal \\n (double backslash + n) in the delta string
   assert.ok(
     !deltaEvent.data.delta.includes("\\\\n"),
-    "delta should NOT contain literal \\\\n (double backslash + n)"
+    "delta should NOT contain literal \\\\n (double backslash + n)",
   );
 
   // 2. function_call_arguments.done must carry valid JSON with correct content
@@ -408,7 +409,7 @@ test("OpenAI -> Responses: no double-escaping of already-escaped JSON arguments"
 
   // 3. output_item.done must carry valid JSON
   const doneItem = events.find(
-    (e) => e.event === "response.output_item.done" && e.data.item?.type === "function_call"
+    (e) => e.event === "response.output_item.done" && e.data.item?.type === "function_call",
   );
   assert.ok(doneItem, "should emit output_item.done for function_call");
   const doneItemParsed = JSON.parse(doneItem.data.item.arguments);
@@ -428,12 +429,12 @@ test("OpenAI -> Responses: no double-escaping of already-escaped JSON arguments"
   assert.equal(
     doneItem.data.item.arguments,
     doneArgsEvent.data.arguments,
-    "output_item.done arguments must match function_call_arguments.done arguments"
+    "output_item.done arguments must match function_call_arguments.done arguments",
   );
   assert.equal(
     doneItem.data.item.arguments,
     completedFc.arguments,
-    "output_item.done arguments must match response.completed output arguments"
+    "output_item.done arguments must match response.completed output arguments",
   );
 
   // 6. Verify no evidence of double-escaping in any argument payload
@@ -446,7 +447,7 @@ test("OpenAI -> Responses: no double-escaping of already-escaped JSON arguments"
           : completedFc.arguments;
     assert.ok(
       !argsStr.includes("\\\\n"),
-      `${source} arguments should NOT contain \\\\n (double backslash + n)`
+      `${source} arguments should NOT contain \\\\n (double backslash + n)`,
     );
     // All three must be parseable JSON
     const parsed = JSON.parse(argsStr);
@@ -457,7 +458,7 @@ test("OpenAI -> Responses: no double-escaping of already-escaped JSON arguments"
     assert.equal(
       literalBackslashN,
       0,
-      `${source} parsed content should have ZERO literal backslash-n sequences`
+      `${source} parsed content should have ZERO literal backslash-n sequences`,
     );
   }
 });

@@ -27,7 +27,7 @@ function render(extra: Record<string, unknown>) {
         onSelectAll={() => {}}
         onDeselectAll={() => {}}
         {...(extra as any)}
-      />
+      />,
     );
   });
   containers.push({ root, el });

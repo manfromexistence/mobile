@@ -15,7 +15,10 @@ vi.mock("next-intl", () => ({
 }));
 vi.mock("next/dynamic", () => ({
   default: () => (props: Record<string, unknown>) => (
-    <div data-testid="provider-topology" data-providers={String((props.providers as unknown[])?.length ?? 0)} />
+    <div
+      data-testid="provider-topology"
+      data-providers={String((props.providers as unknown[])?.length ?? 0)}
+    />
   ),
 }));
 vi.mock("@/shared/components", () => ({
@@ -55,7 +58,7 @@ it("renders the topology card and forwards providers to ProviderTopology", () =>
         ]}
         lastProvider="openai"
         errorProvider=""
-      />
+      />,
     );
   });
 

@@ -29,7 +29,7 @@ async function readStreamText(stream) {
   }
 
   return decoder.decode(
-    chunks.length === 1 ? chunks[0] : Uint8Array.from(chunks.flatMap((chunk) => Array.from(chunk)))
+    chunks.length === 1 ? chunks[0] : Uint8Array.from(chunks.flatMap((chunk) => Array.from(chunk))),
   );
 }
 
@@ -88,7 +88,7 @@ test("createDisconnectAwareStream treats errors after OpenAI DONE as successful 
       onError() {
         errorHandled = true;
       },
-    })
+    }),
   );
   const text = await readStreamText(stream);
 
@@ -121,7 +121,7 @@ test("createDisconnectAwareStream treats cancel after OpenAI DONE as successful 
       onDisconnect() {
         disconnectHandled = true;
       },
-    })
+    }),
   );
   const reader = stream.getReader();
   const first = await reader.read();
@@ -137,7 +137,7 @@ test("createDisconnectAwareStream treats cancel after Responses completed as suc
     readable: new ReadableStream({
       start(controller) {
         controller.enqueue(
-          encoder.encode('event: response.completed\ndata: {"type":"response.completed"}\n\n')
+          encoder.encode('event: response.completed\ndata: {"type":"response.completed"}\n\n'),
         );
       },
     }),
@@ -157,7 +157,7 @@ test("createDisconnectAwareStream treats cancel after Responses completed as suc
       onDisconnect() {
         disconnectHandled = true;
       },
-    })
+    }),
   );
   const reader = stream.getReader();
   const first = await reader.read();
@@ -215,7 +215,7 @@ test("createDisconnectAwareStream emits Responses API failure events for Respons
 
   const stream = createDisconnectAwareStream(
     transformStream,
-    createStreamController({ clientResponseFormat: FORMATS.OPENAI_RESPONSES })
+    createStreamController({ clientResponseFormat: FORMATS.OPENAI_RESPONSES }),
   );
   const text = await readStreamText(stream);
 
@@ -250,7 +250,7 @@ test("createDisconnectAwareStream keeps newlines escaped inside SSE data fields"
 
   const stream = createDisconnectAwareStream(
     transformStream,
-    createStreamController({ clientResponseFormat: FORMATS.OPENAI_RESPONSES })
+    createStreamController({ clientResponseFormat: FORMATS.OPENAI_RESPONSES }),
   );
   const text = await readStreamText(stream);
 
@@ -281,7 +281,7 @@ test("createDisconnectAwareStream treats legacy OpenAI response format alias as 
 
   const stream = createDisconnectAwareStream(
     transformStream,
-    createStreamController({ clientResponseFormat: FORMATS.OPENAI_RESPONSE })
+    createStreamController({ clientResponseFormat: FORMATS.OPENAI_RESPONSE }),
   );
   const text = await readStreamText(stream);
 
@@ -311,7 +311,7 @@ test("createDisconnectAwareStream emits Claude SSE errors for Claude clients", a
 
   const stream = createDisconnectAwareStream(
     transformStream,
-    createStreamController({ clientResponseFormat: FORMATS.CLAUDE })
+    createStreamController({ clientResponseFormat: FORMATS.CLAUDE }),
   );
   const text = await readStreamText(stream);
 
@@ -346,7 +346,7 @@ test("createDisconnectAwareStream keeps newlines escaped for Claude SSE errors",
 
   const stream = createDisconnectAwareStream(
     transformStream,
-    createStreamController({ clientResponseFormat: FORMATS.CLAUDE })
+    createStreamController({ clientResponseFormat: FORMATS.CLAUDE }),
   );
   const text = await readStreamText(stream);
 
@@ -473,7 +473,7 @@ test("createDisconnectAwareStream closes immediately when the controller is alre
         },
       },
     },
-    controller
+    controller,
   );
   const reader = stream.getReader();
   const first = await reader.read();
@@ -531,7 +531,7 @@ test("pipeWithDisconnect clears pending requests when the upstream stream errors
   const stream = pipeWithDisconnect(
     new Response(source),
     new TransformStream(),
-    createStreamController({ provider, model, connectionId })
+    createStreamController({ provider, model, connectionId }),
   );
 
   const text = await readStreamText(stream);
@@ -568,7 +568,7 @@ test("pipeWithDisconnect lets controller onError own pending cleanup", async () 
         errorEvent = event;
         return true;
       },
-    })
+    }),
   );
 
   const text = await readStreamText(stream);
@@ -602,7 +602,7 @@ test("pipeWithDisconnect does not double-clear transform errors already accounte
   const stream = pipeWithDisconnect(
     new Response(source),
     new TransformStream(),
-    createStreamController({ provider, model, connectionId })
+    createStreamController({ provider, model, connectionId }),
   );
 
   await readStreamText(stream);
@@ -701,7 +701,7 @@ test("pipeWithDisconnect does NOT flag a slow but progressing upstream as stalle
   assert.equal(
     onErrorCalled,
     false,
-    "stall watchdog must NOT fire on a slow but progressing upstream"
+    "stall watchdog must NOT fire on a slow but progressing upstream",
   );
   assert.doesNotMatch(text, /stall/i);
   assert.doesNotMatch(text, /"finish_reason":"error"/);

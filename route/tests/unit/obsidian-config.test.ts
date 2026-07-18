@@ -8,8 +8,15 @@ const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omni-obsidian-confi
 process.env.DATA_DIR = TEST_DATA_DIR;
 
 const coreDb = await import("../../src/lib/db/core.ts");
-const { getApiKeyContextSource, setApiKeyContextSource, deleteApiKeyContextSource, listApiKeyContextSources } = await import("../../src/lib/db/apiKeyContextSources.ts");
-const { getObsidianConfigForApiKey, setObsidianToken, setObsidianBaseUrl } = await import("../../src/lib/db/obsidian.ts");
+const {
+  getApiKeyContextSource,
+  setApiKeyContextSource,
+  deleteApiKeyContextSource,
+  listApiKeyContextSources,
+} = await import("../../src/lib/db/apiKeyContextSources.ts");
+const { getObsidianConfigForApiKey, setObsidianToken, setObsidianBaseUrl } = await import(
+  "../../src/lib/db/obsidian.ts"
+);
 
 async function resetStorage() {
   coreDb.resetDbInstance();
@@ -20,7 +27,7 @@ async function resetStorage() {
 function createTestApiKey(id: string, name: string) {
   const db = coreDb.getDbInstance();
   db.prepare(
-    "INSERT OR IGNORE INTO api_keys (id, name, key, machine_id, scopes, created_at) VALUES (?, ?, ?, ?, ?, ?)"
+    "INSERT OR IGNORE INTO api_keys (id, name, key, machine_id, scopes, created_at) VALUES (?, ?, ?, ?, ?, ?)",
   ).run(id, name, `sk-test-${id}`, "test-machine", "[]", new Date().toISOString());
 }
 
@@ -88,7 +95,7 @@ test("apiKeyContextSources: list returns all sources for a key", () => {
   setApiKeyContextSource("key-5", "notion", { token: "not", enabled: true });
   const results = listApiKeyContextSources("key-5");
   assert.equal(results.length, 2);
-  const types = results.map(r => r.sourceType).sort();
+  const types = results.map((r) => r.sourceType).sort();
   assert.deepEqual(types, ["notion", "obsidian"]);
 });
 

@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/Particles/Particles.jsx?raw';
-import css from '@content/Backgrounds/Particles/Particles.css?raw';
-import tailwind from '@tailwind/Backgrounds/Particles/Particles.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/Particles/Particles.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/Particles/Particles.tsx?raw';
+import code from "@content/Backgrounds/Particles/Particles.jsx?raw";
+import css from "@content/Backgrounds/Particles/Particles.css?raw";
+import tailwind from "@tailwind/Backgrounds/Particles/Particles.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/Particles/Particles.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/Particles/Particles.tsx?raw";
 
 export const particles = {
   dependencies: `ogl`,
@@ -24,5 +24,5 @@ export const particles = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

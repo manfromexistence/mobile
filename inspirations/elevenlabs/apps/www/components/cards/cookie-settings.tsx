@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
 import {
   Card,
   CardContent,
@@ -8,9 +8,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/registry/elevenlabs-ui/ui/card"
-import { Label } from "@/registry/elevenlabs-ui/ui/label"
-import { Switch } from "@/registry/elevenlabs-ui/ui/switch"
+} from "@/registry/elevenlabs-ui/ui/card";
+import { Label } from "@/registry/elevenlabs-ui/ui/label";
+import { Switch } from "@/registry/elevenlabs-ui/ui/switch";
 
 export function CardsCookieSettings() {
   return (
@@ -24,8 +24,7 @@ export function CardsCookieSettings() {
           <Label htmlFor="necessary" className="flex flex-col items-start">
             <span>Strictly Necessary</span>
             <span className="text-muted-foreground leading-snug font-normal">
-              These cookies are essential in order to use the website and use
-              its features.
+              These cookies are essential in order to use the website and use its features.
             </span>
           </Label>
           <Switch id="necessary" defaultChecked aria-label="Necessary" />
@@ -34,8 +33,7 @@ export function CardsCookieSettings() {
           <Label htmlFor="functional" className="flex flex-col items-start">
             <span>Functional Cookies</span>
             <span className="text-muted-foreground leading-snug font-normal">
-              These cookies allow the website to provide personalized
-              functionality.
+              These cookies allow the website to provide personalized functionality.
             </span>
           </Label>
           <Switch id="functional" aria-label="Functional" />
@@ -47,5 +45,5 @@ export function CardsCookieSettings() {
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }

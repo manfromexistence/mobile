@@ -144,9 +144,7 @@ describe("Rating Component", () => {
       const items = screen.getAllByRole("radio");
 
       // Record initial aria-posinset values
-      const initialPositions = items.map((item) =>
-        item.getAttribute("aria-posinset"),
-      );
+      const initialPositions = items.map((item) => item.getAttribute("aria-posinset"));
 
       const fourthItem = items[3];
 
@@ -158,9 +156,7 @@ describe("Rating Component", () => {
       await user.click(fourthItem);
 
       // Check that aria-posinset values remain the same (no index reassignment)
-      const afterClickPositions = items.map((item) =>
-        item.getAttribute("aria-posinset"),
-      );
+      const afterClickPositions = items.map((item) => item.getAttribute("aria-posinset"));
 
       expect(afterClickPositions).toEqual(initialPositions);
       expect(afterClickPositions).toEqual(["1", "2", "3", "4", "5"]);

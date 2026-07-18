@@ -49,9 +49,7 @@ export function WalletActions({
           <span className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-foreground">
             <Icon className="h-5 w-5" />
           </span>
-          <span className="text-xs font-medium text-muted-foreground">
-            {label}
-          </span>
+          <span className="text-xs font-medium text-muted-foreground">{label}</span>
         </motion.button>
       ))}
     </div>

@@ -1,9 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
-  AntigravityHandler,
-  convertGeminiToOpenAI,
-} from "../../src/mitm/handlers/antigravity.ts";
+import { AntigravityHandler, convertGeminiToOpenAI } from "../../src/mitm/handlers/antigravity.ts";
 import { runHandler } from "./_mitmHandlerHarness.ts";
 
 test("antigravity handler — forwards to OmniRoute and pipes SSE", async () => {
@@ -11,7 +8,7 @@ test("antigravity handler — forwards to OmniRoute and pipes SSE", async () => 
     new AntigravityHandler(),
     { model: "gpt-4o", messages: [{ role: "user", content: "hi" }] },
     "claude-3.5-sonnet",
-    { upstreamBody: "data: hello\n\ndata: world\n\n" }
+    { upstreamBody: "data: hello\n\ndata: world\n\n" },
   );
   assert.ok(r.fetchCalled);
   assert.equal(r.status, 200);
@@ -19,12 +16,10 @@ test("antigravity handler — forwards to OmniRoute and pipes SSE", async () => 
 });
 
 test("antigravity handler — propagates upstream failure as 500", async () => {
-  const r = await runHandler(
-    new AntigravityHandler(),
-    { model: "gpt-4o" },
-    "claude-3.5-sonnet",
-    { upstreamStatus: 500, upstreamBody: "boom" }
-  );
+  const r = await runHandler(new AntigravityHandler(), { model: "gpt-4o" }, "claude-3.5-sonnet", {
+    upstreamStatus: 500,
+    upstreamBody: "boom",
+  });
   assert.equal(r.status, 500);
   const body = r.responseChunks.join("");
   // Error must NOT include raw stack trace (Hard Rule #12 sanitization).
@@ -49,7 +44,7 @@ test("convertGeminiToOpenAI — maps Gemini fields to OpenAI chat body", () => {
       thinkingConfig: { thinkingBudget: 1024 },
     } as Record<string, unknown>,
     "claude-opus-4-6-thinking",
-    true
+    true,
   );
 
   assert.equal(out.model, "claude-opus-4-6-thinking");
@@ -81,7 +76,7 @@ test("antigravity handler — converts raw Gemini body before forwarding", async
     {
       upstreamBody: "data: pong\n\n",
       url: "/v1beta/models/gemini:streamGenerateContent",
-    }
+    },
   );
 
   assert.ok(r.fetchCalled);
@@ -115,7 +110,7 @@ test("convertGeminiToOpenAI — unwraps the cloudcode-pa `.request` envelope (#4
       },
     } as Record<string, unknown>,
     "ag-claude-opus-4-6-thinking",
-    true
+    true,
   );
 
   assert.equal(out.model, "ag-claude-opus-4-6-thinking");
@@ -144,7 +139,7 @@ test("antigravity handler — forwards a cloudcode envelope request with real me
     {
       upstreamBody: "data: pong\n\n",
       url: "/v1internal:streamGenerateContent",
-    }
+    },
   );
 
   assert.ok(r.fetchCalled);
@@ -164,7 +159,7 @@ test("antigravity handler — non-streaming URL yields stream:false", async () =
     new AntigravityHandler(),
     { contents: [{ role: "user", parts: [{ text: "hi" }] }] },
     "gpt-4o",
-    { url: "/v1beta/models/gemini:generateContent" }
+    { url: "/v1beta/models/gemini:generateContent" },
   );
   const forwarded = JSON.parse(r.fetchBody);
   assert.equal(forwarded.stream, false);

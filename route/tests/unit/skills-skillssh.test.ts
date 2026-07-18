@@ -126,7 +126,7 @@ test("searchSkillsSh throws on non-ok response", async () => {
 
   await assert.rejects(
     () => searchSkillsSh("fail"),
-    (err) => (err as any).message.includes("skills.sh API error: 500")
+    (err) => (err as any).message.includes("skills.sh API error: 500"),
   );
 });
 
@@ -150,7 +150,7 @@ test("fetchSkillMd throws on 404", async () => {
 
   await assert.rejects(
     () => fetchSkillMd("owner/repo", "missing-skill"),
-    (err) => (err as any).message.includes("Failed to fetch SKILL.md: 404")
+    (err) => (err as any).message.includes("Failed to fetch SKILL.md: 404"),
   );
 });
 

@@ -1,9 +1,7 @@
 {
   "name": "mention",
   "type": "registry:ui",
-  "dependencies": [
-    "@diceui/mention"
-  ],
+  "dependencies": ["@diceui/mention"],
   "files": [
     {
       "path": "ui/mention.tsx",

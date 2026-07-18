@@ -26,8 +26,7 @@ export default function PendingWrapperDemo() {
       </Pending>
 
       <p className="text-muted-foreground text-sm">
-        Using the <code className="text-xs">{"<Pending>"}</code> wrapper
-        component
+        Using the <code className="text-xs">{"<Pending>"}</code> wrapper component
       </p>
     </div>
   );

@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { geminiToOpenAIRequest } =
-  await import("../../open-sse/translator/request/gemini-to-openai.ts");
+const { geminiToOpenAIRequest } = await import(
+  "../../open-sse/translator/request/gemini-to-openai.ts"
+);
 
 test("Gemini -> OpenAI maps generation config, system instructions and tools", () => {
   const result = geminiToOpenAIRequest(
@@ -22,7 +23,7 @@ test("Gemini -> OpenAI maps generation config, system instructions and tools", (
         },
       ],
     },
-    false
+    false,
   );
 
   assert.equal(result.stream, false);
@@ -53,7 +54,7 @@ test("Gemini -> OpenAI converts user text and inlineData to OpenAI content block
         },
       ],
     },
-    true
+    true,
   );
 
   assert.equal(result.stream, true);
@@ -82,7 +83,7 @@ test("Gemini -> OpenAI converts model parts into assistant text and tool calls",
         },
       ],
     },
-    false
+    false,
   );
 
   assert.equal(result.messages.length, 1);
@@ -112,7 +113,7 @@ test("Gemini -> OpenAI converts function responses into tool messages", () => {
         },
       ],
     },
-    false
+    false,
   );
 
   assert.deepEqual(result.messages, [

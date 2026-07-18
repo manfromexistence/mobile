@@ -6,9 +6,7 @@ import * as React from "react";
 import { useLayoutEffect } from "./use-layout-effect";
 
 function useSize(element: HTMLElement | null) {
-  const [size, setSize] = React.useState<
-    { width: number; height: number } | undefined
-  >(undefined);
+  const [size, setSize] = React.useState<{ width: number; height: number } | undefined>(undefined);
 
   useLayoutEffect(() => {
     if (element) {
@@ -28,9 +26,7 @@ function useSize(element: HTMLElement | null) {
         if (entry && "borderBoxSize" in entry) {
           const borderSizeEntry = entry.borderBoxSize;
           // iron out differences between browsers
-          const borderSize = Array.isArray(borderSizeEntry)
-            ? borderSizeEntry[0]
-            : borderSizeEntry;
+          const borderSize = Array.isArray(borderSizeEntry) ? borderSizeEntry[0] : borderSizeEntry;
           width = borderSize.inlineSize;
           height = borderSize.blockSize;
         } else {

@@ -3,10 +3,7 @@
   "name": "subtle-tab",
   "title": "Subtle Tab",
   "description": "Horizontal tab navigation with proximity hover, animated pill selection indicator, and fluid font-weight transitions. Supports icons and keyboard navigation.",
-  "dependencies": [
-    "framer-motion",
-    "lucide-react"
-  ],
+  "dependencies": ["framer-motion", "lucide-react"],
   "registryDependencies": [
     "utils",
     "http://localhost:3000/r/springs.json",

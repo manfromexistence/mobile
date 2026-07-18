@@ -31,7 +31,7 @@ test("VIDEO_PROVIDERS exposes the alibaba dashscope-video entry", () => {
   assert.equal(VIDEO_PROVIDERS.alibaba.format, "dashscope-video");
   assert.ok(
     VIDEO_PROVIDERS.alibaba.models.some((m) => m.id === "wan2.7-t2v"),
-    "wan2.7-t2v is listed"
+    "wan2.7-t2v is listed",
   );
 });
 

@@ -52,7 +52,7 @@ describe("resilience/settings normalize split-guard", () => {
   it("normalizeProviderBreakerProfile keeps degradation below failure threshold", () => {
     const out = normalizeProviderBreakerProfile(
       { failureThreshold: 3, degradationThreshold: 10, resetTimeoutMs: 60000 },
-      { failureThreshold: 5, degradationThreshold: 4, resetTimeoutMs: 30000 }
+      { failureThreshold: 5, degradationThreshold: 4, resetTimeoutMs: 30000 },
     );
     assert.equal(out.failureThreshold, 3);
     assert.equal(out.degradationThreshold, 2); // clamped to failureThreshold - 1
@@ -62,14 +62,14 @@ describe("resilience/settings normalize split-guard", () => {
   it("normalizeWaitForCooldownSettings derives ms and disables on zero retries/wait", () => {
     const on = normalizeWaitForCooldownSettings(
       { enabled: true, maxRetries: 2, maxRetryWaitSec: 30 },
-      { enabled: true, maxRetries: 3, maxRetryWaitSec: 30, maxRetryWaitMs: 30000 }
+      { enabled: true, maxRetries: 3, maxRetryWaitSec: 30, maxRetryWaitMs: 30000 },
     );
     assert.equal(on.enabled, true);
     assert.equal(on.maxRetryWaitMs, 30000);
 
     const off = normalizeWaitForCooldownSettings(
       { enabled: true, maxRetries: 0, maxRetryWaitSec: 30 },
-      { enabled: true, maxRetries: 3, maxRetryWaitSec: 30, maxRetryWaitMs: 30000 }
+      { enabled: true, maxRetries: 3, maxRetryWaitSec: 30, maxRetryWaitMs: 30000 },
     );
     assert.equal(off.enabled, false); // maxRetries 0 forces disabled
   });
@@ -97,7 +97,7 @@ describe("resilience/settings normalize split-guard", () => {
     assert.ok(
       resolved.providerBreaker.oauth.degradationThreshold <
         resolved.providerBreaker.oauth.failureThreshold ||
-        resolved.providerBreaker.oauth.failureThreshold <= 1
+        resolved.providerBreaker.oauth.failureThreshold <= 1,
     );
   });
 
@@ -114,11 +114,11 @@ describe("resilience/settings normalize split-guard", () => {
     const compat = buildLegacyResilienceCompat(DEFAULT_RESILIENCE_SETTINGS);
     assert.equal(
       compat.profiles.oauth.transientCooldown,
-      DEFAULT_RESILIENCE_SETTINGS.connectionCooldown.oauth.baseCooldownMs
+      DEFAULT_RESILIENCE_SETTINGS.connectionCooldown.oauth.baseCooldownMs,
     );
     assert.equal(
       compat.defaults.requestsPerMinute,
-      DEFAULT_RESILIENCE_SETTINGS.requestQueue.requestsPerMinute
+      DEFAULT_RESILIENCE_SETTINGS.requestQueue.requestsPerMinute,
     );
   });
 });

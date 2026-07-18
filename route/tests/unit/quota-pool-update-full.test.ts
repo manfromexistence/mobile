@@ -171,7 +171,7 @@ test("updatePool with new connectionIds triggers combo re-sync (openrouter → b
   });
   assert.ok(
     baiduAfter.length > 0,
-    `Expected baidu combos under qtSd/${groupSlug}/baidu/... after switch, found none`
+    `Expected baidu combos under qtSd/${groupSlug}/baidu/... after switch, found none`,
   );
 
   // The pool's primary connection should now reflect baidu
@@ -203,7 +203,7 @@ test("PATCH route sequence (remove→update→sync) prunes OLD-provider combos o
   await syncQuotaCombos(pool.id);
   assert.ok(
     (await listQuotaCombos()).some((c) => parseQuotaModelName(c.name)?.provider === "openrouter"),
-    "precondition: openrouter combos exist"
+    "precondition: openrouter combos exist",
   );
 
   // Mirror the PATCH route's connection/group-change path exactly:
@@ -222,7 +222,7 @@ test("PATCH route sequence (remove→update→sync) prunes OLD-provider combos o
       const p = parseQuotaModelName(c.name);
       return p?.groupSlug === groupSlug && p?.provider === "baidu";
     }),
-    "NEW baidu combos must exist after the switch"
+    "NEW baidu combos must exist after the switch",
   );
 });
 

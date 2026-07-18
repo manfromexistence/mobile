@@ -14,28 +14,28 @@ const root = join(__dirname, "..", "..");
 
 const webCookie = readFileSync(
   join(root, "src", "shared", "constants", "providers", "web-cookie.ts"),
-  "utf8"
+  "utf8",
 );
 const executor = readFileSync(join(root, "open-sse", "executors", "muse-spark-web.ts"), "utf8");
 
 test("provider form hint points at the live ecto_1_sess cookie, not retired abra_sess", () => {
   assert.ok(
     webCookie.includes("Paste your ecto_1_sess value"),
-    "muse-spark authHint must name ecto_1_sess"
+    "muse-spark authHint must name ecto_1_sess",
   );
   assert.ok(
     !webCookie.includes("Paste your abra_sess"),
-    "muse-spark authHint must not name the retired abra_sess cookie"
+    "muse-spark authHint must not name the retired abra_sess cookie",
   );
 });
 
 test("auth-failure message names the live ecto_1_sess cookie, not retired abra_sess", () => {
   assert.ok(
     !executor.includes("meta.ai abra_sess cookie may be missing"),
-    "the 401 message must not name the retired abra_sess cookie"
+    "the 401 message must not name the retired abra_sess cookie",
   );
   assert.ok(
     executor.includes("meta.ai ecto_1_sess cookie may be missing"),
-    "the 401 message must name the live ecto_1_sess cookie"
+    "the 401 message must name the live ecto_1_sess cookie",
   );
 });

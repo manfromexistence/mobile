@@ -1,18 +1,18 @@
-import type { Brick } from "./brick"
+import type { Brick } from "./brick";
 
 export interface GameState {
-  canvas: any
+  canvas: any;
 
-  enableGame: boolean
-  enableSounds: boolean
+  enableGame: boolean;
+  enableSounds: boolean;
 
-  score: number
-  bricks: Brick[]
-  logoIndex: number
+  score: number;
+  bricks: Brick[];
+  logoIndex: number;
 
-  soundBounce: any
-  soundBreak: any
-  soundGameOver: any
-  ballImage: any
-  paddleImage: any
+  soundBounce: any;
+  soundBreak: any;
+  soundGameOver: any;
+  ballImage: any;
+  paddleImage: any;
 }

@@ -1,25 +1,25 @@
-import { useMemo } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box, Text } from '@chakra-ui/react';
+import { useMemo } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box, Text } from "@chakra-ui/react";
 
-import Customize from '../../components/common/Preview/Customize';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import CodeExample from '../../components/code/CodeExample';
+import Customize from "../../components/common/Preview/Customize";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import CodeExample from "../../components/code/CodeExample";
 
-import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '../../components/code/Dependencies';
-import RefreshButton from '../../components/common/Preview/RefreshButton';
-import useForceRerender from '../../hooks/useForceRerender';
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import PropTable from "../../components/common/Preview/PropTable";
+import Dependencies from "../../components/code/Dependencies";
+import RefreshButton from "../../components/common/Preview/RefreshButton";
+import useForceRerender from "../../hooks/useForceRerender";
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
-import Lanyard from '../../content/Components/Lanyard/Lanyard';
-import { lanyard } from '../../constants/code/Components/lanyardCode';
+import Lanyard from "../../content/Components/Lanyard/Lanyard";
+import { lanyard } from "../../constants/code/Components/lanyardCode";
 
 const DEFAULT_PROPS = {
   cameraDistance: 24,
-  stopGravity: false
+  stopGravity: false,
 };
 
 const LanyardDemo = () => {
@@ -31,61 +31,66 @@ const LanyardDemo = () => {
   const propData = useMemo(
     () => [
       {
-        name: 'position',
-        type: 'array',
-        default: '[0, 0, 30]',
-        description: 'Initial camera position for the canvas.'
+        name: "position",
+        type: "array",
+        default: "[0, 0, 30]",
+        description: "Initial camera position for the canvas.",
       },
       {
-        name: 'gravity',
-        type: 'array',
-        default: '[0, -40, 0]',
-        description: 'Gravity vector for the physics simulation.'
+        name: "gravity",
+        type: "array",
+        default: "[0, -40, 0]",
+        description: "Gravity vector for the physics simulation.",
       },
       {
-        name: 'fov',
-        type: 'number',
-        default: '20',
-        description: 'Camera field of view.'
+        name: "fov",
+        type: "number",
+        default: "20",
+        description: "Camera field of view.",
       },
       {
-        name: 'transparent',
-        type: 'boolean',
-        default: 'true',
-        description: 'Enables a transparent background for the canvas.'
+        name: "transparent",
+        type: "boolean",
+        default: "true",
+        description: "Enables a transparent background for the canvas.",
       },
       {
-        name: 'frontImage',
-        type: 'string',
-        default: 'null',
-        description: "Custom image URL for the card's front face. Falls back to the model's built-in texture when not set."
+        name: "frontImage",
+        type: "string",
+        default: "null",
+        description:
+          "Custom image URL for the card's front face. Falls back to the model's built-in texture when not set.",
       },
       {
-        name: 'backImage',
-        type: 'string',
-        default: 'null',
-        description: "Custom image URL for the card's back face, rendered independently from the front."
+        name: "backImage",
+        type: "string",
+        default: "null",
+        description:
+          "Custom image URL for the card's back face, rendered independently from the front.",
       },
       {
-        name: 'imageFit',
+        name: "imageFit",
         type: '"cover" | "contain"',
         default: '"cover"',
-        description: "How a custom front/back image fits its face. Both preserve aspect ratio; 'cover' fills and crops, 'contain' letterboxes."
+        description:
+          "How a custom front/back image fits its face. Both preserve aspect ratio; 'cover' fills and crops, 'contain' letterboxes.",
       },
       {
-        name: 'lanyardImage',
-        type: 'string',
-        default: 'null',
-        description: "Custom image URL for the lanyard band's repeating texture. Falls back to the default band texture when not set."
+        name: "lanyardImage",
+        type: "string",
+        default: "null",
+        description:
+          "Custom image URL for the lanyard band's repeating texture. Falls back to the default band texture when not set.",
       },
       {
-        name: 'lanyardWidth',
-        type: 'number',
-        default: '1',
-        description: 'Width of the lanyard band (meshline lineWidth). Increase it to give a custom band image more room and reduce stretching.'
-      }
+        name: "lanyardWidth",
+        type: "number",
+        default: "1",
+        description:
+          "Width of the lanyard band (meshline lineWidth). Increase it to give a custom band image more room and reduce stretching.",
+      },
     ],
-    []
+    [],
   );
 
   return (
@@ -94,8 +99,11 @@ const LanyardDemo = () => {
       defaultProps={DEFAULT_PROPS}
       resetProps={resetProps}
       hasChanges={hasChanges}
-      demoOnlyProps={['cameraDistance', 'stopGravity']}
-      computedProps={{ position: [0, 0, cameraDistance], gravity: stopGravity ? [0, 0, 0] : [0, -40, 0] }}
+      demoOnlyProps={["cameraDistance", "stopGravity"]}
+      computedProps={{
+        position: [0, 0, cameraDistance],
+        gravity: stopGravity ? [0, 0, 0] : [0, -40, 0],
+      }}
     >
       <TabsLayout>
         <PreviewTab>
@@ -108,10 +116,19 @@ const LanyardDemo = () => {
             bg="linear-gradient(180deg, #2F293A 0%, #120F17 100%)"
           >
             <RefreshButton onClick={forceRerender} />
-            <Text position="absolute" fontSize="clamp(2rem, 6vw, 6rem)" fontWeight={900} color="#2F293A">
+            <Text
+              position="absolute"
+              fontSize="clamp(2rem, 6vw, 6rem)"
+              fontWeight={900}
+              color="#2F293A"
+            >
               Drag It!
             </Text>
-            <Lanyard key={key} position={[0, 0, cameraDistance]} gravity={stopGravity ? [0, 0, 0] : [0, -40, 0]} />
+            <Lanyard
+              key={key}
+              position={[0, 0, cameraDistance]}
+              gravity={stopGravity ? [0, 0, 0] : [0, -40, 0]}
+            />
           </Box>
 
           <Customize>
@@ -121,8 +138,8 @@ const LanyardDemo = () => {
               max={50}
               step={1}
               value={cameraDistance}
-              onChange={val => {
-                updateProp('cameraDistance', val);
+              onChange={(val) => {
+                updateProp("cameraDistance", val);
                 forceRerender();
               }}
             />
@@ -130,13 +147,19 @@ const LanyardDemo = () => {
             <PreviewSwitch
               title="Disable Gravity"
               isChecked={stopGravity}
-              onChange={checked => updateProp('stopGravity', checked)}
+              onChange={(checked) => updateProp("stopGravity", checked)}
             />
           </Customize>
 
           <PropTable data={propData} />
           <Dependencies
-            dependencyList={['three', 'meshline', '@react-three/fiber', '@react-three/drei', '@react-three/rapier']}
+            dependencyList={[
+              "three",
+              "meshline",
+              "@react-three/fiber",
+              "@react-three/drei",
+              "@react-three/rapier",
+            ]}
           />
         </PreviewTab>
 

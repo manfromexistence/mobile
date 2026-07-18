@@ -16,9 +16,7 @@ export default function RatingControlledDemo() {
             <RatingItem key={i} />
           ))}
         </Rating>
-        <p className="text-muted-foreground text-sm">
-          Current rating: {rating}
-        </p>
+        <p className="text-muted-foreground text-sm">Current rating: {rating}</p>
       </div>
       <div className="flex gap-2">
         <Button variant="outline" size="sm" onClick={() => setRating(0)}>

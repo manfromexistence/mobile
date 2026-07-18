@@ -2,11 +2,7 @@ type GtagParams = Record<string, string | number | boolean | undefined>;
 
 declare global {
   interface Window {
-    gtag?: (
-      command: "event" | "config" | "js",
-      action: string,
-      params?: GtagParams,
-    ) => void;
+    gtag?: (command: "event" | "config" | "js", action: string, params?: GtagParams) => void;
   }
 }
 

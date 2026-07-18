@@ -80,7 +80,8 @@ transition: {
     icon: PanelTopOpen,
     demo: "expand",
     ask: "Open the shape first, then reveal the content.",
-    shape: "Start as a tight icon. Expand on hover, focus or click. Text fades in after the shape moves.",
+    shape:
+      "Start as a tight icon. Expand on hover, focus or click. Text fades in after the shape moves.",
     avoid: "Do not animate size and text at the exact same time.",
     code: `expanded = open || hovered || focused
 
@@ -133,9 +134,7 @@ export function MotionPatterns() {
               <h2 className="mt-4 font-pixel text-base uppercase text-foreground">
                 {pattern.title}
               </h2>
-              <p className="mt-1 text-sm leading-5 text-muted-foreground">
-                {pattern.short}
-              </p>
+              <p className="mt-1 text-sm leading-5 text-muted-foreground">{pattern.short}</p>
             </button>
           );
         })}
@@ -167,9 +166,7 @@ function PatternDetails({ pattern }: { pattern: Pattern }) {
     <div className="space-y-3 pt-2">
       <section className="rounded-2xl border border-border bg-background p-4">
         <div className="flex items-center justify-between gap-3">
-          <h3 className="font-pixel text-sm uppercase text-foreground">
-            Live example
-          </h3>
+          <h3 className="font-pixel text-sm uppercase text-foreground">Live example</h3>
           <span className="rounded-full border border-border bg-card px-2.5 py-1 font-mono text-[11px] text-muted-foreground">
             {pattern.spec}
           </span>
@@ -178,30 +175,21 @@ function PatternDetails({ pattern }: { pattern: Pattern }) {
       </section>
 
       <section className="rounded-2xl border border-border bg-background p-4">
-        <h3 className="font-pixel text-sm uppercase text-foreground">
-          Simple guide
-        </h3>
+        <h3 className="font-pixel text-sm uppercase text-foreground">Simple guide</h3>
         <div className="mt-3 grid gap-3">
           {rows.map((row) => (
-            <div
-              key={row.label}
-              className="grid grid-cols-[72px_minmax(0,1fr)] items-start gap-4"
-            >
+            <div key={row.label} className="grid grid-cols-[72px_minmax(0,1fr)] items-start gap-4">
               <p className="pt-1 font-mono text-[11px] uppercase text-muted-foreground">
                 {row.label}
               </p>
-              <p className="text-sm leading-6 text-muted-foreground">
-                {row.value}
-              </p>
+              <p className="text-sm leading-6 text-muted-foreground">{row.value}</p>
             </div>
           ))}
         </div>
       </section>
 
       <section className="rounded-2xl border border-border bg-background p-4">
-        <h3 className="font-pixel text-sm uppercase text-foreground">
-          Pseudo code
-        </h3>
+        <h3 className="font-pixel text-sm uppercase text-foreground">Pseudo code</h3>
         <pre className="mt-3 overflow-x-auto rounded-xl border border-border bg-card p-3 text-xs leading-6 text-foreground">
           <code>{pattern.code}</code>
         </pre>
@@ -232,11 +220,7 @@ function LiveExample({ pattern }: { pattern: Pattern }) {
 
   if (pattern.demo === "reveal") {
     return (
-      <DemoFrame
-        action={
-          <ReplayButton onClick={() => setReplay((current) => current + 1)} />
-        }
-      >
+      <DemoFrame action={<ReplayButton onClick={() => setReplay((current) => current + 1)} />}>
         <motion.div
           key={replay}
           initial={{ opacity: 0, y: 12, filter: "blur(6px)" }}
@@ -320,9 +304,7 @@ function LiveExample({ pattern }: { pattern: Pattern }) {
               onClick={() => setTab(item)}
               className={cn(
                 "rounded-full px-3 py-1.5 text-xs transition-colors",
-                tab === item
-                  ? "bg-foreground text-background"
-                  : "text-muted-foreground",
+                tab === item ? "bg-foreground text-background" : "text-muted-foreground",
               )}
             >
               {item}
@@ -356,9 +338,7 @@ function DemoFrame({
   return (
     <div className="mt-4 rounded-2xl bg-card p-3">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <span className="font-mono text-[11px] uppercase text-muted-foreground">
-          Try it
-        </span>
+        <span className="font-mono text-[11px] uppercase text-muted-foreground">Try it</span>
         {action}
       </div>
       <div className="flex min-h-32 items-center justify-center rounded-xl bg-background p-4">

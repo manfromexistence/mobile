@@ -1,8 +1,4 @@
-import {
-  QRCode,
-  QRCodeCanvas,
-  QRCodeSkeleton,
-} from "@/registry/bases/base/ui/qr-code";
+import { QRCode, QRCodeCanvas, QRCodeSkeleton } from "@/registry/bases/base/ui/qr-code";
 
 export default function QRCodeDemo() {
   return (

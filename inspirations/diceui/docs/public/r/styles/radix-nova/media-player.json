@@ -1,10 +1,7 @@
 {
   "name": "media-player",
   "type": "registry:ui",
-  "dependencies": [
-    "radix-ui",
-    "media-chrome"
-  ],
+  "dependencies": ["radix-ui", "media-chrome"],
   "registryDependencies": [
     "badge",
     "button",

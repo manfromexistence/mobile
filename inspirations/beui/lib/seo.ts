@@ -1,10 +1,5 @@
 import type { JsonLdSchema } from "@/components/app/json-ld";
-import {
-  type CategoryEntry,
-  type ComponentEntry,
-  allComponents,
-  registry,
-} from "@/lib/registry";
+import { type CategoryEntry, type ComponentEntry, allComponents, registry } from "@/lib/registry";
 import { SITE_URL } from "@/lib/site";
 
 export const SITE = SITE_URL;
@@ -44,21 +39,12 @@ const BASE_KEYWORDS = [
  * Long-tail keyword set for a component, generated from its name and category
  * plus any hand-tuned `keywords`. Deduped, order-stable.
  */
-export function componentKeywords(
-  cat: CategoryEntry,
-  comp: ComponentEntry,
-): string[] {
+export function componentKeywords(cat: CategoryEntry, comp: ComponentEntry): string[] {
   const perName = KEYWORD_SUFFIXES.flatMap((suffix) =>
     KEYWORD_PREFIXES.map((prefix) => `${prefix}${comp.name} ${suffix}`.trim()),
   );
   return Array.from(
-    new Set([
-      comp.name,
-      ...perName,
-      ...(comp.keywords ?? []),
-      cat.name,
-      ...BASE_KEYWORDS,
-    ]),
+    new Set([comp.name, ...perName, ...(comp.keywords ?? []), cat.name, ...BASE_KEYWORDS]),
   );
 }
 
@@ -126,10 +112,7 @@ export function breadcrumbJsonLd(crumbs: Crumb[]): JsonLdSchema {
 }
 
 /** Per-component page: SoftwareSourceCode + TechArticle. */
-export function componentJsonLd(
-  cat: CategoryEntry,
-  comp: ComponentEntry,
-): JsonLdSchema {
+export function componentJsonLd(cat: CategoryEntry, comp: ComponentEntry): JsonLdSchema {
   const url = abs(`/components/${cat.slug}/${comp.slug}`);
   return {
     "@context": "https://schema.org",

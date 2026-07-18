@@ -25,12 +25,12 @@ test("Responses -> OpenAI: orphaned function_call_output is stripped", () => {
       ],
     },
     false,
-    {}
+    {},
   ) as { messages: ChatMsg[] };
 
   assert.equal(
     result.messages.some((m) => m.role === "tool" && m.tool_call_id === "orphan_call"),
-    false
+    false,
   );
 });
 
@@ -44,7 +44,7 @@ test("Responses -> OpenAI: matched function_call_output is preserved", () => {
       ],
     },
     false,
-    {}
+    {},
   ) as { messages: ChatMsg[] };
 
   const toolMsgs = result.messages.filter((m) => m.role === "tool");
@@ -63,16 +63,16 @@ test("Responses -> OpenAI: zero-function-call truncation strips every stale outp
       ],
     },
     false,
-    {}
+    {},
   ) as { messages: ChatMsg[] };
 
   assert.equal(
     result.messages.some((m) => m.role === "tool"),
-    false
+    false,
   );
   assert.equal(
     result.messages.some((m) => m.role === "user"),
-    true
+    true,
   );
 });
 
@@ -87,7 +87,7 @@ test("Responses -> OpenAI: mixed matched + orphan keeps only the matched output"
       ],
     },
     false,
-    {}
+    {},
   ) as { messages: ChatMsg[] };
 
   const toolMsgs = result.messages.filter((m) => m.role === "tool");

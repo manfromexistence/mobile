@@ -61,9 +61,7 @@ describe("Check completion unsupported requests", () => {
         suffix: "this is suffix", // this raises error
       };
       postInitAndCheckFields(request, "Llama-3.1-8B-Instruct-q4f32_1-MLC");
-    }).toThrow(
-      "The following fields in CompletionCreateParams are not yet supported",
-    );
+    }).toThrow("The following fields in CompletionCreateParams are not yet supported");
 
     expect(() => {
       const request: CompletionCreateParams = {
@@ -71,9 +69,7 @@ describe("Check completion unsupported requests", () => {
         best_of: 3, // this raises error
       };
       postInitAndCheckFields(request, "Llama-3.1-8B-Instruct-q4f32_1-MLC");
-    }).toThrow(
-      "The following fields in CompletionCreateParams are not yet supported",
-    );
+    }).toThrow("The following fields in CompletionCreateParams are not yet supported");
 
     expect(() => {
       const request: CompletionCreateParams = {
@@ -81,9 +77,7 @@ describe("Check completion unsupported requests", () => {
         user: "Bob", // this raises error
       };
       postInitAndCheckFields(request, "Llama-3.1-8B-Instruct-q4f32_1-MLC");
-    }).toThrow(
-      "The following fields in CompletionCreateParams are not yet supported",
-    );
+    }).toThrow("The following fields in CompletionCreateParams are not yet supported");
   });
 
   test("When streaming `n` needs to be 1", () => {

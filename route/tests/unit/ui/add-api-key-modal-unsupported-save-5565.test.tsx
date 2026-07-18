@@ -14,8 +14,9 @@ vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key,
 }));
 
-const { default: AddApiKeyModal } =
-  await import("../../../src/app/(dashboard)/dashboard/providers/[id]/components/modals/AddApiKeyModal");
+const { default: AddApiKeyModal } = await import(
+  "../../../src/app/(dashboard)/dashboard/providers/[id]/components/modals/AddApiKeyModal"
+);
 
 const containers: Array<{ root: ReturnType<typeof createRoot>; el: HTMLDivElement }> = [];
 
@@ -30,7 +31,7 @@ function render(props: Record<string, unknown>) {
         onSave={async () => undefined}
         onClose={() => {}}
         {...(props as any)}
-      />
+      />,
     );
   });
   containers.push({ root, el });
@@ -71,7 +72,7 @@ beforeEach(() => {
         ok: true,
         json: () => Promise.resolve({ valid: true }),
       } as Response);
-    })
+    }),
   );
 });
 
@@ -92,7 +93,7 @@ describe("AddApiKeyModal — 'validation not supported' is a non-blocking warnin
     setInputValue(apiKeyInput, "arena-auth-prod-v1.0=abc; arena-auth-prod-v1.1=def");
 
     const checkBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "Check cookie"
+      (b) => b.textContent?.trim() === "Check cookie",
     )!;
     expect(checkBtn).toBeTruthy();
     act(() => {
@@ -114,7 +115,7 @@ describe("AddApiKeyModal — 'validation not supported' is a non-blocking warnin
     setInputValue(apiKeyInput, "piapi-secret-key");
 
     const saveBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "save"
+      (b) => b.textContent?.trim() === "save",
     )!;
     expect(saveBtn).toBeTruthy();
     act(() => {

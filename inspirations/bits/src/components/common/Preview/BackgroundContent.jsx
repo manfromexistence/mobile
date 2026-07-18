@@ -1,13 +1,11 @@
-import { useState } from 'react';
-import { Box, Text } from '@chakra-ui/react';
-import { TbMenu } from 'react-icons/tb';
+import { useState } from "react";
+import { Box, Text } from "@chakra-ui/react";
+import { TbMenu } from "react-icons/tb";
 
-import PreviewSwitch from './PreviewSwitch';
-import logo from '../../../assets/logos/react-bits-logo.svg';
+import PreviewSwitch from "./PreviewSwitch";
+import logo from "../../../assets/logos/react-bits-logo.svg";
 
-const BackgroundContent = ({
-  headline = 'Build interfaces that feel alive'
-}) => {
+const BackgroundContent = ({ headline = "Build interfaces that feel alive" }) => {
   const [showContent, setShowContent] = useState(true);
 
   return (
@@ -34,7 +32,7 @@ const BackgroundContent = ({
             <Box
               mx="auto"
               mt={5}
-              w={{ base: '92%', md: '70%' }}
+              w={{ base: "92%", md: "70%" }}
               h="48px"
               borderRadius="14px"
               p="0px 8px 0px 14px"
@@ -46,16 +44,22 @@ const BackgroundContent = ({
               className="bg-content-glass"
             >
               <Box display="flex" alignItems="center" gap={2}>
-                <img src={logo} alt="Logo" style={{ height: '20px', borderRadius: '50px' }} />
+                <img src={logo} alt="Logo" style={{ height: "20px", borderRadius: "50px" }} />
               </Box>
 
-              <Box display={{ base: 'flex', md: 'none' }} alignItems="center" color="rgba(255,255,255,0.5)">
+              <Box
+                display={{ base: "flex", md: "none" }}
+                alignItems="center"
+                color="rgba(255,255,255,0.5)"
+              >
                 <TbMenu size={18} />
               </Box>
 
-              <Box display={{ base: 'none', md: 'flex' }} alignItems="center" gap={5}>
-                {['Features', 'About'].map(item => (
-                  <Text key={item} color="rgba(255,255,255,0.4)" fontSize="13px" fontWeight={500}>{item}</Text>
+              <Box display={{ base: "none", md: "flex" }} alignItems="center" gap={5}>
+                {["Features", "About"].map((item) => (
+                  <Text key={item} color="rgba(255,255,255,0.4)" fontSize="13px" fontWeight={500}>
+                    {item}
+                  </Text>
                 ))}
                 <Box
                   h="30px"

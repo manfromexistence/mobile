@@ -21,10 +21,7 @@ import { fileURLToPath } from "node:url";
 import { __disableSsoProtectionForTest } from "../../src/app/api/settings/proxy/vercel-deploy/route";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const ROUTE_PATH = join(
-  ROOT,
-  "src/app/api/settings/proxy/vercel-deploy/route.ts"
-);
+const ROUTE_PATH = join(ROOT, "src/app/api/settings/proxy/vercel-deploy/route.ts");
 
 describe("disableSsoProtection — checks the Vercel PATCH response instead of swallowing it", () => {
   const originalFetch = global.fetch;
@@ -42,7 +39,7 @@ describe("disableSsoProtection — checks the Vercel PATCH response instead of s
     const result = await __disableSsoProtectionForTest(
       "https://api.vercel.com",
       "proj_123",
-      "test-token"
+      "test-token",
     );
 
     assert.equal(result.ok, false, "must report ok:false on a non-2xx PATCH response");
@@ -55,7 +52,7 @@ describe("disableSsoProtection — checks the Vercel PATCH response instead of s
     const result = await __disableSsoProtectionForTest(
       "https://api.vercel.com",
       "proj_123",
-      "test-token"
+      "test-token",
     );
 
     assert.equal(result.ok, true);
@@ -69,7 +66,7 @@ describe("disableSsoProtection — checks the Vercel PATCH response instead of s
     const result = await __disableSsoProtectionForTest(
       "https://api.vercel.com",
       "proj_123",
-      "test-token"
+      "test-token",
     );
 
     assert.equal(result.ok, false);
@@ -82,14 +79,14 @@ describe("vercel-deploy route — wires the SSO-protection check into the respon
   it("no longer fires the PATCH with a silent `.catch(() => {})`", () => {
     assert.ok(
       !/ssoProtection:\s*null[\s\S]*?\.catch\(\s*\(\)\s*=>\s*\{\s*\}\s*\)/.test(src),
-      "the ssoProtection PATCH must not be silently swallowed with .catch(() => {})"
+      "the ssoProtection PATCH must not be silently swallowed with .catch(() => {})",
     );
   });
 
   it("surfaces a warning in the JSON response when disabling SSO protection failed", () => {
     assert.ok(
       src.includes("ssoProtectionWarning"),
-      "POST handler must surface ssoProtectionWarning in the response payload when the PATCH failed"
+      "POST handler must surface ssoProtectionWarning in the response payload when the PATCH failed",
     );
   });
 });

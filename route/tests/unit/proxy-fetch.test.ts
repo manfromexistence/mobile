@@ -92,16 +92,16 @@ test("proxy fetch bypasses invalid environment proxies for local addresses", asy
 
           assert.equal(response.status, 200);
           assert.equal(await response.text(), "local-bypass-ok");
-        }
+        },
       );
-    }
+    },
   );
 });
 
 test("runWithProxyContext requires a callback function", async () => {
   await assert.rejects(
     runWithProxyContext(null, null),
-    /runWithProxyContext requires a callback function/
+    /runWithProxyContext requires a callback function/,
   );
 });
 
@@ -138,13 +138,13 @@ test("proxy fetch uses TLS fingerprint transport when enabled and available", as
         proxyFetch("https://omniroute.example.test/hello", {
           method: "POST",
           headers: { "x-test": "1" },
-        })
+        }),
       );
 
       assert.equal(isTlsFingerprintActive(), true);
       assert.equal(tracked.tlsFingerprintUsed, true);
       assert.deepEqual(await (tracked.result as any).json(), { via: "tls-client" });
-    }
+    },
   );
 });
 
@@ -159,11 +159,11 @@ test("runWithProxyContext accepts reachable HTTP proxy endpoints and returns cal
           host: parsed.hostname,
           port: parsed.port,
         },
-        async () => "ok"
+        async () => "ok",
       );
 
       assert.equal(result, "ok");
-    }
+    },
   );
 });
 
@@ -171,7 +171,7 @@ test("runWithProxyContext throws PROXY_UNREACHABLE for an unreachable proxy by d
   // 127.0.0.1:9 (discard) refuses connections — the proxy is unreachable.
   await assert.rejects(
     runWithProxyContext({ type: "http", host: "127.0.0.1", port: "9" }, async () => "unreachable"),
-    /Proxy unreachable/
+    /Proxy unreachable/,
   );
 });
 
@@ -184,7 +184,7 @@ test("runWithProxyContext degrades to a direct connection when directFallbackOnU
         ran = true;
         return "direct-ok";
       },
-      { directFallbackOnUnreachable: true }
+      { directFallbackOnUnreachable: true },
     );
 
     assert.equal(ran, true, "callback must still run via a direct connection");
@@ -198,9 +198,9 @@ test("runWithProxyContext keeps strict pinning when the direct fallback feature 
       runWithProxyContext(
         { type: "http", host: "127.0.0.1", port: "9" },
         async () => "unreachable",
-        { directFallbackOnUnreachable: true }
+        { directFallbackOnUnreachable: true },
       ),
-      /Proxy unreachable/
+      /Proxy unreachable/,
     );
   });
 });
@@ -213,7 +213,7 @@ test("runWithProxyContextOrDirect runs the callback directly when the proxy is u
       async () => {
         ran = true;
         return "ok";
-      }
+      },
     );
 
     assert.equal(ran, true);

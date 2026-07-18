@@ -8,8 +8,7 @@ import { useShape } from "@/lib/shape-context";
 import { useTouchPrimary } from "@/hooks/use-touch-primary";
 import { FileThumbnail } from "@/registry/default/file-thumbnail";
 
-interface ChatMessageProps
-  extends Omit<HTMLMotionProps<"div">, "children"> {
+interface ChatMessageProps extends Omit<HTMLMotionProps<"div">, "children"> {
   /** Who sent the message. Drives alignment and bubble colour:
    *  `user` → right-aligned accent bubble, `assistant` → left-aligned plain text. */
   from: "user" | "assistant";
@@ -33,10 +32,7 @@ interface ChatMessageProps
 // InputMessage's onSend: render one per sent/received message. `layout="position"`
 // lets earlier messages slide up smoothly when a new one is appended.
 const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
-  (
-    { from, files, thumbnailSize = 64, time, actions, children, className, ...props },
-    ref
-  ) => {
+  ({ from, files, thumbnailSize = 64, time, actions, children, className, ...props }, ref) => {
     const shape = useShape();
     const isUser = from === "user";
     // Hover-reveal is unreachable on touch — keep the meta row visible there.
@@ -55,17 +51,12 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
         className={cn(
           "group flex max-w-[80%] flex-col gap-1.5",
           isUser ? "items-end self-end" : "items-start self-start",
-          className
+          className,
         )}
         {...props}
       >
         {files && files.length > 0 && (
-          <div
-            className={cn(
-              "flex flex-wrap gap-1.5",
-              isUser ? "justify-end" : "justify-start"
-            )}
-          >
+          <div className={cn("flex flex-wrap gap-1.5", isUser ? "justify-end" : "justify-start")}>
             {files.map((file, i) => (
               <FileThumbnail
                 key={`${file.name}-${file.size}-${file.lastModified}-${i}`}
@@ -90,9 +81,9 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
                     // word-by-word stream visibly reflows earlier words to new
                     // lines. Default (normal) wrapping appends left-to-right and
                     // stays put as the text grows.
-                    "px-3.5 text-pretty bg-[color-mix(in_oklab,var(--accent),var(--background)_45%)] text-accent-foreground"
+                    "px-3.5 text-pretty bg-[color-mix(in_oklab,var(--accent),var(--background)_45%)] text-accent-foreground",
                   )
-                : "text-foreground"
+                : "text-foreground",
             )}
           >
             {children}
@@ -111,18 +102,16 @@ const ChatMessage = forwardRef<HTMLDivElement, ChatMessageProps>(
                 "opacity-0 pointer-events-none transition-opacity duration-150",
                 "group-hover:opacity-100 group-hover:pointer-events-auto",
                 "group-focus-within:opacity-100 group-focus-within:pointer-events-auto",
-              ]
+              ],
             )}
           >
             {showTime && <span className="tabular-nums">{time}</span>}
-            {actions != null && (
-              <span className="flex items-center gap-0.5">{actions}</span>
-            )}
+            {actions != null && <span className="flex items-center gap-0.5">{actions}</span>}
           </div>
         )}
       </motion.div>
     );
-  }
+  },
 );
 
 ChatMessage.displayName = "ChatMessage";

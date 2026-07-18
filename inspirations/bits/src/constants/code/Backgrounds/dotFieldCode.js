@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/DotField/DotField.jsx?raw';
-import css from '@content/Backgrounds/DotField/DotField.css?raw';
-import tailwind from '@tailwind/Backgrounds/DotField/DotField.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/DotField/DotField.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/DotField/DotField.tsx?raw';
+import code from "@content/Backgrounds/DotField/DotField.jsx?raw";
+import css from "@content/Backgrounds/DotField/DotField.css?raw";
+import tailwind from "@tailwind/Backgrounds/DotField/DotField.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/DotField/DotField.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/DotField/DotField.tsx?raw";
 
 export const dotField = {
   dependencies: ``,
@@ -22,5 +22,5 @@ export const dotField = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

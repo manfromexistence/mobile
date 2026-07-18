@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/GradientBlinds/GradientBlinds.jsx?raw';
-import css from '@content/Backgrounds/GradientBlinds/GradientBlinds.css?raw';
-import tailwind from '@tailwind/Backgrounds/GradientBlinds/GradientBlinds.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/GradientBlinds/GradientBlinds.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/GradientBlinds/GradientBlinds.tsx?raw';
+import code from "@content/Backgrounds/GradientBlinds/GradientBlinds.jsx?raw";
+import css from "@content/Backgrounds/GradientBlinds/GradientBlinds.css?raw";
+import tailwind from "@tailwind/Backgrounds/GradientBlinds/GradientBlinds.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/GradientBlinds/GradientBlinds.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/GradientBlinds/GradientBlinds.tsx?raw";
 
 export const gradientBlinds = {
   dependencies: `ogl`,
@@ -28,5 +28,5 @@ export const gradientBlinds = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

@@ -207,11 +207,7 @@ export function Popover({
   useEffect(() => () => cancelClose(), [cancelClose]);
 
   useEffect(() => {
-    const animation = animate(
-      progress,
-      open ? 1 : 0,
-      reduce ? { duration: 0 } : GOO_SPRING,
-    );
+    const animation = animate(progress, open ? 1 : 0, reduce ? { duration: 0 } : GOO_SPRING);
     return () => animation.stop();
   }, [open, progress, reduce]);
 
@@ -220,8 +216,7 @@ export function Popover({
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     // Trigger and panel share rootRef, so moving between them isn't "outside".
     const onPointer = (e: PointerEvent) => {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node))
-        setOpen(false);
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
     };
     window.addEventListener("keydown", onKey);
     if (trigger === "click") window.addEventListener("pointerdown", onPointer);
@@ -270,9 +265,7 @@ export function Popover({
   );
 
   const hoverHandlers =
-    trigger === "hover"
-      ? { onMouseEnter: openHover, onMouseLeave: scheduleClose }
-      : {};
+    trigger === "hover" ? { onMouseEnter: openHover, onMouseLeave: scheduleClose } : {};
 
   return (
     <PopoverContext.Provider value={ctx}>
@@ -312,8 +305,7 @@ export function PopoverTrigger({ children }: PopoverTriggerProps) {
   const childRef = (childProps as { ref?: Ref<HTMLElement> }).ref;
 
   const compose =
-    (name: string, handler: () => void) =>
-    (event: { defaultPrevented?: boolean }) => {
+    (name: string, handler: () => void) => (event: { defaultPrevented?: boolean }) => {
       (childProps[name] as ((e: unknown) => void) | undefined)?.(event);
       if (!event.defaultPrevented) handler();
     };
@@ -423,9 +415,7 @@ export function PopoverContent({ children, className }: PopoverContentProps) {
   useMotionValueEvent(progress, "change", (p) => render(geoRef.current, p));
 
   const hoverHandlers =
-    triggerMode === "hover"
-      ? { onMouseEnter: openHover, onMouseLeave: scheduleClose }
-      : {};
+    triggerMode === "hover" ? { onMouseEnter: openHover, onMouseLeave: scheduleClose } : {};
 
   return (
     <>

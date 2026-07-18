@@ -46,15 +46,15 @@ test("pioneer has open-tier models with supports_on_demand_inference", () => {
   // Gated models (Claude/GPT/Gemini) must NOT appear — they require fine-tuning first
   assert.ok(
     !ids.some((id) => id.toLowerCase().includes("claude")),
-    "gated Claude models must not be in catalog"
+    "gated Claude models must not be in catalog",
   );
   assert.ok(
     !ids.some((id) => id.toLowerCase().includes("gpt")),
-    "gated GPT models must not be in catalog"
+    "gated GPT models must not be in catalog",
   );
   assert.ok(
     !ids.some((id) => id.toLowerCase().includes("gemini")),
-    "gated Gemini models must not be in catalog"
+    "gated Gemini models must not be in catalog",
   );
 });
 
@@ -74,10 +74,10 @@ test("pioneer has hasFree flag and free signup notice", () => {
   assert.ok(pioneer.freeNote?.includes("$75"), "freeNote should mention $75 credits");
   assert.ok(
     pioneer.notice?.signupUrl?.includes("pioneer.ai"),
-    "signupUrl should point to pioneer.ai"
+    "signupUrl should point to pioneer.ai",
   );
   assert.ok(
     pioneer.notice?.apiKeyUrl?.includes("pioneer.ai"),
-    "apiKeyUrl should point to pioneer.ai"
+    "apiKeyUrl should point to pioneer.ai",
   );
 });

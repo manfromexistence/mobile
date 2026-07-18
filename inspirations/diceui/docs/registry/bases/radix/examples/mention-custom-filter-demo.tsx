@@ -43,9 +43,7 @@ export default function MentionCustomFilterDemo() {
 
   // Custom filter that matches commands starting with the search term
   function onFilter(options: string[], term: string) {
-    return options.filter((option) =>
-      option.toLowerCase().startsWith(term.toLowerCase()),
-    );
+    return options.filter((option) => option.toLowerCase().startsWith(term.toLowerCase()));
   }
 
   return (
@@ -63,15 +61,9 @@ export default function MentionCustomFilterDemo() {
       </MentionInput>
       <MentionContent>
         {commands.map((command) => (
-          <MentionItem
-            key={command.id}
-            label={command.name}
-            value={command.name}
-          >
+          <MentionItem key={command.id} label={command.name} value={command.name}>
             <span className="font-mono text-sm">{command.name}</span>
-            <span className="text-muted-foreground text-xs">
-              {command.description}
-            </span>
+            <span className="text-muted-foreground text-xs">{command.description}</span>
           </MentionItem>
         ))}
       </MentionContent>

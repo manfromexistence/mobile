@@ -59,7 +59,7 @@ test("materializeBundledSymlinks relinks a dangling hashed symlink to its siblin
     symlinkSync(
       "/Users/runner/work/OmniRoute/OmniRoute/.build/next/standalone/node_modules/better-sqlite3",
       join(nm, "better-sqlite3-90e2652d1716b047"),
-      "dir"
+      "dir",
     );
 
     const summary = materializeBundledSymlinks(nm);
@@ -81,7 +81,7 @@ test("materializeBundledSymlinks drops a dangling link with no resolvable siblin
     symlinkSync(
       "/nonexistent/build/machine/path/mystery",
       join(nm, "mystery-deadbeefcafe0001"),
-      "dir"
+      "dir",
     );
 
     const summary = materializeBundledSymlinks(nm);
@@ -105,7 +105,7 @@ test("materializeBundledSymlinks handles scoped-package symlinks", () => {
     symlinkSync(
       join(realPkgHome, "@huggingface", "transformers"),
       join(nm, "@huggingface", "transformers-abc1234567890def"),
-      "dir"
+      "dir",
     );
 
     const summary = materializeBundledSymlinks(nm);
@@ -151,7 +151,7 @@ test("syncRebuiltNativeModuleIntoHashedEntries overwrites a hashed entry with th
     const target = join(nm, "better-sqlite3-90e2652d1716b047");
     assert.equal(
       JSON.parse(readFileSync(join(target, "package.json"), "utf8")).marker,
-      "electron-abi-rebuilt"
+      "electron-abi-rebuilt",
     );
   } finally {
     rmSync(root, { recursive: true, force: true });
@@ -171,7 +171,7 @@ test("syncRebuiltNativeModuleIntoHashedEntries overwrites a plain-named entry to
     assert.equal(summary.synced, 1);
     assert.equal(
       JSON.parse(readFileSync(join(nm, "better-sqlite3", "package.json"), "utf8")).marker,
-      "electron-abi-rebuilt"
+      "electron-abi-rebuilt",
     );
   } finally {
     rmSync(root, { recursive: true, force: true });
@@ -191,7 +191,7 @@ test("syncRebuiltNativeModuleIntoHashedEntries no-ops when root module or nested
     const realRootModule = makePkg(root, "better-sqlite3", "electron-abi-rebuilt");
     const missingNm = syncRebuiltNativeModuleIntoHashedEntries(
       realRootModule,
-      join(root, "does-not-exist-nm")
+      join(root, "does-not-exist-nm"),
     );
     assert.deepEqual(missingNm, { synced: 0 });
   } finally {
@@ -213,11 +213,11 @@ test("syncRebuiltNativeModuleIntoHashedEntries leaves unrelated entries untouche
     assert.deepEqual(summary, { synced: 0 });
     assert.equal(
       JSON.parse(readFileSync(join(nm, "pino", "package.json"), "utf8")).marker,
-      "real-pino"
+      "real-pino",
     );
     assert.equal(
       JSON.parse(readFileSync(join(nm, "better-sqlite3-helper", "package.json"), "utf8")).marker,
-      "unrelated-package"
+      "unrelated-package",
     );
   } finally {
     rmSync(root, { recursive: true, force: true });

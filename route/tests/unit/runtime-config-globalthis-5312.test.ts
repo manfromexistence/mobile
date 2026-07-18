@@ -40,7 +40,7 @@ test("#5312-class: backgroundDegradation setter writes the globalThis-shared slo
   assert.equal(
     (store[BG_KEY] as { enabled?: boolean })?.enabled,
     true,
-    "config must live on globalThis so the operator opt-in survives Next's separate module graphs"
+    "config must live on globalThis so the operator opt-in survives Next's separate module graphs",
   );
 });
 
@@ -54,7 +54,7 @@ test("#5312-class: backgroundDegradation getter observes a cross-graph hydrate",
   assert.equal(
     getBackgroundDegradationConfig().enabled,
     true,
-    "getter must read globalThis; a module-local `let _config` would keep enabled=false (opt-in dead on the request path)"
+    "getter must read globalThis; a module-local `let _config` would keep enabled=false (opt-in dead on the request path)",
   );
 });
 
@@ -62,7 +62,7 @@ test("#5312-class: systemTransforms setter writes the globalThis-shared slot", (
   setSystemTransformsConfig({ providers: { claude: { enabled: false, pipeline: [] } } });
   assert.ok(
     store[ST_KEY],
-    "systemTransforms config must live on globalThis so operator overrides survive Next's module graphs"
+    "systemTransforms config must live on globalThis so operator overrides survive Next's module graphs",
   );
 });
 
@@ -72,6 +72,6 @@ test("#5312-class: systemTransforms getter observes a cross-graph hydrate", () =
   assert.equal(
     getSystemTransformsConfig().providers.claude.enabled,
     false,
-    "getter must read globalThis; a module-local `let` would keep the compiled default (operator override lost)"
+    "getter must read globalThis; a module-local `let` would keep the compiled default (operator override lost)",
   );
 });

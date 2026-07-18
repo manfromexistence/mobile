@@ -35,12 +35,7 @@ type MotionSafeDivProps = Omit<
   | "onAnimationIteration"
 >;
 
-export function MobileDrawer({
-  open,
-  onClose,
-  children,
-  triggerRef,
-}: MobileDrawerProps) {
+export function MobileDrawer({ open, onClose, children, triggerRef }: MobileDrawerProps) {
   const substrate = useSurface();
   const level = Math.min(substrate + 2, 8);
 
@@ -75,10 +70,8 @@ export function MobileDrawer({
             to /80 in explicit dark mode. */}
         <DialogPrimitive.Backdrop
           render={(backdropProps) => {
-            const {
-              style: _style,
-              ...rest
-            } = backdropProps as React.HTMLAttributes<HTMLDivElement>;
+            const { style: _style, ...rest } =
+              backdropProps as React.HTMLAttributes<HTMLDivElement>;
             return (
               <motion.div
                 {...(rest as MotionSafeDivProps)}
@@ -96,10 +89,8 @@ export function MobileDrawer({
           aria-label="Navigation"
           finalFocus={triggerRef}
           render={(popupProps) => {
-            const {
-              style: baseStyle,
-              ...rest
-            } = popupProps as React.HTMLAttributes<HTMLDivElement>;
+            const { style: baseStyle, ...rest } =
+              popupProps as React.HTMLAttributes<HTMLDivElement>;
             return (
               <motion.div
                 {...(rest as MotionSafeDivProps)}

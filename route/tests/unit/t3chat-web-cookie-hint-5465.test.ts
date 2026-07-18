@@ -6,10 +6,12 @@ import assert from "node:assert/strict";
 // header value…"). t3.chat needs a localStorage value AND the Cookie header, so
 // that copy is confusing. A step-by-step DevTools hint (t3ChatWebCookieHint)
 // already shipped translated in every locale but was never wired to the UI.
-const { getWebSessionCredentialHint } =
-  await import("../../src/app/(dashboard)/dashboard/providers/[id]/providerPageHelpers.ts");
-const { WEB_SESSION_CREDENTIAL_REQUIREMENTS } =
-  await import("../../src/shared/providers/webSessionCredentials.ts");
+const { getWebSessionCredentialHint } = await import(
+  "../../src/app/(dashboard)/dashboard/providers/[id]/providerPageHelpers.ts"
+);
+const { WEB_SESSION_CREDENTIAL_REQUIREMENTS } = await import(
+  "../../src/shared/providers/webSessionCredentials.ts"
+);
 
 const T3_HINT =
   "Open t3.chat → DevTools → Application → Local Storage → https://t3.chat, copy 'convex-session-id'. Then open DevTools → Network, copy the full Cookie header from any chat request. Paste both values in the fields below.";
@@ -22,7 +24,7 @@ function makeTranslator(messages: Record<string, string>) {
     return values
       ? Object.entries(values).reduce(
           (acc, [name, value]) => acc.replaceAll(`{${name}}`, String(value)),
-          raw
+          raw,
         )
       : raw;
   }) as any;
@@ -41,14 +43,14 @@ test("t3.chat add-credential hint uses the step-by-step DevTools copy, not the c
     t,
     WEB_SESSION_CREDENTIAL_REQUIREMENTS["t3-web"],
     "t3.chat",
-    false
+    false,
   );
 
   assert.equal(hint, T3_HINT);
   assert.ok(hint && hint.includes("Local Storage"), "must explain the localStorage step");
   assert.ok(
     hint && !hint.includes("Required cookie: convex-session-id + Cookie header"),
-    "must not fall back to the circular generic cookie hint"
+    "must not fall back to the circular generic cookie hint",
   );
 });
 
@@ -74,7 +76,7 @@ test("lmarena add-credential hint uses dedicated copy (not generic single-cookie
   assert.ok(/arena-auth-prod-v1/i.test(hint), "must reference Arena auth cookies");
   assert.ok(
     !hint.startsWith("Required cookie:"),
-    "must not fall back to the generic cookie template"
+    "must not fall back to the generic cookie template",
   );
 });
 
@@ -88,7 +90,7 @@ test("cookie providers without a hintKey still use the generic hint (#5465 regre
     t,
     WEB_SESSION_CREDENTIAL_REQUIREMENTS["adapta-web"],
     "adapta",
-    false
+    false,
   );
   assert.ok(hint && hint.startsWith("Required cookie: __client"));
 });

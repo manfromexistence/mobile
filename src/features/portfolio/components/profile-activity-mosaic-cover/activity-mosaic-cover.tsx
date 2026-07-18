@@ -1,20 +1,16 @@
-"use client"
+"use client";
 
-import type { Activity } from "./activity-mosaic"
-import {
-  ActivityMosaic,
-  ActivityMosaicCell,
-  ActivityMosaicGrid,
-} from "./activity-mosaic"
+import type { Activity } from "./activity-mosaic";
+import { ActivityMosaic, ActivityMosaicCell, ActivityMosaicGrid } from "./activity-mosaic";
 
 export function ActivityMosaicCover({
   activities,
   rowCount,
   columnCount,
 }: {
-  activities: Activity[]
-  rowCount: number
-  columnCount: number
+  activities: Activity[];
+  rowCount: number;
+  columnCount: number;
 }) {
   return (
     <div
@@ -29,14 +25,10 @@ export function ActivityMosaicCover({
       >
         <ActivityMosaicGrid>
           {({ activity, rowIndex, columnIndex }) => (
-            <ActivityMosaicCell
-              activity={activity}
-              rowIndex={rowIndex}
-              columnIndex={columnIndex}
-            />
+            <ActivityMosaicCell activity={activity} rowIndex={rowIndex} columnIndex={columnIndex} />
           )}
         </ActivityMosaicGrid>
       </ActivityMosaic>
     </div>
-  )
+  );
 }

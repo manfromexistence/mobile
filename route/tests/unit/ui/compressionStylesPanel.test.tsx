@@ -28,8 +28,9 @@ function mount(ui: React.ReactElement): HTMLElement {
 }
 
 beforeEach(() => {
-  (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-    true;
+  (
+    globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+  ).IS_REACT_ACT_ENVIRONMENT = true;
   intl.locale = "en";
 });
 
@@ -65,7 +66,8 @@ function setupFetchMock() {
     async (input: RequestInfo | URL, init?: RequestInit) => {
       const url = input.toString();
       const method = (init?.method ?? "GET").toUpperCase();
-      if (url.includes("/api/settings/compression/mcp-accessibility")) return json({ enabled: true });
+      if (url.includes("/api/settings/compression/mcp-accessibility"))
+        return json({ enabled: true });
       if (url.includes("/api/settings/compression")) {
         if (method === "PUT") {
           const body = JSON.parse(String(init?.body ?? "{}"));
@@ -75,7 +77,7 @@ function setupFetchMock() {
         return json(initial);
       }
       return json({}, 404);
-    }
+    },
   );
   return { puts };
 }
@@ -142,7 +144,7 @@ describe("CompressionPanel output styles", () => {
     });
     await flush();
     const toggle = container.querySelector(
-      `[data-testid="output-style-toggle-terse-prose"] button, [data-testid="output-style-toggle-terse-prose"] input`
+      `[data-testid="output-style-toggle-terse-prose"] button, [data-testid="output-style-toggle-terse-prose"] input`,
     ) as HTMLElement | null;
     expect(toggle).toBeTruthy();
     await act(async () => {
@@ -152,7 +154,7 @@ describe("CompressionPanel output styles", () => {
     const put = puts.find((p) => "outputStyles" in p.body);
     expect(put, "a PUT carrying outputStyles").toBeTruthy();
     expect(
-      (put!.body.outputStyles as Array<{ id: string }>).some((s) => s.id === "terse-prose")
+      (put!.body.outputStyles as Array<{ id: string }>).some((s) => s.id === "terse-prose"),
     ).toBe(true);
   });
 });

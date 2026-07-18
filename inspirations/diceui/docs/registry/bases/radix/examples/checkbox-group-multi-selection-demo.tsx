@@ -30,11 +30,7 @@ export default function CheckboxGroupMultiSelectionDemo() {
       <CheckboxGroupDescription>
         Hold Shift and click to select multiple items
       </CheckboxGroupDescription>
-      <CheckboxGroupList
-        className="mt-1"
-        onKeyDown={onShiftKeyDown}
-        onKeyUp={onShiftKeyDown}
-      >
+      <CheckboxGroupList className="mt-1" onKeyDown={onShiftKeyDown} onKeyUp={onShiftKeyDown}>
         {tricks.map((trick) => (
           <CheckboxGroupItem key={trick.value} value={trick.value}>
             {trick.label}
@@ -53,22 +49,16 @@ interface UseShiftMultiSelectProps<T> {
   getItemValue: (item: T) => string;
 }
 
-function useShiftMultiSelect<T>({
-  items,
-  getItemValue,
-}: UseShiftMultiSelectProps<T>) {
+function useShiftMultiSelect<T>({ items, getItemValue }: UseShiftMultiSelectProps<T>) {
   const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
   const [lastSelected, setLastSelected] = React.useState<number | null>(null);
   const isShiftPressedRef = React.useRef(false);
 
-  const onShiftKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLElement>) => {
-      if (event.key === "Shift") {
-        isShiftPressedRef.current = event.type === "keydown";
-      }
-    },
-    [],
-  );
+  const onShiftKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key === "Shift") {
+      isShiftPressedRef.current = event.type === "keydown";
+    }
+  }, []);
 
   const onValueChange = React.useCallback(
     (newValue: string[]) => {
@@ -79,9 +69,7 @@ function useShiftMultiSelect<T>({
           newValue.find((v) => !selectedValues.includes(v)) ??
           selectedValues.find((v) => !newValue.includes(v));
         if (clickedValue) {
-          const newIndex = items.findIndex(
-            (item) => getItemValue(item) === clickedValue,
-          );
+          const newIndex = items.findIndex((item) => getItemValue(item) === clickedValue);
           if (newIndex !== -1) {
             setLastSelected(newIndex);
           }
@@ -95,22 +83,17 @@ function useShiftMultiSelect<T>({
         selectedValues.find((v) => !newValue.includes(v));
       if (!clickedValue) return;
 
-      const currentIndex = items.findIndex(
-        (item) => getItemValue(item) === clickedValue,
-      );
+      const currentIndex = items.findIndex((item) => getItemValue(item) === clickedValue);
       if (currentIndex === -1) return;
 
       // Handle shift-click selection
       const start = Math.min(lastSelected, currentIndex);
       const end = Math.max(lastSelected, currentIndex);
-      const rangeValues = items
-        .slice(start, end + 1)
-        .map((item) => getItemValue(item));
+      const rangeValues = items.slice(start, end + 1).map((item) => getItemValue(item));
 
       const newSelectedValues = new Set(selectedValues);
       const currentItem = items[currentIndex];
-      const isSelecting =
-        currentItem && !selectedValues.includes(getItemValue(currentItem));
+      const isSelecting = currentItem && !selectedValues.includes(getItemValue(currentItem));
 
       for (const value of rangeValues) {
         if (isSelecting) {

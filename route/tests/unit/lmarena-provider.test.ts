@@ -34,7 +34,7 @@ type LMArenaExecutorTestAccess = {
   transformRequest: (
     body: unknown,
     model: string,
-    credentials?: unknown
+    credentials?: unknown,
   ) => {
     id: string;
     mode: string;
@@ -127,7 +127,7 @@ describe("LMArena Executor", () => {
     assert.ok(url.includes("arena.ai"), "URL should include arena.ai");
     assert.ok(
       url.includes("/nextjs-api/stream/create-evaluation"),
-      "URL should include /nextjs-api/stream/create-evaluation"
+      "URL should include /nextjs-api/stream/create-evaluation",
     );
   });
 
@@ -280,11 +280,11 @@ describe("LMArena Executor", () => {
     assert.deepEqual(arenaBody.userMessage.metadata, {});
     assert.ok(
       arenaBody.userMessage.content.includes("You are a helpful assistant."),
-      "Should preserve system context in first prompt"
+      "Should preserve system context in first prompt",
     );
     assert.ok(
       arenaBody.userMessage.content.includes("How are you?"),
-      "Should preserve latest user prompt"
+      "Should preserve latest user prompt",
     );
   });
 
@@ -314,11 +314,11 @@ describe("LMArena Executor", () => {
 
     assert.equal(
       pickLMArenaModelId("gemini-3.1-pro-preview", models),
-      "019e080d-c29d-7d9a-aa54-faed41da0763"
+      "019e080d-c29d-7d9a-aa54-faed41da0763",
     );
     assert.equal(
       pickLMArenaModelId("lmarena/Gemini 3.1 Pro Preview", models),
-      "019e080d-c29d-7d9a-aa54-faed41da0763"
+      "019e080d-c29d-7d9a-aa54-faed41da0763",
     );
   });
 
@@ -350,7 +350,7 @@ describe("LMArena Executor", () => {
 
     assert.equal(
       pickLMArenaModelId("gemini-3.1-pro-preview", models),
-      "019e080d-c29d-7d9a-aa54-faed41da0763"
+      "019e080d-c29d-7d9a-aa54-faed41da0763",
     );
   });
 
@@ -385,7 +385,7 @@ describe("LMArena Executor", () => {
 
     assert.equal(
       pickLMArenaModelId("mimo-v2.5-pro", models),
-      "11111111-2222-3333-4444-555555555555"
+      "11111111-2222-3333-4444-555555555555",
     );
     assert.deepEqual(normalizeLMArenaModelsForCatalog(models), [
       {
@@ -512,7 +512,7 @@ describe("LMArena Executor", () => {
   it("returns an empty model list when initialModels end marker is before the array", () => {
     assert.deepEqual(
       parseLMArenaInitialModels('"initialModelAId"],"initialModels":[{"id":"bad"}]'),
-      []
+      [],
     );
   });
 
@@ -600,7 +600,7 @@ describe("LMArena Executor", () => {
     const body = access(executor).transformRequest(
       { messages: [{ role: "user", content: "Hi" }] },
       "gpt-4",
-      { cookie: "x=1", providerSpecificData: { recaptchaV3Token: "tok_abc" } }
+      { cookie: "x=1", providerSpecificData: { recaptchaV3Token: "tok_abc" } },
     );
     assert.equal(body.recaptchaV3Token, "tok_abc");
   });

@@ -1,7 +1,7 @@
-import { readFileSync, writeFileSync } from "node:fs"
-import { join } from "node:path"
+import { readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 
-const root = process.cwd()
+const root = process.cwd();
 
 const files = [
   "src/app/(preview)/preview/[name]/page.tsx",
@@ -15,31 +15,33 @@ const files = [
   "src/app/(app)/(blocks)/blocks/(view)/[category]/[name]/page.tsx",
   "src/app/(app)/(blocks)/blocks/(list)/[category]/page.tsx",
   "src/app/(app)/(blocks)/blocks/(list)/page.tsx",
-]
+];
 
 // Match template literals: `/og/simple?title=${...}&description=${...}`
-const re = /`\/og\/simple\?title=\$\{encodeURIComponent\([^)]+\)\}&description=\$\{encodeURIComponent\([^)]+\)\}`/g
+const re =
+  /`\/og\/simple\?title=\$\{encodeURIComponent\([^)]+\)\}&description=\$\{encodeURIComponent\([^)]+\)\}`/g;
 
 // Match absoluteUrl wrapping
-const reAbsolute = /absoluteUrl\(`\/og\/simple\?title=\$\{encodeURIComponent\([^)]+\)\}&description=\$\{encodeURIComponent\([^)]+\)\}`\)/g
+const reAbsolute =
+  /absoluteUrl\(`\/og\/simple\?title=\$\{encodeURIComponent\([^)]+\)\}&description=\$\{encodeURIComponent\([^)]+\)\}`\)/g;
 
-let count = 0
+let count = 0;
 for (const filePath of files) {
-  const fullPath = join(root, filePath)
-  let content = readFileSync(fullPath, "utf-8")
-  
+  const fullPath = join(root, filePath);
+  let content = readFileSync(fullPath, "utf-8");
+
   // First replace absoluteUrl(...) patterns
-  let modified = content.replace(reAbsolute, '"/og/default.png"')
+  let modified = content.replace(reAbsolute, '"/og/default.png"');
   // Then replace direct template literals
-  modified = modified.replace(re, '"/og/default.png"')
-  
+  modified = modified.replace(re, '"/og/default.png"');
+
   if (modified !== content) {
-    writeFileSync(fullPath, modified, "utf-8")
-    const matches = (content.match(re) || []).length + (content.match(reAbsolute) || []).length
-    console.log(`UPDATED: ${filePath} (${matches} occurrence(s))`)
-    count++
+    writeFileSync(fullPath, modified, "utf-8");
+    const matches = (content.match(re) || []).length + (content.match(reAbsolute) || []).length;
+    console.log(`UPDATED: ${filePath} (${matches} occurrence(s))`);
+    count++;
   } else {
-    console.log(`SKIP: ${filePath}`)
+    console.log(`SKIP: ${filePath}`);
   }
 }
-console.log(`\nTotal files updated: ${count}`)
+console.log(`\nTotal files updated: ${count}`);

@@ -1,17 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
 const FuzzyText = ({
   children,
-  fontSize = 'clamp(2rem, 10vw, 10rem)',
+  fontSize = "clamp(2rem, 10vw, 10rem)",
   fontWeight = 900,
-  fontFamily = 'inherit',
-  color = '#fff',
+  fontFamily = "inherit",
+  color = "#fff",
   enableHover = true,
   baseIntensity = 0.18,
   hoverIntensity = 0.5,
   fuzzRange = 30,
   fps = 60,
-  direction = 'horizontal',
+  direction = "horizontal",
   transitionDuration = 0,
   clickEffect = false,
   glitchMode = false,
@@ -19,7 +19,7 @@ const FuzzyText = ({
   glitchDuration = 200,
   gradient = null,
   letterSpacing = 0,
-  className = ''
+  className = "",
 }) => {
   const canvasRef = useRef(null);
 
@@ -33,13 +33,15 @@ const FuzzyText = ({
     if (!canvas) return;
 
     const init = async () => {
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
       const computedFontFamily =
-        fontFamily === 'inherit' ? window.getComputedStyle(canvas).fontFamily || 'sans-serif' : fontFamily;
+        fontFamily === "inherit"
+          ? window.getComputedStyle(canvas).fontFamily || "sans-serif"
+          : fontFamily;
 
-      const fontSizeStr = typeof fontSize === 'number' ? `${fontSize}px` : fontSize;
+      const fontSizeStr = typeof fontSize === "number" ? `${fontSize}px` : fontSize;
       const fontString = `${fontWeight} ${fontSizeStr} ${computedFontFamily}`;
 
       try {
@@ -50,10 +52,10 @@ const FuzzyText = ({
       if (isCancelled) return;
 
       let numericFontSize;
-      if (typeof fontSize === 'number') {
+      if (typeof fontSize === "number") {
         numericFontSize = fontSize;
       } else {
-        const temp = document.createElement('span');
+        const temp = document.createElement("span");
         temp.style.fontSize = fontSize;
         document.body.appendChild(temp);
         const computedSize = window.getComputedStyle(temp).fontSize;
@@ -61,14 +63,14 @@ const FuzzyText = ({
         document.body.removeChild(temp);
       }
 
-      const text = React.Children.toArray(children).join('');
+      const text = React.Children.toArray(children).join("");
 
-      const offscreen = document.createElement('canvas');
-      const offCtx = offscreen.getContext('2d');
+      const offscreen = document.createElement("canvas");
+      const offCtx = offscreen.getContext("2d");
       if (!offCtx) return;
 
       offCtx.font = `${fontWeight} ${fontSizeStr} ${computedFontFamily}`;
-      offCtx.textBaseline = 'alphabetic';
+      offCtx.textBaseline = "alphabetic";
 
       let totalWidth = 0;
       if (letterSpacing !== 0) {
@@ -82,11 +84,14 @@ const FuzzyText = ({
 
       const metrics = offCtx.measureText(text);
       const actualLeft = metrics.actualBoundingBoxLeft ?? 0;
-      const actualRight = letterSpacing !== 0 ? totalWidth : (metrics.actualBoundingBoxRight ?? metrics.width);
+      const actualRight =
+        letterSpacing !== 0 ? totalWidth : (metrics.actualBoundingBoxRight ?? metrics.width);
       const actualAscent = metrics.actualBoundingBoxAscent ?? numericFontSize;
       const actualDescent = metrics.actualBoundingBoxDescent ?? numericFontSize * 0.2;
 
-      const textBoundingWidth = Math.ceil(letterSpacing !== 0 ? totalWidth : actualLeft + actualRight);
+      const textBoundingWidth = Math.ceil(
+        letterSpacing !== 0 ? totalWidth : actualLeft + actualRight,
+      );
       const tightHeight = Math.ceil(actualAscent + actualDescent);
 
       const extraWidthBuffer = 10;
@@ -97,7 +102,7 @@ const FuzzyText = ({
 
       const xOffset = extraWidthBuffer / 2;
       offCtx.font = `${fontWeight} ${fontSizeStr} ${computedFontFamily}`;
-      offCtx.textBaseline = 'alphabetic';
+      offCtx.textBaseline = "alphabetic";
 
       if (gradient && Array.isArray(gradient) && gradient.length >= 2) {
         const grad = offCtx.createLinearGradient(0, 0, offscreenWidth, 0);
@@ -118,7 +123,7 @@ const FuzzyText = ({
       }
 
       const horizontalMargin = fuzzRange + 20;
-      const verticalMargin = direction === 'vertical' || direction === 'both' ? fuzzRange + 10 : 0;
+      const verticalMargin = direction === "vertical" || direction === "both" ? fuzzRange + 10 : 0;
       canvas.width = offscreenWidth + horizontalMargin * 2;
       canvas.height = tightHeight + verticalMargin * 2;
       ctx.translate(horizontalMargin, verticalMargin);
@@ -150,7 +155,7 @@ const FuzzyText = ({
 
       if (glitchMode) startGlitchLoop();
 
-      const run = timestamp => {
+      const run = (timestamp) => {
         if (isCancelled) return;
 
         if (timestamp - lastFrameTime < frameDuration) {
@@ -163,7 +168,7 @@ const FuzzyText = ({
           -fuzzRange - 20,
           -fuzzRange - 10,
           offscreenWidth + 2 * (fuzzRange + 20),
-          tightHeight + 2 * (fuzzRange + 10)
+          tightHeight + 2 * (fuzzRange + 10),
         );
 
         if (isClicking) {
@@ -190,10 +195,10 @@ const FuzzyText = ({
         for (let j = 0; j < tightHeight; j++) {
           let dx = 0,
             dy = 0;
-          if (direction === 'horizontal' || direction === 'both') {
+          if (direction === "horizontal" || direction === "both") {
             dx = Math.floor(currentIntensity * (Math.random() - 0.5) * fuzzRange);
           }
-          if (direction === 'vertical' || direction === 'both') {
+          if (direction === "vertical" || direction === "both") {
             dy = Math.floor(currentIntensity * (Math.random() - 0.5) * fuzzRange * 0.5);
           }
           ctx.drawImage(offscreen, 0, j, offscreenWidth, 1, dx, j + dy, offscreenWidth, 1);
@@ -204,10 +209,15 @@ const FuzzyText = ({
       animationFrameId = window.requestAnimationFrame(run);
 
       const isInsideTextArea = (x, y) => {
-        return x >= interactiveLeft && x <= interactiveRight && y >= interactiveTop && y <= interactiveBottom;
+        return (
+          x >= interactiveLeft &&
+          x <= interactiveRight &&
+          y >= interactiveTop &&
+          y <= interactiveBottom
+        );
       };
 
-      const handleMouseMove = e => {
+      const handleMouseMove = (e) => {
         if (!enableHover) return;
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -228,7 +238,7 @@ const FuzzyText = ({
         }, 150);
       };
 
-      const handleTouchMove = e => {
+      const handleTouchMove = (e) => {
         if (!enableHover) return;
         e.preventDefault();
         const rect = canvas.getBoundingClientRect();
@@ -243,14 +253,14 @@ const FuzzyText = ({
       };
 
       if (enableHover) {
-        canvas.addEventListener('mousemove', handleMouseMove);
-        canvas.addEventListener('mouseleave', handleMouseLeave);
-        canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-        canvas.addEventListener('touchend', handleTouchEnd);
+        canvas.addEventListener("mousemove", handleMouseMove);
+        canvas.addEventListener("mouseleave", handleMouseLeave);
+        canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+        canvas.addEventListener("touchend", handleTouchEnd);
       }
 
       if (clickEffect) {
-        canvas.addEventListener('click', handleClick);
+        canvas.addEventListener("click", handleClick);
       }
 
       const cleanup = () => {
@@ -259,13 +269,13 @@ const FuzzyText = ({
         clearTimeout(glitchEndTimeoutId);
         clearTimeout(clickTimeoutId);
         if (enableHover) {
-          canvas.removeEventListener('mousemove', handleMouseMove);
-          canvas.removeEventListener('mouseleave', handleMouseLeave);
-          canvas.removeEventListener('touchmove', handleTouchMove);
-          canvas.removeEventListener('touchend', handleTouchEnd);
+          canvas.removeEventListener("mousemove", handleMouseMove);
+          canvas.removeEventListener("mouseleave", handleMouseLeave);
+          canvas.removeEventListener("touchmove", handleTouchMove);
+          canvas.removeEventListener("touchend", handleTouchEnd);
         }
         if (clickEffect) {
-          canvas.removeEventListener('click', handleClick);
+          canvas.removeEventListener("click", handleClick);
         }
       };
 
@@ -302,7 +312,7 @@ const FuzzyText = ({
     glitchInterval,
     glitchDuration,
     gradient,
-    letterSpacing
+    letterSpacing,
   ]);
 
   return <canvas ref={canvasRef} className={className} />;

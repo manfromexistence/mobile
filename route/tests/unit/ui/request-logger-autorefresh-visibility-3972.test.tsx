@@ -38,8 +38,9 @@ vi.mock("@/store/emailPrivacyStore", () => ({
 
 const RequestLoggerV2 = (await import("../../../src/shared/components/RequestLoggerV2.tsx"))
   .default;
-const { DEFAULT_REFRESH_INTERVAL_SEC } =
-  await import("../../../src/shared/components/requestLoggerPreferences.ts");
+const { DEFAULT_REFRESH_INTERVAL_SEC } = await import(
+  "../../../src/shared/components/requestLoggerPreferences.ts"
+);
 
 function setVisibility(state: "visible" | "hidden") {
   Object.defineProperty(document, "visibilityState", { configurable: true, get: () => state });
@@ -94,7 +95,7 @@ beforeEach(() => {
         return Response.json({ enabled: false });
       }
       return Response.json({});
-    })
+    }),
   );
   vi.useFakeTimers();
   container = document.createElement("div");
@@ -156,7 +157,7 @@ describe("RequestLoggerV2 detail modal lifecycle", () => {
     });
 
     const row = Array.from(container.querySelectorAll("tr")).find((tr) =>
-      tr.textContent?.includes("gpt-test")
+      tr.textContent?.includes("gpt-test"),
     );
     expect(row).toBeTruthy();
 
@@ -184,7 +185,7 @@ describe("RequestLoggerV2 detail modal lifecycle", () => {
           timestamp: new Date().toISOString(),
           duration: 43,
           tokens: { in: 1, out: 3 },
-        })
+        }),
       );
       await detail.promise;
     });

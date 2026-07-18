@@ -3,10 +3,7 @@ import type * as React from "react";
 import type { CompositionProps } from "@/types";
 
 export interface HitboxProps
-  extends Omit<
-      React.ComponentProps<typeof Slot.Root>,
-      keyof React.ComponentProps<"div">
-    >,
+  extends Omit<React.ComponentProps<typeof Slot.Root>, keyof React.ComponentProps<"div">>,
     CompositionProps {
   /**
    * The size of the hitbox area.
@@ -40,14 +37,7 @@ export interface HitboxProps
    *
    * @default "all"
    */
-  position?:
-    | "all"
-    | "top"
-    | "bottom"
-    | "left"
-    | "right"
-    | "vertical"
-    | "horizontal";
+  position?: "all" | "top" | "bottom" | "left" | "right" | "vertical" | "horizontal";
 
   /**
    * The border radius of the hitbox area.

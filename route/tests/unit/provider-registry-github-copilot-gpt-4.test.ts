@@ -9,8 +9,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const { REGISTRY } = await import("../../open-sse/config/providerRegistry.ts");
-const { getModelsByProviderId, getProviderModel, isValidModel } =
-  await import("../../open-sse/config/providerModels.ts");
+const { getModelsByProviderId, getProviderModel, isValidModel } = await import(
+  "../../open-sse/config/providerModels.ts"
+);
 
 type ModelEntry = { id: string; name?: string; targetFormat?: string; [k: string]: unknown };
 
@@ -31,7 +32,7 @@ test("github/gpt-4-0125-preview routes via chat/completions (no openai-responses
   assert.notEqual(
     model.targetFormat,
     "openai-responses",
-    "GPT-4 Turbo on GitHub Copilot is a chat/completions model — Responses API would reject it"
+    "GPT-4 Turbo on GitHub Copilot is a chat/completions model — Responses API would reject it",
   );
 });
 
@@ -45,12 +46,12 @@ test("gpt-4-0125-preview resolves through both the gh alias and the github id", 
   // getProviderModel keys on the public alias; isValidModel mirrors it.
   assert.ok(
     getProviderModel("gh", "gpt-4-0125-preview"),
-    "getProviderModel('gh','gpt-4-0125-preview') must resolve"
+    "getProviderModel('gh','gpt-4-0125-preview') must resolve",
   );
   assert.equal(
     isValidModel("gh", "gpt-4-0125-preview"),
     true,
-    "isValidModel('gh','gpt-4-0125-preview') must be true"
+    "isValidModel('gh','gpt-4-0125-preview') must be true",
   );
   // Raw provider id resolves to the same entry via the alias map.
   const viaId = getModelsByProviderId("github").find((m) => m.id === "gpt-4-0125-preview");

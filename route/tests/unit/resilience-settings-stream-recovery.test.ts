@@ -27,7 +27,7 @@ test("resolveResilienceSettings ignores a non-boolean enabled value", () => {
   assert.equal(
     resolved.streamRecovery.enabled,
     false,
-    "non-boolean must fall back to the default, never coerce truthy strings on"
+    "non-boolean must fall back to the default, never coerce truthy strings on",
   );
 });
 

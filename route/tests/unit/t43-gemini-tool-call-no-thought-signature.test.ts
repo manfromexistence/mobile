@@ -18,8 +18,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiToGeminiRequest } =
-  await import("../../open-sse/translator/request/openai-to-gemini.ts");
+const { openaiToGeminiRequest } = await import(
+  "../../open-sse/translator/request/openai-to-gemini.ts"
+);
 
 function translateToGemini(messages, tools) {
   return openaiToGeminiRequest(
@@ -32,7 +33,7 @@ function translateToGemini(messages, tools) {
     },
     false,
     null,
-    { signaturelessToolCallMode: "native" }
+    { signaturelessToolCallMode: "native" },
   );
 }
 
@@ -75,7 +76,7 @@ test("T43: functionCall parts do NOT get a fake thoughtSignature injected", () =
   const result = translateToGemini(messages, tools);
 
   const modelTurn = result.contents.find(
-    (c) => c.role === "model" && c.parts?.some((p) => p.functionCall)
+    (c) => c.role === "model" && c.parts?.some((p) => p.functionCall),
   );
 
   assert.ok(modelTurn, "Expected a model turn with functionCall parts");
@@ -89,7 +90,7 @@ test("T43: functionCall parts do NOT get a fake thoughtSignature injected", () =
   assert.equal(
     functionCallParts[0].thoughtSignature,
     undefined,
-    "functionCall parts must NOT have a fake thoughtSignature injected (standard Gemini)"
+    "functionCall parts must NOT have a fake thoughtSignature injected (standard Gemini)",
   );
 });
 
@@ -123,7 +124,7 @@ test("T43: client-provided thoughtSignature is ignored in default enabled cache 
   const result = translateToGemini(messages, []);
 
   const modelTurn = result.contents.find(
-    (c) => c.role === "model" && c.parts?.some((p) => p.functionCall)
+    (c) => c.role === "model" && c.parts?.some((p) => p.functionCall),
   );
   assert.ok(modelTurn, "Expected a model turn with functionCall parts");
 
@@ -134,7 +135,7 @@ test("T43: client-provided thoughtSignature is ignored in default enabled cache 
   assert.equal(
     functionCallParts[0].thoughtSignature,
     undefined,
-    "Client-provided thoughtSignature should be ignored in enabled cache mode (standard Gemini)"
+    "Client-provided thoughtSignature should be ignored in enabled cache mode (standard Gemini)",
   );
 });
 
@@ -162,11 +163,11 @@ test("T43: thinking parts still emit thought=true (regression guard)", () => {
 
   // After #1410 fix, no fake thoughtSignature parts are injected
   const signaturePart = modelTurn.parts.find(
-    (p) => "thoughtSignature" in p && !p.functionCall && !p.thought
+    (p) => "thoughtSignature" in p && !p.functionCall && !p.thought,
   );
   assert.equal(
     signaturePart,
     undefined,
-    "No standalone fake thoughtSignature parts should be injected"
+    "No standalone fake thoughtSignature parts should be injected",
   );
 });

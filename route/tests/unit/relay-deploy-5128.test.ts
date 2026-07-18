@@ -53,7 +53,7 @@ test("#5128A: a 'deno' relay proxy is routed through the relay branch, not rejec
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ proxyId: stored.id, proxy: { host: "127.0.0.1", port: 443 } }),
-    })
+    }),
   );
   const body = (await res.json()) as { error?: { message?: string } };
 
@@ -116,7 +116,7 @@ test("#5128C: Cloudflare worker upload sends an accepted script Content-Type", a
           apiToken: "cf-token-aaaaaaaaaaaaaaaaaaaaaa",
           projectName: "omniroute-relay",
         }),
-      })
+      }),
     );
   } finally {
     globalThis.fetch = realFetch;
@@ -127,13 +127,13 @@ test("#5128C: Cloudflare worker upload sends an accepted script Content-Type", a
   // to "text/plain;charset=UTF-8", which CF flatly rejects.
   assert.ok(
     requestContentType?.startsWith("multipart/form-data; boundary="),
-    `expected an accepted request Content-Type, got "${requestContentType}"`
+    `expected an accepted request Content-Type, got "${requestContentType}"`,
   );
   // CF rejects "application/javascript+module"; only these are accepted.
   assert.ok(
     scriptPartContentType === "application/javascript" ||
       scriptPartContentType === "text/javascript",
-    `expected an accepted script MIME, got "${scriptPartContentType}"`
+    `expected an accepted script MIME, got "${scriptPartContentType}"`,
   );
 });
 
@@ -151,10 +151,10 @@ test("#6416: Cloudflare worker script body is Service Worker syntax (no top-leve
         ? (init.body as Buffer).toString("utf8")
         : String(init.body);
       const scriptMatch = bodyText.match(
-        /name="index\.js"[^]*?Content-Type: [^\r\n]+\r\n\r\n([^]*?)\r\n--/
+        /name="index\.js"[^]*?Content-Type: [^\r\n]+\r\n\r\n([^]*?)\r\n--/,
       );
       const metadataMatch = bodyText.match(
-        /name="metadata"[^]*?Content-Type: application\/json\r\n\r\n([^]*?)\r\n--/
+        /name="metadata"[^]*?Content-Type: application\/json\r\n\r\n([^]*?)\r\n--/,
       );
       capturedScriptBody = scriptMatch?.[1] ?? "";
       capturedMetadata = metadataMatch?.[1]
@@ -176,7 +176,7 @@ test("#6416: Cloudflare worker script body is Service Worker syntax (no top-leve
           apiToken: "cf-token-aaaaaaaaaaaaaaaaaaaaaa",
           projectName: "omniroute-relay",
         }),
-      })
+      }),
     );
   } finally {
     globalThis.fetch = realFetch;
@@ -187,20 +187,20 @@ test("#6416: Cloudflare worker script body is Service Worker syntax (no top-leve
   // (`export default {...}`). It must register a fetch event listener instead.
   assert.ok(
     !/^\s*export\s+default/m.test(capturedScriptBody),
-    "Cloudflare worker script must not use `export default` (#6416 — CF parses non-`+module` MIME types as Service Workers)"
+    "Cloudflare worker script must not use `export default` (#6416 — CF parses non-`+module` MIME types as Service Workers)",
   );
   assert.ok(
     /addEventListener\(\s*["']fetch["']/.test(capturedScriptBody),
-    "Cloudflare worker script must register a fetch event listener"
+    "Cloudflare worker script must register a fetch event listener",
   );
 
   const privateHostnameFnSource = capturedScriptBody.match(
-    /function isPrivateHostname\(h\) \{[\s\S]*?\n\}/
+    /function isPrivateHostname\(h\) \{[\s\S]*?\n\}/,
   )?.[0];
   assert.ok(privateHostnameFnSource, "emitted worker script should contain isPrivateHostname");
   const isPrivateHostname = vm.runInNewContext(
     `${privateHostnameFnSource}; isPrivateHostname;`,
-    {}
+    {},
   ) as (host: string) => boolean;
   assert.equal(isPrivateHostname("[::1]"), true, "bracketed IPv6 loopback must stay blocked");
   assert.equal(isPrivateHostname("[fd00::1]"), true, "bracketed IPv6 ULA must stay blocked");
@@ -210,12 +210,12 @@ test("#6416: Cloudflare worker script body is Service Worker syntax (no top-leve
   assert.equal(
     capturedMetadata?.body_part,
     "index.js",
-    "metadata.body_part must point at the script part"
+    "metadata.body_part must point at the script part",
   );
   assert.equal(
     capturedMetadata?.main_module,
     undefined,
-    "metadata must not use main_module — that requires an ES module script body (#6416)"
+    "metadata must not use main_module — that requires an ES module script body (#6416)",
   );
 });
 

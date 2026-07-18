@@ -58,7 +58,7 @@ test.afterEach(() => __resetCaptureManager());
 test("startCaptureMode rejects when the native addon is unavailable", async () => {
   await assert.rejects(
     () => startCaptureMode(baseOptions({ deps: { isAvailable: () => false } })),
-    /native addon|CAP_NET_ADMIN/
+    /native addon|CAP_NET_ADMIN/,
   );
 });
 
@@ -71,11 +71,15 @@ test("startCaptureMode wires the injected CA installer into the decrypt listener
       installCa,
       uninstallCa,
       deps: { isAvailable: () => true, startTproxyCapture: fakeStart(rec) as never },
-    })
+    }),
   );
   assert.equal(status.running, true);
   assert.equal(status.onPort, 8443);
-  assert.equal(rec.options?.decrypt?.installCa, installCa, "installCa is passed through to decrypt");
+  assert.equal(
+    rec.options?.decrypt?.installCa,
+    installCa,
+    "installCa is passed through to decrypt",
+  );
   assert.equal(rec.options?.decrypt?.uninstallCa, uninstallCa, "uninstallCa is passed through");
 });
 
@@ -89,7 +93,7 @@ test("startCaptureMode refuses to start a second concurrent session", async () =
 test("stopCaptureMode stops the handle and clears the running state", async () => {
   const rec: CapturedStart = { stopped: false };
   await startCaptureMode(
-    baseOptions({ deps: { isAvailable: () => true, startTproxyCapture: fakeStart(rec) as never } })
+    baseOptions({ deps: { isAvailable: () => true, startTproxyCapture: fakeStart(rec) as never } }),
   );
   const status = await stopCaptureMode();
   assert.equal(rec.stopped, true, "the handle's stop() was invoked");
@@ -106,7 +110,7 @@ test("getCaptureStatus counts interceptions reported by the listener", async () 
   await startCaptureMode(
     baseOptions({
       deps: { isAvailable: () => true, startTproxyCapture: fakeStart(rec) as never },
-    })
+    }),
   );
   rec.options?.onIntercept?.({ destIp: "1.2.3.4", destPort: 443 });
   rec.options?.onIntercept?.({ destIp: "5.6.7.8", destPort: 443 });

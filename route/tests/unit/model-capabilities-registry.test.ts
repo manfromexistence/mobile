@@ -93,7 +93,7 @@ test("canonical model capability resolver lets exact synced metadata override gl
   assert.equal(modelCapabilities.capMaxOutputTokens("openai/gpt-4o-2024-11-20", 999999), 12345);
 
   const geminiHigh = modelCapabilities.getResolvedModelCapabilities(
-    "antigravity/gemini-3.1-pro-high"
+    "antigravity/gemini-3.1-pro-high",
   );
   assert.equal(geminiHigh.toolCalling, false);
   assert.equal(geminiHigh.reasoning, false);
@@ -103,7 +103,7 @@ test("canonical model capability resolver lets exact synced metadata override gl
   assert.equal(geminiHigh.defaultThinkingBudget, 24576);
   assert.equal(
     modelCapabilities.capThinkingBudget("antigravity/gemini-3.1-pro-high", 40000),
-    32768
+    32768,
   );
 
   const codexGpt55 = modelCapabilities.getResolvedModelCapabilities("codex/gpt-5.5");
@@ -115,7 +115,7 @@ test("canonical model capability resolver lets exact synced metadata override gl
   assert.equal(codexGpt55.supportsVision, true);
 
   const bedrockSonnet46 = modelCapabilities.getResolvedModelCapabilities(
-    "bedrock/eu.anthropic.claude-sonnet-4-6"
+    "bedrock/eu.anthropic.claude-sonnet-4-6",
   );
   assert.equal(bedrockSonnet46.contextWindow, 1000000);
   assert.equal(bedrockSonnet46.maxInputTokens, 1000000);
@@ -123,13 +123,13 @@ test("canonical model capability resolver lets exact synced metadata override gl
   assert.equal(bedrockSonnet46.supportsVision, true);
 
   const bedrockSonnet45 = modelCapabilities.getResolvedModelCapabilities(
-    "bedrock/anthropic.claude-sonnet-4-5"
+    "bedrock/anthropic.claude-sonnet-4-5",
   );
   assert.equal(bedrockSonnet45.contextWindow, 200000);
   assert.equal(bedrockSonnet45.maxOutputTokens, 64000);
 
   const bedrockOpus46 = modelCapabilities.getResolvedModelCapabilities(
-    "bedrock/anthropic.claude-opus-4-6"
+    "bedrock/anthropic.claude-opus-4-6",
   );
   assert.equal(bedrockOpus46.contextWindow, 1000000);
   assert.equal(bedrockOpus46.maxOutputTokens, 128000);
@@ -140,7 +140,7 @@ test("canonical model capability resolver lets exact synced metadata override gl
 
 test("unknown models keep maxOutputTokens null instead of using a generic default", () => {
   const unknown = modelCapabilities.getResolvedModelCapabilities(
-    "openai-compatible-local/custom-large-output-model"
+    "openai-compatible-local/custom-large-output-model",
   );
 
   assert.equal(unknown.contextWindow, null);
@@ -149,13 +149,13 @@ test("unknown models keep maxOutputTokens null instead of using a generic defaul
   assert.equal(
     modelCapabilities.capMaxOutputTokens(
       "openai-compatible-local/custom-large-output-model",
-      32000
+      32000,
     ),
-    32000
+    32000,
   );
   assert.equal(
     modelCapabilities.capMaxOutputTokens("openai-compatible-local/custom-large-output-model"),
-    null
+    null,
   );
 });
 

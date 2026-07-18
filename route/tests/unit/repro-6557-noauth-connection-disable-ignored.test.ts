@@ -67,7 +67,7 @@ test("#6557: disabling the opencode no-auth provider's own connection (isActive=
   const beforeCombo = await virtualFactory.createVirtualAutoCombo(undefined);
   assert.ok(
     beforeCombo.autoConfig.candidatePool.includes("opencode"),
-    "baseline: opencode should be a candidate before any disable action"
+    "baseline: opencode should be a candidate before any disable action",
   );
 
   // Simulates exactly what the main Providers grid toggle does:
@@ -82,7 +82,7 @@ test("#6557: disabling the opencode no-auth provider's own connection (isActive=
     !afterCombo.autoConfig.candidatePool.includes("opencode"),
     "BUG #6557: opencode must NOT be routed to after its connection was disabled via the " +
       "main Providers-grid toggle (isActive=false), but it still is — the no-auth candidate " +
-      "builder ignores provider_connections.isActive entirely."
+      "builder ignores provider_connections.isActive entirely.",
   );
 });
 
@@ -90,6 +90,6 @@ test("#6557 regression guard: a no-auth provider with ZERO connection rows (defa
   const combo = await virtualFactory.createVirtualAutoCombo(undefined);
   assert.ok(
     combo.autoConfig.candidatePool.includes("opencode"),
-    "a no-auth provider with no connection row at all must still be included by default"
+    "a no-auth provider with no connection row at all must still be included by default",
   );
 });

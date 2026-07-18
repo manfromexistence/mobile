@@ -28,8 +28,7 @@ const InputGroupContext = createContext<InputGroupContextValue | null>(null);
 
 function useInputGroup() {
   const ctx = useContext(InputGroupContext);
-  if (!ctx)
-    throw new Error("useInputGroup must be used within an InputGroup");
+  if (!ctx) throw new Error("useInputGroup must be used within an InputGroup");
   return ctx;
 }
 
@@ -41,8 +40,7 @@ const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
   ({ children, className, ...props }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const { activeIndex, handlers, registerItem, measureItems } =
-      useProximityHover(containerRef);
+    const { activeIndex, handlers, registerItem, measureItems } = useProximityHover(containerRef);
 
     useEffect(() => {
       measureItems();
@@ -50,7 +48,7 @@ const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
 
     const contextValue = useMemo(
       () => ({ registerItem, activeIndex }),
-      [registerItem, activeIndex]
+      [registerItem, activeIndex],
     );
 
     return (
@@ -71,7 +69,7 @@ const InputGroup = forwardRef<HTMLDivElement, InputGroupProps>(
         </div>
       </InputGroupContext.Provider>
     );
-  }
+  },
 );
 
 InputGroup.displayName = "InputGroup";
@@ -103,7 +101,7 @@ const InputField = forwardRef<HTMLDivElement, InputFieldProps>(
       className,
       ...props
     },
-    ref
+    ref,
   ) => {
     const internalRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLElement | null>(null);
@@ -163,7 +161,7 @@ const InputField = forwardRef<HTMLDivElement, InputFieldProps>(
         className={cn(
           "flex flex-col gap-1 cursor-text",
           disabled && "opacity-50 pointer-events-none",
-          className
+          className,
         )}
       >
         {/* Label */}
@@ -178,7 +176,7 @@ const InputField = forwardRef<HTMLDivElement, InputFieldProps>(
           <span
             className={cn(
               "col-start-1 row-start-1",
-              error ? "text-destructive" : "text-muted-foreground"
+              error ? "text-destructive" : "text-muted-foreground",
             )}
             style={{
               fontVariationSettings: fontWeights.normal,
@@ -201,7 +199,7 @@ const InputField = forwardRef<HTMLDivElement, InputFieldProps>(
           className={cn(
             `flex items-center gap-2 ${shape.input} px-3 py-2 ring-1 transition-all duration-80`,
             bgClass,
-            ringClass
+            ringClass,
           )}
         >
           {Icon && (
@@ -210,9 +208,7 @@ const InputField = forwardRef<HTMLDivElement, InputFieldProps>(
               strokeWidth={labelActive ? 2 : 1.5}
               className={cn(
                 "shrink-0 transition-[color,stroke-width] duration-80",
-                labelActive
-                  ? "text-foreground"
-                  : "text-muted-foreground"
+                labelActive ? "text-foreground" : "text-muted-foreground",
               )}
             />
           )}
@@ -243,7 +239,7 @@ const InputField = forwardRef<HTMLDivElement, InputFieldProps>(
         )}
       </Field.Root>
     );
-  }
+  },
 );
 
 InputField.displayName = "InputField";

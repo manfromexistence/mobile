@@ -1,34 +1,34 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { ConversationProvider, useConversation } from "@elevenlabs/react"
-import { CheckIcon, CopyIcon } from "lucide-react"
+import { useState } from "react";
+import { ConversationProvider, useConversation } from "@elevenlabs/react";
+import { CheckIcon, CopyIcon } from "lucide-react";
 
-import { cn } from "@/registry/elevenlabs-ui/lib/utils"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
-import { Card, CardContent } from "@/registry/elevenlabs-ui/ui/card"
+import { cn } from "@/registry/elevenlabs-ui/lib/utils";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
+import { Card, CardContent } from "@/registry/elevenlabs-ui/ui/card";
 import {
   Conversation,
   ConversationContent,
   ConversationEmptyState,
   ConversationScrollButton,
-} from "@/registry/elevenlabs-ui/ui/conversation"
-import { ConversationBar } from "@/registry/elevenlabs-ui/ui/conversation-bar"
-import { Message, MessageContent } from "@/registry/elevenlabs-ui/ui/message"
-import { Orb } from "@/registry/elevenlabs-ui/ui/orb"
-import { Response } from "@/registry/elevenlabs-ui/ui/response"
+} from "@/registry/elevenlabs-ui/ui/conversation";
+import { ConversationBar } from "@/registry/elevenlabs-ui/ui/conversation-bar";
+import { Message, MessageContent } from "@/registry/elevenlabs-ui/ui/message";
+import { Orb } from "@/registry/elevenlabs-ui/ui/orb";
+import { Response } from "@/registry/elevenlabs-ui/ui/response";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/registry/elevenlabs-ui/ui/tooltip"
+} from "@/registry/elevenlabs-ui/ui/tooltip";
 
-const DEFAULT_AGENT_ID = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID!
+const DEFAULT_AGENT_ID = process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID!;
 
 interface ChatMessage {
-  role: "user" | "assistant"
-  content: string
+  role: "user" | "assistant";
+  content: string;
 }
 
 export default function Page() {
@@ -36,12 +36,12 @@ export default function Page() {
     <ConversationProvider>
       <VoiceChat03 />
     </ConversationProvider>
-  )
+  );
 }
 
 export function VoiceChat03() {
-  const [messages, setMessages] = useState<ChatMessage[]>([])
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   useConversation({
     onConnect: () => setMessages([]),
@@ -51,11 +51,11 @@ export function VoiceChat03() {
         const newMessage: ChatMessage = {
           role: message.source === "user" ? "user" : "assistant",
           content: message.message,
-        }
-        setMessages((prev) => [...prev, newMessage])
+        };
+        setMessages((prev) => [...prev, newMessage]);
       }
     },
-  })
+  });
 
   return (
     <div className="relative mx-auto h-[600px] w-full">
@@ -92,17 +92,15 @@ export function VoiceChat03() {
                               <TooltipTrigger asChild>
                                 <Button
                                   className={cn(
-                                    "text-muted-foreground hover:text-foreground relative size-9 p-1.5"
+                                    "text-muted-foreground hover:text-foreground relative size-9 p-1.5",
                                   )}
                                   size="sm"
                                   type="button"
                                   variant="ghost"
                                   onClick={() => {
-                                    navigator.clipboard.writeText(
-                                      message.content
-                                    )
-                                    setCopiedIndex(index)
-                                    setTimeout(() => setCopiedIndex(null), 2000)
+                                    navigator.clipboard.writeText(message.content);
+                                    setCopiedIndex(index);
+                                    setTimeout(() => setCopiedIndex(null), 2000);
                                   }}
                                 >
                                   {copiedIndex === index ? (
@@ -116,16 +114,14 @@ export function VoiceChat03() {
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p>
-                                  {copiedIndex === index ? "Copied!" : "Copy"}
-                                </p>
+                                <p>{copiedIndex === index ? "Copied!" : "Copy"}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
                         </div>
                       )}
                     </div>
-                  )
+                  );
                 })
               )}
             </ConversationContent>
@@ -139,13 +135,13 @@ export function VoiceChat03() {
                 const userMessage: ChatMessage = {
                   role: "user",
                   content: message,
-                }
-                setMessages((prev) => [...prev, userMessage])
+                };
+                setMessages((prev) => [...prev, userMessage]);
               }}
             />
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

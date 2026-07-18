@@ -25,14 +25,9 @@ export function TableEditablePreview() {
   const [nextCol, setNextCol] = useState(1);
   const [editable, setEditable] = useState(true);
 
-  const onCellEdit = useCallback(
-    (rowId: string, key: string, value: string) => {
-      setRows((prev) =>
-        prev.map((row) => (row.id === rowId ? { ...row, [key]: value } : row)),
-      );
-    },
-    [],
-  );
+  const onCellEdit = useCallback((rowId: string, key: string, value: string) => {
+    setRows((prev) => prev.map((row) => (row.id === rowId ? { ...row, [key]: value } : row)));
+  }, []);
 
   const onInsertRow = useCallback(
     (index: number, position: "before" | "after") => {
@@ -103,11 +98,7 @@ export function TableEditablePreview() {
             ? "Click a cell to edit. Use the column and row handles to insert or delete."
             : "Read-only."}
         </p>
-        <Switch
-          checked={editable}
-          onCheckedChange={setEditable}
-          label="Editable"
-        />
+        <Switch checked={editable} onCheckedChange={setEditable} label="Editable" />
       </div>
       <Table
         data={rows}

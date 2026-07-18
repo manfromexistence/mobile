@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { MinusIcon, PlusIcon } from "lucide-react"
-import { Bar, BarChart } from "recharts"
+import * as React from "react";
+import { MinusIcon, PlusIcon } from "lucide-react";
+import { Bar, BarChart } from "recharts";
 
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
 import {
   Card,
   CardContent,
@@ -12,8 +12,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/registry/elevenlabs-ui/ui/card"
-import { ChartConfig, ChartContainer } from "@/registry/elevenlabs-ui/ui/chart"
+} from "@/registry/elevenlabs-ui/ui/card";
+import { ChartConfig, ChartContainer } from "@/registry/elevenlabs-ui/ui/chart";
 
 const data = [
   {
@@ -55,20 +55,20 @@ const data = [
   {
     goal: 349,
   },
-]
+];
 
 const chartConfig = {
   goal: {
     label: "Goal",
     color: "var(--primary)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function CardsActivityGoal() {
-  const [goal, setGoal] = React.useState(350)
+  const [goal, setGoal] = React.useState(350);
 
   function onClick(adjustment: number) {
-    setGoal(Math.max(200, Math.min(400, goal + adjustment)))
+    setGoal(Math.max(200, Math.min(400, goal + adjustment)));
   }
 
   return (
@@ -90,12 +90,8 @@ export function CardsActivityGoal() {
             <span className="sr-only">Decrease</span>
           </Button>
           <div className="text-center">
-            <div className="text-4xl font-bold tracking-tighter tabular-nums">
-              {goal}
-            </div>
-            <div className="text-muted-foreground text-xs uppercase">
-              Calories/day
-            </div>
+            <div className="text-4xl font-bold tracking-tighter tabular-nums">{goal}</div>
+            <div className="text-muted-foreground text-xs uppercase">Calories/day</div>
           </div>
           <Button
             variant="outline"
@@ -109,10 +105,7 @@ export function CardsActivityGoal() {
           </Button>
         </div>
         <div className="flex-1">
-          <ChartContainer
-            config={chartConfig}
-            className="aspect-auto h-full w-full"
-          >
+          <ChartContainer config={chartConfig} className="aspect-auto h-full w-full">
             <BarChart data={data}>
               <Bar dataKey="goal" radius={4} fill="var(--color-goal)" />
             </BarChart>
@@ -125,5 +118,5 @@ export function CardsActivityGoal() {
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }

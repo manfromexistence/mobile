@@ -9,7 +9,7 @@ export const COLORS = [
   "hsl(var(--accent))",
   "hsl(var(--secondary))",
   "hsl(var(--muted))",
-]
+];
 
-export const MAX_VISIBLE_WORKSPACES = 5
-export const MAX_LOGOS = 12
+export const MAX_VISIBLE_WORKSPACES = 5;
+export const MAX_LOGOS = 12;

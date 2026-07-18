@@ -1,6 +1,6 @@
-import Image from "next/image"
+import Image from "next/image";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 export function BlockImage({
   name,
@@ -9,12 +9,7 @@ export function BlockImage({
   className,
 }: Omit<React.ComponentProps<typeof Image>, "src" | "alt"> & { name: string }) {
   return (
-    <div
-      className={cn(
-        "relative aspect-[1440/900] w-full overflow-hidden rounded-lg",
-        className
-      )}
-    >
+    <div className={cn("relative aspect-[1440/900] w-full overflow-hidden rounded-lg", className)}>
       <Image
         src={`/r/${name}-light.png`}
         alt={name}
@@ -32,5 +27,5 @@ export function BlockImage({
         data-image="dark"
       />
     </div>
-  )
+  );
 }

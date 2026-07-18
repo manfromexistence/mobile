@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState, memo } from 'react';
-import * as THREE from 'three';
+import { useEffect, useRef, useState, memo } from "react";
+import * as THREE from "three";
 
 function hasWebGL() {
   try {
-    const c = document.createElement('canvas');
-    return !!(c.getContext('webgl') || c.getContext('webgl2'));
+    const c = document.createElement("canvas");
+    return !!(c.getContext("webgl") || c.getContext("webgl2"));
   } catch {
     return false;
   }
@@ -74,9 +74,9 @@ void main() {
 `;
 
 const HeroBand = memo(function HeroBand({
-  className = '',
+  className = "",
   style,
-  color = '#A855F7',
+  color = "#A855F7",
   rotation = 0,
   speed = 0.2,
   scale = 1,
@@ -139,7 +139,7 @@ const HeroBand = memo(function HeroBand({
     try {
       renderer = new THREE.WebGLRenderer({
         antialias: false,
-        powerPreference: 'high-performance',
+        powerPreference: "high-performance",
         alpha: true,
       });
     } catch {
@@ -149,9 +149,9 @@ const HeroBand = memo(function HeroBand({
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.setClearColor(0x000000, 0);
-    renderer.domElement.style.width = '100%';
-    renderer.domElement.style.height = '100%';
-    renderer.domElement.style.display = 'block';
+    renderer.domElement.style.width = "100%";
+    renderer.domElement.style.height = "100%";
+    renderer.domElement.style.display = "block";
     container.appendChild(renderer.domElement);
 
     const clock = new THREE.Clock();
@@ -167,11 +167,11 @@ const HeroBand = memo(function HeroBand({
     handleResize();
 
     let ro;
-    if ('ResizeObserver' in window) {
+    if ("ResizeObserver" in window) {
       ro = new ResizeObserver(handleResize);
       ro.observe(container);
     } else {
-      window.addEventListener('resize', handleResize);
+      window.addEventListener("resize", handleResize);
     }
 
     const handlePointer = (e) => {
@@ -180,7 +180,7 @@ const HeroBand = memo(function HeroBand({
       const y = -(((e.clientY - r.top) / r.height) * 2 - 1);
       pointerTarget.current.set(x, y);
     };
-    window.addEventListener('mousemove', handlePointer, { passive: true });
+    window.addEventListener("mousemove", handlePointer, { passive: true });
 
     const loop = () => {
       const dt = clock.getDelta();
@@ -198,8 +198,8 @@ const HeroBand = memo(function HeroBand({
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
       if (ro) ro.disconnect();
-      else window.removeEventListener('resize', handleResize);
-      window.removeEventListener('mousemove', handlePointer);
+      else window.removeEventListener("resize", handleResize);
+      window.removeEventListener("mousemove", handlePointer);
       geometry.dispose();
       material.dispose();
       renderer.dispose();
@@ -208,7 +208,7 @@ const HeroBand = memo(function HeroBand({
         container.removeChild(renderer.domElement);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supported]);
 
   useEffect(() => {
@@ -227,7 +227,7 @@ const HeroBand = memo(function HeroBand({
     material.uniforms.uIterations.value = iterations;
     material.uniforms.uIntensity.value = intensity;
 
-    const hex = color.replace('#', '').trim();
+    const hex = color.replace("#", "").trim();
     const r = parseInt(hex.slice(0, 2), 16) / 255;
     const g = parseInt(hex.slice(2, 4), 16) / 255;
     const b = parseInt(hex.slice(4, 6), 16) / 255;
@@ -235,7 +235,21 @@ const HeroBand = memo(function HeroBand({
 
     const rad = (rotation * Math.PI) / 180;
     material.uniforms.uRot.value.set(Math.cos(rad), Math.sin(rad));
-  }, [color, rotation, speed, scale, frequency, warpStrength, noise, bandWidth, yOffset, fadeTop, mouseInfluence, iterations, intensity]);
+  }, [
+    color,
+    rotation,
+    speed,
+    scale,
+    frequency,
+    warpStrength,
+    noise,
+    bandWidth,
+    yOffset,
+    fadeTop,
+    mouseInfluence,
+    iterations,
+    intensity,
+  ]);
 
   if (!supported) return <div className={className} style={style} />;
 

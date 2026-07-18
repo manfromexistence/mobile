@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
-import * as THREE from 'three';
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import * as THREE from "three";
 
 const AntigravityInner = ({
   count = 300,
@@ -11,14 +11,14 @@ const AntigravityInner = ({
   waveAmplitude = 1,
   particleSize = 2,
   lerpSpeed = 0.1,
-  color = '#FF9FFC',
+  color = "#FF9FFC",
   autoAnimate = false,
   particleVariance = 1,
   rotationSpeed = 0,
   depthFactor = 1,
   pulseSpeed = 3,
-  particleShape = 'capsule',
-  fieldStrength = 10
+  particleShape = "capsule",
+  fieldStrength = 10,
 }) => {
   const meshRef = useRef(null);
   const { viewport } = useThree();
@@ -63,19 +63,21 @@ const AntigravityInner = ({
         vx: 0,
         vy: 0,
         vz: 0,
-        randomRadiusOffset
+        randomRadiusOffset,
       });
     }
     return temp;
   }, [count, viewport.width, viewport.height]);
 
-  useFrame(state => {
+  useFrame((state) => {
     const mesh = meshRef.current;
     if (!mesh) return;
 
     const { viewport: v, pointer: m } = state;
 
-    const mouseDist = Math.sqrt(Math.pow(m.x - lastMousePos.current.x, 2) + Math.pow(m.y - lastMousePos.current.y, 2));
+    const mouseDist = Math.sqrt(
+      Math.pow(m.x - lastMousePos.current.x, 2) + Math.pow(m.y - lastMousePos.current.y, 2),
+    );
 
     if (mouseDist > 0.001) {
       lastMouseMoveTime.current = Date.now();
@@ -138,7 +140,7 @@ const AntigravityInner = ({
       dummy.rotateX(Math.PI / 2);
 
       const currentDistToMouse = Math.sqrt(
-        Math.pow(particle.cx - projectedTargetX, 2) + Math.pow(particle.cy - projectedTargetY, 2)
+        Math.pow(particle.cx - projectedTargetX, 2) + Math.pow(particle.cy - projectedTargetY, 2),
       );
 
       const distFromRing = Math.abs(currentDistToMouse - ringRadius);
@@ -146,7 +148,8 @@ const AntigravityInner = ({
 
       scaleFactor = Math.max(0, Math.min(1, scaleFactor));
 
-      const finalScale = scaleFactor * (0.8 + Math.sin(t * pulseSpeed) * 0.2 * particleVariance) * particleSize;
+      const finalScale =
+        scaleFactor * (0.8 + Math.sin(t * pulseSpeed) * 0.2 * particleVariance) * particleSize;
       dummy.scale.set(finalScale, finalScale, finalScale);
 
       dummy.updateMatrix();
@@ -159,16 +162,16 @@ const AntigravityInner = ({
 
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
-      {particleShape === 'capsule' && <capsuleGeometry args={[0.1, 0.4, 4, 8]} />}
-      {particleShape === 'sphere' && <sphereGeometry args={[0.2, 16, 16]} />}
-      {particleShape === 'box' && <boxGeometry args={[0.3, 0.3, 0.3]} />}
-      {particleShape === 'tetrahedron' && <tetrahedronGeometry args={[0.3]} />}
+      {particleShape === "capsule" && <capsuleGeometry args={[0.1, 0.4, 4, 8]} />}
+      {particleShape === "sphere" && <sphereGeometry args={[0.2, 16, 16]} />}
+      {particleShape === "box" && <boxGeometry args={[0.3, 0.3, 0.3]} />}
+      {particleShape === "tetrahedron" && <tetrahedronGeometry args={[0.3]} />}
       <meshBasicMaterial color={color} />
     </instancedMesh>
   );
 };
 
-const Antigravity = props => {
+const Antigravity = (props) => {
   return (
     <Canvas camera={{ position: [0, 0, 50], fov: 35 }}>
       <AntigravityInner {...props} />

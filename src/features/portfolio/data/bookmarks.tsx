@@ -1,6 +1,6 @@
-import { AnimationsDevIcon, ResendIcon, VercelIcon } from "@/components/icons"
+import { AnimationsDevIcon, ResendIcon, VercelIcon } from "@/components/icons";
 
-import { type Bookmark, BookmarkCategory } from "../types/bookmarks"
+import { type Bookmark, BookmarkCategory } from "../types/bookmarks";
 
 export const BOOKMARKS: Bookmark[] = [
   {
@@ -164,12 +164,12 @@ export const BOOKMARKS: Bookmark[] = [
     category: BookmarkCategory.REFERENCE,
     bookmarkedAt: "2026-06-20",
   },
-]
+];
 
 function Circle() {
   return (
     <svg viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="10" fill="currentColor" />
     </svg>
-  )
+  );
 }

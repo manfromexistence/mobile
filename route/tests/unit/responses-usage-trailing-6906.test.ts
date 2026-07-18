@@ -47,7 +47,7 @@ test("BUG #6906: live translator — response.completed carries usage when the u
   assert.deepEqual(
     completedEvent.data.response.usage,
     { input_tokens: 2249, output_tokens: 123, total_tokens: 2372 },
-    "response.completed must carry usage even when the usage-only chunk trails finish_reason"
+    "response.completed must carry usage even when the usage-only chunk trails finish_reason",
   );
 });
 
@@ -128,6 +128,6 @@ test("BUG #6906: legacy transformer — response.completed carries usage when th
   assert.deepEqual(
     payload.response.usage,
     { prompt_tokens: 55, completion_tokens: 11, total_tokens: 66 },
-    "legacy transformer response.completed must carry usage even when the usage-only chunk trails finish_reason"
+    "legacy transformer response.completed must carry usage even when the usage-only chunk trails finish_reason",
   );
 });

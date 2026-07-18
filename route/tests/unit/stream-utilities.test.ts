@@ -62,7 +62,7 @@ test("createPassthroughStreamWithLogger omits [DONE] for Responses clients", asy
     null,
     null,
     null,
-    "openai-responses"
+    "openai-responses",
   );
 
   const writer = transform.writable.getWriter();
@@ -72,8 +72,8 @@ test("createPassthroughStreamWithLogger omits [DONE] for Responses clients", asy
         "event: response.completed",
         'data: {"type":"response.completed","response":{"id":"resp_1","model":"gpt-5.5-low","status":"completed","output":[],"usage":{"input_tokens":1,"output_tokens":1,"total_tokens":2}}}',
         "",
-      ].join("\n")
-    )
+      ].join("\n"),
+    ),
   );
   await writer.close();
 
@@ -102,7 +102,7 @@ test("createPassthroughStreamWithLogger synthesizes reasoning summary events fro
     null,
     null,
     null,
-    "openai-responses"
+    "openai-responses",
   );
 
   const writer = transform.writable.getWriter();
@@ -112,8 +112,8 @@ test("createPassthroughStreamWithLogger synthesizes reasoning summary events fro
         "event: response.output_item.done",
         'data: {"type":"response.output_item.done","response_id":"resp_reasoning_1","output_index":0,"item":{"id":"rs_resp_reasoning_1_0","type":"reasoning","summary":[{"type":"summary_text","text":"Reasoning summary text"}]}}',
         "",
-      ].join("\n")
-    )
+      ].join("\n"),
+    ),
   );
   await writer.close();
 
@@ -153,7 +153,7 @@ test("createPassthroughStreamWithLogger shows a placeholder for encrypted reason
     null,
     null,
     null,
-    "openai-responses"
+    "openai-responses",
   );
 
   const writer = transform.writable.getWriter();
@@ -163,8 +163,8 @@ test("createPassthroughStreamWithLogger shows a placeholder for encrypted reason
         "event: response.output_item.done",
         'data: {"type":"response.output_item.done","response_id":"resp_reasoning_2","output_index":0,"item":{"id":"rs_resp_reasoning_2_0","type":"reasoning","encrypted_content":"enc_opaque_state"}}',
         "",
-      ].join("\n")
-    )
+      ].join("\n"),
+    ),
   );
   await writer.close();
 
@@ -207,7 +207,7 @@ test("createPassthroughStreamWithLogger backfills completed output with encrypte
     null,
     null,
     null,
-    "openai-responses"
+    "openai-responses",
   );
 
   const writer = transform.writable.getWriter();
@@ -220,8 +220,8 @@ test("createPassthroughStreamWithLogger backfills completed output with encrypte
         "event: response.completed",
         'data: {"type":"response.completed","response":{"id":"resp_reasoning_3","model":"gpt-5.5-low","status":"completed","output":[],"usage":{"input_tokens":1,"output_tokens":1,"total_tokens":2}}}',
         "",
-      ].join("\n")
-    )
+      ].join("\n"),
+    ),
   );
   await writer.close();
 
@@ -260,7 +260,7 @@ test("createPassthroughStreamWithLogger backfills completed output from function
     null,
     null,
     null,
-    "openai-responses"
+    "openai-responses",
   );
 
   const writer = transform.writable.getWriter();
@@ -275,8 +275,8 @@ test("createPassthroughStreamWithLogger backfills completed output from function
         "event: response.completed",
         'data: {"type":"response.completed","response":{"id":"resp_fc_1","status":"completed","output":[],"usage":{"input_tokens":1,"output_tokens":1,"total_tokens":2}}}',
         "",
-      ].join("\n")
-    )
+      ].join("\n"),
+    ),
   );
   await writer.close();
 
@@ -318,7 +318,7 @@ test("createPassthroughStreamWithLogger keeps reasoning deltas out of logged ass
     },
     null,
     null,
-    "openai-responses"
+    "openai-responses",
   );
 
   const writer = transform.writable.getWriter();
@@ -335,8 +335,8 @@ test("createPassthroughStreamWithLogger keeps reasoning deltas out of logged ass
         "event: response.completed",
         'data: {"type":"response.completed","response":{"id":"resp_reasoning_delta_1","status":"completed","output":[],"usage":{"input_tokens":1,"output_tokens":1,"total_tokens":2}}}',
         "",
-      ].join("\n")
-    )
+      ].join("\n"),
+    ),
   );
   await writer.close();
 
@@ -350,9 +350,9 @@ test("createPassthroughStreamWithLogger keeps reasoning deltas out of logged ass
   assert.equal(completePayload.responseBody.choices[0].message.content, "OK");
   assert.equal(
     JSON.stringify(completePayload.responseBody).includes(
-      "Internal reasoning should not be content"
+      "Internal reasoning should not be content",
     ),
-    false
+    false,
   );
   assert.equal(JSON.stringify(completePayload.responseBody).includes("secret.txt"), false);
 });

@@ -1,19 +1,25 @@
-import { useMemo } from 'react';
-import { getLanguage } from '../../utils/utils';
-import { useComponentPropsContext } from '../../hooks/useComponentPropsContext';
-import { formatPropValue } from '../../utils/codeGeneration';
-import { colors } from '../../constants/colors';
-import CliInstallation from './CliInstallation';
-import CodeHighlighter from './CodeHighlighter';
-import CodeOptions, { CSS, Tailwind, TSCSS, TSTailwind } from './CodeOptions';
+import { useMemo } from "react";
+import { getLanguage } from "../../utils/utils";
+import { useComponentPropsContext } from "../../hooks/useComponentPropsContext";
+import { formatPropValue } from "../../utils/codeGeneration";
+import { colors } from "../../constants/colors";
+import CliInstallation from "./CliInstallation";
+import CodeHighlighter from "./CodeHighlighter";
+import CodeOptions, { CSS, Tailwind, TSCSS, TSTailwind } from "./CodeOptions";
 
-const SKIP_KEYS = new Set(['tailwind', 'css', 'tsTailwind', 'tsCode', 'dependencies']);
+const SKIP_KEYS = new Set(["tailwind", "css", "tsTailwind", "tsCode", "dependencies"]);
 
 /**
  * Injects current prop values into a usage code string.
  * Updates changed props in place, and adds new props that don't exist yet.
  */
-export function injectPropsIntoCode(usageCode, props, defaultProps, componentName, demoOnlyProps = []) {
+export function injectPropsIntoCode(
+  usageCode,
+  props,
+  defaultProps,
+  componentName,
+  demoOnlyProps = [],
+) {
   if (!usageCode || !props || !componentName) return usageCode;
 
   const demoOnlySet = new Set(demoOnlyProps);
@@ -34,11 +40,13 @@ export function injectPropsIntoCode(usageCode, props, defaultProps, componentNam
   for (const [propName, propValue] of Object.entries(changedProps)) {
     const formattedValue = formatPropValue(propValue, propName);
     const newPropLine =
-      typeof propValue === 'boolean' && propValue === true ? propName : `${propName}=${formattedValue}`;
+      typeof propValue === "boolean" && propValue === true
+        ? propName
+        : `${propName}=${formattedValue}`;
 
     const simplePropRegex = new RegExp(
       `(^[ \\t]*)(${propName})(?:=(?:"[^"\\n]*"|'[^'\\n]*'|\\{[^{}\\n]*\\}|[^\\s/>]+))?[ \\t]*(\\r?\\n|$)`,
-      'gm'
+      "gm",
     );
 
     const hasSimpleMatch = simplePropRegex.test(result);
@@ -47,14 +55,14 @@ export function injectPropsIntoCode(usageCode, props, defaultProps, componentNam
     if (hasSimpleMatch) {
       let seen = false;
       result = result.replace(simplePropRegex, (_, indent, __, lineEnding) => {
-        if (seen) return '';
+        if (seen) return "";
         seen = true;
         return `${indent}${newPropLine}${lineEnding}`;
       });
       continue;
     }
 
-    const multiLineStart = new RegExp(`^([ \\t]*)(${propName})=\\{`, 'gm');
+    const multiLineStart = new RegExp(`^([ \\t]*)(${propName})=\\{`, "gm");
     let match;
     let updated = false;
 
@@ -66,8 +74,8 @@ export function injectPropsIntoCode(usageCode, props, defaultProps, componentNam
       let braceCount = 1;
       let i = openBraceIndex + 1;
       while (i < result.length && braceCount > 0) {
-        if (result[i] === '{') braceCount++;
-        else if (result[i] === '}') braceCount--;
+        if (result[i] === "{") braceCount++;
+        else if (result[i] === "}") braceCount--;
         i++;
       }
 
@@ -87,15 +95,15 @@ export function injectPropsIntoCode(usageCode, props, defaultProps, componentNam
 
   if (propsToAdd.length > 0) {
     const indentMatch = result.match(/\n([ \t]+)\w/);
-    const indent = indentMatch ? indentMatch[1] : '  ';
+    const indent = indentMatch ? indentMatch[1] : "  ";
 
-    const newPropsStr = propsToAdd.map(p => `${indent}${p}`).join('\n');
+    const newPropsStr = propsToAdd.map((p) => `${indent}${p}`).join("\n");
 
-    const closingIndex = result.lastIndexOf('/>');
+    const closingIndex = result.lastIndexOf("/>");
     if (closingIndex !== -1) {
       const before = result.slice(0, closingIndex);
       const after = result.slice(closingIndex);
-      result = before.trimEnd() + '\n' + newPropsStr + '\n' + after.trim();
+      result = before.trimEnd() + "\n" + newPropsStr + "\n" + after.trim();
     }
   }
 
@@ -128,7 +136,10 @@ const CodeExample = ({ codeObject, componentName }) => {
       {dynamicUsage && (
         <div>
           <h2 className="demo-title">
-            Usage {hasChanges && <span style={{ color: colors.accent, fontSize: '12px' }}>(with your settings)</span>}
+            Usage{" "}
+            {hasChanges && (
+              <span style={{ color: colors.accent, fontSize: "12px" }}>(with your settings)</span>
+            )}
           </h2>
           <CodeHighlighter snippetId="usage" language="jsx" codeString={dynamicUsage} />
         </div>
@@ -136,9 +147,9 @@ const CodeExample = ({ codeObject, componentName }) => {
 
       {Object.entries(codeObject).map(([name, snippet]) => {
         if (SKIP_KEYS.has(name)) return null;
-        if (name === 'usage') return null;
+        if (name === "usage") return null;
 
-        if (name === 'code' || name === 'tsCode') {
+        if (name === "code" || name === "tsCode") {
           return (
             <div key={name}>
               <h2 className="demo-title">{name}</h2>

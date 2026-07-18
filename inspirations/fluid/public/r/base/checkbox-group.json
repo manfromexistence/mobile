@@ -3,10 +3,7 @@
   "name": "checkbox-group",
   "title": "Checkbox Group (Base UI)",
   "description": "Animated checkbox group with proximity hover, contiguous selection merging, and spring-animated check marks. Base UI flavor.",
-  "dependencies": [
-    "framer-motion",
-    "@base-ui/react"
-  ],
+  "dependencies": ["framer-motion", "@base-ui/react"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

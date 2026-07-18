@@ -1,9 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "voice-button-demo",
-  "registryDependencies": [
-    "https://ui.elevenlabs.io/r/voice-button.json"
-  ],
+  "registryDependencies": ["https://ui.elevenlabs.io/r/voice-button.json"],
   "files": [
     {
       "path": "examples/voice-button-demo.tsx",

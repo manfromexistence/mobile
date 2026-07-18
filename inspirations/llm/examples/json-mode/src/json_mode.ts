@@ -16,10 +16,9 @@ async function main() {
   const selectedModel = "Llama-3.2-3B-Instruct-q4f16_1-MLC";
   // const selectedModel = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC";
   // const selectedModel = "Phi-3.5-mini-instruct-q4f16_1-MLC";
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    { initProgressCallback: initProgressCallback },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+  });
   // Note that you'd need to prompt the model to answer in JSON either in
   // user's message or the system prompt
   const request: webllm.ChatCompletionRequest = {

@@ -19,7 +19,7 @@ test("default quotaPreflight thresholds use remaining-% semantics (matches dashb
   assert.equal(settings.quotaPreflight.warnThresholdPercent, 20);
   // Warn fires earlier than block, so warn % > block %.
   assert.ok(
-    settings.quotaPreflight.warnThresholdPercent > settings.quotaPreflight.defaultThresholdPercent
+    settings.quotaPreflight.warnThresholdPercent > settings.quotaPreflight.defaultThresholdPercent,
   );
 });
 
@@ -64,7 +64,7 @@ test("warnThresholdPercent is forced ABOVE defaultThresholdPercent when sent in 
   });
   assert(
     next.quotaPreflight.warnThresholdPercent > next.quotaPreflight.defaultThresholdPercent,
-    `expected warn > default, got warn=${next.quotaPreflight.warnThresholdPercent} default=${next.quotaPreflight.defaultThresholdPercent}`
+    `expected warn > default, got warn=${next.quotaPreflight.warnThresholdPercent} default=${next.quotaPreflight.defaultThresholdPercent}`,
   );
   assert.equal(next.quotaPreflight.defaultThresholdPercent, 30);
   assert.equal(next.quotaPreflight.warnThresholdPercent, 31);
@@ -104,7 +104,7 @@ test("providerWindowDefaults: out-of-range values are clamped, garbage is pruned
   assert.equal(
     "junk" in next.quotaPreflight.providerWindowDefaults.codex,
     false,
-    "non-numeric entries should be pruned"
+    "non-numeric entries should be pruned",
   );
 });
 
@@ -128,7 +128,7 @@ test("#4483: quota cutoff stored enabled values must be booleans", () => {
   assert.equal(
     resolved.quotaPreflight.enabled,
     false,
-    "stored settings must not coerce truthy strings into the hard cutoff"
+    "stored settings must not coerce truthy strings into the hard cutoff",
   );
 });
 

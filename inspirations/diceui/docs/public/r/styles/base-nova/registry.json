@@ -17,9 +17,7 @@
         "@diceui/use-as-ref",
         "@diceui/use-isomorphic-layout-effect"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "angle-slider",
@@ -44,9 +42,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "avatar-group",
@@ -57,9 +53,7 @@
           "type": "registry:ui"
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "badge-overflow",
@@ -74,9 +68,7 @@
           "type": "registry:lib"
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "banner",
@@ -87,14 +79,8 @@
           "type": "registry:ui"
         }
       ],
-      "registryDependencies": [
-        "button",
-        "@diceui/use-as-ref",
-        "@diceui/use-lazy-ref"
-      ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "registryDependencies": ["button", "@diceui/use-as-ref", "@diceui/use-lazy-ref"],
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "circular-progress",
@@ -105,9 +91,7 @@
           "type": "registry:ui"
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
+      "dependencies": ["@base-ui/react"],
       "cssVars": {
         "theme": {
           "--animate-spin-around": "spin-around 0.8s linear infinite"
@@ -148,9 +132,7 @@
         "@diceui/use-lazy-ref",
         "@diceui/compose-refs"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "color-swatch",
@@ -161,9 +143,7 @@
           "type": "registry:ui"
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "compare-slider",
@@ -183,9 +163,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "cropper",
@@ -205,9 +183,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "editable",
@@ -228,9 +204,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "file-upload",
@@ -241,14 +215,8 @@
           "type": "registry:ui"
         }
       ],
-      "registryDependencies": [
-        "direction",
-        "@diceui/use-as-ref",
-        "@diceui/use-lazy-ref"
-      ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "registryDependencies": ["direction", "@diceui/use-as-ref", "@diceui/use-lazy-ref"],
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "fps",
@@ -273,9 +241,7 @@
           "type": "registry:lib"
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "key-value",
@@ -302,9 +268,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "marquee",
@@ -319,12 +283,8 @@
           "type": "registry:lib"
         }
       ],
-      "registryDependencies": [
-        "direction"
-      ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
+      "registryDependencies": ["direction"],
+      "dependencies": ["@base-ui/react"],
       "cssVars": {
         "theme": {
           "--animate-marquee-left": "marquee-left var(--marquee-duration) linear var(--marquee-loop-count)",
@@ -399,9 +359,7 @@
           "type": "registry:lib"
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "masonry",
@@ -416,12 +374,8 @@
           "type": "registry:lib"
         }
       ],
-      "registryDependencies": [
-        "@diceui/use-isomorphic-layout-effect"
-      ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "registryDependencies": ["@diceui/use-isomorphic-layout-effect"],
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "media-player",
@@ -441,10 +395,7 @@
         "@diceui/compose-refs",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react",
-        "media-chrome"
-      ]
+      "dependencies": ["@base-ui/react", "media-chrome"]
     },
     {
       "name": "phone-input",
@@ -471,10 +422,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react",
-        "cmdk"
-      ]
+      "dependencies": ["@base-ui/react", "cmdk"]
     },
     {
       "name": "qr-code",
@@ -489,16 +437,9 @@
           "type": "registry:lib"
         }
       ],
-      "registryDependencies": [
-        "@diceui/use-lazy-ref"
-      ],
-      "dependencies": [
-        "@base-ui/react",
-        "qrcode"
-      ],
-      "devDependencies": [
-        "@types/qrcode"
-      ]
+      "registryDependencies": ["@diceui/use-lazy-ref"],
+      "dependencies": ["@base-ui/react", "qrcode"],
+      "devDependencies": ["@types/qrcode"]
     },
     {
       "name": "rating",
@@ -523,9 +464,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "relative-time-card",
@@ -536,12 +475,8 @@
           "type": "registry:ui"
         }
       ],
-      "registryDependencies": [
-        "hover-card"
-      ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "registryDependencies": ["hover-card"],
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "responsive-dialog",
@@ -560,9 +495,7 @@
         "@diceui/use-lazy-ref",
         "@diceui/use-mobile"
       ],
-      "dependencies": [
-        "vaul"
-      ]
+      "dependencies": ["vaul"]
     },
     {
       "name": "scroll-spy",
@@ -583,9 +516,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "scroller",
@@ -600,9 +531,7 @@
           "type": "registry:lib"
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "segmented-input",
@@ -613,13 +542,8 @@
           "type": "registry:ui"
         }
       ],
-      "registryDependencies": [
-        "input",
-        "direction"
-      ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "registryDependencies": ["input", "direction"],
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "selection-toolbar",
@@ -640,10 +564,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react",
-        "@floating-ui/react-dom"
-      ]
+      "dependencies": ["@base-ui/react", "@floating-ui/react-dom"]
     },
     {
       "name": "speed-dial",
@@ -664,9 +585,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "stack",
@@ -677,9 +596,7 @@
           "type": "registry:ui"
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "stat",
@@ -690,9 +607,7 @@
           "type": "registry:ui"
         }
       ],
-      "registryDependencies": [
-        "separator"
-      ]
+      "registryDependencies": ["separator"]
     },
     {
       "name": "status",
@@ -703,9 +618,7 @@
           "type": "registry:ui"
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "stepper",
@@ -726,9 +639,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "swap",
@@ -744,9 +655,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "timeline",
@@ -766,9 +675,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "time-picker",
@@ -793,9 +700,7 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ],
+      "dependencies": ["@base-ui/react"],
       "css": {
         "@utility scrollbar-none": {
           "scrollbar-width": "none",
@@ -825,18 +730,12 @@
         "@diceui/use-isomorphic-layout-effect",
         "@diceui/use-lazy-ref"
       ],
-      "dependencies": [
-        "@base-ui/react",
-        "@floating-ui/react-dom"
-      ]
+      "dependencies": ["@base-ui/react", "@floating-ui/react-dom"]
     },
     {
       "name": "utils",
       "type": "registry:lib",
-      "dependencies": [
-        "clsx",
-        "tailwind-merge"
-      ],
+      "dependencies": ["clsx", "tailwind-merge"],
       "files": [
         {
           "path": "lib/utils.ts",
@@ -873,9 +772,7 @@
           "type": "registry:component"
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "portal",
@@ -896,9 +793,7 @@
           "type": "registry:component"
         }
       ],
-      "dependencies": [
-        "@base-ui/react"
-      ]
+      "dependencies": ["@base-ui/react"]
     },
     {
       "name": "visually-hidden-input",
@@ -913,9 +808,7 @@
     {
       "name": "use-as-ref",
       "type": "registry:hook",
-      "registryDependencies": [
-        "@diceui/use-isomorphic-layout-effect"
-      ],
+      "registryDependencies": ["@diceui/use-isomorphic-layout-effect"],
       "files": [
         {
           "path": "hooks/use-as-ref.ts",

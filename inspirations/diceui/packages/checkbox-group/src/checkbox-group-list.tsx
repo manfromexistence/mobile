@@ -4,13 +4,9 @@ import { useCheckboxGroup } from "./checkbox-group-root";
 
 const LIST_NAME = "CheckboxGroupList";
 
-interface CheckboxGroupListProps
-  extends React.ComponentPropsWithoutRef<typeof Primitive.div> {}
+interface CheckboxGroupListProps extends React.ComponentPropsWithoutRef<typeof Primitive.div> {}
 
-const CheckboxGroupList = React.forwardRef<
-  HTMLDivElement,
-  CheckboxGroupListProps
->((props, ref) => {
+const CheckboxGroupList = React.forwardRef<HTMLDivElement, CheckboxGroupListProps>((props, ref) => {
   const context = useCheckboxGroup(LIST_NAME);
   const id = useId();
 

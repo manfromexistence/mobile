@@ -54,7 +54,7 @@ test("T28: github registry exposes Gemini 3.1 Pro Preview and keeps legacy alias
 test("T28: qwen registry uses native chat.qwen.ai base URL", () => {
   assert.equal(
     REGISTRY.qwen.baseUrl,
-    "https://chat.qwen.ai/api/v1/services/aigc/text-generation/generation"
+    "https://chat.qwen.ai/api/v1/services/aigc/text-generation/generation",
   );
 });
 
@@ -97,7 +97,7 @@ test("T28: volcengine (Ark) catalog includes DeepSeek V4 models", () => {
 
   assert.ok(
     volcengineIds.includes("DeepSeek-V4-Flash"),
-    "volcengine Ark must list DeepSeek-V4-Flash"
+    "volcengine Ark must list DeepSeek-V4-Flash",
   );
   assert.ok(volcengineIds.includes("DeepSeek-V4-Pro"), "volcengine Ark must list DeepSeek-V4-Pro");
   // Existing models must still be present

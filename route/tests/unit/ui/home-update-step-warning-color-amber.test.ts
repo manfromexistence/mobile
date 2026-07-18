@@ -15,27 +15,27 @@ import { dirname, resolve } from "node:path";
 const here = dirname(fileURLToPath(import.meta.url));
 const source = readFileSync(
   resolve(here, "../../../src/app/(dashboard)/dashboard/HomePageClient.tsx"),
-  "utf8"
+  "utf8",
 );
 
 // Isolate the update-step status-icon block: the `warning` material symbol icon span.
 // Match the className on the span immediately preceding the `warning` glyph.
 const warningIconMatch = source.match(
-  /className="material-symbols-outlined ([^"]*)"[^>]*>\s*warning\s*</
+  /className="material-symbols-outlined ([^"]*)"[^>]*>\s*warning\s*</,
 );
 
 test("update-step warning icon renders with an amber color, not bare yellow", () => {
   assert.ok(
     warningIconMatch,
-    "expected to find the update-step `warning` material-symbols icon span in HomePageClient.tsx"
+    "expected to find the update-step `warning` material-symbols icon span in HomePageClient.tsx",
   );
   const className = warningIconMatch![1];
   assert.ok(
     className.includes("text-amber-500"),
-    `warning icon should use the project's amber warning convention; got: "${className}"`
+    `warning icon should use the project's amber warning convention; got: "${className}"`,
   );
   assert.ok(
     !className.includes("text-yellow-500"),
-    "warning icon must not use the low-contrast bare `text-yellow-500` (no dark variant, fails WCAG on light backgrounds)"
+    "warning icon must not use the low-contrast bare `text-yellow-500` (no dark variant, fails WCAG on light backgrounds)",
   );
 });

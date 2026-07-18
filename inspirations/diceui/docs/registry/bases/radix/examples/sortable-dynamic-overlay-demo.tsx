@@ -24,8 +24,7 @@ export default function SortableDynamicOverlayDemo() {
     {
       id: "2",
       title: "Indy Backflip",
-      description:
-        "The Indy Backflip is a trick where you backflip in the air.",
+      description: "The Indy Backflip is a trick where you backflip in the air.",
     },
     {
       id: "3",
@@ -40,8 +39,7 @@ export default function SortableDynamicOverlayDemo() {
     {
       id: "5",
       title: "Kickflip Backflip",
-      description:
-        "The Kickflip Backflip is a trick where you kickflip backflip.",
+      description: "The Kickflip Backflip is a trick where you kickflip backflip.",
     },
     {
       id: "6",
@@ -84,9 +82,7 @@ function TrickCard({ trick, ...props }: TrickCardProps) {
   return (
     <SortableItem value={trick.id} asChild {...props}>
       <div className="flex size-full flex-col gap-1 rounded-md border bg-zinc-100 p-4 text-foreground shadow-sm dark:bg-zinc-900">
-        <div className="font-medium text-sm leading-tight sm:text-base">
-          {trick.title}
-        </div>
+        <div className="font-medium text-sm leading-tight sm:text-base">{trick.title}</div>
         <span className="line-clamp-2 hidden text-muted-foreground text-sm sm:inline-block">
           {trick.description}
         </span>

@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { geminiToClaudeResponse } =
-  await import("../../open-sse/translator/response/gemini-to-claude.ts");
+const { geminiToClaudeResponse } = await import(
+  "../../open-sse/translator/response/gemini-to-claude.ts"
+);
 
 function flatten(items) {
   return items.flatMap((item) => item || []);
@@ -16,13 +17,13 @@ test("Gemini -> Claude stream: text block stays open across sequential text chun
       modelVersion: "gemini-2.5-pro",
       candidates: [{ content: { parts: [{ text: "Hello" }] } }],
     },
-    state
+    state,
   );
   const second = geminiToClaudeResponse(
     {
       candidates: [{ content: { parts: [{ text: " world" }] } }],
     },
-    state
+    state,
   );
   const result = flatten([first, second]);
 
@@ -43,14 +44,14 @@ test("Gemini -> Claude stream: thinking chunk closes text block and emits thinki
       modelVersion: "gemini-2.5-pro",
       candidates: [{ content: { parts: [{ text: "Hello" }] } }],
     },
-    state
+    state,
   );
 
   const result = geminiToClaudeResponse(
     {
       candidates: [{ content: { parts: [{ thought: true, text: "Plan" }] } }],
     },
-    state
+    state,
   );
 
   assert.equal(result[0].type, "content_block_stop");
@@ -95,13 +96,13 @@ test("Gemini -> Claude stream: functionCall becomes tool_use and MAX_TOKENS maps
         cachedContentTokenCount: 1,
       },
     },
-    state
+    state,
   );
 
   assert.equal(result[1].content_block.type, "tool_use");
   assert.equal(
     result[1].content_block.name,
-    "mcp__filesystem__read_multiple_files_with_validation_and_metadata_bundle_v2"
+    "mcp__filesystem__read_multiple_files_with_validation_and_metadata_bundle_v2",
   );
   assert.match(result[1].content_block.id, /^toolu_/);
   assert.equal(result[2].delta.partial_json, JSON.stringify({ path: "/tmp/a" }));
@@ -127,14 +128,14 @@ test("Gemini -> Claude stream: STOP after prior tool use still maps to tool_use"
         },
       ],
     },
-    state
+    state,
   );
 
   const result = geminiToClaudeResponse(
     {
       candidates: [{ content: { parts: [] }, finishReason: "STOP" }],
     },
-    state
+    state,
   );
 
   assert.equal(result[0].type, "message_delta");
@@ -151,7 +152,7 @@ test("Gemini -> Claude stream: response wrapper is supported and promptFeedback-
         candidates: [{ content: { parts: [{ text: "wrapped" }] } }],
       },
     },
-    {}
+    {},
   );
 
   assert.equal(wrapped[0].type, "message_start");

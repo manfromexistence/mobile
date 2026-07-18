@@ -45,11 +45,7 @@
     "!**/*.spec.ts",
     "!**/*.spec.tsx"
   ],
-  "workspaces": [
-    "open-sse",
-    "packages/dx-serializer",
-    "packages/dx-cli"
-  ],
+  "workspaces": ["open-sse", "packages/dx-serializer", "packages/dx-cli"],
   "engines": {
     "node": ">=22.0.0 <23 || >=24.0.0 <27"
   },
@@ -368,9 +364,7 @@
       "prettier --write",
       "eslint --fix --no-error-on-unmatched-pattern --suppressions-location config/quality/eslint-suppressions.json"
     ],
-    "*.{json,md,yml,yaml,css}": [
-      "prettier --write"
-    ]
+    "*.{json,md,yml,yaml,css}": ["prettier --write"]
   },
   "pnpm": {
     "onlyBuiltDependencies": [

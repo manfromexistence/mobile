@@ -73,7 +73,7 @@ test("#3488 does NOT persist the CA path (validate-only)", async () => {
   // must NOT exist — proving the dry-run never persisted/activated the CA.
   assert.ok(
     !fs.existsSync(PERSISTED_CA_PATH_FILE),
-    "precondition: persisted CA-path file should not exist before the test"
+    "precondition: persisted CA-path file should not exist before the test",
   );
 
   const res = await POST(postJson({ path: validCaPath }));
@@ -83,7 +83,7 @@ test("#3488 does NOT persist the CA path (validate-only)", async () => {
 
   assert.ok(
     !fs.existsSync(PERSISTED_CA_PATH_FILE),
-    "validate-only /test route must not write the persisted upstream-ca.path file"
+    "validate-only /test route must not write the persisted upstream-ca.path file",
   );
   // And it must not advertise activation/persistence in its response shape.
   assert.equal(json.persisted, undefined);

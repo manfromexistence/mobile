@@ -45,21 +45,21 @@ test("registry resolution: modelscope uses passthrough models with an empty stat
   assert.equal(
     modelscopeProvider.modelsUrl,
     "https://api-inference.modelscope.cn/v1/models",
-    "modelsUrl must point at the verified .cn domain"
+    "modelsUrl must point at the verified .cn domain",
   );
 });
 
 test("baseUrl guard: modelscope targets the verified api-inference.modelscope.cn domain (not .ai)", () => {
   assert.equal(
     modelscopeProvider.baseUrl,
-    "https://api-inference.modelscope.cn/v1/chat/completions"
+    "https://api-inference.modelscope.cn/v1/chat/completions",
   );
   assert.ok(
     modelscopeProvider.baseUrl.includes("api-inference.modelscope.cn"),
-    `baseUrl must use the verified .cn domain, got: ${modelscopeProvider.baseUrl}`
+    `baseUrl must use the verified .cn domain, got: ${modelscopeProvider.baseUrl}`,
   );
   assert.ok(
     !modelscopeProvider.baseUrl.includes("modelscope.ai"),
-    "baseUrl must not regress to the upstream PR's unverified .ai domain"
+    "baseUrl must not regress to the upstream PR's unverified .ai domain",
   );
 });

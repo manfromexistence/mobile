@@ -6,7 +6,7 @@ describe("resolveTlsClientProxyUrl — fail-closed", () => {
   it("returns the per-call override verbatim", () => {
     assert.equal(
       resolveTlsClientProxyUrl("https://grok.com", "http://p:8080", () => null),
-      "http://p:8080"
+      "http://p:8080",
     );
   });
   it("returns undefined when no proxy is configured (direct is legitimate)", () => {
@@ -15,7 +15,7 @@ describe("resolveTlsClientProxyUrl — fail-closed", () => {
         source: "direct",
         proxyUrl: null,
       })),
-      undefined
+      undefined,
     );
   });
   it("returns the resolved proxy url when one is configured", () => {
@@ -24,7 +24,7 @@ describe("resolveTlsClientProxyUrl — fail-closed", () => {
         source: "context",
         proxyUrl: "socks5://p:1080",
       })),
-      "socks5://p:1080"
+      "socks5://p:1080",
     );
   });
   it("THROWS (fail-closed) when resolution throws — never silently direct", () => {
@@ -33,7 +33,7 @@ describe("resolveTlsClientProxyUrl — fail-closed", () => {
         resolveTlsClientProxyUrl("https://grok.com", undefined, () => {
           throw new Error("SOCKS5 disabled");
         }),
-      /proxy resolution failed/i
+      /proxy resolution failed/i,
     );
   });
 });

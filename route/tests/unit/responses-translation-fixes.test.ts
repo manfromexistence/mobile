@@ -1,12 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { convertResponsesApiFormat } =
-  await import("../../open-sse/translator/helpers/responsesApiHelper.ts");
-const { openaiResponsesToOpenAIRequest, openaiToOpenAIResponsesRequest } =
-  await import("../../open-sse/translator/request/openai-responses.ts");
-const { normalizeCodexResponsesInput, normalizeResponsesInputForChat } =
-  await import("../../open-sse/utils/responsesInputNormalization.ts");
+const { convertResponsesApiFormat } = await import(
+  "../../open-sse/translator/helpers/responsesApiHelper.ts"
+);
+const { openaiResponsesToOpenAIRequest, openaiToOpenAIResponsesRequest } = await import(
+  "../../open-sse/translator/request/openai-responses.ts"
+);
+const { normalizeCodexResponsesInput, normalizeResponsesInputForChat } = await import(
+  "../../open-sse/utils/responsesInputNormalization.ts"
+);
 
 test("convertResponsesApiFormat filters orphaned function_call_output items", () => {
   const body = {
@@ -64,7 +67,7 @@ test("Responses→Chat: string input becomes a user message instead of an empty 
     null,
     { model: "gpt-4", input: "Responda apenas: OK", max_output_tokens: 80 },
     null,
-    null
+    null,
   );
 
   assert.equal((result as any).input, undefined);
@@ -80,7 +83,7 @@ test("Responses→Chat: object input becomes a single user message", () => {
     null,
     { model: "gpt-4", input: { text: "Ping" } },
     null,
-    null
+    null,
   );
 
   assert.equal((result as any).messages.length, 1);
@@ -93,7 +96,7 @@ test("Responses→Chat: role/content object input becomes a single user message"
     null,
     { model: "gpt-4", input: { role: "user", content: "Ping" } },
     null,
-    null
+    null,
   );
 
   assert.equal((result as any).messages.length, 1);
@@ -330,7 +333,7 @@ test("Responses→Chat: built-in tool_choice type throws unsupported error", () 
   };
   assert.throws(
     () => openaiResponsesToOpenAIRequest(null, body, null, null),
-    (err) => (err as any).message.includes("web_search_preview")
+    (err) => (err as any).message.includes("web_search_preview"),
   );
 });
 
@@ -347,7 +350,7 @@ test("Responses→Chat: file_search tool type throws unsupported error (no web_s
   };
   assert.throws(
     () => openaiResponsesToOpenAIRequest(null, body, null, null),
-    (err) => (err as any).message.includes("file_search")
+    (err) => (err as any).message.includes("file_search"),
   );
 });
 
@@ -359,7 +362,7 @@ test("Responses→Chat: computer tool type throws unsupported error", () => {
   };
   assert.throws(
     () => openaiResponsesToOpenAIRequest(null, body, null, null),
-    (err) => (err as any).message.includes("computer")
+    (err) => (err as any).message.includes("computer"),
   );
 });
 
@@ -371,7 +374,7 @@ test("Responses→Chat: mcp tool type throws unsupported error", () => {
   };
   assert.throws(
     () => openaiResponsesToOpenAIRequest(null, body, null, null),
-    (err) => (err as any).message.includes("mcp")
+    (err) => (err as any).message.includes("mcp"),
   );
 });
 
@@ -466,8 +469,9 @@ test("Chat→Responses: deprecated function role message converted to function_c
   assert.equal(fcOutput.call_id, fcItem.call_id);
 });
 
-const { openaiToOpenAIResponsesResponse, openaiResponsesToOpenAIResponse } =
-  await import("../../open-sse/translator/response/openai-responses.ts");
+const { openaiToOpenAIResponsesResponse, openaiResponsesToOpenAIResponse } = await import(
+  "../../open-sse/translator/response/openai-responses.ts"
+);
 const { initState } = await import("../../open-sse/translator/index.ts");
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 
@@ -590,7 +594,7 @@ test("Chat→Responses streaming: generic prompt-format <think> tags remain text
   assert.equal(combined, "<think>first</think>middle<think>second</think>end");
   assert.equal(
     events.some((e) => e.event === "response.reasoning_summary_text.delta"),
-    false
+    false,
   );
 });
 

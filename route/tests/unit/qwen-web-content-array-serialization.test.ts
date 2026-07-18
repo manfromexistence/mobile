@@ -74,7 +74,7 @@ describe("QwenWebExecutor — structured (array) content serialization", () => {
 
     assert.ok(
       !sent.includes("[object Object]"),
-      `prompt must not contain '[object Object]', got: ${sent}`
+      `prompt must not contain '[object Object]', got: ${sent}`,
     );
     assert.ok(sent.includes("First part."), "text of first content part must survive");
     assert.ok(sent.includes("Second part."), "text of second content part must survive");

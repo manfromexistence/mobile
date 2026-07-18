@@ -106,9 +106,7 @@ async function renderComponent(
 
 /** Click the accordion toggle button to open/close it. */
 async function clickToggle(container: HTMLElement) {
-  const btn = container.querySelector(
-    "button[aria-expanded]",
-  ) as HTMLButtonElement | null;
+  const btn = container.querySelector("button[aria-expanded]") as HTMLButtonElement | null;
   expect(btn).toBeTruthy();
   await act(async () => {
     btn?.click();

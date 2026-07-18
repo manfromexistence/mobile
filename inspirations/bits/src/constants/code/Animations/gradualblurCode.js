@@ -1,8 +1,8 @@
-import code from '@content/Animations/GradualBlur/GradualBlur.jsx?raw';
-import tailwind from '@tailwind/Animations/GradualBlur/GradualBlur.jsx?raw';
-import css from '@content/Animations/GradualBlur/GradualBlur.css?raw';
-import tsCode from '@ts-default/Animations/GradualBlur/GradualBlur.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/GradualBlur/GradualBlur.tsx?raw';
+import code from "@content/Animations/GradualBlur/GradualBlur.jsx?raw";
+import tailwind from "@tailwind/Animations/GradualBlur/GradualBlur.jsx?raw";
+import css from "@content/Animations/GradualBlur/GradualBlur.css?raw";
+import tsCode from "@ts-default/Animations/GradualBlur/GradualBlur.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/GradualBlur/GradualBlur.tsx?raw";
 
 export const gradualBlur = {
   dependencies: `mathjs`,
@@ -30,5 +30,5 @@ import GradualBlur from './GradualBlur';
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

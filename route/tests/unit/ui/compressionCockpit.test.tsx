@@ -28,8 +28,9 @@ vi.mock("@xyflow/react", async () => {
 
 // ── Import after mocks ─────────────────────────────────────────────────────
 
-const { CompressionCockpit } =
-  await import("@/app/(dashboard)/dashboard/compression/studio/CompressionCockpit");
+const { CompressionCockpit } = await import(
+  "@/app/(dashboard)/dashboard/compression/studio/CompressionCockpit"
+);
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -170,7 +171,7 @@ describe("CompressionCockpit", () => {
     expect(container.querySelector("[data-testid='waterfall-inspector']")).toBeTruthy();
     expect(container.querySelector(".react-flow")).toBeFalsy();
     expect(
-      container.querySelector("[data-testid='waterfall-total-savings']")?.textContent
+      container.querySelector("[data-testid='waterfall-total-savings']")?.textContent,
     ).toContain("51.2");
 
     // Switch back to the canvas.

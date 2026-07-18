@@ -1,26 +1,26 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import { Box, Flex, Text } from '@chakra-ui/react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
+import React, { useEffect, useMemo, useRef } from "react";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
 
-import CodeExample from '../../components/code/CodeExample';
-import Dependencies from '../../components/code/Dependencies';
+import CodeExample from "../../components/code/CodeExample";
+import Dependencies from "../../components/code/Dependencies";
 
-import Customize from '../../components/common/Preview/Customize';
-import PropTable from '../../components/common/Preview/PropTable';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
-import PreviewSelect from '../../components/common/Preview/PreviewSelect';
+import Customize from "../../components/common/Preview/Customize";
+import PropTable from "../../components/common/Preview/PropTable";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
+import PreviewSelect from "../../components/common/Preview/PreviewSelect";
 
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
-import Crosshair from '../../content/Animations/Crosshair/Crosshair';
-import { crosshair } from '../../constants/code/Animations/crosshairCode';
+import Crosshair from "../../content/Animations/Crosshair/Crosshair";
+import { crosshair } from "../../constants/code/Animations/crosshairCode";
 
-const DEFAULT_TEXT = 'Target';
+const DEFAULT_TEXT = "Target";
 
 const DEFAULT_PROPS = {
-  color: '#ffffff',
-  targeted: true
+  color: "#ffffff",
+  targeted: true,
 };
 
 const CrosshairDemo = () => {
@@ -36,16 +36,21 @@ const CrosshairDemo = () => {
 
   const propData = useMemo(
     () => [
-      { name: 'color', type: 'string', default: "'white'", description: 'Color of the crosshair lines.' },
       {
-        name: 'containerRef',
-        type: 'RefObject<HTMLElement>',
-        default: 'null',
+        name: "color",
+        type: "string",
+        default: "'white'",
+        description: "Color of the crosshair lines.",
+      },
+      {
+        name: "containerRef",
+        type: "RefObject<HTMLElement>",
+        default: "null",
         description:
-          'Optional container ref to limit crosshair to specific element. If null, crosshair will be active on entire viewport.'
-      }
+          "Optional container ref to limit crosshair to specific element. If null, crosshair will be active on entire viewport.",
+      },
     ],
-    []
+    [],
   );
 
   useEffect(() => {
@@ -57,24 +62,35 @@ const CrosshairDemo = () => {
   }, [linkText, minWidth]);
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
-          <Box ref={containerRef} position="relative" className="demo-container" minH={300} overflow="hidden">
+          <Box
+            ref={containerRef}
+            position="relative"
+            className="demo-container"
+            minH={300}
+            overflow="hidden"
+          >
             <Crosshair containerRef={targeted ? null : containerRef} color={color} />
 
             <Flex direction="column" justifyContent="center" alignItems="center">
               <Text
-                _hover={{ color: 'magenta' }}
+                _hover={{ color: "magenta" }}
                 transition=".3s ease"
                 textAlign="center"
                 fontWeight={900}
-                fontSize={{ base: '2rem', md: '4rem' }}
+                fontSize={{ base: "2rem", md: "4rem" }}
                 as="a"
                 href="https://github.com/DavidHDev/react-bits"
                 ref={linkRef}
                 onMouseEnter={() => {
-                  setLinkText('Locked');
+                  setLinkText("Locked");
                 }}
                 onMouseLeave={() => {
                   setLinkText(DEFAULT_TEXT);
@@ -90,16 +106,16 @@ const CrosshairDemo = () => {
             <Text
               ref={hiddenRef}
               style={{
-                visibility: 'hidden',
-                position: 'absolute',
-                whiteSpace: 'nowrap',
-                pointerEvents: 'none',
-                overflow: 'hidden'
+                visibility: "hidden",
+                position: "absolute",
+                whiteSpace: "nowrap",
+                pointerEvents: "none",
+                overflow: "hidden",
               }}
               aria-hidden="true"
               textAlign="center"
               fontWeight={900}
-              fontSize={{ base: '2rem', md: '4rem' }}
+              fontSize={{ base: "2rem", md: "4rem" }}
             >
               {linkText}
             </Text>
@@ -109,26 +125,26 @@ const CrosshairDemo = () => {
             <PreviewColorPickerCustom
               title="Crosshair Color"
               color={color}
-              onChange={val => {
-                updateProp('color', val);
+              onChange={(val) => {
+                updateProp("color", val);
               }}
             />
 
             <PreviewSelect
               title="Cursor Container"
               options={[
-                { value: 'viewport', label: 'Viewport' },
-                { value: 'targeted', label: 'Targeted' }
+                { value: "viewport", label: "Viewport" },
+                { value: "targeted", label: "Targeted" },
               ]}
-              value={targeted ? 'viewport' : 'targeted'}
-              onChange={val => {
-                updateProp('targeted', val === 'viewport');
+              value={targeted ? "viewport" : "targeted"}
+              onChange={(val) => {
+                updateProp("targeted", val === "viewport");
               }}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['gsap']} />
+          <Dependencies dependencyList={["gsap"]} />
         </PreviewTab>
 
         <CodeTab>

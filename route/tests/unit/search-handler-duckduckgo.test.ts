@@ -41,7 +41,7 @@ test("handleSearch fulfills duckduckgo-free via the HTML scraping path (no API k
     assert.equal(
       new URL(capturedUrl).hostname,
       "lite.duckduckgo.com",
-      "must hit the DDG lite endpoint"
+      "must hit the DDG lite endpoint",
     );
     assert.equal(result.data.provider, "duckduckgo-free");
     assert.equal(result.data.usage.search_cost_usd, 0, "free provider has zero cost");
@@ -83,7 +83,7 @@ test("handleSearch fails over to duckduckgo-free when the primary provider error
     assert.equal(
       result.data.provider,
       "duckduckgo-free",
-      "failover must land on the free last-resort provider"
+      "failover must land on the free last-resort provider",
     );
     assert.equal(result.data.results.length, 2);
   } finally {

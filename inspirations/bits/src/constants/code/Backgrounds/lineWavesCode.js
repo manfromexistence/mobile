@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/LineWaves/LineWaves.jsx?raw';
-import css from '@content/Backgrounds/LineWaves/LineWaves.css?raw';
-import tailwind from '@tailwind/Backgrounds/LineWaves/LineWaves.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/LineWaves/LineWaves.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/LineWaves/LineWaves.tsx?raw';
+import code from "@content/Backgrounds/LineWaves/LineWaves.jsx?raw";
+import css from "@content/Backgrounds/LineWaves/LineWaves.css?raw";
+import tailwind from "@tailwind/Backgrounds/LineWaves/LineWaves.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/LineWaves/LineWaves.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/LineWaves/LineWaves.tsx?raw";
 
 export const lineWaves = {
   dependencies: `ogl`,
@@ -27,5 +27,5 @@ export const lineWaves = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

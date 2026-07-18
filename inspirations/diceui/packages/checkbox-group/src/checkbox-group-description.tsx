@@ -19,30 +19,29 @@ interface CheckboxGroupDescriptionProps
   hideOnError?: boolean;
 }
 
-const CheckboxGroupDescription = React.forwardRef<
-  HTMLDivElement,
-  CheckboxGroupDescriptionProps
->((props, ref) => {
-  const { announce = false, hideOnError = false, ...descriptionProps } = props;
-  const context = useCheckboxGroup(DESCRIPTION_NAME);
+const CheckboxGroupDescription = React.forwardRef<HTMLDivElement, CheckboxGroupDescriptionProps>(
+  (props, ref) => {
+    const { announce = false, hideOnError = false, ...descriptionProps } = props;
+    const context = useCheckboxGroup(DESCRIPTION_NAME);
 
-  if (hideOnError && context.isInvalid) {
-    return null;
-  }
+    if (hideOnError && context.isInvalid) {
+      return null;
+    }
 
-  return (
-    <Primitive.div
-      id={context.descriptionId}
-      aria-live={announce ? "polite" : "off"}
-      aria-describedby={context.labelId}
-      aria-invalid={context.isInvalid}
-      data-disabled={context.disabled ? "" : undefined}
-      data-invalid={context.isInvalid ? "" : undefined}
-      {...descriptionProps}
-      ref={ref}
-    />
-  );
-});
+    return (
+      <Primitive.div
+        id={context.descriptionId}
+        aria-live={announce ? "polite" : "off"}
+        aria-describedby={context.labelId}
+        aria-invalid={context.isInvalid}
+        data-disabled={context.disabled ? "" : undefined}
+        data-invalid={context.isInvalid ? "" : undefined}
+        {...descriptionProps}
+        ref={ref}
+      />
+    );
+  },
+);
 
 CheckboxGroupDescription.displayName = DESCRIPTION_NAME;
 

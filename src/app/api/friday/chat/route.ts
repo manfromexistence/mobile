@@ -36,10 +36,10 @@ export async function POST(req: NextRequest) {
 
   if (!upstream.ok || !upstream.body) {
     const text = await upstream.text().catch(() => "");
-    return new Response(
-      JSON.stringify({ error: `upstream ${upstream.status}`, body: text }),
-      { status: 502, headers: { "content-type": "application/json" } },
-    );
+    return new Response(JSON.stringify({ error: `upstream ${upstream.status}`, body: text }), {
+      status: 502,
+      headers: { "content-type": "application/json" },
+    });
   }
 
   // Transform the OpenAI-style SSE stream into a plain text stream of

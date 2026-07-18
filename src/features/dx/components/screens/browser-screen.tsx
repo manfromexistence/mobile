@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Globe } from "lucide-react"
-import { motion } from "motion/react"
+import { Globe } from "lucide-react";
+import { motion } from "motion/react";
 
 export function BrowserScreen() {
   return (
@@ -16,9 +16,7 @@ export function BrowserScreen() {
         <div className="h-3 w-3 rounded-full bg-green-500" />
         <div className="ml-2 flex flex-1 items-center gap-2 rounded-md bg-accent px-3 py-1.5">
           <Globe className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">
-            https://dx-chat.app
-          </span>
+          <span className="text-sm text-muted-foreground">https://dx-chat.app</span>
         </div>
       </div>
       <div className="flex flex-1 items-center justify-center">
@@ -31,5 +29,5 @@ export function BrowserScreen() {
         </div>
       </div>
     </motion.div>
-  )
+  );
 }

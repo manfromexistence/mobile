@@ -1,7 +1,7 @@
-import code from '@content/Backgrounds/Ballpit/Ballpit.jsx?raw';
-import tailwind from '@tailwind/Backgrounds/Ballpit/Ballpit.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/Ballpit/Ballpit.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/Ballpit/Ballpit.tsx?raw';
+import code from "@content/Backgrounds/Ballpit/Ballpit.jsx?raw";
+import tailwind from "@tailwind/Backgrounds/Ballpit/Ballpit.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/Ballpit/Ballpit.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/Ballpit/Ballpit.tsx?raw";
 
 export const ballpit = {
   dependencies: `three`,
@@ -22,5 +22,5 @@ import Ballpit from './Ballpit;'
   code,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

@@ -27,11 +27,7 @@ export function Switch({ checked, onCheckedChange, disabled, label, className }:
   useEffect(() => {
     if (!thumbRef.current || reduce) return;
     if (disabled && isPressed) {
-      animate(
-        thumbRef.current,
-        { x: [0, -2, 2, -1, 0] },
-        { delay: 0.2, duration: 0.6 },
-      );
+      animate(thumbRef.current, { x: [0, -2, 2, -1, 0] }, { delay: 0.2, duration: 0.6 });
     }
   }, [disabled, isPressed, reduce]);
 
@@ -69,12 +65,7 @@ export function Switch({ checked, onCheckedChange, disabled, label, className }:
             className="pointer-events-none block h-5 w-5 rounded-full bg-background shadow-md"
           >
             {/* Stretch toward the destination while active. */}
-            <div
-              className={cn(
-                "size-5",
-                squish && (checked ? "ml-1" : "mr-1"),
-              )}
-            />
+            <div className={cn("size-5", squish && (checked ? "ml-1" : "mr-1"))} />
           </motion.div>
         </motion.button>
         {label ? (

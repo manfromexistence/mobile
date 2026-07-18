@@ -20,37 +20,37 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
  * `add`/`search`/`list` pay zero TUI cost.
  */
 export default defineConfig({
-	entry: {
-		cli: "src/cli.ts",
-		"commands/browse": "src/commands/browse.tsx",
-	},
-	format: ["esm"],
-	target: "node20",
-	platform: "node",
-	splitting: false,
-	clean: true,
-	sourcemap: false,
-	dts: false,
-	minify: false,
-	banner: { js: "#!/usr/bin/env node" },
-	noExternal: ["@animateicons/core", "cac", "picocolors", "fuse.js"],
-	// Defensive: never try to bundle Ink's optional/native internals.
-	external: ["react-devtools-core", "yoga-layout"],
-	esbuildPlugins: [
-		{
-			name: "keep-browse-dynamic-import-external",
-			setup(build) {
-				build.onResolve({ filter: /^\.\/commands\/browse\.js$/ }, () => ({
-					path: "./commands/browse.js",
-					external: true,
-				}));
-			},
-		},
-	],
-	esbuildOptions(options) {
-		options.alias = {
-			...(options.alias ?? {}),
-			"@animateicons/core": path.resolve(__dirname, "../core/src/index.ts"),
-		};
-	},
+  entry: {
+    cli: "src/cli.ts",
+    "commands/browse": "src/commands/browse.tsx",
+  },
+  format: ["esm"],
+  target: "node20",
+  platform: "node",
+  splitting: false,
+  clean: true,
+  sourcemap: false,
+  dts: false,
+  minify: false,
+  banner: { js: "#!/usr/bin/env node" },
+  noExternal: ["@animateicons/core", "cac", "picocolors", "fuse.js"],
+  // Defensive: never try to bundle Ink's optional/native internals.
+  external: ["react-devtools-core", "yoga-layout"],
+  esbuildPlugins: [
+    {
+      name: "keep-browse-dynamic-import-external",
+      setup(build) {
+        build.onResolve({ filter: /^\.\/commands\/browse\.js$/ }, () => ({
+          path: "./commands/browse.js",
+          external: true,
+        }));
+      },
+    },
+  ],
+  esbuildOptions(options) {
+    options.alias = {
+      ...(options.alias ?? {}),
+      "@animateicons/core": path.resolve(__dirname, "../core/src/index.ts"),
+    };
+  },
 });

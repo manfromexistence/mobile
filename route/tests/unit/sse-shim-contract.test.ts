@@ -67,7 +67,7 @@ test("src/sse service wrappers delegate to open-sse and shared infrastructure", 
 
 test("src/sse does not contain tracked backup artifacts", () => {
   const artifacts = listProjectFiles("src/sse").filter((file) =>
-    /\.(orig|bak|backup)$/i.test(file)
+    /\.(orig|bak|backup)$/i.test(file),
   );
 
   assert.deepEqual(artifacts, []);

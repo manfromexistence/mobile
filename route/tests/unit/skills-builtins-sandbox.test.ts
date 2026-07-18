@@ -88,27 +88,27 @@ test("builtin skill handlers validate required fields and perform real sandboxed
 
       await assert.rejects(
         () => builtinSkills.file_read({}, context),
-        /Missing required field: path/
+        /Missing required field: path/,
       );
       await assert.rejects(
         () => builtinSkills.file_write({ path: "demo.txt" }, context),
-        /Missing required fields/
+        /Missing required fields/,
       );
       await assert.rejects(
         () => builtinSkills.http_request({}, context),
-        /Missing required field: url/
+        /Missing required field: url/,
       );
       await assert.rejects(
         () => builtinSkills.web_search({}, context),
-        /Missing required field: query/
+        /Missing required field: query/,
       );
       await assert.rejects(
         () => builtinSkills.eval_code({}, context),
-        /Missing required field: code/
+        /Missing required field: code/,
       );
       await assert.rejects(
         () => builtinSkills.execute_command({}, context),
-        /Missing required field: command/
+        /Missing required field: command/,
       );
 
       assert.deepEqual(
@@ -118,7 +118,7 @@ test("builtin skill handlers validate required fields and perform real sandboxed
           path: "notes/demo.txt",
           bytesWritten: 11,
           context: "key-123",
-        }
+        },
       );
 
       assert.deepEqual(await builtinSkills.file_read({ path: "notes/demo.txt" }, context), {
@@ -132,11 +132,11 @@ test("builtin skill handlers validate required fields and perform real sandboxed
 
       await assert.rejects(
         () => builtinSkills.file_read({ path: "../outside.txt" }, context),
-        /escapes the skill workspace/
+        /escapes the skill workspace/,
       );
       await assert.rejects(
         () => builtinSkills.file_write({ path: ".env", content: "secret" }, context),
-        /restricted segment/
+        /restricted segment/,
       );
 
       globalThis.fetch = async (url, init) => {
@@ -159,7 +159,7 @@ test("builtin skill handlers validate required fields and perform real sandboxed
           headers: { Accept: "application/json", Authorization: "Bearer secret" },
           body: { ok: true },
         },
-        context
+        context,
       );
 
       assert.equal(httpResult.success, true);
@@ -169,7 +169,7 @@ test("builtin skill handlers validate required fields and perform real sandboxed
 
       await assert.rejects(
         () => builtinSkills.http_request({ url: "http://127.0.0.1:9000" }, context),
-        /Blocked private or local provider URL/
+        /Blocked private or local provider URL/,
       );
     });
   } finally {
@@ -198,7 +198,7 @@ test("builtin command and code skills execute through the Docker sandbox", async
 
     const commandResult = await builtinSkills.execute_command(
       { command: "echo", args: ["hello"] },
-      context
+      context,
     );
     assert.equal(commandResult.success, true);
     assert.equal(commandResult.exitCode, 0);
@@ -207,7 +207,7 @@ test("builtin command and code skills execute through the Docker sandbox", async
 
     const codeResult = await builtinSkills.eval_code(
       { code: "console.log('hello sandbox')", language: "javascript" },
-      context
+      context,
     );
     assert.equal(codeResult.success, true);
     assert.equal(codeResult.image, "node:22-alpine");
@@ -228,9 +228,9 @@ test("builtin command and code skills execute through the Docker sandbox", async
       () =>
         builtinSkills.execute_command(
           { command: "echo", image: "ubuntu:latest", args: ["hello"] },
-          context
+          context,
         ),
-      /Sandbox image is not allowed/
+      /Sandbox image is not allowed/,
     );
   } finally {
     childProcess.spawn = originalSpawn;
@@ -243,7 +243,7 @@ test("browser skill fails explicitly instead of returning a fake success", async
 
   await assert.rejects(
     () => browserSkill({ action: "navigate", url: "https://example.com" }, context),
-    /Browser automation skill is disabled/
+    /Browser automation skill is disabled/,
   );
   await assert.rejects(() => browserSkill({ action: "launch" }, context), /Unknown action: launch/);
 });
@@ -326,7 +326,7 @@ test("sandboxRunner handles success, spawn errors, timeouts, and killAll cleanup
 
       assert.equal(
         calls.filter((entry) => entry.mode === "error" && entry.args[0] === "run").length,
-        1
+        1,
       );
       assert.equal(errorResult.exitCode, -1);
       assert.equal(errorResult.stderr, "docker not found");
@@ -343,7 +343,7 @@ test("sandboxRunner handles success, spawn errors, timeouts, and killAll cleanup
       assert.equal(timeoutResult.exitCode, null);
       assert.equal(
         calls.some((entry) => entry.mode === "timeout" && entry.args[0] === "kill"),
-        true
+        true,
       );
 
       const procA = createFakeProcess();
@@ -357,7 +357,7 @@ test("sandboxRunner handles success, spawn errors, timeouts, and killAll cleanup
       assert.equal(procB.killedSignal, "SIGTERM");
       assert.equal(sandboxRunner.getRunningCount(), 0);
       assert.equal(sandboxRunner.isRunning("a"), false);
-    }
+    },
   );
 });
 
@@ -394,7 +394,7 @@ test("sandboxRunner kill/killAll fallback naming matches containerProvider's SAN
         .map((entry) => entry.args[1]);
       assert.ok(killAllNames.includes("omniroute-fallback-a"));
       assert.ok(killAllNames.includes("omniroute-fallback-b"));
-    }
+    },
   );
 });
 
@@ -420,27 +420,15 @@ test("containerProvider: all five providers registered", () => {
 
 test("containerProvider: platformPriority returns correct order per OS", () => {
   return importFresh("src/lib/skills/containerProvider.ts").then((mod) => {
-    const originalPlatform = Object.getOwnPropertyDescriptor(
-      process,
-      "platform",
-    );
+    const originalPlatform = Object.getOwnPropertyDescriptor(process, "platform");
 
     // darwin
     Object.defineProperty(process, "platform", { value: "darwin" });
-    assert.deepStrictEqual(mod.platformPriority(), [
-      "apple",
-      "orbstack",
-      "podman",
-      "docker",
-    ]);
+    assert.deepStrictEqual(mod.platformPriority(), ["apple", "orbstack", "podman", "docker"]);
 
     // win32
     Object.defineProperty(process, "platform", { value: "win32" });
-    assert.deepStrictEqual(mod.platformPriority(), [
-      "wsl",
-      "docker",
-      "podman",
-    ]);
+    assert.deepStrictEqual(mod.platformPriority(), ["wsl", "docker", "podman"]);
 
     // linux
     Object.defineProperty(process, "platform", { value: "linux" });
@@ -448,11 +436,7 @@ test("containerProvider: platformPriority returns correct order per OS", () => {
 
     // Restore
     if (originalPlatform) {
-      Object.defineProperty(
-        process,
-        "platform",
-        originalPlatform,
-      );
+      Object.defineProperty(process, "platform", originalPlatform);
     }
   });
 });
@@ -467,25 +451,10 @@ test("containerProvider: buildRun produces run as args[0] for all providers", ()
       readOnly: true,
     };
     for (const provider of mod.ALL_PROVIDERS) {
-      const resolved = provider.buildRun(
-        "alpine",
-        ["echo", "hi"],
-        "test-id",
-        config,
-      );
-      assert.equal(
-        resolved.args[0],
-        "run",
-        `${provider.id}: args[0] must be "run"`,
-      );
-      assert.ok(
-        resolved.args.includes("--rm"),
-        `${provider.id}: should include --rm`,
-      );
-      assert.ok(
-        resolved.args.includes("alpine"),
-        `${provider.id}: should include image`,
-      );
+      const resolved = provider.buildRun("alpine", ["echo", "hi"], "test-id", config);
+      assert.equal(resolved.args[0], "run", `${provider.id}: args[0] must be "run"`);
+      assert.ok(resolved.args.includes("--rm"), `${provider.id}: should include --rm`);
+      assert.ok(resolved.args.includes("alpine"), `${provider.id}: should include image`);
       // killArgs must return something callable
       const kill = resolved.killArgs("test-cont");
       assert.ok(Array.isArray(kill), `${provider.id}: killArgs returns array`);
@@ -555,9 +524,7 @@ test("containerProvider: resolveProvider falls back to docker when no runtime in
   // Auto-detect walks platform priority â€” if nothing is installed we
   // always land on docker as the fallback.
   const provider = await mod.resolveProvider();
-  assert.ok(
-    ["docker", "apple", "wsl", "podman", "orbstack"].includes(provider.id),
-  );
+  assert.ok(["docker", "apple", "wsl", "podman", "orbstack"].includes(provider.id));
   // Ensure the fallback is always docker when probes fail
   // (this test is best-effort â€” on a host with docker installed,
   //  the auto-detect will legitimately pick docker)

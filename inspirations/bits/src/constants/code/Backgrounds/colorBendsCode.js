@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/ColorBends/ColorBends.jsx?raw';
-import css from '@content/Backgrounds/ColorBends/ColorBends.css?raw';
-import tailwind from '@tailwind/Backgrounds/ColorBends/ColorBends.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/ColorBends/ColorBends.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/ColorBends/ColorBends.tsx?raw';
+import code from "@content/Backgrounds/ColorBends/ColorBends.jsx?raw";
+import css from "@content/Backgrounds/ColorBends/ColorBends.css?raw";
+import tailwind from "@tailwind/Backgrounds/ColorBends/ColorBends.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/ColorBends/ColorBends.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/ColorBends/ColorBends.tsx?raw";
 
 export const colorBends = {
   dependencies: `three`,
@@ -27,5 +27,5 @@ export const colorBends = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

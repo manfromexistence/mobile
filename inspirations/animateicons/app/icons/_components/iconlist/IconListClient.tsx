@@ -7,20 +7,20 @@ import PlaygroundSheet from "../playground/PlaygroundSheet";
 import IconListSkeleton from "./IconListSkeleton";
 
 const IconList = dynamic(() => import("./IconList"), {
-	ssr: false,
-	loading: () => <IconListSkeleton />,
+  ssr: false,
+  loading: () => <IconListSkeleton />,
 });
 
 const IconListClient = () => {
-	const isMobile = useIsMobile();
+  const isMobile = useIsMobile();
 
-	return (
-		<>
-			{isMobile ? <SearchBar /> : null}
-			<IconList />
-			<PlaygroundSheet />
-		</>
-	);
+  return (
+    <>
+      {isMobile ? <SearchBar /> : null}
+      <IconList />
+      <PlaygroundSheet />
+    </>
+  );
 };
 
 export default IconListClient;

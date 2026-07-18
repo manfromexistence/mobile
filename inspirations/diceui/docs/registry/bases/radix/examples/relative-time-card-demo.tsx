@@ -16,9 +16,7 @@ export default function RelativeTimeCardDemo() {
         <RelativeTimeCard date={fiveMinutesAgo} />
       </div>
       <div className="flex flex-col gap-2">
-        <span className="text-muted-foreground text-sm">
-          Different variants
-        </span>
+        <span className="text-muted-foreground text-sm">Different variants</span>
         <div className="flex items-center gap-4">
           <RelativeTimeCard date={oneHourAgo} variant="default" />
           <RelativeTimeCard date={oneHourAgo} variant="muted" />
@@ -26,17 +24,13 @@ export default function RelativeTimeCardDemo() {
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <span className="text-muted-foreground text-sm">
-          With time in the future
-        </span>
+        <span className="text-muted-foreground text-sm">With time in the future</span>
         <div className="flex items-center gap-4">
           <RelativeTimeCard date={tomorrow} />
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <span className="text-muted-foreground text-sm">
-          Multiple timezones
-        </span>
+        <span className="text-muted-foreground text-sm">Multiple timezones</span>
         <RelativeTimeCard
           date={oneDayAgo}
           timezones={["America/New_York", "Europe/London", "Asia/Tokyo"]}
@@ -52,9 +46,7 @@ export default function RelativeTimeCardDemo() {
         </RelativeTimeCard>
       </div>
       <div className="flex flex-col gap-2">
-        <span className="text-muted-foreground text-sm">
-          Different positions
-        </span>
+        <span className="text-muted-foreground text-sm">Different positions</span>
         <div className="flex items-center gap-4">
           <RelativeTimeCard date={now} side="top" align="start">
             Top Start

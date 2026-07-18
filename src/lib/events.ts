@@ -1,7 +1,7 @@
-import posthog from "posthog-js"
-import { z } from "zod"
+import posthog from "posthog-js";
+import { z } from "zod";
 
-import { op } from "./openpanel"
+import { op } from "./openpanel";
 
 const eventSchema = z.object({
   name: z.enum([
@@ -29,20 +29,17 @@ const eventSchema = z.object({
   ]),
   // declare type AllowedPropertyValues = string | number | boolean | null
   properties: z
-    .record(
-      z.string(),
-      z.union([z.string(), z.number(), z.boolean(), z.null()])
-    )
+    .record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]))
     .optional(),
-})
+});
 
-export type Event = z.infer<typeof eventSchema>
+export type Event = z.infer<typeof eventSchema>;
 
 export function trackEvent(input: Event) {
-  const event = eventSchema.parse(input)
+  const event = eventSchema.parse(input);
   if (event) {
-    console.log("trackEvent:", event)
-    posthog.capture(event.name, event.properties)
-    op.track(event.name, event.properties)
+    console.log("trackEvent:", event);
+    posthog.capture(event.name, event.properties);
+    op.track(event.name, event.properties);
   }
 }

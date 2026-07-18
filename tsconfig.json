@@ -13,6 +13,7 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    "allowImportingTsExtensions": true,
     "plugins": [
       {
         "name": "next"
@@ -30,5 +31,5 @@
     ".next/dev/types/**/*.ts",
     "./src/scripts/build-registry.mts"
   ],
-  "exclude": ["node_modules", "inspirations", "packages", "apps", "scripts"]
+  "exclude": ["node_modules", "inspirations", "route", "packages", "apps", "scripts"]
 }

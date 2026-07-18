@@ -26,9 +26,7 @@ function renderButton(config = BASE_CONFIG, setConfig = vi.fn()): HTMLDivElement
   document.body.appendChild(el);
   const root = createRoot(el);
   act(() => {
-    root.render(
-      <ImprovePromptButton configState={config} setConfigState={setConfig} />,
-    );
+    root.render(<ImprovePromptButton configState={config} setConfigState={setConfig} />);
   });
   containers.push({ root, el });
   return el;
@@ -68,7 +66,9 @@ describe("ImprovePromptButton", () => {
     const el = renderButton();
     const btn = el.querySelector("[aria-label='Improve prompt using AI']") as HTMLButtonElement;
 
-    await act(async () => { btn.click(); });
+    await act(async () => {
+      btn.click();
+    });
 
     const modal = el.querySelector("[role='dialog']");
     expect(modal).not.toBeNull();
@@ -79,7 +79,9 @@ describe("ImprovePromptButton", () => {
     const el = renderButton();
     const btn = el.querySelector("[aria-label='Improve prompt using AI']") as HTMLButtonElement;
 
-    await act(async () => { btn.click(); });
+    await act(async () => {
+      btn.click();
+    });
 
     const modal = el.querySelector("[role='dialog']");
     expect(modal?.textContent).toContain("quota");
@@ -89,7 +91,9 @@ describe("ImprovePromptButton", () => {
     const el = renderButton();
     const btn = el.querySelector("[aria-label='Improve prompt using AI']") as HTMLButtonElement;
 
-    await act(async () => { btn.click(); });
+    await act(async () => {
+      btn.click();
+    });
 
     const modal = el.querySelector("[role='dialog']");
     expect(modal?.textContent).toContain("openai/gpt-4o");
@@ -100,10 +104,14 @@ describe("ImprovePromptButton", () => {
     const el = renderButton();
     const btn = el.querySelector("[aria-label='Improve prompt using AI']") as HTMLButtonElement;
 
-    await act(async () => { btn.click(); });
+    await act(async () => {
+      btn.click();
+    });
 
     const cancelBtn = el.querySelector("[role='dialog'] button:first-child") as HTMLButtonElement;
-    await act(async () => { cancelBtn.click(); });
+    await act(async () => {
+      cancelBtn.click();
+    });
 
     // Modal should close
     expect(el.querySelector("[role='dialog']")).toBeNull();
@@ -133,7 +141,9 @@ describe("ImprovePromptButton", () => {
     const el = renderButton(BASE_CONFIG, setConfig);
 
     const btn = el.querySelector("[aria-label='Improve prompt using AI']") as HTMLButtonElement;
-    await act(async () => { btn.click(); });
+    await act(async () => {
+      btn.click();
+    });
 
     // Click confirm (Improve button)
     const modal = el.querySelector("[role='dialog']");
@@ -143,7 +153,9 @@ describe("ImprovePromptButton", () => {
     ) as HTMLButtonElement;
     expect(improveBtn).not.toBeNull();
 
-    await act(async () => { improveBtn.click(); });
+    await act(async () => {
+      improveBtn.click();
+    });
     await act(async () => {
       await Promise.resolve();
       await Promise.resolve();
@@ -151,7 +163,10 @@ describe("ImprovePromptButton", () => {
 
     // fetch should have been called with POST to improve-prompt
     expect(vi.mocked(fetch)).toHaveBeenCalledTimes(1);
-    const [url, opts] = (vi.mocked(fetch) as ReturnType<typeof vi.fn>).mock.calls[0] as [string, RequestInit];
+    const [url, opts] = (vi.mocked(fetch) as ReturnType<typeof vi.fn>).mock.calls[0] as [
+      string,
+      RequestInit,
+    ];
     expect(url).toContain("improve-prompt");
     expect(opts.method).toBe("POST");
 

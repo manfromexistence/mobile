@@ -1,12 +1,7 @@
 "use client";
 // beui.dev/components/motion/shared-layout-bg
 
-import {
-  AnimatePresence,
-  motion,
-  useReducedMotion,
-  type Variants,
-} from "motion/react";
+import { AnimatePresence, motion, useReducedMotion, type Variants } from "motion/react";
 import {
   Children,
   cloneElement,
@@ -31,8 +26,7 @@ export interface SharedLayoutBgProps {
 const variants: Variants = {
   initial: { opacity: 0, filter: "blur(6px)" },
   animate: { opacity: 1, filter: "blur(0px)" },
-  exit: (isActive: boolean) =>
-    !isActive ? { opacity: 0, filter: "blur(6px)" } : {},
+  exit: (isActive: boolean) => (!isActive ? { opacity: 0, filter: "blur(6px)" } : {}),
 };
 
 const reducedVariants: Variants = {
@@ -62,7 +56,11 @@ export function SharedLayoutBg({
       {Children.toArray(children)
         .filter(isValidElement)
         .map((child, index) => {
-          const el = child as ReactElement<{ className?: string; onMouseEnter?: () => void; children?: ReactNode }>;
+          const el = child as ReactElement<{
+            className?: string;
+            onMouseEnter?: () => void;
+            children?: ReactNode;
+          }>;
           const childKey = el.key ? String(el.key) : `item-${index}`;
           return cloneElement(
             el,
@@ -97,7 +95,7 @@ export function SharedLayoutBg({
                 ) : null}
               </AnimatePresence>
               <div className="relative z-10">{el.props.children}</div>
-            </>
+            </>,
           );
         })}
     </motion.div>

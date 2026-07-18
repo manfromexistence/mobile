@@ -1,9 +1,9 @@
 export {};
 
-declare module '*.glb';
-declare module '*.png';
+declare module "*.glb";
+declare module "*.png";
 
-declare module 'meshline' {
+declare module "meshline" {
   export const MeshLineGeometry: any;
   export const MeshLineMaterial: any;
 }

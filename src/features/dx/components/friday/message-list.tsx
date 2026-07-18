@@ -138,8 +138,7 @@ export function EmptyState({ onPrompt }: { onPrompt: (text: string) => void }) {
         transition={{ delay: 0.1 }}
         className="mt-2 max-w-md text-balance text-[13.5px] text-muted-foreground"
       >
-        Ask anything &mdash; code, design, writing, or just chat. I&apos;ll respond in real
-        time.
+        Ask anything &mdash; code, design, writing, or just chat. I&apos;ll respond in real time.
       </motion.p>
 
       <div className="mt-8 grid w-full grid-cols-1 gap-2.5 sm:grid-cols-2">
@@ -164,8 +163,7 @@ export function EmptyState({ onPrompt }: { onPrompt: (text: string) => void }) {
             </div>
             <div className="min-w-0">
               <div className="text-[13px] font-semibold text-foreground">
-                {c.title}{" "}
-                <span className="font-normal text-muted-foreground">{c.desc}</span>
+                {c.title} <span className="font-normal text-muted-foreground">{c.desc}</span>
               </div>
             </div>
             <motion.div

@@ -34,7 +34,7 @@ test("host re-exports the moved function and keeps both register() directions", 
   const src = readFileSync(HOST, "utf8");
   assert.match(
     src,
-    /export \{ openaiToOpenAIResponsesRequest \} from "\.\/openai-responses\/toResponses\.ts"/
+    /export \{ openaiToOpenAIResponsesRequest \} from "\.\/openai-responses\/toResponses\.ts"/,
   );
   assert.match(src, /export function openaiResponsesToOpenAIRequest\(/);
   assert.match(src, /register\(FORMATS\.OPENAI_RESPONSES, FORMATS\.OPENAI,/);
@@ -50,7 +50,7 @@ test("both directions are callable via the host module", async () => {
     "gpt-4",
     { messages: [{ role: "user", content: "hi" }] },
     true,
-    null
+    null,
   ) as Record<string, unknown>;
   assert.ok(Array.isArray(out.input));
 });

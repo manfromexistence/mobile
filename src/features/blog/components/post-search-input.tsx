@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { XIcon } from "lucide-react"
-import { useEffect } from "react"
-import { useHotkeys } from "react-hotkeys-hook"
-import { SearchIcon } from "@/components/icons"
+import { XIcon } from "lucide-react";
+import { useEffect } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import { SearchIcon } from "@/components/icons";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group"
-import { trackEvent } from "@/lib/events"
+} from "@/components/ui/input-group";
+import { trackEvent } from "@/lib/events";
 
-import { useSearchQuery } from "../hooks/use-search-query"
+import { useSearchQuery } from "../hooks/use-search-query";
 
 export function PostSearchInput() {
-  const { query, setQuery } = useSearchQuery()
+  const { query, setQuery } = useSearchQuery();
 
-  useHotkeys("esc", () => setQuery(null), { enableOnFormTags: true })
+  useHotkeys("esc", () => setQuery(null), { enableOnFormTags: true });
 
   useEffect(() => {
     if (query && query.length >= 2) {
@@ -28,12 +28,12 @@ export function PostSearchInput() {
             query: query,
             query_length: query.length,
           },
-        })
-      }, 500)
+        });
+      }, 500);
 
-      return () => clearTimeout(timeoutId)
+      return () => clearTimeout(timeoutId);
     }
-  }, [query])
+  }, [query]);
 
   return (
     <InputGroup className="rounded-lg shadow-none">
@@ -41,7 +41,7 @@ export function PostSearchInput() {
         placeholder="Search blog…"
         value={query}
         onChange={(e) => {
-          setQuery(e.target.value)
+          setQuery(e.target.value);
         }}
       />
 
@@ -65,5 +65,5 @@ export function PostSearchInput() {
         </InputGroupButton>
       </InputGroupAddon>
     </InputGroup>
-  )
+  );
 }

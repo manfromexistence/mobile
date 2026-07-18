@@ -39,7 +39,7 @@ test("OpenAI-compatible legacy providers honor providerSpecificData.apiType", ()
   assert.equal(url, "https://legacy-proxy.example.com/v1/responses");
   assert.equal(
     getTargetFormat("openai-compatible-sp-openai", providerSpecificData),
-    "openai-responses"
+    "openai-responses",
   );
 });
 
@@ -53,7 +53,7 @@ test("Anthropic-compatible Claude Code providers use the Claude Code URL and hea
       apiKey: "anthropic-token",
       providerSpecificData: { ccSessionId: "session-123" },
     },
-    false
+    false,
   );
 
   assert.equal(isClaudeCodeCompatible("anthropic-compatible-cc-demo"), true);
@@ -71,7 +71,7 @@ test("GitHub provider headers include request IDs and JSON accept for non-stream
     {
       copilotToken: "copilot-token",
     },
-    false
+    false,
   );
 
   assert.equal(headers.Authorization, "Bearer copilot-token");
@@ -86,14 +86,14 @@ test("Registry-driven headers support x-goog-api-key and bearer fallback", () =>
     {
       apiKey: "gemini-api-key",
     },
-    true
+    true,
   );
   const accessTokenHeaders = buildProviderHeaders(
     "gemini",
     {
       accessToken: "gemini-access-token",
     },
-    false
+    false,
   );
 
   assert.equal(apiKeyHeaders["x-goog-api-key"], "gemini-api-key");
@@ -107,7 +107,7 @@ test("Registry-driven headers support Key auth", () => {
     {
       apiKey: "maritalk-key",
     },
-    true
+    true,
   );
 
   assert.equal(headers.Authorization, "Key maritalk-key");
@@ -120,7 +120,7 @@ test("Unknown providers fall back to bearer auth and OpenAI format", () => {
     {
       apiKey: "custom-key",
     },
-    false
+    false,
   );
 
   assert.equal(headers.Authorization, "Bearer custom-key");

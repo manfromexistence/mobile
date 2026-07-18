@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { toast } from "sonner"
+import { toast } from "sonner";
 
-import { ShimmeringText } from "@/registry/transformed/components/shimmering-text"
+import { ShimmeringText } from "@/registry/transformed/components/shimmering-text";
 import {
   SlideToUnlock,
   SlideToUnlockHandle,
   SlideToUnlockText,
   SlideToUnlockTrack,
-} from "@/registry/transformed/components/slide-to-unlock"
+} from "@/registry/transformed/components/slide-to-unlock";
 
 export default function SlideToUnlockDemo2() {
   return (
@@ -17,15 +17,15 @@ export default function SlideToUnlockDemo2() {
       onUnlock={() => {
         const myPromise = new Promise((resolve) => {
           setTimeout(() => {
-            resolve(true)
-          }, 1000)
-        })
+            resolve(true);
+          }, 1000);
+        });
 
         toast.promise(myPromise, {
           loading: "Connecting...",
           success: () => `Connected`,
           error: ({ message }) => `Error: ${message}`,
-        })
+        });
       }}
     >
       <SlideToUnlockTrack>
@@ -42,5 +42,5 @@ export default function SlideToUnlockDemo2() {
         <SlideToUnlockHandle className="bg-linear-to-b from-emerald-500 to-emerald-700 text-white" />
       </SlideToUnlockTrack>
     </SlideToUnlock>
-  )
+  );
 }

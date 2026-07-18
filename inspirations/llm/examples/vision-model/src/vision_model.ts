@@ -14,8 +14,7 @@ const USE_WEB_WORKER = true;
 const proxyUrl = "https://cors-anywhere.herokuapp.com/";
 const url_https_street = "https://www.ilankelman.org/stopsigns/australia.jpg";
 const url_https_tree = "https://www.ilankelman.org/sunset.jpg";
-const url_https_sea =
-  "https://www.islandvulnerability.org/index/silhouette.jpg";
+const url_https_sea = "https://www.islandvulnerability.org/index/silhouette.jpg";
 
 async function main() {
   // can feed request with either base64 or http url

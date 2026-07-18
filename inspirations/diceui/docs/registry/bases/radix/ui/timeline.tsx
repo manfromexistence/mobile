@@ -1,10 +1,7 @@
 "use client";
 
 import { cva } from "class-variance-authority";
-import {
-  Direction as DirectionPrimitive,
-  Slot as SlotPrimitive,
-} from "radix-ui";
+import { Direction as DirectionPrimitive, Slot as SlotPrimitive } from "radix-ui";
 import * as React from "react";
 import { useComposedRefs } from "@/lib/compose-refs";
 import { cn } from "@/lib/utils";
@@ -35,9 +32,7 @@ function getItemStatus(itemIndex: number, activeIndex?: number): Status {
   return "pending";
 }
 
-function getSortedEntries(
-  entries: [string, React.RefObject<ItemElement | null>][],
-) {
+function getSortedEntries(entries: [string, React.RefObject<ItemElement | null>][]) {
   return entries.sort((a, b) => {
     const elementA = a[1].current;
     const elementB = b[1].current;
@@ -55,10 +50,7 @@ function useStore<T>(selector: (store: Store) => T): T {
     throw new Error(`\`useStore\` must be used within \`${ROOT_NAME}\``);
   }
 
-  const getSnapshot = React.useCallback(
-    () => selector(store),
-    [store, selector],
-  );
+  const getSnapshot = React.useCallback(() => selector(store), [store, selector]);
 
   return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
@@ -71,10 +63,7 @@ interface Store {
   subscribe: (callback: () => void) => () => void;
   getState: () => StoreState;
   notify: () => void;
-  onItemRegister: (
-    id: string,
-    ref: React.RefObject<ItemElement | null>,
-  ) => void;
+  onItemRegister: (id: string, ref: React.RefObject<ItemElement | null>) => void;
   onItemUnregister: (id: string) => void;
   getNextItemStatus: (id: string, activeIndex?: number) => Status | undefined;
   getItemIndex: (id: string) => number;
@@ -186,10 +175,7 @@ function Timeline(props: TimelineProps) {
           cb();
         }
       },
-      onItemRegister: (
-        id: string,
-        ref: React.RefObject<ItemElement | null>,
-      ) => {
+      onItemRegister: (id: string, ref: React.RefObject<ItemElement | null>) => {
         stateRef.current.items.set(id, ref);
         store.notify();
       },
@@ -253,8 +239,7 @@ interface TimelineItemContextValue {
   isAlternateRight: boolean;
 }
 
-const TimelineItemContext =
-  React.createContext<TimelineItemContextValue | null>(null);
+const TimelineItemContext = React.createContext<TimelineItemContextValue | null>(null);
 
 function useTimelineItemContext(consumerName: string) {
   const context = React.useContext(TimelineItemContext);
@@ -318,8 +303,7 @@ const timelineItemVariants = cva("relative flex", {
 function TimelineItem(props: DivProps) {
   const { asChild, className, id, ref, ...itemProps } = props;
 
-  const { dir, orientation, variant, activeIndex } =
-    useTimelineContext(ITEM_NAME);
+  const { dir, orientation, variant, activeIndex } = useTimelineContext(ITEM_NAME);
   const store = useStoreContext(ITEM_NAME);
 
   const instanceId = React.useId();
@@ -599,21 +583,16 @@ interface TimelineConnectorProps extends DivProps {
 function TimelineConnector(props: TimelineConnectorProps) {
   const { asChild, forceMount, className, ...connectorProps } = props;
 
-  const { orientation, variant, activeIndex } =
-    useTimelineContext(CONNECTOR_NAME);
-  const { id, status, isAlternateRight } =
-    useTimelineItemContext(CONNECTOR_NAME);
+  const { orientation, variant, activeIndex } = useTimelineContext(CONNECTOR_NAME);
+  const { id, status, isAlternateRight } = useTimelineItemContext(CONNECTOR_NAME);
 
-  const nextItemStatus = useStore((state) =>
-    state.getNextItemStatus(id, activeIndex),
-  );
+  const nextItemStatus = useStore((state) => state.getNextItemStatus(id, activeIndex));
 
   const isLastItem = nextItemStatus === undefined;
 
   if (!forceMount && isLastItem) return null;
 
-  const isConnectorCompleted =
-    nextItemStatus === "completed" || nextItemStatus === "active";
+  const isConnectorCompleted = nextItemStatus === "completed" || nextItemStatus === "active";
 
   const ConnectorPrimitive = asChild ? SlotPrimitive.Slot : "div";
 

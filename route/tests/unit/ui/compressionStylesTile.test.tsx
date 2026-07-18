@@ -19,8 +19,9 @@ function mount(ui: React.ReactElement): HTMLElement {
 }
 
 beforeEach(() => {
-  (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-    true;
+  (
+    globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+  ).IS_REACT_ACT_ENVIRONMENT = true;
 });
 
 afterEach(async () => {
@@ -50,8 +51,8 @@ describe("CompressionStylesTile", () => {
           totalOutputTokens: 900,
           appliedStyleCounts: { "terse-prose": 3, "less-code": 1 },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-      )
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      ),
     );
     const { default: CompressionStylesTile } = await import(
       "../../../src/app/(dashboard)/dashboard/context/CompressionStylesTile"

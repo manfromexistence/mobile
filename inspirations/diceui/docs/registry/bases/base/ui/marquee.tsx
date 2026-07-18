@@ -38,10 +38,7 @@ function createResizeObserverStore() {
 
   const snapshotCache = new WeakMap<
     Element,
-    WeakMap<
-      Element,
-      { horizontal: ElementDimensions; vertical: ElementDimensions }
-    >
+    WeakMap<Element, { horizontal: ElementDimensions; vertical: ElementDimensions }>
   >();
 
   function notify() {
@@ -86,10 +83,8 @@ function createResizeObserverStore() {
 
     if (!rootDims || !contentDims) return null;
 
-    const rootSize =
-      orientation === "vertical" ? rootDims.height : rootDims.width;
-    const contentSize =
-      orientation === "vertical" ? contentDims.height : contentDims.width;
+    const rootSize = orientation === "vertical" ? rootDims.height : rootDims.width;
+    const contentSize = orientation === "vertical" ? contentDims.height : contentDims.width;
 
     let rootCache = snapshotCache.get(rootElement);
     if (!rootCache) {
@@ -116,10 +111,7 @@ function createResizeObserverStore() {
     return snapshot;
   }
 
-  function observe(
-    rootElement: RootElement | null,
-    contentElement: Element | null,
-  ) {
+  function observe(rootElement: RootElement | null, contentElement: Element | null) {
     if (!isSupported || !rootElement || !contentElement) return;
 
     if (!observer) {
@@ -132,11 +124,7 @@ function createResizeObserverStore() {
 
           const currentData = elements.get(element);
 
-          if (
-            !currentData ||
-            currentData.width !== width ||
-            currentData.height !== height
-          ) {
+          if (!currentData || currentData.width !== width || currentData.height !== height) {
             elements.set(element, { width, height });
             hasChanged = true;
           }
@@ -176,10 +164,7 @@ function createResizeObserverStore() {
     }
   }
 
-  function unobserve(
-    rootElement: RootElement | null,
-    contentElement: Element | null,
-  ) {
+  function unobserve(rootElement: RootElement | null, contentElement: Element | null) {
     if (!observer || !rootElement || !contentElement) return;
 
     const rootCount = (refCounts.get(rootElement) ?? 1) - 1;
@@ -223,12 +208,7 @@ function useResizeObserverStore(
   );
 
   const getSnapshot = React.useCallback(
-    () =>
-      resizeObserverStore.getSnapshot(
-        rootRef.current,
-        contentRef.current,
-        orientation,
-      ),
+    () => resizeObserverStore.getSnapshot(rootRef.current, contentRef.current, orientation),
     [rootRef, contentRef, orientation],
   );
 
@@ -260,9 +240,7 @@ function useMarqueeContext(consumerName: string) {
   return context;
 }
 
-interface MarqueeProps
-  extends React.ComponentProps<"div">,
-    useRender.ComponentProps<"div"> {
+interface MarqueeProps extends React.ComponentProps<"div">, useRender.ComponentProps<"div"> {
   side?: Side;
   dir?: Direction;
   speed?: number;
@@ -294,8 +272,7 @@ function Marquee(props: MarqueeProps) {
     ...marqueeProps
   } = props;
 
-  const orientation: Orientation =
-    side === "top" || side === "bottom" ? "vertical" : "horizontal";
+  const orientation: Orientation = side === "top" || side === "bottom" ? "vertical" : "horizontal";
 
   const contextDir = useDirection();
   const dir = dirProp ?? contextDir;
@@ -329,13 +306,10 @@ function Marquee(props: MarqueeProps) {
     const { rootSize, contentSize } = dimensions;
 
     if (autoFill) {
-      const multiplier =
-        contentSize < rootSize ? Math.ceil(rootSize / contentSize) : 1;
+      const multiplier = contentSize < rootSize ? Math.ceil(rootSize / contentSize) : 1;
       return (contentSize * multiplier) / safeSpeed;
     } else {
-      return contentSize < rootSize
-        ? rootSize / safeSpeed
-        : contentSize / safeSpeed;
+      return contentSize < rootSize ? rootSize / safeSpeed : contentSize / safeSpeed;
     }
   }, [dimensions, speed, autoFill]);
 
@@ -345,9 +319,7 @@ function Marquee(props: MarqueeProps) {
       "--marquee-gap": gap,
       "--marquee-delay": `${delay}s`,
       "--marquee-loop-count":
-        loopCount === 0 || loopCount === Infinity
-          ? "infinite"
-          : loopCount.toString(),
+        loopCount === 0 || loopCount === Infinity ? "infinite" : loopCount.toString(),
       ...styleProp,
     }),
     [duration, gap, delay, loopCount, styleProp],
@@ -422,63 +394,53 @@ function Marquee(props: MarqueeProps) {
   );
 }
 
-const marqueeContentVariants = cva(
-  "flex min-w-full shrink-0 gap-(--marquee-gap)",
-  {
-    variants: {
-      side: {
-        left: "animate-marquee-left",
-        right: "animate-marquee-right",
-        top: "min-h-full min-w-auto animate-marquee-up flex-col",
-        bottom: "min-h-full min-w-auto animate-marquee-down flex-col",
-      },
-      dir: {
-        ltr: "",
-        rtl: "",
-      },
-      pauseOnHover: {
-        true: "group-hover:[animation-play-state:paused]",
-        false: "",
-      },
-      reverse: {
-        true: "[animation-direction:reverse]",
-        false: "",
-      },
+const marqueeContentVariants = cva("flex min-w-full shrink-0 gap-(--marquee-gap)", {
+  variants: {
+    side: {
+      left: "animate-marquee-left",
+      right: "animate-marquee-right",
+      top: "min-h-full min-w-auto animate-marquee-up flex-col",
+      bottom: "min-h-full min-w-auto animate-marquee-down flex-col",
     },
-    compoundVariants: [
-      {
-        side: "left",
-        dir: "rtl",
-        className: "animate-marquee-left-rtl",
-      },
-      {
-        side: "right",
-        dir: "rtl",
-        className: "animate-marquee-right-rtl",
-      },
-    ],
-    defaultVariants: {
-      side: "left",
-      dir: "ltr",
-      pauseOnHover: false,
-      reverse: false,
+    dir: {
+      ltr: "",
+      rtl: "",
+    },
+    pauseOnHover: {
+      true: "group-hover:[animation-play-state:paused]",
+      false: "",
+    },
+    reverse: {
+      true: "[animation-direction:reverse]",
+      false: "",
     },
   },
-);
+  compoundVariants: [
+    {
+      side: "left",
+      dir: "rtl",
+      className: "animate-marquee-left-rtl",
+    },
+    {
+      side: "right",
+      dir: "rtl",
+      className: "animate-marquee-right-rtl",
+    },
+  ],
+  defaultVariants: {
+    side: "left",
+    dir: "ltr",
+    pauseOnHover: false,
+    reverse: false,
+  },
+});
 
 interface MarqueeContentProps
   extends React.ComponentProps<"div">,
     useRender.ComponentProps<"div"> {}
 
 function MarqueeContent(props: MarqueeContentProps) {
-  const {
-    className,
-    render,
-    ref,
-    children,
-    style: styleProp,
-    ...contentProps
-  } = props;
+  const { className, render, ref, children, style: styleProp, ...contentProps } = props;
 
   const context = useMarqueeContext(CONTENT_NAME);
   const composedRef = useComposedRefs(ref, context.contentRef);
@@ -494,16 +456,10 @@ function MarqueeContent(props: MarqueeContentProps) {
 
   React.useEffect(() => {
     if (context.rootRef.current && context.contentRef.current) {
-      resizeObserverStore.observe(
-        context.rootRef.current,
-        context.contentRef.current,
-      );
+      resizeObserverStore.observe(context.rootRef.current, context.contentRef.current);
 
       return () => {
-        resizeObserverStore.unobserve(
-          context.rootRef.current,
-          context.contentRef.current,
-        );
+        resizeObserverStore.unobserve(context.rootRef.current, context.contentRef.current);
       };
     }
   }, [context.rootRef, context.contentRef]);
@@ -546,21 +502,14 @@ function MarqueeContent(props: MarqueeContentProps) {
       className,
     }),
     isVertical && "flex-col",
-    isVertical
-      ? "mb-(--marquee-gap)"
-      : isRtl
-        ? "ml-(--marquee-gap)"
-        : "mr-(--marquee-gap)",
+    isVertical ? "mb-(--marquee-gap)" : isRtl ? "ml-(--marquee-gap)" : "mr-(--marquee-gap)",
   );
 
   const innerContent = (
     <>
       <div
         ref={composedRef}
-        className={cn(
-          "flex shrink-0 gap-(--marquee-gap)",
-          isVertical && "flex-col",
-        )}
+        className={cn("flex shrink-0 gap-(--marquee-gap)", isVertical && "flex-col")}
       >
         {children}
       </div>
@@ -609,17 +558,12 @@ function MarqueeContent(props: MarqueeContentProps) {
   );
 }
 
-interface MarqueeItemProps
-  extends React.ComponentProps<"div">,
-    useRender.ComponentProps<"div"> {}
+interface MarqueeItemProps extends React.ComponentProps<"div">, useRender.ComponentProps<"div"> {}
 
 function MarqueeItem({ className, render, ...itemProps }: MarqueeItemProps) {
   return useRender({
     defaultTagName: "div",
-    props: mergeProps<"div">(
-      { className: cn("shrink-0", className) },
-      itemProps,
-    ),
+    props: mergeProps<"div">({ className: cn("shrink-0", className) }, itemProps),
     render,
     state: { slot: "marquee-item" },
   });
@@ -634,11 +578,9 @@ const marqueeEdgeVariants = cva("pointer-events-none absolute z-10", {
   variants: {
     side: {
       left: "top-0 left-0 h-full bg-linear-to-r from-background to-transparent",
-      right:
-        "top-0 right-0 h-full bg-linear-to-l from-background to-transparent",
+      right: "top-0 right-0 h-full bg-linear-to-l from-background to-transparent",
       top: "top-0 left-0 w-full bg-linear-to-b from-background to-transparent",
-      bottom:
-        "bottom-0 left-0 w-full bg-linear-to-t from-background to-transparent",
+      bottom: "bottom-0 left-0 w-full bg-linear-to-t from-background to-transparent",
     },
     size: {
       default: "",
@@ -683,13 +625,7 @@ const marqueeEdgeVariants = cva("pointer-events-none absolute z-10", {
   },
 });
 
-function MarqueeEdge({
-  side,
-  size,
-  className,
-  render,
-  ...edgeProps
-}: MarqueeEdgeProps) {
+function MarqueeEdge({ side, size, className, render, ...edgeProps }: MarqueeEdgeProps) {
   return useRender({
     defaultTagName: "div",
     props: mergeProps<"div">(

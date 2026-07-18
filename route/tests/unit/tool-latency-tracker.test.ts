@@ -8,12 +8,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const {
-  recordToolLatency,
-  getToolLatencyByProvider,
-  recordToolTtft,
-  resetToolLatency,
-} = await import("../../open-sse/services/toolLatencyTracker.ts");
+const { recordToolLatency, getToolLatencyByProvider, recordToolTtft, resetToolLatency } =
+  await import("../../open-sse/services/toolLatencyTracker.ts");
 const { markToolFinish, consumeToolFinishTime } = await import(
   "../../open-sse/services/sessionManager.ts"
 );

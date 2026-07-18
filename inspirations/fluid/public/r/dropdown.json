@@ -3,10 +3,7 @@
   "name": "dropdown",
   "title": "Dropdown",
   "description": "Dropdown menu with proximity-based hover tracking, animated selection indicator, and animated focus ring. Renders as an always-visible inline panel or as a triggered popup (DropdownMenu/DropdownTrigger/DropdownContent) built on Base UI Menu with collision-aware positioning, typeahead, and close-on-select. Includes MenuItem sub-component.",
-  "dependencies": [
-    "@base-ui/react",
-    "framer-motion"
-  ],
+  "dependencies": ["@base-ui/react", "framer-motion"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

@@ -27,26 +27,23 @@ const badgeColors = {
 
 type BadgeColor = keyof typeof badgeColors;
 
-const badgeVariants = cva(
-  "inline-flex items-center font-medium whitespace-nowrap",
-  {
-    variants: {
-      variant: {
-        solid: "",
-        dot: "border border-border text-foreground",
-      },
-      size: {
-        sm: "h-5 px-2 text-[11px] gap-1",
-        md: "h-6 px-2.5 text-[12px] gap-1.5",
-        lg: "h-7 px-3 text-[13px] gap-1.5",
-      },
+const badgeVariants = cva("inline-flex items-center font-medium whitespace-nowrap", {
+  variants: {
+    variant: {
+      solid: "",
+      dot: "border border-border text-foreground",
     },
-    defaultVariants: {
-      variant: "solid",
-      size: "md",
+    size: {
+      sm: "h-5 px-2 text-[11px] gap-1",
+      md: "h-6 px-2.5 text-[12px] gap-1.5",
+      lg: "h-7 px-3 text-[13px] gap-1.5",
     },
-  }
-);
+  },
+  defaultVariants: {
+    variant: "solid",
+    size: "md",
+  },
+});
 
 interface BadgeProps
   extends Omit<HTMLAttributes<HTMLSpanElement>, "color">,
@@ -56,16 +53,8 @@ interface BadgeProps
 
 const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
   (
-    {
-      className,
-      variant = "solid",
-      size = "md",
-      color = "gray",
-      children,
-      style,
-      ...props
-    },
-    ref
+    { className, variant = "solid", size = "md", color = "gray", children, style, ...props },
+    ref,
   ) => {
     const shape = useShape();
     const colorValue = badgeColors[color];
@@ -103,7 +92,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
         {children}
       </span>
     );
-  }
+  },
 );
 
 Badge.displayName = "Badge";

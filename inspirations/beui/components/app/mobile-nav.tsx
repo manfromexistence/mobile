@@ -32,12 +32,7 @@ export function MobileNav() {
       >
         <Menu className="h-5 w-5" />
       </Button>
-      <BottomSheet
-        open={open}
-        onOpenChange={setOpen}
-        title="Menu"
-        snapPoints={[0.85]}
-      >
+      <BottomSheet open={open} onOpenChange={setOpen} title="Menu" snapPoints={[0.85]}>
         <div className="flex flex-col gap-5 pt-2">
           <nav className="flex gap-1">
             <Link
@@ -45,7 +40,8 @@ export function MobileNav() {
               onClick={() => setOpen(false)}
               className={cn(
                 "rounded-md px-3 py-1.5 text-sm transition-colors",
-                pathname.startsWith("/components/motion") || (pathname.startsWith("/components") && !pathname.startsWith("/components/blocks"))
+                pathname.startsWith("/components/motion") ||
+                  (pathname.startsWith("/components") && !pathname.startsWith("/components/blocks"))
                   ? "text-foreground"
                   : "text-muted-foreground hover:text-foreground",
               )}

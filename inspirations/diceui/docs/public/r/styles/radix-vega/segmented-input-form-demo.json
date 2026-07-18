@@ -1,10 +1,7 @@
 {
   "name": "segmented-input-form-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "button",
-    "segmented-input"
-  ],
+  "registryDependencies": ["button", "segmented-input"],
   "files": [
     {
       "path": "examples/segmented-input-form-demo.tsx",

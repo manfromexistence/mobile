@@ -28,7 +28,7 @@ test("/api/logs/active route is removed", () => {
   assert.equal(
     fs.existsSync("src/app/api/logs/active/route.ts"),
     false,
-    "active logs must not expose an in-memory timing-sensitive endpoint"
+    "active logs must not expose an in-memory timing-sensitive endpoint",
   );
 });
 
@@ -103,7 +103,7 @@ test("updatePendingRequest keeps pending detail API view in sync", () => {
     {
       clientRequest: { model: "cc-test/claude-sonnet-4-6", reasoning_effort: "xhigh" },
       providerRequest: { model: "claude-sonnet-4-6", reasoning_effort: "xhigh" },
-    }
+    },
   );
   assert.ok(requestId, "trackPendingRequest should return an id");
 
@@ -139,7 +139,7 @@ test("updatePendingRequestById updates and finalizes the exact overlapping reque
     true,
     {
       providerRequest: { request: "second", reasoning_effort: "xhigh" },
-    }
+    },
   );
   assert.ok(firstId);
   assert.ok(secondId);
@@ -228,8 +228,8 @@ test("pending request detail shape remains available internally", () => {
         providerRequest: detail.providerRequest ?? null,
         providerUrl: detail.providerUrl ?? null,
         streamChunks: detail.streamChunks ?? null,
-      }))
-    )
+      })),
+    ),
   );
 
   assert.equal(entries.length, 1);
@@ -323,7 +323,7 @@ test("GET /api/usage/call-logs rows are ordered by priority then newest-first", 
   // which are ordered newest-first among themselves.
   assert.deepEqual(
     rows.map((row) => row.id),
-    ["completed-middle", "persisted-newest", "persisted-oldest"]
+    ["completed-middle", "persisted-newest", "persisted-oldest"],
   );
 });
 
@@ -608,7 +608,7 @@ test("createRequestLogger without connectionId does not populate streamChunks", 
   assert.equal(
     detail.streamChunks,
     undefined,
-    "streamChunks should be undefined when connectionId not provided to createRequestLogger"
+    "streamChunks should be undefined when connectionId not provided to createRequestLogger",
   );
 });
 
@@ -636,7 +636,7 @@ test("createRequestLogger appendOpenAIChunk and appendConvertedChunk also popula
   assert.equal(detail.streamChunks.openai.length, 1);
   assert.equal(
     stripChunkTs(detail.streamChunks.openai[0]),
-    'data: {"role":"assistant","content":"hi"}'
+    'data: {"role":"assistant","content":"hi"}',
   );
   assert.equal(detail.streamChunks.client.length, 1);
   assert.equal(stripChunkTs(detail.streamChunks.client[0]), 'data: {"content":"there"}');
@@ -672,7 +672,7 @@ test("createRequestLogger captures stream chunks even when enabled: false", asyn
   assert.equal(
     logger.getPipelinePayloads(),
     null,
-    "pipeline payloads should be null when disabled"
+    "pipeline payloads should be null when disabled",
   );
 });
 

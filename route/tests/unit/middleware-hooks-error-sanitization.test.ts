@@ -24,9 +24,9 @@ for (const path of ROUTES) {
     const source = readFileSync(path, "utf8");
     assert.ok(
       /import\s*\{[^}]*\bsanitizeErrorMessage\b[^}]*\}\s*from\s*["']@omniroute\/open-sse\/utils\/error["']/.test(
-        source
+        source,
       ),
-      `expected ${path} to import sanitizeErrorMessage from "@omniroute/open-sse/utils/error"`
+      `expected ${path} to import sanitizeErrorMessage from "@omniroute/open-sse/utils/error"`,
     );
   });
 
@@ -34,7 +34,7 @@ for (const path of ROUTES) {
     const source = readFileSync(path, "utf8");
     assert.ok(
       !/error\?\.message\s*\|\|/.test(source),
-      `expected ${path} to have no raw \`error?.message ||\` fallback (Hard Rule #12)`
+      `expected ${path} to have no raw \`error?.message ||\` fallback (Hard Rule #12)`,
     );
   });
 }

@@ -10,11 +10,7 @@ import { Button } from "@/registry/radix/button";
 import { Badge } from "@/registry/default/badge";
 import { ChatMessage } from "@/registry/default/chat-message";
 import { InputMessage } from "@/registry/default/input-message";
-import {
-  TabsSubtle,
-  TabsSubtleItem,
-  TabsSubtlePanel,
-} from "@/registry/default/tabs-subtle";
+import { TabsSubtle, TabsSubtleItem, TabsSubtlePanel } from "@/registry/default/tabs-subtle";
 import {
   ThinkingSteps,
   ThinkingStepsHeader,
@@ -37,8 +33,18 @@ interface Source {
 
 const SOURCES: Source[] = [
   { n: 1, title: "Epictetus — The Enchiridion", site: "classics.mit.edu", color: "amber" },
-  { n: 2, title: "Marcus Aurelius and the dichotomy of control", site: "dailystoic.com", color: "blue" },
-  { n: 3, title: "Stoicism: internal vs external goods", site: "plato.stanford.edu", color: "violet" },
+  {
+    n: 2,
+    title: "Marcus Aurelius and the dichotomy of control",
+    site: "dailystoic.com",
+    color: "blue",
+  },
+  {
+    n: 3,
+    title: "Stoicism: internal vs external goods",
+    site: "plato.stanford.edu",
+    color: "violet",
+  },
   { n: 4, title: "What is 'up to us'? A reading of Stoic agency", site: "aeon.co", color: "teal" },
 ];
 
@@ -46,7 +52,7 @@ const SOURCES: Source[] = [
 // tab, rendered through the library's ThinkingStepImage.
 function swatch(a: string, b: string) {
   return `data:image/svg+xml,${encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="150"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="240" height="150" fill="url(#g)"/></svg>`
+    `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="150"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="240" height="150" fill="url(#g)"/></svg>`,
   )}`;
 }
 
@@ -82,26 +88,22 @@ function Answer() {
           <span style={{ fontVariationSettings: fontWeights.semibold }}>
             &ldquo;up to us&rdquo;
           </span>{" "}
-          and what is not. Our judgments, desires, and chosen actions are within
-          our power; everything else — health, reputation, wealth, the behaviour
-          of others — is not
+          and what is not. Our judgments, desires, and chosen actions are within our power;
+          everything else — health, reputation, wealth, the behaviour of others — is not
           <Cite n={1} />
           <Cite n={3} />.
         </p>
         <p>
-          Epictetus opens the <em>Enchiridion</em> with exactly this
-          &ldquo;dichotomy of control.&rdquo; Tranquility, he argues, comes from
-          investing effort only in the former and meeting the latter with
-          equanimity
-          <Cite n={1} />. Marcus Aurelius turns the same idea
-          inward as a daily practice: you have power over your mind, not over
-          outside events
+          Epictetus opens the <em>Enchiridion</em> with exactly this &ldquo;dichotomy of
+          control.&rdquo; Tranquility, he argues, comes from investing effort only in the former and
+          meeting the latter with equanimity
+          <Cite n={1} />. Marcus Aurelius turns the same idea inward as a daily practice: you have
+          power over your mind, not over outside events
           <Cite n={2} />.
         </p>
         <p>
-          Later readings refine the picture — some goods are &ldquo;preferred&rdquo;
-          without being truly good — but the core move is constant: locate the
-          will, and let the rest go
+          Later readings refine the picture — some goods are &ldquo;preferred&rdquo; without being
+          truly good — but the core move is constant: locate the will, and let the rest go
           <Cite n={4} />.
         </p>
       </div>
@@ -120,7 +122,7 @@ function SourcesPanel() {
           href="#answer"
           className={cn(
             "flex items-center gap-3 rounded-xl px-3.5 py-3 transition-shadow duration-100 hover:shadow-surface-4",
-            surfaceClasses(2, 2)
+            surfaceClasses(2, 2),
           )}
         >
           <Badge color={s.color} size="sm" className="shrink-0 tabular-nums">
@@ -133,9 +135,7 @@ function SourcesPanel() {
             >
               {s.title}
             </span>
-            <span className="truncate text-[12px] text-muted-foreground">
-              {s.site}
-            </span>
+            <span className="truncate text-[12px] text-muted-foreground">{s.site}</span>
           </div>
         </a>
       ))}
@@ -178,11 +178,7 @@ function TurnView({ turn }: { turn: Turn }) {
             description="stoicism dichotomy of control — primary sources"
             status="complete"
           />
-          <ThinkingStep
-            icon="globe"
-            label="Reading sources"
-            status="complete"
-          >
+          <ThinkingStep icon="globe" label="Reading sources" status="complete">
             <ThinkingStepSources>
               {SOURCES.map((s, i) => (
                 <ThinkingStepSource key={s.n} color={s.color} delay={i * 0.05}>
@@ -264,9 +260,7 @@ export default function LumenPage() {
     setDraft("");
     // Resolve the "thinking" turn into a full answer after a beat.
     setTimeout(() => {
-      setTurns((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, thinking: false } : t))
-      );
+      setTurns((prev) => prev.map((t) => (t.id === id ? { ...t, thinking: false } : t)));
     }, 1600);
   }, []);
 

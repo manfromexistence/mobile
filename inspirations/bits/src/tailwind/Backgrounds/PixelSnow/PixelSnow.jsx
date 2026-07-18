@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Color,
   Mesh,
@@ -8,8 +8,8 @@ import {
   ShaderMaterial,
   Vector2,
   Vector3,
-  WebGLRenderer
-} from 'three';
+  WebGLRenderer,
+} from "three";
 
 const vertexShader = `
 void main() {
@@ -170,7 +170,7 @@ void main() {
 `;
 
 export default function PixelSnow({
-  color = '#ffffff',
+  color = "#ffffff",
   flakeSize = 0.01,
   minFlakeSize = 1.25,
   pixelResolution = 200,
@@ -180,10 +180,10 @@ export default function PixelSnow({
   brightness = 1,
   gamma = 0.4545,
   density = 0.3,
-  variant = 'square',
+  variant = "square",
   direction = 125,
-  className = '',
-  style = {}
+  className = "",
+  style = {},
 }) {
   const containerRef = useRef(null);
   const animationRef = useRef(0);
@@ -194,7 +194,7 @@ export default function PixelSnow({
 
   // Memoize shader variant value
   const variantValue = useMemo(() => {
-    return variant === 'round' ? 1.0 : variant === 'snowflake' ? 2.0 : 0.0;
+    return variant === "round" ? 1.0 : variant === "snowflake" ? 2.0 : 0.0;
   }, [variant]);
 
   // Memoize color conversion
@@ -230,7 +230,7 @@ export default function PixelSnow({
       ([entry]) => {
         isVisibleRef.current = entry.isIntersecting;
       },
-      { threshold: 0 }
+      { threshold: 0 },
     );
 
     observer.observe(container);
@@ -248,9 +248,9 @@ export default function PixelSnow({
       antialias: false,
       alpha: true,
       premultipliedAlpha: false,
-      powerPreference: 'high-performance',
+      powerPreference: "high-performance",
       stencil: false,
-      depth: false
+      depth: false,
     });
 
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -276,16 +276,16 @@ export default function PixelSnow({
         uGamma: { value: gamma },
         uDensity: { value: density },
         uVariant: { value: variantValue },
-        uDirection: { value: (direction * Math.PI) / 180 }
+        uDirection: { value: (direction * Math.PI) / 180 },
       },
-      transparent: true
+      transparent: true,
     });
     materialRef.current = material;
 
     const geometry = new PlaneGeometry(2, 2);
     scene.add(new Mesh(geometry, material));
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     const startTime = performance.now();
     const animate = () => {
@@ -301,7 +301,7 @@ export default function PixelSnow({
 
     return () => {
       cancelAnimationFrame(animationRef.current);
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
       if (resizeTimeoutRef.current) {
         clearTimeout(resizeTimeoutRef.current);
       }
@@ -347,7 +347,7 @@ export default function PixelSnow({
     density,
     variantValue,
     direction,
-    colorVector
+    colorVector,
   ]);
 
   return (

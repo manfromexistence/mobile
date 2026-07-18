@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  AnimatePresence,
-  animate,
-  motion,
-  useReducedMotion,
-} from "motion/react";
+import { AnimatePresence, animate, motion, useReducedMotion } from "motion/react";
 import {
   useEffect,
   useId,
@@ -29,10 +24,8 @@ const CARET_SPRING = {
 const EDGE_PAD = 14;
 const ICON_PAD = 40;
 
-export interface InputProps extends Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  "value" | "defaultValue" | "onChange"
-> {
+export interface InputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "defaultValue" | "onChange"> {
   label?: string;
   value?: string;
   defaultValue?: string;
@@ -102,11 +95,7 @@ export function Input({
   // Shake the field when an error appears.
   useEffect(() => {
     if (!fieldRef.current || reduce || !hasError) return;
-    animate(
-      fieldRef.current,
-      { x: [0, -6, 6, -4, 4, -2, 0] },
-      { duration: 0.45 },
-    );
+    animate(fieldRef.current, { x: [0, -6, 6, -4, 4, -2, 0] }, { duration: 0.45 });
   }, [hasError, reduce]);
 
   const handleChange = (next: string) => {
@@ -117,25 +106,14 @@ export function Input({
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label ? (
-        <label
-          htmlFor={id}
-          className="px-1 text-sm font-medium text-foreground"
-        >
+        <label htmlFor={id} className="px-1 text-sm font-medium text-foreground">
           {label}
         </label>
       ) : null}
 
       <div
         ref={fieldRef}
-        data-state={
-          hasError
-            ? "error"
-            : success
-              ? "success"
-              : focused
-                ? "focused"
-                : "idle"
-        }
+        data-state={hasError ? "error" : success ? "success" : focused ? "focused" : "idle"}
         className={cn(
           "relative h-11 overflow-hidden rounded-full border transition-colors duration-200",
           "border-border",
@@ -247,17 +225,9 @@ export function Input({
           <motion.p
             id={`${id}-error`}
             role="alert"
-            initial={
-              reduce
-                ? { opacity: 0 }
-                : { opacity: 0, y: -4, filter: "blur(4px)" }
-            }
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: -4, filter: "blur(4px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={
-              reduce
-                ? { opacity: 0 }
-                : { opacity: 0, y: -4, filter: "blur(4px)" }
-            }
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -4, filter: "blur(4px)" }}
             transition={{ duration: 0.2 }}
             className="px-1 text-xs text-destructive"
           >

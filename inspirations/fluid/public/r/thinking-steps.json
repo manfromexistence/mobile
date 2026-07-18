@@ -3,11 +3,7 @@
   "name": "thinking-steps",
   "title": "Thinking Steps",
   "description": "Chain-of-thought reasoning display with collapsible steps, sequential animation, source badges, and image support.",
-  "dependencies": [
-    "@base-ui/react",
-    "framer-motion",
-    "lucide-react"
-  ],
+  "dependencies": ["@base-ui/react", "framer-motion", "lucide-react"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

@@ -43,7 +43,10 @@ test("#4421 a base type does not match a more-specific node type", () => {
 });
 
 test("#4421 nodeTypeFromId strips a trailing UUID", () => {
-  assert.equal(nodeTypeFromId(`openai-compatible-responses-${UUID}`), "openai-compatible-responses");
+  assert.equal(
+    nodeTypeFromId(`openai-compatible-responses-${UUID}`),
+    "openai-compatible-responses",
+  );
   assert.equal(nodeTypeFromId(`openai-compatible-${UUID}`), "openai-compatible");
   assert.equal(nodeTypeFromId("no-uuid-here"), "no-uuid-here");
 });

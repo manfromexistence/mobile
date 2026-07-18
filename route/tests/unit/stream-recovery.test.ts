@@ -28,7 +28,7 @@ function makeStream(chunks: string[], end: "close" | Error): ReadableStream<Uint
 }
 
 async function readAll(
-  rs: ReadableStream<Uint8Array>
+  rs: ReadableStream<Uint8Array>,
 ): Promise<{ text: string; errored: Error | null }> {
   const reader = rs.getReader();
   const dec = new TextDecoder();
@@ -84,7 +84,7 @@ test("HoldbackBuffer auto-commits once the holdback window elapses", () => {
   assert.equal(
     Buffer.concat(emitted).toString("utf8"),
     "data: first\n\ndata: second\n\n",
-    "flush releases everything buffered so far"
+    "flush releases everything buffered so far",
   );
 });
 
@@ -137,7 +137,7 @@ test("isRetryableStreamError: client aborts and unknown errors are NOT retryable
 test("hasTerminalMarker detects OpenAI and Anthropic stream terminators", () => {
   assert.equal(hasTerminalMarker(enc("data: {...}\n\ndata: [DONE]\n\n")), true);
   assert.equal(hasTerminalMarker(enc("event: message_stop\ndata: {}\n\n")), true);
-  assert.equal(hasTerminalMarker(enc("data: {\"choices\":[]}\n\n")), false);
+  assert.equal(hasTerminalMarker(enc('data: {"choices":[]}\n\n')), false);
   assert.equal(hasTerminalMarker(enc("")), false);
 });
 
@@ -154,7 +154,7 @@ test("createRecoverableStream retries an early truncation transparently", async 
       reopened++;
       return attempt2;
     },
-    { finalize: () => finalizeCount++, now: () => 0 } // frozen clock: no time-based commit
+    { finalize: () => finalizeCount++, now: () => 0 }, // frozen clock: no time-based commit
   );
 
   const { text, errored } = await readAll(rs);
@@ -192,7 +192,7 @@ test("createRecoverableStream propagates errors once committed (never replays)",
       reopened++;
       return makeStream(["data: nope\n\n"], "close");
     },
-    { finalize: () => finalizeCount++, now: () => 0 }
+    { finalize: () => finalizeCount++, now: () => 0 },
   );
 
   const { errored } = await readAll(rs);
@@ -212,7 +212,7 @@ test("createRecoverableStream passes a clean short stream straight through", asy
       reopened++;
       return null;
     },
-    { finalize: () => finalizeCount++, now: () => 0 }
+    { finalize: () => finalizeCount++, now: () => 0 },
   );
 
   const { text, errored } = await readAll(rs);
@@ -233,7 +233,7 @@ test("createRecoverableStream stops after maxEarlyRetries", async () => {
       reopened++;
       return makeStream(["data: t\n\n"], "close"); // every retry truncates too
     },
-    { finalize: () => finalizeCount++, now: () => 0, maxEarlyRetries: 2 }
+    { finalize: () => finalizeCount++, now: () => 0, maxEarlyRetries: 2 },
   );
 
   const { errored } = await readAll(rs);
@@ -265,7 +265,7 @@ test("createRecoverableStream does not spend an upstream re-open after a client 
       reopened++;
       return makeStream(["data: t\n\n"], "close");
     },
-    { finalize: () => finalizeCount++, now: () => 0 }
+    { finalize: () => finalizeCount++, now: () => 0 },
   );
 
   const reader = rs.getReader();

@@ -1,11 +1,11 @@
-import code from '@content/Animations/MagicRings/MagicRings.jsx?raw';
-import css from '@content/Animations/MagicRings/MagicRings.css?raw';
-import tailwind from '@tailwind/Animations/MagicRings/MagicRings.jsx?raw';
-import tsCode from '@ts-default/Animations/MagicRings/MagicRings.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/MagicRings/MagicRings.tsx?raw';
+import code from "@content/Animations/MagicRings/MagicRings.jsx?raw";
+import css from "@content/Animations/MagicRings/MagicRings.css?raw";
+import tailwind from "@tailwind/Animations/MagicRings/MagicRings.jsx?raw";
+import tsCode from "@ts-default/Animations/MagicRings/MagicRings.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/MagicRings/MagicRings.tsx?raw";
 
 export const magicRings = {
-  dependencies: '',
+  dependencies: "",
   usage: `import MagicRings from './MagicRings';
 
 <div style={{ width: '600px', height: '400px', position: 'relative' }}>

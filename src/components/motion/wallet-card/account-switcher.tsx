@@ -142,10 +142,7 @@ export function AccountSwitcher({
               initial="hidden"
               animate="show"
               variants={reduce ? undefined : LIST}
-              className={cn(
-                "max-h-64 overflow-y-auto p-1.5",
-                armed ? "" : "pointer-events-none",
-              )}
+              className={cn("max-h-64 overflow-y-auto p-1.5", armed ? "" : "pointer-events-none")}
             >
               {accounts.map((account) => {
                 const selected = account.id === activeAccount?.id;
@@ -175,16 +172,12 @@ export function AccountSwitcher({
                     >
                       <AccountAvatar account={account} />
                       <span className="flex min-w-0 flex-1 flex-col">
-                        <span className="truncate font-medium">
-                          {account.name}
-                        </span>
+                        <span className="truncate font-medium">{account.name}</span>
                         <span className="truncate text-xs text-muted-foreground">
                           {truncateAddress(account.address)}
                         </span>
                       </span>
-                      {selected ? (
-                        <Check className="h-4 w-4 shrink-0 text-foreground" />
-                      ) : null}
+                      {selected ? <Check className="h-4 w-4 shrink-0 text-foreground" /> : null}
                     </button>
                     <CopyButton value={account.address} />
                   </motion.li>

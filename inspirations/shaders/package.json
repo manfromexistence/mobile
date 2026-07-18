@@ -3,11 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "license": "MIT",
-  "workspaces": [
-    "docs",
-    "packages/shaders",
-    "packages/shaders-react"
-  ],
+  "workspaces": ["docs", "packages/shaders", "packages/shaders-react"],
   "scripts": {
     "build": "bun run build.js",
     "publish-all": "run-s clean build && bun run publish.js",

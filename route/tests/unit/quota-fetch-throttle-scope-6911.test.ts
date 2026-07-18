@@ -9,10 +9,22 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { fetchDeepseekQuota, invalidateDeepseekQuotaCache } from "../../open-sse/services/deepseekQuotaFetcher.ts";
-import { fetchBailianQuota, invalidateBailianQuotaCache } from "../../open-sse/services/bailianQuotaFetcher.ts";
-import { fetchOpencodeQuota, invalidateOpencodeQuotaCache } from "../../open-sse/services/opencodeQuotaFetcher.ts";
-import { fetchCrofUsage, invalidateCrofUsageCache } from "../../open-sse/services/crofUsageFetcher.ts";
+import {
+  fetchDeepseekQuota,
+  invalidateDeepseekQuotaCache,
+} from "../../open-sse/services/deepseekQuotaFetcher.ts";
+import {
+  fetchBailianQuota,
+  invalidateBailianQuotaCache,
+} from "../../open-sse/services/bailianQuotaFetcher.ts";
+import {
+  fetchOpencodeQuota,
+  invalidateOpencodeQuotaCache,
+} from "../../open-sse/services/opencodeQuotaFetcher.ts";
+import {
+  fetchCrofUsage,
+  invalidateCrofUsageCache,
+} from "../../open-sse/services/crofUsageFetcher.ts";
 import { resetQuotaFetchThrottle } from "../../open-sse/services/quotaFetchThrottle.ts";
 
 const originalFetch = globalThis.fetch;
@@ -71,7 +83,7 @@ const crofBody = { usable_requests: 99, credits: 1.5 };
 async function assertSpacedByThrottle(
   label: string,
   responseBody: unknown,
-  fetchTwice: (idA: string, idB: string) => Promise<unknown[]>
+  fetchTwice: (idA: string, idB: string) => Promise<unknown[]>,
 ): Promise<void> {
   const callStarts: number[] = [];
   const t0 = Date.now();
@@ -89,7 +101,7 @@ async function assertSpacedByThrottle(
   const spread = Math.abs(callStarts[1] - callStarts[0]);
   assert.ok(
     spread >= 180,
-    `${label}: calls were NOT spaced by the shared throttle (spread=${spread}ms, expected >=180ms)`
+    `${label}: calls were NOT spaced by the shared throttle (spread=${spread}ms, expected >=180ms)`,
   );
 }
 
@@ -98,7 +110,7 @@ test("#6911 fetchDeepseekQuota is spaced by the shared quota-fetch throttle", as
     Promise.all([
       fetchDeepseekQuota(idA, { apiKey: "sk-a" }),
       fetchDeepseekQuota(idB, { apiKey: "sk-b" }),
-    ])
+    ]),
   );
 });
 
@@ -107,7 +119,7 @@ test("#6911 fetchBailianQuota (primary site) is spaced by the shared quota-fetch
     Promise.all([
       fetchBailianQuota(idA, { apiKey: "sk-a" }),
       fetchBailianQuota(idB, { apiKey: "sk-b" }),
-    ])
+    ]),
   );
 });
 
@@ -116,16 +128,13 @@ test("#6911 fetchOpencodeQuota is spaced by the shared quota-fetch throttle", as
     Promise.all([
       fetchOpencodeQuota(idA, { apiKey: "sk-a" }),
       fetchOpencodeQuota(idB, { apiKey: "sk-b" }),
-    ])
+    ]),
   );
 });
 
 test("#6911 fetchCrofUsage is spaced by the shared quota-fetch throttle", async () => {
   await assertSpacedByThrottle("crof", crofBody, (idA, idB) =>
-    Promise.all([
-      fetchCrofUsage(idA, { apiKey: "sk-a" }),
-      fetchCrofUsage(idB, { apiKey: "sk-b" }),
-    ])
+    Promise.all([fetchCrofUsage(idA, { apiKey: "sk-a" }), fetchCrofUsage(idB, { apiKey: "sk-b" })]),
   );
 });
 
@@ -151,7 +160,7 @@ test("#6911 cache hits are never delayed by the shared quota-fetch throttle", as
   assert.ok(second !== null);
   assert.ok(
     secondElapsed < 50,
-    `cache-hit path should not be delayed by the throttle (took ${secondElapsed}ms, t0=${t0})`
+    `cache-hit path should not be delayed by the throttle (took ${secondElapsed}ms, t0=${t0})`,
   );
 
   invalidateDeepseekQuotaCache(connectionId);
@@ -183,7 +192,7 @@ test("#6911 fetchBailianQuota China-region retry fetch is also throttled", async
   const spread = Math.abs(callStarts[1] - callStarts[0]);
   assert.ok(
     spread >= 180,
-    `China-region retry fetch was NOT spaced by the shared throttle (spread=${spread}ms)`
+    `China-region retry fetch was NOT spaced by the shared throttle (spread=${spread}ms)`,
   );
 
   invalidateBailianQuotaCache(connectionId);

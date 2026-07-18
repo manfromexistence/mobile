@@ -21,31 +21,31 @@ import { defineConfig } from "tsup";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-	entry: {
-		index: "src/index.ts",
-		lucide: "src/lucide.ts",
-		huge: "src/huge.ts",
-	},
-	format: ["esm", "cjs"],
-	dts: true,
-	// Sourcemaps add ~3.6 MB unpacked install size for the consumer.
-	// Skip them - debugging into the package is rare for icon code.
-	sourcemap: false,
-	clean: true,
-	treeshake: true,
-	// Minify the runtime JS. Roughly 30% smaller before brotli.
-	// .d.ts files are not minified (would break editor experience).
-	minify: true,
-	external: ["react", "react-dom"],
-	// banner: { js } is unreliable here because tsup splits the `cn`
-	// helper into a separate chunk file and esbuild loses the directive
-	// on the entry. We re-inject deterministically via onSuccess.
-	onSuccess: "node scripts/inject-use-client.mjs",
-	esbuildOptions(options) {
-		options.alias = {
-			...(options.alias ?? {}),
-			"@/lib/utils": path.resolve(__dirname, "src/lib/cn.ts"),
-			"@/types/icon": path.resolve(__dirname, "src/lib/icon-handle.ts"),
-		};
-	},
+  entry: {
+    index: "src/index.ts",
+    lucide: "src/lucide.ts",
+    huge: "src/huge.ts",
+  },
+  format: ["esm", "cjs"],
+  dts: true,
+  // Sourcemaps add ~3.6 MB unpacked install size for the consumer.
+  // Skip them - debugging into the package is rare for icon code.
+  sourcemap: false,
+  clean: true,
+  treeshake: true,
+  // Minify the runtime JS. Roughly 30% smaller before brotli.
+  // .d.ts files are not minified (would break editor experience).
+  minify: true,
+  external: ["react", "react-dom"],
+  // banner: { js } is unreliable here because tsup splits the `cn`
+  // helper into a separate chunk file and esbuild loses the directive
+  // on the entry. We re-inject deterministically via onSuccess.
+  onSuccess: "node scripts/inject-use-client.mjs",
+  esbuildOptions(options) {
+    options.alias = {
+      ...(options.alias ?? {}),
+      "@/lib/utils": path.resolve(__dirname, "src/lib/cn.ts"),
+      "@/types/icon": path.resolve(__dirname, "src/lib/icon-handle.ts"),
+    };
+  },
 });

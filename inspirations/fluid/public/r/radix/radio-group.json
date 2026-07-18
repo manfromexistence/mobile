@@ -3,10 +3,7 @@
   "name": "radio-group",
   "title": "Radio Group",
   "description": "Animated radio group with proximity hover, spring-animated selection dot, and optional Radix UI integration. Supports both controlled index and value-based APIs.",
-  "dependencies": [
-    "framer-motion",
-    "@radix-ui/react-radio-group"
-  ],
+  "dependencies": ["framer-motion", "@radix-ui/react-radio-group"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

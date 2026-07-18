@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { motion, PanInfo, useMotionValue, useTransform } from 'motion/react';
+import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, PanInfo, useMotionValue, useTransform } from "motion/react";
 // replace icons with your own if needed
-import { FiCircle, FiCode, FiFileText, FiLayers, FiLayout } from 'react-icons/fi';
-import './Carousel.css';
+import { FiCircle, FiCode, FiFileText, FiLayers, FiLayout } from "react-icons/fi";
+import "./Carousel.css";
 
 export interface CarouselItem {
   title: string;
@@ -23,41 +23,41 @@ export interface CarouselProps {
 
 const DEFAULT_ITEMS: CarouselItem[] = [
   {
-    title: 'Text Animations',
-    description: 'Cool text animations for your projects.',
+    title: "Text Animations",
+    description: "Cool text animations for your projects.",
     id: 1,
-    icon: <FiFileText className="carousel-icon" />
+    icon: <FiFileText className="carousel-icon" />,
   },
   {
-    title: 'Animations',
-    description: 'Smooth animations for your projects.',
+    title: "Animations",
+    description: "Smooth animations for your projects.",
     id: 2,
-    icon: <FiCircle className="carousel-icon" />
+    icon: <FiCircle className="carousel-icon" />,
   },
   {
-    title: 'Components',
-    description: 'Reusable components for your projects.',
+    title: "Components",
+    description: "Reusable components for your projects.",
     id: 3,
-    icon: <FiLayers className="carousel-icon" />
+    icon: <FiLayers className="carousel-icon" />,
   },
   {
-    title: 'Backgrounds',
-    description: 'Beautiful backgrounds and patterns for your projects.',
+    title: "Backgrounds",
+    description: "Beautiful backgrounds and patterns for your projects.",
     id: 4,
-    icon: <FiLayout className="carousel-icon" />
+    icon: <FiLayout className="carousel-icon" />,
   },
   {
-    title: 'Common UI',
-    description: 'Common UI components are coming soon!',
+    title: "Common UI",
+    description: "Common UI components are coming soon!",
     id: 5,
-    icon: <FiCode className="carousel-icon" />
-  }
+    icon: <FiCode className="carousel-icon" />,
+  },
 ];
 
 const DRAG_BUFFER = 0;
 const VELOCITY_THRESHOLD = 500;
 const GAP = 16;
-const SPRING_OPTIONS = { type: 'spring' as const, stiffness: 300, damping: 30 };
+const SPRING_OPTIONS = { type: "spring" as const, stiffness: 300, damping: 30 };
 
 interface CarouselItemProps {
   item: CarouselItem;
@@ -69,24 +69,36 @@ interface CarouselItemProps {
   transition: any;
 }
 
-function CarouselItem({ item, index, itemWidth, round, trackItemOffset, x, transition }: CarouselItemProps) {
-  const range = [-(index + 1) * trackItemOffset, -index * trackItemOffset, -(index - 1) * trackItemOffset];
+function CarouselItem({
+  item,
+  index,
+  itemWidth,
+  round,
+  trackItemOffset,
+  x,
+  transition,
+}: CarouselItemProps) {
+  const range = [
+    -(index + 1) * trackItemOffset,
+    -index * trackItemOffset,
+    -(index - 1) * trackItemOffset,
+  ];
   const outputRange = [90, 0, -90];
   const rotateY = useTransform(x, range, outputRange, { clamp: false });
 
   return (
     <motion.div
       key={`${item?.id ?? index}-${index}`}
-      className={`carousel-item ${round ? 'round' : ''}`}
+      className={`carousel-item ${round ? "round" : ""}`}
       style={{
         width: itemWidth,
-        height: round ? itemWidth : '100%',
+        height: round ? itemWidth : "100%",
         rotateY: rotateY,
-        ...(round && { borderRadius: '50%' })
+        ...(round && { borderRadius: "50%" }),
       }}
       transition={transition}
     >
-      <div className={`carousel-item-header ${round ? 'round' : ''}`}>
+      <div className={`carousel-item-header ${round ? "round" : ""}`}>
         <span className="carousel-icon-container">{item.icon}</span>
       </div>
       <div className="carousel-item-content">
@@ -104,7 +116,7 @@ export default function Carousel({
   autoplayDelay = 3000,
   pauseOnHover = false,
   loop = false,
-  round = false
+  round = false,
 }: CarouselProps): React.JSX.Element {
   const containerPadding = 16;
   const itemWidth = baseWidth - containerPadding * 2;
@@ -127,11 +139,11 @@ export default function Carousel({
       const container = containerRef.current;
       const handleMouseEnter = () => setIsHovered(true);
       const handleMouseLeave = () => setIsHovered(false);
-      container.addEventListener('mouseenter', handleMouseEnter);
-      container.addEventListener('mouseleave', handleMouseLeave);
+      container.addEventListener("mouseenter", handleMouseEnter);
+      container.addEventListener("mouseleave", handleMouseLeave);
       return () => {
-        container.removeEventListener('mouseenter', handleMouseEnter);
-        container.removeEventListener('mouseleave', handleMouseLeave);
+        container.removeEventListener("mouseenter", handleMouseEnter);
+        container.removeEventListener("mouseleave", handleMouseLeave);
       };
     }
   }, [pauseOnHover]);
@@ -141,7 +153,7 @@ export default function Carousel({
     if (pauseOnHover && isHovered) return undefined;
 
     const timer = setInterval(() => {
-      setPosition(prev => Math.min(prev + 1, itemsForRender.length - 1));
+      setPosition((prev) => Math.min(prev + 1, itemsForRender.length - 1));
     }, autoplayDelay);
 
     return () => clearInterval(timer);
@@ -210,7 +222,7 @@ export default function Carousel({
 
     if (direction === 0) return;
 
-    setPosition(prev => {
+    setPosition((prev) => {
       const next = prev + direction;
       const max = itemsForRender.length - 1;
       return Math.max(0, Math.min(next, max));
@@ -222,32 +234,36 @@ export default function Carousel({
     : {
         dragConstraints: {
           left: -trackItemOffset * Math.max(itemsForRender.length - 1, 0),
-          right: 0
-        }
+          right: 0,
+        },
       };
 
   const activeIndex =
-    items.length === 0 ? 0 : loop ? (position - 1 + items.length) % items.length : Math.min(position, items.length - 1);
+    items.length === 0
+      ? 0
+      : loop
+        ? (position - 1 + items.length) % items.length
+        : Math.min(position, items.length - 1);
 
   return (
     <div
       ref={containerRef}
-      className={`carousel-container ${round ? 'round' : ''}`}
+      className={`carousel-container ${round ? "round" : ""}`}
       style={{
         width: `${baseWidth}px`,
-        ...(round && { height: `${baseWidth}px`, borderRadius: '50%' })
+        ...(round && { height: `${baseWidth}px`, borderRadius: "50%" }),
       }}
     >
       <motion.div
         className="carousel-track"
-        drag={isAnimating ? false : 'x'}
+        drag={isAnimating ? false : "x"}
         {...dragProps}
         style={{
           width: itemWidth,
           gap: `${GAP}px`,
           perspective: 1000,
           perspectiveOrigin: `${position * trackItemOffset + itemWidth / 2}px 50%`,
-          x
+          x,
         }}
         onDragEnd={handleDragEnd}
         animate={{ x: -(position * trackItemOffset) }}
@@ -268,17 +284,17 @@ export default function Carousel({
           />
         ))}
       </motion.div>
-      <div className={`carousel-indicators-container ${round ? 'round' : ''}`}>
+      <div className={`carousel-indicators-container ${round ? "round" : ""}`}>
         <div className="carousel-indicators">
           {items.map((_, index) => (
             <motion.button
               type="button"
               key={index}
-              className={`carousel-indicator ${activeIndex === index ? 'active' : 'inactive'}`}
+              className={`carousel-indicator ${activeIndex === index ? "active" : "inactive"}`}
               aria-label={`Go to slide ${index + 1}`}
               aria-current={activeIndex === index}
               animate={{
-                scale: activeIndex === index ? 1.2 : 1
+                scale: activeIndex === index ? 1.2 : 1,
               }}
               onClick={() => setPosition(loop ? index + 1 : index)}
               transition={{ duration: 0.15 }}

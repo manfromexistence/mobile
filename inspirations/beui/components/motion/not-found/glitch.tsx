@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "motion/react";
-import {
-  NOT_FOUND_DEFAULTS,
-  NotFoundActions,
-  NotFoundStage,
-  type NotFoundProps,
-} from "./shared";
+import { NOT_FOUND_DEFAULTS, NotFoundActions, NotFoundStage, type NotFoundProps } from "./shared";
 
 const GLYPHS = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#%&@$?/\\";
 const SCRAMBLE_MS = 700;
@@ -40,9 +35,7 @@ function Scramble({ text }: { text: string }) {
         setDisplay(
           chars
             .map((ch, i) =>
-              i < settled || ch === " "
-                ? ch
-                : GLYPHS[Math.floor(Math.random() * GLYPHS.length)],
+              i < settled || ch === " " ? ch : GLYPHS[Math.floor(Math.random() * GLYPHS.length)],
             )
             .join(""),
         );

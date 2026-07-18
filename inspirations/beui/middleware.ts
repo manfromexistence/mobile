@@ -18,12 +18,7 @@ export function middleware(req: NextRequest, event: NextFetchEvent) {
   const { pathname } = req.nextUrl;
   // Only the shadcn item endpoints (`/r/<slug>.json`) are real installs.
   // Skip the catalog and the raw-source / non-json sub-paths.
-  if (
-    !GA_ID ||
-    !GA_SECRET ||
-    !pathname.endsWith(".json") ||
-    pathname === "/r/registry.json"
-  ) {
+  if (!GA_ID || !GA_SECRET || !pathname.endsWith(".json") || pathname === "/r/registry.json") {
     return pass;
   }
 

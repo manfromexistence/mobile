@@ -1,9 +1,7 @@
 {
   "name": "gauge-sizes-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "gauge"
-  ],
+  "registryDependencies": ["gauge"],
   "files": [
     {
       "path": "examples/gauge-sizes-demo.tsx",

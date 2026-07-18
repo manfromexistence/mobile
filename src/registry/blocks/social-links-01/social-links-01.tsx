@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils"
-import { IconPlaceholder } from "@/registry/icons/icon-placeholder"
+import { cn } from "@/lib/utils";
+import { IconPlaceholder } from "@/registry/icons/icon-placeholder";
 
 export function SocialLinks01() {
   return (
@@ -20,25 +20,25 @@ export function SocialLinks01() {
                   className={cn(
                     "max-sm:screen-line-top max-sm:screen-line-bottom",
                     "sm:max-md:nth-[2n+1]:screen-line-top sm:max-md:nth-[2n+1]:screen-line-bottom",
-                    "md:nth-[3n+1]:screen-line-top md:nth-[3n+1]:screen-line-bottom"
+                    "md:nth-[3n+1]:screen-line-top md:nth-[3n+1]:screen-line-bottom",
                   )}
                 >
                   <SocialLinkItem {...link} />
                 </li>
-              )
+              );
             })}
           </ul>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 type SocialLink = {
-  icon: string
-  title: string
-  href: string
-}
+  icon: string;
+  title: string;
+  href: string;
+};
 
 function SocialLinkItem({ icon, title, href }: SocialLink) {
   return (
@@ -68,7 +68,7 @@ function SocialLinkItem({ icon, title, href }: SocialLink) {
         className="size-4 shrink-0 text-muted-foreground"
       />
     </div>
-  )
+  );
 }
 
 const SOCIAL_LINKS: SocialLink[] = [
@@ -102,4 +102,4 @@ const SOCIAL_LINKS: SocialLink[] = [
     title: "YouTube",
     href: "https://www.youtube.com/@ncdai",
   },
-]
+];

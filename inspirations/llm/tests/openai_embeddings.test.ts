@@ -1,7 +1,4 @@
-import {
-  EmbeddingInputEmptyError,
-  EmbeddingUnsupportedEncodingFormatError,
-} from "../src/error";
+import { EmbeddingInputEmptyError, EmbeddingUnsupportedEncodingFormatError } from "../src/error";
 import {
   EmbeddingCreateParams,
   postInitAndCheckFields,

@@ -29,9 +29,9 @@ export const siteConfig = {
     sales:
       "https://elevenlabs.io/contact-sales?utm_source=ui_elevenlabs&utm_medium=web&utm_campaign=growth_experiments_ui_components",
   },
-}
+};
 
 export const META_THEME_COLORS = {
   light: "#ffffff",
   dark: "#09090b",
-}
+};

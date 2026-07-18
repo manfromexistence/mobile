@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { PauseIcon, PlayIcon } from "lucide-react"
+import { PauseIcon, PlayIcon } from "lucide-react";
 
-import { cn } from "@/registry/elevenlabs-ui/lib/utils"
+import { cn } from "@/registry/elevenlabs-ui/lib/utils";
 import {
   AudioPlayerButton,
   AudioPlayerDuration,
@@ -11,15 +11,15 @@ import {
   AudioPlayerTime,
   exampleTracks,
   useAudioPlayer,
-} from "@/registry/elevenlabs-ui/ui/audio-player"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
-import { Card } from "@/registry/elevenlabs-ui/ui/card"
-import { ScrollArea } from "@/registry/elevenlabs-ui/ui/scroll-area"
+} from "@/registry/elevenlabs-ui/ui/audio-player";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
+import { Card } from "@/registry/elevenlabs-ui/ui/card";
+import { ScrollArea } from "@/registry/elevenlabs-ui/ui/scroll-area";
 
 interface Track {
-  id: string
-  name: string
-  url: string
+  id: string;
+  name: string;
+  url: string;
 }
 
 export default function Page() {
@@ -27,7 +27,7 @@ export default function Page() {
     <AudioPlayerProvider<Track>>
       <MusicPlayer />
     </AudioPlayerProvider>
-  )
+  );
 }
 
 const MusicPlayer = () => {
@@ -38,11 +38,7 @@ const MusicPlayer = () => {
           <ScrollArea className="h-48 w-full lg:h-full">
             <div className="space-y-1 p-3">
               {exampleTracks.map((song, index) => (
-                <SongListItem
-                  key={song.id}
-                  song={song}
-                  trackNumber={index + 1}
-                />
+                <SongListItem key={song.id} song={song} trackNumber={index + 1} />
               ))}
             </div>
           </ScrollArea>
@@ -50,11 +46,11 @@ const MusicPlayer = () => {
         <Player />
       </div>
     </Card>
-  )
-}
+  );
+};
 
 const Player = () => {
-  const player = useAudioPlayer<Track>()
+  const player = useAudioPlayer<Track>();
 
   return (
     <div className="flex flex-1 items-center p-4 sm:p-6">
@@ -79,19 +75,19 @@ const Player = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const SongListItem = ({
   song,
   trackNumber,
 }: {
-  song: Track
-  trackNumber: number
+  song: Track;
+  trackNumber: number;
 }) => {
-  const player = useAudioPlayer<Track>()
-  const isActive = player.isItemActive(song.id)
-  const isCurrentlyPlaying = isActive && player.isPlaying
+  const player = useAudioPlayer<Track>();
+  const isActive = player.isItemActive(song.id);
+  const isCurrentlyPlaying = isActive && player.isPlaying;
 
   return (
     <div className="group/song relative">
@@ -100,17 +96,17 @@ const SongListItem = ({
         size="sm"
         className={cn(
           "h-10 w-full justify-start px-3 font-normal sm:h-9 sm:px-2",
-          isActive && "bg-secondary"
+          isActive && "bg-secondary",
         )}
         onClick={() => {
           if (isCurrentlyPlaying) {
-            player.pause()
+            player.pause();
           } else {
             player.play({
               id: song.id,
               src: song.url,
               data: song,
-            })
+            });
           }
         }}
       >
@@ -131,5 +127,5 @@ const SongListItem = ({
         </div>
       </Button>
     </div>
-  )
-}
+  );
+};

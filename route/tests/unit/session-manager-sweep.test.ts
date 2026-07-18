@@ -19,10 +19,7 @@ test("MAX_SESSIONS constant exists and is 200", () => {
 });
 
 test("SESSION_TTL_MS is 15 minutes (15 * 60 * 1000)", () => {
-  assert.ok(
-    src.includes("15 * 60 * 1000"),
-    "SESSION_TTL_MS should be 15 * 60 * 1000"
-  );
+  assert.ok(src.includes("15 * 60 * 1000"), "SESSION_TTL_MS should be 15 * 60 * 1000");
 });
 
 // ── touchSession creates sessions ────────────────────────────────────────────
@@ -152,7 +149,7 @@ test("getSessionInfo returns null for null sessionId", () => {
 test("getSessionInfo checks TTL via lastActive (source invariant)", () => {
   assert.ok(
     src.includes("Date.now() - entry.lastActive > SESSION_TTL_MS"),
-    "getSessionInfo must check TTL via lastActive"
+    "getSessionInfo must check TTL via lastActive",
   );
 });
 
@@ -265,18 +262,20 @@ test("extractExternalSessionId returns null for empty value", () => {
 test("cleanup timer is unref'd to avoid blocking process exit", () => {
   assert.ok(
     src.includes("_cleanupTimer") && src.includes(".unref?.()"),
-    "cleanup timer must be unref'd"
+    "cleanup timer must be unref'd",
   );
 });
 
 // ── Source-level: eviction uses lastActive not createdAt ──────────────────────
 
 test("eviction loop sorts by lastActive, not createdAt", () => {
-  const evictBlock = src.match(/while\s*\(sessions\.size\s*>\s*MAX_SESSIONS\)[\s\S]*?sessions\.delete\(oldestKey\)/);
+  const evictBlock = src.match(
+    /while\s*\(sessions\.size\s*>\s*MAX_SESSIONS\)[\s\S]*?sessions\.delete\(oldestKey\)/,
+  );
   assert.ok(evictBlock, "hard-cap eviction loop must exist");
   assert.ok(
     evictBlock[0].includes("entry.lastActive"),
-    "eviction must compare by entry.lastActive"
+    "eviction must compare by entry.lastActive",
   );
 });
 
@@ -285,7 +284,7 @@ test("eviction loop sorts by lastActive, not createdAt", () => {
 test("TTL cleanup checks lastActive for expiration", () => {
   assert.ok(
     src.includes("now - entry.lastActive > SESSION_TTL_MS"),
-    "TTL cleanup must check lastActive against SESSION_TTL_MS"
+    "TTL cleanup must check lastActive against SESSION_TTL_MS",
   );
 });
 

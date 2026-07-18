@@ -1,8 +1,8 @@
-import code from '@content/Animations/PixelTransition/PixelTransition.jsx?raw';
-import css from '@content/Animations/PixelTransition/PixelTransition.css?raw';
-import tailwind from '@tailwind/Animations/PixelTransition/PixelTransition.jsx?raw';
-import tsCode from '@ts-default/Animations/PixelTransition/PixelTransition.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/PixelTransition/PixelTransition.tsx?raw';
+import code from "@content/Animations/PixelTransition/PixelTransition.jsx?raw";
+import css from "@content/Animations/PixelTransition/PixelTransition.css?raw";
+import tailwind from "@tailwind/Animations/PixelTransition/PixelTransition.jsx?raw";
+import tsCode from "@ts-default/Animations/PixelTransition/PixelTransition.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/PixelTransition/PixelTransition.tsx?raw";
 
 export const pixelTransition = {
   dependencies: `gsap`,
@@ -39,5 +39,5 @@ export const pixelTransition = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

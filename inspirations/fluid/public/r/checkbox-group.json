@@ -3,10 +3,7 @@
   "name": "checkbox-group",
   "title": "Checkbox Group",
   "description": "Animated checkbox group with proximity hover, contiguous selection merging, and spring-animated check marks. Built on Radix UI Checkbox.",
-  "dependencies": [
-    "framer-motion",
-    "@radix-ui/react-checkbox"
-  ],
+  "dependencies": ["framer-motion", "@radix-ui/react-checkbox"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

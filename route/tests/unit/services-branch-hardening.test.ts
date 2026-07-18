@@ -109,7 +109,7 @@ test("model capability helpers cover denylist, empty input and default-safe path
   assert.equal(modelCapabilities.supportsToolCalling("deepseek-reasoner"), true);
   assert.equal(
     modelCapabilities.supportsToolCalling("openai/nonexistent-default-safe-model"),
-    true
+    true,
   );
 
   assert.equal(modelCapabilities.supportsReasoning(""), true);
@@ -165,7 +165,7 @@ test("combo agent middleware covers system override, tool filtering, tag strippi
       system_message: "combo system",
       tool_filter_regex: "^keep",
     },
-    "openai/gpt-4o"
+    "openai/gpt-4o",
   );
 
   // PR #3399: server-side session pinning replaced <omniModel> tag extraction;
@@ -347,7 +347,7 @@ test("model helpers cover malformed input, alias maps, wildcard aliases, ambigui
     {
       provider: "github",
       model: "gemini-3-pro",
-    }
+    },
   );
   assert.deepEqual(
     modelService.resolveModelAliasFromMap("alias-b", {
@@ -356,7 +356,7 @@ test("model helpers cover malformed input, alias maps, wildcard aliases, ambigui
     {
       provider: "codex",
       model: "gpt-5.2-codex",
-    }
+    },
   );
   assert.equal(modelService.resolveModelAliasFromMap("missing", { other: "x/y" }), null);
   assert.equal(modelService.resolveModelAliasFromMap("broken", { broken: "no-slash" }), null);
@@ -408,7 +408,7 @@ test("error classifier covers empty-content helpers, context overflow and remain
     errorClassifier.isEmptyContentResponse({
       choices: [{ message: { content: "", tool_calls: [{ id: "call_1" }] } }],
     }),
-    false
+    false,
   );
   assert.equal(errorClassifier.isEmptyContentResponse({ content: [] }), true);
   assert.equal(errorClassifier.isEmptyContentResponse({ text: "   " }), true);
@@ -421,31 +421,31 @@ test("error classifier covers empty-content helpers, context overflow and remain
   assert.equal(
     errorClassifier.classifyProviderError(
       429,
-      JSON.stringify({ error: { message: "insufficient_quota: exceeded your current quota" } })
+      JSON.stringify({ error: { message: "insufficient_quota: exceeded your current quota" } }),
     ),
-    errorClassifier.PROVIDER_ERROR_TYPES.QUOTA_EXHAUSTED
+    errorClassifier.PROVIDER_ERROR_TYPES.QUOTA_EXHAUSTED,
   );
   assert.equal(
     errorClassifier.classifyProviderError(
       401,
-      JSON.stringify({ error: { message: "invalid authentication credentials" } })
+      JSON.stringify({ error: { message: "invalid authentication credentials" } }),
     ),
-    errorClassifier.PROVIDER_ERROR_TYPES.OAUTH_INVALID_TOKEN
+    errorClassifier.PROVIDER_ERROR_TYPES.OAUTH_INVALID_TOKEN,
   );
   assert.equal(
     errorClassifier.classifyProviderError(
       403,
-      JSON.stringify({ error: { message: "account_deactivated due to billing issue" } })
+      JSON.stringify({ error: { message: "account_deactivated due to billing issue" } }),
     ),
-    errorClassifier.PROVIDER_ERROR_TYPES.ACCOUNT_DEACTIVATED
+    errorClassifier.PROVIDER_ERROR_TYPES.ACCOUNT_DEACTIVATED,
   );
   assert.equal(
     errorClassifier.classifyProviderError(500, { error: { message: "upstream exploded" } }),
-    errorClassifier.PROVIDER_ERROR_TYPES.SERVER_ERROR
+    errorClassifier.PROVIDER_ERROR_TYPES.SERVER_ERROR,
   );
   assert.equal(
     errorClassifier.classifyProviderError(400, { error: { message: "input exceeds context" } }),
-    errorClassifier.PROVIDER_ERROR_TYPES.CONTEXT_OVERFLOW
+    errorClassifier.PROVIDER_ERROR_TYPES.CONTEXT_OVERFLOW,
   );
 
   const circular = {};

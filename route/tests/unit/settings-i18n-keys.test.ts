@@ -7,8 +7,9 @@ import path from "node:path";
 const require = createRequire(import.meta.url);
 const en = require("../../src/i18n/messages/en.json");
 const zhCn = require("../../src/i18n/messages/zh-CN.json");
-const { SIDEBAR_SECTIONS, getSectionItems } =
-  await import("../../src/shared/constants/sidebarVisibility.ts");
+const { SIDEBAR_SECTIONS, getSectionItems } = await import(
+  "../../src/shared/constants/sidebarVisibility.ts"
+);
 
 const requiredSettingsKeys = [
   "adaptiveVolumeRouting",
@@ -136,7 +137,8 @@ function lookupMessage(messages, dottedKey) {
 function stripSourceComments(source) {
   return source.replace(
     /("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`|\/\*[\s\S]*?\*\/|\/\/[^\r\n]*)/g,
-    (match) => (match.startsWith("//") || match.startsWith("/*") ? " ".repeat(match.length) : match)
+    (match) =>
+      match.startsWith("//") || match.startsWith("/*") ? " ".repeat(match.length) : match,
   );
 }
 
@@ -180,7 +182,7 @@ function collectMissingEnglishDirectTranslationKeys() {
       .join("|");
     const callPattern = new RegExp(
       String.raw`(?<![\w$.])(${variableAlternation})(?:\.(?:rich|markup|raw))?\s*\(\s*(["'])([^"'\\]*(?:\\.[^"'\\]*)*)\2`,
-      "g"
+      "g",
     );
 
     for (const match of source.matchAll(callPattern)) {
@@ -190,7 +192,7 @@ function collectMissingEnglishDirectTranslationKeys() {
       const binding = [...bindings]
         .reverse()
         .find(
-          (candidate) => candidate.varName === match[1] && candidate.position < (match.index ?? 0)
+          (candidate) => candidate.varName === match[1] && candidate.position < (match.index ?? 0),
         );
       if (!binding) continue;
 
@@ -232,7 +234,7 @@ test("English sidebar translations include every configured sidebar item", () =>
     SIDEBAR_SECTIONS.flatMap((section) => [
       section.titleKey,
       ...getSectionItems(section).map((item) => item.i18nKey),
-    ])
+    ]),
   );
 
   for (const key of sidebarKeys) {
@@ -262,7 +264,7 @@ test("all locales include request body limit settings labels", () => {
       assert.equal(
         typeof messages.settings?.[key],
         "string",
-        `${file}: settings.${key} should exist`
+        `${file}: settings.${key} should exist`,
       );
     }
   }
@@ -279,7 +281,7 @@ test("all locales include proxy page tab labels", () => {
       assert.equal(
         typeof messages.settings?.[key],
         "string",
-        `${file}: settings.${key} should exist`
+        `${file}: settings.${key} should exist`,
       );
     }
   }
@@ -330,7 +332,7 @@ test("direct translation calls have English messages", () => {
 test("resilience tab text is sourced from i18n messages", () => {
   const sourcePath = path.resolve(
     process.cwd(),
-    "src/app/(dashboard)/dashboard/settings/components/ResilienceTab.tsx"
+    "src/app/(dashboard)/dashboard/settings/components/ResilienceTab.tsx",
   );
   const source = fs.readFileSync(sourcePath, "utf8");
 

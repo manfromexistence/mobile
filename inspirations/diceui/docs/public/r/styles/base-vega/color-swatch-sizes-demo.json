@@ -1,9 +1,7 @@
 {
   "name": "color-swatch-sizes-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "color-swatch"
-  ],
+  "registryDependencies": ["color-swatch"],
   "files": [
     {
       "path": "examples/color-swatch-sizes-demo.tsx",

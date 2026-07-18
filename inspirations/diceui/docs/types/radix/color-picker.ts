@@ -1,17 +1,9 @@
 import type { Slider } from "radix-ui";
 import type * as React from "react";
 import type { Input } from "@/registry/bases/radix/ui/input";
-import type {
-  PopoverContent,
-  PopoverTrigger,
-} from "@/registry/bases/radix/ui/popover";
+import type { PopoverContent, PopoverTrigger } from "@/registry/bases/radix/ui/popover";
 import type { Select, SelectTrigger } from "@/registry/bases/radix/ui/select";
-import type {
-  ButtonProps,
-  CompositionProps,
-  ControlledProps,
-  Direction,
-} from "@/types";
+import type { ButtonProps, CompositionProps, ControlledProps, Direction } from "@/types";
 
 type ColorFormat = "hex" | "rgb" | "hsl" | "hsb";
 
@@ -144,17 +136,11 @@ export interface ColorPickerProps
 }
 
 export interface ColorPickerTriggerProps
-  extends Omit<
-      React.ComponentProps<typeof PopoverTrigger>,
-      keyof React.ComponentProps<"button">
-    >,
+  extends Omit<React.ComponentProps<typeof PopoverTrigger>, keyof React.ComponentProps<"button">>,
     CompositionProps {}
 
 export interface ColorPickerContentProps
-  extends Omit<
-      React.ComponentProps<typeof PopoverContent>,
-      keyof React.ComponentProps<"div">
-    >,
+  extends Omit<React.ComponentProps<typeof PopoverContent>, keyof React.ComponentProps<"div">>,
     CompositionProps {}
 
 export interface ColorPickerAreaProps

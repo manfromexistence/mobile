@@ -197,7 +197,7 @@ describe("forwardOpencodeClientHeaders – synthesizeRequestId", () => {
     assert.match(
       headers["x-opencode-request"],
       /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
-      "synthesized request id should be a UUID"
+      "synthesized request id should be a UUID",
     );
   });
 

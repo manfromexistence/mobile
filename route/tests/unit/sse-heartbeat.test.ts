@@ -246,7 +246,7 @@ test("no shape collides with stream.ts event: keepalive strip regex", async () =
         assert.doesNotMatch(
           line.trim(),
           /^event:\s*keepalive\b/i,
-          `shape ${shape} produced forbidden line: ${line}`
+          `shape ${shape} produced forbidden line: ${line}`,
         );
       }
     });

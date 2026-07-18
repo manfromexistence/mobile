@@ -59,11 +59,27 @@ const [value, setValue] = useState("library");
 /* ────────── Props data ────────── */
 
 const tabsProps: PropDef[] = [
-  { name: "value", type: "string", description: "Controlled active tab value. Takes precedence over selectedIndex." },
-  { name: "onValueChange", type: "(value: string) => void", description: "Called when the active tab changes." },
+  {
+    name: "value",
+    type: "string",
+    description: "Controlled active tab value. Takes precedence over selectedIndex.",
+  },
+  {
+    name: "onValueChange",
+    type: "(value: string) => void",
+    description: "Called when the active tab changes.",
+  },
   { name: "selectedIndex", type: "number", description: "Index-based controlled alternative." },
-  { name: "onSelect", type: "(index: number) => void", description: "Called with the new index when the active tab changes." },
-  { name: "defaultValue", type: "string", description: "Default active tab for uncontrolled usage." },
+  {
+    name: "onSelect",
+    type: "(index: number) => void",
+    description: "Called with the new index when the active tab changes.",
+  },
+  {
+    name: "defaultValue",
+    type: "string",
+    description: "Default active tab for uncontrolled usage.",
+  },
   { name: "children", type: "ReactNode", description: "TabsList and TabPanel children." },
 ];
 
@@ -80,7 +96,11 @@ const tabItemProps: PropDef[] = [
 
 const tabPanelProps: PropDef[] = [
   { name: "value", type: "string", description: "Must match a TabItem value." },
-  { name: "children", type: "ReactNode", description: "Panel content, rendered when the matching tab is active." },
+  {
+    name: "children",
+    type: "ReactNode",
+    description: "Panel content, rendered when the matching tab is active.",
+  },
 ];
 
 /* ────────── Page ────────── */
@@ -110,24 +130,16 @@ export default function TabsDoc() {
                 <TabItem value="settings" label="Settings" />
               </TabsList>
               <TabPanel value="library">
-                <p className="text-[13px] text-muted-foreground pt-3">
-                  Library content.
-                </p>
+                <p className="text-[13px] text-muted-foreground pt-3">Library content.</p>
               </TabPanel>
               <TabPanel value="recents">
-                <p className="text-[13px] text-muted-foreground pt-3">
-                  Recents content.
-                </p>
+                <p className="text-[13px] text-muted-foreground pt-3">Recents content.</p>
               </TabPanel>
               <TabPanel value="favorites">
-                <p className="text-[13px] text-muted-foreground pt-3">
-                  Favorites content.
-                </p>
+                <p className="text-[13px] text-muted-foreground pt-3">Favorites content.</p>
               </TabPanel>
               <TabPanel value="settings">
-                <p className="text-[13px] text-muted-foreground pt-3">
-                  Settings content.
-                </p>
+                <p className="text-[13px] text-muted-foreground pt-3">Settings content.</p>
               </TabPanel>
             </Tabs>
           </div>
@@ -145,24 +157,16 @@ export default function TabsDoc() {
                 <TabItem value="settings" icon={Settings} label="Settings" />
               </TabsList>
               <TabPanel value="library">
-                <p className="text-[13px] text-muted-foreground pt-3">
-                  Library content.
-                </p>
+                <p className="text-[13px] text-muted-foreground pt-3">Library content.</p>
               </TabPanel>
               <TabPanel value="recents">
-                <p className="text-[13px] text-muted-foreground pt-3">
-                  Recents content.
-                </p>
+                <p className="text-[13px] text-muted-foreground pt-3">Recents content.</p>
               </TabPanel>
               <TabPanel value="favorites">
-                <p className="text-[13px] text-muted-foreground pt-3">
-                  Favorites content.
-                </p>
+                <p className="text-[13px] text-muted-foreground pt-3">Favorites content.</p>
               </TabPanel>
               <TabPanel value="settings">
-                <p className="text-[13px] text-muted-foreground pt-3">
-                  Settings content.
-                </p>
+                <p className="text-[13px] text-muted-foreground pt-3">Settings content.</p>
               </TabPanel>
             </Tabs>
           </div>
@@ -179,19 +183,13 @@ export default function TabsDoc() {
                 <TabItem value="favorites" label="Favorites" />
               </TabsList>
               <TabPanel value="library">
-                <p className="text-[13px] text-muted-foreground pt-3">
-                  Library content.
-                </p>
+                <p className="text-[13px] text-muted-foreground pt-3">Library content.</p>
               </TabPanel>
               <TabPanel value="recents">
-                <p className="text-[13px] text-muted-foreground pt-3">
-                  Recents content.
-                </p>
+                <p className="text-[13px] text-muted-foreground pt-3">Recents content.</p>
               </TabPanel>
               <TabPanel value="favorites">
-                <p className="text-[13px] text-muted-foreground pt-3">
-                  Favorites content.
-                </p>
+                <p className="text-[13px] text-muted-foreground pt-3">Favorites content.</p>
               </TabPanel>
             </Tabs>
             <p className="text-[12px] text-muted-foreground">

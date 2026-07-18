@@ -1,21 +1,18 @@
-import '../../../css/preview-slider.css';
+import "../../../css/preview-slider.css";
 
 const PreviewInput = ({
-  title = '',
-  value = '',
-  placeholder = '',
+  title = "",
+  value = "",
+  placeholder = "",
   maxLength,
   isDisabled = false,
-  onChange
+  onChange,
 }) => {
   const handleChange = (e) => onChange?.(e.target.value);
 
   return (
     <div className="scrubber">
-      <div
-        className="scrubber-track scrubber-track--input"
-        data-disabled={isDisabled}
-      >
+      <div className="scrubber-track scrubber-track--input" data-disabled={isDisabled}>
         <span className="scrubber-label">{title}</span>
         <input
           className="scrubber-input"

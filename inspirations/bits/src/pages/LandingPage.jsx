@@ -1,15 +1,15 @@
-import { useState, useEffect, useLayoutEffect, useCallback } from 'react';
-import Navbar from '@/components/landingnew/Navbar/Navbar';
-import Hero from '@/components/landingnew/Hero/Hero';
-import Features from '@/components/landingnew/Features/Features';
-import Testimonials from '@/components/landingnew/Testimonials/Testimonials';
-import LiveDemo from '@/components/landingnew/LiveDemo/LiveDemo';
-import QuickStart from '@/components/landingnew/QuickStart/QuickStart';
-import Sponsors from '@/components/landingnew/Sponsors/Sponsors';
-import CTA from '@/components/landingnew/CTA/CTA';
-import Footer from '@/components/landingnew/Footer/Footer';
-import LandingLoader from '@/components/landingnew/LandingLoader/LandingLoader';
-import useScrollToTop from '../hooks/useScrollToTop';
+import { useState, useEffect, useLayoutEffect, useCallback } from "react";
+import Navbar from "@/components/landingnew/Navbar/Navbar";
+import Hero from "@/components/landingnew/Hero/Hero";
+import Features from "@/components/landingnew/Features/Features";
+import Testimonials from "@/components/landingnew/Testimonials/Testimonials";
+import LiveDemo from "@/components/landingnew/LiveDemo/LiveDemo";
+import QuickStart from "@/components/landingnew/QuickStart/QuickStart";
+import Sponsors from "@/components/landingnew/Sponsors/Sponsors";
+import CTA from "@/components/landingnew/CTA/CTA";
+import Footer from "@/components/landingnew/Footer/Footer";
+import LandingLoader from "@/components/landingnew/LandingLoader/LandingLoader";
+import useScrollToTop from "../hooks/useScrollToTop";
 
 const MIN_LOADER_MS = 800;
 
@@ -26,11 +26,11 @@ const LandingPage = () => {
 
   useLayoutEffect(() => {
     if (loaded) return;
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
     return () => {
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
     };
   }, [loaded]);
 
@@ -47,7 +47,7 @@ const LandingPage = () => {
   return (
     <>
       {!loaded && <LandingLoader hiding={hiding} />}
-      <section className={`landing-wrapper no-side-fades${loaded ? ' ln-loaded' : ' ln-loading'}`}>
+      <section className={`landing-wrapper no-side-fades${loaded ? " ln-loaded" : " ln-loading"}`}>
         <title>React Bits - Animated UI Components For React</title>
 
         <Navbar />

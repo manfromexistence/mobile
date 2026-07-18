@@ -10,7 +10,10 @@ import {
 // instead of forcing manual host/port re-entry. The server resolves that id to the
 // live pool record so the executor still receives an inline {type,host,port,...}.
 
-const POOL: Record<string, { type: string; host: string; port: number; username?: string; password?: string }> = {
+const POOL: Record<
+  string,
+  { type: string; host: string; port: number; username?: string; password?: string }
+> = {
   "pool-1": { type: "http", host: "1.2.3.4", port: 8080, username: "u", password: "p" },
   "pool-2": { type: "socks5", host: "9.9.9.9", port: 1080 },
 };
@@ -57,8 +60,14 @@ test("a throwing lookup degrades to direct (null) rather than rejecting", async 
 
 test("proxyId takes precedence over an inline proxy on the same entry", async () => {
   const out = await resolveAccountProxies(
-    [{ fingerprint: "acc-f", proxyId: "pool-2", proxy: { type: "http", host: "0.0.0.0", port: 1 } }],
-    lookup
+    [
+      {
+        fingerprint: "acc-f",
+        proxyId: "pool-2",
+        proxy: { type: "http", host: "0.0.0.0", port: 1 },
+      },
+    ],
+    lookup,
   );
   assert.equal(out[0].proxy?.host, "9.9.9.9");
 });
@@ -66,7 +75,7 @@ test("proxyId takes precedence over an inline proxy on the same entry", async ()
 test("entry with neither proxyId nor proxy.host yields direct (null)", async () => {
   const out = await resolveAccountProxies(
     [{ fingerprint: "acc-g" }, { fingerprint: "acc-h", proxy: null }],
-    lookup
+    lookup,
   );
   assert.equal(out[0].proxy, null);
   assert.equal(out[1].proxy, null);
@@ -77,7 +86,7 @@ test("non-array / malformed input is ignored without throwing", async () => {
   assert.deepEqual(await resolveAccountProxies(null, lookup), []);
   const out = await resolveAccountProxies(
     [null, 42, "x", { proxyId: "pool-1" }, { fingerprint: "ok", proxyId: "pool-2" }],
-    lookup
+    lookup,
   );
   // Only the well-formed entry (with a string fingerprint) survives.
   assert.equal(out.length, 1);
@@ -87,7 +96,7 @@ test("non-array / malformed input is ignored without throwing", async () => {
 test("inline proxy missing host is treated as direct (null)", async () => {
   const out = await resolveAccountProxies(
     [{ fingerprint: "acc-i", proxy: { type: "http", port: 8080 } as never }],
-    lookup
+    lookup,
   );
   assert.equal(out[0].proxy, null);
 });

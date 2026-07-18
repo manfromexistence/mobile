@@ -16,11 +16,7 @@
  */
 
 import { MLCEngineInterface, LatencyBreakdown } from "../types";
-import {
-  functionCallingModelIds,
-  MessagePlaceholders,
-  ModelType,
-} from "../config";
+import { functionCallingModelIds, MessagePlaceholders, ModelType } from "../config";
 import {
   officialHermes2FunctionCallSchemaArray,
   hermes2FunctionCallingSystemPrompt,
@@ -65,9 +61,7 @@ export class Completions {
   }
 
   create(request: ChatCompletionRequestNonStreaming): Promise<ChatCompletion>;
-  create(
-    request: ChatCompletionRequestStreaming,
-  ): Promise<AsyncIterable<ChatCompletionChunk>>;
+  create(request: ChatCompletionRequestStreaming): Promise<AsyncIterable<ChatCompletionChunk>>;
   create(
     request: ChatCompletionRequestBase,
   ): Promise<AsyncIterable<ChatCompletionChunk> | ChatCompletion>;
@@ -286,16 +280,14 @@ export interface ChatCompletionRequestBase {
   };
 }
 
-export interface ChatCompletionRequestNonStreaming
-  extends ChatCompletionRequestBase {
+export interface ChatCompletionRequestNonStreaming extends ChatCompletionRequestBase {
   /**
    * If set, partial message deltas will be sent. It will be terminated by an empty chunk.
    */
   stream?: false | null;
 }
 
-export interface ChatCompletionRequestStreaming
-  extends ChatCompletionRequestBase {
+export interface ChatCompletionRequestStreaming extends ChatCompletionRequestBase {
   /**
    * If set, partial message deltas will be sent. It will be terminated by an empty chunk.
    */
@@ -433,58 +425,51 @@ export function postInitAndCheckFields(
   }
 
   // 2. Check unsupported messages
-  request.messages.forEach(
-    (message: ChatCompletionMessageParam, index: number) => {
-      // Check content array messages (that are not simple string)
-      if (message.role === "user" && typeof message.content !== "string") {
-        if (currentModelType !== ModelType.VLM) {
-          // Only VLM can handle non-string content (i.e. message with image)
-          throw new UserMessageContentErrorForNonVLM(
-            currentModelId,
-            ModelType[currentModelType],
-            message.content,
-          );
-        }
-        let numTextContent = 0;
-        for (let i = 0; i < message.content.length; i++) {
-          const curContent = message.content[i];
-          if (curContent.type === "image_url") {
-            // Do not support image_url.detail
-            const detail = curContent.image_url.detail;
-            if (detail !== undefined && detail !== null) {
-              throw new UnsupportedDetailError(detail);
-            }
-            // Either start with http or data:image for base64
-            const url = curContent.image_url.url;
-            if (!url.startsWith("data:image") && !url.startsWith("http")) {
-              throw new UnsupportedImageURLError(url);
-            }
-          } else {
-            numTextContent += 1;
+  request.messages.forEach((message: ChatCompletionMessageParam, index: number) => {
+    // Check content array messages (that are not simple string)
+    if (message.role === "user" && typeof message.content !== "string") {
+      if (currentModelType !== ModelType.VLM) {
+        // Only VLM can handle non-string content (i.e. message with image)
+        throw new UserMessageContentErrorForNonVLM(
+          currentModelId,
+          ModelType[currentModelType],
+          message.content,
+        );
+      }
+      let numTextContent = 0;
+      for (let i = 0; i < message.content.length; i++) {
+        const curContent = message.content[i];
+        if (curContent.type === "image_url") {
+          // Do not support image_url.detail
+          const detail = curContent.image_url.detail;
+          if (detail !== undefined && detail !== null) {
+            throw new UnsupportedDetailError(detail);
           }
-        }
-        if (numTextContent > 1) {
-          // Only one text contentPart per message
-          // TODO(Charlie): is it always the case that an input can only have one
-          // textPart? Or it is only for phi3vision?
-          throw new MultipleTextContentError();
+          // Either start with http or data:image for base64
+          const url = curContent.image_url.url;
+          if (!url.startsWith("data:image") && !url.startsWith("http")) {
+            throw new UnsupportedImageURLError(url);
+          }
+        } else {
+          numTextContent += 1;
         }
       }
-      if (message.role === "system" && index !== 0) {
-        throw new SystemMessageOrderError();
+      if (numTextContent > 1) {
+        // Only one text contentPart per message
+        // TODO(Charlie): is it always the case that an input can only have one
+        // textPart? Or it is only for phi3vision?
+        throw new MultipleTextContentError();
       }
-    },
-  );
+    }
+    if (message.role === "system" && index !== 0) {
+      throw new SystemMessageOrderError();
+    }
+  });
 
   // 3. Last message has to be from user or tool
   const lastId = request.messages.length - 1;
-  if (
-    request.messages[lastId].role !== "user" &&
-    request.messages[lastId].role !== "tool"
-  ) {
-    throw new MessageOrderError(
-      "Last message should be from either `user` or `tool`.",
-    );
+  if (request.messages[lastId].role !== "user" && request.messages[lastId].role !== "tool") {
+    throw new MessageOrderError("Last message should be from either `user` or `tool`.");
   }
 
   // 4. If streaming, n cannot be > 1, since we cannot manage multiple sequences at once
@@ -500,20 +485,14 @@ export function postInitAndCheckFields(
   }
 
   // 6. Schema can only be specified when type is `json_object`.
-  if (
-    request.response_format?.schema !== undefined &&
-    request.response_format?.schema !== null
-  ) {
+  if (request.response_format?.schema !== undefined && request.response_format?.schema !== null) {
     if (request.response_format?.type !== "json_object") {
       throw new InvalidResponseFormatError();
     }
   }
 
   // 6.1 When grammar is specified, the type needs to be grammar
-  if (
-    request.response_format?.grammar !== undefined &&
-    request.response_format?.grammar !== null
-  ) {
+  if (request.response_format?.grammar !== undefined && request.response_format?.grammar !== null) {
     if (request.response_format?.type !== "grammar") {
       throw new InvalidResponseFormatGrammarError();
     }
@@ -551,24 +530,15 @@ export function postInitAndCheckFields(
   if (request.tools !== undefined && request.tools !== null) {
     // 7.1 Check if model supports function calling
     if (!functionCallingModelIds.includes(currentModelId)) {
-      throw new UnsupportedModelIdError(
-        currentModelId,
-        functionCallingModelIds,
-      );
+      throw new UnsupportedModelIdError(currentModelId, functionCallingModelIds);
     }
 
     // 7.2 Hard coded support for Hermes2Pro / Hermes3 following
     // https://huggingface.co/NousResearch/Hermes-2-Pro-Llama-3-8B#prompt-format-for-function-calling
     // https://huggingface.co/NousResearch/Hermes-3-Llama-3.1-8B#prompt-format-for-function-calling
-    if (
-      currentModelId.startsWith("Hermes-2-Pro-") ||
-      currentModelId.startsWith("Hermes-3-")
-    ) {
+    if (currentModelId.startsWith("Hermes-2-Pro-") || currentModelId.startsWith("Hermes-3-")) {
       // 7.2.1 Update response format for Hermes2Pro / Hermes3 function calling to use json schema
-      if (
-        request.response_format !== undefined &&
-        request.response_format !== null
-      ) {
+      if (request.response_format !== undefined && request.response_format !== null) {
         throw new CustomResponseFormatError(request.response_format);
       }
       request.response_format = {
@@ -691,12 +661,7 @@ export namespace ChatCompletionMessageToolCall {
 /**
  * The role of the author of a message
  */
-export type ChatCompletionRole =
-  | "system"
-  | "user"
-  | "assistant"
-  | "tool"
-  | "function";
+export type ChatCompletionRole = "system" | "user" | "assistant" | "tool" | "function";
 
 /**
  * Options for streaming response. Only set this when you set `stream: true`.
@@ -871,10 +836,7 @@ export namespace ChatCompletionNamedToolChoice {
  * `none` is the default when no functions are present. `auto` is the default if
  * functions are present.
  */
-export type ChatCompletionToolChoiceOption =
-  | "none"
-  | "auto"
-  | ChatCompletionNamedToolChoice;
+export type ChatCompletionToolChoiceOption = "none" | "auto" | ChatCompletionNamedToolChoice;
 
 //////////////////////////////// 3. OTHERS ////////////////////////////////
 
@@ -1033,11 +995,7 @@ export interface CompletionUsage {
  * be exceeded, `tool_calls` if the model called a tool, or `abort` if user manually stops the
  * generation.
  */
-export type ChatCompletionFinishReason =
-  | "stop"
-  | "length"
-  | "tool_calls"
-  | "abort";
+export type ChatCompletionFinishReason = "stop" | "length" | "tool_calls" | "abort";
 
 export namespace ChatCompletion {
   export interface Choice {

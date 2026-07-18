@@ -44,7 +44,7 @@ test.before(async () => {
     "vova gpt-5.5",
     "manual",
     "chat-completions",
-    ["chat"]
+    ["chat"],
   );
 });
 
@@ -81,6 +81,6 @@ test("#6772 RED: `<connId>/<prefix>/<rawModelId>` (naive owned_by+id concat) mus
     info.model,
     RAW_MODEL_ID,
     `model must strip the node's own prefix "${PREFIX}/" so it matches the registered custom model id ` +
-      `"${RAW_MODEL_ID}" — got "${info.model}" instead (double-namespaced, will 400 upstream)`
+      `"${RAW_MODEL_ID}" — got "${info.model}" instead (double-namespaced, will 400 upstream)`,
   );
 });

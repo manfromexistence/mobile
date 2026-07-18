@@ -79,7 +79,7 @@ describe("resolveSpawnArgs — argument-building contract", () => {
     assert.equal(spawnArgs.env.MUX_SERVER_AUTH_TOKEN, token);
     assert.ok(
       !spawnArgs.args.some((a) => a.includes(token)),
-      "token must never appear in argv (would leak via `ps`)"
+      "token must never appear in argv (would leak via `ps`)",
     );
   });
 

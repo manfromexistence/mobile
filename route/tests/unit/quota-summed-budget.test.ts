@@ -74,7 +74,7 @@ test("summed-budget: single-account (limit=L), consumption > L → BLOCK (fair-s
   // CONSUMPTION (1200) > fairShare (500) in strict mode → block
   assert.ok(
     CONSUMPTION > fairShare,
-    `sanity: CONSUMPTION (${CONSUMPTION}) must exceed fair-share (${fairShare})`
+    `sanity: CONSUMPTION (${CONSUMPTION}) must exceed fair-share (${fairShare})`,
   );
 
   const decision = decideFairShare({
@@ -87,7 +87,7 @@ test("summed-budget: single-account (limit=L), consumption > L → BLOCK (fair-s
   assert.equal(
     decision.kind,
     "block",
-    `With 1 account (limit=${effectiveLimit}), consumption=${CONSUMPTION} must be BLOCKED`
+    `With 1 account (limit=${effectiveLimit}), consumption=${CONSUMPTION} must be BLOCKED`,
   );
   assert.equal(decision.reason, "fair-share");
 });
@@ -127,7 +127,7 @@ test("summed-budget: 2-account pool (limit=2L), same consumption > L but < 2L �
   assert.equal(
     decision.kind,
     "allow",
-    `With 2-account pool (limit=${effectiveLimit}), consumption=${CONSUMPTION_BETWEEN} must be ALLOWED`
+    `With 2-account pool (limit=${effectiveLimit}), consumption=${CONSUMPTION_BETWEEN} must be ALLOWED`,
   );
 });
 
@@ -139,7 +139,7 @@ test("summed-budget: 1-account (limit=L), consumption=600 > fair-share(500) → 
 
   assert.ok(
     CONSUMPTION_BETWEEN > fairShare,
-    `sanity: consumption (${CONSUMPTION_BETWEEN}) must exceed 1-account fair-share (${fairShare})`
+    `sanity: consumption (${CONSUMPTION_BETWEEN}) must exceed 1-account fair-share (${fairShare})`,
   );
 
   const decision = decideFairShare({
@@ -152,7 +152,7 @@ test("summed-budget: 1-account (limit=L), consumption=600 > fair-share(500) → 
   assert.equal(
     decision.kind,
     "block",
-    `With 1-account pool (limit=${effectiveLimit}), consumption=${CONSUMPTION_BETWEEN} must be BLOCKED`
+    `With 1-account pool (limit=${effectiveLimit}), consumption=${CONSUMPTION_BETWEEN} must be BLOCKED`,
   );
   assert.equal(decision.reason, "fair-share");
 });
@@ -238,6 +238,6 @@ test("summed-budget: enforceQuotaShare fail-open (no DB) → allow, B16 semantic
   assert.equal(
     result.kind,
     "allow",
-    "No DB → fail-open → allow; B16 semantics preserved after accountCount change"
+    "No DB → fail-open → allow; B16 semantics preserved after accountCount change",
   );
 });

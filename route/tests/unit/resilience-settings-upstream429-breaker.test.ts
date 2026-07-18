@@ -54,7 +54,7 @@ test("mergeResilienceSettings: null sentinel deletes the field (back to undefine
   assert.equal(
     "useUpstream429BreakerHints" in serialized,
     false,
-    "key should be absent in serialized JSON"
+    "key should be absent in serialized JSON",
   );
 });
 
@@ -78,7 +78,7 @@ test("resolveResilienceSettings: omitted field in record stays undefined (no toB
     },
   };
   const resolved = resolveResilienceSettings(
-    record as Parameters<typeof resolveResilienceSettings>[0]
+    record as Parameters<typeof resolveResilienceSettings>[0],
   );
   assert.equal(resolved.connectionCooldown.oauth.useUpstream429BreakerHints, undefined);
   assert.equal(resolved.connectionCooldown.apikey.useUpstream429BreakerHints, undefined);

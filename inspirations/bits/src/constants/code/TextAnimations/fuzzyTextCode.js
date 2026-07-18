@@ -1,7 +1,7 @@
-import code from '@content/TextAnimations/FuzzyText/FuzzyText.jsx?raw';
-import tailwind from '@tailwind/TextAnimations/FuzzyText/FuzzyText.jsx?raw';
-import tsCode from '@ts-default/TextAnimations/FuzzyText/FuzzyText.tsx?raw';
-import tsTailwind from '@ts-tailwind/TextAnimations/FuzzyText/FuzzyText.tsx?raw';
+import code from "@content/TextAnimations/FuzzyText/FuzzyText.jsx?raw";
+import tailwind from "@tailwind/TextAnimations/FuzzyText/FuzzyText.jsx?raw";
+import tsCode from "@ts-default/TextAnimations/FuzzyText/FuzzyText.tsx?raw";
+import tsTailwind from "@ts-tailwind/TextAnimations/FuzzyText/FuzzyText.tsx?raw";
 
 export const fuzzyText = {
   usage: `import FuzzyText from './FuzzyText';
@@ -16,5 +16,5 @@ export const fuzzyText = {
   code,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

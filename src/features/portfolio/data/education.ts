@@ -1,4 +1,4 @@
-import type { Education } from "@/features/portfolio/types/education"
+import type { Education } from "@/features/portfolio/types/education";
 
 export const EDUCATION: Education[] = [
   {
@@ -51,15 +51,7 @@ export const EDUCATION: Education[] = [
 - Developed a feature using Node.js and Pandoc to recognize multiple-choice questions from .docx files and upload them to an [online quiz platform](https://youtu.be/QjR99wdmTyo) I created.
 - Developed websites based on Laravel framework.
 - Built websites with PHP and MySQL, following the MVC architecture.`,
-    skills: [
-      "Algorithms",
-      "C++",
-      "PHP",
-      "MySQL",
-      "Laravel",
-      "Node.js",
-      "Pandoc",
-    ],
+    skills: ["Algorithms", "C++", "PHP", "MySQL", "Laravel", "Node.js", "Pandoc"],
   },
   {
     id: "thcsthuanhung",
@@ -77,4 +69,4 @@ export const EDUCATION: Education[] = [
 - Developed websites using the open-source NukeViet CMS.`,
     skills: ["Pascal", "HTML", "CSS", "JavaScript", "NukeViet"],
   },
-]
+];

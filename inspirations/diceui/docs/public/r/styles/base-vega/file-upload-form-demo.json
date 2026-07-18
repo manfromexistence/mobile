@@ -1,16 +1,8 @@
 {
   "name": "file-upload-form-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react",
-    "@hookform/resolvers/zod",
-    "zod"
-  ],
-  "registryDependencies": [
-    "button",
-    "file-upload",
-    "form"
-  ],
+  "dependencies": ["lucide-react", "@hookform/resolvers/zod", "zod"],
+  "registryDependencies": ["button", "file-upload", "form"],
   "files": [
     {
       "path": "examples/file-upload-form-demo.tsx",

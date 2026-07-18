@@ -17,4 +17,4 @@ export {
   TerminalIcon,
   TextAlignStartIcon,
   TypeIcon,
-} from "lucide-react"
+} from "lucide-react";

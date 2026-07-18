@@ -66,7 +66,7 @@ function installMockFetch({
           data: { chat_session_id: "sess1", status: 2, message_id: "msg1" },
           message: "success",
         },
-        sessionStatus
+        sessionStatus,
       );
     }
     throw new Error(`unexpected fetch ${url}`);
@@ -195,7 +195,7 @@ test('model "auto" stays in code mode (solo_chat_mode=code)', async () => {
     assert.equal(calls.sessionBody.mode, "code");
     assert.equal(
       JSON.parse(calls.sessionBody.initial_message.common_params).solo_chat_mode,
-      "code"
+      "code",
     );
   } finally {
     restore();
@@ -345,7 +345,7 @@ test("refreshCredentials throws on RefreshTokenInvalid so the next call surfaces
     const ex = new TraeExecutor();
     await assert.rejects(
       ex.refreshCredentials({ ...CREDS, refreshToken: "BAD" }),
-      /RefreshTokenInvalid/
+      /RefreshTokenInvalid/,
     );
   } finally {
     restore();

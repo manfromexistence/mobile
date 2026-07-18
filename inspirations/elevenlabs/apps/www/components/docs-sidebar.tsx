@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-import type { source } from "@/lib/source"
+import type { source } from "@/lib/source";
 import {
   Sidebar,
   SidebarContent,
@@ -13,7 +13,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/registry/elevenlabs-ui/ui/sidebar"
+} from "@/registry/elevenlabs-ui/ui/sidebar";
 
 const TOP_LEVEL_SECTIONS = [
   { name: "Introduction", href: "/docs" },
@@ -24,21 +24,18 @@ const TOP_LEVEL_SECTIONS = [
   { name: "Setup", href: "/docs/setup" },
   { name: "Usage", href: "/docs/usage" },
   { name: "Troubleshooting", href: "/docs/troubleshooting" },
-]
+];
 
-const EXCLUDED_SECTIONS = ["installation", "dark-mode", "(root)"]
-const EXCLUDED_PAGES: string[] = []
+const EXCLUDED_SECTIONS = ["installation", "dark-mode", "(root)"];
+const EXCLUDED_PAGES: string[] = [];
 
-const NEW_COMPONENTS = [
-  "components/transcript-viewer.mdx",
-  "components/scrub-bar.mdx",
-]
+const NEW_COMPONENTS = ["components/transcript-viewer.mdx", "components/scrub-bar.mdx"];
 
 export function DocsSidebar({
   tree,
   ...props
 }: React.ComponentProps<typeof Sidebar> & { tree: typeof source.pageTree }) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <Sidebar
@@ -72,14 +69,14 @@ export function DocsSidebar({
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                )
+                );
               })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
         {tree.children.map((item) => {
           if (EXCLUDED_SECTIONS.includes(item.$id ?? "")) {
-            return null
+            return null;
           }
 
           return (
@@ -91,7 +88,7 @@ export function DocsSidebar({
                 {item.type === "folder" && (
                   <SidebarMenu className="gap-0.5">
                     {item.children.map((item) => {
-                      const isNew = NEW_COMPONENTS.includes(item.$id ?? "")
+                      const isNew = NEW_COMPONENTS.includes(item.$id ?? "");
                       return (
                         item.type === "page" &&
                         !EXCLUDED_PAGES.includes(item.url) && (
@@ -116,15 +113,15 @@ export function DocsSidebar({
                             </SidebarMenuButton>
                           </SidebarMenuItem>
                         )
-                      )
+                      );
                     })}
                   </SidebarMenu>
                 )}
               </SidebarGroupContent>
             </SidebarGroup>
-          )
+          );
         })}
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }

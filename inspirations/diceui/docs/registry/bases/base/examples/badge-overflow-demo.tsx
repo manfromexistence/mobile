@@ -24,16 +24,12 @@ export default function BadgeOverflowDemo() {
         <div className="w-64 rounded-md border p-3">
           <BadgeOverflow
             items={tags}
-            renderBadge={(_, label) => (
-              <Badge variant="secondary">{label}</Badge>
-            )}
+            renderBadge={(_, label) => <Badge variant="secondary">{label}</Badge>}
           />
         </div>
       </div>
       <div className="flex flex-col gap-3">
-        <h3 className="font-medium text-sm">
-          Badge Overflow with Custom Overflow
-        </h3>
+        <h3 className="font-medium text-sm">Badge Overflow with Custom Overflow</h3>
         <div className="w-64 rounded-md border p-3">
           <BadgeOverflow
             items={tags}

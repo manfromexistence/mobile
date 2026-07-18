@@ -6,8 +6,9 @@ import assert from "node:assert/strict";
 // The auth.js mutex is an integration-level concern (DB-dependent) and is covered
 // by its own manual verification.
 
-const { checkFallbackError, getProviderProfile } =
-  await import("../../open-sse/services/accountFallback.ts");
+const { checkFallbackError, getProviderProfile } = await import(
+  "../../open-sse/services/accountFallback.ts"
+);
 
 const { BACKOFF_CONFIG, PROVIDER_PROFILES, DEFAULT_API_LIMITS, COOLDOWN_MS, RateLimitReason } =
   await import("../../open-sse/config/constants.ts");
@@ -21,7 +22,7 @@ test("OAuth profile has stricter circuit breaker (lower threshold)", () => {
   const apikey = PROVIDER_PROFILES.apikey;
   assert.ok(
     oauth.circuitBreakerThreshold < apikey.circuitBreakerThreshold,
-    "OAuth should open circuit faster"
+    "OAuth should open circuit faster",
   );
 });
 
@@ -30,7 +31,7 @@ test("API profile has shorter transient cooldown", () => {
   const oauth = PROVIDER_PROFILES.oauth;
   assert.ok(
     apikey.transientCooldown < oauth.transientCooldown,
-    "API providers should have shorter base cooldown"
+    "API providers should have shorter base cooldown",
   );
 });
 
@@ -41,7 +42,7 @@ test("Exponential backoff clamps to the configured maxBackoffLevel", () => {
   assert.equal(result.newBackoffLevel, BACKOFF_CONFIG.maxLevel);
   assert.equal(
     result.cooldownMs,
-    COOLDOWN_MS.transientInitial * Math.pow(2, BACKOFF_CONFIG.maxLevel)
+    COOLDOWN_MS.transientInitial * Math.pow(2, BACKOFF_CONFIG.maxLevel),
   );
 });
 

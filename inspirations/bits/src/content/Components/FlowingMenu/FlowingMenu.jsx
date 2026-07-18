@@ -1,16 +1,16 @@
-import { useRef, useEffect, useState } from 'react';
-import { gsap } from 'gsap';
+import { useRef, useEffect, useState } from "react";
+import { gsap } from "gsap";
 
-import './FlowingMenu.css';
+import "./FlowingMenu.css";
 
 function FlowingMenu({
   items = [],
   speed = 15,
-  textColor = '#fff',
-  bgColor = '#120F17',
-  marqueeBgColor = '#fff',
-  marqueeTextColor = '#120F17',
-  borderColor = '#fff'
+  textColor = "#fff",
+  bgColor = "#120F17",
+  marqueeBgColor = "#fff",
+  marqueeTextColor = "#120F17",
+  borderColor = "#fff",
 }) {
   return (
     <div className="menu-wrap" style={{ backgroundColor: bgColor }}>
@@ -31,19 +31,28 @@ function FlowingMenu({
   );
 }
 
-function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marqueeTextColor, borderColor }) {
+function MenuItem({
+  link,
+  text,
+  image,
+  speed,
+  textColor,
+  marqueeBgColor,
+  marqueeTextColor,
+  borderColor,
+}) {
   const itemRef = useRef(null);
   const marqueeRef = useRef(null);
   const marqueeInnerRef = useRef(null);
   const animationRef = useRef(null);
   const [repetitions, setRepetitions] = useState(4);
 
-  const animationDefaults = { duration: 0.6, ease: 'expo' };
+  const animationDefaults = { duration: 0.6, ease: "expo" };
 
   const findClosestEdge = (mouseX, mouseY, width, height) => {
     const topEdgeDist = distMetric(mouseX, mouseY, width / 2, 0);
     const bottomEdgeDist = distMetric(mouseX, mouseY, width / 2, height);
-    return topEdgeDist < bottomEdgeDist ? 'top' : 'bottom';
+    return topEdgeDist < bottomEdgeDist ? "top" : "bottom";
   };
 
   const distMetric = (x, y, x2, y2) => {
@@ -57,7 +66,7 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
       if (!marqueeInnerRef.current) return;
 
       // Get the first marquee part to measure content width
-      const marqueeContent = marqueeInnerRef.current.querySelector('.marquee__part');
+      const marqueeContent = marqueeInnerRef.current.querySelector(".marquee__part");
       if (!marqueeContent) return;
 
       const contentWidth = marqueeContent.offsetWidth;
@@ -70,15 +79,15 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
     };
 
     calculateRepetitions();
-    window.addEventListener('resize', calculateRepetitions);
-    return () => window.removeEventListener('resize', calculateRepetitions);
+    window.addEventListener("resize", calculateRepetitions);
+    return () => window.removeEventListener("resize", calculateRepetitions);
   }, [text, image]);
 
   useEffect(() => {
     const setupMarquee = () => {
       if (!marqueeInnerRef.current) return;
 
-      const marqueeContent = marqueeInnerRef.current.querySelector('.marquee__part');
+      const marqueeContent = marqueeInnerRef.current.querySelector(".marquee__part");
       if (!marqueeContent) return;
 
       const contentWidth = marqueeContent.offsetWidth;
@@ -92,8 +101,8 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
       animationRef.current = gsap.to(marqueeInnerRef.current, {
         x: -contentWidth,
         duration: speed,
-        ease: 'none',
-        repeat: -1
+        ease: "none",
+        repeat: -1,
       });
     };
 
@@ -108,7 +117,7 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
     };
   }, [text, image, repetitions, speed]);
 
-  const handleMouseEnter = ev => {
+  const handleMouseEnter = (ev) => {
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
     const rect = itemRef.current.getBoundingClientRect();
     const x = ev.clientX - rect.left;
@@ -117,12 +126,12 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
 
     gsap
       .timeline({ defaults: animationDefaults })
-      .set(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' }, 0)
-      .set(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' }, 0)
-      .to([marqueeRef.current, marqueeInnerRef.current], { y: '0%' }, 0);
+      .set(marqueeRef.current, { y: edge === "top" ? "-101%" : "101%" }, 0)
+      .set(marqueeInnerRef.current, { y: edge === "top" ? "101%" : "-101%" }, 0)
+      .to([marqueeRef.current, marqueeInnerRef.current], { y: "0%" }, 0);
   };
 
-  const handleMouseLeave = ev => {
+  const handleMouseLeave = (ev) => {
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
     const rect = itemRef.current.getBoundingClientRect();
     const x = ev.clientX - rect.left;
@@ -131,8 +140,8 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
 
     gsap
       .timeline({ defaults: animationDefaults })
-      .to(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' }, 0)
-      .to(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' }, 0);
+      .to(marqueeRef.current, { y: edge === "top" ? "-101%" : "101%" }, 0)
+      .to(marqueeInnerRef.current, { y: edge === "top" ? "101%" : "-101%" }, 0);
   };
 
   return (

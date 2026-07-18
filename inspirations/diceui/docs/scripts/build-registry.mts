@@ -101,10 +101,7 @@ export const ExamplesIndex: Record<string, Record<string, unknown>> = {
       // Build style index.
       for (const item of registry.items) {
         const resolveFiles = item.files?.map(
-          (file) =>
-            `registry/bases/${baseName}/${
-              typeof file === "string" ? file : file.path
-            }`,
+          (file) => `registry/bases/${baseName}/${typeof file === "string" ? file : file.path}`,
         );
         if (!resolveFiles) {
           continue;
@@ -210,9 +207,7 @@ export const ExamplesIndex: Record<string, Record<string, unknown>> = {
 
               containerAttr?.remove();
 
-              const parentJsxElement = component.getParentIfKindOrThrow(
-                SyntaxKind.JsxElement,
-              );
+              const parentJsxElement = component.getParentIfKindOrThrow(SyntaxKind.JsxElement);
 
               const children = parentJsxElement
                 .getDescendantsOfKind(SyntaxKind.JsxOpeningElement)
@@ -223,15 +218,11 @@ export const ExamplesIndex: Record<string, Record<string, unknown>> = {
                     .map((node) => node.getTagNameNode().getText()),
                 );
 
-              const componentImports = new Map<
-                string,
-                string | string[] | Set<string>
-              >();
+              const componentImports = new Map<string, string | string[] | Set<string>>();
               for (const child of children) {
                 const importLine = imports.get(child);
                 if (importLine) {
-                  const existingImports =
-                    componentImports.get(importLine.module) || [];
+                  const existingImports = componentImports.get(importLine.module) || [];
                   const newImports = importLine.isDefault
                     ? importLine.text
                     : new Set([...existingImports, child]);
@@ -242,13 +233,9 @@ export const ExamplesIndex: Record<string, Record<string, unknown>> = {
                 }
               }
 
-              const componentImportLines = Array.from(
-                componentImports.keys(),
-              ).map((key) => {
+              const componentImportLines = Array.from(componentImports.keys()).map((key) => {
                 const values = componentImports.get(key);
-                const specifier = Array.isArray(values)
-                  ? `{${values.join(",")}}`
-                  : values;
+                const specifier = Array.isArray(values) ? `{${values.join(",")}}` : values;
                 return `import ${specifier} from "${key}"`;
               });
 
@@ -283,9 +270,7 @@ export const ExamplesIndex: Record<string, Record<string, unknown>> = {
 
           if (item.files) {
             const files = item.files.map((file) =>
-              typeof file === "string"
-                ? { type: "registry:page", path: file }
-                : file,
+              typeof file === "string" ? { type: "registry:page", path: file } : file,
             );
             if (files?.length) {
               sourceFilename = `__registry__/${baseName}/${style.name}/${files[0]?.path}`;
@@ -305,9 +290,7 @@ export const ExamplesIndex: Record<string, Record<string, unknown>> = {
 
         if (item.files) {
           const files = item.files.map((file) =>
-            typeof file === "string"
-              ? { type: "registry:page", path: file }
-              : file,
+            typeof file === "string" ? { type: "registry:page", path: file } : file,
           );
           if (files?.length) {
             componentPath = `@/registry/bases/${baseName}/${files[0]?.path}`;
@@ -376,10 +359,7 @@ export const ExamplesIndex: Record<string, Record<string, unknown>> = {
 
   await fs.mkdir(path.join(process.cwd(), "examples"), { recursive: true });
   rimraf.sync(path.join(process.cwd(), "examples/__index__.tsx"));
-  await fs.writeFile(
-    path.join(process.cwd(), "examples/__index__.tsx"),
-    examplesIndex,
-  );
+  await fs.writeFile(path.join(process.cwd(), "examples/__index__.tsx"), examplesIndex);
 }
 
 // ----------------------------------------------------------------------------
@@ -466,10 +446,7 @@ async function buildRootIndex() {
         mapped.registryDependencies = item.registryDependencies;
       if (item.files) {
         mapped.files = item.files.map((_file) => {
-          const file =
-            typeof _file === "string"
-              ? { path: _file, type: item.type }
-              : _file;
+          const file = typeof _file === "string" ? { path: _file, type: item.type } : _file;
           return { path: file.path, type: file.type };
         });
       }
@@ -503,10 +480,7 @@ async function buildPublicItems() {
     );
 
     // Build all per-item JSON files once, into the default style directory
-    const defaultStyleDir = path.join(
-      STYLES_PATH,
-      `${baseName}-${DEFAULT_STYLE}`,
-    );
+    const defaultStyleDir = path.join(STYLES_PATH, `${baseName}-${DEFAULT_STYLE}`);
     await fs.mkdir(defaultStyleDir, { recursive: true });
 
     for (const item of registry.items) {
@@ -517,16 +491,11 @@ async function buildPublicItems() {
         await Promise.all(
           (item.files ?? []).map(async (_file) => {
             const file =
-              typeof _file === "string"
-                ? { path: _file, type: item.type, target: "" }
-                : _file;
+              typeof _file === "string" ? { path: _file, type: item.type, target: "" } : _file;
 
             let content: string;
             try {
-              content = await fs.readFile(
-                path.join(baseSrcRoot, file.path),
-                "utf8",
-              );
+              content = await fs.readFile(path.join(baseSrcRoot, file.path), "utf8");
             } catch {
               return null;
             }
@@ -566,10 +535,7 @@ async function buildPublicItems() {
 
       await Promise.all(
         builtFiles.map((file) =>
-          fs.copyFile(
-            path.join(defaultStyleDir, file),
-            path.join(styleDir, file),
-          ),
+          fs.copyFile(path.join(defaultStyleDir, file), path.join(styleDir, file)),
         ),
       );
     }
@@ -592,9 +558,7 @@ try {
   await rimraf(STYLES_PATH);
   await fs.mkdir(STYLES_PATH, { recursive: true });
 
-  console.log(
-    "🏗️  Building registry/__index__.tsx and examples/__index__.tsx...",
-  );
+  console.log("🏗️  Building registry/__index__.tsx and examples/__index__.tsx...");
   await buildRegistry();
 
   console.log("📦 Building styles index...");

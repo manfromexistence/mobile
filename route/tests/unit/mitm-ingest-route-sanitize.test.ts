@@ -43,7 +43,7 @@ test("ingest masks bearer tokens / secrets before they enter the buffer", async 
       method: "POST",
       headers: { "content-type": "application/json", authorization: `Bearer ${INGEST_TOKEN}` },
       body: JSON.stringify(entry),
-    })
+    }),
   );
 
   assert.equal(res.status, 200);
@@ -70,7 +70,7 @@ test("ingest rejects a wrong token with 403 (and does not buffer)", async () => 
       method: "POST",
       headers: { "content-type": "application/json", authorization: "Bearer wrong-token" },
       body: JSON.stringify({ id: "x" }),
-    })
+    }),
   );
 
   assert.equal(res.status, 403);

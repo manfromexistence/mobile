@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
 import {
   Card,
   CardContent,
@@ -8,20 +8,17 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/registry/elevenlabs-ui/ui/card"
-import { Input } from "@/registry/elevenlabs-ui/ui/input"
-import { Label } from "@/registry/elevenlabs-ui/ui/label"
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "@/registry/elevenlabs-ui/ui/radio-group"
+} from "@/registry/elevenlabs-ui/ui/card";
+import { Input } from "@/registry/elevenlabs-ui/ui/input";
+import { Label } from "@/registry/elevenlabs-ui/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/registry/elevenlabs-ui/ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/registry/elevenlabs-ui/ui/select"
+} from "@/registry/elevenlabs-ui/ui/select";
 
 const plans = [
   {
@@ -36,16 +33,14 @@ const plans = [
     description: "Advanced features with more storage.",
     price: "$20",
   },
-] as const
+] as const;
 
 export function CardsPaymentMethod() {
   return (
     <Card>
       <CardHeader>
         <CardTitle>Payment Method</CardTitle>
-        <CardDescription>
-          Add a new payment method to your account.
-        </CardDescription>
+        <CardDescription>Add a new payment method to your account.</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
@@ -130,5 +125,5 @@ export function CardsPaymentMethod() {
         <Button className="w-full">Continue</Button>
       </CardFooter>
     </Card>
-  )
+  );
 }

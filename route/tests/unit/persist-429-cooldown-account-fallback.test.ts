@@ -33,14 +33,8 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const core = await import("../../src/lib/db/core.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 
-import {
-  applyErrorState,
-  resetAccountState,
-} from "../../open-sse/services/accountFallback.ts";
-import {
-  markConnectionRateLimitedUntil,
-  clearConnectionRateLimit,
-} from "../../src/lib/localDb.ts";
+import { applyErrorState, resetAccountState } from "../../open-sse/services/accountFallback.ts";
+import { markConnectionRateLimitedUntil, clearConnectionRateLimit } from "../../src/lib/localDb.ts";
 
 test.after(() => {
   core.resetDbInstance();
@@ -93,10 +87,7 @@ test("applyErrorState: 429 cascade persists cooldown via setConnectionRateLimitU
   const row = limited.find((c: any) => c.id === connId) as any;
   if (row?.rate_limited_until) {
     const ts = Number(row.rate_limited_until);
-    assert.ok(
-      ts > before,
-      `cooldown timestamp ${ts} must be > request start ${before}`,
-    );
+    assert.ok(ts > before, `cooldown timestamp ${ts} must be > request start ${before}`);
   }
 });
 
@@ -160,9 +151,7 @@ test("localDb.markConnectionRateLimitedUntil: writes cooldown; never throws on b
   const connId = "non-existent-id-xxxxx";
   // Must not throw even though the id doesn't exist — DB write failure
   // inside the wrapper must never crash the request path.
-  assert.doesNotThrow(() =>
-    markConnectionRateLimitedUntil(connId, 5_000),
-  );
+  assert.doesNotThrow(() => markConnectionRateLimitedUntil(connId, 5_000));
 });
 
 test("localDb.clearConnectionRateLimit: does not throw on bad id", () => {

@@ -1,39 +1,39 @@
-import { Eye, Star, Component, Gem, Crown, Medal, ArrowRight } from 'lucide-react';
-import useScrollToTop from '../hooks/useScrollToTop';
-import Navbar from '../components/landingnew/Navbar/Navbar';
-import Footer from '../components/landingnew/Footer/Footer';
-import DotField from '../components/landingnew/Hero/DotField';
-import { diamondSponsors, platinumSponsors, silverSponsors } from '../constants/Sponsors';
-import { FaArrowRight } from 'react-icons/fa6';
+import { Eye, Star, Component, Gem, Crown, Medal, ArrowRight } from "lucide-react";
+import useScrollToTop from "../hooks/useScrollToTop";
+import Navbar from "../components/landingnew/Navbar/Navbar";
+import Footer from "../components/landingnew/Footer/Footer";
+import DotField from "../components/landingnew/Hero/DotField";
+import { diamondSponsors, platinumSponsors, silverSponsors } from "../constants/Sponsors";
+import { FaArrowRight } from "react-icons/fa6";
 
-import '../css/sponsors-page.css';
+import "../css/sponsors-page.css";
 
 const buildSponsorUrl = (url, tier) => {
   if (!url) return null;
   try {
     const sponsorUrl = new URL(url);
-    sponsorUrl.searchParams.set('utm_source', 'reactbits');
-    sponsorUrl.searchParams.set('utm_medium', 'sponsor');
-    sponsorUrl.searchParams.set('utm_campaign', tier);
-    sponsorUrl.searchParams.set('ref', 'reactbits');
+    sponsorUrl.searchParams.set("utm_source", "reactbits");
+    sponsorUrl.searchParams.set("utm_medium", "sponsor");
+    sponsorUrl.searchParams.set("utm_campaign", tier);
+    sponsorUrl.searchParams.set("ref", "reactbits");
     return sponsorUrl.toString();
   } catch {
-    const separator = url.includes('?') ? '&' : '?';
+    const separator = url.includes("?") ? "&" : "?";
     return `${url}${separator}utm_source=reactbits&utm_medium=sponsor&utm_campaign=${tier}&ref=reactbits`;
   }
 };
 
 const STATS = [
-  { icon: Eye, value: '500K+', label: 'Monthly Visitors' },
-  { icon: Star, value: '37K+', label: 'GitHub Stars' },
-  { icon: Component, value: '130+', label: 'Components' },
+  { icon: Eye, value: "500K+", label: "Monthly Visitors" },
+  { icon: Star, value: "37K+", label: "GitHub Stars" },
+  { icon: Component, value: "130+", label: "Components" },
 ];
 
 const TIERS = [
-  { key: 'diamond', label: 'Diamond', icon: Gem, sponsors: diamondSponsors },
-  { key: 'platinum', label: 'Platinum', icon: Crown, sponsors: platinumSponsors },
-  { key: 'silver', label: 'Silver', icon: Medal, sponsors: silverSponsors },
-].filter(tier => tier.sponsors.length > 0);
+  { key: "diamond", label: "Diamond", icon: Gem, sponsors: diamondSponsors },
+  { key: "platinum", label: "Platinum", icon: Crown, sponsors: platinumSponsors },
+  { key: "silver", label: "Silver", icon: Medal, sponsors: silverSponsors },
+].filter((tier) => tier.sponsors.length > 0);
 
 const SponsorsPage = () => {
   useScrollToTop();
@@ -64,7 +64,7 @@ const SponsorsPage = () => {
         </div>
 
         {/* ── Tiers ───────────────────────────────────────────────── */}
-        {TIERS.map(tier => (
+        {TIERS.map((tier) => (
           <div className="sponsors-tier-section" key={tier.key}>
             <div className="sponsors-tier-header">
               <span className={`sponsors-tier-badge sponsors-tier-badge--${tier.key}`}>
@@ -75,7 +75,7 @@ const SponsorsPage = () => {
 
             {tier.sponsors.length > 0 ? (
               <div className={`sponsors-tier-grid sponsors-tier-grid--${tier.key}`}>
-                {tier.sponsors.map(sponsor => {
+                {tier.sponsors.map((sponsor) => {
                   const href = buildSponsorUrl(sponsor.url, tier.key);
                   return (
                     <a
@@ -115,9 +115,11 @@ const SponsorsPage = () => {
 
         {/* ── Stats ───────────────────────────────────────────────── */}
         <div className="sponsors-stats">
-          {STATS.map(s => (
+          {STATS.map((s) => (
             <div className="sponsors-stat" key={s.label}>
-              <span className="sponsors-stat-icon"><s.icon size={22} /></span>
+              <span className="sponsors-stat-icon">
+                <s.icon size={22} />
+              </span>
               <span className="sponsors-stat-value">{s.value}</span>
               <span className="sponsors-stat-label">{s.label}</span>
             </div>

@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "@/registry/elevenlabs-ui/ui/navigation-menu"
+} from "@/registry/elevenlabs-ui/ui/navigation-menu";
 
 export function NavHeader() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <NavigationMenu className="hidden sm:flex">
@@ -33,5 +33,5 @@ export function NavHeader() {
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
-  )
+  );
 }

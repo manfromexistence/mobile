@@ -5,9 +5,7 @@ import type { CompositionProps, EmptyProps } from "@/types";
 type HoverCardProps = React.ComponentProps<typeof HoverCard.Root>;
 type HoverCardContentProps = React.ComponentProps<typeof HoverCard.Content>;
 
-export interface RelativeTimeCardProps
-  extends EmptyProps<"button">,
-    CompositionProps {
+export interface RelativeTimeCardProps extends EmptyProps<"button">, CompositionProps {
   /**
    * The date to display. Can be a Date object, string, or number.
    *

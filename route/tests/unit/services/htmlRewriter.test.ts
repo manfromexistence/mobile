@@ -19,14 +19,14 @@ const PREFIX = "/dashboard/providers/services/9router/embed";
 function assertContains(haystack: string, needle: string, msg?: string): void {
   assert.ok(
     haystack.includes(needle),
-    msg ?? `Expected output to contain: ${JSON.stringify(needle)}\nActual: ${haystack}`
+    msg ?? `Expected output to contain: ${JSON.stringify(needle)}\nActual: ${haystack}`,
   );
 }
 
 function assertNotContains(haystack: string, needle: string, msg?: string): void {
   assert.ok(
     !haystack.includes(needle),
-    msg ?? `Expected output NOT to contain: ${JSON.stringify(needle)}\nActual: ${haystack}`
+    msg ?? `Expected output NOT to contain: ${JSON.stringify(needle)}\nActual: ${haystack}`,
   );
 }
 
@@ -46,7 +46,7 @@ describe("rewriteHtml — <base> injection", () => {
     const titleIdx = out.indexOf("<title>");
     assert.ok(
       baseIdx < titleIdx,
-      `<base> should appear before <title>; base=${baseIdx}, title=${titleIdx}`
+      `<base> should appear before <title>; base=${baseIdx}, title=${titleIdx}`,
     );
   });
 

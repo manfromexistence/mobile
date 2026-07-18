@@ -21,12 +21,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
 const PAGE_CLIENT_PATH = join(
   ROOT,
-  "src/app/(dashboard)/dashboard/costs/quota-share/QuotaSharePageClient.tsx"
+  "src/app/(dashboard)/dashboard/costs/quota-share/QuotaSharePageClient.tsx",
 );
 
 const WIZARD_PATH = join(
   ROOT,
-  "src/app/(dashboard)/dashboard/costs/quota-share/components/PoolWizard.tsx"
+  "src/app/(dashboard)/dashboard/costs/quota-share/components/PoolWizard.tsx",
 );
 
 const EN_PATH = join(ROOT, "src/i18n/messages/en.json");
@@ -40,7 +40,7 @@ const wizardSrc = readFileSync(WIZARD_PATH, "utf8");
 test("QuotaSharePageClient: fetches /api/quota/groups", () => {
   assert.ok(
     pageSrc.includes("/api/quota/groups"),
-    "QuotaSharePageClient must fetch /api/quota/groups"
+    "QuotaSharePageClient must fetch /api/quota/groups",
   );
 });
 
@@ -52,7 +52,7 @@ test("QuotaSharePageClient: has a fetch for GET /api/quota/groups (list)", () =>
   const afterFetch = pageSrc.slice(fetchGroupsIdx);
   assert.ok(
     afterFetch.includes('"/api/quota/groups"') || afterFetch.includes("'/api/quota/groups'"),
-    "fetchGroups must call fetch with /api/quota/groups"
+    "fetchGroups must call fetch with /api/quota/groups",
   );
 });
 
@@ -63,11 +63,11 @@ test("QuotaSharePageClient: has a POST to /api/quota/groups for group creation",
   const afterCreate = pageSrc.slice(createGroupIdx, createGroupIdx + 800);
   assert.ok(
     afterCreate.includes('method: "POST"') || afterCreate.includes("method: 'POST'"),
-    "handleCreateGroup must use POST"
+    "handleCreateGroup must use POST",
   );
   assert.ok(
     afterCreate.includes("/api/quota/groups"),
-    "handleCreateGroup must POST to /api/quota/groups"
+    "handleCreateGroup must POST to /api/quota/groups",
   );
 });
 
@@ -78,11 +78,11 @@ test("QuotaSharePageClient: has a PATCH to /api/quota/groups/[id] for rename", (
   const afterRename = pageSrc.slice(renameIdx, renameIdx + 800);
   assert.ok(
     afterRename.includes('method: "PATCH"') || afterRename.includes("method: 'PATCH'"),
-    "handleRenameGroup must use PATCH"
+    "handleRenameGroup must use PATCH",
   );
   assert.ok(
     afterRename.includes("/api/quota/groups/"),
-    "handleRenameGroup must PATCH /api/quota/groups/[id]"
+    "handleRenameGroup must PATCH /api/quota/groups/[id]",
   );
 });
 
@@ -92,25 +92,25 @@ test("QuotaSharePageClient: renders a group <select>", () => {
   // The group bar must include a <select> with value bound to selectedGroupId
   assert.ok(
     pageSrc.includes("selectedGroupId"),
-    "QuotaSharePageClient must track selectedGroupId state"
+    "QuotaSharePageClient must track selectedGroupId state",
   );
   assert.ok(
     pageSrc.includes("<select") && pageSrc.includes("selectedGroupId"),
-    "QuotaSharePageClient must render a <select> for groups"
+    "QuotaSharePageClient must render a <select> for groups",
   );
 });
 
 test("QuotaSharePageClient: group bar renders 'New group' action", () => {
   assert.ok(
     pageSrc.includes("newGroup") || pageSrc.includes("showNewGroupInput"),
-    "QuotaSharePageClient must render a New group action (uses newGroup i18n key or showNewGroupInput state)"
+    "QuotaSharePageClient must render a New group action (uses newGroup i18n key or showNewGroupInput state)",
   );
 });
 
 test("QuotaSharePageClient: group bar renders 'Rename group' action", () => {
   assert.ok(
     pageSrc.includes("renameGroup"),
-    "QuotaSharePageClient must render a Rename group action using renameGroup i18n key"
+    "QuotaSharePageClient must render a Rename group action using renameGroup i18n key",
   );
 });
 
@@ -119,7 +119,7 @@ test("QuotaSharePageClient: group bar renders 'Rename group' action", () => {
 test("QuotaSharePageClient: filters pool list by selectedGroupId (filteredPools)", () => {
   assert.ok(
     pageSrc.includes("filteredPools"),
-    "QuotaSharePageClient must derive filteredPools from the group selection"
+    "QuotaSharePageClient must derive filteredPools from the group selection",
   );
 });
 
@@ -129,7 +129,7 @@ test("QuotaSharePageClient: renders group heading above pool grid", () => {
   // per-group headings using groupPools.length — one section per group.
   assert.ok(
     pageSrc.includes("groupPools.length") || pageSrc.includes("filteredPools.length"),
-    "QuotaSharePageClient must show pool count in the group heading (groupPools.length or filteredPools.length)"
+    "QuotaSharePageClient must show pool count in the group heading (groupPools.length or filteredPools.length)",
   );
 });
 
@@ -138,14 +138,14 @@ test("QuotaSharePageClient: renders group heading above pool grid", () => {
 test("QuotaSharePageClient: passes groups prop to PoolWizard", () => {
   assert.ok(
     pageSrc.includes("groups={groups}"),
-    "QuotaSharePageClient must pass groups={groups} to PoolWizard"
+    "QuotaSharePageClient must pass groups={groups} to PoolWizard",
   );
 });
 
 test("QuotaSharePageClient: passes selectedGroupId prop to PoolWizard", () => {
   assert.ok(
     pageSrc.includes("selectedGroupId={selectedGroupId}"),
-    "QuotaSharePageClient must pass selectedGroupId={selectedGroupId} to PoolWizard"
+    "QuotaSharePageClient must pass selectedGroupId={selectedGroupId} to PoolWizard",
   );
 });
 
@@ -155,24 +155,23 @@ test("PoolWizard: includes groupId in the POST /api/quota/pools body", () => {
   // The POST body JSON must include groupId
   assert.ok(
     wizardSrc.includes("groupId"),
-    "PoolWizard must include groupId in the create POST body"
+    "PoolWizard must include groupId in the create POST body",
   );
   // Find the POST body JSON.stringify call
   const postIdx = wizardSrc.indexOf('method: "POST"');
   assert.ok(postIdx >= 0, "POST method call must exist in PoolWizard");
   const postSection = wizardSrc.slice(postIdx, postIdx + 400);
-  assert.ok(
-    postSection.includes("groupId"),
-    "groupId must be in the POST body JSON.stringify"
-  );
+  assert.ok(postSection.includes("groupId"), "groupId must be in the POST body JSON.stringify");
 });
 
 // ── PoolWizard: group picker UI in step 1 ────────────────────────────────────
 
 test("PoolWizard: accepts groups prop in PoolWizardProps", () => {
   assert.ok(
-    wizardSrc.includes("groups?:") || wizardSrc.includes("groups ?: ") || wizardSrc.includes("groups?: "),
-    "PoolWizardProps must include optional groups prop"
+    wizardSrc.includes("groups?:") ||
+      wizardSrc.includes("groups ?: ") ||
+      wizardSrc.includes("groups?: "),
+    "PoolWizardProps must include optional groups prop",
   );
 });
 
@@ -185,7 +184,7 @@ test("PoolWizard: renders a group picker <select> in step 1", () => {
   const step1Block = wizardSrc.slice(step1Idx, step2Idx);
   assert.ok(
     step1Block.includes("groupId") && step1Block.includes("<select"),
-    "step 1 must include a group picker <select> with groupId binding"
+    "step 1 must include a group picker <select> with groupId binding",
   );
 });
 
@@ -200,11 +199,11 @@ test("PoolWizard: effectivePoolName uses provider slug, not connLabel", () => {
   const effectiveLine = wizardSrc.slice(effectiveIdx, effectiveIdx + 200);
   assert.ok(
     !effectiveLine.includes("connLabel(selectedConn)"),
-    "effectivePoolName must NOT use connLabel(selectedConn) — that exposes email"
+    "effectivePoolName must NOT use connLabel(selectedConn) — that exposes email",
   );
   assert.ok(
     effectiveLine.includes("selectedConn.provider") || effectiveLine.includes(".provider"),
-    "effectivePoolName must fall back to provider slug"
+    "effectivePoolName must fall back to provider slug",
   );
 });
 
@@ -227,7 +226,7 @@ test("PoolWizard: pool name placeholder uses provider, not connLabel", () => {
   }
   assert.ok(
     foundProviderPlaceholder,
-    "Pool name input placeholder must use selectedConn.provider (not connLabel/email)"
+    "Pool name input placeholder must use selectedConn.provider (not connLabel/email)",
   );
 });
 
@@ -250,22 +249,14 @@ const GROUP_KEYS = [
 test("i18n: all group keys present in en.json quotaShare namespace", () => {
   const en = JSON.parse(readFileSync(EN_PATH, "utf8")) as Record<string, Record<string, string>>;
   for (const k of GROUP_KEYS) {
-    assert.equal(
-      typeof en["quotaShare"]?.[k],
-      "string",
-      `en.json missing quotaShare.${k}`
-    );
+    assert.equal(typeof en["quotaShare"]?.[k], "string", `en.json missing quotaShare.${k}`);
   }
 });
 
 test("i18n: all group keys present in pt-BR.json quotaShare namespace", () => {
   const pt = JSON.parse(readFileSync(PT_PATH, "utf8")) as Record<string, Record<string, string>>;
   for (const k of GROUP_KEYS) {
-    assert.equal(
-      typeof pt["quotaShare"]?.[k],
-      "string",
-      `pt-BR.json missing quotaShare.${k}`
-    );
+    assert.equal(typeof pt["quotaShare"]?.[k], "string", `pt-BR.json missing quotaShare.${k}`);
   }
 });
 
@@ -284,5 +275,9 @@ test("i18n: no group keys are present in en but missing from pt-BR (full parity)
   const enKeys = new Set(Object.keys(en["quotaShare"] ?? {}));
   const ptKeys = new Set(Object.keys(pt["quotaShare"] ?? {}));
   const missingInPt = GROUP_KEYS.filter((k) => enKeys.has(k) && !ptKeys.has(k));
-  assert.deepEqual(missingInPt, [], `pt-BR.json missing quotaShare keys: ${missingInPt.join(", ")}`);
+  assert.deepEqual(
+    missingInPt,
+    [],
+    `pt-BR.json missing quotaShare keys: ${missingInPt.join(", ")}`,
+  );
 });

@@ -1,16 +1,7 @@
 "use client";
 // beui.dev/components/blocks/bloom-menu
 
-import {
-  Bell,
-  FileText,
-  FolderClosed,
-  LayoutGrid,
-  Link,
-  Plus,
-  Table,
-  X,
-} from "lucide-react";
+import { Bell, FileText, FolderClosed, LayoutGrid, Link, Plus, Table, X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { type ComponentType, useEffect, useId, useRef, useState } from "react";
 import { EASE_OUT } from "@/lib/ease";
@@ -41,11 +32,7 @@ export interface AiProviderProps {
   className?: string;
 }
 
-export function AiProvider({
-  items = ITEMS,
-  onSelect,
-  className,
-}: AiProviderProps) {
+export function AiProvider({ items = ITEMS, onSelect, className }: AiProviderProps) {
   const [open, setOpen] = useState(false);
   const reduce = useReducedMotion();
   const layoutId = useId();
@@ -57,8 +44,7 @@ export function AiProvider({
       if (e.key === "Escape") setOpen(false);
     };
     const onPointer = (e: PointerEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node))
-        setOpen(false);
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
     window.addEventListener("keydown", onKey);
     window.addEventListener("pointerdown", onPointer);
@@ -122,9 +108,7 @@ export function AiProvider({
                   // Iris reveal: start as a small box at the grid center and open
                   // outward to all four corners, so the menu grows from the middle
                   // in every direction instead of wiping top-down.
-                  initial={
-                    reduce ? false : { clipPath: "inset(45% 34% 45% 34%)" }
-                  }
+                  initial={reduce ? false : { clipPath: "inset(45% 34% 45% 34%)" }}
                   animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
                   transition={{
                     delay: reduce ? 0 : 0.08,
@@ -141,10 +125,7 @@ export function AiProvider({
                     const rows = Math.ceil(items.length / cols);
                     const col = i % cols;
                     const row = Math.floor(i / cols);
-                    const dist = Math.hypot(
-                      col - (cols - 1) / 2,
-                      row - (rows - 1) / 2,
-                    );
+                    const dist = Math.hypot(col - (cols - 1) / 2, row - (rows - 1) / 2);
                     return (
                       <button
                         key={item.label}
@@ -153,34 +134,34 @@ export function AiProvider({
                           onSelect?.(item.label);
                           setOpen(false);
                         }}
-                      // Static cell with hairline borders (no animated fill) so
-                      // the grid lines never flicker as items stagger in. Only the
-                      // inner content animates.
-                      className={cn(
-                        "flex items-center justify-center px-3 py-6 text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary",
-                        i % 3 !== 2 && "border-r border-border",
-                        i < 3 && "border-b border-border",
-                      )}
-                    >
-                      <motion.span
-                        initial={
-                          reduce
-                            ? { opacity: 0 }
-                            : { opacity: 0, scale: 0.85, filter: "blur(6px)" }
-                        }
-                        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                        transition={{
-                          delay: reduce ? 0 : 0.1 + dist * 0.07,
-                          type: "spring",
-                          stiffness: 440,
-                          damping: 34,
-                        }}
-                        className="flex flex-col items-center gap-2"
+                        // Static cell with hairline borders (no animated fill) so
+                        // the grid lines never flicker as items stagger in. Only the
+                        // inner content animates.
+                        className={cn(
+                          "flex items-center justify-center px-3 py-6 text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary",
+                          i % 3 !== 2 && "border-r border-border",
+                          i < 3 && "border-b border-border",
+                        )}
                       >
-                        <item.icon className="h-5 w-5" />
-                        <span className="text-sm font-medium">{item.label}</span>
-                      </motion.span>
-                    </button>
+                        <motion.span
+                          initial={
+                            reduce
+                              ? { opacity: 0 }
+                              : { opacity: 0, scale: 0.85, filter: "blur(6px)" }
+                          }
+                          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                          transition={{
+                            delay: reduce ? 0 : 0.1 + dist * 0.07,
+                            type: "spring",
+                            stiffness: 440,
+                            damping: 34,
+                          }}
+                          className="flex flex-col items-center gap-2"
+                        >
+                          <item.icon className="h-5 w-5" />
+                          <span className="text-sm font-medium">{item.label}</span>
+                        </motion.span>
+                      </button>
                     );
                   })}
                 </motion.div>
@@ -200,10 +181,7 @@ export function AiProvider({
             >
               {/* own `layout` counter-scales the label so it stays crisp while the
                   button box morphs, instead of stretching with it */}
-              <motion.span
-                layout
-                className="inline-flex items-center gap-2 whitespace-nowrap"
-              >
+              <motion.span layout className="inline-flex items-center gap-2 whitespace-nowrap">
                 Big Pickel
                 {/* <Plus className="h-4 w-4" /> */}
               </motion.span>

@@ -35,7 +35,7 @@ test("#5183 a blocked-by-id no-auth provider lands in `blocked`, not discarded",
   const { visible, blocked } = partitionNoAuthEntriesByBlocked(entries, ["veoaifree-web"]);
   assert.deepEqual(
     blocked.map((e) => e.providerId),
-    ["veoaifree-web"]
+    ["veoaifree-web"],
   );
   assert.ok(!visible.some((e) => e.providerId === "veoaifree-web"));
 });
@@ -44,7 +44,7 @@ test("#5183 a provider blocked by its ALIAS is also captured as blocked", () => 
   const { blocked } = partitionNoAuthEntriesByBlocked(entries, ["geminiweb"]);
   assert.deepEqual(
     blocked.map((e) => e.providerId),
-    ["gemini-web"]
+    ["gemini-web"],
   );
 });
 
@@ -60,10 +60,10 @@ test("#5183 partition order is preserved within each bucket", () => {
   const { visible, blocked } = partitionNoAuthEntriesByBlocked(entries, ["gemini-web"]);
   assert.deepEqual(
     visible.map((e) => e.providerId),
-    ["veoaifree-web", "kilocode"]
+    ["veoaifree-web", "kilocode"],
   );
   assert.deepEqual(
     blocked.map((e) => e.providerId),
-    ["gemini-web"]
+    ["gemini-web"],
   );
 });

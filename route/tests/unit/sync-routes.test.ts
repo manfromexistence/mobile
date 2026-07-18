@@ -64,7 +64,7 @@ test("sync token management requires management auth when login is enabled", asy
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ name: "Desktop client" }),
-    })
+    }),
   );
 
   assert.equal(response.status, 401);
@@ -82,7 +82,7 @@ test("sync token routes issue, list, use and revoke dedicated tokens", async () 
         "x-forwarded-for": "198.51.100.30",
       },
       body: { name: "Desktop client" },
-    })
+    }),
   );
 
   assert.equal(createResponse.status, 201);
@@ -94,7 +94,7 @@ test("sync token routes issue, list, use and revoke dedicated tokens", async () 
   const listResponse = await syncTokensRoute.GET(
     await makeManagementSessionRequest("http://localhost/api/sync/tokens", {
       token: managementKey.key,
-    })
+    }),
   );
   assert.equal(listResponse.status, 200);
   const listed = (await listResponse.json()) as any;
@@ -108,7 +108,7 @@ test("sync token routes issue, list, use and revoke dedicated tokens", async () 
       headers: {
         authorization: `Bearer ${createdBody.token}`,
       },
-    })
+    }),
   );
   assert.equal(bundleResponse.status, 200);
   assert.match(bundleResponse.headers.get("etag") || "", /^"[a-f0-9]{64}"$/);
@@ -120,7 +120,7 @@ test("sync token routes issue, list, use and revoke dedicated tokens", async () 
   const secondListResponse = await syncTokensRoute.GET(
     await makeManagementSessionRequest("http://localhost/api/sync/tokens", {
       token: managementKey.key,
-    })
+    }),
   );
   const secondListBody = (await secondListResponse.json()) as any;
   assert.equal(typeof secondListBody.tokens[0].lastUsedAt, "string");
@@ -131,7 +131,7 @@ test("sync token routes issue, list, use and revoke dedicated tokens", async () 
         authorization: `Bearer ${createdBody.token}`,
         "if-none-match": `"${bundlePayload.version}"`,
       },
-    })
+    }),
   );
   assert.equal(notModifiedResponse.status, 304);
 
@@ -145,9 +145,9 @@ test("sync token routes issue, list, use and revoke dedicated tokens", async () 
           "x-request-id": "req-sync-token-revoke",
           "x-forwarded-for": "198.51.100.30",
         },
-      }
+      },
     ),
-    { params: Promise.resolve({ id: createdBody.syncToken.id }) }
+    { params: Promise.resolve({ id: createdBody.syncToken.id }) },
   );
 
   assert.equal(revokeResponse.status, 200);
@@ -159,7 +159,7 @@ test("sync token routes issue, list, use and revoke dedicated tokens", async () 
       headers: {
         authorization: `Bearer ${createdBody.token}`,
       },
-    })
+    }),
   );
   assert.equal(revokedBundleResponse.status, 401);
 

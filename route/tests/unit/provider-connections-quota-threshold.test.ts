@@ -66,7 +66,7 @@ test("createProviderConnection with no map yields null on re-read", async () => 
   // null/undefined are both acceptable signals for "no overrides".
   assert.ok(
     fetched.quotaWindowThresholds === null || fetched.quotaWindowThresholds === undefined,
-    `expected null/undefined, got ${JSON.stringify(fetched.quotaWindowThresholds)}`
+    `expected null/undefined, got ${JSON.stringify(fetched.quotaWindowThresholds)}`,
   );
 });
 

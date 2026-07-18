@@ -12,10 +12,7 @@ export default function Home() {
     <>
       <Head>
         <title>Example App</title>
-        <meta
-          name="description"
-          content="Example app for web llm next compatibility"
-        />
+        <meta name="description" content="Example app for web llm next compatibility" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main

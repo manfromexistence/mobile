@@ -1,10 +1,10 @@
-import { Box, Flex, Text, Icon, useBreakpointValue } from '@chakra-ui/react';
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { Settings, ChevronUp } from 'lucide-react';
-import Controls from './Controls';
-import Canvas from './Canvas';
-import { createRenderer } from './renderer';
-import { createInitialState, OVERLAY_TEXTURES } from './types';
+import { Box, Flex, Text, Icon, useBreakpointValue } from "@chakra-ui/react";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { Settings, ChevronUp } from "lucide-react";
+import Controls from "./Controls";
+import Canvas from "./Canvas";
+import { createRenderer } from "./renderer";
+import { createInitialState, OVERLAY_TEXTURES } from "./types";
 import {
   loadImageFromFile,
   loadImageFromURL,
@@ -14,9 +14,9 @@ import {
   copyDataURLToClipboard,
   exportCanvas,
   isClipboardImageSupported,
-  generateProceduralTexture
-} from './utils';
-import { toaster } from '../../components/setup/toaster';
+  generateProceduralTexture,
+} from "./utils";
+import { toaster } from "../../components/setup/toaster";
 
 export default function TextureLab({ toolSelector }) {
   const isMobile = useBreakpointValue({ base: true, lg: false });
@@ -46,7 +46,7 @@ export default function TextureLab({ toolSelector }) {
     duration,
     isExporting,
     exportProgress,
-    exportStatus
+    exportStatus,
   } = state;
 
   useEffect(() => {
@@ -54,12 +54,12 @@ export default function TextureLab({ toolSelector }) {
       try {
         rendererRef.current = createRenderer(canvasRef.current);
       } catch (err) {
-        console.error('Failed to create renderer:', err);
+        console.error("Failed to create renderer:", err);
         toaster.create({
-          title: 'Renderer Error',
-          description: 'Failed to initialize graphics renderer.',
-          type: 'error',
-          duration: 5000
+          title: "Renderer Error",
+          description: "Failed to initialize graphics renderer.",
+          type: "error",
+          duration: 5000,
         });
       }
     }
@@ -71,10 +71,10 @@ export default function TextureLab({ toolSelector }) {
       }
       if (videoRef.current) {
         videoRef.current.pause();
-        if (videoRef.current.src && videoRef.current.src.startsWith('blob:')) {
+        if (videoRef.current.src && videoRef.current.src.startsWith("blob:")) {
           URL.revokeObjectURL(videoRef.current.src);
         }
-        videoRef.current.src = '';
+        videoRef.current.src = "";
         videoRef.current = null;
       }
     };
@@ -83,7 +83,7 @@ export default function TextureLab({ toolSelector }) {
   const renderPreview = useCallback(() => {
     if (!rendererRef.current) return;
 
-    if (mediaType === 'video' && video) {
+    if (mediaType === "video" && video) {
       rendererRef.current.updateVideoFrame(video);
       rendererRef.current.render(effects, seed, video.videoWidth, video.videoHeight);
       return;
@@ -94,7 +94,7 @@ export default function TextureLab({ toolSelector }) {
     let targetWidth = image.width;
     let targetHeight = image.height;
 
-    if (previewQuality === 'draft' && (image.width > 1000 || image.height > 1000)) {
+    if (previewQuality === "draft" && (image.width > 1000 || image.height > 1000)) {
       const scale = Math.min(1000 / image.width, 1000 / image.height);
       targetWidth = Math.round(image.width * scale);
       targetHeight = Math.round(image.height * scale);
@@ -106,7 +106,7 @@ export default function TextureLab({ toolSelector }) {
   const rafRef = useRef(null);
 
   useEffect(() => {
-    if (mediaType !== 'video' || !video || !isPlaying) {
+    if (mediaType !== "video" || !video || !isPlaying) {
       if (videoAnimationRef.current) {
         cancelAnimationFrame(videoAnimationRef.current);
         videoAnimationRef.current = null;
@@ -117,7 +117,7 @@ export default function TextureLab({ toolSelector }) {
     const updateFrame = () => {
       if (!video.paused && !video.ended) {
         renderPreview();
-        setState(s => ({ ...s, currentTime: video.currentTime }));
+        setState((s) => ({ ...s, currentTime: video.currentTime }));
         videoAnimationRef.current = requestAnimationFrame(updateFrame);
       }
     };
@@ -139,7 +139,7 @@ export default function TextureLab({ toolSelector }) {
       cancelAnimationFrame(rafRef.current);
     }
 
-    if (previewQuality === 'draft') {
+    if (previewQuality === "draft") {
       rafRef.current = requestAnimationFrame(() => {
         renderPreview();
       });
@@ -167,7 +167,7 @@ export default function TextureLab({ toolSelector }) {
     const loadOverlayTextures = async () => {
       if (!rendererRef.current) return;
 
-      const overlayEffect = effects.find(e => e.type === 'overlay' && e.enabled);
+      const overlayEffect = effects.find((e) => e.type === "overlay" && e.enabled);
       if (!overlayEffect) {
         if (lastOverlayParamsRef.current !== null) {
           rendererRef.current.setOverlayTexture(null);
@@ -177,7 +177,7 @@ export default function TextureLab({ toolSelector }) {
       }
 
       const { texture, customTextureUrl } = overlayEffect.params;
-      const paramsKey = `${texture}:${customTextureUrl || ''}`;
+      const paramsKey = `${texture}:${customTextureUrl || ""}`;
 
       if (lastOverlayParamsRef.current === paramsKey) {
         return;
@@ -191,7 +191,7 @@ export default function TextureLab({ toolSelector }) {
           lastOverlayParamsRef.current = paramsKey;
           renderPreview();
         } catch {
-          console.warn('Failed to load custom overlay texture');
+          console.warn("Failed to load custom overlay texture");
         }
       } else if (texture !== OVERLAY_TEXTURES.CUSTOM) {
         const textureImg = await generateProceduralTexture(texture);
@@ -212,17 +212,17 @@ export default function TextureLab({ toolSelector }) {
   const handleImageLoad = useCallback(async (source, type) => {
     if (videoRef.current) {
       videoRef.current.pause();
-      if (videoRef.current.src && videoRef.current.src.startsWith('blob:')) {
+      if (videoRef.current.src && videoRef.current.src.startsWith("blob:")) {
         URL.revokeObjectURL(videoRef.current.src);
       }
-      videoRef.current.src = '';
+      videoRef.current.src = "";
       videoRef.current = null;
     }
 
     try {
       let result;
 
-      if (type === 'file') {
+      if (type === "file") {
         result = await loadImageFromFile(source);
       } else {
         result = await loadImageFromURL(source);
@@ -232,33 +232,33 @@ export default function TextureLab({ toolSelector }) {
         rendererRef.current.setImage(result.image);
       }
 
-      setState(s => ({
+      setState((s) => ({
         ...s,
         image: result.image,
         imageUrl: result.url,
         video: null,
         videoUrl: null,
-        mediaType: 'image',
+        mediaType: "image",
         corsError: result.corsError,
         isPlaying: false,
         currentTime: 0,
-        duration: 0
+        duration: 0,
       }));
 
       if (result.corsError) {
         toaster.create({
-          title: 'CORS Warning',
-          description: 'Image loaded but export/copy disabled. Re-upload locally to enable.',
-          type: 'warning',
-          duration: 5000
+          title: "CORS Warning",
+          description: "Image loaded but export/copy disabled. Re-upload locally to enable.",
+          type: "warning",
+          duration: 5000,
         });
       }
     } catch (err) {
       toaster.create({
-        title: 'Failed to load image',
+        title: "Failed to load image",
         description: err.message,
-        type: 'error',
-        duration: 3000
+        type: "error",
+        duration: 3000,
       });
     }
   }, []);
@@ -266,16 +266,16 @@ export default function TextureLab({ toolSelector }) {
   const handleVideoLoad = useCallback(async (source, type) => {
     if (videoRef.current) {
       videoRef.current.pause();
-      if (videoRef.current.src && videoRef.current.src.startsWith('blob:')) {
+      if (videoRef.current.src && videoRef.current.src.startsWith("blob:")) {
         URL.revokeObjectURL(videoRef.current.src);
       }
-      videoRef.current.src = '';
+      videoRef.current.src = "";
     }
 
     try {
       let result;
 
-      if (type === 'file') {
+      if (type === "file") {
         result = await loadVideoFromFile(source);
       } else {
         result = await loadVideoFromURL(source);
@@ -291,53 +291,53 @@ export default function TextureLab({ toolSelector }) {
 
       result.video.play();
 
-      setState(s => ({
+      setState((s) => ({
         ...s,
         image: null,
         imageUrl: null,
         video: result.video,
         videoUrl: result.url,
-        mediaType: 'video',
+        mediaType: "video",
         corsError: result.corsError,
         isPlaying: true,
         currentTime: 0,
-        duration: result.duration
+        duration: result.duration,
       }));
 
       if (result.corsError) {
         toaster.create({
-          title: 'CORS Warning',
-          description: 'Video loaded but export disabled. Re-upload locally to enable.',
-          type: 'warning',
-          duration: 5000
+          title: "CORS Warning",
+          description: "Video loaded but export disabled. Re-upload locally to enable.",
+          type: "warning",
+          duration: 5000,
         });
       }
     } catch (err) {
       toaster.create({
-        title: 'Failed to load video',
+        title: "Failed to load video",
         description: err.message,
-        type: 'error',
-        duration: 3000
+        type: "error",
+        duration: 3000,
       });
     }
   }, []);
 
   const handleMediaLoad = useCallback(
     async (source, type) => {
-      if (type === 'file') {
-        if (source.type.startsWith('video/')) {
+      if (type === "file") {
+        if (source.type.startsWith("video/")) {
           return handleVideoLoad(source, type);
         }
         return handleImageLoad(source, type);
       }
 
-      const ext = source.split('?')[0].split('.').pop()?.toLowerCase();
-      if (['mp4', 'webm', 'ogg', 'mov'].includes(ext)) {
+      const ext = source.split("?")[0].split(".").pop()?.toLowerCase();
+      if (["mp4", "webm", "ogg", "mov"].includes(ext)) {
         return handleVideoLoad(source, type);
       }
       return handleImageLoad(source, type);
     },
-    [handleImageLoad, handleVideoLoad]
+    [handleImageLoad, handleVideoLoad],
   );
 
   const handlePlayPause = useCallback(() => {
@@ -345,59 +345,59 @@ export default function TextureLab({ toolSelector }) {
 
     if (videoRef.current.paused) {
       videoRef.current.play();
-      setState(s => ({ ...s, isPlaying: true }));
+      setState((s) => ({ ...s, isPlaying: true }));
     } else {
       videoRef.current.pause();
-      setState(s => ({ ...s, isPlaying: false }));
+      setState((s) => ({ ...s, isPlaying: false }));
     }
   }, []);
 
   const handleSeek = useCallback(
-    time => {
+    (time) => {
       if (!videoRef.current) return;
       videoRef.current.currentTime = time;
-      setState(s => ({ ...s, currentTime: time }));
+      setState((s) => ({ ...s, currentTime: time }));
       renderPreview();
     },
-    [renderPreview]
+    [renderPreview],
   );
 
-  const handleEffectsChange = useCallback(newEffects => {
-    setState(s => ({ ...s, effects: newEffects }));
+  const handleEffectsChange = useCallback((newEffects) => {
+    setState((s) => ({ ...s, effects: newEffects }));
   }, []);
 
-  const handleSeedChange = useCallback(newSeed => {
-    setState(s => ({ ...s, seed: newSeed }));
+  const handleSeedChange = useCallback((newSeed) => {
+    setState((s) => ({ ...s, seed: newSeed }));
   }, []);
 
-  const handlePreviewQualityChange = useCallback(quality => {
-    setState(s => ({ ...s, previewQuality: quality }));
+  const handlePreviewQualityChange = useCallback((quality) => {
+    setState((s) => ({ ...s, previewQuality: quality }));
   }, []);
 
-  const handleExportFormatChange = useCallback(format => {
-    setState(s => ({ ...s, exportFormat: format }));
+  const handleExportFormatChange = useCallback((format) => {
+    setState((s) => ({ ...s, exportFormat: format }));
   }, []);
 
-  const handleExportQualityChange = useCallback(quality => {
-    setState(s => ({ ...s, exportQuality: quality }));
+  const handleExportQualityChange = useCallback((quality) => {
+    setState((s) => ({ ...s, exportQuality: quality }));
   }, []);
 
-  const handleExportScaleChange = useCallback(scale => {
-    setState(s => ({ ...s, exportScale: scale }));
+  const handleExportScaleChange = useCallback((scale) => {
+    setState((s) => ({ ...s, exportScale: scale }));
   }, []);
 
-  const handleViewModeChange = useCallback(mode => {
-    setState(s => ({ ...s, viewMode: mode }));
+  const handleViewModeChange = useCallback((mode) => {
+    setState((s) => ({ ...s, viewMode: mode }));
   }, []);
 
   const handleCopyToClipboard = useCallback(async () => {
     if (!canvasRef.current || corsError) return;
-    if (mediaType === 'video') {
+    if (mediaType === "video") {
       toaster.create({
-        title: 'Cannot copy video',
-        description: 'Copy to clipboard only works for images. Use export for video.',
-        type: 'warning',
-        duration: 3000
+        title: "Cannot copy video",
+        description: "Copy to clipboard only works for images. Use export for video.",
+        type: "warning",
+        duration: 3000,
       });
       return;
     }
@@ -410,27 +410,27 @@ export default function TextureLab({ toolSelector }) {
       if (isClipboardImageSupported()) {
         await copyCanvasToClipboard(canvasRef.current);
         toaster.create({
-          title: 'Copied to clipboard',
-          type: 'success',
-          duration: 2000
+          title: "Copied to clipboard",
+          type: "success",
+          duration: 2000,
         });
       } else {
         await copyDataURLToClipboard(canvasRef.current);
         toaster.create({
-          title: 'Copied as data URL',
-          description: 'Image clipboard not supported in this browser.',
-          type: 'info',
-          duration: 3000
+          title: "Copied as data URL",
+          description: "Image clipboard not supported in this browser.",
+          type: "info",
+          duration: 3000,
         });
       }
 
       renderPreview();
     } catch (err) {
       toaster.create({
-        title: 'Copy failed',
+        title: "Copy failed",
         description: err.message,
-        type: 'error',
-        duration: 3000
+        type: "error",
+        duration: 3000,
       });
     }
   }, [corsError, mediaType, image, effects, seed, renderPreview]);
@@ -438,17 +438,17 @@ export default function TextureLab({ toolSelector }) {
   const handleVideoExport = useCallback(async () => {
     if (!canvasRef.current || !video || corsError || isExporting) return;
 
-    setState(s => ({
+    setState((s) => ({
       ...s,
       isExporting: true,
       exportProgress: 0,
-      exportStatus: 'Preparing...'
+      exportStatus: "Preparing...",
     }));
 
     const wasPlaying = !video.paused;
     if (wasPlaying) {
       video.pause();
-      setState(s => ({ ...s, isPlaying: false }));
+      setState((s) => ({ ...s, isPlaying: false }));
     }
 
     const wasLooping = video.loop;
@@ -466,53 +466,53 @@ export default function TextureLab({ toolSelector }) {
 
       currentVideo.currentTime = 0;
       await Promise.race([
-        new Promise(resolve => {
+        new Promise((resolve) => {
           const onSeeked = () => {
-            currentVideo.removeEventListener('seeked', onSeeked);
+            currentVideo.removeEventListener("seeked", onSeeked);
             resolve();
           };
-          currentVideo.addEventListener('seeked', onSeeked);
+          currentVideo.addEventListener("seeked", onSeeked);
         }),
-        new Promise(resolve => setTimeout(resolve, 200))
+        new Promise((resolve) => setTimeout(resolve, 200)),
       ]);
 
       if (currentVideo.currentTime > 0.1) {
         currentVideo.currentTime = 0;
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
       currentRenderer.updateVideoFrame(currentVideo);
       currentRenderer.render(effects, seed, currentVideo.videoWidth, currentVideo.videoHeight);
 
-      setState(s => ({ ...s, exportStatus: 'Recording...' }));
+      setState((s) => ({ ...s, exportStatus: "Recording..." }));
 
       const stream = currentCanvas.captureStream(60);
       mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'video/webm;codecs=vp9',
-        videoBitsPerSecond: 12000000
+        mimeType: "video/webm;codecs=vp9",
+        videoBitsPerSecond: 12000000,
       });
 
       const chunks = [];
-      mediaRecorder.ondataavailable = e => {
+      mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0) chunks.push(e.data);
       };
 
-      const recordingDone = new Promise(resolve => {
+      const recordingDone = new Promise((resolve) => {
         mediaRecorder.onstop = () => resolve(chunks);
       });
 
       mediaRecorder.start(100);
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
       const renderLoop = () => {
         currentRenderer.updateVideoFrame(currentVideo);
         currentRenderer.render(effects, seed, currentVideo.videoWidth, currentVideo.videoHeight);
 
         const progress = Math.round((currentVideo.currentTime / videoDuration) * 100);
-        setState(s => ({
+        setState((s) => ({
           ...s,
           exportProgress: Math.min(progress, 100),
-          exportStatus: 'Exporting...'
+          exportStatus: "Exporting...",
         }));
 
         if (!currentVideo.ended && !currentVideo.paused) {
@@ -524,12 +524,12 @@ export default function TextureLab({ toolSelector }) {
 
       await currentVideo.play();
 
-      await new Promise(resolve => {
+      await new Promise((resolve) => {
         if (currentVideo.ended) {
           resolve();
           return;
         }
-        currentVideo.addEventListener('ended', resolve, { once: true });
+        currentVideo.addEventListener("ended", resolve, { once: true });
       });
 
       if (animationId) {
@@ -540,15 +540,15 @@ export default function TextureLab({ toolSelector }) {
       currentRenderer.updateVideoFrame(currentVideo);
       currentRenderer.render(effects, seed, currentVideo.videoWidth, currentVideo.videoHeight);
 
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 200));
 
       mediaRecorder.stop();
 
       const finalChunks = await recordingDone;
 
-      const webmBlob = new Blob(finalChunks, { type: 'video/webm' });
+      const webmBlob = new Blob(finalChunks, { type: "video/webm" });
       const url = URL.createObjectURL(webmBlob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
       link.download = `texture-lab-${Date.now()}.webm`;
       document.body.appendChild(link);
@@ -560,22 +560,22 @@ export default function TextureLab({ toolSelector }) {
       currentVideo.currentTime = 0;
       if (wasPlaying) {
         currentVideo.play();
-        setState(s => ({ ...s, isPlaying: true }));
+        setState((s) => ({ ...s, isPlaying: true }));
       }
       renderPreview();
 
-      setState(s => ({ ...s, isExporting: false, exportProgress: 0, exportStatus: '' }));
+      setState((s) => ({ ...s, isExporting: false, exportProgress: 0, exportStatus: "" }));
       toaster.create({
-        title: 'Video exported',
+        title: "Video exported",
         description: `Saved as WebM (${(webmBlob.size / 1024 / 1024).toFixed(1)} MB)`,
-        type: 'success',
-        duration: 2000
+        type: "success",
+        duration: 2000,
       });
     } catch (err) {
-      console.error('Video export error:', err);
+      console.error("Video export error:", err);
 
       if (animationId) cancelAnimationFrame(animationId);
-      if (mediaRecorder && mediaRecorder.state === 'recording') {
+      if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
       }
 
@@ -583,12 +583,12 @@ export default function TextureLab({ toolSelector }) {
       currentVideo.pause();
       currentVideo.currentTime = 0;
 
-      setState(s => ({ ...s, isExporting: false, exportProgress: 0, exportStatus: '' }));
+      setState((s) => ({ ...s, isExporting: false, exportProgress: 0, exportStatus: "" }));
       toaster.create({
-        title: 'Video export failed',
+        title: "Video export failed",
         description: err.message,
-        type: 'error',
-        duration: 3000
+        type: "error",
+        duration: 3000,
       });
     }
   }, [video, corsError, isExporting, effects, seed, renderPreview]);
@@ -596,7 +596,7 @@ export default function TextureLab({ toolSelector }) {
   const handleExport = useCallback(async () => {
     if (!canvasRef.current || corsError) return;
 
-    if (mediaType === 'video' && video) {
+    if (mediaType === "video" && video) {
       return handleVideoExport();
     }
 
@@ -613,22 +613,22 @@ export default function TextureLab({ toolSelector }) {
       await exportCanvas(canvasRef.current, {
         format: exportFormat,
         quality: exportQuality,
-        filename: `texture-lab-${Date.now()}`
+        filename: `texture-lab-${Date.now()}`,
       });
 
       toaster.create({
-        title: 'Export complete',
-        type: 'success',
-        duration: 2000
+        title: "Export complete",
+        type: "success",
+        duration: 2000,
       });
 
       renderPreview();
     } catch (err) {
       toaster.create({
-        title: 'Export failed',
+        title: "Export failed",
         description: err.message,
-        type: 'error',
-        duration: 3000
+        type: "error",
+        duration: 3000,
       });
     }
   }, [
@@ -642,19 +642,19 @@ export default function TextureLab({ toolSelector }) {
     effects,
     seed,
     renderPreview,
-    handleVideoExport
+    handleVideoExport,
   ]);
 
   const handleReset = useCallback(() => {
-    setState(s => ({
+    setState((s) => ({
       ...s,
       effects: [],
       seed: Math.floor(Math.random() * 100000),
-      previewQuality: 'draft',
-      viewMode: 'preview',
-      exportFormat: 'png',
+      previewQuality: "draft",
+      viewMode: "preview",
+      exportFormat: "png",
       exportQuality: 0.92,
-      exportScale: 1
+      exportScale: 1,
     }));
     if (rendererRef.current) {
       rendererRef.current.setOverlayTexture(null);
@@ -667,11 +667,11 @@ export default function TextureLab({ toolSelector }) {
       if (videoRef.current.src) {
         URL.revokeObjectURL(videoRef.current.src);
       }
-      videoRef.current.src = '';
+      videoRef.current.src = "";
       videoRef.current = null;
     }
 
-    setState(s => ({
+    setState((s) => ({
       ...s,
       image: null,
       imageUrl: null,
@@ -681,7 +681,7 @@ export default function TextureLab({ toolSelector }) {
       corsError: false,
       isPlaying: false,
       currentTime: 0,
-      duration: 0
+      duration: 0,
     }));
     if (rendererRef.current) {
       rendererRef.current.setImage(null);
@@ -693,7 +693,7 @@ export default function TextureLab({ toolSelector }) {
       h="100%"
       w="100%"
       gap={{ base: 0, lg: 4 }}
-      direction={{ base: 'column', lg: 'row' }}
+      direction={{ base: "column", lg: "row" }}
       position="relative"
       overflow="hidden"
     >
@@ -702,7 +702,7 @@ export default function TextureLab({ toolSelector }) {
         flexShrink={0}
         h="100%"
         overflow="hidden"
-        display={{ base: 'none', lg: 'flex' }}
+        display={{ base: "none", lg: "flex" }}
         flexDirection="column"
       >
         <Controls
@@ -737,14 +737,14 @@ export default function TextureLab({ toolSelector }) {
       <Box
         flex={1}
         position="relative"
-        borderRadius={{ base: '12px', lg: '16px' }}
+        borderRadius={{ base: "12px", lg: "16px" }}
         overflow="hidden"
         border="1px solid var(--border-primary)"
         bg="var(--bg-body)"
         maxWidth="1920px"
         margin="0 auto"
         width="100%"
-        minH={{ base: '400px', lg: 'auto' }}
+        minH={{ base: "400px", lg: "auto" }}
       >
         <Canvas
           image={image}
@@ -753,7 +753,7 @@ export default function TextureLab({ toolSelector }) {
           canvasRef={canvasRef}
           viewMode={viewMode}
           onViewModeChange={handleViewModeChange}
-          onMediaDrop={file => handleMediaLoad(file, 'file')}
+          onMediaDrop={(file) => handleMediaLoad(file, "file")}
           onMediaLoad={handleMediaLoad}
           isPlaying={isPlaying}
           currentTime={currentTime}
@@ -765,7 +765,7 @@ export default function TextureLab({ toolSelector }) {
 
         <Flex
           as="button"
-          display={{ base: 'flex', lg: 'none' }}
+          display={{ base: "flex", lg: "none" }}
           position="absolute"
           bottom={20}
           right={4}
@@ -778,7 +778,7 @@ export default function TextureLab({ toolSelector }) {
           cursor="pointer"
           onClick={() => setMobileControlsOpen(true)}
           boxShadow="0 4px 20px rgba(168, 85, 247, 0.4)"
-          _active={{ transform: 'scale(0.95)' }}
+          _active={{ transform: "scale(0.95)" }}
           transition="transform 0.1s"
           zIndex={10}
         >
@@ -799,7 +799,7 @@ export default function TextureLab({ toolSelector }) {
             bottom={0}
             bg="rgba(0, 0, 0, 0.6)"
             opacity={mobileControlsOpen ? 1 : 0}
-            visibility={mobileControlsOpen ? 'visible' : 'hidden'}
+            visibility={mobileControlsOpen ? "visible" : "hidden"}
             transition="all 0.3s"
             zIndex={999}
             onClick={() => setMobileControlsOpen(false)}
@@ -813,7 +813,7 @@ export default function TextureLab({ toolSelector }) {
             bg="var(--bg-card)"
             borderTop="1px solid var(--border-primary)"
             borderTopRadius="24px"
-            transform={mobileControlsOpen ? 'translateY(0)' : 'translateY(100%)'}
+            transform={mobileControlsOpen ? "translateY(0)" : "translateY(100%)"}
             transition="transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
             zIndex={1000}
             maxH="85vh"
@@ -821,11 +821,23 @@ export default function TextureLab({ toolSelector }) {
             display="flex"
             flexDirection="column"
           >
-            <Flex justify="center" pt={3} pb={2} cursor="pointer" onClick={() => setMobileControlsOpen(false)}>
+            <Flex
+              justify="center"
+              pt={3}
+              pb={2}
+              cursor="pointer"
+              onClick={() => setMobileControlsOpen(false)}
+            >
               <Box w="40px" h="4px" bg="var(--border-primary)" borderRadius="2px" />
             </Flex>
 
-            <Flex align="center" justify="space-between" px={4} pb={3} borderBottom="1px solid var(--border-primary)">
+            <Flex
+              align="center"
+              justify="space-between"
+              px={4}
+              pb={3}
+              borderBottom="1px solid var(--border-primary)"
+            >
               <Text fontSize="16px" fontWeight={700} color="#fff">
                 Controls
               </Text>
@@ -839,7 +851,7 @@ export default function TextureLab({ toolSelector }) {
                 bg="var(--bg-elevated)"
                 cursor="pointer"
                 onClick={() => setMobileControlsOpen(false)}
-                _hover={{ bg: 'var(--bg-elevated)' }}
+                _hover={{ bg: "var(--bg-elevated)" }}
               >
                 <Icon as={ChevronUp} boxSize={5} color="var(--text-muted)" />
               </Flex>
@@ -851,8 +863,8 @@ export default function TextureLab({ toolSelector }) {
               px={4}
               py={4}
               css={{
-                '&::-webkit-scrollbar': { display: 'none' },
-                scrollbarWidth: 'none'
+                "&::-webkit-scrollbar": { display: "none" },
+                scrollbarWidth: "none",
               }}
             >
               <Controls

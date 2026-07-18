@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import { MoonIcon, SunMediumIcon } from "lucide-react"
-import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
-import { useClickSound } from "@/lib/soundcn/hooks/use-click-sound"
+import { MoonIcon, SunMediumIcon } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+import { useClickSound } from "@/lib/soundcn/hooks/use-click-sound";
 
 /** @internal */
-import { ThemeToggleEffectSelector } from "./theme-toggle-effect-selector"
+import { ThemeToggleEffectSelector } from "./theme-toggle-effect-selector";
 
 export default function ThemeToggleEffectDemo() {
-  const { resolvedTheme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme();
 
-  const [click] = useClickSound()
+  const [click] = useClickSound();
 
   const switchTheme = () => {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark")
-  }
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  };
 
   const handleThemeToggleClick = () => {
-    click()
-    if (!document.startViewTransition) switchTheme()
-    else document.startViewTransition(switchTheme)
-  }
+    click();
+    if (!document.startViewTransition) switchTheme();
+    else document.startViewTransition(switchTheme);
+  };
 
   return (
     <div className="flex gap-2">
@@ -37,5 +37,5 @@ export default function ThemeToggleEffectDemo() {
         <SunMediumIcon className="hidden [html.light_&]:block" />
       </Button>
     </div>
-  )
+  );
 }

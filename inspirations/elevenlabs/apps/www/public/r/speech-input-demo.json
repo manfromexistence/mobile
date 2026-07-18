@@ -1,11 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "speech-input-demo",
-  "registryDependencies": [
-    "https://ui.elevenlabs.io/r/speech-input.json",
-    "input",
-    "textarea"
-  ],
+  "registryDependencies": ["https://ui.elevenlabs.io/r/speech-input.json", "input", "textarea"],
   "files": [
     {
       "path": "examples/speech-input-demo.tsx",

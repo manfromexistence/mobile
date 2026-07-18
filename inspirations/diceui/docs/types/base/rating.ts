@@ -143,7 +143,5 @@ export interface RatingItemProps extends RenderProps {
    * )}
    * ```
    */
-  children?:
-    | React.ReactNode
-    | ((dataState: "full" | "partial" | "empty") => React.ReactNode);
+  children?: React.ReactNode | ((dataState: "full" | "partial" | "empty") => React.ReactNode);
 }

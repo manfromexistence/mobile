@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { Fragment } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useBreadcrumb } from "fumadocs-core/breadcrumb"
-import type { PageTree } from "fumadocs-core/server"
+import { Fragment } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useBreadcrumb } from "fumadocs-core/breadcrumb";
+import type { PageTree } from "fumadocs-core/server";
 
 import {
   Breadcrumb,
@@ -13,19 +13,19 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/registry/elevenlabs-ui/ui/breadcrumb"
+} from "@/registry/elevenlabs-ui/ui/breadcrumb";
 
 export function DocsBreadcrumb({
   tree,
   className,
 }: {
-  tree: PageTree.Root
-  className?: string
+  tree: PageTree.Root;
+  className?: string;
 }) {
-  const pathname = usePathname()
-  const items = useBreadcrumb(pathname, tree)
+  const pathname = usePathname();
+  const items = useBreadcrumb(pathname, tree);
 
-  if (items.length === 0) return null
+  if (items.length === 0) return null;
 
   return (
     <Breadcrumb className={className}>
@@ -44,10 +44,7 @@ export function DocsBreadcrumb({
             {item.url ? (
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link
-                    href={item.url}
-                    className="hover:text-accent-foreground truncate"
-                  >
+                  <Link href={item.url} className="hover:text-accent-foreground truncate">
                     {item.name}
                   </Link>
                 </BreadcrumbLink>
@@ -61,5 +58,5 @@ export function DocsBreadcrumb({
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  )
+  );
 }

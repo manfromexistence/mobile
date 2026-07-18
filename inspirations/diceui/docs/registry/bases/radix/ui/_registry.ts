@@ -5,11 +5,7 @@ export const ui: Registry["items"] = [
     name: "action-bar",
     type: "registry:ui",
     dependencies: ["radix-ui"],
-    registryDependencies: [
-      "button",
-      "@diceui/use-as-ref",
-      "@diceui/use-isomorphic-layout-effect",
-    ],
+    registryDependencies: ["button", "@diceui/use-as-ref", "@diceui/use-isomorphic-layout-effect"],
     files: [
       {
         path: "ui/action-bar.tsx",
@@ -75,11 +71,7 @@ export const ui: Registry["items"] = [
     name: "banner",
     type: "registry:ui",
     dependencies: ["radix-ui"],
-    registryDependencies: [
-      "button",
-      "@diceui/use-as-ref",
-      "@diceui/use-lazy-ref",
-    ],
+    registryDependencies: ["button", "@diceui/use-as-ref", "@diceui/use-lazy-ref"],
     files: [
       {
         path: "ui/banner.tsx",
@@ -780,10 +772,7 @@ export const ui: Registry["items"] = [
     name: "timeline",
     type: "registry:ui",
     dependencies: ["radix-ui"],
-    registryDependencies: [
-      "@diceui/use-isomorphic-layout-effect",
-      "@diceui/use-lazy-ref",
-    ],
+    registryDependencies: ["@diceui/use-isomorphic-layout-effect", "@diceui/use-lazy-ref"],
     files: [
       {
         path: "ui/timeline.tsx",

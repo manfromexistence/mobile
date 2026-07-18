@@ -32,21 +32,24 @@ test("collapses the reporter's two distinct duplicated ids to two unique entries
   assert.equal(out.length, 2);
   assert.deepEqual(
     out.map((m) => m.id),
-    ["veo-free/seedance", "veo-free/veo"]
+    ["veo-free/seedance", "veo-free/veo"],
   );
 });
 
 test("preserves intentional same-id audio variants (transcription vs speech)", () => {
   const input = [
-    { id: "prov/whisper", owned_by: "prov", root: "whisper", type: "audio", subtype: "transcription" },
+    {
+      id: "prov/whisper",
+      owned_by: "prov",
+      root: "whisper",
+      type: "audio",
+      subtype: "transcription",
+    },
     { id: "prov/whisper", owned_by: "prov", root: "whisper", type: "audio", subtype: "speech" },
   ];
   const out = dedupeExactCatalogIds(input);
   assert.equal(out.length, 2);
-  assert.deepEqual(
-    out.map((m) => m.subtype).sort(),
-    ["speech", "transcription"]
-  );
+  assert.deepEqual(out.map((m) => m.subtype).sort(), ["speech", "transcription"]);
 });
 
 test("keeps distinct ids untouched", () => {
@@ -90,7 +93,7 @@ test("preserves relative order of kept entries", () => {
   const out = dedupeExactCatalogIds(input);
   assert.deepEqual(
     out.map((m) => m.id),
-    ["first/a", "dup/x", "second/b", "third/c"]
+    ["first/a", "dup/x", "second/b", "third/c"],
   );
 });
 

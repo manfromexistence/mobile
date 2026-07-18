@@ -1,26 +1,26 @@
-import { useMemo } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box } from '@chakra-ui/react';
+import { useMemo } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box } from "@chakra-ui/react";
 
-import Customize from '../../components/common/Preview/Customize';
-import CodeExample from '../../components/code/CodeExample';
+import Customize from "../../components/common/Preview/Customize";
+import CodeExample from "../../components/code/CodeExample";
 
-import PropTable from '../../components/common/Preview/PropTable';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewInput from '../../components/common/Preview/PreviewInput';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import useForceRerender from '../../hooks/useForceRerender';
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import PropTable from "../../components/common/Preview/PropTable";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewInput from "../../components/common/Preview/PreviewInput";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import useForceRerender from "../../hooks/useForceRerender";
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
-import { curvedLoop } from '../../constants/code/TextAnimations/curvedLoopCode';
-import CurvedLoop from '../../content/TextAnimations/CurvedLoop/CurvedLoop';
+import { curvedLoop } from "../../constants/code/TextAnimations/curvedLoopCode";
+import CurvedLoop from "../../content/TextAnimations/CurvedLoop/CurvedLoop";
 
 const DEFAULT_PROPS = {
-  marqueeText: 'Be ✦ Creative ✦ With ✦ React ✦ Bits ✦',
+  marqueeText: "Be ✦ Creative ✦ With ✦ React ✦ Bits ✦",
   speed: 2,
   curveAmount: 400,
-  interactive: true
+  interactive: true,
 };
 
 const CurvedLoopDemo = () => {
@@ -32,47 +32,52 @@ const CurvedLoopDemo = () => {
   const propData = useMemo(
     () => [
       {
-        name: 'marqueeText',
-        type: 'string',
+        name: "marqueeText",
+        type: "string",
         default: '""',
-        description: 'The text to display in the curved marquee'
+        description: "The text to display in the curved marquee",
       },
       {
-        name: 'speed',
-        type: 'number',
-        default: '2',
-        description: 'Animation speed of the marquee text'
+        name: "speed",
+        type: "number",
+        default: "2",
+        description: "Animation speed of the marquee text",
       },
       {
-        name: 'className',
-        type: 'string',
-        default: 'undefined',
-        description: 'CSS class name for styling the text'
+        name: "className",
+        type: "string",
+        default: "undefined",
+        description: "CSS class name for styling the text",
       },
       {
-        name: 'curveAmount',
-        type: 'number',
-        default: '400',
-        description: 'Amount of curve in the text path'
+        name: "curveAmount",
+        type: "number",
+        default: "400",
+        description: "Amount of curve in the text path",
       },
       {
-        name: 'direction',
+        name: "direction",
         type: '"left" | "right"',
         default: '"left"',
-        description: 'Initial direction of the marquee animation'
+        description: "Initial direction of the marquee animation",
       },
       {
-        name: 'interactive',
-        type: 'boolean',
-        default: 'true',
-        description: 'Whether the marquee can be dragged by the user'
-      }
+        name: "interactive",
+        type: "boolean",
+        default: "true",
+        description: "Whether the marquee can be dragged by the user",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box position="relative" className="demo-container" h={400} overflow="hidden" p={0}>
@@ -91,8 +96,8 @@ const CurvedLoopDemo = () => {
               value={marqueeText}
               placeholder="Enter text..."
               width={300}
-              onChange={value => {
-                updateProp('marqueeText', value);
+              onChange={(value) => {
+                updateProp("marqueeText", value);
                 forceRerender();
               }}
             />
@@ -103,8 +108,8 @@ const CurvedLoopDemo = () => {
               max={10}
               step={0.1}
               value={speed}
-              onChange={value => {
-                updateProp('speed', value);
+              onChange={(value) => {
+                updateProp("speed", value);
                 forceRerender();
               }}
             />
@@ -116,8 +121,8 @@ const CurvedLoopDemo = () => {
               step={10}
               value={curveAmount}
               valueUnit="px"
-              onChange={value => {
-                updateProp('curveAmount', value);
+              onChange={(value) => {
+                updateProp("curveAmount", value);
                 forceRerender();
               }}
             />
@@ -125,8 +130,8 @@ const CurvedLoopDemo = () => {
             <PreviewSwitch
               title="Draggable"
               isChecked={interactive}
-              onChange={checked => {
-                updateProp('interactive', checked);
+              onChange={(checked) => {
+                updateProp("interactive", checked);
                 forceRerender();
               }}
             />

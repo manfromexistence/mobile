@@ -1,11 +1,11 @@
-import { registryItemSchema, type Registry } from "shadcn/schema"
-import { z } from "zod"
+import { registryItemSchema, type Registry } from "shadcn/schema";
+import { z } from "zod";
 
-import { blocks } from "@/registry/registry-blocks"
-import { examples } from "@/registry/registry-examples"
-import { hooks } from "@/registry/registry-hooks"
-import { lib } from "@/registry/registry-lib"
-import { ui } from "@/registry/registry-ui"
+import { blocks } from "@/registry/registry-blocks";
+import { examples } from "@/registry/registry-examples";
+import { hooks } from "@/registry/registry-hooks";
+import { lib } from "@/registry/registry-lib";
+import { ui } from "@/registry/registry-ui";
 
 const DEPRECATED_ITEMS = [
   "toast",
@@ -14,7 +14,7 @@ const DEPRECATED_ITEMS = [
   "toast-simple",
   "toast-with-action",
   "toast-with-title",
-]
+];
 
 // Shared between index and style for backward compatibility.
 const NEW_YORK_V4_STYLE = {
@@ -24,7 +24,7 @@ const NEW_YORK_V4_STYLE = {
   registryDependencies: ["utils"],
   cssVars: {},
   files: [],
-}
+};
 
 export const registry = {
   name: "shadcn/ui",
@@ -46,19 +46,19 @@ export const registry = {
       ...examples,
     ]
       .filter((item) => {
-        return !DEPRECATED_ITEMS.includes(item.name)
+        return !DEPRECATED_ITEMS.includes(item.name);
       })
       .map((item) => {
         // Temporary fix for dashboard-01.
         if (item.name === "dashboard-01") {
-          item.dependencies?.push("@tabler/icons-react")
+          item.dependencies?.push("@tabler/icons-react");
         }
 
         if (item.name === "accordion" && "tailwind" in item) {
-          delete item.tailwind
+          delete item.tailwind;
         }
 
-        return item
-      })
+        return item;
+      }),
   ),
-} satisfies Registry
+} satisfies Registry;

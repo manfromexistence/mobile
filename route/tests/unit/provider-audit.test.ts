@@ -13,7 +13,7 @@ test("extractProviderWarnings finds sanitizer and warning fields without duplica
       detail: {
         warning: "Content was filtered by the upstream safety filter.",
       },
-    }
+    },
   );
 
   assert.deepEqual(warnings, [

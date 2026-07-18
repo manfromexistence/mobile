@@ -16,9 +16,7 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 
 const core = await import("../../src/lib/db/core.ts");
 const serviceModelsDb = await import("../../src/lib/db/serviceModels.ts");
-const routeModule = await import(
-  "../../src/app/api/v1/providers/[provider]/models/route.ts"
-);
+const routeModule = await import("../../src/app/api/v1/providers/[provider]/models/route.ts");
 
 function makeRequest(provider: string) {
   return new Request(`http://localhost/api/v1/providers/${encodeURIComponent(provider)}/models`);
@@ -58,7 +56,7 @@ test("GET /v1/providers/:provider/models accepts openai-compatible connection ID
     assert.notEqual(
       body.error?.code,
       "invalid_provider",
-      "openai-compatible-chat-* IDs must bypass the unknown-provider 400 gate"
+      "openai-compatible-chat-* IDs must bypass the unknown-provider 400 gate",
     );
   }
 });
@@ -88,7 +86,7 @@ test("GET /v1/providers/:provider/models returns synced embedded service models"
   assert.equal(body.object, "list");
   assert.deepEqual(
     body.data.map((model: any) => model.id),
-    ["cli/gpt-5"]
+    ["cli/gpt-5"],
   );
   assert.equal(body.data[0].owned_by, "cliproxyapi");
   assert.equal(body.data[0].parent, null);

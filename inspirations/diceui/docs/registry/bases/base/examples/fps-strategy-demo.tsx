@@ -16,9 +16,7 @@ export default function FpsStrategyDemo() {
         <Fps strategy="fixed" position="bottom-right" label="Fixed" />
         <div className="flex size-full flex-col items-center justify-center gap-1">
           <div>Fixed positioning</div>
-          <div className="text-muted-foreground text-sm">
-            Relative to viewport with a portal
-          </div>
+          <div className="text-muted-foreground text-sm">Relative to viewport with a portal</div>
         </div>
       </div>
     </div>

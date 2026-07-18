@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { convertCursorToOpenAI } =
-  await import("../../open-sse/translator/response/cursor-to-openai.ts");
+const { convertCursorToOpenAI } = await import(
+  "../../open-sse/translator/response/cursor-to-openai.ts"
+);
 
 test("Cursor -> OpenAI response translator passes through streaming chunks", () => {
   const chunk = {

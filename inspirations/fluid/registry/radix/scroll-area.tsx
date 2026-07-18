@@ -25,17 +25,13 @@ const ScrollAreaContext = createContext<boolean>(false);
 
 type Orientation = "vertical" | "horizontal" | "both";
 
-interface ScrollAreaProps
-  extends ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> {
+interface ScrollAreaProps extends ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> {
   viewportClassName?: string;
   /** Which axes get scrollbars. Defaults to `"vertical"`. */
   orientation?: Orientation;
 }
 
-const ScrollArea = forwardRef<
-  ComponentRef<typeof ScrollAreaPrimitive.Root>,
-  ScrollAreaProps
->(
+const ScrollArea = forwardRef<ComponentRef<typeof ScrollAreaPrimitive.Root>, ScrollAreaProps>(
   (
     {
       className,
@@ -45,7 +41,7 @@ const ScrollArea = forwardRef<
       orientation = "vertical",
       ...props
     },
-    ref
+    ref,
   ) => {
     const isTouch = useTouchPrimary();
 
@@ -67,7 +63,7 @@ const ScrollArea = forwardRef<
                 orientation === "vertical" && "overflow-y-auto",
                 orientation === "horizontal" && "overflow-x-auto",
                 orientation === "both" && "overflow-auto",
-                viewportClassName
+                viewportClassName,
               )}
               tabIndex={0}
             >
@@ -95,7 +91,7 @@ const ScrollArea = forwardRef<
         )}
       </ScrollAreaContext.Provider>
     );
-  }
+  },
 );
 
 ScrollArea.displayName = "ScrollArea";
@@ -140,7 +136,7 @@ const ScrollBar = forwardRef<
         "data-[state=hidden]:pointer-events-none",
         orientation === "vertical" && "h-full w-2.5",
         orientation === "horizontal" && "h-2.5 w-full flex-col",
-        className
+        className,
       )}
       {...props}
     >
@@ -150,10 +146,8 @@ const ScrollBar = forwardRef<
           "relative bg-foreground/25 transition-[background-color,width,height] duration-160 ease-in-out",
           "group-hover/scrollbar:bg-foreground/45 active:!bg-foreground/60",
           shape.bg,
-          orientation === "vertical" &&
-            "mx-auto my-1 w-1 group-hover/scrollbar:w-1.5",
-          orientation === "horizontal" &&
-            "my-auto mx-1 h-1 group-hover/scrollbar:h-1.5"
+          orientation === "vertical" && "mx-auto my-1 w-1 group-hover/scrollbar:w-1.5",
+          orientation === "horizontal" && "my-auto mx-1 h-1 group-hover/scrollbar:h-1.5",
         )}
       />
     </ScrollAreaPrimitive.ScrollAreaScrollbar>

@@ -1,25 +1,22 @@
-"use client"
+"use client";
 
-import { ArrowRightIcon } from "lucide-react"
-import { useInView, usePageInView } from "motion/react"
-import Link from "next/link"
-import { useRef } from "react"
-import { Button } from "@/components/base/ui/button"
-import type { MarqueeContentProps } from "@/components/vendor/kibo-ui/marquee"
+import { ArrowRightIcon } from "lucide-react";
+import { useInView, usePageInView } from "motion/react";
+import Link from "next/link";
+import { useRef } from "react";
+import { Button } from "@/components/base/ui/button";
+import type { MarqueeContentProps } from "@/components/vendor/kibo-ui/marquee";
 import {
   Marquee,
   MarqueeContent,
   MarqueeFade,
   MarqueeItem,
-} from "@/components/vendor/kibo-ui/marquee"
-import { SOCIAL } from "@/features/portfolio/data/social-links"
-import {
-  TESTIMONIALS_1,
-  TESTIMONIALS_2,
-} from "@/features/portfolio/data/testimonials"
-import type { Testimonial as TestimonialType } from "@/features/portfolio/types/testimonials"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { cn } from "@/lib/utils"
+} from "@/components/vendor/kibo-ui/marquee";
+import { SOCIAL } from "@/features/portfolio/data/social-links";
+import { TESTIMONIALS_1, TESTIMONIALS_2 } from "@/features/portfolio/data/testimonials";
+import type { Testimonial as TestimonialType } from "@/features/portfolio/types/testimonials";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { cn } from "@/lib/utils";
 import {
   Testimonial,
   TestimonialAuthor,
@@ -29,36 +26,32 @@ import {
   TestimonialAvatarImg,
   TestimonialAvatarRing,
   TestimonialQuote,
-} from "@/registry/transformed/components/testimonial"
-import { TestimonialSpotlight } from "@/registry/transformed/components/testimonial-spotlight"
-import { Twemoji } from "@/registry/transformed/components/twemoji/twemoji"
+} from "@/registry/transformed/components/testimonial";
+import { TestimonialSpotlight } from "@/registry/transformed/components/testimonial-spotlight";
+import { Twemoji } from "@/registry/transformed/components/twemoji/twemoji";
 
-import { Panel, PanelContent, PanelHeader, PanelTitle } from "./panel"
+import { Panel, PanelContent, PanelHeader, PanelTitle } from "./panel";
 
-const ID = "testimonials"
+const ID = "testimonials";
 
 const TESTIMONIALS = [...TESTIMONIALS_1, ...TESTIMONIALS_2].sort(
-  (a, b) => Number(a.order ?? 999) - Number(b.order ?? 999)
-)
+  (a, b) => Number(a.order ?? 999) - Number(b.order ?? 999),
+);
 
-const TESTIMONIALS_MOBILE = TESTIMONIALS.slice(0, 8)
+const TESTIMONIALS_MOBILE = TESTIMONIALS.slice(0, 8);
 
-const TESTIMONIALS_FEATURED = TESTIMONIALS.filter((item) => item.isFeatured)
+const TESTIMONIALS_FEATURED = TESTIMONIALS.filter((item) => item.isFeatured);
 
-const TESTIMONIALS_1_FILTERED = TESTIMONIALS_1.filter(
-  (item) => !item.isFeatured
-)
+const TESTIMONIALS_1_FILTERED = TESTIMONIALS_1.filter((item) => !item.isFeatured);
 
-const TESTIMONIALS_2_FILTERED = TESTIMONIALS_2.filter(
-  (item) => !item.isFeatured
-)
+const TESTIMONIALS_2_FILTERED = TESTIMONIALS_2.filter((item) => !item.isFeatured);
 
 export function Testimonials() {
-  const ref = useRef<HTMLDivElement>(null)
-  const isPageInView = usePageInView()
-  const isInView = useInView(ref)
-  const isDesktop = useMediaQuery("(min-width: 40rem)") // sm breakpoint
-  const play = isPageInView && isInView && isDesktop
+  const ref = useRef<HTMLDivElement>(null);
+  const isPageInView = usePageInView();
+  const isInView = useInView(ref);
+  const isDesktop = useMediaQuery("(min-width: 40rem)"); // sm breakpoint
+  const play = isPageInView && isInView && isDesktop;
 
   return (
     <Panel ref={ref} id={ID}>
@@ -92,11 +85,7 @@ export function Testimonials() {
           </TestimonialSpotlight>
         ))}
 
-        <TestimonialsMarquee
-          className="sm:col-span-2"
-          data={TESTIMONIALS_1_FILTERED}
-          play={play}
-        />
+        <TestimonialsMarquee className="sm:col-span-2" data={TESTIMONIALS_1_FILTERED} play={play} />
 
         <TestimonialsMarquee
           className="sm:col-span-2"
@@ -119,7 +108,7 @@ export function Testimonials() {
         </Button>
       </div>
     </Panel>
-  )
+  );
 }
 
 function TestimonialsMarquee({
@@ -128,10 +117,10 @@ function TestimonialsMarquee({
   play,
   className,
 }: {
-  data: TestimonialType[]
-  direction?: MarqueeContentProps["direction"]
-  play?: boolean
-  className?: string
+  data: TestimonialType[];
+  direction?: MarqueeContentProps["direction"];
+  play?: boolean;
+  className?: string;
 }) {
   return (
     <Marquee className={className}>
@@ -155,7 +144,7 @@ function TestimonialsMarquee({
         ))}
       </MarqueeContent>
     </Marquee>
-  )
+  );
 }
 
 function TestimonialItem({
@@ -211,5 +200,5 @@ function TestimonialItem({
         </div>
       )}
     </Testimonial>
-  )
+  );
 }

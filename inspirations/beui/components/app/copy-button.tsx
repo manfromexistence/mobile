@@ -34,16 +34,14 @@ export function CopyButton({
         trackEvent(eventName, { label: eventLabel, chars: text.length });
       }}
       aria-label={copied ? "Copied" : "Copy code"}
-      className={cn(
-        "text-muted-foreground hover:text-foreground",
-        className,
-      )}
+      className={cn("text-muted-foreground hover:text-foreground", className)}
     >
       <ActionSwapCascadeIcon value={copied ? "check" : "copy"} className="h-3.5 w-3.5">
-        {copied
-          ? <Check className="h-3.5 w-3.5 text-(--color-success)" />
-          : <Copy className="h-3.5 w-3.5" />
-        }
+        {copied ? (
+          <Check className="h-3.5 w-3.5 text-(--color-success)" />
+        ) : (
+          <Copy className="h-3.5 w-3.5" />
+        )}
       </ActionSwapCascadeIcon>
     </Button>
   );

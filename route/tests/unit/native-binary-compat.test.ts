@@ -82,7 +82,7 @@ describe("isNativeBinaryCompatible", () => {
           runtimeArch: "x64",
           dlopen() {},
         }),
-        true
+        true,
       );
     });
   });
@@ -97,7 +97,7 @@ describe("isNativeBinaryCompatible", () => {
             throw new Error("abi mismatch");
           },
         }),
-        false
+        false,
       );
     });
   });
@@ -110,7 +110,7 @@ describe("isNativeBinaryCompatible", () => {
           runtimeArch: "arm64",
           dlopen() {},
         }),
-        false
+        false,
       );
     });
   });
@@ -123,7 +123,7 @@ describe("isNativeBinaryCompatible", () => {
           runtimeArch: "x64",
           dlopen() {},
         }),
-        false
+        false,
       );
     });
   });
@@ -136,7 +136,7 @@ describe("isNativeBinaryCompatible", () => {
           runtimeArch: "arm64",
           dlopen() {},
         }),
-        true
+        true,
       );
     });
   });

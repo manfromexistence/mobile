@@ -1,16 +1,16 @@
-import { CollapsibleList } from "@/components/collapsible-list"
+import { CollapsibleList } from "@/components/collapsible-list";
 import {
   Panel,
   PanelHeader,
   PanelTitle,
   PanelTitleSup,
-} from "@/features/portfolio/components/panel"
-import { PanelTitleCopy } from "@/features/portfolio/components/panel-title-copy"
-import { CERTIFICATIONS } from "@/features/portfolio/data/certifications"
+} from "@/features/portfolio/components/panel";
+import { PanelTitleCopy } from "@/features/portfolio/components/panel-title-copy";
+import { CERTIFICATIONS } from "@/features/portfolio/data/certifications";
 
-import { CertificationItem } from "./certification-item"
+import { CertificationItem } from "./certification-item";
 
-const ID = "certs"
+const ID = "certs";
 
 export function Certifications() {
   return (
@@ -29,5 +29,5 @@ export function Certifications() {
         renderItem={(item) => <CertificationItem certification={item} />}
       />
     </Panel>
-  )
+  );
 }

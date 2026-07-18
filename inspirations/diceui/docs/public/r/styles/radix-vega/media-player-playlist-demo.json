@@ -1,15 +1,8 @@
 {
   "name": "media-player-playlist-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react",
-    "media-chrome"
-  ],
-  "registryDependencies": [
-    "button",
-    "media-player",
-    "scroll-area"
-  ],
+  "dependencies": ["lucide-react", "media-chrome"],
+  "registryDependencies": ["button", "media-player", "scroll-area"],
   "files": [
     {
       "path": "examples/media-player-playlist-demo.tsx",

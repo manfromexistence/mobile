@@ -1,10 +1,7 @@
 {
   "name": "editable-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "button",
-    "editable"
-  ],
+  "registryDependencies": ["button", "editable"],
   "files": [
     {
       "path": "examples/editable-demo.tsx",

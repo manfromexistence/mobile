@@ -1,11 +1,9 @@
-import * as React from "react"
+import * as React from "react";
 
-import { Separator } from "@/components/ui/separator"
-import { ScrollFadeEffect } from "@/registry/transformed/components/scroll-fade-effect"
+import { Separator } from "@/components/ui/separator";
+import { ScrollFadeEffect } from "@/registry/transformed/components/scroll-fade-effect";
 
-const tags = Array.from({ length: 50 }).map(
-  (_, i, a) => `v1.2.0-beta.${a.length - i}`
-)
+const tags = Array.from({ length: 50 }).map((_, i, a) => `v1.2.0-beta.${a.length - i}`);
 
 export default function ScrollFadeEffectDemo() {
   return (
@@ -22,5 +20,5 @@ export default function ScrollFadeEffectDemo() {
         </div>
       </ScrollFadeEffect>
     </div>
-  )
+  );
 }

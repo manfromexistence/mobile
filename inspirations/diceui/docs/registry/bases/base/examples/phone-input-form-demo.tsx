@@ -65,18 +65,14 @@ export default function PhoneInputFormDemo() {
                   value={field.value}
                   onValueChange={field.onChange}
                   country={form.watch("country")}
-                  onCountryChange={(country) =>
-                    form.setValue("country", country)
-                  }
+                  onCountryChange={(country) => form.setValue("country", country)}
                   required
                 >
                   <PhoneInputCountrySelect />
                   <PhoneInputField />
                 </PhoneInput>
               </FormControl>
-              <FormDescription>
-                Enter your phone number with country code.
-              </FormDescription>
+              <FormDescription>Enter your phone number with country code.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

@@ -1,12 +1,7 @@
 "use client";
 
 import { Banknote, ChevronDown } from "lucide-react";
-import {
-  AnimatePresence,
-  animate,
-  motion,
-  useReducedMotion,
-} from "motion/react";
+import { AnimatePresence, animate, motion, useReducedMotion } from "motion/react";
 import {
   useCallback,
   useEffect,
@@ -61,10 +56,7 @@ export interface PredictionMarketProps {
   value?: PredictionMarketOrderValue;
   defaultValue?: Partial<PredictionMarketOrderValue>;
   onValueChange?: (value: PredictionMarketOrderValue) => void;
-  onTrade?: (
-    order: PredictionMarketOrderValue,
-    quote: PredictionMarketQuote,
-  ) => void;
+  onTrade?: (order: PredictionMarketOrderValue, quote: PredictionMarketQuote) => void;
   onSignIn?: () => void;
   authenticated?: boolean;
   orderTypeLabel?: string;
@@ -146,9 +138,7 @@ function formatCurrency(value: number, maximumFractionDigits = 2) {
 }
 
 function formatCompactCurrency(value: number) {
-  return value >= 100
-    ? formatCurrency(value, 0)
-    : formatCurrency(value, value % 1 === 0 ? 0 : 2);
+  return value >= 100 ? formatCurrency(value, 0) : formatCurrency(value, value % 1 === 0 ? 0 : 2);
 }
 
 function formatCents(value: number) {
@@ -322,21 +312,9 @@ function AnimatedAmountInput({
               <motion.span
                 key={charId}
                 layout={reduce ? false : "position"}
-                initial={
-                  reduce
-                    ? { opacity: 0 }
-                    : { opacity: 0, y: 18, filter: "blur(10px)" }
-                }
-                animate={
-                  reduce
-                    ? { opacity: 1 }
-                    : { opacity: 1, y: 0, filter: "blur(0px)" }
-                }
-                exit={
-                  reduce
-                    ? { opacity: 0 }
-                    : { opacity: 0, y: -14, filter: "blur(10px)" }
-                }
+                initial={reduce ? { opacity: 0 } : { opacity: 0, y: 18, filter: "blur(10px)" }}
+                animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={reduce ? { opacity: 0 } : { opacity: 0, y: -14, filter: "blur(10px)" }}
                 transition={DIGIT_TRANSITION}
                 className="inline-block min-w-[0.55em] text-center will-change-[transform,opacity,filter]"
               >
@@ -379,8 +357,7 @@ export function PredictionMarket({
     onValueChange,
   });
 
-  const selectedOutcome =
-    outcomes.find((outcome) => outcome.id === order.outcomeId) ?? outcomes[0];
+  const selectedOutcome = outcomes.find((outcome) => outcome.id === order.outcomeId) ?? outcomes[0];
   const position = positions[selectedOutcome.id] ?? 0;
   const quote = useMemo(
     () =>
@@ -415,11 +392,7 @@ export function PredictionMarket({
 
   useEffect(() => {
     if (shakeKey === 0 || reduce || !amountRef.current) return;
-    animate(
-      amountRef.current,
-      { x: [0, -5, 5, -3, 3, -1, 0] },
-      { duration: 0.38, ease: EASE_OUT },
-    );
+    animate(amountRef.current, { x: [0, -5, 5, -3, 3, -1, 0] }, { duration: 0.38, ease: EASE_OUT });
   }, [reduce, shakeKey]);
 
   const addAmount = (increment: number) => {
@@ -474,12 +447,7 @@ export function PredictionMarket({
         classNames?.root,
       )}
     >
-      <div
-        className={cn(
-          "border-b border-border/80 px-4 pt-4",
-          classNames?.header,
-        )}
-      >
+      <div className={cn("border-b border-border/80 px-4 pt-4", classNames?.header)}>
         <div className="flex items-end justify-between gap-4">
           <Tabs
             value={order.mode}
@@ -528,17 +496,14 @@ export function PredictionMarket({
             {outcomes.map((outcome) => {
               const selected = outcome.id === selectedOutcome.id;
               const isNo =
-                outcome.label.toLowerCase() === "no" ||
-                outcome.label.toLowerCase() === "down";
+                outcome.label.toLowerCase() === "no" || outcome.label.toLowerCase() === "down";
 
               return (
                 <TabsTrigger
                   key={outcome.id}
                   value={outcome.id}
                   indicatorClassName={
-                    isNo
-                      ? "bg-red-500/10 dark:bg-red-500/15"
-                      : "bg-emerald-500/20"
+                    isNo ? "bg-red-500/10 dark:bg-red-500/15" : "bg-emerald-500/20"
                   }
                   className={cn(
                     "h-14 w-full rounded-[1.35rem] px-0 py-0 text-base font-semibold active:scale-[0.99]",
@@ -558,15 +523,9 @@ export function PredictionMarket({
           </TabsList>
         </Tabs>
 
-        <div
-          ref={amountRef}
-          className={cn("rounded-3xl bg-card p-4", classNames?.amount)}
-        >
+        <div ref={amountRef} className={cn("rounded-3xl bg-card p-4", classNames?.amount)}>
           <div className="flex min-h-24 flex-col items-center justify-center gap-5 text-center">
-            <label
-              htmlFor={inputId}
-              className="text-xl font-medium text-foreground mr-6"
-            >
+            <label htmlFor={inputId} className="text-xl font-medium text-foreground mr-6">
               {order.mode === "buy" ? "Amount" : "Shares"}
             </label>
 
@@ -583,12 +542,7 @@ export function PredictionMarket({
             </div>
           </div>
 
-          <div
-            className={cn(
-              "mt-8 flex flex-wrap justify-center gap-2",
-              classNames?.chips,
-            )}
-          >
+          <div className={cn("mt-8 flex flex-wrap justify-center gap-2", classNames?.chips)}>
             {quickAmounts.map((amount) => (
               <button
                 key={amount}
@@ -613,12 +567,7 @@ export function PredictionMarket({
       </div>
 
       {showFooter ? (
-        <div
-          className={cn(
-            "border-t border-border/80 px-4 py-4",
-            classNames?.footer,
-          )}
-        >
+        <div className={cn("border-t border-border/80 px-4 py-4", classNames?.footer)}>
           <div className="mb-4 flex items-end justify-between gap-3">
             <div className="min-w-0 shrink">
               <div className="flex items-center gap-2 text-xl font-semibold text-foreground">
@@ -652,10 +601,7 @@ export function PredictionMarket({
             loadingText="Trading"
             successText="Trade filled"
             errorText={quote.error ?? "Enter an amount"}
-            className={cn(
-              "h-12 w-full rounded-2xl text-base font-semibold",
-              classNames?.action,
-            )}
+            className={cn("h-12 w-full rounded-2xl text-base font-semibold", classNames?.action)}
           >
             Trade
           </StatefulButton>
@@ -668,10 +614,7 @@ export function PredictionMarket({
             size="lg"
             pressScale={0.98}
             onClick={submit}
-            className={cn(
-              "h-14 w-full rounded-2xl text-base font-semibold",
-              classNames?.action,
-            )}
+            className={cn("h-14 w-full rounded-2xl text-base font-semibold", classNames?.action)}
           >
             Connect
           </StatefulButton>

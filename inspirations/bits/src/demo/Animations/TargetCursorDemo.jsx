@@ -1,80 +1,87 @@
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box, Text, Grid, GridItem } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box, Text, Grid, GridItem } from "@chakra-ui/react";
+import { useMemo } from "react";
 
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
-import Customize from '../../components/common/Preview/Customize';
-import CodeExample from '../../components/code/CodeExample';
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
+import Customize from "../../components/common/Preview/Customize";
+import CodeExample from "../../components/code/CodeExample";
 
-import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '../../components/code/Dependencies';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
+import PropTable from "../../components/common/Preview/PropTable";
+import Dependencies from "../../components/code/Dependencies";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
 
-import TargetCursor from '../../content/Animations/TargetCursor/TargetCursor';
-import { targetCursor } from '../../constants/code/Animations/targetCursorCode';
+import TargetCursor from "../../content/Animations/TargetCursor/TargetCursor";
+import { targetCursor } from "../../constants/code/Animations/targetCursorCode";
 
 const DEFAULT_PROPS = {
   spinDuration: 2,
   hideDefaultCursor: true,
   hoverDuration: 0.2,
   parallaxOn: true,
-  cursorColor: '#ffffff',
-  cursorColorOnTarget: '#B497CF'
+  cursorColor: "#ffffff",
+  cursorColorOnTarget: "#B497CF",
 };
 
 const TargetCursorDemo = () => {
   const { props, updateProp, resetProps, hasChanges } = useComponentProps(DEFAULT_PROPS);
-  const { spinDuration, hideDefaultCursor, hoverDuration, parallaxOn, cursorColor, cursorColorOnTarget } = props;
+  const {
+    spinDuration,
+    hideDefaultCursor,
+    hoverDuration,
+    parallaxOn,
+    cursorColor,
+    cursorColorOnTarget,
+  } = props;
 
   const propData = useMemo(
     () => [
       {
-        name: 'targetSelector',
-        type: 'string',
+        name: "targetSelector",
+        type: "string",
         default: '".cursor-target"',
-        description: 'CSS selector for elements that should trigger the cursor targeting effect'
+        description: "CSS selector for elements that should trigger the cursor targeting effect",
       },
       {
-        name: 'spinDuration',
-        type: 'number',
-        default: '2',
-        description: "Duration in seconds for the cursor's spinning animation when not targeting"
+        name: "spinDuration",
+        type: "number",
+        default: "2",
+        description: "Duration in seconds for the cursor's spinning animation when not targeting",
       },
       {
-        name: 'hideDefaultCursor',
-        type: 'boolean',
-        default: 'true',
-        description: 'Whether to hide the default browser cursor when the component is active'
+        name: "hideDefaultCursor",
+        type: "boolean",
+        default: "true",
+        description: "Whether to hide the default browser cursor when the component is active",
       },
       {
-        name: 'hoverDuration',
-        type: 'number',
-        default: '0.2',
-        description: 'Duration in seconds for the transition when the cursor locks onto a target'
+        name: "hoverDuration",
+        type: "number",
+        default: "0.2",
+        description: "Duration in seconds for the transition when the cursor locks onto a target",
       },
       {
-        name: 'parallaxOn',
-        type: 'boolean',
-        default: 'true',
-        description: 'Enables a subtle parallax effect on the corners when moving over a target'
+        name: "parallaxOn",
+        type: "boolean",
+        default: "true",
+        description: "Enables a subtle parallax effect on the corners when moving over a target",
       },
       {
-        name: 'cursorColor',
-        type: 'string',
+        name: "cursorColor",
+        type: "string",
         default: "'#ffffff'",
-        description: 'Color of the cursor dot and corner brackets at rest'
+        description: "Color of the cursor dot and corner brackets at rest",
       },
       {
-        name: 'cursorColorOnTarget',
-        type: 'string',
-        default: 'undefined',
-        description: 'Optional color the cursor smoothly transitions to while locked onto a target'
-      }
+        name: "cursorColorOnTarget",
+        type: "string",
+        default: "undefined",
+        description: "Optional color the cursor smoothly transitions to while locked onto a target",
+      },
     ],
-    []
+    [],
   );
 
   return (
@@ -87,7 +94,13 @@ const TargetCursorDemo = () => {
       >
         <TabsLayout>
           <PreviewTab>
-            <Box position="relative" className="demo-container" flexDirection="column" h={400} overflow="hidden">
+            <Box
+              position="relative"
+              className="demo-container"
+              flexDirection="column"
+              h={400}
+              overflow="hidden"
+            >
               <Text fontSize="clamp(2rem, 6vw, 3rem)" fontWeight={900} mb={6} color="#2F293A">
                 Hover Below.
               </Text>
@@ -165,7 +178,7 @@ const TargetCursorDemo = () => {
                 value={spinDuration}
                 valueUnit="s"
                 width={200}
-                onChange={val => updateProp('spinDuration', val)}
+                onChange={(val) => updateProp("spinDuration", val)}
               />
               <PreviewSlider
                 title="Hover Duration"
@@ -175,32 +188,32 @@ const TargetCursorDemo = () => {
                 value={hoverDuration}
                 valueUnit="s"
                 width={200}
-                onChange={val => updateProp('hoverDuration', val)}
+                onChange={(val) => updateProp("hoverDuration", val)}
               />
               <PreviewSwitch
                 title="Hide Default Cursor"
                 isChecked={hideDefaultCursor}
-                onChange={val => updateProp('hideDefaultCursor', val)}
+                onChange={(val) => updateProp("hideDefaultCursor", val)}
               />
               <PreviewSwitch
                 title="Enable Parallax"
                 isChecked={parallaxOn}
-                onChange={val => updateProp('parallaxOn', val)}
+                onChange={(val) => updateProp("parallaxOn", val)}
               />
               <PreviewColorPickerCustom
                 title="Cursor Color"
                 color={cursorColor}
-                onChange={val => updateProp('cursorColor', val)}
+                onChange={(val) => updateProp("cursorColor", val)}
               />
               <PreviewColorPickerCustom
                 title="Cursor Color On Target"
                 color={cursorColorOnTarget}
-                onChange={val => updateProp('cursorColorOnTarget', val)}
+                onChange={(val) => updateProp("cursorColorOnTarget", val)}
               />
             </Customize>
 
             <PropTable data={propData} />
-            <Dependencies dependencyList={['gsap']} />
+            <Dependencies dependencyList={["gsap"]} />
           </PreviewTab>
 
           <CodeTab>

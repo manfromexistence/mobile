@@ -5,7 +5,7 @@
 }
 
 .landing-wrapper::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -17,7 +17,7 @@
 }
 
 .landing-wrapper::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
@@ -152,11 +152,8 @@
 }
 
 .hero-new-badge-container:hover {
-  box-shadow:
-    0 0 60px rgba(124, 58, 237, 0.2),
-    0 0 120px rgba(139, 92, 246, 0.2),
-    0 0 180px rgba(109, 40, 217, 0.2),
-    0 12px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 60px rgba(124, 58, 237, 0.2), 0 0 120px rgba(139, 92, 246, 0.2), 0 0 180px
+    rgba(109, 40, 217, 0.2), 0 12px 40px rgba(0, 0, 0, 0.4);
   transform: scale(1.01);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   animation-duration: 1.5s;
@@ -182,10 +179,8 @@
   cursor: pointer;
   isolation: isolate;
   z-index: 15;
-  box-shadow:
-    0 0 40px rgba(124, 58, 237, 0.2),
-    0 0 80px rgba(139, 92, 246, 0.1),
-    0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 40px rgba(124, 58, 237, 0.2), 0 0 80px rgba(139, 92, 246, 0.1), 0 8px 32px
+    rgba(0, 0, 0, 0.1);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   /* glow-pulse animation removed for performance - filter animations are expensive */
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -228,7 +223,7 @@
 }
 
 .landing-button::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -240,7 +235,7 @@
 }
 
 .landing-button::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: -2px;
   background: linear-gradient(
@@ -474,7 +469,8 @@
     text-align: center !important;
   }
 
-  .landing-wrapper > div[style*='position: absolute'][style*='width: 100vw'][style*='height: 100vh'] {
+  .landing-wrapper
+    > div[style*="position: absolute"][style*="width: 100vw"][style*="height: 100vh"] {
     opacity: 0.7;
   }
 }
@@ -519,7 +515,8 @@
     height: 32px;
   }
 
-  .landing-wrapper > div[style*='position: absolute'][style*='width: 100vw'][style*='height: 100vh'] {
+  .landing-wrapper
+    > div[style*="position: absolute"][style*="width: 100vw"][style*="height: 100vh"] {
     opacity: 0.5;
   }
 }
@@ -544,7 +541,8 @@
     height: 28px;
   }
 
-  .landing-wrapper > div[style*='position: absolute'][style*='width: 100vw'][style*='height: 100vh'] {
+  .landing-wrapper
+    > div[style*="position: absolute"][style*="width: 100vw"][style*="height: 100vh"] {
     opacity: 0.3;
   }
 }

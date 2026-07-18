@@ -151,10 +151,7 @@ export interface EmbeddingCreateParams {
   user?: string;
 }
 
-export const EmbeddingCreateParamsUnsupportedFields: Array<string> = [
-  "dimensions",
-  "user",
-];
+export const EmbeddingCreateParamsUnsupportedFields: Array<string> = ["dimensions", "user"];
 
 export function postInitAndCheckFields(
   request: EmbeddingCreateParams,

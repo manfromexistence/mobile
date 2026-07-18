@@ -13,8 +13,9 @@ const providersDb = await import("../../src/lib/db/providers.ts");
 const settingsDb = await import("../../src/lib/db/settings.ts");
 const auth = await import("../../src/sse/services/auth.ts");
 const { handleComboChat } = await import("../../open-sse/services/combo.ts");
-const { recordModelLockoutFailure, getModelLockoutInfo, clearAllModelLockouts } =
-  await import("../../open-sse/services/accountFallback.ts");
+const { recordModelLockoutFailure, getModelLockoutInfo, clearAllModelLockouts } = await import(
+  "../../open-sse/services/accountFallback.ts"
+);
 
 function createLog() {
   return {
@@ -80,7 +81,7 @@ test("recordModelLockoutFailure honors maxCooldownMs option parameter", () => {
     null,
     {
       maxCooldownMs: 1500,
-    }
+    },
   );
   assert.equal(first.cooldownMs, 500);
 
@@ -100,7 +101,7 @@ test("recordModelLockoutFailure honors maxCooldownMs option parameter", () => {
       null,
       {
         maxCooldownMs: 1500,
-      }
+      },
     );
     assert.equal(second.cooldownMs, 1000);
 
@@ -115,7 +116,7 @@ test("recordModelLockoutFailure honors maxCooldownMs option parameter", () => {
       null,
       {
         maxCooldownMs: 1500,
-      }
+      },
     );
     assert.equal(third.cooldownMs, 1500);
   } finally {
@@ -173,7 +174,7 @@ test("handleComboChat quality failure model lockout honors maxCooldownMs setting
     assert.ok(info);
     assert.ok(
       info!.remainingMs <= 5000,
-      `Expected remainingMs to be capped at 5000, but got ${info!.remainingMs}`
+      `Expected remainingMs to be capped at 5000, but got ${info!.remainingMs}`,
     );
   } finally {
     Date.now = originalNow;
@@ -214,7 +215,7 @@ test("markAccountUnavailable local 404 lockout honors maxCooldownMs settings", a
     assert.ok(info);
     assert.ok(
       info!.remainingMs <= 5000,
-      `Expected remainingMs to be capped at 5000, but got ${info!.remainingMs}`
+      `Expected remainingMs to be capped at 5000, but got ${info!.remainingMs}`,
     );
   } finally {
     Date.now = originalNow;

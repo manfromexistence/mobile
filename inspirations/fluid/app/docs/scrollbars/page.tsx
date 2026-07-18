@@ -19,20 +19,39 @@ import { DocPage, DocSection } from "@/lib/docs/DocPage";
 // Demo data
 // ---------------------------------------------------------------------------
 
-const RELEASES = Array.from(
-  { length: 24 },
-  (_, i) => `v1.${23 - i}.0 — maintenance release`
-);
+const RELEASES = Array.from({ length: 24 }, (_, i) => `v1.${23 - i}.0 — maintenance release`);
 
 const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
 
 const CITIES = [
-  "Amsterdam", "Berlin", "Copenhagen", "Dublin", "Helsinki", "Lisbon",
-  "London", "Madrid", "Oslo", "Paris", "Prague", "Stockholm",
-  "Vienna", "Warsaw", "Zurich",
+  "Amsterdam",
+  "Berlin",
+  "Copenhagen",
+  "Dublin",
+  "Helsinki",
+  "Lisbon",
+  "London",
+  "Madrid",
+  "Oslo",
+  "Paris",
+  "Prague",
+  "Stockholm",
+  "Vienna",
+  "Warsaw",
+  "Zurich",
 ];
 
 // Deterministic fake metric so the table renders identically on every pass.
@@ -139,14 +158,12 @@ const scrollAreaProps: PropDef[] = [
   {
     name: "viewportClassName",
     type: "string",
-    description:
-      "Classes for the inner scrolling viewport — where the scroll-fade utility goes.",
+    description: "Classes for the inner scrolling viewport — where the scroll-fade utility goes.",
   },
   {
     name: "className",
     type: "string",
-    description:
-      "Classes for the outer container — set the height/width constraint here.",
+    description: "Classes for the outer container — set the height/width constraint here.",
   },
 ];
 
@@ -158,10 +175,7 @@ function ReleaseRows() {
   return (
     <div className="flex flex-col p-3">
       {RELEASES.map((release) => (
-        <div
-          key={release}
-          className="px-3 py-2 text-[13px] text-foreground whitespace-nowrap"
-        >
+        <div key={release} className="px-3 py-2 text-[13px] text-foreground whitespace-nowrap">
           {release}
         </div>
       ))}
@@ -170,11 +184,7 @@ function ReleaseRows() {
 }
 
 function PanelLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-[12px] text-muted-foreground text-center">
-      {children}
-    </span>
-  );
+  return <span className="text-[12px] text-muted-foreground text-center">{children}</span>;
 }
 
 function ProblemDemo() {
@@ -183,9 +193,7 @@ function ProblemDemo() {
     <ComponentPreview code={PROBLEM_CODE} padding="responsive">
       <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
         <div className="flex flex-col gap-2">
-          <div
-            className={`h-56 w-64 overflow-y-auto border border-border ${shape.container}`}
-          >
+          <div className={`h-56 w-64 overflow-y-auto border border-border ${shape.container}`}>
             <ReleaseRows />
           </div>
           <PanelLabel>Native — default OS scrollbar</PanelLabel>
@@ -207,16 +215,8 @@ function ProblemDemo() {
 function HorizontalDemo() {
   const shape = useShape();
   return (
-    <ComponentPreview
-      code={HORIZONTAL_CODE}
-      padding="none"
-      minHeightClass="min-h-0"
-    >
-      <ScrollArea
-        orientation="horizontal"
-        viewportClassName="scroll-fade-x"
-        className="w-full"
-      >
+    <ComponentPreview code={HORIZONTAL_CODE} padding="none" minHeightClass="min-h-0">
+      <ScrollArea orientation="horizontal" viewportClassName="scroll-fade-x" className="w-full">
         <div className="flex gap-2 p-3 w-max">
           {MONTHS.map((month) => (
             <div
@@ -264,14 +264,9 @@ function TableDemo() {
           <TableBody>
             {CITIES.map((city, r) => (
               <TableRow key={city} index={r}>
-                <TableCell className="text-foreground whitespace-nowrap">
-                  {city}
-                </TableCell>
+                <TableCell className="text-foreground whitespace-nowrap">{city}</TableCell>
                 {MONTHS.map((m, c) => (
-                  <TableCell
-                    key={m}
-                    className="text-right tabular-nums whitespace-nowrap"
-                  >
+                  <TableCell key={m} className="text-right tabular-nums whitespace-nowrap">
                     {metric(r, c)}
                   </TableCell>
                 ))}
@@ -300,11 +295,7 @@ function H3({ children }: { children: React.ReactNode }) {
 }
 
 function P({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-[13px] text-muted-foreground leading-relaxed">
-      {children}
-    </p>
-  );
+  return <p className="text-[13px] text-muted-foreground leading-relaxed">{children}</p>;
 }
 
 export default function ScrollbarsDoc() {
@@ -315,19 +306,18 @@ export default function ScrollbarsDoc() {
       installSlug="scroll-area"
       description={
         <>
-          A scrollbar that stays out of the way but never disappears, over
-          shadcn&apos;s scroll-fade as the baseline edge treatment — restyled to
-          the shape system, with native scroll physics on touch.
+          A scrollbar that stays out of the way but never disappears, over shadcn&apos;s scroll-fade
+          as the baseline edge treatment — restyled to the shape system, with native scroll physics
+          on touch.
         </>
       }
     >
       <DocSection title="The problem">
         <div className="flex flex-col gap-3 text-[13px] text-muted-foreground leading-relaxed">
           <p>
-            macOS hides the scrollbar until you start scrolling, so a clipped
-            list gives no sign it has more below. And the moment it does appear,
-            it&apos;s the grey OS default sitting on top of your design. You
-            either get no affordance or the wrong one.
+            macOS hides the scrollbar until you start scrolling, so a clipped list gives no sign it
+            has more below. And the moment it does appear, it&apos;s the grey OS default sitting on
+            top of your design. You either get no affordance or the wrong one.
           </p>
         </div>
         <ProblemDemo />
@@ -335,18 +325,15 @@ export default function ScrollbarsDoc() {
 
       <DocSection title="The scrollbar">
         <P>
-          The thumb rests narrow and low-contrast, then widens and darkens on
-          hover so it stays quiet until you reach for it. Press{" "}
-          <kbd className="px-1 py-0.5 rounded bg-muted text-[12px] font-mono">
-            R
-          </kbd>{" "}
-          to see the radius follow the shape system. On touch-primary devices
-          the whole thing steps aside for native overflow scrolling, where
-          platform physics beat any custom scrollbar.
+          The thumb rests narrow and low-contrast, then widens and darkens on hover so it stays
+          quiet until you reach for it. Press{" "}
+          <kbd className="px-1 py-0.5 rounded bg-muted text-[12px] font-mono">R</kbd> to see the
+          radius follow the shape system. On touch-primary devices the whole thing steps aside for
+          native overflow scrolling, where platform physics beat any custom scrollbar.
         </P>
         <P>
-          Ships in Radix and Base UI flavors with the same API — switch with
-          the Primitive toggle. Scrollbar machinery adapted from{" "}
+          Ships in Radix and Base UI flavors with the same API — switch with the Primitive toggle.
+          Scrollbar machinery adapted from{" "}
           <a
             href="https://lina.sameer.sh"
             target="_blank"
@@ -371,20 +358,12 @@ export default function ScrollbarsDoc() {
             scroll-fade
           </a>
           , vendored as a CSS utility in{" "}
-          <code className="px-1 py-0.5 rounded bg-muted text-[12px]">
-            globals.css
-          </code>
-          . A mask dissolves the content toward the edges that have more to
-          scroll, and a scroll-driven animation keeps the true start and end
-          crisp. Drop{" "}
-          <code className="px-1 py-0.5 rounded bg-muted text-[12px]">
-            scroll-fade
-          </code>{" "}
-          (or{" "}
-          <code className="px-1 py-0.5 rounded bg-muted text-[12px]">
-            scroll-fade-x
-          </code>
-          ) on the viewport and it rides under the scrollbar — no JavaScript.
+          <code className="px-1 py-0.5 rounded bg-muted text-[12px]">globals.css</code>. A mask
+          dissolves the content toward the edges that have more to scroll, and a scroll-driven
+          animation keeps the true start and end crisp. Drop{" "}
+          <code className="px-1 py-0.5 rounded bg-muted text-[12px]">scroll-fade</code> (or{" "}
+          <code className="px-1 py-0.5 rounded bg-muted text-[12px]">scroll-fade-x</code>) on the
+          viewport and it rides under the scrollbar — no JavaScript.
         </P>
         <FadeDemo />
       </DocSection>

@@ -32,7 +32,7 @@
 }
 
 .tools-landing-title {
-  font-family: 'Geist Pixel Line', sans-serif;
+  font-family: "Geist Pixel Line", sans-serif;
   font-size: clamp(36px, 5vw, 100px);
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -42,7 +42,7 @@
 }
 
 .tools-landing-subtitle {
-  font-family: 'Geist', sans-serif;
+  font-family: "Geist", sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.4;
@@ -89,7 +89,7 @@
 }
 
 .tools-landing-card-banner::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(circle at 50% 80%, rgba(168, 85, 247, 0.12) 0%, transparent 60%);
@@ -148,7 +148,7 @@
 }
 
 .tools-landing-card-title {
-  font-family: 'Geist', sans-serif;
+  font-family: "Geist", sans-serif;
   font-size: 16px;
   font-weight: 600;
   color: #fff;
@@ -157,7 +157,7 @@
 }
 
 .tools-landing-card-tag {
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
@@ -180,7 +180,7 @@
 }
 
 .tools-landing-card-desc {
-  font-family: 'Geist', sans-serif;
+  font-family: "Geist", sans-serif;
   font-size: 13px;
   font-weight: 400;
   line-height: 1.6;
@@ -192,7 +192,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 13px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.4);

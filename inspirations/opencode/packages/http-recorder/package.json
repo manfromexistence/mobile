@@ -12,14 +12,7 @@
   },
   "homepage": "https://github.com/anomalyco/opencode/tree/dev/packages/http-recorder",
   "bugs": "https://github.com/anomalyco/opencode/issues",
-  "keywords": [
-    "effect",
-    "http",
-    "recording",
-    "replay",
-    "testing",
-    "vcr"
-  ],
+  "keywords": ["effect", "http", "recording", "replay", "testing", "vcr"],
   "engines": {
     "node": ">=22"
   },
@@ -36,12 +29,7 @@
     ".": "./src/index.ts",
     "./internal": "./src/internal.ts"
   },
-  "files": [
-    "dist",
-    "README.md",
-    "CHANGELOG.md",
-    "LICENSE"
-  ],
+  "files": ["dist", "README.md", "CHANGELOG.md", "LICENSE"],
   "devDependencies": {
     "@tsconfig/node22": "catalog:",
     "@types/bun": "catalog:",

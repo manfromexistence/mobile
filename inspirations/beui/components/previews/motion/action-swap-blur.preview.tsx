@@ -2,10 +2,7 @@
 
 import { Check, Copy, Moon, Sun } from "lucide-react";
 import { useState } from "react";
-import {
-  ActionSwapBlurButton,
-  type ActionSwapItem,
-} from "@/components/motion/action-swap-blur";
+import { ActionSwapBlurButton, type ActionSwapItem } from "@/components/motion/action-swap-blur";
 
 const TEXT_ITEMS: ActionSwapItem[] = [
   { id: "copy", label: "Copy" },

@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import { Renderer, Program, Mesh, Triangle } from 'ogl';
-import './Ferrofluid.css';
+import React, { useEffect, useRef } from "react";
+import { Renderer, Program, Mesh, Triangle } from "ogl";
+import "./Ferrofluid.css";
 
 export interface FerrofluidProps {
   className?: string;
@@ -15,7 +15,7 @@ export interface FerrofluidProps {
   sharpness?: number;
   shimmer?: number;
   glow?: number;
-  flowDirection?: 'up' | 'down' | 'left' | 'right';
+  flowDirection?: "up" | "down" | "left" | "right";
   opacity?: number;
   mouseInteraction?: boolean;
   mouseStrength?: number;
@@ -29,7 +29,7 @@ type RGB = [number, number, number];
 const MAX_COLORS = 8;
 
 const hexToRGB = (hex: string): RGB => {
-  const c = hex.replace('#', '').padEnd(6, '0');
+  const c = hex.replace("#", "").padEnd(6, "0");
   const r = parseInt(c.slice(0, 2), 16) / 255;
   const g = parseInt(c.slice(2, 4), 16) / 255;
   const b = parseInt(c.slice(4, 6), 16) / 255;
@@ -37,7 +37,10 @@ const hexToRGB = (hex: string): RGB => {
 };
 
 const prepColors = (input?: string[]) => {
-  const base = (input && input.length ? input : ['#4F46E5', '#06B6D4', '#E0F2FE']).slice(0, MAX_COLORS);
+  const base = (input && input.length ? input : ["#4F46E5", "#06B6D4", "#E0F2FE"]).slice(
+    0,
+    MAX_COLORS,
+  );
   const count = base.length;
   const arr: RGB[] = [];
   for (let i = 0; i < MAX_COLORS; i++) arr.push(hexToRGB(base[Math.min(i, base.length - 1)]));
@@ -55,13 +58,13 @@ const prepColors = (input?: string[]) => {
 
 const flowVec = (d?: string): [number, number] => {
   switch (d) {
-    case 'up':
+    case "up":
       return [0, 1];
-    case 'down':
+    case "down":
       return [0, -1];
-    case 'left':
+    case "left":
       return [-1, 0];
-    case 'right':
+    case "right":
       return [1, 0];
     default:
       return [0, -1];
@@ -215,7 +218,7 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
   className,
   dpr,
   paused = false,
-  colors = ['#ffffff', '#ffffff', '#ffffff'],
+  colors = ["#ffffff", "#ffffff", "#ffffff"],
   speed = 0.5,
   scale = 1.6,
   turbulence = 1,
@@ -224,13 +227,13 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
   sharpness = 2.5,
   shimmer = 1.5,
   glow = 2,
-  flowDirection = 'down',
+  flowDirection = "down",
   opacity = 1,
   mouseInteraction = true,
   mouseStrength = 1,
   mouseRadius = 0.35,
   mouseDampening = 0.15,
-  mixBlendMode
+  mixBlendMode,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -246,17 +249,17 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
     if (!container) return;
 
     const renderer = new Renderer({
-      dpr: dpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1),
+      dpr: dpr ?? (typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1),
       alpha: true,
-      antialias: true
+      antialias: true,
     });
     rendererRef.current = renderer;
     const gl = renderer.gl;
     const canvas = gl.canvas as HTMLCanvasElement;
     gl.clearColor(0, 0, 0, 0);
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.style.display = 'block';
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.display = "block";
     container.appendChild(canvas);
 
     const { arr, count, avg } = prepColors(colors);
@@ -287,7 +290,7 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
       uOpacity: { value: opacity },
       uMouseEnabled: { value: mouseInteraction ? 1 : 0 },
       uMouseStrength: { value: mouseStrength },
-      uMouseRadius: { value: mouseRadius }
+      uMouseRadius: { value: mouseRadius },
     };
 
     const program = new Program(gl, { vertex, fragment, uniforms });
@@ -319,7 +322,7 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
       }
     };
     if (mouseInteraction) {
-      canvas.addEventListener('pointermove', onPointerMove);
+      canvas.addEventListener("pointermove", onPointerMove);
     }
 
     const loop = (t: number) => {
@@ -351,21 +354,21 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      if (mouseInteraction) canvas.removeEventListener('pointermove', onPointerMove);
+      if (mouseInteraction) canvas.removeEventListener("pointermove", onPointerMove);
       ro.disconnect();
       if (canvas.parentElement === container) {
         container.removeChild(canvas);
       }
       const callIfFn = (obj: unknown, key: string) => {
         const fn = obj && (obj as Record<string, unknown>)[key];
-        if (typeof fn === 'function') {
+        if (typeof fn === "function") {
           (fn as () => void).call(obj);
         }
       };
-      callIfFn(programRef.current, 'remove');
-      callIfFn(geometryRef.current, 'remove');
-      callIfFn(meshRef.current, 'remove');
-      callIfFn(rendererRef.current, 'destroy');
+      callIfFn(programRef.current, "remove");
+      callIfFn(geometryRef.current, "remove");
+      callIfFn(meshRef.current, "remove");
+      callIfFn(rendererRef.current, "destroy");
       programRef.current = null;
       geometryRef.current = null;
       meshRef.current = null;
@@ -388,15 +391,15 @@ const Ferrofluid: React.FC<FerrofluidProps> = ({
     mouseInteraction,
     mouseStrength,
     mouseRadius,
-    mouseDampening
+    mouseDampening,
   ]);
 
   return (
     <div
       ref={containerRef}
-      className={`ferrofluid-container ${className ?? ''}`}
+      className={`ferrofluid-container ${className ?? ""}`}
       style={{
-        ...(mixBlendMode && { mixBlendMode: mixBlendMode as React.CSSProperties['mixBlendMode'] })
+        ...(mixBlendMode && { mixBlendMode: mixBlendMode as React.CSSProperties["mixBlendMode"] }),
       }}
     />
   );

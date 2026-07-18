@@ -14,8 +14,7 @@ const [ComboboxBadgeListProvider, useComboboxBadgeListContext] =
 
 type BadgeListElement = React.ElementRef<typeof Primitive.div>;
 
-interface ComboboxBadgeListProps
-  extends React.ComponentPropsWithoutRef<typeof Primitive.div> {
+interface ComboboxBadgeListProps extends React.ComponentPropsWithoutRef<typeof Primitive.div> {
   /**
    * Whether to force mount the badge list even if there is no selected item.
    * @default false
@@ -29,42 +28,34 @@ interface ComboboxBadgeListProps
   orientation?: "horizontal" | "vertical";
 }
 
-const ComboboxBadgeList = React.forwardRef<
-  BadgeListElement,
-  ComboboxBadgeListProps
->((props, forwardedRef) => {
-  const {
-    forceMount = false,
-    orientation = "horizontal",
-    ...badgeListProps
-  } = props;
-  const context = useComboboxContext(BADGE_LIST_NAME);
-  const values = Array.isArray(context.value) ? context.value : [];
-  const composedRef = useComposedRefs(forwardedRef, (node) => {
-    // If the list is not rendered, don't need to consider badge list keyboard navigation
-    context.onHasBadgeListChange(!!node);
-  });
+const ComboboxBadgeList = React.forwardRef<BadgeListElement, ComboboxBadgeListProps>(
+  (props, forwardedRef) => {
+    const { forceMount = false, orientation = "horizontal", ...badgeListProps } = props;
+    const context = useComboboxContext(BADGE_LIST_NAME);
+    const values = Array.isArray(context.value) ? context.value : [];
+    const composedRef = useComposedRefs(forwardedRef, (node) => {
+      // If the list is not rendered, don't need to consider badge list keyboard navigation
+      context.onHasBadgeListChange(!!node);
+    });
 
-  if (!forceMount && (!context.multiple || values.length === 0)) {
-    return null;
-  }
+    if (!forceMount && (!context.multiple || values.length === 0)) {
+      return null;
+    }
 
-  return (
-    <ComboboxBadgeListProvider
-      orientation={orientation}
-      badgeCount={values.length}
-    >
-      <Primitive.div
-        role="listbox"
-        aria-multiselectable={context.multiple}
-        aria-orientation={orientation}
-        data-orientation={orientation}
-        {...badgeListProps}
-        ref={composedRef}
-      />
-    </ComboboxBadgeListProvider>
-  );
-});
+    return (
+      <ComboboxBadgeListProvider orientation={orientation} badgeCount={values.length}>
+        <Primitive.div
+          role="listbox"
+          aria-multiselectable={context.multiple}
+          aria-orientation={orientation}
+          data-orientation={orientation}
+          {...badgeListProps}
+          ref={composedRef}
+        />
+      </ComboboxBadgeListProvider>
+    );
+  },
+);
 
 ComboboxBadgeList.displayName = BADGE_LIST_NAME;
 

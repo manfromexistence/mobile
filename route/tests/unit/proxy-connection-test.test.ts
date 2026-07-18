@@ -169,7 +169,7 @@ test("classifyFailure: rate limit via message", () => {
     assert.equal(
       result.type,
       "upstream_rate_limited",
-      `Expected upstream_rate_limited for "${msg}"`
+      `Expected upstream_rate_limited for "${msg}"`,
     );
   }
 });
@@ -250,14 +250,14 @@ function getProviderDisplayLabel(provider) {
 
 test("getProviderDisplayLabel: openai-compatible with UUID shows OAI-COMPAT", () => {
   const result = getProviderDisplayLabel(
-    "openai-compatible-chat-02669115-2545-4896-b003-cb4dac09d441"
+    "openai-compatible-chat-02669115-2545-4896-b003-cb4dac09d441",
   );
   assert.equal(result, "OAI-COMPAT");
 });
 
 test("getProviderDisplayLabel: anthropic-compatible with UUID shows ANT-COMPAT", () => {
   const result = getProviderDisplayLabel(
-    "anthropic-compatible-chat-abcdef12-3456-7890-abcd-ef1234567890"
+    "anthropic-compatible-chat-abcdef12-3456-7890-abcd-ef1234567890",
   );
   assert.equal(result, "ANT-COMPAT");
 });
@@ -319,7 +319,7 @@ test("OAuth test config covers all expected providers", () => {
   for (const provider of expected) {
     assert.ok(
       configuredProviders.includes(provider),
-      `Missing OAUTH_TEST_CONFIG for provider: ${provider}`
+      `Missing OAUTH_TEST_CONFIG for provider: ${provider}`,
     );
   }
 });
@@ -336,7 +336,7 @@ test("testApiKeyConnection: self-hosted chat providers with empty API key do NOT
     assert.equal(
       providerAllowsOptionalApiKey(provider),
       true,
-      `Expected ${provider} to not require API key`
+      `Expected ${provider} to not require API key`,
     );
   }
 });
@@ -355,7 +355,7 @@ test("testApiKeyConnection: providers requiring an API key are correctly identif
     assert.equal(
       providerAllowsOptionalApiKey(provider),
       false,
-      `Expected ${provider} to require an API key`
+      `Expected ${provider} to require an API key`,
     );
   }
 });

@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
-const { default: RequestLoggerDetail } =
-  await import("../../src/shared/components/RequestLoggerDetail.tsx");
+const { default: RequestLoggerDetail } = await import(
+  "../../src/shared/components/RequestLoggerDetail.tsx"
+);
 
 function renderDetailWithSourceFormat(sourceFormat: string) {
   return renderToStaticMarkup(
@@ -42,7 +43,7 @@ function renderDetailWithSourceFormat(sourceFormat: string) {
       loading: false,
       onClose: () => {},
       onCopy: async () => true,
-    })
+    }),
   );
 }
 
@@ -90,7 +91,7 @@ test("request log detail splits token badges into input and output groups", () =
       loading: false,
       onClose: () => {},
       onCopy: async () => true,
-    })
+    }),
   );
 
   const inputLabelIndex = html.indexOf(">Input<");
@@ -116,7 +117,7 @@ test("request log detail splits token badges into input and output groups", () =
 
   assert.match(
     html,
-    /data-testid="token-group-input"[\s\S]*Total In: 21[\s\S]*818[\s\S]*Cache Read: 21[\s\S]*632[\s\S]*Cache Write: N\/A/
+    /data-testid="token-group-input"[\s\S]*Total In: 21[\s\S]*818[\s\S]*Cache Read: 21[\s\S]*632[\s\S]*Cache Write: N\/A/,
   );
   assert.match(html, /data-testid="token-group-output"[\s\S]*Total Out: 42[\s\S]*Reasoning: N\/A/);
 });
@@ -169,7 +170,7 @@ test("request log detail compression-summary badge shows positive saved%, never 
         loading: false,
         onClose: () => {},
         onCopy: async () => true,
-      })
+      }),
     );
 
   // Original bug repro: totalIn=0, compressed=5286 → previously rendered "(−100%)".
@@ -179,7 +180,7 @@ test("request log detail compression-summary badge shows positive saved%, never 
   assert.equal(
     fullyCompressed.includes("\u2212100%"),
     false,
-    "unicode minus + 100% must never appear"
+    "unicode minus + 100% must never appear",
   );
 
   // Half-compressed case must clamp cleanly inside the [0, 100] window.
@@ -216,10 +217,10 @@ test("request log detail follows the email visibility setting for accounts", () 
   };
 
   const hiddenHtml = renderToStaticMarkup(
-    React.createElement(RequestLoggerDetail, { ...props, emailsVisible: false })
+    React.createElement(RequestLoggerDetail, { ...props, emailsVisible: false }),
   );
   const visibleHtml = renderToStaticMarkup(
-    React.createElement(RequestLoggerDetail, { ...props, emailsVisible: true })
+    React.createElement(RequestLoggerDetail, { ...props, emailsVisible: true }),
   );
 
   assert.match(hiddenHtml, /log\*{6}@\*{8}com/);

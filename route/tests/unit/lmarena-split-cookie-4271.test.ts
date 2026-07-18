@@ -36,7 +36,7 @@ describe("LMArena split Supabase SSR cookie (#4271)", () => {
     // Ascending concat of the chunk values, used verbatim (base64- prefix kept).
     assert.ok(
       reconstructed.includes("arena-auth-prod-v1=base64-eyJABCDEF.ghi"),
-      `expected reconstructed cookie to carry the joined session, got: ${reconstructed}`
+      `expected reconstructed cookie to carry the joined session, got: ${reconstructed}`,
     );
 
     // And it must flow through to the forwarded Cookie header.
@@ -44,7 +44,7 @@ describe("LMArena split Supabase SSR cookie (#4271)", () => {
     assert.ok(header, "should set a Cookie header");
     assert.ok(
       header!.includes("arena-auth-prod-v1=base64-eyJABCDEF.ghi"),
-      `Cookie header should carry the reconstructed session, got: ${header}`
+      `Cookie header should carry the reconstructed session, got: ${header}`,
     );
   });
 
@@ -53,7 +53,7 @@ describe("LMArena split Supabase SSR cookie (#4271)", () => {
     const reconstructed = reconstructLMArenaCookie(raw);
     assert.ok(
       reconstructed.includes("arena-auth-prod-v1=base64-xyz"),
-      `back-compat cookie should be preserved, got: ${reconstructed}`
+      `back-compat cookie should be preserved, got: ${reconstructed}`,
     );
 
     const header = cookieHeaderFor({ cookie: raw });
@@ -66,7 +66,7 @@ describe("LMArena split Supabase SSR cookie (#4271)", () => {
     const reconstructed = reconstructLMArenaCookie(raw);
     assert.ok(
       reconstructed.includes("arena-auth-prod-v1=base64-eyJABCDEF.ghi"),
-      `expected .0 then .1 regardless of paste order, got: ${reconstructed}`
+      `expected .0 then .1 regardless of paste order, got: ${reconstructed}`,
     );
   });
 
@@ -76,7 +76,7 @@ describe("LMArena split Supabase SSR cookie (#4271)", () => {
     const reconstructed = reconstructLMArenaCookie(raw);
     assert.ok(
       reconstructed.includes("arena-auth-prod-v1=base64-eyJABCDEF.ghi"),
-      `session should be reconstructed, got: ${reconstructed}`
+      `session should be reconstructed, got: ${reconstructed}`,
     );
     assert.ok(reconstructed.includes("cf_clearance=abc"), "should keep cf_clearance");
     assert.ok(reconstructed.includes("sidebar=open"), "should keep sidebar");
@@ -115,7 +115,7 @@ describe("LMArena split Supabase SSR cookie (#4271)", () => {
     // carries no session value.
     assert.ok(
       !/arena-auth-prod-v1=[^;\s]/.test(header ?? ""),
-      `should not fabricate a session value, got: ${header}`
+      `should not fabricate a session value, got: ${header}`,
     );
   });
 });
@@ -126,11 +126,11 @@ describe("LMArena split-cookie credential storage keys (#4271)", () => {
     assert.ok(req, "should have a credential requirement");
     assert.ok(
       req!.storageKeys.includes("arena-auth-prod-v1.0"),
-      "storageKeys should include arena-auth-prod-v1.0"
+      "storageKeys should include arena-auth-prod-v1.0",
     );
     assert.ok(
       req!.storageKeys.includes("arena-auth-prod-v1.1"),
-      "storageKeys should include arena-auth-prod-v1.1"
+      "storageKeys should include arena-auth-prod-v1.1",
     );
   });
 
@@ -139,7 +139,7 @@ describe("LMArena split-cookie credential storage keys (#4271)", () => {
     assert.ok(req, "should have a credential requirement");
     assert.ok(
       /full cookie header/i.test(req!.placeholder),
-      `placeholder should instruct pasting the full Cookie header, got: ${req!.placeholder}`
+      `placeholder should instruct pasting the full Cookie header, got: ${req!.placeholder}`,
     );
   });
 });

@@ -1,10 +1,5 @@
 /* eslint-disable no-useless-escape */
-import {
-  Role,
-  MessagePlaceholders,
-  ConvTemplateConfig,
-  ChatConfig,
-} from "../src/config";
+import { Role, MessagePlaceholders, ConvTemplateConfig, ChatConfig } from "../src/config";
 import {
   getConversation,
   getConversationFromChatCompletionRequest,
@@ -76,8 +71,7 @@ describe("Test gorilla conversation template", () => {
           },
           {
             name: "time",
-            description:
-              "The amount of time in minutes the customer is willing to wait",
+            description: "The amount of time in minutes the customer is willing to wait",
           },
         ],
       },
@@ -282,10 +276,7 @@ describe("Test Hermes2 formatting", () => {
       ],
     };
     // Since we treat last input as PrefillStep input, last message is not included in `conv`
-    const conv = getConversationFromChatCompletionRequest(
-      request,
-      hermes2LlamaChatConfig,
-    );
+    const conv = getConversationFromChatCompletionRequest(request, hermes2LlamaChatConfig);
     const promptArray = conv.getPromptArray();
     let finalMessage = "";
     for (const msg of promptArray) {
@@ -398,10 +389,7 @@ describe("Test Llama3.1 formatting", () => {
       ],
     };
     // Since we treat last input as PrefillStep input, last message is not included in `conv`
-    const conv = getConversationFromChatCompletionRequest(
-      request,
-      llama3_1ChatConfig,
-    );
+    const conv = getConversationFromChatCompletionRequest(request, llama3_1ChatConfig);
     const promptArray = conv.getPromptArray();
     let finalMessage = "";
     for (const msg of promptArray) {

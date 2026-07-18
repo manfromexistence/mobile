@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   ChevronLeft,
@@ -9,24 +9,24 @@ import {
   RotateCcw,
   Sparkles,
   Sun,
-} from "lucide-react"
-import { motion } from "motion/react"
-import { useTheme } from "next-themes"
-import { useCallback, useEffect, useRef, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
+} from "lucide-react";
+import { motion } from "motion/react";
+import { useTheme } from "next-themes";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface ColorDot {
-  id: number
-  x: number
-  y: number
-  color: string
-  isPrimary: boolean
+  id: number;
+  x: number;
+  y: number;
+  color: string;
+  isPrimary: boolean;
 }
 
-const PICKER_SIZE = 500
-const MAX_DOTS = 3
+const PICKER_SIZE = 500;
+const MAX_DOTS = 3;
 
 // Preset color palettes (12 colors per page, 4 pages)
 const colorPages = [
@@ -86,225 +86,204 @@ const colorPages = [
     { r: 0, g: 0, b: 64 }, // Dark Blue
     { r: 64, g: 64, b: 0 }, // Dark Yellow
   ],
-]
+];
 
 export function ThemePicker() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-  const [dots, setDots] = useState<ColorDot[]>([])
-  const [draggingDot, setDraggingDot] = useState<number | null>(null)
-  const [opacity, setOpacity] = useState(0.5)
-  const [texture, setTexture] = useState(0)
-  const [colorPage, setColorPage] = useState(0)
-  const [isDraggingTexture, setIsDraggingTexture] = useState(false)
-  const [_isPickerHovered, setIsPickerHovered] = useState(false)
-  const [hasUserInteracted, setHasUserInteracted] = useState(false)
-  const pickerRef = useRef<HTMLDivElement>(null)
-  const textureRef = useRef<HTMLDivElement>(null)
-  const _sliderRef = useRef<HTMLDivElement>(null)
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [dots, setDots] = useState<ColorDot[]>([]);
+  const [draggingDot, setDraggingDot] = useState<number | null>(null);
+  const [opacity, setOpacity] = useState(0.5);
+  const [texture, setTexture] = useState(0);
+  const [colorPage, setColorPage] = useState(0);
+  const [isDraggingTexture, setIsDraggingTexture] = useState(false);
+  const [_isPickerHovered, setIsPickerHovered] = useState(false);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
+  const textureRef = useRef<HTMLDivElement>(null);
+  const _sliderRef = useRef<HTMLDivElement>(null);
 
   // Prevent hydration mismatch
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   // Apply theme colors to CSS variables
   const applyThemeColors = useCallback(() => {
-    if (dots.length === 0) return
+    if (dots.length === 0) return;
 
-    const root = document.documentElement
+    const root = document.documentElement;
 
     // Calculate relative luminance for WCAG contrast
     const getLuminance = (r: number, g: number, b: number) => {
       const toLinear = (c: number) => {
-        const normalized = c / 255
-        return normalized <= 0.03928
-          ? normalized / 12.92
-          : ((normalized + 0.055) / 1.055) ** 2.4
-      }
+        const normalized = c / 255;
+        return normalized <= 0.03928 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+      };
 
-      const rLin = toLinear(r)
-      const gLin = toLinear(g)
-      const bLin = toLinear(b)
+      const rLin = toLinear(r);
+      const gLin = toLinear(g);
+      const bLin = toLinear(b);
 
-      return 0.2126 * rLin + 0.7152 * gLin + 0.0722 * bLin
-    }
+      return 0.2126 * rLin + 0.7152 * gLin + 0.0722 * bLin;
+    };
 
     // Get contrasting text color (black or white) based on background luminance
     const getContrastColor = (luminance: number) => {
       // WCAG recommends 0.5 as threshold for contrast (adjusted for better visibility)
       return luminance > 0.5
         ? { l: 0.145, c: 0, h: 0 } // Dark text for light backgrounds
-        : { l: 0.985, c: 0, h: 0 } // Light text for dark backgrounds
-    }
+        : { l: 0.985, c: 0, h: 0 }; // Light text for dark backgrounds
+    };
 
     // Convert RGB to OKLCH
     const rgbToOklch = (r: number, g: number, b: number) => {
       // Normalize RGB to 0-1
-      const rNorm = r / 255
-      const gNorm = g / 255
-      const bNorm = b / 255
+      const rNorm = r / 255;
+      const gNorm = g / 255;
+      const bNorm = b / 255;
 
       // Convert to linear RGB
-      const toLinear = (c: number) =>
-        c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
-      const rLin = toLinear(rNorm)
-      const gLin = toLinear(gNorm)
-      const bLin = toLinear(bNorm)
+      const toLinear = (c: number) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+      const rLin = toLinear(rNorm);
+      const gLin = toLinear(gNorm);
+      const bLin = toLinear(bNorm);
 
       // Calculate lightness (simplified)
-      const lightness = 0.2126 * rLin + 0.7152 * gLin + 0.0722 * bLin
+      const lightness = 0.2126 * rLin + 0.7152 * gLin + 0.0722 * bLin;
 
       // Calculate chroma and hue (simplified)
-      const a = rNorm - gNorm
-      const b2 = gNorm - bNorm
-      const chroma = Math.sqrt(a * a + b2 * b2) * 0.4
-      let hue = (Math.atan2(b2, a) * 180) / Math.PI
-      if (hue < 0) hue += 360
+      const a = rNorm - gNorm;
+      const b2 = gNorm - bNorm;
+      const chroma = Math.sqrt(a * a + b2 * b2) * 0.4;
+      let hue = (Math.atan2(b2, a) * 180) / Math.PI;
+      if (hue < 0) hue += 360;
 
-      return { l: lightness, c: chroma, h: hue }
-    }
+      return { l: lightness, c: chroma, h: hue };
+    };
 
     // Extract RGB from color string
     const extractRGB = (color: string) => {
-      const match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/)
+      const match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
       if (match) {
         return {
           r: parseInt(match[1], 10),
           g: parseInt(match[2], 10),
           b: parseInt(match[3], 10),
-        }
+        };
       }
-      return { r: 128, g: 128, b: 128 }
-    }
+      return { r: 128, g: 128, b: 128 };
+    };
 
     // Get colors from dots
-    const primaryDot = dots.find((d) => d.isPrimary) || dots[0]
-    const primaryRGB = extractRGB(primaryDot.color)
-    const primaryOKLCH = rgbToOklch(primaryRGB.r, primaryRGB.g, primaryRGB.b)
-    const primaryLuminance = getLuminance(
-      primaryRGB.r,
-      primaryRGB.g,
-      primaryRGB.b
-    )
+    const primaryDot = dots.find((d) => d.isPrimary) || dots[0];
+    const primaryRGB = extractRGB(primaryDot.color);
+    const primaryOKLCH = rgbToOklch(primaryRGB.r, primaryRGB.g, primaryRGB.b);
+    const primaryLuminance = getLuminance(primaryRGB.r, primaryRGB.g, primaryRGB.b);
 
     // Generate complementary colors
-    const isDark = theme === "dark"
+    const isDark = theme === "dark";
 
     // Primary color - use the actual color from picker
-    const primaryL = primaryOKLCH.l
+    const primaryL = primaryOKLCH.l;
     root.style.setProperty(
       "--primary",
-      `oklch(${primaryL.toFixed(3)} ${primaryOKLCH.c.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`
-    )
+      `oklch(${primaryL.toFixed(3)} ${primaryOKLCH.c.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`,
+    );
 
     // Primary foreground (contrasting text color based on primary color luminance)
-    const primaryForeground = getContrastColor(primaryLuminance)
+    const primaryForeground = getContrastColor(primaryLuminance);
     root.style.setProperty(
       "--primary-foreground",
-      `oklch(${primaryForeground.l.toFixed(3)} ${primaryForeground.c.toFixed(3)} ${primaryForeground.h.toFixed(1)})`
-    )
+      `oklch(${primaryForeground.l.toFixed(3)} ${primaryForeground.c.toFixed(3)} ${primaryForeground.h.toFixed(1)})`,
+    );
 
     // Accent color (slightly adjusted)
-    const accentL = isDark
-      ? Math.min(primaryL + 0.1, 0.9)
-      : Math.max(primaryL - 0.1, 0.2)
+    const accentL = isDark ? Math.min(primaryL + 0.1, 0.9) : Math.max(primaryL - 0.1, 0.2);
     root.style.setProperty(
       "--accent",
-      `oklch(${accentL.toFixed(3)} ${primaryOKLCH.c.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`
-    )
+      `oklch(${accentL.toFixed(3)} ${primaryOKLCH.c.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`,
+    );
     root.style.setProperty(
       "--accent-foreground",
-      `oklch(${primaryForeground.l.toFixed(3)} ${primaryForeground.c.toFixed(3)} ${primaryForeground.h.toFixed(1)})`
-    )
+      `oklch(${primaryForeground.l.toFixed(3)} ${primaryForeground.c.toFixed(3)} ${primaryForeground.h.toFixed(1)})`,
+    );
 
     // Secondary color (desaturated)
-    const secondaryC = primaryOKLCH.c * 0.3
-    const secondaryL = isDark ? 0.269 : 0.97
+    const secondaryC = primaryOKLCH.c * 0.3;
+    const secondaryL = isDark ? 0.269 : 0.97;
     root.style.setProperty(
       "--secondary",
-      `oklch(${secondaryL.toFixed(3)} ${secondaryC.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`
-    )
+      `oklch(${secondaryL.toFixed(3)} ${secondaryC.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`,
+    );
 
     // Secondary foreground
-    const secondaryForeground = isDark
-      ? { l: 0.985, c: 0, h: 0 }
-      : { l: 0.205, c: 0, h: 0 }
+    const secondaryForeground = isDark ? { l: 0.985, c: 0, h: 0 } : { l: 0.205, c: 0, h: 0 };
     root.style.setProperty(
       "--secondary-foreground",
-      `oklch(${secondaryForeground.l.toFixed(3)} ${secondaryForeground.c.toFixed(3)} ${secondaryForeground.h.toFixed(1)})`
-    )
+      `oklch(${secondaryForeground.l.toFixed(3)} ${secondaryForeground.c.toFixed(3)} ${secondaryForeground.h.toFixed(1)})`,
+    );
 
     // Muted color with opacity effect - MORE VISIBLE
-    const mutedL = isDark ? 0.269 : 0.97
-    const mutedChroma = primaryOKLCH.c * 0.1 * opacity // Opacity directly affects saturation
+    const mutedL = isDark ? 0.269 : 0.97;
+    const mutedChroma = primaryOKLCH.c * 0.1 * opacity; // Opacity directly affects saturation
     root.style.setProperty(
       "--muted",
-      `oklch(${mutedL.toFixed(3)} ${mutedChroma.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`
-    )
+      `oklch(${mutedL.toFixed(3)} ${mutedChroma.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`,
+    );
 
     // Muted foreground - affected by opacity MORE VISIBLY
-    const mutedForegroundL = isDark
-      ? 0.5 + opacity * 0.208
-      : 0.8 - opacity * 0.244 // 0.5-0.708 dark, 0.556-0.8 light
-    const mutedForegroundChroma = primaryOKLCH.c * 0.05 * opacity
+    const mutedForegroundL = isDark ? 0.5 + opacity * 0.208 : 0.8 - opacity * 0.244; // 0.5-0.708 dark, 0.556-0.8 light
+    const mutedForegroundChroma = primaryOKLCH.c * 0.05 * opacity;
     root.style.setProperty(
       "--muted-foreground",
-      `oklch(${mutedForegroundL.toFixed(3)} ${mutedForegroundChroma.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`
-    )
+      `oklch(${mutedForegroundL.toFixed(3)} ${mutedForegroundChroma.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`,
+    );
 
     // Border color with texture AND opacity
-    const borderL = isDark ? 0.275 : 0.922
-    const borderChroma = (primaryOKLCH.c * 0.05 + texture * 0.03) * opacity // Opacity affects border
+    const borderL = isDark ? 0.275 : 0.922;
+    const borderChroma = (primaryOKLCH.c * 0.05 + texture * 0.03) * opacity; // Opacity affects border
     root.style.setProperty(
       "--border",
-      `oklch(${borderL.toFixed(3)} ${borderChroma.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`
-    )
+      `oklch(${borderL.toFixed(3)} ${borderChroma.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`,
+    );
 
     // Ring color affected by opacity
-    const ringL = isDark ? 0.556 : 0.708
-    const ringChroma = primaryOKLCH.c * 0.2 * opacity
+    const ringL = isDark ? 0.556 : 0.708;
+    const ringChroma = primaryOKLCH.c * 0.2 * opacity;
     root.style.setProperty(
       "--ring",
-      `oklch(${ringL.toFixed(3)} ${ringChroma.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`
-    )
+      `oklch(${ringL.toFixed(3)} ${ringChroma.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`,
+    );
 
     // Card colors with texture AND opacity
-    const cardL = isDark ? 0.205 : 1
-    const cardChroma = (primaryOKLCH.c * 0.02 + texture * 0.05) * opacity
+    const cardL = isDark ? 0.205 : 1;
+    const cardChroma = (primaryOKLCH.c * 0.02 + texture * 0.05) * opacity;
     root.style.setProperty(
       "--card",
-      `oklch(${cardL.toFixed(3)} ${cardChroma.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`
-    )
-    const cardForegroundL = isDark ? 0.985 : 0.145
-    root.style.setProperty(
-      "--card-foreground",
-      `oklch(${cardForegroundL.toFixed(3)} 0 0)`
-    )
+      `oklch(${cardL.toFixed(3)} ${cardChroma.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`,
+    );
+    const cardForegroundL = isDark ? 0.985 : 0.145;
+    root.style.setProperty("--card-foreground", `oklch(${cardForegroundL.toFixed(3)} 0 0)`);
 
     // Popover colors with opacity
-    const popoverL = isDark ? 0.269 : 1
-    const popoverChroma = primaryOKLCH.c * 0.02 * opacity
+    const popoverL = isDark ? 0.269 : 1;
+    const popoverChroma = primaryOKLCH.c * 0.02 * opacity;
     root.style.setProperty(
       "--popover",
-      `oklch(${popoverL.toFixed(3)} ${popoverChroma.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`
-    )
-    root.style.setProperty(
-      "--popover-foreground",
-      `oklch(${cardForegroundL.toFixed(3)} 0 0)`
-    )
+      `oklch(${popoverL.toFixed(3)} ${popoverChroma.toFixed(3)} ${primaryOKLCH.h.toFixed(1)})`,
+    );
+    root.style.setProperty("--popover-foreground", `oklch(${cardForegroundL.toFixed(3)} 0 0)`);
 
     // Apply opacity and texture with visible effects
-    root.style.setProperty("--theme-opacity", opacity.toString())
-    root.style.setProperty("--theme-texture", texture.toString())
+    root.style.setProperty("--theme-opacity", opacity.toString());
+    root.style.setProperty("--theme-texture", texture.toString());
 
     // Apply texture as a filter to cards and UI elements
-    const noiseIntensity = texture * 0.15 // 0 to 0.15
+    const noiseIntensity = texture * 0.15; // 0 to 0.15
     const grainFilter =
-      texture > 0
-        ? `contrast(${1 + texture * 0.1}) brightness(${1 - texture * 0.05})`
-        : "none"
-    root.style.setProperty("--theme-filter", grainFilter)
+      texture > 0 ? `contrast(${1 + texture * 0.1}) brightness(${1 - texture * 0.05})` : "none";
+    root.style.setProperty("--theme-filter", grainFilter);
 
     console.log("Theme applied:", {
       primaryOKLCH,
@@ -323,210 +302,197 @@ export function ThemePicker() {
       ringChroma,
       popoverChroma,
       contrastText: primaryLuminance > 0.5 ? "dark" : "light",
-    })
-  }, [dots, opacity, texture, theme])
+    });
+  }, [dots, opacity, texture, theme]);
 
   // Auto-apply theme when values change - ONLY if user has interacted
   useEffect(() => {
     if (mounted && dots.length > 0 && hasUserInteracted) {
-      applyThemeColors()
+      applyThemeColors();
     }
-  }, [dots, opacity, texture, mounted, applyThemeColors, hasUserInteracted])
+  }, [dots, opacity, texture, mounted, applyThemeColors, hasUserInteracted]);
 
   // HSL to RGB conversion
-  const hslToRgb = (
-    h: number,
-    s: number,
-    l: number
-  ): [number, number, number] => {
+  const hslToRgb = (h: number, s: number, l: number): [number, number, number] => {
     const hueToRgb = (p: number, q: number, t: number) => {
-      if (t < 0) t += 1
-      if (t > 1) t -= 1
-      if (t < 1 / 6) return p + (q - p) * 6 * t
-      if (t < 1 / 2) return q
-      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6
-      return p
-    }
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
 
     if (s === 0) {
-      const val = Math.round(l * 255)
-      return [val, val, val]
+      const val = Math.round(l * 255);
+      return [val, val, val];
     }
 
-    const q = l < 0.5 ? l * (1 + s) : l + s - l * s
-    const p = 2 * l - q
-    const r = hueToRgb(p, q, h + 1 / 3)
-    const g = hueToRgb(p, q, h)
-    const b = hueToRgb(p, q, h - 1 / 3)
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    const r = hueToRgb(p, q, h + 1 / 3);
+    const g = hueToRgb(p, q, h);
+    const b = hueToRgb(p, q, h - 1 / 3);
 
-    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)]
-  }
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  };
 
   // Get color from position in circular picker
   const getColorFromPosition = (x: number, y: number): string => {
-    const centerX = PICKER_SIZE / 2
-    const centerY = PICKER_SIZE / 2
-    const radius = PICKER_SIZE / 2
+    const centerX = PICKER_SIZE / 2;
+    const centerY = PICKER_SIZE / 2;
+    const radius = PICKER_SIZE / 2;
 
-    const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2)
-    let angle = Math.atan2(y - centerY, x - centerX)
-    angle = (angle * 180) / Math.PI
-    if (angle < 0) angle += 360
+    const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+    let angle = Math.atan2(y - centerY, x - centerX);
+    angle = (angle * 180) / Math.PI;
+    if (angle < 0) angle += 360;
 
-    const normalizedDistance = 1 - Math.min(distance / radius, 1)
-    const hue = angle / 360
-    const saturation = normalizedDistance
-    const lightness = 0.5
+    const normalizedDistance = 1 - Math.min(distance / radius, 1);
+    const hue = angle / 360;
+    const saturation = normalizedDistance;
+    const lightness = 0.5;
 
-    const [r, g, b] = hslToRgb(hue, saturation, lightness)
-    return `rgb(${r}, ${g}, ${b})`
-  }
+    const [r, g, b] = hslToRgb(hue, saturation, lightness);
+    return `rgb(${r}, ${g}, ${b})`;
+  };
 
   // Handle click on circular picker
   const handlePickerClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!pickerRef.current || draggingDot !== null) return
+    if (!pickerRef.current || draggingDot !== null) return;
 
-    const rect = pickerRef.current.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+    const rect = pickerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-    const color = getColorFromPosition(x, y)
+    const color = getColorFromPosition(x, y);
 
-    setHasUserInteracted(true) // Mark that user has interacted
+    setHasUserInteracted(true); // Mark that user has interacted
 
     if (dots.length === 0) {
-      setDots([{ id: 0, x, y, color, isPrimary: true }])
+      setDots([{ id: 0, x, y, color, isPrimary: true }]);
     } else if (dots.length < MAX_DOTS) {
-      setDots([...dots, { id: dots.length, x, y, color, isPrimary: false }])
+      setDots([...dots, { id: dots.length, x, y, color, isPrimary: false }]);
     } else {
-      setDots(
-        dots.map((dot) => (dot.isPrimary ? { ...dot, x, y, color } : dot))
-      )
+      setDots(dots.map((dot) => (dot.isPrimary ? { ...dot, x, y, color } : dot)));
     }
-  }
+  };
 
   // Handle dot drag
   const handleDotMouseDown = (e: React.MouseEvent, dotId: number) => {
-    e.stopPropagation()
-    setDraggingDot(dotId)
-  }
+    e.stopPropagation();
+    setDraggingDot(dotId);
+  };
 
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
-      if (draggingDot === null || !pickerRef.current) return
+      if (draggingDot === null || !pickerRef.current) return;
 
-      const rect = pickerRef.current.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
+      const rect = pickerRef.current.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
 
-      const color = getColorFromPosition(x, y)
+      const color = getColorFromPosition(x, y);
 
-      setDots(
-        dots.map((dot) =>
-          dot.id === draggingDot ? { ...dot, x, y, color } : dot
-        )
-      )
+      setDots(dots.map((dot) => (dot.id === draggingDot ? { ...dot, x, y, color } : dot)));
     },
-    [draggingDot, dots]
-  )
+    [draggingDot, dots],
+  );
 
   const handleMouseUp = useCallback(() => {
-    setDraggingDot(null)
-  }, [])
+    setDraggingDot(null);
+  }, []);
 
   useEffect(() => {
     if (draggingDot !== null) {
-      document.addEventListener("mousemove", handleMouseMove)
-      document.addEventListener("mouseup", handleMouseUp)
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
       return () => {
-        document.removeEventListener("mousemove", handleMouseMove)
-        document.removeEventListener("mouseup", handleMouseUp)
-      }
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
     }
-  }, [draggingDot, handleMouseMove, handleMouseUp])
+  }, [draggingDot, handleMouseMove, handleMouseUp]);
 
   // Texture control - fixed rotation calculation
   const handleTextureMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault()
-    setIsDraggingTexture(true)
-    updateTextureFromMouse(e.clientX, e.clientY)
-  }
+    e.preventDefault();
+    setIsDraggingTexture(true);
+    updateTextureFromMouse(e.clientX, e.clientY);
+  };
 
   const updateTextureFromMouse = (clientX: number, clientY: number) => {
-    if (!textureRef.current) return
+    if (!textureRef.current) return;
 
-    const rect = textureRef.current.getBoundingClientRect()
-    const centerX = rect.left + rect.width / 2
-    const centerY = rect.top + rect.height / 2
+    const rect = textureRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
 
     // Calculate angle from center
-    const angle = Math.atan2(clientY - centerY, clientX - centerX)
+    const angle = Math.atan2(clientY - centerY, clientX - centerX);
     // Convert to degrees and normalize to 0-360
-    let degrees = (angle * 180) / Math.PI + 90
-    if (degrees < 0) degrees += 360
+    let degrees = (angle * 180) / Math.PI + 90;
+    if (degrees < 0) degrees += 360;
 
     // Convert to 0-1 range and snap to 16 steps
-    let textureValue = degrees / 360
-    textureValue = Math.round(textureValue * 16) / 16
-    if (textureValue >= 1) textureValue = 0
+    let textureValue = degrees / 360;
+    textureValue = Math.round(textureValue * 16) / 16;
+    if (textureValue >= 1) textureValue = 0;
 
-    setTexture(textureValue)
-  }
+    setTexture(textureValue);
+  };
 
   const handleTextureMouseMove = useCallback(
     (e: MouseEvent) => {
-      if (!isDraggingTexture) return
-      updateTextureFromMouse(e.clientX, e.clientY)
+      if (!isDraggingTexture) return;
+      updateTextureFromMouse(e.clientX, e.clientY);
     },
-    [isDraggingTexture]
-  )
+    [isDraggingTexture],
+  );
 
   const handleTextureMouseUp = useCallback(() => {
-    setIsDraggingTexture(false)
-  }, [])
+    setIsDraggingTexture(false);
+  }, []);
 
   useEffect(() => {
     if (isDraggingTexture) {
-      document.addEventListener("mousemove", handleTextureMouseMove)
-      document.addEventListener("mouseup", handleTextureMouseUp)
+      document.addEventListener("mousemove", handleTextureMouseMove);
+      document.addEventListener("mouseup", handleTextureMouseUp);
       return () => {
-        document.removeEventListener("mousemove", handleTextureMouseMove)
-        document.removeEventListener("mouseup", handleTextureMouseUp)
-      }
+        document.removeEventListener("mousemove", handleTextureMouseMove);
+        document.removeEventListener("mouseup", handleTextureMouseUp);
+      };
     }
-  }, [isDraggingTexture, handleTextureMouseMove, handleTextureMouseUp])
+  }, [isDraggingTexture, handleTextureMouseMove, handleTextureMouseUp]);
 
   // Add/remove dots
   const addDot = () => {
-    if (dots.length >= MAX_DOTS) return
-    const centerX = PICKER_SIZE / 2
-    const centerY = PICKER_SIZE / 2
-    const color = getColorFromPosition(centerX, centerY)
-    setDots([
-      ...dots,
-      { id: dots.length, x: centerX, y: centerY, color, isPrimary: false },
-    ])
-  }
+    if (dots.length >= MAX_DOTS) return;
+    const centerX = PICKER_SIZE / 2;
+    const centerY = PICKER_SIZE / 2;
+    const color = getColorFromPosition(centerX, centerY);
+    setDots([...dots, { id: dots.length, x: centerX, y: centerY, color, isPrimary: false }]);
+  };
 
   const removeDot = () => {
-    if (dots.length === 0) return
-    setDots(dots.slice(0, -1))
-  }
+    if (dots.length === 0) return;
+    setDots(dots.slice(0, -1));
+  };
 
   // Apply preset color
   const applyPresetColor = (rgb: { r: number; g: number; b: number }) => {
-    const color = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`
+    const color = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
 
-    setHasUserInteracted(true) // Mark that user has interacted
+    setHasUserInteracted(true); // Mark that user has interacted
 
     if (dots.length === 0) {
-      const centerX = PICKER_SIZE / 2
-      const centerY = PICKER_SIZE / 2
-      setDots([{ id: 0, x: centerX, y: centerY, color, isPrimary: true }])
+      const centerX = PICKER_SIZE / 2;
+      const centerY = PICKER_SIZE / 2;
+      setDots([{ id: 0, x: centerX, y: centerY, color, isPrimary: true }]);
     } else {
-      setDots(dots.map((dot) => (dot.isPrimary ? { ...dot, color } : dot)))
+      setDots(dots.map((dot) => (dot.isPrimary ? { ...dot, color } : dot)));
     }
-  }
+  };
 
   return (
     <Card className="w-full max-w-2xl bg-background border p-0 overflow-hidden">
@@ -552,8 +518,7 @@ export function ThemePicker() {
           <div
             className="absolute inset-0 pointer-events-none z-0"
             style={{
-              backgroundImage:
-                "radial-gradient(circle, #666666 1px, transparent 1px)",
+              backgroundImage: "radial-gradient(circle, #666666 1px, transparent 1px)",
               backgroundSize: "10px 10px",
             }}
           />
@@ -573,11 +538,11 @@ export function ThemePicker() {
                   "h-11 w-11 rounded-xl transition-all backdrop-blur-md",
                   theme === "system"
                     ? "bg-background/90 shadow-lg"
-                    : "bg-background/50 hover:bg-background/70"
+                    : "bg-background/50 hover:bg-background/70",
                 )}
                 onClick={(e) => {
-                  e.stopPropagation()
-                  setTheme("system")
+                  e.stopPropagation();
+                  setTheme("system");
                 }}
               >
                 <Sparkles className="h-5 w-5" />
@@ -589,11 +554,11 @@ export function ThemePicker() {
                   "h-11 w-11 rounded-xl transition-all backdrop-blur-md",
                   theme === "light"
                     ? "bg-background/90 shadow-lg"
-                    : "bg-background/50 hover:bg-background/70"
+                    : "bg-background/50 hover:bg-background/70",
                 )}
                 onClick={(e) => {
-                  e.stopPropagation()
-                  setTheme("light")
+                  e.stopPropagation();
+                  setTheme("light");
                 }}
               >
                 <Sun className="h-5 w-5" />
@@ -605,11 +570,11 @@ export function ThemePicker() {
                   "h-11 w-11 rounded-xl transition-all backdrop-blur-md",
                   theme === "dark"
                     ? "bg-background/90 shadow-lg"
-                    : "bg-background/50 hover:bg-background/70"
+                    : "bg-background/50 hover:bg-background/70",
                 )}
                 onClick={(e) => {
-                  e.stopPropagation()
-                  setTheme("dark")
+                  e.stopPropagation();
+                  setTheme("dark");
                 }}
               >
                 <Moon className="h-5 w-5" />
@@ -623,9 +588,7 @@ export function ThemePicker() {
               key={dot.id}
               className={cn(
                 "absolute rounded-full border-white cursor-move shadow-lg",
-                dot.isPrimary
-                  ? "w-12 h-12 border-[5px] z-10"
-                  : "w-10 h-10 border-4"
+                dot.isPrimary ? "w-12 h-12 border-[5px] z-10" : "w-10 h-10 border-4",
               )}
               style={{
                 backgroundColor: dot.color,
@@ -691,8 +654,8 @@ export function ThemePicker() {
               size="icon"
               className="h-9 w-9 rounded-xl bg-background/80 backdrop-blur hover:bg-background/90"
               onClick={(e) => {
-                e.stopPropagation()
-                addDot()
+                e.stopPropagation();
+                addDot();
               }}
               disabled={dots.length >= MAX_DOTS}
             >
@@ -703,8 +666,8 @@ export function ThemePicker() {
               size="icon"
               className="h-9 w-9 rounded-xl bg-background/80 backdrop-blur hover:bg-background/90"
               onClick={(e) => {
-                e.stopPropagation()
-                removeDot()
+                e.stopPropagation();
+                removeDot();
               }}
               disabled={dots.length === 0}
             >
@@ -715,8 +678,8 @@ export function ThemePicker() {
               size="icon"
               className="h-9 w-9 rounded-xl bg-background/80 backdrop-blur hover:bg-background/90"
               onClick={(e) => {
-                e.stopPropagation()
-                setDots([])
+                e.stopPropagation();
+                setDots([]);
               }}
             >
               <RotateCcw className="h-4 w-4" />
@@ -737,11 +700,7 @@ export function ThemePicker() {
             variant="ghost"
             size="icon"
             className="h-9 w-9 shrink-0"
-            onClick={() =>
-              setColorPage(
-                (colorPage - 1 + colorPages.length) % colorPages.length
-              )
-            }
+            onClick={() => setColorPage((colorPage - 1 + colorPages.length) % colorPages.length)}
           >
             <ChevronLeft className="h-5 w-5" />
           </Button>
@@ -755,22 +714,13 @@ export function ThemePicker() {
           >
             {colorPages[colorPage].map((color, index) => {
               // Create more vibrant gradient variations
-              const lighterR = Math.min(
-                255,
-                Math.round(color.r + (255 - color.r) * 0.4)
-              )
-              const lighterG = Math.min(
-                255,
-                Math.round(color.g + (255 - color.g) * 0.4)
-              )
-              const lighterB = Math.min(
-                255,
-                Math.round(color.b + (255 - color.b) * 0.4)
-              )
+              const lighterR = Math.min(255, Math.round(color.r + (255 - color.r) * 0.4));
+              const lighterG = Math.min(255, Math.round(color.g + (255 - color.g) * 0.4));
+              const lighterB = Math.min(255, Math.round(color.b + (255 - color.b) * 0.4));
 
-              const darkerR = Math.max(0, Math.round(color.r * 0.6))
-              const darkerG = Math.max(0, Math.round(color.g * 0.6))
-              const darkerB = Math.max(0, Math.round(color.b * 0.6))
+              const darkerR = Math.max(0, Math.round(color.r * 0.6));
+              const darkerG = Math.max(0, Math.round(color.g * 0.6));
+              const darkerB = Math.max(0, Math.round(color.b * 0.6));
 
               return (
                 <motion.button
@@ -795,7 +745,7 @@ export function ThemePicker() {
                     background: `linear-gradient(135deg, rgb(${lighterR}, ${lighterG}, ${lighterB}) 0%, rgb(${color.r}, ${color.g}, ${color.b}) 50%, rgb(${darkerR}, ${darkerG}, ${darkerB}) 100%)`,
                   }}
                 />
-              )
+              );
             })}
           </motion.div>
 
@@ -918,8 +868,8 @@ export function ThemePicker() {
 
               {/* Texture dots around circle */}
               {Array.from({ length: 16 }).map((_, i) => {
-                const angle = (i / 16) * Math.PI * 2 - Math.PI / 2
-                const active = i / 16 <= texture
+                const angle = (i / 16) * Math.PI * 2 - Math.PI / 2;
+                const active = i / 16 <= texture;
                 return (
                   <div
                     key={i}
@@ -927,7 +877,7 @@ export function ThemePicker() {
                       "absolute w-1.5 h-1.5 rounded-full transition-all duration-150",
                       active
                         ? "bg-foreground opacity-100 scale-110"
-                        : "bg-muted-foreground opacity-30 scale-100"
+                        : "bg-muted-foreground opacity-30 scale-100",
                     )}
                     style={{
                       left: `${50 + Math.cos(angle) * 40}%`,
@@ -935,7 +885,7 @@ export function ThemePicker() {
                       transform: `translate(-50%, -50%)`,
                     }}
                   />
-                )
+                );
               })}
 
               {/* Texture handler */}
@@ -953,5 +903,5 @@ export function ThemePicker() {
         </div>
       </motion.div>
     </Card>
-  )
+  );
 }

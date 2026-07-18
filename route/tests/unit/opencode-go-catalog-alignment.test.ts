@@ -11,8 +11,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { opencode_goProvider } =
-  await import("../../open-sse/config/providers/registry/opencode/go/index.ts");
+const { opencode_goProvider } = await import(
+  "../../open-sse/config/providers/registry/opencode/go/index.ts"
+);
 
 function modelIds(): string[] {
   return (opencode_goProvider.models ?? []).map((m) => m.id);
@@ -23,14 +24,14 @@ const DEPRECATED_MIMO_V2_MODELS = ["mimo-v2-pro", "mimo-v2-omni"];
 test("opencode-go advertises glm-5.2 (official Go endpoint addition)", () => {
   assert.ok(
     modelIds().includes("glm-5.2"),
-    `expected glm-5.2 in opencode-go catalog, got: ${modelIds().join(", ")}`
+    `expected glm-5.2 in opencode-go catalog, got: ${modelIds().join(", ")}`,
   );
 });
 
 test("opencode-go advertises kimi-k2.7-code (live API rejects plain kimi-k2.7 for chat)", () => {
   assert.ok(
     modelIds().includes("kimi-k2.7-code"),
-    `expected kimi-k2.7-code in opencode-go catalog, got: ${modelIds().join(", ")}`
+    `expected kimi-k2.7-code in opencode-go catalog, got: ${modelIds().join(", ")}`,
   );
 });
 
@@ -46,7 +47,7 @@ test("opencode-go preserves the pre-existing minimax-m3 and qwen routing via tar
   // equivalent of upstream's MESSAGES_FORMAT_MODELS set; the alignment
   // change must not regress this.
   const byId = new Map(
-    (opencode_goProvider.models ?? []).map((m) => [m.id, m as Record<string, unknown>])
+    (opencode_goProvider.models ?? []).map((m) => [m.id, m as Record<string, unknown>]),
   );
   assert.equal(byId.get("minimax-m3")?.targetFormat, "claude");
   assert.equal(byId.get("qwen3.7-max")?.targetFormat, "claude");

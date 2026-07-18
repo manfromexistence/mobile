@@ -23,7 +23,7 @@ test("getUsageForProvider handles deepseek with valid balance", async () => {
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const result = await getUsageForProvider({
@@ -59,7 +59,7 @@ test("getUsageForProvider handles deepseek with insufficient balance", async () 
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const result = await getUsageForProvider({
@@ -91,7 +91,7 @@ test("getUsageForProvider handles deepseek with CNY currency", async () => {
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const result = await getUsageForProvider({
@@ -128,7 +128,7 @@ test("getUsageForProvider handles deepseek with both USD and CNY balances", asyn
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const result = await getUsageForProvider({

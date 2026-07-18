@@ -47,10 +47,7 @@ interface Store {
 
 const StoreContext = React.createContext<Store | null>(null);
 
-function useStore<T>(
-  selector: (state: StoreState) => T,
-  ogStore?: Store | null,
-): T {
+function useStore<T>(selector: (state: StoreState) => T, ogStore?: Store | null): T {
   const contextStore = React.useContext(StoreContext);
   const store = ogStore ?? contextStore;
 
@@ -58,10 +55,7 @@ function useStore<T>(
     throw new Error(`\`useStore\` must be used within \`${ROOT_NAME}\``);
   }
 
-  const getSnapshot = React.useCallback(
-    () => selector(store.getState()),
-    [store, selector],
-  );
+  const getSnapshot = React.useCallback(() => selector(store.getState()), [store, selector]);
 
   return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
@@ -148,9 +142,7 @@ function ResponsiveDialog({
   );
 }
 
-function ResponsiveDialogTrigger({
-  ...props
-}: React.ComponentProps<typeof DialogTrigger>) {
+function ResponsiveDialogTrigger({ ...props }: React.ComponentProps<typeof DialogTrigger>) {
   const isMobile = useStore((state) => state.isMobile);
 
   if (isMobile) {
@@ -160,9 +152,7 @@ function ResponsiveDialogTrigger({
   return <DialogTrigger data-variant="dialog" {...props} />;
 }
 
-function ResponsiveDialogClose({
-  ...props
-}: React.ComponentProps<typeof DialogClose>) {
+function ResponsiveDialogClose({ ...props }: React.ComponentProps<typeof DialogClose>) {
   const isMobile = useStore((state) => state.isMobile);
 
   if (isMobile) {
@@ -172,9 +162,7 @@ function ResponsiveDialogClose({
   return <DialogClose data-variant="dialog" {...props} />;
 }
 
-function ResponsiveDialogPortal({
-  ...props
-}: React.ComponentProps<typeof DialogPortal>) {
+function ResponsiveDialogPortal({ ...props }: React.ComponentProps<typeof DialogPortal>) {
   const isMobile = useStore((state) => state.isMobile);
 
   if (isMobile) {
@@ -184,9 +172,7 @@ function ResponsiveDialogPortal({
   return <DialogPortal data-variant="dialog" {...props} />;
 }
 
-function ResponsiveDialogOverlay({
-  ...props
-}: React.ComponentProps<typeof DialogOverlay>) {
+function ResponsiveDialogOverlay({ ...props }: React.ComponentProps<typeof DialogOverlay>) {
   const isMobile = useStore((state) => state.isMobile);
 
   if (isMobile) {
@@ -204,22 +190,14 @@ function ResponsiveDialogContent({
 
   if (isMobile) {
     return (
-      <DrawerContent
-        data-variant="drawer"
-        className={cn("px-4 pb-4", className)}
-        {...props}
-      />
+      <DrawerContent data-variant="drawer" className={cn("px-4 pb-4", className)} {...props} />
     );
   }
 
-  return (
-    <DialogContent data-variant="dialog" className={className} {...props} />
-  );
+  return <DialogContent data-variant="dialog" className={className} {...props} />;
 }
 
-function ResponsiveDialogHeader({
-  ...props
-}: React.ComponentProps<typeof DialogHeader>) {
+function ResponsiveDialogHeader({ ...props }: React.ComponentProps<typeof DialogHeader>) {
   const isMobile = useStore((state) => state.isMobile);
 
   if (isMobile) {
@@ -239,18 +217,10 @@ function ResponsiveDialogFooter({
     return <DrawerFooter data-variant="drawer" {...props} />;
   }
 
-  return (
-    <DialogFooter
-      data-variant="dialog"
-      showCloseButton={showCloseButton}
-      {...props}
-    />
-  );
+  return <DialogFooter data-variant="dialog" showCloseButton={showCloseButton} {...props} />;
 }
 
-function ResponsiveDialogTitle({
-  ...props
-}: React.ComponentProps<typeof DialogTitle>) {
+function ResponsiveDialogTitle({ ...props }: React.ComponentProps<typeof DialogTitle>) {
   const isMobile = useStore((state) => state.isMobile);
 
   if (isMobile) {
@@ -260,9 +230,7 @@ function ResponsiveDialogTitle({
   return <DialogTitle data-variant="dialog" {...props} />;
 }
 
-function ResponsiveDialogDescription({
-  ...props
-}: React.ComponentProps<typeof DialogDescription>) {
+function ResponsiveDialogDescription({ ...props }: React.ComponentProps<typeof DialogDescription>) {
   const isMobile = useStore((state) => state.isMobile);
 
   if (isMobile) {

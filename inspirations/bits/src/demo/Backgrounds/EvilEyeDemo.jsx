@@ -1,23 +1,23 @@
-import { useMemo } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box, Flex } from '@chakra-ui/react';
+import { useMemo } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box, Flex } from "@chakra-ui/react";
 
-import OpenInStudioButton from '../../components/common/Preview/OpenInStudioButton';
-import CodeExample from '../../components/code/CodeExample';
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import OpenInStudioButton from "../../components/common/Preview/OpenInStudioButton";
+import CodeExample from "../../components/code/CodeExample";
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
-import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '../../components/code/Dependencies';
-import Customize from '../../components/common/Preview/Customize';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
+import PropTable from "../../components/common/Preview/PropTable";
+import Dependencies from "../../components/code/Dependencies";
+import Customize from "../../components/common/Preview/Customize";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
 
-import EvilEye from '../../content/Backgrounds/EvilEye/EvilEye';
-import { evilEye } from '../../constants/code/Backgrounds/evilEyeCode';
+import EvilEye from "../../content/Backgrounds/EvilEye/EvilEye";
+import { evilEye } from "../../constants/code/Backgrounds/evilEyeCode";
 
 const DEFAULT_PROPS = {
-  eyeColor: '#FF6F37',
+  eyeColor: "#FF6F37",
   intensity: 1.5,
   pupilSize: 0.6,
   irisWidth: 0.25,
@@ -26,85 +26,97 @@ const DEFAULT_PROPS = {
   noiseScale: 1.0,
   pupilFollow: 1.0,
   flameSpeed: 1.0,
-  backgroundColor: '#120F17'
+  backgroundColor: "#120F17",
 };
 
 const EvilEyeDemo = () => {
   const { props, updateProp, resetProps, hasChanges } = useComponentProps(DEFAULT_PROPS);
   const {
-    eyeColor, intensity, pupilSize,
-    irisWidth, glowIntensity, scale, noiseScale,
-    pupilFollow, flameSpeed, backgroundColor
+    eyeColor,
+    intensity,
+    pupilSize,
+    irisWidth,
+    glowIntensity,
+    scale,
+    noiseScale,
+    pupilFollow,
+    flameSpeed,
+    backgroundColor,
   } = props;
 
   const propData = useMemo(
     () => [
       {
-        name: 'eyeColor',
-        type: 'string',
+        name: "eyeColor",
+        type: "string",
         default: '"#FF6F37"',
-        description: 'Primary eye color in HEX format.'
+        description: "Primary eye color in HEX format.",
       },
       {
-        name: 'intensity',
-        type: 'number',
-        default: '1.5',
-        description: 'Brightness / HDR intensity of the eye color.'
+        name: "intensity",
+        type: "number",
+        default: "1.5",
+        description: "Brightness / HDR intensity of the eye color.",
       },
       {
-        name: 'pupilSize',
-        type: 'number',
-        default: '0.6',
-        description: 'Size and darkness of the pupil slit.'
+        name: "pupilSize",
+        type: "number",
+        default: "0.6",
+        description: "Size and darkness of the pupil slit.",
       },
       {
-        name: 'irisWidth',
-        type: 'number',
-        default: '0.25',
-        description: 'Width of the main iris ring.'
+        name: "irisWidth",
+        type: "number",
+        default: "0.25",
+        description: "Width of the main iris ring.",
       },
       {
-        name: 'glowIntensity',
-        type: 'number',
-        default: '0.35',
-        description: 'Strength of the outer eye glow.'
+        name: "glowIntensity",
+        type: "number",
+        default: "0.35",
+        description: "Strength of the outer eye glow.",
       },
       {
-        name: 'scale',
-        type: 'number',
-        default: '0.8',
-        description: 'Zoom level of the eye. Values > 1 zoom in, < 1 zoom out.'
+        name: "scale",
+        type: "number",
+        default: "0.8",
+        description: "Zoom level of the eye. Values > 1 zoom in, < 1 zoom out.",
       },
       {
-        name: 'noiseScale',
-        type: 'number',
-        default: '1.0',
-        description: 'Scale of the fire/noise texture sampling.'
+        name: "noiseScale",
+        type: "number",
+        default: "1.0",
+        description: "Scale of the fire/noise texture sampling.",
       },
       {
-        name: 'pupilFollow',
-        type: 'number',
-        default: '1.0',
-        description: 'Intensity of pupil cursor tracking. 0 disables it.'
+        name: "pupilFollow",
+        type: "number",
+        default: "1.0",
+        description: "Intensity of pupil cursor tracking. 0 disables it.",
       },
       {
-        name: 'flameSpeed',
-        type: 'number',
-        default: '1.0',
-        description: 'Independent flame flicker animation speed.'
+        name: "flameSpeed",
+        type: "number",
+        default: "1.0",
+        description: "Independent flame flicker animation speed.",
       },
       {
-        name: 'backgroundColor',
-        type: 'string',
+        name: "backgroundColor",
+        type: "string",
         default: '"#000000"',
-        description: 'Background color in HEX format.'
-      }
+        description: "Background color in HEX format.",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box position="relative" className="demo-container" h={500} overflow="hidden" p={0}>
@@ -135,15 +147,23 @@ const EvilEyeDemo = () => {
                 noiseScale,
                 pupilFollow,
                 flameSpeed,
-                backgroundColor
+                backgroundColor,
               }}
               defaultProps={DEFAULT_PROPS}
             />
           </Flex>
 
           <Customize>
-            <PreviewColorPickerCustom title="Eye Color" color={eyeColor} onChange={val => updateProp('eyeColor', val)} />
-            <PreviewColorPickerCustom title="Background" color={backgroundColor} onChange={val => updateProp('backgroundColor', val)} />
+            <PreviewColorPickerCustom
+              title="Eye Color"
+              color={eyeColor}
+              onChange={(val) => updateProp("eyeColor", val)}
+            />
+            <PreviewColorPickerCustom
+              title="Background"
+              color={backgroundColor}
+              onChange={(val) => updateProp("backgroundColor", val)}
+            />
 
             <PreviewSlider
               min={0.5}
@@ -151,8 +171,8 @@ const EvilEyeDemo = () => {
               step={0.1}
               title="Intensity"
               value={intensity}
-              onChange={val => {
-                updateProp('intensity', val);
+              onChange={(val) => {
+                updateProp("intensity", val);
               }}
             />
 
@@ -162,8 +182,8 @@ const EvilEyeDemo = () => {
               step={0.05}
               title="Pupil Size"
               value={pupilSize}
-              onChange={val => {
-                updateProp('pupilSize', val);
+              onChange={(val) => {
+                updateProp("pupilSize", val);
               }}
             />
 
@@ -173,8 +193,8 @@ const EvilEyeDemo = () => {
               step={0.05}
               title="Iris Width"
               value={irisWidth}
-              onChange={val => {
-                updateProp('irisWidth', val);
+              onChange={(val) => {
+                updateProp("irisWidth", val);
               }}
             />
 
@@ -184,8 +204,8 @@ const EvilEyeDemo = () => {
               step={0.05}
               title="Glow Intensity"
               value={glowIntensity}
-              onChange={val => {
-                updateProp('glowIntensity', val);
+              onChange={(val) => {
+                updateProp("glowIntensity", val);
               }}
             />
 
@@ -195,8 +215,8 @@ const EvilEyeDemo = () => {
               step={0.1}
               title="Scale"
               value={scale}
-              onChange={val => {
-                updateProp('scale', val);
+              onChange={(val) => {
+                updateProp("scale", val);
               }}
             />
 
@@ -206,8 +226,8 @@ const EvilEyeDemo = () => {
               step={0.1}
               title="Noise Scale"
               value={noiseScale}
-              onChange={val => {
-                updateProp('noiseScale', val);
+              onChange={(val) => {
+                updateProp("noiseScale", val);
               }}
             />
 
@@ -217,8 +237,8 @@ const EvilEyeDemo = () => {
               step={0.1}
               title="Pupil Follow"
               value={pupilFollow}
-              onChange={val => {
-                updateProp('pupilFollow', val);
+              onChange={(val) => {
+                updateProp("pupilFollow", val);
               }}
             />
 
@@ -228,14 +248,13 @@ const EvilEyeDemo = () => {
               step={0.1}
               title="Flame Speed"
               value={flameSpeed}
-              onChange={val => {
-                updateProp('flameSpeed', val);
+              onChange={(val) => {
+                updateProp("flameSpeed", val);
               }}
             />
-
           </Customize>
           <PropTable data={propData} />
-          <Dependencies dependencyList={['ogl']} />
+          <Dependencies dependencyList={["ogl"]} />
         </PreviewTab>
 
         <CodeTab>

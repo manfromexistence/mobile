@@ -26,12 +26,8 @@ const MAX_ITEMS_OPTIONS = [1000, 5000, 10000, 20000];
 
 export default function MasonryPage() {
   const [linear, setLinear] = React.useState(false);
-  const [itemsPerPage, setItemsPerPage] = React.useState(
-    DEFAULT_ITEMS_PER_PAGE,
-  );
-  const [maxItemCount, setMaxItemCount] = React.useState(
-    DEFAULT_MAX_ITEM_COUNT,
-  );
+  const [itemsPerPage, setItemsPerPage] = React.useState(DEFAULT_ITEMS_PER_PAGE);
+  const [maxItemCount, setMaxItemCount] = React.useState(DEFAULT_MAX_ITEM_COUNT);
   const [items, setItems] = React.useState(() =>
     Array.from({ length: itemsPerPage }, (_, index) => ({
       id: index,
@@ -95,11 +91,7 @@ export default function MasonryPage() {
     <div className="container grid items-center gap-4 pt-6 pb-8 md:py-8">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className="sticky top-8 z-10 ml-auto w-fit"
-          >
+          <Button variant="outline" size="sm" className="sticky top-8 z-10 ml-auto w-fit">
             Layout
             <ChevronDown />
           </Button>
@@ -116,10 +108,7 @@ export default function MasonryPage() {
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 {ITEMS_PER_PAGE_OPTIONS.map((option) => (
-                  <DropdownMenuItem
-                    key={option}
-                    onClick={() => setItemsPerPage(option)}
-                  >
+                  <DropdownMenuItem key={option} onClick={() => setItemsPerPage(option)}>
                     <span>{option} items</span>
                     {itemsPerPage === option && <Check className="ml-auto" />}
                   </DropdownMenuItem>
@@ -132,10 +121,7 @@ export default function MasonryPage() {
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
                 {MAX_ITEMS_OPTIONS.map((option) => (
-                  <DropdownMenuItem
-                    key={option}
-                    onClick={() => setMaxItemCount(option)}
-                  >
+                  <DropdownMenuItem key={option} onClick={() => setMaxItemCount(option)}>
                     <span>{option} items</span>
                     {maxItemCount === option && <Check className="ml-auto" />}
                   </DropdownMenuItem>
@@ -164,10 +150,7 @@ export default function MasonryPage() {
           ))}
         </Masonry>
         {hasMore && (
-          <div
-            ref={loaderRef}
-            className="flex w-full items-center justify-center py-8"
-          >
+          <div ref={loaderRef} className="flex w-full items-center justify-center py-8">
             {isLoading ? (
               <Loader className="h-6 w-6 animate-spin text-muted-foreground" />
             ) : (

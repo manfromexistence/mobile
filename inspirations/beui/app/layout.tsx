@@ -100,12 +100,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
 
   return (
-    <html lang="en" suppressHydrationWarning className={cn(inter.variable, mono.variable, pixel.variable)}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn(inter.variable, mono.variable, pixel.variable)}
+    >
       <head>
         <link rel="icon" type="image/png" href="/beui-mark.png" />
         <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
         <link rel="alternate" type="application/json" title="Component registry" href="/r" />
-        <link rel="alternate" type="application/json" title="shadcn registry" href="/registry.json" />
+        <link
+          rel="alternate"
+          type="application/json"
+          title="shadcn registry"
+          href="/registry.json"
+        />
       </head>
       <body className="min-h-screen antialiased">
         <JsonLd data={siteJsonLd()} />

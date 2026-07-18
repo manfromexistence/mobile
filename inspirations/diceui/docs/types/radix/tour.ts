@@ -131,9 +131,7 @@ export interface TourProps extends EmptyProps<"div">, CompositionProps {
    * }}
    * ```
    */
-  onInteractOutside?: (
-    event: CustomEvent<{ originalEvent: PointerEvent | FocusEvent }>,
-  ) => void;
+  onInteractOutside?: (event: CustomEvent<{ originalEvent: PointerEvent | FocusEvent }>) => void;
 
   /**
    * Event handler called when auto-focusing on opening the tour.
@@ -254,9 +252,7 @@ export interface TourProps extends EmptyProps<"div">, CompositionProps {
   stepFooter?: React.ReactElement;
 }
 
-export interface TourSpotlightProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface TourSpotlightProps extends EmptyProps<"div">, CompositionProps {
   /**
    * Whether to force mount the spotlight even when closed.
    *
@@ -265,9 +261,7 @@ export interface TourSpotlightProps
   forceMount?: boolean;
 }
 
-export interface TourSpotlightRingProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface TourSpotlightRingProps extends EmptyProps<"div">, CompositionProps {
   /**
    * Whether to force mount the spotlight ring even when closed.
    *
@@ -335,9 +329,7 @@ export interface TourStepProps extends EmptyProps<"div">, CompositionProps {
    *
    * @default 0
    */
-  collisionPadding?:
-    | number
-    | Partial<Record<"top" | "right" | "bottom" | "left", number>>;
+  collisionPadding?: number | Partial<Record<"top" | "right" | "bottom" | "left", number>>;
 
   /**
    * The minimum padding between the arrow and the edges of the popover.
@@ -406,23 +398,17 @@ export interface TourStepProps extends EmptyProps<"div">, CompositionProps {
   onStepLeave?: () => void;
 }
 
-export interface TourCloseProps
-  extends EmptyProps<"button">,
-    CompositionProps {}
+export interface TourCloseProps extends EmptyProps<"button">, CompositionProps {}
 
 export interface TourHeaderProps extends EmptyProps<"div">, CompositionProps {}
 
 export interface TourTitleProps extends EmptyProps<"h2">, CompositionProps {}
 
-export interface TourDescriptionProps
-  extends EmptyProps<"p">,
-    CompositionProps {}
+export interface TourDescriptionProps extends EmptyProps<"p">, CompositionProps {}
 
 export interface TourFooterProps extends EmptyProps<"div">, CompositionProps {}
 
-export interface TourStepCounterProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface TourStepCounterProps extends EmptyProps<"div">, CompositionProps {
   /**
    * Custom format function for the step counter.
    *

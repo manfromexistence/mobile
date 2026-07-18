@@ -1,34 +1,34 @@
-import { useQueryStates } from 'nuqs';
-import { useCallback, useMemo, useRef } from 'react';
+import { useQueryStates } from "nuqs";
+import { useCallback, useMemo, useRef } from "react";
 
-const isHexColor = value => typeof value === 'string' && /^#?[0-9a-fA-F]{3,8}$/.test(value);
+const isHexColor = (value) => typeof value === "string" && /^#?[0-9a-fA-F]{3,8}$/.test(value);
 
-const createParser = defaultValue => {
-  if (typeof defaultValue === 'number') {
+const createParser = (defaultValue) => {
+  if (typeof defaultValue === "number") {
     return {
-      parse: v => (v === null || v === '' ? null : Number(v)),
-      serialize: v => String(v),
-      eq: (a, b) => a === b
+      parse: (v) => (v === null || v === "" ? null : Number(v)),
+      serialize: (v) => String(v),
+      eq: (a, b) => a === b,
     };
   }
-  if (typeof defaultValue === 'boolean') {
+  if (typeof defaultValue === "boolean") {
     return {
-      parse: v => (v === null || v === '' ? null : v === 'true'),
-      serialize: v => String(v),
-      eq: (a, b) => a === b
+      parse: (v) => (v === null || v === "" ? null : v === "true"),
+      serialize: (v) => String(v),
+      eq: (a, b) => a === b,
     };
   }
   if (isHexColor(defaultValue)) {
     return {
-      parse: v => (v === null || v === '' ? null : `#${v}`),
-      serialize: v => v.replace(/^#/, ''),
-      eq: (a, b) => a === b
+      parse: (v) => (v === null || v === "" ? null : `#${v}`),
+      serialize: (v) => v.replace(/^#/, ""),
+      eq: (a, b) => a === b,
     };
   }
   return {
-    parse: v => (v === null || v === '' ? null : v),
-    serialize: v => String(v),
-    eq: (a, b) => a === b
+    parse: (v) => (v === null || v === "" ? null : v),
+    serialize: (v) => String(v),
+    eq: (a, b) => a === b,
   };
 };
 
@@ -56,7 +56,7 @@ export function useComponentProps(defaultProps) {
   }, [queryState]);
 
   const hasChanges = useMemo(() => {
-    return Object.values(queryState).some(v => v !== null);
+    return Object.values(queryState).some((v) => v !== null);
   }, [queryState]);
 
   const updateProp = useCallback(
@@ -64,18 +64,18 @@ export function useComponentProps(defaultProps) {
       const newValue = value === defaultPropsRef.current[name] ? null : value;
       setQueryState({ [name]: newValue });
     },
-    [setQueryState]
+    [setQueryState],
   );
 
   const updateProps = useCallback(
-    updates => {
+    (updates) => {
       const newState = {};
       for (const [name, value] of Object.entries(updates)) {
         newState[name] = value === defaultPropsRef.current[name] ? null : value;
       }
       setQueryState(newState);
     },
-    [setQueryState]
+    [setQueryState],
   );
 
   const resetProps = useCallback(() => {
@@ -97,7 +97,7 @@ export function useComponentProps(defaultProps) {
     updateProps,
     resetProps,
     hasChanges,
-    getShareUrl
+    getShareUrl,
   };
 }
 

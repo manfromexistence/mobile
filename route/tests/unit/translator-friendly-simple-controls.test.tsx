@@ -89,56 +89,53 @@ vi.mock("@/shared/components", () => ({
 }));
 
 // --- Mock useAvailableModels ---
-vi.mock(
-  "@/app/(dashboard)/dashboard/translator/hooks/useAvailableModels",
-  () => ({
-    useAvailableModels: () => ({
-      model: "gpt-4o",
-      setModel: vi.fn(),
-      availableModels: ["gpt-4o", "claude-sonnet-4-20250514"],
-      loading: false,
-      pickModelForFormat: () => "gpt-4o",
-    }),
-  })
-);
+vi.mock("@/app/(dashboard)/dashboard/translator/hooks/useAvailableModels", () => ({
+  useAvailableModels: () => ({
+    model: "gpt-4o",
+    setModel: vi.fn(),
+    availableModels: ["gpt-4o", "claude-sonnet-4-20250514"],
+    loading: false,
+    pickModelForFormat: () => "gpt-4o",
+  }),
+}));
 
 // --- Mock exampleTemplates ---
-vi.mock(
-  "@/app/(dashboard)/dashboard/translator/exampleTemplates",
-  () => ({
-    FORMAT_OPTIONS: [
-      { value: "openai", label: "OpenAI" },
-      { value: "claude", label: "Claude" },
-      { value: "gemini", label: "Gemini" },
-    ],
-    FORMAT_META: {
-      openai: { label: "OpenAI", color: "emerald", icon: "smart_toy" },
-      claude: { label: "Claude", color: "orange", icon: "psychology" },
-      gemini: { label: "Gemini", color: "blue", icon: "auto_awesome" },
+vi.mock("@/app/(dashboard)/dashboard/translator/exampleTemplates", () => ({
+  FORMAT_OPTIONS: [
+    { value: "openai", label: "OpenAI" },
+    { value: "claude", label: "Claude" },
+    { value: "gemini", label: "Gemini" },
+  ],
+  FORMAT_META: {
+    openai: { label: "OpenAI", color: "emerald", icon: "smart_toy" },
+    claude: { label: "Claude", color: "orange", icon: "psychology" },
+    gemini: { label: "Gemini", color: "blue", icon: "auto_awesome" },
+  },
+  getExampleTemplates: () => [
+    {
+      id: "simple-chat",
+      name: "Simple Chat",
+      icon: "chat",
+      description: "A simple chat example",
+      formats: {
+        openai: { model: "gpt-4o", messages: [{ role: "user", content: "Hello" }] },
+        claude: {
+          model: "claude-sonnet-4-20250514",
+          messages: [{ role: "user", content: "Hello" }],
+        },
+      },
     },
-    getExampleTemplates: () => [
-      {
-        id: "simple-chat",
-        name: "Simple Chat",
-        icon: "chat",
-        description: "A simple chat example",
-        formats: {
-          openai: { model: "gpt-4o", messages: [{ role: "user", content: "Hello" }] },
-          claude: { model: "claude-sonnet-4-20250514", messages: [{ role: "user", content: "Hello" }] },
-        },
+    {
+      id: "tool-calling",
+      name: "Tool Calling",
+      icon: "build",
+      description: "Tool calling example",
+      formats: {
+        openai: { model: "gpt-4o", tools: [] },
       },
-      {
-        id: "tool-calling",
-        name: "Tool Calling",
-        icon: "build",
-        description: "Tool calling example",
-        formats: {
-          openai: { model: "gpt-4o", tools: [] },
-        },
-      },
-    ],
-  })
-);
+    },
+  ],
+}));
 
 // --- Setup ---
 const cleanupCallbacks: Array<() => void> = [];
@@ -150,23 +147,25 @@ function makeContainer(): HTMLElement {
   return container;
 }
 
-function makeProps(overrides: Partial<{
-  source: FormatId;
-  target: FormatId;
-  provider: string;
-  inputText: string;
-  mode: TranslateMode;
-  onSourceChange: (s: FormatId) => void;
-  onTargetChange: (t: FormatId) => void;
-  onProviderChange: (p: string) => void;
-  onInputChange: (text: string) => void;
-  onModeChange: (m: TranslateMode) => void;
-  onSubmit: () => void;
-  onOpenAdvanced: () => void;
-  isLoading: boolean;
-  providerOptions: Array<{ value: string; label: string }>;
-  loading: boolean;
-}> = {}) {
+function makeProps(
+  overrides: Partial<{
+    source: FormatId;
+    target: FormatId;
+    provider: string;
+    inputText: string;
+    mode: TranslateMode;
+    onSourceChange: (s: FormatId) => void;
+    onTargetChange: (t: FormatId) => void;
+    onProviderChange: (p: string) => void;
+    onInputChange: (text: string) => void;
+    onModeChange: (m: TranslateMode) => void;
+    onSubmit: () => void;
+    onOpenAdvanced: () => void;
+    isLoading: boolean;
+    providerOptions: Array<{ value: string; label: string }>;
+    loading: boolean;
+  }> = {},
+) {
   return {
     source: "claude" as FormatId,
     target: "openai" as FormatId,
@@ -181,7 +180,10 @@ function makeProps(overrides: Partial<{
     onSubmit: vi.fn(),
     onOpenAdvanced: vi.fn(),
     isLoading: false,
-    providerOptions: [{ value: "openai", label: "OpenAI" }, { value: "anthropic", label: "Anthropic" }],
+    providerOptions: [
+      { value: "openai", label: "OpenAI" },
+      { value: "anthropic", label: "Anthropic" },
+    ],
     loading: false,
     ...overrides,
   };
@@ -189,7 +191,9 @@ function makeProps(overrides: Partial<{
 
 describe("SimpleControls", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {
@@ -199,9 +203,7 @@ describe("SimpleControls", () => {
   });
 
   it("exports a default function component", async () => {
-    const mod = await import(
-      "@/app/(dashboard)/dashboard/translator/components/SimpleControls"
-    );
+    const mod = await import("@/app/(dashboard)/dashboard/translator/components/SimpleControls");
     expect(typeof mod.default).toBe("function");
   });
 
@@ -260,7 +262,9 @@ describe("SimpleControls", () => {
       root.render(<SimpleControls {...props} />);
     });
     // The first select is the source select (aria-label uses fallback "My app uses")
-    const sourceSelect = container.querySelector("select[aria-label='My app uses']") as HTMLSelectElement | null;
+    const sourceSelect = container.querySelector(
+      "select[aria-label='My app uses']",
+    ) as HTMLSelectElement | null;
     expect(sourceSelect).toBeTruthy();
     await act(async () => {
       if (sourceSelect) {
@@ -284,7 +288,7 @@ describe("SimpleControls", () => {
     });
     // Find the "preview" tab button in the segmented control
     const previewTab = container.querySelector(
-      "[data-testid='segmented-control'] button[data-value='preview']"
+      "[data-testid='segmented-control'] button[data-value='preview']",
     ) as HTMLButtonElement | null;
     expect(previewTab).toBeTruthy();
     await act(async () => {
@@ -328,7 +332,7 @@ describe("SimpleControls", () => {
     });
     // Find the Advanced button (has aria-label fallback "Advanced")
     const advancedBtn = container.querySelector(
-      "button[aria-label='Advanced']"
+      "button[aria-label='Advanced']",
     ) as HTMLButtonElement | null;
     expect(advancedBtn).toBeTruthy();
     await act(async () => {
@@ -347,9 +351,7 @@ describe("SimpleControls", () => {
     await act(async () => {
       root.render(<SimpleControls {...props} />);
     });
-    const submitBtn = container.querySelector(
-      "[data-testid='button']"
-    ) as HTMLButtonElement | null;
+    const submitBtn = container.querySelector("[data-testid='button']") as HTMLButtonElement | null;
     expect(submitBtn?.disabled).toBe(true);
   });
 
@@ -363,9 +365,7 @@ describe("SimpleControls", () => {
     await act(async () => {
       root.render(<SimpleControls {...props} />);
     });
-    const submitBtn = container.querySelector(
-      "[data-testid='button']"
-    ) as HTMLButtonElement | null;
+    const submitBtn = container.querySelector("[data-testid='button']") as HTMLButtonElement | null;
     expect(submitBtn?.disabled).toBe(false);
   });
 
@@ -382,7 +382,7 @@ describe("SimpleControls", () => {
     });
     // The example select has a __custom__ option (aria-label uses fallback "Start with")
     const exampleSelect = container.querySelector(
-      "select[aria-label='Start with']"
+      "select[aria-label='Start with']",
     ) as HTMLSelectElement | null;
     expect(exampleSelect).toBeTruthy();
     await act(async () => {

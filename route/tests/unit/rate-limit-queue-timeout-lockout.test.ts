@@ -11,8 +11,9 @@ process.env.API_KEY_SECRET = "test-rl-lockout-secret";
 const core = await import("../../src/lib/db/core.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 const { handleComboChat } = await import("../../open-sse/services/combo.ts");
-const { getModelLockoutInfo, isModelLocked } =
-  await import("../../open-sse/services/accountFallback.ts");
+const { getModelLockoutInfo, isModelLocked } = await import(
+  "../../open-sse/services/accountFallback.ts"
+);
 
 function createLog() {
   return {
@@ -103,7 +104,7 @@ test("RATE_LIMIT_QUEUE_TIMEOUT lockout behaves correctly depending on connection
   assert.equal(
     lockedForConnBuggy,
     false,
-    "Model should not be locked for actual connection when header is missing"
+    "Model should not be locked for actual connection when header is missing",
   );
 
   // Verify that it got locked under the empty string connectionId ""
@@ -111,7 +112,7 @@ test("RATE_LIMIT_QUEUE_TIMEOUT lockout behaves correctly depending on connection
   assert.equal(
     lockedForEmptyBuggy,
     true,
-    "Model is incorrectly locked under empty string connectionId when header is missing"
+    "Model is incorrectly locked under empty string connectionId when header is missing",
   );
 
   const { clearAllModelLockouts } = await import("../../open-sse/services/accountFallback.ts");

@@ -30,7 +30,7 @@ describe("mitm manager stub alias (#6344)", () => {
     assert.doesNotMatch(
       config,
       /^\s*"@\/mitm\/manager":\s*"\.\/src\/mitm\/manager\.stub\.ts",?\s*$/m,
-      "next.config.mjs must not hardcode the @/mitm/manager stub alias"
+      "next.config.mjs must not hardcode the @/mitm/manager stub alias",
     );
   });
 

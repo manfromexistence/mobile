@@ -1,8 +1,8 @@
-import code from '@content/TextAnimations/TrueFocus/TrueFocus.jsx?raw';
-import css from '@content/TextAnimations/TrueFocus/TrueFocus.css?raw';
-import tailwind from '@tailwind/TextAnimations/TrueFocus/TrueFocus.jsx?raw';
-import tsCode from '@ts-default/TextAnimations/TrueFocus/TrueFocus.tsx?raw';
-import tsTailwind from '@ts-tailwind/TextAnimations/TrueFocus/TrueFocus.tsx?raw';
+import code from "@content/TextAnimations/TrueFocus/TrueFocus.jsx?raw";
+import css from "@content/TextAnimations/TrueFocus/TrueFocus.css?raw";
+import tailwind from "@tailwind/TextAnimations/TrueFocus/TrueFocus.jsx?raw";
+import tsCode from "@ts-default/TextAnimations/TrueFocus/TrueFocus.tsx?raw";
+import tsTailwind from "@ts-tailwind/TextAnimations/TrueFocus/TrueFocus.tsx?raw";
 
 export const trueFocus = {
   dependencies: `motion`,
@@ -20,5 +20,5 @@ pauseBetweenAnimations={1}
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

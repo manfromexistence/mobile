@@ -4,10 +4,7 @@ import { Music, Phone, PhoneOff, Timer } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/motion/button";
-import {
-  DynamicIsland,
-  DynamicIslandView,
-} from "@/components/motion/dynamic-island";
+import { DynamicIsland, DynamicIslandView } from "@/components/motion/dynamic-island";
 import { NumberTicker } from "@/components/motion/number-ticker";
 
 type IslandView = "call" | "timer" | "music" | null;
@@ -70,9 +67,7 @@ export function DynamicIslandPreview() {
         >
           <DynamicIslandView id="call" className="gap-4">
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase tracking-wider opacity-60">
-                Incoming call
-              </span>
+              <span className="text-[10px] uppercase tracking-wider opacity-60">Incoming call</span>
               <span className="text-sm font-semibold">Saurabh</span>
             </div>
             <div className="flex items-center gap-2">
@@ -97,9 +92,7 @@ export function DynamicIslandPreview() {
 
           <DynamicIslandView id="timer" className="gap-3">
             <Timer className="h-4 w-4 text-(--color-warning)" />
-            <span className="text-[10px] uppercase tracking-wider opacity-60">
-              Timer
-            </span>
+            <span className="text-[10px] uppercase tracking-wider opacity-60">Timer</span>
             <NumberTicker
               value={seconds}
               format={formatClock}
@@ -114,9 +107,7 @@ export function DynamicIslandPreview() {
               <Music className="h-3.5 w-3.5" />
             </span>
             <div className="flex flex-col text-left">
-              <span className="text-xs font-semibold leading-tight">
-                Midnight City
-              </span>
+              <span className="text-xs font-semibold leading-tight">Midnight City</span>
               <span className="text-[10px] opacity-60">M83</span>
             </div>
             <EqBars />

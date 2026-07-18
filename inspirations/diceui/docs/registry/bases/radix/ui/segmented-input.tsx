@@ -1,10 +1,7 @@
 "use client";
 
 import { cva, type VariantProps } from "class-variance-authority";
-import {
-  Direction as DirectionPrimitive,
-  Slot as SlotPrimitive,
-} from "radix-ui";
+import { Direction as DirectionPrimitive, Slot as SlotPrimitive } from "radix-ui";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/registry/bases/radix/ui/input";
@@ -26,8 +23,7 @@ interface SegmentedInputContextValue {
   required?: boolean;
 }
 
-const SegmentedInputContext =
-  React.createContext<SegmentedInputContextValue | null>(null);
+const SegmentedInputContext = React.createContext<SegmentedInputContextValue | null>(null);
 
 function useSegmentedInputContext(consumerName: string) {
   const context = React.useContext(SegmentedInputContext);
@@ -113,11 +109,7 @@ function SegmentedInput(props: SegmentedInputProps) {
         data-required={required ? "" : undefined}
         dir={dir}
         {...rootProps}
-        className={cn(
-          "flex",
-          orientation === "horizontal" ? "flex-row" : "flex-col",
-          className,
-        )}
+        className={cn("flex", orientation === "horizontal" ? "flex-row" : "flex-col", className)}
       >
         {segmentedInputItems}
       </RootPrimitive>
@@ -174,8 +166,7 @@ interface SegmentedInputItemProps
 }
 
 function SegmentedInputItem(props: SegmentedInputItemProps) {
-  const { asChild, className, position, disabled, required, ...inputProps } =
-    props;
+  const { asChild, className, position, disabled, required, ...inputProps } = props;
   const context = useSegmentedInputContext(ITEM_NAME);
 
   const isDisabled = disabled ?? context.disabled;

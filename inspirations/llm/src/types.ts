@@ -109,10 +109,7 @@ export interface MLCEngineInterface {
    *   potentially with a smaller model or smaller context window size.
    * @note This is an async function.
    */
-  reload: (
-    modelId: string | string[],
-    chatOpts?: ChatOptions | ChatOptions[],
-  ) => Promise<void>;
+  reload: (modelId: string | string[], chatOpts?: ChatOptions | ChatOptions[]) => Promise<void>;
 
   /**
    * OpenAI-style API. Generate a chat completion response for the given conversation and
@@ -128,9 +125,7 @@ export interface MLCEngineInterface {
    * @note For requests sent to the same modelId, will block until all previous requests finish.
    * @note For more, see https://platform.openai.com/docs/api-reference/chat
    */
-  chatCompletion(
-    request: ChatCompletionRequestNonStreaming,
-  ): Promise<ChatCompletion>;
+  chatCompletion(request: ChatCompletionRequestNonStreaming): Promise<ChatCompletion>;
   chatCompletion(
     request: ChatCompletionRequestStreaming,
   ): Promise<AsyncIterable<ChatCompletionChunk>>;
@@ -151,15 +146,9 @@ export interface MLCEngineInterface {
    * @note For more, see https://platform.openai.com/docs/api-reference/completions
    */
   completion(request: CompletionCreateParamsNonStreaming): Promise<Completion>;
-  completion(
-    request: CompletionCreateParamsStreaming,
-  ): Promise<AsyncIterable<Completion>>;
-  completion(
-    request: CompletionCreateParamsBase,
-  ): Promise<AsyncIterable<Completion> | Completion>;
-  completion(
-    request: CompletionCreateParams,
-  ): Promise<AsyncIterable<Completion> | Completion>;
+  completion(request: CompletionCreateParamsStreaming): Promise<AsyncIterable<Completion>>;
+  completion(request: CompletionCreateParamsBase): Promise<AsyncIterable<Completion> | Completion>;
+  completion(request: CompletionCreateParams): Promise<AsyncIterable<Completion> | Completion>;
 
   /**
    * OpenAI-style API. Creates an embedding vector representing the input text.

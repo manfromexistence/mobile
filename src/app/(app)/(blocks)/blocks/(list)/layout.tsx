@@ -1,23 +1,17 @@
-import {
-  PageHeading,
-  PageHeadingTagline,
-  PageHeadingTitle,
-} from "@/components/page-heading"
+import { PageHeading, PageHeadingTagline, PageHeadingTitle } from "@/components/page-heading";
 
-import { BlocksNav } from "./blocks-nav"
+import { BlocksNav } from "./blocks-nav";
 
 export default function BlocksLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <>
       <PageHeading>
         <PageHeadingTagline>Blocks</PageHeadingTagline>
-        <PageHeadingTitle>
-          Beautifully designed, production-ready.
-        </PageHeadingTitle>
+        <PageHeadingTitle>Beautifully designed, production-ready.</PageHeadingTitle>
       </PageHeading>
 
       <div className="flex h-4" />
@@ -34,9 +28,7 @@ export default function BlocksLayout({
 
       <div className="p-2">
         <div className="relative border border-line p-4">
-          <p className="font-mono text-sm text-muted-foreground">
-            More blocks on the way…
-          </p>
+          <p className="font-mono text-sm text-muted-foreground">More blocks on the way…</p>
 
           <div className="*:absolute *:flex *:size-2 *:border *:bg-background dark:*:border-line">
             <div className="top-[-4.5px] left-[-4.5px]" />
@@ -47,5 +39,5 @@ export default function BlocksLayout({
         </div>
       </div>
     </>
-  )
+  );
 }

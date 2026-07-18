@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import type { TargetAndTransition } from "motion/react"
-import { motion } from "motion/react"
-import type { ComponentProps } from "react"
+import type { TargetAndTransition } from "motion/react";
+import { motion } from "motion/react";
+import type { ComponentProps } from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const initialProps: TargetAndTransition = {
   pathLength: 0,
   opacity: 0,
-}
+};
 
 const animateProps: TargetAndTransition = {
   pathLength: 1,
   opacity: 1,
-}
+};
 
 export type AppleHelloEffectProps = Omit<
   ComponentProps<typeof motion.svg>,
@@ -25,10 +25,10 @@ export type AppleHelloEffectProps = Omit<
    * Values below 1 speed up, values above 1 slow down.
    * @defaultValue 0.8
    */
-  durationScale?: number
+  durationScale?: number;
   /** Called when the full handwriting animation completes. */
-  onAnimationComplete?: () => void
-}
+  onAnimationComplete?: () => void;
+};
 
 export function AppleHelloEffectHindi({
   className,
@@ -36,7 +36,7 @@ export function AppleHelloEffectHindi({
   onAnimationComplete,
   ...props
 }: AppleHelloEffectProps) {
-  const calc = (x: number) => x * durationScale
+  const calc = (x: number) => x * durationScale;
 
   return (
     <motion.svg
@@ -164,5 +164,5 @@ export function AppleHelloEffectHindi({
         onAnimationComplete={onAnimationComplete}
       />
     </motion.svg>
-  )
+  );
 }

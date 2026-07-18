@@ -70,7 +70,11 @@ test("Anthropic token reset (RFC3339) is normalized to epoch ms", () => {
   const sig = getTokenHeaderSaturation("anthropic", "anth-conn-2");
   assert.ok(sig, "expected signal");
   const expected = Date.parse("2026-01-01T00:00:30Z");
-  assert.equal(sig!.resetAt, expected, `resetAt should be RFC3339 epoch ${expected}, got ${sig!.resetAt}`);
+  assert.equal(
+    sig!.resetAt,
+    expected,
+    `resetAt should be RFC3339 epoch ${expected}, got ${sig!.resetAt}`,
+  );
   // fully exhausted → saturation 1.
   assert.equal(sig!.saturation, 1);
 });
@@ -121,7 +125,7 @@ test('OpenAI reset duration "6m0s" → now + 360s (epoch ms)', () => {
   // 6m0s = 360_000 ms in the future, measured from the store time.
   assert.ok(
     sig!.resetAt >= before + 360_000 && sig!.resetAt <= after + 360_000,
-    `resetAt should be ≈ now+360000, got ${sig!.resetAt} (window ${before + 360_000}..${after + 360_000})`
+    `resetAt should be ≈ now+360000, got ${sig!.resetAt} (window ${before + 360_000}..${after + 360_000})`,
   );
 });
 
@@ -139,7 +143,7 @@ test('OpenAI reset duration "1s" → now + 1s (epoch ms)', () => {
   assert.ok(sig, "expected signal");
   assert.ok(
     sig!.resetAt >= before + 1000 && sig!.resetAt <= after + 1000,
-    `resetAt should be ≈ now+1000, got ${sig!.resetAt}`
+    `resetAt should be ≈ now+1000, got ${sig!.resetAt}`,
   );
 });
 
@@ -158,7 +162,7 @@ test('OpenAI compound duration "1h30m15s" → 5415s', () => {
   const secs = (1 * 3600 + 30 * 60 + 15) * 1000; // 5_415_000
   assert.ok(
     sig!.resetAt >= before + secs && sig!.resetAt <= after + secs,
-    `resetAt should be ≈ now+${secs}, got ${sig!.resetAt}`
+    `resetAt should be ≈ now+${secs}, got ${sig!.resetAt}`,
   );
 });
 
@@ -176,7 +180,7 @@ test('OpenAI fractional-second duration "1.5s" → 1500ms', () => {
   assert.ok(sig, "expected signal");
   assert.ok(
     sig!.resetAt >= before + 1500 && sig!.resetAt <= after + 1500,
-    `resetAt should be ≈ now+1500, got ${sig!.resetAt}`
+    `resetAt should be ≈ now+1500, got ${sig!.resetAt}`,
   );
 });
 

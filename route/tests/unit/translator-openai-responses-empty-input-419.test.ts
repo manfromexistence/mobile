@@ -29,7 +29,7 @@ test("Responses -> Chat: empty input[] still preserves instructions as system me
     "gpt-4o",
     { instructions: "Be terse.", input: [] },
     null,
-    null
+    null,
   ) as Record<string, unknown>;
 
   const messages = result.messages as Array<Record<string, unknown>>;

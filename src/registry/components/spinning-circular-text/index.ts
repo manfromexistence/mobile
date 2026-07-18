@@ -1,1 +1,1 @@
-export * from "./spinning-circular-text"
+export * from "./spinning-circular-text";

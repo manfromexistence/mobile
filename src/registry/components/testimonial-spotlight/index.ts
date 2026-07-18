@@ -1,1 +1,1 @@
-export * from "./testimonial-spotlight"
+export * from "./testimonial-spotlight";

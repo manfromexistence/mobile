@@ -1,13 +1,6 @@
-import type {
-  CompositionProps,
-  Direction,
-  EmptyProps,
-  Orientation,
-} from "@/types";
+import type { CompositionProps, Direction, EmptyProps, Orientation } from "@/types";
 
-export interface SegmentedInputProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface SegmentedInputProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The size of all inputs in the segment.
    * @default "default"
@@ -45,9 +38,7 @@ export interface SegmentedInputProps
   required?: boolean;
 }
 
-export interface SegmentedInputItemProps
-  extends EmptyProps<"input">,
-    CompositionProps {
+export interface SegmentedInputItemProps extends EmptyProps<"input">, CompositionProps {
   /**
    * The position of the input within the segment.
    * Controls the visual styling and borders.

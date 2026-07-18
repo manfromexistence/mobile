@@ -87,7 +87,7 @@ test("#1382 streaming Claude response with empty content_block (no text, no tool
   assert.equal(
     out.valid,
     false,
-    `expected invalid for empty content_block stream, got valid=true (reason: ${out.reason})`
+    `expected invalid for empty content_block stream, got valid=true (reason: ${out.reason})`,
   );
   assert.match(out.reason ?? "", /empty/i, `reason should mention 'empty', got: "${out.reason}"`);
 });

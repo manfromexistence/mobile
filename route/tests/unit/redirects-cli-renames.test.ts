@@ -10,7 +10,7 @@ test("next.config.mjs has permanent redirect from /dashboard/cli-tools to /dashb
   assert.ok(
     configSource.includes('source: "/dashboard/cli-tools"') &&
       configSource.includes('destination: "/dashboard/cli-code"'),
-    "expected /dashboard/cli-tools → /dashboard/cli-code redirect in next.config.mjs"
+    "expected /dashboard/cli-tools → /dashboard/cli-code redirect in next.config.mjs",
   );
 });
 
@@ -18,7 +18,7 @@ test("next.config.mjs has permanent wildcard redirect from /dashboard/cli-tools/
   assert.ok(
     configSource.includes('source: "/dashboard/cli-tools/:path*"') &&
       configSource.includes('destination: "/dashboard/cli-code/:path*"'),
-    "expected /dashboard/cli-tools/:path* → /dashboard/cli-code/:path* redirect in next.config.mjs"
+    "expected /dashboard/cli-tools/:path* → /dashboard/cli-code/:path* redirect in next.config.mjs",
   );
 });
 
@@ -26,7 +26,7 @@ test("next.config.mjs has permanent redirect from /dashboard/agents to /dashboar
   assert.ok(
     configSource.includes('source: "/dashboard/agents"') &&
       configSource.includes('destination: "/dashboard/acp-agents"'),
-    "expected /dashboard/agents → /dashboard/acp-agents redirect in next.config.mjs"
+    "expected /dashboard/agents → /dashboard/acp-agents redirect in next.config.mjs",
   );
 });
 
@@ -34,7 +34,7 @@ test("next.config.mjs has permanent wildcard redirect from /dashboard/agents/:pa
   assert.ok(
     configSource.includes('source: "/dashboard/agents/:path*"') &&
       configSource.includes('destination: "/dashboard/acp-agents/:path*"'),
-    "expected /dashboard/agents/:path* → /dashboard/acp-agents/:path* redirect in next.config.mjs"
+    "expected /dashboard/agents/:path* → /dashboard/acp-agents/:path* redirect in next.config.mjs",
   );
 });
 
@@ -45,6 +45,6 @@ test("all 4 CLI redirect entries use permanent: true", () => {
   const permanentCount = (cliBlock.match(/permanent: true/g) || []).length;
   assert.ok(
     permanentCount >= 4,
-    `expected at least 4 'permanent: true' entries in CLI Pages block, found ${permanentCount}`
+    `expected at least 4 'permanent: true' entries in CLI Pages block, found ${permanentCount}`,
   );
 });

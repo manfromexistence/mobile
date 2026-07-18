@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
-import './GooeyNav.css';
+import React, { useRef, useEffect, useState } from "react";
+import "./GooeyNav.css";
 
 interface GooeyNavItem {
   label: string;
@@ -25,7 +25,7 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
   particleR = 100,
   timeVariance = 300,
   colors = [1, 2, 3, 1, 2, 3, 1, 4],
-  initialActiveIndex = 0
+  initialActiveIndex = 0,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLUListElement>(null);
@@ -48,7 +48,7 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
       time: t,
       scale: 1 + noise(0.2),
       color: colors[Math.floor(Math.random() * colors.length)],
-      rotate: rotate > 0 ? (rotate + r / 20) * 10 : (rotate - r / 20) * 10
+      rotate: rotate > 0 ? (rotate + r / 20) * 10 : (rotate - r / 20) * 10,
     };
   };
 
@@ -56,31 +56,31 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
     const d: [number, number] = particleDistances;
     const r = particleR;
     const bubbleTime = animationTime * 2 + timeVariance;
-    element.style.setProperty('--time', `${bubbleTime}ms`);
+    element.style.setProperty("--time", `${bubbleTime}ms`);
 
     for (let i = 0; i < particleCount; i++) {
       const t = animationTime * 2 + noise(timeVariance * 2);
       const p = createParticle(i, t, d, r);
-      element.classList.remove('active');
+      element.classList.remove("active");
 
       setTimeout(() => {
-        const particle = document.createElement('span');
-        const point = document.createElement('span');
-        particle.classList.add('particle');
-        particle.style.setProperty('--start-x', `${p.start[0]}px`);
-        particle.style.setProperty('--start-y', `${p.start[1]}px`);
-        particle.style.setProperty('--end-x', `${p.end[0]}px`);
-        particle.style.setProperty('--end-y', `${p.end[1]}px`);
-        particle.style.setProperty('--time', `${p.time}ms`);
-        particle.style.setProperty('--scale', `${p.scale}`);
-        particle.style.setProperty('--color', `var(--color-${p.color}, white)`);
-        particle.style.setProperty('--rotate', `${p.rotate}deg`);
+        const particle = document.createElement("span");
+        const point = document.createElement("span");
+        particle.classList.add("particle");
+        particle.style.setProperty("--start-x", `${p.start[0]}px`);
+        particle.style.setProperty("--start-y", `${p.start[1]}px`);
+        particle.style.setProperty("--end-x", `${p.end[0]}px`);
+        particle.style.setProperty("--end-y", `${p.end[1]}px`);
+        particle.style.setProperty("--time", `${p.time}ms`);
+        particle.style.setProperty("--scale", `${p.scale}`);
+        particle.style.setProperty("--color", `var(--color-${p.color}, white)`);
+        particle.style.setProperty("--rotate", `${p.rotate}deg`);
 
-        point.classList.add('point');
+        point.classList.add("point");
         particle.appendChild(point);
         element.appendChild(particle);
         requestAnimationFrame(() => {
-          element.classList.add('active');
+          element.classList.add("active");
         });
         setTimeout(() => {
           try {
@@ -102,7 +102,7 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
       left: `${pos.x - containerRect.x}px`,
       top: `${pos.y - containerRect.y}px`,
       width: `${pos.width}px`,
-      height: `${pos.height}px`
+      height: `${pos.height}px`,
     };
     Object.assign(filterRef.current.style, styles);
     Object.assign(textRef.current.style, styles);
@@ -117,15 +117,15 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
     updateEffectPosition(liEl);
 
     if (filterRef.current) {
-      const particles = filterRef.current.querySelectorAll('.particle');
-      particles.forEach(p => filterRef.current!.removeChild(p));
+      const particles = filterRef.current.querySelectorAll(".particle");
+      particles.forEach((p) => filterRef.current!.removeChild(p));
     }
 
     if (textRef.current) {
-      textRef.current.classList.remove('active');
+      textRef.current.classList.remove("active");
 
       void textRef.current.offsetWidth;
-      textRef.current.classList.add('active');
+      textRef.current.classList.add("active");
     }
 
     if (filterRef.current) {
@@ -134,15 +134,15 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLAnchorElement>, index: number) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+    if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       const liEl = e.currentTarget.parentElement;
       if (liEl) {
         handleClick(
           {
-            currentTarget: liEl
+            currentTarget: liEl,
           } as React.MouseEvent<HTMLAnchorElement>,
-          index
+          index,
         );
       }
     }
@@ -150,14 +150,14 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
 
   useEffect(() => {
     if (!navRef.current || !containerRef.current) return;
-    const activeLi = navRef.current.querySelectorAll('li')[activeIndex] as HTMLElement;
+    const activeLi = navRef.current.querySelectorAll("li")[activeIndex] as HTMLElement;
     if (activeLi) {
       updateEffectPosition(activeLi);
-      textRef.current?.classList.add('active');
+      textRef.current?.classList.add("active");
     }
 
     const resizeObserver = new ResizeObserver(() => {
-      const currentActiveLi = navRef.current?.querySelectorAll('li')[activeIndex] as HTMLElement;
+      const currentActiveLi = navRef.current?.querySelectorAll("li")[activeIndex] as HTMLElement;
       if (currentActiveLi) {
         updateEffectPosition(currentActiveLi);
       }
@@ -172,8 +172,12 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
       <nav>
         <ul ref={navRef}>
           {items.map((item, index) => (
-            <li key={index} className={activeIndex === index ? 'active' : ''}>
-              <a href={item.href} onClick={e => handleClick(e, index)} onKeyDown={e => handleKeyDown(e, index)}>
+            <li key={index} className={activeIndex === index ? "active" : ""}>
+              <a
+                href={item.href}
+                onClick={(e) => handleClick(e, index)}
+                onKeyDown={(e) => handleKeyDown(e, index)}
+              >
                 {item.label}
               </a>
             </li>

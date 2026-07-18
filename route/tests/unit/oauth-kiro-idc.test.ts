@@ -28,7 +28,7 @@ test("kiro.requestDeviceCode returns resolved region for IDC token endpoint", as
           expiresIn: 600,
           interval: 1,
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -71,7 +71,7 @@ test("kiro.pollToken uses region provided by extraData", async () => {
         refreshToken: "refresh",
         expiresIn: 3600,
       }),
-      { status: 200 }
+      { status: 200 },
     );
   }) as typeof fetch;
 
@@ -80,7 +80,7 @@ test("kiro.pollToken uses region provided by extraData", async () => {
       { tokenUrl: "https://oidc.us-east-1.amazonaws.com/token" },
       "device-code",
       null,
-      { _clientId: "cid", _clientSecret: "csecret", _region: "ap-southeast-1" }
+      { _clientId: "cid", _clientSecret: "csecret", _region: "ap-southeast-1" },
     );
 
     assert.equal(requestedUrl, "https://oidc.ap-southeast-1.amazonaws.com/token");

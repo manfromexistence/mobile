@@ -1,20 +1,10 @@
 "use client";
 
 import { useRef } from "react";
-import {
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useReducedMotion,
-} from "motion/react";
+import { motion, useMotionTemplate, useMotionValue, useReducedMotion } from "motion/react";
 import { useHoverCapable } from "@/lib/hooks/use-hover-capable";
 import { cn } from "@/lib/utils";
-import {
-  NOT_FOUND_DEFAULTS,
-  NotFoundActions,
-  NotFoundStage,
-  type NotFoundProps,
-} from "./shared";
+import { NOT_FOUND_DEFAULTS, NotFoundActions, NotFoundStage, type NotFoundProps } from "./shared";
 
 export function NotFoundSpotlight({
   className,

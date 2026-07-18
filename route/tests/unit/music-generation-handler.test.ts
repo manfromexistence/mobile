@@ -66,7 +66,7 @@ test("handleMusicGeneration executes ComfyUI audio workflow and normalizes wav o
             },
           },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -132,7 +132,7 @@ test("handleMusicGeneration polls KIE music tasks and returns audio URLs", async
             },
           },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -250,7 +250,7 @@ test("handleMusicGeneration returns provider errors for ComfyUI failures and log
             },
           },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -282,7 +282,7 @@ test("handleMusicGeneration returns provider errors for ComfyUI failures and log
     assert.match(result.error, /ComfyUI fetch output failed \(500\)/);
     assert.deepEqual(
       logEntries.map((entry) => entry[0]),
-      ["info", "error"]
+      ["info", "error"],
     );
     assert.match(logEntries[1][2], /comfyui error/i);
   } finally {

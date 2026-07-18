@@ -17,9 +17,7 @@
     "./v2/effect/plugin": "./src/v2/effect/plugin.ts",
     "./v2/promise": "./src/v2/promise/index.ts"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "dependencies": {
     "@ai-sdk/provider": "3.0.8",
     "@opencode-ai/sdk": "workspace:*",

@@ -12,7 +12,7 @@ test("isNoMemoryRequested is true for truthy header values (plain object)", () =
     assert.equal(
       isNoMemoryRequested({ "x-omniroute-no-memory": v }),
       true,
-      `expected true for ${JSON.stringify(v)}`
+      `expected true for ${JSON.stringify(v)}`,
     );
   }
 });
@@ -40,6 +40,6 @@ test("isNoMemoryRequested is false when the header is absent / empty / falsy", (
 test("getHeaderValueCaseInsensitive still resolves the header (sanity)", () => {
   assert.equal(
     getHeaderValueCaseInsensitive({ "x-omniroute-no-memory": "true" }, "x-omniroute-no-memory"),
-    "true"
+    "true",
   );
 });

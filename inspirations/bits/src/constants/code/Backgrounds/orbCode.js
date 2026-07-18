@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/Orb/Orb.jsx?raw';
-import css from '@content/Backgrounds/Orb/Orb.css?raw';
-import tailwind from '@tailwind/Backgrounds/Orb/Orb.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/Orb/Orb.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/Orb/Orb.tsx?raw';
+import code from "@content/Backgrounds/Orb/Orb.jsx?raw";
+import css from "@content/Backgrounds/Orb/Orb.css?raw";
+import tailwind from "@tailwind/Backgrounds/Orb/Orb.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/Orb/Orb.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/Orb/Orb.tsx?raw";
 
 export const orb = {
   dependencies: `ogl`,
@@ -20,5 +20,5 @@ export const orb = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

@@ -54,7 +54,7 @@ function buildCatalogEntries(): ProviderFilterEntry[] {
 
 function filterByCategory(
   entries: ProviderFilterEntry[],
-  category: CategoryFilter
+  category: CategoryFilter,
 ): ProviderFilterEntry[] {
   if (category === "all") return dedupeByProviderId(entries);
   if (category === "free") return dedupeByProviderId(entries.filter(providerHasFree));
@@ -70,7 +70,7 @@ function searchEntries(entries: ProviderFilterEntry[], query: string): ProviderF
       const name = entry.provider.name.toLowerCase();
       const id = entry.providerId.toLowerCase();
       return name.includes(normalizedQuery) || id.includes(normalizedQuery);
-    })
+    }),
   );
 }
 
@@ -99,7 +99,7 @@ test("provider catalog public surface excludes removed categories helper", () =>
 test('filterByCategory("free") returns every hasFree provider across native categories', () => {
   const entries = buildCatalogEntries();
   const expectedIds = dedupeByProviderId(entries.filter(providerHasFree)).map(
-    (entry) => entry.providerId
+    (entry) => entry.providerId,
   );
   const actualIds = filterByCategory(entries, "free").map((entry) => entry.providerId);
 

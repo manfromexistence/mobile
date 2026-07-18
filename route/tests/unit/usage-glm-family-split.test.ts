@@ -17,7 +17,7 @@ test("leaf exposes getGlmUsage + glmMonthlyRemainingPercentage", () => {
 test("host re-exports glmMonthlyRemainingPercentage with the same identity", () => {
   assert.equal(
     (HOST as Record<string, unknown>).glmMonthlyRemainingPercentage,
-    (G as Record<string, unknown>).glmMonthlyRemainingPercentage
+    (G as Record<string, unknown>).glmMonthlyRemainingPercentage,
   );
 });
 

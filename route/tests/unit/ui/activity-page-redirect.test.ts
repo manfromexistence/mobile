@@ -31,30 +31,21 @@ import { resolve } from "node:path";
 
 const PAGE_PATH = resolve(
   import.meta.dirname ?? new URL(".", import.meta.url).pathname,
-  "../../../src/app/(dashboard)/dashboard/logs/activity/page.tsx"
+  "../../../src/app/(dashboard)/dashboard/logs/activity/page.tsx",
 );
 
 test("logs/activity/page.tsx contains permanentRedirect('/dashboard/activity')", () => {
   const src = readFileSync(PAGE_PATH, "utf-8");
-  assert.ok(
-    src.includes("permanentRedirect"),
-    "page.tsx must call permanentRedirect"
-  );
-  assert.ok(
-    src.includes("/dashboard/activity"),
-    "page.tsx must redirect to /dashboard/activity"
-  );
-  assert.ok(
-    src.includes(`from "next/navigation"`),
-    "page.tsx must import from next/navigation"
-  );
+  assert.ok(src.includes("permanentRedirect"), "page.tsx must call permanentRedirect");
+  assert.ok(src.includes("/dashboard/activity"), "page.tsx must redirect to /dashboard/activity");
+  assert.ok(src.includes(`from "next/navigation"`), "page.tsx must import from next/navigation");
 });
 
 test("logs/activity/page.tsx does NOT import AuditLogTab anymore", () => {
   const src = readFileSync(PAGE_PATH, "utf-8");
   assert.ok(
     !src.includes("AuditLogTab"),
-    "page.tsx must not reference AuditLogTab after F4 cleanup"
+    "page.tsx must not reference AuditLogTab after F4 cleanup",
   );
 });
 
@@ -62,14 +53,14 @@ test("logs/activity/page.tsx does NOT have 'use client' directive (server compon
   const src = readFileSync(PAGE_PATH, "utf-8");
   assert.ok(
     !src.includes('"use client"'),
-    "redirect page must be a server component (no 'use client')"
+    "redirect page must be a server component (no 'use client')",
   );
 });
 
 test("AuditLogTab.tsx no longer exists (deleted by F4)", () => {
   const AUDIT_LOG_TAB_PATH = resolve(
     import.meta.dirname ?? new URL(".", import.meta.url).pathname,
-    "../../../src/app/(dashboard)/dashboard/logs/AuditLogTab.tsx"
+    "../../../src/app/(dashboard)/dashboard/logs/AuditLogTab.tsx",
   );
   let exists = false;
   try {
@@ -85,7 +76,7 @@ test("AuditLogTab.tsx no longer exists (deleted by F4)", () => {
 test("activity/ActivityFeedClient.tsx exists", () => {
   const CLIENT_PATH = resolve(
     import.meta.dirname ?? new URL(".", import.meta.url).pathname,
-    "../../../src/app/(dashboard)/dashboard/activity/ActivityFeedClient.tsx"
+    "../../../src/app/(dashboard)/dashboard/activity/ActivityFeedClient.tsx",
   );
   let src: string;
   try {
@@ -98,7 +89,7 @@ test("activity/ActivityFeedClient.tsx exists", () => {
   // The client sets level: "high" in URLSearchParams (produces level=high in the query string)
   assert.ok(
     src.includes('level: "high"') || src.includes("level=high"),
-    "Client must request level=high"
+    "Client must request level=high",
   );
 });
 

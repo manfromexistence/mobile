@@ -13,10 +13,9 @@ async function main() {
     setLabel("init-label", report.text);
   };
   const selectedModel = "Hermes-2-Pro-Llama-3-8B-q4f16_1-MLC";
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    { initProgressCallback: initProgressCallback },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+  });
 
   const tools: Array<webllm.ChatCompletionTool> = [
     {
@@ -45,8 +44,7 @@ async function main() {
     messages: [
       {
         role: "user",
-        content:
-          "What is the current weather in celsius in Pittsburgh and Tokyo?",
+        content: "What is the current weather in celsius in Pittsburgh and Tokyo?",
       },
     ],
     tool_choice: "auto",

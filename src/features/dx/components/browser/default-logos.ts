@@ -1,15 +1,15 @@
-import { Discord } from "@/components/ui/svgs/discord"
-import { Figma } from "@/components/ui/svgs/figma"
-import { GithubDark } from "@/components/ui/svgs/githubDark"
-import { NextjsIconDark } from "@/components/ui/svgs/nextjsIconDark"
-import { Notion } from "@/components/ui/svgs/notion"
-import { ReactLight } from "@/components/ui/svgs/reactLight"
-import { Slack } from "@/components/ui/svgs/slack"
-import { Stripe } from "@/components/ui/svgs/stripe"
-import { Supabase } from "@/components/ui/svgs/supabase"
-import { Typescript } from "@/components/ui/svgs/typescript"
-import { Youtube } from "@/components/ui/svgs/youtube"
-import type { SVGLogo } from "./types"
+import { Discord } from "@/components/ui/svgs/discord";
+import { Figma } from "@/components/ui/svgs/figma";
+import { GithubDark } from "@/components/ui/svgs/githubDark";
+import { NextjsIconDark } from "@/components/ui/svgs/nextjsIconDark";
+import { Notion } from "@/components/ui/svgs/notion";
+import { ReactLight } from "@/components/ui/svgs/reactLight";
+import { Slack } from "@/components/ui/svgs/slack";
+import { Stripe } from "@/components/ui/svgs/stripe";
+import { Supabase } from "@/components/ui/svgs/supabase";
+import { Typescript } from "@/components/ui/svgs/typescript";
+import { Youtube } from "@/components/ui/svgs/youtube";
+import type { SVGLogo } from "./types";
 
 export const DEFAULT_LOGOS: SVGLogo[] = [
   { id: 1, title: "React", component: ReactLight },
@@ -24,4 +24,4 @@ export const DEFAULT_LOGOS: SVGLogo[] = [
   { id: 10, title: "YouTube", component: Youtube },
   { id: 11, title: "Supabase", component: Supabase },
   { id: 12, title: "Stripe", component: Stripe },
-]
+];

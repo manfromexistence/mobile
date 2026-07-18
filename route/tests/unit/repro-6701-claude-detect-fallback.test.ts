@@ -46,7 +46,7 @@ describe("#6701 — claude detection should fall back to settings.json when bina
     fs.mkdirSync(claudeDir, { recursive: true });
     fs.writeFileSync(
       path.join(claudeDir, "settings.json"),
-      JSON.stringify({ env: { ANTHROPIC_BASE_URL: "http://localhost:20128" } }, null, 2)
+      JSON.stringify({ env: { ANTHROPIC_BASE_URL: "http://localhost:20128" } }, null, 2),
     );
 
     // Force the binary lookup to fail deterministically regardless of host state.
@@ -68,7 +68,7 @@ describe("#6701 — claude detection should fall back to settings.json when bina
     assert.equal(
       result.installed,
       true,
-      `Expected installed:true (9router-parity settings.json fallback), got installed:${result.installed} reason:${result.reason}`
+      `Expected installed:true (9router-parity settings.json fallback), got installed:${result.installed} reason:${result.reason}`,
     );
   });
 });

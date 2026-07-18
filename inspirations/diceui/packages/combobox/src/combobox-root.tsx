@@ -31,9 +31,7 @@ function getDataState(open: boolean) {
 
 const ROOT_NAME = "ComboboxRoot";
 
-type Value<Multiple extends boolean = false> = Multiple extends true
-  ? string[]
-  : string;
+type Value<Multiple extends boolean = false> = Multiple extends true ? string[] : string;
 
 interface ItemData {
   label: string;
@@ -57,15 +55,10 @@ interface ComboboxContextValue<Multiple extends boolean = false> {
   onFilter?: (options: string[], term: string) => string[];
   onItemsFilter: () => void;
   highlightedItem: CollectionItem<ItemElement, ItemData> | null;
-  onHighlightedItemChange: (
-    item: CollectionItem<ItemElement, ItemData> | null,
-  ) => void;
+  onHighlightedItemChange: (item: CollectionItem<ItemElement, ItemData> | null) => void;
   highlightedBadgeIndex: number;
   onHighlightedBadgeIndexChange: (index: number) => void;
-  onItemRegister: (
-    item: CollectionItem<ItemElement, ItemData>,
-    groupId?: string,
-  ) => () => void;
+  onItemRegister: (item: CollectionItem<ItemElement, ItemData>, groupId?: string) => () => void;
   onItemRemove: (value: string) => void;
   onHighlightMove: (direction: HighlightingDirection) => void;
   getIsItemVisible: (value: string) => boolean;
@@ -267,16 +260,15 @@ function ComboboxRootImpl<Multiple extends boolean = false>(
   const listId = useId();
 
   const dir = useDirection(dirProp);
-  const { collectionRef, getItems, itemMap, groupMap, onItemRegister } =
-    useCollection<ItemElement, ItemData>({
-      grouped: true,
-    });
-  const { anchorRef, hasAnchor, onHasAnchorChange } =
-    useAnchor<AnchorElement>();
+  const { collectionRef, getItems, itemMap, groupMap, onItemRegister } = useCollection<
+    ItemElement,
+    ItemData
+  >({
+    grouped: true,
+  });
+  const { anchorRef, hasAnchor, onHasAnchorChange } = useAnchor<AnchorElement>();
   const { isFormControl, onTriggerChange } = useFormControl<RootElement>();
-  const composedRef = useComposedRefs(forwardedRef, collectionRef, (node) =>
-    onTriggerChange(node),
-  );
+  const composedRef = useComposedRefs(forwardedRef, collectionRef, (node) => onTriggerChange(node));
 
   const [selectedText, setSelectedText] = React.useState("");
   const [highlightedItem, setHighlightedItem] = React.useState<CollectionItem<
@@ -303,12 +295,11 @@ function ComboboxRootImpl<Multiple extends boolean = false>(
       }
     },
   });
-  const [value = multiple ? ([] as string[]) : "", setValue] =
-    useControllableState({
-      prop: valueProp,
-      defaultProp: defaultValue,
-      onChange: onValueChangeProp,
-    });
+  const [value = multiple ? ([] as string[]) : "", setValue] = useControllableState({
+    prop: valueProp,
+    defaultProp: defaultValue,
+    onChange: onValueChangeProp,
+  });
   const [inputValue = "", setInputValue] = useControllableState({
     defaultProp: !multiple && defaultValue ? String(defaultValue) : "",
     prop: inputValueProp,
@@ -321,14 +312,13 @@ function ComboboxRootImpl<Multiple extends boolean = false>(
     },
   });
 
-  const { filterStore, onItemsFilter, getIsItemVisible, getIsListEmpty } =
-    useFilterStore({
-      itemMap,
-      groupMap,
-      onFilter,
-      exactMatch,
-      manualFiltering,
-    });
+  const { filterStore, onItemsFilter, getIsItemVisible, getIsListEmpty } = useFilterStore({
+    itemMap,
+    groupMap,
+    onFilter,
+    exactMatch,
+    manualFiltering,
+  });
 
   const onValueChange = React.useCallback(
     (newValue: string | string[]) => {
@@ -352,9 +342,7 @@ function ComboboxRootImpl<Multiple extends boolean = false>(
 
   const onItemRemove = React.useCallback(
     (currentValue: string) => {
-      const newValues = Array.isArray(value)
-        ? value.filter((v) => v !== currentValue)
-        : [];
+      const newValues = Array.isArray(value) ? value.filter((v) => v !== currentValue) : [];
       setValue(newValues as Value<Multiple>);
     },
     [setValue, value],
@@ -364,9 +352,7 @@ function ComboboxRootImpl<Multiple extends boolean = false>(
     highlightedItem,
     onHighlightedItemChange: setHighlightedItem,
     getItems: React.useCallback(() => {
-      return getItems().filter(
-        (item) => !item.disabled && getIsItemVisible(item.value),
-      );
+      return getItems().filter((item) => !item.disabled && getIsItemVisible(item.value));
     }, [getItems, getIsItemVisible]),
     getIsItemSelected: (item) => {
       const selectedValue = Array.isArray(value) ? value[0] : value;
@@ -439,8 +425,7 @@ function ComboboxRootImpl<Multiple extends boolean = false>(
 
 interface ComboboxRootComponentProps extends WithDisplayName {
   <Multiple extends boolean = false>(
-    props: ComboboxRootProps<Multiple> &
-      WithForwardedRef<typeof ComboboxRootImpl>,
+    props: ComboboxRootProps<Multiple> & WithForwardedRef<typeof ComboboxRootImpl>,
   ): React.JSX.Element;
 }
 

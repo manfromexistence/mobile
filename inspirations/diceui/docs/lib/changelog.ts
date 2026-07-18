@@ -3,11 +3,7 @@ import { source } from "@/lib/source";
 export function getChangelogPages() {
   return source
     .getPages()
-    .filter(
-      (page) =>
-        page.url.startsWith("/docs/changelog/") &&
-        page.url !== "/docs/changelog",
-    )
+    .filter((page) => page.url.startsWith("/docs/changelog/") && page.url !== "/docs/changelog")
     .map((page) => ({
       ...page,
       date: page.data.date ? new Date(page.data.date) : null,

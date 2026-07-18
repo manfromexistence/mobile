@@ -19,7 +19,7 @@ test("getUsageForProvider returns error for unsupported provider", async () => {
   });
   assert.ok(result);
   assert.ok(
-    (result as any).error || (result as any).quotas === undefined || typeof result === "object"
+    (result as any).error || (result as any).quotas === undefined || typeof result === "object",
   );
 });
 

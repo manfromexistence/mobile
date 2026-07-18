@@ -29,7 +29,7 @@ async function seedUsageEntries(
     latencyMs?: number;
     minutesAgo?: number;
     serviceTier?: string;
-  }>
+  }>,
 ) {
   for (const [i, e] of entries.entries()) {
     await usageHistory.saveRequestUsage({
@@ -133,7 +133,7 @@ test("getUsageDb provides nextCursor when rows exceed MAX_ROWS", async () => {
   for (let i = 0; i < 10001; i++) {
     db.prepare(
       `INSERT INTO usage_history (provider, model, timestamp, tokens_input, tokens_output, success, latency_ms)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
     ).run(`prov-${i}`, `model-${i}`, new Date(Date.now() - i * 1000).toISOString(), 10, 5, 1, 100);
   }
 

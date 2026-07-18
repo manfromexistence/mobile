@@ -52,12 +52,7 @@ export default function SwitchDoc() {
 
       <DocSection title="Disabled">
         <ComponentPreview code={disabledCode}>
-          <Switch
-            label="Disabled option"
-            checked={false}
-            onToggle={() => {}}
-            disabled
-          />
+          <Switch label="Disabled option" checked={false} onToggle={() => {}} disabled />
         </ComponentPreview>
       </DocSection>
 

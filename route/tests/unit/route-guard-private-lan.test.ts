@@ -88,18 +88,18 @@ test("services + traffic-inspector remain LOCAL_ONLY paths", () => {
 test("management policy must NOT derive locality from the spoofable Host header", () => {
   const src = readFileSync(
     join(import.meta.dirname, "../../src/server/authz/policies/management.ts"),
-    "utf8"
+    "utf8",
   );
   // Regression guard: a prior fix read the client-controlled Host header for the
   // LOCAL_ONLY decision, letting `Host: 127.0.0.1` bypass the gate. Locality must
   // come from the token-stamped peer IP instead.
   assert.ok(
     !src.includes('get?.("host")') && !src.includes('get("host")'),
-    "requestPeerAddress must NOT read the Host header"
+    "requestPeerAddress must NOT read the Host header",
   );
   assert.ok(
     src.includes("resolveStampedPeer") && src.includes("PEER_IP_HEADER"),
-    "requestPeerAddress must resolve the trusted token-stamped peer IP"
+    "requestPeerAddress must resolve the trusted token-stamped peer IP",
   );
 });
 

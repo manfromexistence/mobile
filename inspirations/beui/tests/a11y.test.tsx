@@ -31,9 +31,7 @@ const cases: Array<[name: string, render: () => ReactElement]> = [
   ["BloomMenu", () => <BloomMenu />],
   [
     "Switch",
-    () => (
-      <Switch checked={false} onCheckedChange={() => {}} label="Email notifications" />
-    ),
+    () => <Switch checked={false} onCheckedChange={() => {}} label="Email notifications" />,
   ],
   ["AnimatedBadge", () => <AnimatedBadge status="success">Live</AnimatedBadge>],
   [
@@ -59,10 +57,7 @@ const cases: Array<[name: string, render: () => ReactElement]> = [
   ],
   ["ScrollTo", () => <ScrollTo to="#top">Back to top</ScrollTo>],
   ["RangeSlider", () => <RangeSlider defaultValue={40} aria-label="Volume" />],
-  [
-    "Checkbox",
-    () => <Checkbox checked={false} onCheckedChange={() => {}} label="Accept terms" />,
-  ],
+  ["Checkbox", () => <Checkbox checked={false} onCheckedChange={() => {}} label="Accept terms" />],
   [
     "RadioGroup",
     () => (

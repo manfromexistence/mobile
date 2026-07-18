@@ -1,21 +1,17 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { CheckIcon, ClipboardIcon } from "lucide-react"
+import * as React from "react";
+import { CheckIcon, ClipboardIcon } from "lucide-react";
 
-import { Event, trackEvent } from "@/lib/events"
-import { cn } from "@/lib/utils"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/registry/elevenlabs-ui/ui/tooltip"
+import { Event, trackEvent } from "@/lib/events";
+import { cn } from "@/lib/utils";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/registry/elevenlabs-ui/ui/tooltip";
 
 export function copyToClipboardWithMeta(value: string, event?: Event) {
-  navigator.clipboard.writeText(value)
+  navigator.clipboard.writeText(value);
   if (event) {
-    trackEvent(event)
+    trackEvent(event);
   }
 }
 
@@ -26,17 +22,17 @@ export function CopyButton({
   event,
   ...props
 }: React.ComponentProps<typeof Button> & {
-  value: string
-  src?: string
-  event?: Event["name"]
+  value: string;
+  src?: string;
+  event?: Event["name"];
 }) {
-  const [hasCopied, setHasCopied] = React.useState(false)
+  const [hasCopied, setHasCopied] = React.useState(false);
 
   React.useEffect(() => {
     setTimeout(() => {
-      setHasCopied(false)
-    }, 2000)
-  }, [])
+      setHasCopied(false);
+    }, 2000);
+  }, []);
 
   return (
     <Tooltip>
@@ -47,7 +43,7 @@ export function CopyButton({
           variant={variant}
           className={cn(
             "bg-code absolute top-3 right-2 z-10 size-7 hover:opacity-100 focus-visible:opacity-100",
-            className
+            className,
           )}
           onClick={() => {
             copyToClipboardWithMeta(
@@ -59,9 +55,9 @@ export function CopyButton({
                       code: value,
                     },
                   }
-                : undefined
-            )
-            setHasCopied(true)
+                : undefined,
+            );
+            setHasCopied(true);
           }}
           {...props}
         >
@@ -69,9 +65,7 @@ export function CopyButton({
           {hasCopied ? <CheckIcon /> : <ClipboardIcon />}
         </Button>
       </TooltipTrigger>
-      <TooltipContent>
-        {hasCopied ? "Copied" : "Copy to Clipboard"}
-      </TooltipContent>
+      <TooltipContent>{hasCopied ? "Copied" : "Copy to Clipboard"}</TooltipContent>
     </Tooltip>
-  )
+  );
 }

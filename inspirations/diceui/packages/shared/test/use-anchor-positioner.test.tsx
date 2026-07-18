@@ -19,21 +19,15 @@ function TestPopover({
   const [open, setOpen] = React.useState(defaultOpen);
   const anchorRef = React.useRef<HTMLButtonElement>(null);
 
-  const {
-    refs,
-    floatingStyles,
-    getFloatingProps,
-    arrowStyles,
-    onArrowChange,
-    placement,
-  } = useAnchorPositioner({
-    open,
-    onOpenChange: setOpen,
-    anchorRef,
-    side,
-    align,
-    disableArrow: false,
-  });
+  const { refs, floatingStyles, getFloatingProps, arrowStyles, onArrowChange, placement } =
+    useAnchorPositioner({
+      open,
+      onOpenChange: setOpen,
+      anchorRef,
+      side,
+      align,
+      disableArrow: false,
+    });
 
   const arrowRef = React.useRef<HTMLDivElement>(null);
 
@@ -46,11 +40,7 @@ function TestPopover({
 
   return (
     <>
-      <button
-        ref={anchorRef}
-        onClick={() => setOpen(!open)}
-        data-testid="anchor"
-      >
+      <button ref={anchorRef} onClick={() => setOpen(!open)} data-testid="anchor">
         Toggle
       </button>
       {open && (

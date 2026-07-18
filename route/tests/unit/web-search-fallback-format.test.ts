@@ -34,7 +34,7 @@ test("#2390 web_search fallback is FLAT for Responses API target", () => {
   assert.equal(
     injected.function,
     undefined,
-    "Responses API tool must not be nested under .function"
+    "Responses API tool must not be nested under .function",
   );
   assert.ok(injected.parameters, "flat tool keeps top-level parameters");
 });
@@ -54,14 +54,14 @@ test("#2390 web_search fallback stays NESTED for Chat Completions target", () =>
   assert.equal(
     injected.name,
     undefined,
-    "Chat Completions tool must not expose a flat top-level name"
+    "Chat Completions tool must not expose a flat top-level name",
   );
 });
 
 test("#2390 tool_choice matches the injected tool shape per target format", () => {
   const responses = prepareWebSearchFallbackBody(
     { ...makeBody(), tool_choice: { type: "web_search" } },
-    { targetFormat: "openai-responses", nativeCodexPassthrough: false }
+    { targetFormat: "openai-responses", nativeCodexPassthrough: false },
   );
   const rChoice = responses.body.tool_choice as Record<string, unknown>;
   assert.equal(rChoice.name, OMNIROUTE_WEB_SEARCH_FALLBACK_TOOL_NAME);
@@ -69,7 +69,7 @@ test("#2390 tool_choice matches the injected tool shape per target format", () =
 
   const chat = prepareWebSearchFallbackBody(
     { ...makeBody(), tool_choice: { type: "web_search" } },
-    { targetFormat: "openai", nativeCodexPassthrough: false }
+    { targetFormat: "openai", nativeCodexPassthrough: false },
   );
   const cChoice = chat.body.tool_choice as Record<string, unknown>;
   const cFn = cChoice.function as Record<string, unknown> | undefined;
@@ -86,7 +86,7 @@ test("bypass predicate: true for native Codex passthrough", () => {
       targetFormat: "openai-responses",
       nativeCodexPassthrough: true,
     }),
-    true
+    true,
   );
 });
 
@@ -98,7 +98,7 @@ test("bypass predicate: true for Gemini target", () => {
       targetFormat: "gemini",
       nativeCodexPassthrough: false,
     }),
-    true
+    true,
   );
 });
 
@@ -110,7 +110,7 @@ test("bypass predicate: true for Claude -> Claude passthrough", () => {
       targetFormat: "claude",
       nativeCodexPassthrough: false,
     }),
-    true
+    true,
   );
 });
 
@@ -128,7 +128,7 @@ test("bypass predicate: false for Claude -> Claude when provider lacks Anthropic
       targetFormat: "claude",
       nativeCodexPassthrough: false,
     }),
-    false
+    false,
   );
 });
 
@@ -140,7 +140,7 @@ test("bypass predicate: still true for Claude -> Claude on a real Claude provide
       targetFormat: "claude",
       nativeCodexPassthrough: false,
     }),
-    true
+    true,
   );
 });
 
@@ -152,7 +152,7 @@ test("bypass predicate: false for standard OpenAI -> OpenAI", () => {
       targetFormat: "openai",
       nativeCodexPassthrough: false,
     }),
-    false
+    false,
   );
 });
 
@@ -167,7 +167,7 @@ test("bypass predicate: false when only the target is Claude (non-native tool mu
       targetFormat: "claude",
       nativeCodexPassthrough: false,
     }),
-    false
+    false,
   );
 });
 
@@ -179,7 +179,7 @@ test("bypass predicate: false when only the source is Claude", () => {
       targetFormat: "openai",
       nativeCodexPassthrough: false,
     }),
-    false
+    false,
   );
 });
 
@@ -268,7 +268,7 @@ test("#3384 interceptSearchOverride=true forces interception even on the Claude-
       interceptSearchOverride: true,
     }),
     false,
-    "explicit interceptSearch:true must NOT bypass, overriding the native Claude passthrough"
+    "explicit interceptSearch:true must NOT bypass, overriding the native Claude passthrough",
   );
 });
 
@@ -282,7 +282,7 @@ test("#3384 interceptSearchOverride=false forces native passthrough even for a s
       interceptSearchOverride: false,
     }),
     true,
-    "explicit interceptSearch:false must bypass even though OpenAI->OpenAI has no native default bypass"
+    "explicit interceptSearch:false must bypass even though OpenAI->OpenAI has no native default bypass",
   );
 });
 
@@ -296,7 +296,7 @@ test("#3384 interceptSearchOverride=undefined falls through to the existing nati
       interceptSearchOverride: undefined,
     }),
     true,
-    "no override configured — default Claude->Claude bypass still applies"
+    "no override configured — default Claude->Claude bypass still applies",
   );
 });
 

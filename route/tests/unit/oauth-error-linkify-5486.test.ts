@@ -40,7 +40,7 @@ test("#5486 (hardening) only ever exposes http(s) hrefs — no javascript:/data:
   // plain text. Regression guard for the CodeQL js/xss + url-redirection sink on the <a href>.
   const segs = linkifyText(
     "run javascript:alert(document.cookie) or data:text/html,alert(1) " +
-      "but https://safe.example.com/ok is fine"
+      "but https://safe.example.com/ok is fine",
   );
   const hrefs = segs.filter((s) => s.href).map((s) => s.href as string);
   assert.deepEqual(hrefs, ["https://safe.example.com/ok"], "only the http(s) URL is a link");

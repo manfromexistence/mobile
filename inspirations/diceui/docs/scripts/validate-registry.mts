@@ -22,10 +22,7 @@ async function main() {
   let hasErrors = false;
 
   for (const styleName of getStyleNames()) {
-    const registryFile = path.join(
-      process.cwd(),
-      `public/r/styles/${styleName}/registry.json`,
-    );
+    const registryFile = path.join(process.cwd(), `public/r/styles/${styleName}/registry.json`);
 
     console.log(`🔍 Validating ${styleName}/registry.json...`);
 

@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiResponsesToOpenAIRequest, openaiToOpenAIResponsesRequest } =
-  await import("../../open-sse/translator/request/openai-responses.ts");
+const { openaiResponsesToOpenAIRequest, openaiToOpenAIResponsesRequest } = await import(
+  "../../open-sse/translator/request/openai-responses.ts"
+);
 
 test("Responses -> Chat converts instructions, inputs, function calls, outputs, tools and tool_choice", () => {
   const result = openaiResponsesToOpenAIRequest(
@@ -42,7 +43,7 @@ test("Responses -> Chat converts instructions, inputs, function calls, outputs, 
       tool_choice: { type: "function", name: "read_file" },
     },
     false,
-    null
+    null,
   );
 
   assert.deepEqual((result as any).messages, [
@@ -97,7 +98,7 @@ test("Responses -> Chat filters orphan tool outputs and supports role-based mess
       ],
     },
     false,
-    null
+    null,
   );
 
   assert.equal((result as any).messages.length, 3);
@@ -122,9 +123,9 @@ test("Responses -> Chat rejects unsupported built-in tools (non-web_search)", ()
           tools: [{ type: "file_search", name: "search" }],
         },
         false,
-        null
+        null,
       ),
-    (error: any) => error.statusCode === 400 && error.errorType === "unsupported_feature"
+    (error: any) => error.statusCode === 400 && error.errorType === "unsupported_feature",
   );
 });
 
@@ -138,7 +139,7 @@ test("Responses -> Chat passes through web_search_preview tool (web_search famil
       tools: [{ type: "web_search_preview", name: "search" }],
     },
     false,
-    null
+    null,
   ) as Record<string, unknown>;
 
   assert.ok(Array.isArray(result.tools), "tools array must be present");
@@ -161,7 +162,7 @@ test("Responses -> Chat strips background flag and degrades to synchronous execu
         background: true,
       },
       true,
-      { provider: "codex" }
+      { provider: "codex" },
     );
     const r = result as Record<string, unknown>;
     assert.equal(r.background, undefined, "background flag must be stripped from output");
@@ -169,7 +170,7 @@ test("Responses -> Chat strips background flag and degrades to synchronous execu
     assert.equal((r.messages as unknown[]).length, 1, "user message must be preserved");
     assert.ok(
       warnLog.some((m) => m.startsWith("BACKGROUND_DEGRADE provider=codex model=gpt-5.5")),
-      "BACKGROUND_DEGRADE warning log must be emitted when background=true"
+      "BACKGROUND_DEGRADE warning log must be emitted when background=true",
     );
   } finally {
     console.warn = originalWarn;
@@ -190,7 +191,7 @@ test("Responses -> Chat passes through when background flag is unset or false (n
       "gpt-5.5",
       { input: [{ role: "user", content: [{ type: "input_text", text: "hi" }] }] },
       true,
-      { provider: "codex" }
+      { provider: "codex" },
     ) as Record<string, unknown>;
     assert.equal(r1.background, undefined, "background must be absent on output (unset case)");
 
@@ -202,14 +203,14 @@ test("Responses -> Chat passes through when background flag is unset or false (n
         background: false,
       },
       true,
-      { provider: "codex" }
+      { provider: "codex" },
     ) as Record<string, unknown>;
     assert.equal(r2.background, undefined, "background must be stripped on output (false case)");
 
     assert.equal(
       warnLog.filter((m) => m.startsWith("BACKGROUND_DEGRADE")).length,
       0,
-      "BACKGROUND_DEGRADE must NOT be emitted for unset or false values"
+      "BACKGROUND_DEGRADE must NOT be emitted for unset or false values",
     );
   } finally {
     console.warn = originalWarn;
@@ -226,13 +227,13 @@ test("Responses -> Chat strips safety_identifier (LobeHub #2770)", () => {
       safety_identifier: "sid-xyz",
     },
     false,
-    null
+    null,
   ) as Record<string, unknown>;
 
   assert.equal(
     result.safety_identifier,
     undefined,
-    "safety_identifier must be stripped before forwarding to Chat Completions"
+    "safety_identifier must be stripped before forwarding to Chat Completions",
   );
   assert.ok(Array.isArray(result.messages), "translation must still produce messages");
 });
@@ -248,13 +249,13 @@ test("Responses -> Chat strips client_metadata (Mistral 422 fix)", () => {
       client_metadata: { session_id: "abc123", foo: "bar" },
     },
     false,
-    null
+    null,
   ) as Record<string, unknown>;
 
   assert.equal(
     result.client_metadata,
     undefined,
-    "client_metadata must be stripped before forwarding to Chat Completions"
+    "client_metadata must be stripped before forwarding to Chat Completions",
   );
   assert.ok(Array.isArray(result.messages), "translation must still produce messages");
   assert.equal((result.messages as unknown[]).length, 1, "user message must be preserved");
@@ -280,7 +281,7 @@ test("Chat -> Responses clamps call_id to 64 chars and keeps the pair matched (p
       ],
     },
     false,
-    null
+    null,
   ) as any;
 
   const input = result.input as Array<Record<string, any>>;
@@ -292,7 +293,7 @@ test("Chat -> Responses clamps call_id to 64 chars and keeps the pair matched (p
   assert.equal(
     fnOut.call_id,
     fnCall.call_id,
-    "output call_id must match the clamped function_call id"
+    "output call_id must match the clamped function_call id",
   );
 });
 
@@ -344,7 +345,7 @@ test("Chat -> Responses converts messages, tool calls, tool outputs, tools and p
       top_p: 0.9,
     },
     false,
-    null
+    null,
   );
 
   assert.equal((result as any).instructions, "Rules");
@@ -416,7 +417,7 @@ test("Chat -> Responses converts json_schema response_format to text.format", ()
       },
     },
     false,
-    null
+    null,
   ) as any;
 
   assert.deepEqual(result.text, {
@@ -446,7 +447,7 @@ test("Chat -> Responses uses response_format over nonstandard chat text.format",
       },
     },
     false,
-    null
+    null,
   ) as any;
 
   assert.deepEqual(result.text, {
@@ -462,7 +463,7 @@ test("Chat -> Responses ignores nonstandard chat text.format without response_fo
       text: { format: { type: "json_schema", name: "nonstandard", schema: { type: "object" } } },
     },
     false,
-    null
+    null,
   ) as any;
 
   assert.equal(result.text, undefined);
@@ -484,7 +485,7 @@ test("Responses round-trip preserves store and previous_response_id when opt-in 
       store: true,
     },
     false,
-    credentials
+    credentials,
   );
 
   const result = openaiToOpenAIResponsesRequest("gpt-4o", chatBody, false, credentials);
@@ -509,7 +510,7 @@ test("Chat -> Responses converts assistant image_url history parts to output_tex
       ],
     },
     true,
-    null
+    null,
   );
 
   assert.deepEqual((result as any).input, [
@@ -535,7 +536,7 @@ test("Chat -> Responses preserves prompt_cache_key and session affinity fields",
       conversation_id: "conv-123",
     },
     false,
-    { providerSpecificData: { openaiStoreEnabled: true } }
+    { providerSpecificData: { openaiStoreEnabled: true } },
   );
 
   (assert as any).equal((result as any).prompt_cache_key, "cache-key-1");
@@ -552,7 +553,7 @@ test("Chat -> Responses preserves explicit reasoning objects", () => {
       reasoning: { effort: "low" },
     },
     false,
-    null
+    null,
   );
 
   assert.deepEqual((result as any).reasoning, { effort: "low" });
@@ -568,7 +569,7 @@ test("Chat -> Responses propagates include so upstream streams the reasoning sum
       include: ["reasoning.encrypted_content"],
     },
     false,
-    null
+    null,
   );
 
   assert.deepEqual((result as any).include, ["reasoning.encrypted_content"]);
@@ -582,7 +583,7 @@ test("Chat -> Responses does not inject include when caller did not set one", ()
       reasoning: { effort: "high" },
     },
     false,
-    null
+    null,
   );
 
   assert.equal((result as any).include, undefined);
@@ -596,7 +597,7 @@ test("Chat -> Responses maps reasoning_effort into Responses reasoning", () => {
       reasoning_effort: "low",
     },
     false,
-    null
+    null,
   );
 
   // Effort-only chat requests now default `summary: "auto"` + the encrypted
@@ -616,7 +617,7 @@ test("Chat -> Responses does not default a reasoning summary for reasoning_effor
       reasoning_effort: "none",
     },
     false,
-    null
+    null,
   );
 
   const record = result as Record<string, unknown>;
@@ -635,7 +636,7 @@ test("Chat -> Responses normalizes reasoning_effort max to xhigh", () => {
       reasoning_effort: "max",
     },
     false,
-    null
+    null,
   );
 
   assert.deepEqual((result as any).reasoning, { effort: "xhigh", summary: "auto" });
@@ -663,21 +664,21 @@ test("Chat -> Responses filters orphan function_call_output items and leaves emp
       ],
     },
     false,
-    null
+    null,
   );
 
   assert.equal((result as any).instructions, "");
   assert.equal(
     (result as any).input.some((item) => item.call_id === "orphan"),
-    false
+    false,
   );
   assert.equal(
     (result as any).input.filter((item) => item.type === "function_call_output").length,
-    1
+    1,
   );
   assert.equal(
     (result as any).input.find((item) => item.type === "function_call_output").call_id,
-    "call_2"
+    "call_2",
   );
 });
 
@@ -689,7 +690,7 @@ test("Chat -> Responses maps max_completion_tokens to max_output_tokens", () => 
       max_completion_tokens: 2048,
     },
     false,
-    null
+    null,
   );
 
   (assert as any).equal((result as any).max_output_tokens, 2048);
@@ -705,7 +706,7 @@ test("Chat -> Responses maps legacy max_tokens to max_output_tokens when max_com
       max_tokens: 512,
     },
     false,
-    null
+    null,
   );
 
   assert.equal((result as any).max_output_tokens, 512);
@@ -721,7 +722,7 @@ test("Chat -> Responses prefers max_completion_tokens over max_tokens when both 
       max_completion_tokens: 4096,
     },
     false,
-    null
+    null,
   );
 
   (assert as any).equal((result as any).max_output_tokens, 4096);
@@ -740,7 +741,7 @@ test("Responses -> Chat drops `reasoning` and promotes effort to reasoning_effor
       reasoning: { effort: "high" },
     },
     true,
-    null
+    null,
   ) as Record<string, unknown>;
 
   assert.equal(result.reasoning, undefined);
@@ -755,7 +756,7 @@ test("Responses -> Chat promotes reasoning.effort to reasoning_effort when _copi
       reasoning: { effort: "high" },
     },
     true,
-    { _copilotClient: true }
+    { _copilotClient: true },
   ) as Record<string, unknown>;
 
   assert.equal(result.reasoning, undefined);
@@ -770,7 +771,7 @@ test("Responses -> Chat normalizes Copilot reasoning.effort=max to xhigh", () =>
       reasoning: { effort: "max" },
     },
     true,
-    { _copilotClient: true }
+    { _copilotClient: true },
   ) as Record<string, unknown>;
 
   assert.equal(result.reasoning_effort, "xhigh");
@@ -785,7 +786,7 @@ test("Responses -> Chat keeps an explicit reasoning_effort over reasoning.effort
       reasoning_effort: "high",
     },
     true,
-    { _copilotClient: true }
+    { _copilotClient: true },
   ) as Record<string, unknown>;
 
   assert.equal(result.reasoning_effort, "high");
@@ -796,7 +797,7 @@ test("Responses -> Chat ignores Copilot marker when reasoning field is absent", 
     "claude-opus-4-7",
     { input: [{ role: "user", content: [{ type: "input_text", text: "hi" }] }] },
     true,
-    { _copilotClient: true }
+    { _copilotClient: true },
   ) as Record<string, unknown>;
 
   assert.equal(result.reasoning_effort, undefined);
@@ -814,8 +815,8 @@ test("Responses -> Chat: web_search_20250305 tool does not throw (issue #2695)",
         tools: [{ type: "web_search_20250305" }],
       },
       false,
-      null
-    )
+      null,
+    ),
   );
 });
 
@@ -827,7 +828,7 @@ test("Responses -> Chat: web_search_20250305 tool is preserved in output tools a
       tools: [{ type: "web_search_20250305" }],
     },
     false,
-    null
+    null,
   ) as Record<string, unknown>;
 
   const tools = result.tools as any[];
@@ -846,8 +847,8 @@ test("Responses -> Chat: plain web_search tool does not throw", () => {
         tools: [{ type: "web_search" }],
       },
       false,
-      null
-    )
+      null,
+    ),
   );
 });
 
@@ -866,7 +867,7 @@ test("Responses -> Chat: function tool still translates correctly (no regression
       ],
     },
     false,
-    null
+    null,
   ) as Record<string, unknown>;
 
   const tools = result.tools as any[];
@@ -886,9 +887,9 @@ test("Responses -> Chat: unknown tool type still throws unsupported_feature (no 
           tools: [{ type: "unknown_tool_xyz" }],
         },
         false,
-        null
+        null,
       ),
-    (error: any) => error.statusCode === 400 && error.errorType === "unsupported_feature"
+    (error: any) => error.statusCode === 400 && error.errorType === "unsupported_feature",
   );
 });
 
@@ -905,8 +906,8 @@ test("Responses -> Chat: tool_search does not throw (issue #2766)", () => {
         tools: [{ type: "tool_search", name: "search" }],
       },
       false,
-      null
-    )
+      null,
+    ),
   );
 });
 
@@ -928,7 +929,7 @@ test("Responses -> Chat: tool_search is stripped from output tools array (issue 
       ],
     },
     false,
-    null
+    null,
   ) as Record<string, unknown>;
 
   const tools = result.tools as any[];
@@ -936,7 +937,7 @@ test("Responses -> Chat: tool_search is stripped from output tools array (issue 
   assert.equal(
     tools.some((t) => t.type === "tool_search"),
     false,
-    "tool_search must be stripped from output"
+    "tool_search must be stripped from output",
   );
   assert.equal(tools.length, 1, "only the function tool must remain");
   assert.equal(tools[0].type, "function");
@@ -957,8 +958,8 @@ test("Responses -> Chat: image_generation does not throw (issue #2950)", () => {
         tools: [{ type: "image_generation", output_format: "png" }],
       },
       false,
-      null
-    )
+      null,
+    ),
   );
 });
 
@@ -978,7 +979,7 @@ test("Responses -> Chat: image_generation is stripped from output tools array (i
       ],
     },
     false,
-    null
+    null,
   ) as Record<string, unknown>;
 
   const tools = result.tools as any[];
@@ -986,7 +987,7 @@ test("Responses -> Chat: image_generation is stripped from output tools array (i
   assert.equal(
     tools.some((t) => t.type === "image_generation"),
     false,
-    "image_generation must be stripped from output"
+    "image_generation must be stripped from output",
   );
   assert.equal(tools.length, 1, "only the function tool must remain");
   assert.equal(tools[0].type, "function");
@@ -1004,8 +1005,8 @@ test("Responses -> Chat: local_shell does not throw", () => {
         tools: [{ type: "local_shell" }],
       },
       false,
-      null
-    )
+      null,
+    ),
   );
 });
 
@@ -1017,7 +1018,7 @@ test("Responses -> Chat: local_shell maps to a shell function tool", () => {
       tools: [{ type: "local_shell" }],
     },
     false,
-    null
+    null,
   ) as Record<string, unknown>;
 
   const tools = result.tools as any[];
@@ -1038,7 +1039,7 @@ test("Responses -> Chat: local_shell tool_choice maps to shell function choice",
       tool_choice: { type: "local_shell" },
     },
     false,
-    null
+    null,
   ) as Record<string, unknown>;
 
   assert.deepEqual(result.tool_choice, { type: "function", function: { name: "shell" } });
@@ -1062,7 +1063,7 @@ test("Chat -> Responses: shell function stays caller-side and does not leak loca
       tool_choice: { type: "function", function: { name: "shell" } },
     },
     false,
-    null
+    null,
   ) as Record<string, unknown>;
 
   assert.equal((result.tools as any[])[0].type, "function");
@@ -1085,20 +1086,20 @@ test("Responses -> Chat: function_call with empty call_id is dropped together wi
       ],
     },
     false,
-    null
+    null,
   ) as Record<string, unknown>;
 
   const messages = result.messages as any[];
   assert.equal(
     messages.some((m) => m.role === "tool"),
     false,
-    "tool result with empty tool_call_id must be dropped"
+    "tool result with empty tool_call_id must be dropped",
   );
   const danglingEmptyId = messages.some(
     (m) =>
       m.role === "assistant" &&
       Array.isArray(m.tool_calls) &&
-      m.tool_calls.some((tc: any) => !tc.id)
+      m.tool_calls.some((tc: any) => !tc.id),
   );
   assert.equal(danglingEmptyId, false, "assistant tool_call with empty id must be dropped");
 });
@@ -1113,14 +1114,14 @@ test("Responses -> Chat: function_call with empty name leaves no orphan tool out
       ],
     },
     false,
-    null
+    null,
   ) as Record<string, unknown>;
 
   const messages = result.messages as any[];
   assert.equal(
     messages.some((m) => m.role === "tool"),
     false,
-    "an output whose function_call was skipped (empty name) must not survive as an orphan"
+    "an output whose function_call was skipped (empty name) must not survive as an orphan",
   );
 });
 
@@ -1134,7 +1135,7 @@ test("Responses -> Chat: a valid function_call/output pair is preserved (issue #
       ],
     },
     false,
-    null
+    null,
   ) as Record<string, unknown>;
 
   const messages = result.messages as any[];
@@ -1166,7 +1167,7 @@ test("Chat -> Responses converts AI SDK image content part to input_image", () =
       ],
     },
     true,
-    {}
+    {},
   ) as Record<string, unknown>;
 
   const input = result.input as any[];
@@ -1182,7 +1183,7 @@ test("Chat -> Responses defaults AI SDK image detail to auto", () => {
     "gpt-5.2",
     { messages: [{ role: "user", content: [{ type: "image", image: imageUrl }] }] },
     true,
-    {}
+    {},
   ) as Record<string, unknown>;
 
   const input = result.input as any[];

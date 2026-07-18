@@ -79,13 +79,13 @@ test("stainless timeout derives from fetch timeout and rounds up to whole second
     runtimeTimeouts.getStainlessTimeoutSeconds({
       REQUEST_TIMEOUT_MS: "1200000",
     }),
-    1200
+    1200,
   );
   assert.equal(
     runtimeTimeouts.getStainlessTimeoutSeconds({
       FETCH_TIMEOUT_MS: "600001",
     }),
-    601
+    601,
   );
 });
 
@@ -117,12 +117,12 @@ test("readiness adaptive cap defaults to 180s and is env-overridable", () => {
   assert.equal(
     runtimeTimeouts.getUpstreamTimeoutConfig({ STREAM_READINESS_MAX_TIMEOUT_MS: "300000" })
       .streamReadinessMaxTimeoutMs,
-    300_000
+    300_000,
   );
   assert.equal(
     runtimeTimeouts.getUpstreamTimeoutConfig({ STREAM_READINESS_MAX_TIMEOUT_MS: "bad" })
       .streamReadinessMaxTimeoutMs,
-    180_000
+    180_000,
   );
 });
 
@@ -132,12 +132,12 @@ test("heartbeat interval default = 15s, env-overridable", () => {
   assert.equal(
     runtimeTimeouts.getUpstreamTimeoutConfig({ SSE_HEARTBEAT_INTERVAL_MS: "8000" })
       .sseHeartbeatIntervalMs,
-    8_000
+    8_000,
   );
   assert.equal(
     runtimeTimeouts.getUpstreamTimeoutConfig({ SSE_HEARTBEAT_INTERVAL_MS: "0" })
       .sseHeartbeatIntervalMs,
-    0
+    0,
   );
 });
 

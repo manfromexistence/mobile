@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/Galaxy/Galaxy.jsx?raw';
-import css from '@content/Backgrounds/Galaxy/Galaxy.css?raw';
-import tailwind from '@tailwind/Backgrounds/Galaxy/Galaxy.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/Galaxy/Galaxy.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/Galaxy/Galaxy.tsx?raw';
+import code from "@content/Backgrounds/Galaxy/Galaxy.jsx?raw";
+import css from "@content/Backgrounds/Galaxy/Galaxy.css?raw";
+import tailwind from "@tailwind/Backgrounds/Galaxy/Galaxy.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/Galaxy/Galaxy.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/Galaxy/Galaxy.tsx?raw";
 
 export const galaxy = {
   dependencies: `ogl`,
@@ -28,5 +28,5 @@ export const galaxy = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

@@ -53,7 +53,7 @@ test("updateResilienceSchema validates provider breaker degradation threshold ra
         oauth: { failureThreshold: 1000, degradationThreshold: 999 },
       },
     }).success,
-    true
+    true,
   );
 
   assert.equal(
@@ -62,7 +62,7 @@ test("updateResilienceSchema validates provider breaker degradation threshold ra
         oauth: { failureThreshold: 5, degradationThreshold: 5 },
       },
     }).success,
-    false
+    false,
   );
 
   assert.equal(
@@ -71,7 +71,7 @@ test("updateResilienceSchema validates provider breaker degradation threshold ra
         oauth: { failureThreshold: 1001, degradationThreshold: 999 },
       },
     }).success,
-    false
+    false,
   );
 });
 

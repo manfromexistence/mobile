@@ -1,8 +1,8 @@
-import code from '@content/TextAnimations/ScrollVelocity/ScrollVelocity.jsx?raw';
-import css from '@content/TextAnimations/ScrollVelocity/ScrollVelocity.css?raw';
-import tailwind from '@tailwind/TextAnimations/ScrollVelocity/ScrollVelocity.jsx?raw';
-import tsCode from '@ts-default/TextAnimations/ScrollVelocity/ScrollVelocity.tsx?raw';
-import tsTailwind from '@ts-tailwind/TextAnimations/ScrollVelocity/ScrollVelocity.tsx?raw';
+import code from "@content/TextAnimations/ScrollVelocity/ScrollVelocity.jsx?raw";
+import css from "@content/TextAnimations/ScrollVelocity/ScrollVelocity.css?raw";
+import tailwind from "@tailwind/TextAnimations/ScrollVelocity/ScrollVelocity.jsx?raw";
+import tsCode from "@ts-default/TextAnimations/ScrollVelocity/ScrollVelocity.tsx?raw";
+import tsTailwind from "@ts-tailwind/TextAnimations/ScrollVelocity/ScrollVelocity.tsx?raw";
 
 export const scrollVelocity = {
   dependencies: `motion`,
@@ -17,5 +17,5 @@ export const scrollVelocity = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

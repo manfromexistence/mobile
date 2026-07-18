@@ -31,7 +31,7 @@ test("translateRequest replays reasoning_content on plain xiaomi-mimo assistant 
     body,
     true,
     null,
-    "xiaomi-mimo"
+    "xiaomi-mimo",
   );
 
   const assistant = result.messages.find((m) => m.role === "assistant");
@@ -39,6 +39,6 @@ test("translateRequest replays reasoning_content on plain xiaomi-mimo assistant 
   assert.equal(
     typeof assistant.reasoning_content === "string" && assistant.reasoning_content.length > 0,
     true,
-    "plain xiaomi-mimo assistant turn must carry a non-empty reasoning_content"
+    "plain xiaomi-mimo assistant turn must carry a non-empty reasoning_content",
   );
 });

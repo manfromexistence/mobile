@@ -14,8 +14,9 @@ import assert from "node:assert/strict";
  *   - Anything else: falls back to global ERROR_RULES.
  */
 
-const { classifyError, checkFallbackError } =
-  await import("../../open-sse/services/accountFallback.ts");
+const { classifyError, checkFallbackError } = await import(
+  "../../open-sse/services/accountFallback.ts"
+);
 const { RateLimitReason } = await import("../../open-sse/config/constants.ts");
 
 test("S1: Opencode 429 with x-ratelimit-remaining-requests=0 → QUOTA_EXHAUSTED, not RATE_LIMIT_EXCEEDED", () => {
@@ -31,7 +32,7 @@ test("S1: Opencode 429 with x-ratelimit-remaining-requests=0 → QUOTA_EXHAUSTED
   assert.equal(
     reason,
     RateLimitReason.QUOTA_EXHAUSTED,
-    "Opencode account-wide quota exhaustion must classify as QUOTA_EXHAUSTED so the connection is locked, not the model"
+    "Opencode account-wide quota exhaustion must classify as QUOTA_EXHAUSTED so the connection is locked, not the model",
   );
 });
 
@@ -40,14 +41,15 @@ test("S2: Minimax 429 with x-model-quota-remaining header → QUOTA_EXHAUSTED wi
   // signals ONLY that model is locked; other models on the same connection must
   // remain available. classifyError returns the reason; the caller (combo.ts)
   // reads the scope from providerRuleMatch to decide lockModel vs updateProviderConnection.
-  const { providerRuleRegistry, getProviderErrorRuleMatch } =
-    await import("../../open-sse/config/providerErrorRules.ts");
+  const { providerRuleRegistry, getProviderErrorRuleMatch } = await import(
+    "../../open-sse/config/providerErrorRules.ts"
+  );
 
   // The registry must be loaded for minimax
   const minimaxRules = providerRuleRegistry.get("minimax");
   assert.ok(
     minimaxRules && minimaxRules.length > 0,
-    "minimax must be registered in the provider rule registry"
+    "minimax must be registered in the provider rule registry",
   );
 
   // The match function returns { reason, scope } for the given provider + status + headers
@@ -59,7 +61,7 @@ test("S2: Minimax 429 with x-model-quota-remaining header → QUOTA_EXHAUSTED wi
   assert.equal(
     match.scope,
     "model",
-    "Minimax per-model quota must scope the lock to the model only"
+    "Minimax per-model quota must scope the lock to the model only",
   );
 });
 
@@ -95,7 +97,7 @@ test("S3: Regression — provider with no rules falls back to global ERROR_RULES
   assert.equal(
     reason,
     RateLimitReason.RATE_LIMIT_EXCEEDED,
-    "Unknown providers must fall through to global rules without modification"
+    "Unknown providers must fall through to global rules without modification",
   );
 
   // And without any context at all (old call sites), still works.
@@ -120,17 +122,17 @@ test("S4: End-to-end — checkFallbackError forwards provider+headers to classif
     "opencode", // provider
     { "x-ratelimit-remaining-requests": "0" }, // headers
     null, // profileOverride
-    null // structuredError
+    null, // structuredError
   );
 
   assert.equal(
     result.reason,
     RateLimitReason.QUOTA_EXHAUSTED,
-    "checkFallbackError must forward provider+headers to classifyError so the Opencode quota rule fires"
+    "checkFallbackError must forward provider+headers to classifyError so the Opencode quota rule fires",
   );
   assert.equal(
     result.shouldFallback,
     true,
-    "quota_exhausted must trigger fallback to the next provider"
+    "quota_exhausted must trigger fallback to the next provider",
   );
 });

@@ -106,9 +106,7 @@ export function DestinationRow({
 
   useEffect(() => {
     if (!show) return;
-    requestAnimationFrame(() =>
-      inputRef.current?.focus({ preventScroll: true }),
-    );
+    requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
   }, [show]);
 
   return (
@@ -149,9 +147,7 @@ export function DestinationRow({
               <div
                 className={cn(
                   "flex items-center gap-2 rounded-lg border px-2.5 py-2 transition-colors",
-                  hasAddress && !valid
-                    ? "border-destructive/40"
-                    : "border-border",
+                  hasAddress && !valid ? "border-destructive/40" : "border-border",
                 )}
               >
                 <input

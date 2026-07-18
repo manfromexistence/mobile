@@ -31,7 +31,11 @@ beforeEach(() => {
       // test): a non-ok GET leaves dbSettings null, so the `!dbSettingsLoading &&
       // dbSettings` form block is skipped while the Maintenance card stays rendered.
       if (method === "GET" && /\/api\/settings\/database$/.test(url)) {
-        return Promise.resolve({ ok: false, status: 404, json: async () => ({}) } as unknown as Response);
+        return Promise.resolve({
+          ok: false,
+          status: 404,
+          json: async () => ({}),
+        } as unknown as Response);
       }
       return Promise.resolve({
         ok: true,
@@ -39,7 +43,7 @@ beforeEach(() => {
         // Permissive body covering every loader; vacuum returns a success payload.
         json: async () => ({ success: true, message: "VACUUM completed", backups: [] }),
       } as unknown as Response);
-    })
+    }),
   );
   container = document.createElement("div");
   document.body.appendChild(container);
@@ -64,7 +68,7 @@ describe("SystemStorageTab — Manual VACUUM button (#3973)", () => {
     });
 
     const vacuumButton = Array.from(container.querySelectorAll("button")).find((b) =>
-      (b.textContent || "").includes("Manual VACUUM")
+      (b.textContent || "").includes("Manual VACUUM"),
     );
     expect(vacuumButton, "Manual VACUUM button should be rendered").toBeTruthy();
 

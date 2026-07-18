@@ -6,8 +6,7 @@
 import * as React from "react";
 import type { RegistryItem } from "shadcn/schema";
 
-interface RegistryStyleItem
-  extends Pick<RegistryItem, "name" | "title" | "description"> {
+interface RegistryStyleItem extends Pick<RegistryItem, "name" | "title" | "description"> {
   icon: React.ReactNode;
 }
 

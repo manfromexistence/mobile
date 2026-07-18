@@ -1,29 +1,21 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import type { SubmitHandler } from "react-hook-form"
-import { Controller, useForm } from "react-hook-form"
-import { toast } from "sonner"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { SubmitHandler } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
-import { Button } from "@/components/ui/button"
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
-import type { WheelPickerOption } from "@/registry/transformed/components/wheel-picker"
-import {
-  WheelPicker,
-  WheelPickerWrapper,
-} from "@/registry/transformed/components/wheel-picker"
+import { Button } from "@/components/ui/button";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import type { WheelPickerOption } from "@/registry/transformed/components/wheel-picker";
+import { WheelPicker, WheelPickerWrapper } from "@/registry/transformed/components/wheel-picker";
 
 const formSchema = z.object({
   framework: z.string(),
-})
+});
 
-type FormSchema = z.infer<typeof formSchema>
+type FormSchema = z.infer<typeof formSchema>;
 
 export default function WheelPickerFormDemo() {
   const {
@@ -35,7 +27,7 @@ export default function WheelPickerFormDemo() {
     defaultValues: {
       framework: "nextjs",
     },
-  })
+  });
 
   const onSubmit: SubmitHandler<FormSchema> = (values) => {
     toast("You submitted the following values:", {
@@ -47,8 +39,8 @@ export default function WheelPickerFormDemo() {
       classNames: {
         content: "flex-1",
       },
-    })
-  }
+    });
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-56 max-w-full">
@@ -61,16 +53,10 @@ export default function WheelPickerFormDemo() {
               <FieldLabel>Framework</FieldLabel>
 
               <WheelPickerWrapper>
-                <WheelPicker
-                  options={options}
-                  value={field.value}
-                  onValueChange={field.onChange}
-                />
+                <WheelPicker options={options} value={field.value} onValueChange={field.onChange} />
               </WheelPickerWrapper>
 
-              {errors.framework && (
-                <FieldError>{errors.framework.message}</FieldError>
-              )}
+              {errors.framework && <FieldError>{errors.framework.message}</FieldError>}
             </Field>
           )}
         />
@@ -79,7 +65,7 @@ export default function WheelPickerFormDemo() {
         </Field>
       </FieldGroup>
     </form>
-  )
+  );
 }
 
 const options: WheelPickerOption[] = [
@@ -116,4 +102,4 @@ const options: WheelPickerOption[] = [
     label: "Gatsby",
     value: "gatsby",
   },
-]
+];

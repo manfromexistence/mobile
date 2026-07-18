@@ -1,16 +1,11 @@
-"use client"
+"use client";
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import { cn } from "@/lib/utils"
-import { voiceToSiteAction } from "@/registry/elevenlabs-ui/blocks/voice-nav-01/actions/voice-to-site"
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/registry/elevenlabs-ui/ui/card"
-import { VoiceButton } from "@/registry/elevenlabs-ui/ui/voice-button"
+import { cn } from "@/lib/utils";
+import { voiceToSiteAction } from "@/registry/elevenlabs-ui/blocks/voice-nav-01/actions/voice-to-site";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/registry/elevenlabs-ui/ui/card";
+import { VoiceButton } from "@/registry/elevenlabs-ui/ui/voice-button";
 
 const AUDIO_CONSTRAINTS: MediaStreamConstraints = {
   audio: {
@@ -18,112 +13,111 @@ const AUDIO_CONSTRAINTS: MediaStreamConstraints = {
     noiseSuppression: true,
     autoGainControl: true,
   },
-}
+};
 
-const SUPPORTED_MIME_TYPES = ["audio/webm;codecs=opus", "audio/webm"] as const
+const SUPPORTED_MIME_TYPES = ["audio/webm;codecs=opus", "audio/webm"] as const;
 
 function getMimeType(): string {
   for (const type of SUPPORTED_MIME_TYPES) {
     if (MediaRecorder.isTypeSupported(type)) {
-      return type
+      return type;
     }
   }
-  return "audio/webm"
+  return "audio/webm";
 }
 
 export default function Page() {
-  const [url, setUrl] = useState("https://elevenlabs.io/docs")
-  const [isRecording, setIsRecording] = useState(false)
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState(false)
+  const [url, setUrl] = useState("https://elevenlabs.io/docs");
+  const [isRecording, setIsRecording] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const audioChunksRef = useRef<Blob[]>([])
-  const streamRef = useRef<MediaStream | null>(null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
 
   const cleanupStream = useCallback(() => {
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop())
-      streamRef.current = null
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
     }
-  }, [])
+  }, []);
 
   const processAudio = useCallback(async (audioBlob: Blob) => {
-    setIsProcessing(true)
-    setError("")
-    setSuccess(false)
+    setIsProcessing(true);
+    setError("");
+    setSuccess(false);
 
     try {
       const audioFile = new File([audioBlob], "audio.webm", {
         type: audioBlob.type,
-      })
+      });
 
-      const result = await voiceToSiteAction(audioFile)
+      const result = await voiceToSiteAction(audioFile);
 
       if (result.data?.url) {
-        setUrl(result.data.url)
-        setSuccess(true)
+        setUrl(result.data.url);
+        setSuccess(true);
       }
     } catch (err) {
-      console.error("Voice input error:", err)
-      setError(err instanceof Error ? err.message : "Failed to process audio")
+      console.error("Voice input error:", err);
+      setError(err instanceof Error ? err.message : "Failed to process audio");
     } finally {
-      setIsProcessing(false)
+      setIsProcessing(false);
     }
-  }, [])
+  }, []);
 
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current?.state !== "inactive") {
-      mediaRecorderRef.current?.stop()
+      mediaRecorderRef.current?.stop();
     }
-    cleanupStream()
-    setIsRecording(false)
-  }, [cleanupStream])
+    cleanupStream();
+    setIsRecording(false);
+  }, [cleanupStream]);
 
   const startRecording = useCallback(async () => {
     try {
-      setError("")
-      audioChunksRef.current = []
+      setError("");
+      audioChunksRef.current = [];
 
-      const stream =
-        await navigator.mediaDevices.getUserMedia(AUDIO_CONSTRAINTS)
-      streamRef.current = stream
+      const stream = await navigator.mediaDevices.getUserMedia(AUDIO_CONSTRAINTS);
+      streamRef.current = stream;
 
-      const mimeType = getMimeType()
-      const mediaRecorder = new MediaRecorder(stream, { mimeType })
-      mediaRecorderRef.current = mediaRecorder
+      const mimeType = getMimeType();
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
+      mediaRecorderRef.current = mediaRecorder;
 
       mediaRecorder.ondataavailable = (event: BlobEvent) => {
         if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data)
+          audioChunksRef.current.push(event.data);
         }
-      }
+      };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType })
-        processAudio(audioBlob)
-      }
+        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+        processAudio(audioBlob);
+      };
 
-      mediaRecorder.start()
-      setIsRecording(true)
+      mediaRecorder.start();
+      setIsRecording(true);
     } catch (err) {
-      setError("Microphone permission denied")
-      console.error("Microphone error:", err)
+      setError("Microphone permission denied");
+      console.error("Microphone error:", err);
     }
-  }, [processAudio])
+  }, [processAudio]);
 
   const handleVoiceToggle = useCallback(() => {
     if (isRecording) {
-      stopRecording()
+      stopRecording();
     } else {
-      startRecording()
+      startRecording();
     }
-  }, [isRecording, startRecording, stopRecording])
+  }, [isRecording, startRecording, stopRecording]);
 
   useEffect(() => {
-    return cleanupStream
-  }, [cleanupStream])
+    return cleanupStream;
+  }, [cleanupStream]);
 
   const voiceState = isProcessing
     ? "processing"
@@ -133,7 +127,7 @@ export default function Page() {
         ? "success"
         : error
           ? "error"
-          : "idle"
+          : "idle";
 
   return (
     <div className="mx-auto w-full">
@@ -145,8 +139,8 @@ export default function Page() {
                 <div className="space-y-1">
                   <CardTitle>Voice Navigation</CardTitle>
                   <CardDescription>
-                    Navigate websites with your voice (e.g., &ldquo;Take me to
-                    the quickstart guide&rdquo;)
+                    Navigate websites with your voice (e.g., &ldquo;Take me to the quickstart
+                    guide&rdquo;)
                   </CardDescription>
                 </div>
                 <VoiceButton
@@ -172,5 +166,5 @@ export default function Page() {
         </div>
       </Card>
     </div>
-  )
+  );
 }

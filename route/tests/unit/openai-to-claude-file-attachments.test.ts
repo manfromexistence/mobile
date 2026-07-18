@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiToClaudeRequest } =
-  await import("../../open-sse/translator/request/openai-to-claude.ts");
+const { openaiToClaudeRequest } = await import(
+  "../../open-sse/translator/request/openai-to-claude.ts"
+);
 
 function userBlocks(model: string, content: unknown) {
   const translated = openaiToClaudeRequest(model, { messages: [{ role: "user", content }] }, false);
@@ -60,11 +61,11 @@ test("openaiToClaudeRequest skips a video file block (Claude has no native video
   const img = blocks.find((b) => b.type === "image");
   assert.ok(
     !doc && !img,
-    "a video file must not be mislabeled as a Claude document or image block"
+    "a video file must not be mislabeled as a Claude document or image block",
   );
   // the text part is still forwarded
   assert.ok(
     blocks.some((b) => b.type === "text"),
-    "the accompanying text part must still be forwarded"
+    "the accompanying text part must still be forwarded",
   );
 });

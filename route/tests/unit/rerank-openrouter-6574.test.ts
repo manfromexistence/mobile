@@ -27,6 +27,6 @@ test("#6574 getAllRerankModels lists openrouter reranker models", () => {
   const ids = getAllRerankModels().map((m) => m.id);
   assert.ok(
     ids.includes("openrouter/cohere/rerank-4-pro"),
-    `expected openrouter/cohere/rerank-4-pro in ${JSON.stringify(ids)}`
+    `expected openrouter/cohere/rerank-4-pro in ${JSON.stringify(ids)}`,
   );
 });

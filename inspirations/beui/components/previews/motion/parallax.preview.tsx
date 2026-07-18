@@ -43,11 +43,7 @@ export function ParallaxPreview() {
           </span>
         </Parallax>
 
-        <Parallax
-          container={containerRef}
-          speed={0.9}
-          className="absolute bottom-4 right-4"
-        >
+        <Parallax container={containerRef} speed={0.9} className="absolute bottom-4 right-4">
           {/* biome-ignore lint/performance/noImgElement: plain img keeps the copy-paste preview portable (no next/image host config). */}
           <img
             src="https://picsum.photos/seed/beui-avatar/120/120"

@@ -219,13 +219,13 @@ test("token refresh wrapper delegates provider-specific refresh helpers and form
       const generic = await tokenRefresh.refreshAccessToken(
         "custom-oauth-local-608",
         "refresh-generic",
-        {}
+        {},
       );
       const claude = await tokenRefresh.refreshClaudeOAuthToken("refresh-claude");
       const google = await tokenRefresh.refreshGoogleToken(
         "refresh-google",
         "override-client-id",
-        "override-client-secret"
+        "override-client-secret",
       );
       const qwen = await tokenRefresh.refreshQwenToken("refresh-qwen");
       const codex = await tokenRefresh.refreshCodexToken("refresh-codex");
@@ -271,7 +271,7 @@ test("token refresh wrapper delegates provider-specific refresh helpers and form
         refreshToken: "refresh-github",
       });
       assert.equal(allTokens.github.accessToken, "github-access");
-    }
+    },
   );
 
   assert.equal(calls.length >= 8, true);
@@ -320,7 +320,7 @@ test("OAuth refresh prefers connection proxy over provider proxy", async () => {
           access_token: "connection-proxy-access",
           refresh_token: "connection-proxy-refresh",
           expires_in: 1800,
-        })
+        }),
       );
     },
     async (tokenServer) => {
@@ -369,12 +369,12 @@ test("OAuth refresh prefers connection proxy over provider proxy", async () => {
                 await settingsDb.deleteProxyForLevel("provider", providerId);
                 await settingsDb.deleteProxyForLevel("key", (connection as any).id);
               }
-            }
+            },
           );
         },
-        { targetHost: tokenServer.host, targetPort: tokenServer.port }
+        { targetHost: tokenServer.host, targetPort: tokenServer.port },
       );
-    }
+    },
   );
 });
 
@@ -390,7 +390,7 @@ test("provider-specific refresh helper accepts connection proxy context", async 
           access_token: "claude-connection-proxy-access",
           refresh_token: "claude-connection-proxy-refresh",
           expires_in: 1200,
-        })
+        }),
       );
     },
     async (tokenServer) => {
@@ -416,7 +416,7 @@ test("provider-specific refresh helper accepts connection proxy context", async 
 
           const result = await tokenRefresh.refreshClaudeOAuthToken(
             "refresh-claude-via-account-proxy",
-            { connectionId }
+            { connectionId },
           );
 
           assert.equal(result.accessToken, "claude-connection-proxy-access");
@@ -429,7 +429,7 @@ test("provider-specific refresh helper accepts connection proxy context", async 
           OAUTH_ENDPOINTS.anthropic.token = originalAnthropicTokenUrl;
         }
       });
-    }
+    },
   );
 });
 
@@ -467,7 +467,7 @@ test("checkAndRefreshToken refreshes expiring OAuth access tokens and updates th
         assert.equal(stored.refreshToken, "claude-refresh-fresh");
         assert.equal(stored.expiresIn, 900);
         assert.equal(typeof stored.expiresAt, "string");
-      }
+      },
     );
   });
 });
@@ -508,7 +508,7 @@ test("checkAndRefreshToken refreshes expiring GitHub copilot tokens and syncs th
         assert.equal(refreshed.providerSpecificData.copilotToken, "copilot-fresh");
         assert.equal((stored as any).providerSpecificData.copilotToken, "copilot-fresh");
         assert.equal((stored as any).providerSpecificData.copilotTokenExpiresAt, 1_700_001_000);
-      }
+      },
     );
   });
 });
@@ -544,7 +544,7 @@ test("refreshGitHubAndCopilotTokens composes GitHub and Copilot refresh response
           copilotTokenExpiresAt: 1_700_001_500,
         },
       });
-    }
+    },
   );
 });
 
@@ -558,7 +558,7 @@ test("checkAndRefreshToken leaves credentials untouched when nothing is close to
     providerSpecificData: {
       copilotToken: "copilot-stable",
       copilotTokenExpiresAt: Math.floor(
-        (now + tokenRefresh.TOKEN_EXPIRY_BUFFER_MS + 60_000) / 1000
+        (now + tokenRefresh.TOKEN_EXPIRY_BUFFER_MS + 60_000) / 1000,
       ),
     },
   };
@@ -571,7 +571,7 @@ test("checkAndRefreshToken leaves credentials untouched when nothing is close to
       async () => {
         const refreshed = await tokenRefresh.checkAndRefreshToken("github", credentials);
         assert.deepEqual(refreshed, credentials);
-      }
+      },
     );
   });
 });
@@ -600,6 +600,6 @@ test("refreshGitHubAndCopilotTokens returns refreshed GitHub credentials when Co
         refreshToken: "github-only-refresh",
         expiresIn: 1200,
       });
-    }
+    },
   );
 });

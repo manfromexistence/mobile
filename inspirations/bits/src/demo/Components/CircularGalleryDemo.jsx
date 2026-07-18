@@ -1,27 +1,36 @@
-import { Box } from '@chakra-ui/react';
-import { useMemo } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
+import { Box } from "@chakra-ui/react";
+import { useMemo } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
 
-import CodeExample from '../../components/code/CodeExample';
-import Dependencies from '../../components/code/Dependencies';
-import Customize from '../../components/common/Preview/Customize';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSelect from '../../components/common/Preview/PreviewSelect';
-import PropTable from '../../components/common/Preview/PropTable';
-import useForceRerender from '../../hooks/useForceRerender';
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import CodeExample from "../../components/code/CodeExample";
+import Dependencies from "../../components/code/Dependencies";
+import Customize from "../../components/common/Preview/Customize";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSelect from "../../components/common/Preview/PreviewSelect";
+import PropTable from "../../components/common/Preview/PropTable";
+import useForceRerender from "../../hooks/useForceRerender";
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
-import { circularGallery } from '../../constants/code/Components/circularGalleryCode';
-import CircularGallery from '../../content/Components/CircularGallery/CircularGallery';
+import { circularGallery } from "../../constants/code/Components/circularGalleryCode";
+import CircularGallery from "../../content/Components/CircularGallery/CircularGallery";
 
 const FONT_OPTIONS = [
-  { label: 'Figtree (default)', value: '' },
-  { label: 'Orbitron', value: 'https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap' },
-  { label: 'Playfair Display', value: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap' },
-  { label: 'Pacifico', value: 'https://fonts.googleapis.com/css2?family=Pacifico&display=swap' },
-  { label: 'Bungee', value: 'https://fonts.googleapis.com/css2?family=Bungee&display=swap' },
-  { label: 'Roboto Mono', value: 'https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap' }
+  { label: "Figtree (default)", value: "" },
+  {
+    label: "Orbitron",
+    value: "https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap",
+  },
+  {
+    label: "Playfair Display",
+    value: "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap",
+  },
+  { label: "Pacifico", value: "https://fonts.googleapis.com/css2?family=Pacifico&display=swap" },
+  { label: "Bungee", value: "https://fonts.googleapis.com/css2?family=Bungee&display=swap" },
+  {
+    label: "Roboto Mono",
+    value: "https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap",
+  },
 ];
 
 const DEFAULT_PROPS = {
@@ -29,7 +38,7 @@ const DEFAULT_PROPS = {
   borderRadius: 0.05,
   scrollSpeed: 2,
   scrollEase: 0.05,
-  fontUrl: ''
+  fontUrl: "",
 };
 
 const CircularGalleryDemo = () => {
@@ -41,63 +50,70 @@ const CircularGalleryDemo = () => {
   const propData = useMemo(
     () => [
       {
-        name: 'items',
-        type: 'Array<{ image: string; text: string }>',
-        default: 'undefined',
-        description: 'List of items to display in the gallery. Each item should have an image URL and a text label.'
-      },
-      {
-        name: 'bend',
-        type: 'number',
-        default: '3',
+        name: "items",
+        type: "Array<{ image: string; text: string }>",
+        default: "undefined",
         description:
-          'Determines the curvature of the gallery layout. A negative value bends in one direction, a positive value in the opposite.'
+          "List of items to display in the gallery. Each item should have an image URL and a text label.",
       },
       {
-        name: 'textColor',
-        type: 'string',
+        name: "bend",
+        type: "number",
+        default: "3",
+        description:
+          "Determines the curvature of the gallery layout. A negative value bends in one direction, a positive value in the opposite.",
+      },
+      {
+        name: "textColor",
+        type: "string",
         default: '"#ffffff"',
-        description: 'Specifies the color of the text labels.'
+        description: "Specifies the color of the text labels.",
       },
       {
-        name: 'borderRadius',
-        type: 'number',
-        default: '0.05',
-        description: 'Sets the border radius for the media items to achieve rounded corners.'
+        name: "borderRadius",
+        type: "number",
+        default: "0.05",
+        description: "Sets the border radius for the media items to achieve rounded corners.",
       },
       {
-        name: 'font',
-        type: 'string',
+        name: "font",
+        type: "string",
         default: '"bold 30px Figtree"',
-        description: 'CSS font shorthand (style, weight, size, family) used for the text labels below each card.'
+        description:
+          "CSS font shorthand (style, weight, size, family) used for the text labels below each card.",
       },
       {
-        name: 'fontUrl',
-        type: 'string',
-        default: 'undefined',
+        name: "fontUrl",
+        type: "string",
+        default: "undefined",
         description:
-          'URL of a font to load for the labels. Accepts a stylesheet URL (e.g. a Google Fonts link) or a direct font file (.woff2, .woff, .ttf, .otf). The loaded family overrides the family in `font`.'
+          "URL of a font to load for the labels. Accepts a stylesheet URL (e.g. a Google Fonts link) or a direct font file (.woff2, .woff, .ttf, .otf). The loaded family overrides the family in `font`.",
       },
       {
-        name: 'scrollSpeed',
-        type: 'number',
-        default: '2',
+        name: "scrollSpeed",
+        type: "number",
+        default: "2",
         description:
-          'Controls how much the gallery moves per scroll event. Lower values result in slower scrolling, higher values in faster scrolling.'
+          "Controls how much the gallery moves per scroll event. Lower values result in slower scrolling, higher values in faster scrolling.",
       },
       {
-        name: 'scrollEase',
-        type: 'number',
-        default: '0.05',
+        name: "scrollEase",
+        type: "number",
+        default: "0.05",
         description:
-          'Controls the smoothness of scroll transitions. Lower values create smoother, more fluid motion, while higher values make it more responsive.'
-      }
+          "Controls the smoothness of scroll transitions. Lower values create smoother, more fluid motion, while higher values make it more responsive.",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box position="relative" className="demo-container" h={400} p={0} overflow="hidden">
@@ -116,8 +132,8 @@ const CircularGalleryDemo = () => {
               title="Font"
               options={FONT_OPTIONS}
               value={fontUrl}
-              onChange={val => {
-                updateProp('fontUrl', val);
+              onChange={(val) => {
+                updateProp("fontUrl", val);
                 forceRerender();
               }}
             />
@@ -128,8 +144,8 @@ const CircularGalleryDemo = () => {
               max={10}
               step={1}
               value={bend}
-              onChange={val => {
-                updateProp('bend', val);
+              onChange={(val) => {
+                updateProp("bend", val);
                 forceRerender();
               }}
             />
@@ -140,8 +156,8 @@ const CircularGalleryDemo = () => {
               max={0.5}
               step={0.01}
               value={borderRadius}
-              onChange={val => {
-                updateProp('borderRadius', val);
+              onChange={(val) => {
+                updateProp("borderRadius", val);
                 forceRerender();
               }}
             />
@@ -152,8 +168,8 @@ const CircularGalleryDemo = () => {
               max={5}
               step={0.1}
               value={scrollSpeed}
-              onChange={val => {
-                updateProp('scrollSpeed', val);
+              onChange={(val) => {
+                updateProp("scrollSpeed", val);
                 forceRerender();
               }}
             />
@@ -164,15 +180,15 @@ const CircularGalleryDemo = () => {
               max={0.15}
               step={0.01}
               value={scrollEase}
-              onChange={val => {
-                updateProp('scrollEase', val);
+              onChange={(val) => {
+                updateProp("scrollEase", val);
                 forceRerender();
               }}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['ogl']} />
+          <Dependencies dependencyList={["ogl"]} />
         </PreviewTab>
 
         <CodeTab>

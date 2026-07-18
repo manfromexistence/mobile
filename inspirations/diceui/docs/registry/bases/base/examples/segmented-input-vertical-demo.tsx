@@ -1,10 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  SegmentedInput,
-  SegmentedInputItem,
-} from "@/registry/bases/base/ui/segmented-input";
+import { SegmentedInput, SegmentedInputItem } from "@/registry/bases/base/ui/segmented-input";
 
 export default function SegmentedInputVerticalDemo() {
   const [address, setAddress] = React.useState({
@@ -14,22 +11,19 @@ export default function SegmentedInputVerticalDemo() {
   });
 
   const onFieldChange = React.useCallback(
-    (field: keyof typeof address) =>
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAddress((prev) => ({
-          ...prev,
-          [field]: event.target.value,
-        }));
-      },
+    (field: keyof typeof address) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setAddress((prev) => ({
+        ...prev,
+        [field]: event.target.value,
+      }));
+    },
     [],
   );
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <label className="font-medium text-sm leading-none">
-          Mailing Address
-        </label>
+        <label className="font-medium text-sm leading-none">Mailing Address</label>
         <SegmentedInput
           aria-label="Mailing address input"
           className="w-full max-w-sm"
@@ -56,8 +50,7 @@ export default function SegmentedInputVerticalDemo() {
         </SegmentedInput>
       </div>
       <p className="text-muted-foreground text-sm">
-        Use arrow keys (up/down) to navigate between fields in vertical
-        orientation.
+        Use arrow keys (up/down) to navigate between fields in vertical orientation.
       </p>
     </div>
   );

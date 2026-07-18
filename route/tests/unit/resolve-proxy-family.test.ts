@@ -12,7 +12,12 @@ describe("resolved proxy config → URL family encoding", () => {
     assert.ok(url!.endsWith("?family=ipv6"), url!);
   });
   it("omits family marker when auto", () => {
-    const url = proxyConfigToUrl({ type: "http", host: "p.example.com", port: 8080, family: "auto" });
+    const url = proxyConfigToUrl({
+      type: "http",
+      host: "p.example.com",
+      port: 8080,
+      family: "auto",
+    });
     assert.ok(!url!.includes("family="), url!);
   });
 });
@@ -118,7 +123,7 @@ test("api-key-level proxy carries family=ipv6 (Step 2 object literal)", async ()
   core
     .getDbInstance()
     .prepare(
-      "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'perKeyProxyEnabled', 'true')"
+      "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'perKeyProxyEnabled', 'true')",
     )
     .run();
   const proxy = await proxiesDb.createProxy({

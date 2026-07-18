@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import './GridDistortion.css';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import "./GridDistortion.css";
 
 interface GridDistortionProps {
   grid?: number;
@@ -42,7 +42,7 @@ const GridDistortion: React.FC<GridDistortionProps> = ({
   strength = 0.15,
   relaxation = 0.9,
   imageSrc,
-  className = ''
+  className = "",
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -64,13 +64,13 @@ const GridDistortion: React.FC<GridDistortionProps> = ({
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
-      powerPreference: 'high-performance'
+      powerPreference: "high-performance",
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
     rendererRef.current = renderer;
 
-    container.innerHTML = '';
+    container.innerHTML = "";
     container.appendChild(renderer.domElement);
 
     const camera = new THREE.OrthographicCamera(0, 0, 0, 0, -1000, 1000);
@@ -81,11 +81,11 @@ const GridDistortion: React.FC<GridDistortionProps> = ({
       time: { value: 0 },
       resolution: { value: new THREE.Vector4() },
       uTexture: { value: null as THREE.Texture | null },
-      uDataTexture: { value: null as THREE.DataTexture | null }
+      uDataTexture: { value: null as THREE.DataTexture | null },
     };
 
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load(imageSrc, texture => {
+    textureLoader.load(imageSrc, (texture) => {
       texture.minFilter = THREE.LinearFilter;
       texture.magFilter = THREE.LinearFilter;
       texture.wrapS = THREE.ClampToEdgeWrapping;
@@ -111,7 +111,7 @@ const GridDistortion: React.FC<GridDistortionProps> = ({
       uniforms,
       vertexShader,
       fragmentShader,
-      transparent: true
+      transparent: true,
     });
 
     const geometry = new THREE.PlaneGeometry(1, 1, size - 1, size - 1);
@@ -154,7 +154,7 @@ const GridDistortion: React.FC<GridDistortionProps> = ({
       resizeObserver.observe(container);
       resizeObserverRef.current = resizeObserver;
     } else {
-      window.addEventListener('resize', handleResize);
+      window.addEventListener("resize", handleResize);
     }
 
     const mouseState = {
@@ -163,7 +163,7 @@ const GridDistortion: React.FC<GridDistortionProps> = ({
       prevX: 0,
       prevY: 0,
       vX: 0,
-      vY: 0
+      vY: 0,
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -185,12 +185,12 @@ const GridDistortion: React.FC<GridDistortionProps> = ({
         prevX: 0,
         prevY: 0,
         vX: 0,
-        vY: 0
+        vY: 0,
       });
     };
 
-    container.addEventListener('mousemove', handleMouseMove);
-    container.addEventListener('mouseleave', handleMouseLeave);
+    container.addEventListener("mousemove", handleMouseMove);
+    container.addEventListener("mouseleave", handleMouseLeave);
 
     handleResize();
 
@@ -202,7 +202,7 @@ const GridDistortion: React.FC<GridDistortionProps> = ({
       uniforms.time.value += 0.05;
 
       if (!(dataTexture.image.data instanceof Float32Array)) {
-        console.error('dataTexture.image.data is not a Float32Array');
+        console.error("dataTexture.image.data is not a Float32Array");
         return;
       }
       const data: Float32Array = dataTexture.image.data;
@@ -241,11 +241,11 @@ const GridDistortion: React.FC<GridDistortionProps> = ({
       if (resizeObserverRef.current) {
         resizeObserverRef.current.disconnect();
       } else {
-        window.removeEventListener('resize', handleResize);
+        window.removeEventListener("resize", handleResize);
       }
 
-      container.removeEventListener('mousemove', handleMouseMove);
-      container.removeEventListener('mouseleave', handleMouseLeave);
+      container.removeEventListener("mousemove", handleMouseMove);
+      container.removeEventListener("mouseleave", handleMouseLeave);
 
       if (renderer) {
         renderer.dispose();
@@ -272,10 +272,10 @@ const GridDistortion: React.FC<GridDistortionProps> = ({
       ref={containerRef}
       className={`distortion-container ${className}`}
       style={{
-        width: '100%',
-        height: '100%',
-        minWidth: '0',
-        minHeight: '0'
+        width: "100%",
+        height: "100%",
+        minWidth: "0",
+        minHeight: "0",
       }}
     />
   );

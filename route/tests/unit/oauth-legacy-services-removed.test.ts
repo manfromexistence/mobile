@@ -24,7 +24,7 @@ import { fileURLToPath } from "node:url";
 
 const SERVICES = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
-  "../../src/lib/oauth/services"
+  "../../src/lib/oauth/services",
 );
 
 const REMOVED_DEAD = [
@@ -46,7 +46,7 @@ test("legacy OAuth service-class files stay removed (dead code — PR #5039)", (
     assert.equal(
       fs.existsSync(path.join(SERVICES, `${f}.ts`)),
       false,
-      `src/lib/oauth/services/${f}.ts is dead legacy code (0 refs) and must not be re-added`
+      `src/lib/oauth/services/${f}.ts is dead legacy code (0 refs) and must not be re-added`,
     );
   }
 });
@@ -56,7 +56,7 @@ test("live OAuth service files remain (imported directly by routes)", () => {
     assert.equal(
       fs.existsSync(path.join(SERVICES, `${f}.ts`)),
       true,
-      `src/lib/oauth/services/${f}.ts is still imported by routes and must remain`
+      `src/lib/oauth/services/${f}.ts is still imported by routes and must remain`,
     );
   }
 });

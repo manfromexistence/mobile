@@ -2,17 +2,9 @@ import type { Popover as PopoverPrimitive } from "@base-ui/react/popover";
 import type { Slider as SliderPrimitive } from "@base-ui/react/slider";
 import type * as React from "react";
 import type { Input } from "@/registry/bases/base/ui/input";
-import type {
-  PopoverContent,
-  PopoverTrigger,
-} from "@/registry/bases/base/ui/popover";
+import type { PopoverContent, PopoverTrigger } from "@/registry/bases/base/ui/popover";
 import type { Select, SelectTrigger } from "@/registry/bases/base/ui/select";
-import type {
-  ButtonProps,
-  ControlledProps,
-  Direction,
-  RenderProps,
-} from "@/types";
+import type { ButtonProps, ControlledProps, Direction, RenderProps } from "@/types";
 
 type ColorFormat = "hex" | "rgb" | "hsl" | "hsb";
 
@@ -134,10 +126,7 @@ export interface ColorPickerProps
    * }}
    * ```
    */
-  onOpenChange?: (
-    open: boolean,
-    eventDetails?: PopoverPrimitive.Root.ChangeEventDetails,
-  ) => void;
+  onOpenChange?: (open: boolean, eventDetails?: PopoverPrimitive.Root.ChangeEventDetails) => void;
 
   /**
    * The modality of the color picker. When set to `true`, interaction with outside elements
@@ -149,20 +138,12 @@ export interface ColorPickerProps
 }
 
 export interface ColorPickerTriggerProps
-  extends Omit<
-    React.ComponentProps<typeof PopoverTrigger>,
-    keyof React.ComponentProps<"button">
-  > {}
+  extends Omit<React.ComponentProps<typeof PopoverTrigger>, keyof React.ComponentProps<"button">> {}
 
 export interface ColorPickerContentProps
-  extends Omit<
-    React.ComponentProps<typeof PopoverContent>,
-    keyof React.ComponentProps<"div">
-  > {}
+  extends Omit<React.ComponentProps<typeof PopoverContent>, keyof React.ComponentProps<"div">> {}
 
-export interface ColorPickerAreaProps
-  extends React.ComponentProps<"div">,
-    RenderProps {}
+export interface ColorPickerAreaProps extends React.ComponentProps<"div">, RenderProps {}
 
 export interface ColorPickerHueSliderProps
   extends Omit<SliderProps, keyof React.ComponentProps<"span">> {}
@@ -170,9 +151,7 @@ export interface ColorPickerHueSliderProps
 export interface ColorPickerAlphaSliderProps
   extends Omit<SliderProps, keyof React.ComponentProps<"span">> {}
 
-export interface ColorPickerSwatchProps
-  extends React.ComponentProps<"div">,
-    RenderProps {}
+export interface ColorPickerSwatchProps extends React.ComponentProps<"div">, RenderProps {}
 
 export interface ColorPickerEyeDropperProps
   extends Omit<ButtonProps, keyof React.ComponentProps<"button">> {

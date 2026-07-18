@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { AnimatePresence, motion } from "motion/react"
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 
-import { ShimmeringText } from "@/registry/elevenlabs-ui/ui/shimmering-text"
+import { ShimmeringText } from "@/registry/elevenlabs-ui/ui/shimmering-text";
 
 const phrases = [
   "Agent is thinking...",
@@ -11,18 +11,18 @@ const phrases = [
   "Analyzing the data...",
   "Generating response...",
   "Almost there...",
-]
+];
 
 export default function TextShimmerDemo() {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % phrases.length)
-    }, 3000)
+      setCurrentIndex((prev) => (prev + 1) % phrases.length);
+    }, 3000);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="bg-card w-full rounded-lg border p-6">
@@ -49,5 +49,5 @@ export default function TextShimmerDemo() {
         </div>
       </div>
     </div>
-  )
+  );
 }

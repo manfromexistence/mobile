@@ -29,9 +29,7 @@ function ExplainPanel({ points }: { points: ExplainPoint[] }) {
             <code className="inline-block rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground">
               {p.code}
             </code>
-            <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
-              {p.text}
-            </p>
+            <p className="mt-1.5 text-sm leading-6 text-muted-foreground">{p.text}</p>
           </li>
         ))}
       </ul>
@@ -75,15 +73,11 @@ export function Playground() {
   const [replayKey, setReplayKey] = useState(0);
   // per-type values so switching types preserves each one's tweaks
   const [valuesByType, setValuesByType] = useState<Record<string, Values>>(() =>
-    Object.fromEntries(
-      PLAYGROUND_ITEMS.map((it) => [it.slug, { ...it.defaults }]),
-    ),
+    Object.fromEntries(PLAYGROUND_ITEMS.map((it) => [it.slug, { ...it.defaults }])),
   );
 
   const active = useMemo(
-    () =>
-      PLAYGROUND_ITEMS.find((it) => it.slug === activeSlug) ??
-      PLAYGROUND_ITEMS[0],
+    () => PLAYGROUND_ITEMS.find((it) => it.slug === activeSlug) ?? PLAYGROUND_ITEMS[0],
     [activeSlug],
   );
   const values = valuesByType[active.slug];
@@ -97,8 +91,7 @@ export function Playground() {
 
   const setValue = (key: string, value: ControlValue) => {
     // strip float artifacts from step snapping (0.30000000000000004 -> 0.3)
-    const clean =
-      typeof value === "number" ? Math.round(value * 1e6) / 1e6 : value;
+    const clean = typeof value === "number" ? Math.round(value * 1e6) / 1e6 : value;
     setValuesByType((prev) => {
       const merged = { ...prev[active.slug], [key]: clean };
       // let the type reconcile dependent controls (e.g. property -> frames)
@@ -125,8 +118,8 @@ export function Playground() {
           Playground
         </h1>
         <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-          Learn motion by playing. Tweak a property, watch it run, read what the
-          code is doing line by line, then copy it.
+          Learn motion by playing. Tweak a property, watch it run, read what the code is doing line
+          by line, then copy it.
         </p>
       </header>
 
@@ -185,12 +178,8 @@ export function Playground() {
         <div className="min-w-0">
           {/* vocab: define the type for first-timers */}
           <div className="mb-5">
-            <h2 className="text-lg font-semibold text-foreground">
-              {active.label}
-            </h2>
-            <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">
-              {active.blurb}
-            </p>
+            <h2 className="text-lg font-semibold text-foreground">{active.label}</h2>
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">{active.blurb}</p>
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
@@ -199,15 +188,8 @@ export function Playground() {
             <div className="flex min-w-0 flex-col gap-6">
               <div className="flex flex-col rounded-2xl border border-border bg-card">
                 <div className="flex items-center justify-between border-b border-border px-5 py-3">
-                  <span className="text-sm font-medium text-foreground">
-                    Preview
-                  </span>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={replay}
-                    className="gap-1.5"
-                  >
+                  <span className="text-sm font-medium text-foreground">Preview</span>
+                  <Button variant="secondary" size="sm" onClick={replay} className="gap-1.5">
                     <RotateCw className="h-3.5 w-3.5" />
                     Replay
                   </Button>
@@ -225,11 +207,7 @@ export function Playground() {
               <div className="rounded-2xl border border-border bg-card p-5">
                 <PresetSection presets={active.presets} onApply={applyPreset} />
                 <div className="mt-5 border-t border-border pt-5">
-                  <Controls
-                    controls={active.controls}
-                    values={values}
-                    onChange={setValue}
-                  />
+                  <Controls controls={active.controls} values={values} onChange={setValue} />
                 </div>
               </div>
 

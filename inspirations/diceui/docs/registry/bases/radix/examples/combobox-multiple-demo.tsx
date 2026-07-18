@@ -30,13 +30,7 @@ export default function ComboboxMultipleDemo() {
   const [value, setValue] = React.useState<string[]>([]);
 
   return (
-    <Combobox
-      value={value}
-      onValueChange={setValue}
-      className="w-[400px]"
-      multiple
-      autoHighlight
-    >
+    <Combobox value={value} onValueChange={setValue} className="w-[400px]" multiple autoHighlight>
       <ComboboxLabel>Tricks</ComboboxLabel>
       <ComboboxAnchor className="h-full min-h-10 flex-wrap px-3 py-2">
         <ComboboxBadgeList>
@@ -51,10 +45,7 @@ export default function ComboboxMultipleDemo() {
             );
           })}
         </ComboboxBadgeList>
-        <ComboboxInput
-          placeholder="Select tricks..."
-          className="h-auto min-w-20 flex-1"
-        />
+        <ComboboxInput placeholder="Select tricks..." className="h-auto min-w-20 flex-1" />
         <ComboboxTrigger className="absolute top-3 right-2">
           <ChevronDown className="h-4 w-4" />
         </ComboboxTrigger>

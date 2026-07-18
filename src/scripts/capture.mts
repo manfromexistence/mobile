@@ -1,10 +1,10 @@
-import fs from "node:fs"
-import path from "node:path"
-import type { Browser } from "puppeteer"
-import puppeteer from "puppeteer"
+import fs from "node:fs";
+import path from "node:path";
+import type { Browser } from "puppeteer";
+import puppeteer from "puppeteer";
 
-const url = process.env.URL || "https://ncdai.localhost"
-const outputDir = path.join(process.cwd(), ".ncdai/screenshots")
+const url = process.env.URL || "https://ncdai.localhost";
+const outputDir = path.join(process.cwd(), ".ncdai/screenshots");
 
 const SIZE = {
   // MacBook Pro 14-inch
@@ -22,9 +22,9 @@ const SIZE = {
     width: 1200,
     height: 630,
   },
-} as const
+} as const;
 
-type Theme = "light" | "dark"
+type Theme = "light" | "dark";
 
 async function captureScreenshot({
   browser,
@@ -34,55 +34,53 @@ async function captureScreenshot({
   themes = ["light"],
   type = "webp",
 }: {
-  browser: Browser
-  name: string
-  url: string
-  size: keyof typeof SIZE
-  themes?: Theme[]
-  type?: "webp" | "png" | "jpeg"
+  browser: Browser;
+  name: string;
+  url: string;
+  size: keyof typeof SIZE;
+  themes?: Theme[];
+  type?: "webp" | "png" | "jpeg";
 }) {
   // Ensure the output directory exists
-  await fs.promises.mkdir(outputDir, { recursive: true })
+  await fs.promises.mkdir(outputDir, { recursive: true });
 
-  const page = await browser.newPage()
+  const page = await browser.newPage();
 
-  const { width, height } = SIZE[size]
-  await page.setViewport({ width, height })
+  const { width, height } = SIZE[size];
+  await page.setViewport({ width, height });
 
-  await page.goto(url, { waitUntil: "networkidle2" })
+  await page.goto(url, { waitUntil: "networkidle2" });
 
   for (const theme of themes) {
-    const fileName = `${name}-${size}-${theme}.${type}`
+    const fileName = `${name}-${size}-${theme}.${type}`;
     const filePath = path.join(outputDir, fileName) as
       | `${string}.webp`
       | `${string}.png`
-      | `${string}.jpeg`
+      | `${string}.jpeg`;
 
     if (fs.existsSync(filePath)) {
-      console.log(`⚠️ Screenshot already exists, skipping:`, filePath)
-      continue
+      console.log(`⚠️ Screenshot already exists, skipping:`, filePath);
+      continue;
     }
 
-    await page.emulateMediaFeatures([
-      { name: "prefers-color-scheme", value: theme },
-    ])
+    await page.emulateMediaFeatures([{ name: "prefers-color-scheme", value: theme }]);
 
-    await page.reload({ waitUntil: "networkidle0" })
+    await page.reload({ waitUntil: "networkidle0" });
 
     await page.screenshot({
       path: filePath,
       type,
       quality: type !== "png" ? 90 : undefined,
-    })
+    });
 
-    console.log(`✅ Screenshot saved:`, filePath)
+    console.log(`✅ Screenshot saved:`, filePath);
   }
 
-  await page.close()
+  await page.close();
 }
 
 async function main() {
-  const browser = await puppeteer.launch()
+  const browser = await puppeteer.launch();
 
   try {
     await captureScreenshot({
@@ -91,7 +89,7 @@ async function main() {
       url,
       size: "desktop",
       themes: ["light", "dark"],
-    })
+    });
 
     await captureScreenshot({
       browser,
@@ -99,7 +97,7 @@ async function main() {
       url,
       size: "mobile",
       themes: ["light", "dark"],
-    })
+    });
 
     await captureScreenshot({
       browser,
@@ -108,14 +106,14 @@ async function main() {
       size: "og-image",
       themes: ["light", "dark"],
       type: "png",
-    })
+    });
 
-    console.log("✅ All screenshots captured successfully.")
+    console.log("✅ All screenshots captured successfully.");
   } catch (error) {
-    console.error("⛔️ Error capturing screenshots:", error)
+    console.error("⛔️ Error capturing screenshots:", error);
   } finally {
-    await browser.close()
+    await browser.close();
   }
 }
 
-main()
+main();

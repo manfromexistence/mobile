@@ -1,5 +1,5 @@
-import { LuArrowRight, LuSparkles } from 'react-icons/lu';
-import './ProCardMobile.css';
+import { LuArrowRight, LuSparkles } from "react-icons/lu";
+import "./ProCardMobile.css";
 
 const ProCardMobile = () => {
   return (

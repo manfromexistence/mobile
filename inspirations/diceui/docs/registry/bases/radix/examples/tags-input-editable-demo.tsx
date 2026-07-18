@@ -13,11 +13,7 @@ import {
 } from "@/registry/bases/radix/ui/tags-input";
 
 export default function TagsInputEditableDemo() {
-  const [tricks, setTricks] = React.useState([
-    "Kickflip",
-    "Heelflip",
-    "FS 540",
-  ]);
+  const [tricks, setTricks] = React.useState(["Kickflip", "Heelflip", "FS 540"]);
 
   return (
     <TagsInput value={tricks} onValueChange={setTricks} editable addOnPaste>

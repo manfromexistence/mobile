@@ -1,8 +1,8 @@
-import code from '@content/Components/BorderGlow/BorderGlow.jsx?raw';
-import css from '@content/Components/BorderGlow/BorderGlow.css?raw';
-import tailwind from '@tailwind/Components/BorderGlow/BorderGlow.jsx?raw';
-import tsCode from '@ts-default/Components/BorderGlow/BorderGlow.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/BorderGlow/BorderGlow.tsx?raw';
+import code from "@content/Components/BorderGlow/BorderGlow.jsx?raw";
+import css from "@content/Components/BorderGlow/BorderGlow.css?raw";
+import tailwind from "@tailwind/Components/BorderGlow/BorderGlow.jsx?raw";
+import tsCode from "@ts-default/Components/BorderGlow/BorderGlow.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/BorderGlow/BorderGlow.tsx?raw";
 
 export const borderGlow = {
   usage: `import BorderGlow from './BorderGlow';
@@ -27,5 +27,5 @@ export const borderGlow = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

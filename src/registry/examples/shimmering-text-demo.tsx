@@ -1,7 +1,5 @@
-import { ShimmeringText } from "@/registry/transformed/components/shimmering-text"
+import { ShimmeringText } from "@/registry/transformed/components/shimmering-text";
 
 export default function ShimmeringTextDemo() {
-  return (
-    <ShimmeringText className="text-2xl font-medium" text="Shimmering Text" />
-  )
+  return <ShimmeringText className="text-2xl font-medium" text="Shimmering Text" />;
 }

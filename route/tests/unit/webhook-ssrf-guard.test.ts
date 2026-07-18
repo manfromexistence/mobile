@@ -109,13 +109,13 @@ describe("deliverWebhook — runtime SSRF guard returns error without firing fet
     const res = await deliverWebhook(
       "http://169.254.169.254/latest/meta-data/",
       { event: "test.ping", timestamp: new Date().toISOString(), data: {} },
-      "secret"
+      "secret",
     );
     assert.equal(res.success, false);
     assert.equal(res.status, 0);
     assert.ok(
       typeof res.error === "string" && /private|blocked|local/i.test(res.error),
-      `expected guard error, got: ${res.error}`
+      `expected guard error, got: ${res.error}`,
     );
   });
 
@@ -123,7 +123,7 @@ describe("deliverWebhook — runtime SSRF guard returns error without firing fet
     const res = await deliverWebhook(
       "http://127.0.0.1:8080/admin",
       { event: "request.failed", timestamp: new Date().toISOString(), data: {} },
-      "supersecret"
+      "supersecret",
     );
     assert.equal(res.success, false);
     assert.equal(res.status, 0);

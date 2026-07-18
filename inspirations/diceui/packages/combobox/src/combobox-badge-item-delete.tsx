@@ -1,8 +1,4 @@
-import {
-  composeEventHandlers,
-  Primitive,
-  useComposedRefs,
-} from "@diceui/shared";
+import { composeEventHandlers, Primitive, useComposedRefs } from "@diceui/shared";
 import * as React from "react";
 import { useComboboxBadgeItemContext } from "./combobox-badge-item";
 import { useComboboxContext } from "./combobox-root";
@@ -52,11 +48,7 @@ const ComboboxBadgeItemDelete = React.forwardRef<
           target.releasePointerCapture(event.pointerId);
         }
 
-        if (
-          event.button === 0 &&
-          event.ctrlKey === false &&
-          event.pointerType === "mouse"
-        ) {
+        if (event.button === 0 && event.ctrlKey === false && event.pointerType === "mouse") {
           // prevent item from stealing focus from the input
           event.preventDefault();
         }

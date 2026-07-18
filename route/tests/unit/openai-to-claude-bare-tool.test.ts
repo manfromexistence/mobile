@@ -32,10 +32,18 @@ test("openaiToClaudeRequest: bare {function:{...}} tool (no parent type) is NOT 
   const translated = openaiToClaudeRequest("claude-sonnet-4", request, false);
 
   assert.ok(Array.isArray(translated.tools), "expected translated.tools to be an array");
-  assert.equal(translated.tools.length, 1, "expected the bare-function tool to survive translation");
+  assert.equal(
+    translated.tools.length,
+    1,
+    "expected the bare-function tool to survive translation",
+  );
 
   const tool = translated.tools[0];
-  assert.match(tool.name, /get_weather$/, "expected the original tool name to be preserved (prefixed)");
+  assert.match(
+    tool.name,
+    /get_weather$/,
+    "expected the original tool name to be preserved (prefixed)",
+  );
   assert.equal(tool.description, "Get the current weather");
   assert.deepEqual(tool.input_schema, {
     type: "object",

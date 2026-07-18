@@ -5,59 +5,54 @@ import { useComboboxContext } from "./combobox-root";
 
 const TRIGGER_NAME = "ComboboxTrigger";
 
-interface ComboboxTriggerProps
-  extends React.ComponentPropsWithoutRef<typeof Primitive.button> {}
+interface ComboboxTriggerProps extends React.ComponentPropsWithoutRef<typeof Primitive.button> {}
 
-const ComboboxTrigger = React.forwardRef<
-  HTMLButtonElement,
-  ComboboxTriggerProps
->((props, forwardedRef) => {
-  const { disabled, ...triggerProps } = props;
+const ComboboxTrigger = React.forwardRef<HTMLButtonElement, ComboboxTriggerProps>(
+  (props, forwardedRef) => {
+    const { disabled, ...triggerProps } = props;
 
-  const context = useComboboxContext(TRIGGER_NAME);
+    const context = useComboboxContext(TRIGGER_NAME);
 
-  const isDisabled = disabled || context.disabled;
+    const isDisabled = disabled || context.disabled;
 
-  return (
-    <Primitive.button
-      type="button"
-      aria-haspopup="listbox"
-      aria-expanded={context.open}
-      aria-controls={context.listId}
-      data-state={context.open ? "open" : "closed"}
-      data-disabled={isDisabled ? "" : undefined}
-      dir={context.dir}
-      disabled={isDisabled}
-      tabIndex={isDisabled ? undefined : -1}
-      {...triggerProps}
-      ref={forwardedRef}
-      onClick={composeEventHandlers(triggerProps.onClick, async () => {
-        const newOpenState = !context.open;
-        context.onOpenChange(newOpenState);
+    return (
+      <Primitive.button
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={context.open}
+        aria-controls={context.listId}
+        data-state={context.open ? "open" : "closed"}
+        data-disabled={isDisabled ? "" : undefined}
+        dir={context.dir}
+        disabled={isDisabled}
+        tabIndex={isDisabled ? undefined : -1}
+        {...triggerProps}
+        ref={forwardedRef}
+        onClick={composeEventHandlers(triggerProps.onClick, async () => {
+          const newOpenState = !context.open;
+          context.onOpenChange(newOpenState);
 
-        await new Promise((resolve) => requestAnimationFrame(resolve));
+          await new Promise((resolve) => requestAnimationFrame(resolve));
 
-        const input = context.inputRef.current;
-        if (input) {
-          input.focus();
-          const length = input.value.length;
-          input.setSelectionRange(length, length);
-        }
+          const input = context.inputRef.current;
+          if (input) {
+            input.focus();
+            const length = input.value.length;
+            input.setSelectionRange(length, length);
+          }
 
-        if (!newOpenState) return;
+          if (!newOpenState) return;
 
-        if (context.value.length > 0) {
-          context.onHighlightMove("selected");
-          return;
-        }
+          if (context.value.length > 0) {
+            context.onHighlightMove("selected");
+            return;
+          }
 
-        if (context.autoHighlight && !context.open) {
-          context.onHighlightMove("first");
-        }
-      })}
-      onPointerDown={composeEventHandlers(
-        triggerProps.onPointerDown,
-        (event) => {
+          if (context.autoHighlight && !context.open) {
+            context.onHighlightMove("first");
+          }
+        })}
+        onPointerDown={composeEventHandlers(triggerProps.onPointerDown, (event) => {
           if (context.disabled) return;
 
           // prevent implicit pointer capture
@@ -77,11 +72,11 @@ const ComboboxTrigger = React.forwardRef<
           ) {
             event.preventDefault();
           }
-        },
-      )}
-    />
-  );
-});
+        })}
+      />
+    );
+  },
+);
 
 ComboboxTrigger.displayName = TRIGGER_NAME;
 

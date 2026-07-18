@@ -23,7 +23,7 @@ after(() => {
 test("USAGE_SUPPORTED_PROVIDERS includes opencode-go", () => {
   assert.ok(
     (USAGE_SUPPORTED_PROVIDERS as string[]).includes("opencode-go"),
-    "opencode-go must be in the usage-supported providers allowlist"
+    "opencode-go must be in the usage-supported providers allowlist",
   );
 });
 
@@ -94,7 +94,7 @@ test("getUsageForProvider exposes OpenCode Go 5h, weekly, and monthly quotas", a
           ],
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -173,7 +173,7 @@ test("getUsageForProvider ignores out-of-range OpenCode Go reset timestamps", as
           ],
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   try {
@@ -220,7 +220,7 @@ test("getUsageForProvider scrapes OpenCode Go dashboard quota when workspace coo
         '<span data-slot="reset-time">Resets in 10 days</span>',
         "</div>",
       ].join(""),
-      { status: 200, headers: { "content-type": "text/html" } }
+      { status: 200, headers: { "content-type": "text/html" } },
     );
   };
 
@@ -275,7 +275,7 @@ test("getUsageForProvider parses OpenCode Go reset-time wrapped in React hydrati
         '<span data-slot="reset-time"><!--$-->Resets in 1 hour 30 minutes<!--/--></span>',
         "</div>",
       ].join(""),
-      { status: 200, headers: { "content-type": "text/html" } }
+      { status: 200, headers: { "content-type": "text/html" } },
     );
 
   try {
@@ -290,7 +290,7 @@ test("getUsageForProvider parses OpenCode Go reset-time wrapped in React hydrati
     // session quota resolved → the comment-wrapped reset time was sanitized and parsed
     assert.ok(
       result.quotas?.session,
-      "session quota should resolve from comment-wrapped reset-time"
+      "session quota should resolve from comment-wrapped reset-time",
     );
     assert.equal(result.quotas!.session.remainingPercentage, 75);
   } finally {
@@ -316,7 +316,7 @@ test("getUsageForProvider returns message for invalid OpenCode Go API keys", asy
       result.message,
       "OpenCode Go API key is valid for chat/models but cannot read quota from the configured " +
         "OMNIROUTE_OPENCODE_GO_QUOTA_URL endpoint. " +
-        "Set OPENCODE_GO_WORKSPACE_ID and OPENCODE_GO_AUTH_COOKIE to enable dashboard quota scraping."
+        "Set OPENCODE_GO_WORKSPACE_ID and OPENCODE_GO_AUTH_COOKIE to enable dashboard quota scraping.",
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -361,7 +361,7 @@ test("getUsageForProvider returns message when OpenCode Go quota API returns 200
       result.message,
       "OpenCode Go API key is valid for chat/models but cannot read quota from the configured " +
         "OMNIROUTE_OPENCODE_GO_QUOTA_URL endpoint. " +
-        "Set OPENCODE_GO_WORKSPACE_ID and OPENCODE_GO_AUTH_COOKIE to enable dashboard quota scraping."
+        "Set OPENCODE_GO_WORKSPACE_ID and OPENCODE_GO_AUTH_COOKIE to enable dashboard quota scraping.",
     );
   } finally {
     globalThis.fetch = originalFetch;

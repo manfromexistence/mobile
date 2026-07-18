@@ -1,23 +1,23 @@
-import { useMemo, useRef } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box } from '@chakra-ui/react';
+import { useMemo, useRef } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box } from "@chakra-ui/react";
 
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
-import PropTable from '../../components/common/Preview/PropTable';
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
+import PropTable from "../../components/common/Preview/PropTable";
 
-import CodeExample from '../../components/code/CodeExample';
-import Dependencies from '../../components/code/Dependencies';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSelect from '../../components/common/Preview/PreviewSelect';
-import Customize from '../../components/common/Preview/Customize';
+import CodeExample from "../../components/code/CodeExample";
+import Dependencies from "../../components/code/Dependencies";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSelect from "../../components/common/Preview/PreviewSelect";
+import Customize from "../../components/common/Preview/Customize";
 
-import VariableProximity from '../../content/TextAnimations/VariableProximity/VariableProximity';
-import { variableProximity } from '../../constants/code/TextAnimations/variableProximityCode';
+import VariableProximity from "../../content/TextAnimations/VariableProximity/VariableProximity";
+import { variableProximity } from "../../constants/code/TextAnimations/variableProximityCode";
 
 const DEFAULT_PROPS = {
   radius: 100,
-  falloff: 'linear'
+  falloff: "linear",
 };
 
 const VariableProximityDemo = () => {
@@ -29,53 +29,65 @@ const VariableProximityDemo = () => {
   const propData = useMemo(
     () => [
       {
-        name: 'label',
-        type: 'string',
+        name: "label",
+        type: "string",
         default: '""',
-        description: 'The text content to display.'
+        description: "The text content to display.",
       },
       {
-        name: 'fromFontVariationSettings',
-        type: 'string',
+        name: "fromFontVariationSettings",
+        type: "string",
         default: "'wght' 400, 'opsz' 9",
-        description: 'The starting variation settings.'
+        description: "The starting variation settings.",
       },
       {
-        name: 'toFontVariationSettings',
-        type: 'string',
+        name: "toFontVariationSettings",
+        type: "string",
         default: "'wght' 800, 'opsz' 40",
-        description: 'The variation settings to reach at cursor proximity.'
+        description: "The variation settings to reach at cursor proximity.",
       },
       {
-        name: 'containerRef',
-        type: 'RefObject<HTMLDivElement>',
-        default: 'undefined',
-        description: 'Reference to container for relative calculations.'
+        name: "containerRef",
+        type: "RefObject<HTMLDivElement>",
+        default: "undefined",
+        description: "Reference to container for relative calculations.",
       },
       {
-        name: 'radius',
-        type: 'number',
-        default: '50',
-        description: 'Proximity radius to influence the effect.'
+        name: "radius",
+        type: "number",
+        default: "50",
+        description: "Proximity radius to influence the effect.",
       },
       {
-        name: 'falloff',
+        name: "falloff",
         type: "'linear' | 'exponential' | 'gaussian'",
         default: '"linear"',
-        description: 'Type of falloff for the effect.'
-      }
+        description: "Type of falloff for the effect.",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
-          <Box ref={containerRef} position="relative" className="demo-container" minH={400} overflow="hidden" p={4}>
+          <Box
+            ref={containerRef}
+            position="relative"
+            className="demo-container"
+            minH={400}
+            overflow="hidden"
+            p={4}
+          >
             <VariableProximity
-              label={'Hover me! And then star React Bits on GitHub, or else...'}
-              className={'variable-proximity-demo'}
+              label={"Hover me! And then star React Bits on GitHub, or else..."}
+              className={"variable-proximity-demo"}
               fromFontVariationSettings="'wght' 400, 'opsz' 9"
               toFontVariationSettings="'wght' 1000, 'opsz' 40"
               containerRef={containerRef}
@@ -92,23 +104,23 @@ const VariableProximityDemo = () => {
               step={10}
               value={radius}
               valueUnit="px"
-              onChange={val => updateProp('radius', val)}
+              onChange={(val) => updateProp("radius", val)}
             />
 
             <PreviewSelect
               title="Falloff"
               options={[
-                { value: 'linear', label: 'Linear' },
-                { value: 'exponential', label: 'Exponential' },
-                { value: 'gaussian', label: 'Gaussian' }
+                { value: "linear", label: "Linear" },
+                { value: "exponential", label: "Exponential" },
+                { value: "gaussian", label: "Gaussian" },
               ]}
               value={falloff}
-              onChange={val => updateProp('falloff', val)}
+              onChange={(val) => updateProp("falloff", val)}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['motion']} />
+          <Dependencies dependencyList={["motion"]} />
         </PreviewTab>
 
         <CodeTab>

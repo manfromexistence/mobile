@@ -2,11 +2,7 @@
 
 import { useState } from "react";
 import { useIcon } from "@/lib/icon-context";
-import {
-  TabsSubtle,
-  TabsSubtleItem,
-  TabsSubtlePanel,
-} from "@/registry/default/tabs-subtle";
+import { TabsSubtle, TabsSubtleItem, TabsSubtlePanel } from "@/registry/default/tabs-subtle";
 import { ComponentPreview } from "@/lib/docs/ComponentPreview";
 import { PropsTable, type PropDef } from "@/lib/docs/PropsTable";
 import { DocPage, DocSection } from "@/lib/docs/DocPage";
@@ -104,9 +100,18 @@ const [selected, setSelected] = useState(0);
 
 const tabProps: PropDef[] = [
   { name: "selectedIndex", type: "number", description: "Index of the currently selected tab." },
-  { name: "onSelect", type: "(index: number) => void", description: "Called when a tab is selected." },
+  {
+    name: "onSelect",
+    type: "(index: number) => void",
+    description: "Called when a tab is selected.",
+  },
   { name: "idPrefix", type: "string", description: "Prefix for ARIA IDs linking tabs to panels." },
-  { name: "activeLabel", type: "boolean", default: "false", description: "When true, only the selected tab shows its text label. Requires icons on tabs." },
+  {
+    name: "activeLabel",
+    type: "boolean",
+    default: "false",
+    description: "When true, only the selected tab shows its text label. Requires icons on tabs.",
+  },
   { name: "children", type: "ReactNode", description: "TabsSubtleItem children." },
 ];
 
@@ -120,7 +125,11 @@ const tabPanelProps: PropDef[] = [
   { name: "index", type: "number", description: "Index of this panel." },
   { name: "selectedIndex", type: "number", description: "Currently selected tab index." },
   { name: "idPrefix", type: "string", description: "Must match the TabsSubtle idPrefix." },
-  { name: "children", type: "ReactNode", description: "Panel content, only rendered when selected." },
+  {
+    name: "children",
+    type: "ReactNode",
+    description: "Panel content, only rendered when selected.",
+  },
 ];
 
 export default function TabsSubtleDoc() {
@@ -165,9 +174,7 @@ export default function TabsSubtleDoc() {
                 selectedIndex={basicSelected}
                 idPrefix="basic-demo"
               >
-                <p className="text-[13px] text-muted-foreground px-3">
-                  {label} content goes here.
-                </p>
+                <p className="text-[13px] text-muted-foreground px-3">{label} content goes here.</p>
               </TabsSubtlePanel>
             ))}
           </div>
@@ -183,12 +190,7 @@ export default function TabsSubtleDoc() {
               onSelect={setIconsSelected}
             >
               {tabs.map((tab, i) => (
-                <TabsSubtleItem
-                  key={tab.label}
-                  index={i}
-                  icon={tab.icon}
-                  label={tab.label}
-                />
+                <TabsSubtleItem key={tab.label} index={i} icon={tab.icon} label={tab.label} />
               ))}
             </TabsSubtle>
             {tabs.map((tab, i) => (
@@ -217,12 +219,7 @@ export default function TabsSubtleDoc() {
               onSelect={setActiveLabelSelected}
             >
               {tabs.map((tab, i) => (
-                <TabsSubtleItem
-                  key={tab.label}
-                  index={i}
-                  icon={tab.icon}
-                  label={tab.label}
-                />
+                <TabsSubtleItem key={tab.label} index={i} icon={tab.icon} label={tab.label} />
               ))}
             </TabsSubtle>
             {tabs.map((tab, i) => (

@@ -11,11 +11,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import {
-  registerHook,
-  emitHookBlocking,
-  resetHooks,
-} from "../../src/lib/plugins/hooks.ts";
+import { registerHook, emitHookBlocking, resetHooks } from "../../src/lib/plugins/hooks.ts";
 
 test.afterEach(() => {
   resetHooks();
@@ -32,7 +28,7 @@ test("emitHookBlocking feeds each handler the body mutated by previous handlers"
       const ctx = p as { body?: { value?: number } };
       return { body: { value: (ctx.body?.value ?? 0) + 1 } };
     },
-    10
+    10,
   );
 
   // Plugin B (lower priority → runs after A): records what body it received.
@@ -44,7 +40,7 @@ test("emitHookBlocking feeds each handler the body mutated by previous handlers"
       seenByB.push(ctx.body);
       return { body: { value: (ctx.body?.value ?? 0) + 1 } };
     },
-    20
+    20,
   );
 
   const result = await emitHookBlocking("onRequest", { body: { value: 0 } });
@@ -58,12 +54,7 @@ test("emitHookBlocking feeds each handler the body mutated by previous handlers"
 test("emitHookBlocking chains metadata across handlers", async () => {
   let metadataSeenByB: Record<string, unknown> | undefined;
 
-  registerHook(
-    "onRequest",
-    "meta-a",
-    () => ({ metadata: { a: true } }),
-    10
-  );
+  registerHook("onRequest", "meta-a", () => ({ metadata: { a: true } }), 10);
 
   registerHook(
     "onRequest",
@@ -72,7 +63,7 @@ test("emitHookBlocking chains metadata across handlers", async () => {
       metadataSeenByB = (p as { metadata?: Record<string, unknown> }).metadata;
       return { metadata: { b: true } };
     },
-    20
+    20,
   );
 
   const result = await emitHookBlocking("onRequest", { body: {}, metadata: {} });

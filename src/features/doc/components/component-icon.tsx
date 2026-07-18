@@ -5,7 +5,7 @@ import {
   IconCircleSquare,
   IconGridDots,
   IconRipple,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 import {
   BriefcaseBusinessIcon,
   ChevronsUpDownIcon,
@@ -26,10 +26,10 @@ import {
   TerminalIcon,
   VibrateIcon,
   ZapIcon,
-} from "lucide-react"
+} from "lucide-react";
 
-import { ChanhDaiMark } from "@/components/chanhdai-mark"
-import { AppleIcon, ReactIcon, XIcon } from "@/components/icons"
+import { ChanhDaiMark } from "@/components/chanhdai-mark";
+import { AppleIcon, ReactIcon, XIcon } from "@/components/icons";
 
 const COMPONENT_ICONS: Record<string, React.ReactNode> = {
   "work-experience-component": <BriefcaseBusinessIcon />,
@@ -46,19 +46,9 @@ const COMPONENT_ICONS: Record<string, React.ReactNode> = {
   "shimmering-text": <ZapIcon />,
   "slide-to-unlock": (
     // Icon designed by @ncdai
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      aria-hidden
-    >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <path d="M3 10a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v4a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z" />
-      <path
-        d="M6 12h6M9 15l3-3-3-3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M6 12h6M9 15l3-3-3-3" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
   testimonial: <QuoteIcon />,
@@ -95,13 +85,7 @@ const COMPONENT_ICONS: Record<string, React.ReactNode> = {
   "theme-toggle-effect": <PaintbrushIcon />,
   "elastic-slider": (
     // Icon designed by @ncdai
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      aria-hidden
-    >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <path d="M3 10a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v4a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z" />
       <path d="M17 10v4" strokeLinecap="round" />
     </svg>
@@ -146,8 +130,8 @@ const COMPONENT_ICONS: Record<string, React.ReactNode> = {
   "line-nav": <IconBaselineDensitySmall />,
   "share-menu": <ShareIcon />,
   "spotlight-logo": <ChanhDaiMark />,
-}
+};
 
 export function ComponentIcon({ slug }: { slug: string }) {
-  return COMPONENT_ICONS[slug] ?? <ReactIcon />
+  return COMPONENT_ICONS[slug] ?? <ReactIcon />;
 }

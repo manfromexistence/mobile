@@ -14,12 +14,12 @@ test("sortQuotasByRemaining orders quotas by remaining percentage descending", (
   const sorted = sortQuotasByRemaining(quotas);
   assert.deepEqual(
     sorted.map((q) => q.name),
-    ["high", "mid", "low"]
+    ["high", "mid", "low"],
   );
   // original array untouched
   assert.deepEqual(
     quotas.map((q) => q.name),
-    ["low", "high", "mid"]
+    ["low", "high", "mid"],
   );
 });
 
@@ -35,7 +35,7 @@ test("getVisibleQuotas collapses to the first 3 rows when not expanded", () => {
   assert.equal(visible.length, 3);
   assert.deepEqual(
     visible.map((q) => q.name),
-    ["q1", "q2", "q3"]
+    ["q1", "q2", "q3"],
   );
 });
 

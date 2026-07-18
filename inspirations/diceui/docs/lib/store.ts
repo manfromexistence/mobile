@@ -41,10 +41,7 @@ function createStore<T>(
 }
 
 function useStoreSelector<T, U>(store: Store<T>, selector: (state: T) => U): U {
-  const getSnapshot = React.useCallback(
-    () => selector(store.getState()),
-    [store, selector],
-  );
+  const getSnapshot = React.useCallback(() => selector(store.getState()), [store, selector]);
 
   return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
@@ -53,10 +50,7 @@ function useStore<T>(initialState: T) {
   const stateRef = useLazyRef(() => initialState);
   const listenersRef = useLazyRef(() => new Set<() => void>());
 
-  const store = React.useMemo(
-    () => createStore(listenersRef, stateRef),
-    [listenersRef, stateRef],
-  );
+  const store = React.useMemo(() => createStore(listenersRef, stateRef), [listenersRef, stateRef]);
 
   return store;
 }

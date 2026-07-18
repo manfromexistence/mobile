@@ -1,34 +1,28 @@
-"use client"
+"use client";
 
-import { LinkIcon } from "lucide-react"
-import type React from "react"
-import { CopyButton } from "@/components/copy-button"
-import { cn } from "@/lib/utils"
+import { LinkIcon } from "lucide-react";
+import type React from "react";
+import { CopyButton } from "@/components/copy-button";
+import { cn } from "@/lib/utils";
 
-type HeadingTypes = "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
+type HeadingTypes = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 type HeadingProps<T extends HeadingTypes> = React.ComponentProps<T> & {
-  as?: T
-}
+  as?: T;
+};
 
 export function Heading<T extends HeadingTypes = "h1">({
   as,
   className,
   ...props
 }: HeadingProps<T>): React.ReactElement {
-  const Comp = as ?? "h1"
+  const Comp = as ?? "h1";
 
   if (!props.id) {
-    return <Comp className={className} {...props} />
+    return <Comp className={className} {...props} />;
   }
 
   return (
-    <Comp
-      className={cn(
-        "group/heading flex flex-row items-center gap-1",
-        className
-      )}
-      {...props}
-    >
+    <Comp className={cn("group/heading flex flex-row items-center gap-1", className)} {...props}>
       <a href={`#${props.id}`} className="peer not-prose">
         {props.children}
       </a>
@@ -41,17 +35,17 @@ export function Heading<T extends HeadingTypes = "h1">({
         aria-label="Copy link to section"
       />
     </Comp>
-  )
+  );
 }
 
 export function createHeadingUrl(id: string) {
   if (typeof window === "undefined") {
-    return `#${id}`
+    return `#${id}`;
   }
 
-  const url = new URL(window.location.href)
+  const url = new URL(window.location.href);
 
-  url.hash = id
+  url.hash = id;
 
-  return url.toString()
+  return url.toString();
 }

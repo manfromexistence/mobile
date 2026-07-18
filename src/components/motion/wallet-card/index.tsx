@@ -43,9 +43,7 @@ export function WalletCard({
   className,
 }: WalletCardProps) {
   const accountControlled = accountId !== undefined;
-  const [internalAccountId, setInternalAccountId] = useState(
-    defaultAccountId ?? accounts[0]?.id,
-  );
+  const [internalAccountId, setInternalAccountId] = useState(defaultAccountId ?? accounts[0]?.id);
   const [balanceHidden, setBalanceHidden] = useState(defaultBalanceHidden);
 
   const shownBalance = `${balancePrefix}${balance.toLocaleString(undefined, {
@@ -54,8 +52,7 @@ export function WalletCard({
   })}`;
   const maskedBalance = "*".repeat(7);
   const activeAccountId = accountControlled ? accountId : internalAccountId;
-  const activeAccount =
-    accounts.find((a) => a.id === activeAccountId) ?? accounts[0];
+  const activeAccount = accounts.find((a) => a.id === activeAccountId) ?? accounts[0];
 
   const handleAccountChange = (id: string) => {
     if (!accountControlled) setInternalAccountId(id);
@@ -112,11 +109,7 @@ export function WalletCard({
             aria-pressed={balanceHidden}
             className="text-muted-foreground outline-none transition-colors hover:text-foreground"
           >
-            {balanceHidden ? (
-              <EyeOff className="h-3.5 w-3.5" />
-            ) : (
-              <Eye className="h-3.5 w-3.5" />
-            )}
+            {balanceHidden ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
           </button>
         </div>
         {/* One ActionSwapText swaps the number and the asterisk mask with a
@@ -140,12 +133,7 @@ export function WalletCard({
       </div>
 
       <div className="mt-8">
-        <WalletActions
-          onSend={onSend}
-          onDeposit={onDeposit}
-          onSwap={onSwap}
-          onBuy={onBuy}
-        />
+        <WalletActions onSend={onSend} onDeposit={onDeposit} onSwap={onSwap} onBuy={onBuy} />
       </div>
     </div>
   );

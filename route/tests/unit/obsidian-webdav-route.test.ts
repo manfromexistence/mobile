@@ -103,8 +103,14 @@ test("POST with a valid temp dir → returns { username, password }, GET shows e
 
     assert.equal(res.status, 200);
     const body = (await res.json()) as Record<string, unknown>;
-    assert.ok(typeof body.username === "string" && (body.username as string).length > 0, "username non-empty");
-    assert.ok(typeof body.password === "string" && (body.password as string).length > 0, "password non-empty");
+    assert.ok(
+      typeof body.username === "string" && (body.username as string).length > 0,
+      "username non-empty",
+    );
+    assert.ok(
+      typeof body.password === "string" && (body.password as string).length > 0,
+      "password non-empty",
+    );
     assert.ok(typeof body.vaultPath === "string", "vaultPath returned");
 
     // GET should now reflect enabled state
@@ -113,8 +119,12 @@ test("POST with a valid temp dir → returns { username, password }, GET shows e
     assert.equal(getRes.status, 200);
     const getBody = (await getRes.json()) as Record<string, unknown>;
     assert.equal(getBody.webdavEnabled, true);
-    assert.ok(typeof getBody.webdavUsername === "string" && (getBody.webdavUsername as string).length > 0);
-    assert.ok(typeof getBody.webdavPassword === "string" && (getBody.webdavPassword as string).length > 0);
+    assert.ok(
+      typeof getBody.webdavUsername === "string" && (getBody.webdavUsername as string).length > 0,
+    );
+    assert.ok(
+      typeof getBody.webdavPassword === "string" && (getBody.webdavPassword as string).length > 0,
+    );
   } finally {
     fs.rmSync(vaultDir, { recursive: true, force: true });
   }
@@ -131,11 +141,13 @@ test("POST with a non-existent path → 400, body does NOT contain a stack trace
 
   assert.equal(res.status, 400);
   const body = (await res.json()) as Record<string, unknown>;
-  const errorMsg = (body.error as Record<string, unknown> | undefined)?.message as string | undefined;
+  const errorMsg = (body.error as Record<string, unknown> | undefined)?.message as
+    | string
+    | undefined;
   // Must not leak stack trace
   assert.ok(
     !errorMsg || !errorMsg.includes("at /"),
-    `Error message should not contain a stack trace, got: ${errorMsg}`
+    `Error message should not contain a stack trace, got: ${errorMsg}`,
   );
 });
 
@@ -274,11 +286,11 @@ test("encryption round-trip: setWebdavPassword stores encrypted, getWebdavPasswo
   assert.notEqual(
     storedInner,
     plaintext,
-    "Raw DB value must NOT be plaintext when encryption is enabled"
+    "Raw DB value must NOT be plaintext when encryption is enabled",
   );
   assert.ok(
     storedInner.startsWith("enc:v1:"),
-    `Raw DB value should start with enc:v1: prefix, got: ${storedInner.slice(0, 40)}`
+    `Raw DB value should start with enc:v1: prefix, got: ${storedInner.slice(0, 40)}`,
   );
 
   // getWebdavPassword must round-trip back to plaintext
@@ -297,5 +309,9 @@ test("encryption graceful fallback: plaintext stored without key reads back corr
 
   // Must read back the same value
   const retrieved = obsidianDb.getWebdavPassword();
-  assert.equal(retrieved, plaintext, "Plaintext value must read back unchanged when no encryption key");
+  assert.equal(
+    retrieved,
+    plaintext,
+    "Plaintext value must read back unchanged when no encryption key",
+  );
 });

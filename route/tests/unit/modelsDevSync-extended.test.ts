@@ -250,7 +250,7 @@ test("modelsDev pricing helpers persist records, skip corrupted rows, and clear 
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "models_dev_pricing",
     "corrupted",
-    "{oops"
+    "{oops",
   );
 
   const withCorruption = modelsDev.getModelsDevPricing();

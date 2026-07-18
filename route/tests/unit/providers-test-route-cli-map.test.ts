@@ -12,7 +12,7 @@ test("CLI_RUNTIME_PROVIDER_MAP must not gate kilocode on a local CLI binary (#24
   assert.equal(
     CLI_RUNTIME_PROVIDER_MAP.kilocode,
     undefined,
-    "kilocode is an OAuth+HTTPS provider; it must not require the local CLI binary at test time"
+    "kilocode is an OAuth+HTTPS provider; it must not require the local CLI binary at test time",
   );
 });
 

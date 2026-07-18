@@ -44,7 +44,7 @@ test("LEDGER-1: updateProviderNode preserves customHeaders when the field is omi
   assert.deepEqual(
     updated?.customHeaders,
     { "X-Tenant": "acme", "X-Env": "prod" },
-    "omitting customHeaders on update must NOT wipe stored headers"
+    "omitting customHeaders on update must NOT wipe stored headers",
   );
   // And reading it back confirms persistence.
   const fetched = await providersDb.getProviderNodeById(created.id as string);
@@ -137,7 +137,7 @@ test("LEDGER-2: valid custom headers still pass", () => {
 test("LEDGER-4: all minimax-m3 registry entries set supportsVision (matches lite.ts)", () => {
   const entries: { id: string; supportsVision?: boolean }[] = [];
   for (const provider of Object.values(
-    REGISTRY as Record<string, { models?: { id: string; supportsVision?: boolean }[] }>
+    REGISTRY as Record<string, { models?: { id: string; supportsVision?: boolean }[] }>,
   )) {
     for (const m of provider.models || []) {
       if (/minimax-m3/i.test(m.id)) entries.push(m);
@@ -148,7 +148,7 @@ test("LEDGER-4: all minimax-m3 registry entries set supportsVision (matches lite
   assert.deepEqual(
     unflagged,
     [],
-    `these minimax-m3 entries miss supportsVision: ${unflagged.join(", ")}`
+    `these minimax-m3 entries miss supportsVision: ${unflagged.join(", ")}`,
   );
 });
 
@@ -160,7 +160,7 @@ test("LEDGER-5: custom headers reach the wire for anthropic-compatible-cc-* node
       accessToken: "tok",
       providerSpecificData: { customHeaders: { "X-CC-Custom": "yes" } },
     },
-    false
+    false,
   ) as Record<string, string>;
   assert.equal(headers["X-CC-Custom"], "yes", "CC node must apply operator custom headers");
 });
@@ -176,13 +176,13 @@ test("LEDGER-10: a custom content-type overrides (not duplicates) the executor's
         customHeaders: { "content-type": "application/custom" },
       },
     },
-    false
+    false,
   ) as Record<string, string>;
   const ctKeys = Object.keys(headers).filter((k) => k.toLowerCase() === "content-type");
   assert.equal(
     ctKeys.length,
     1,
-    `exactly one content-type header expected, got ${ctKeys.join(", ")}`
+    `exactly one content-type header expected, got ${ctKeys.join(", ")}`,
   );
   assert.equal(headers[ctKeys[0]], "application/custom");
 });
@@ -197,13 +197,13 @@ test("LEDGER-3: executor still drops auth/forbidden custom headers (defense-in-d
         customHeaders: { Authorization: "Bearer evil", Host: "evil.example", "X-Ok": "ok" },
       },
     },
-    false
+    false,
   ) as Record<string, string>;
   assert.equal(headers["X-Ok"], "ok");
   assert.notEqual(
     headers["Authorization"],
     "Bearer evil",
-    "auth must not be overridden by a custom header"
+    "auth must not be overridden by a custom header",
   );
   assert.ok(!Object.keys(headers).some((k) => k.toLowerCase() === "host"));
 });
@@ -215,7 +215,7 @@ test("LEDGER-9: rowToCamel surfaces a NULL _json column under the base key as nu
   assert.equal(camel?.customHeaders, null, "NULL _json column should be customHeaders: null");
   assert.ok(
     !("customHeadersJson" in (camel as object)),
-    "the suffixed key must not leak on the null path"
+    "the suffixed key must not leak on the null path",
   );
 });
 

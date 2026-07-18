@@ -131,12 +131,12 @@ describe("OpencodeExecutor per-account proxy + rotation (#4954)", () => {
     assert.strictEqual(
       first.source,
       "context",
-      `expected proxy-context egress, got source="${first.source}" (was always "direct" before #4954)`
+      `expected proxy-context egress, got source="${first.source}" (was always "direct" before #4954)`,
     );
     assert.strictEqual(first.host, "127.0.0.1", "egress must use a configured proxy host");
     assert.ok(
       first.port === String(portA) || first.port === String(portB),
-      `expected one of the configured proxy ports, got "${first.port}"`
+      `expected one of the configured proxy ports, got "${first.port}"`,
     );
   });
 
@@ -162,7 +162,7 @@ describe("OpencodeExecutor per-account proxy + rotation (#4954)", () => {
     assert.notStrictEqual(
       observed[0].port,
       observed[1].port,
-      "rotation must switch to a different account/proxy"
+      "rotation must switch to a different account/proxy",
     );
     for (const p of observed) {
       assert.strictEqual(p.source, "context", "every dispatch must egress through a proxy context");
@@ -195,11 +195,11 @@ describe("OpencodeExecutor per-account proxy + rotation (#4954)", () => {
     });
 
     const dispatchInfo = infoCalls.find(
-      (c) => c.tag === "OPENCODE" && /dispatch via account/.test(c.msg)
+      (c) => c.tag === "OPENCODE" && /dispatch via account/.test(c.msg),
     );
     assert.ok(
       dispatchInfo,
-      `expected an info-level "dispatch via account …" log; info calls=${JSON.stringify(infoCalls)}`
+      `expected an info-level "dispatch via account …" log; info calls=${JSON.stringify(infoCalls)}`,
     );
     // The selection line must carry the masked account id + rotation index, and
     // must NOT be emitted at debug (where it would be invisible at default level).
@@ -207,12 +207,12 @@ describe("OpencodeExecutor per-account proxy + rotation (#4954)", () => {
     assert.match(dispatchInfo!.msg, /idx \d+\/2/);
     assert.ok(
       !debugCalls.some((c) => /dispatch via account/.test(c.msg)),
-      "the selection log must not also/only be at debug level"
+      "the selection log must not also/only be at debug level",
     );
     // Masking guard: never log the full 32-char account id.
     assert.ok(
       !/(a{32}|b{32})/.test(dispatchInfo!.msg),
-      "rotation log must keep the account id masked"
+      "rotation log must keep the account id masked",
     );
   });
 
@@ -232,14 +232,14 @@ describe("OpencodeExecutor per-account proxy + rotation (#4954)", () => {
         signal: null,
         credentials: credentialsWithProxies(),
         log,
-      })
+      }),
     );
 
     assert.ok(sink.proxy, "sink must capture the proxy the executor actually applied");
     assert.equal(sink.proxy.host, "127.0.0.1", "captured proxy host must match the account proxy");
     assert.ok(
       sink.proxy.port === portA || sink.proxy.port === portB,
-      `captured proxy port must be one of the configured account proxies, got ${sink.proxy.port}`
+      `captured proxy port must be one of the configured account proxies, got ${sink.proxy.port}`,
     );
   });
 });

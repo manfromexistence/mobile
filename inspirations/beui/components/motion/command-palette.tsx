@@ -2,15 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import { Search, type LucideIcon } from "lucide-react";
-import {
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { EASE_OUT } from "@/lib/ease";
 import { cn } from "@/lib/utils";
@@ -92,10 +84,7 @@ export function CommandPalette({
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (
-        (e.metaKey || e.ctrlKey) &&
-        e.key.toLowerCase() === shortcut.toLowerCase()
-      ) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === shortcut.toLowerCase()) {
         e.preventDefault();
         setOpen(!open);
         return;
@@ -168,9 +157,7 @@ export function CommandPalette({
 
   useEffect(() => {
     if (!open) return;
-    const el = listRef.current?.querySelector<HTMLButtonElement>(
-      `[data-index="${active}"]`,
-    );
+    const el = listRef.current?.querySelector<HTMLButtonElement>(`[data-index="${active}"]`);
     el?.scrollIntoView({ block: "nearest" });
   }, [active, open]);
 
@@ -184,10 +171,7 @@ export function CommandPalette({
   return createPortal(
     <div
       aria-hidden={!open}
-      className={cn(
-        "fixed inset-0 z-[100]",
-        open ? "pointer-events-auto" : "pointer-events-none",
-      )}
+      className={cn("fixed inset-0 z-[100]", open ? "pointer-events-auto" : "pointer-events-none")}
     >
       <motion.div
         initial={false}
@@ -211,11 +195,7 @@ export function CommandPalette({
             scale: open || reduce ? 1 : 0.97,
           }}
           transition={
-            reduce
-              ? { duration: 0.1 }
-              : open
-                ? PANEL_SPRING
-                : { duration: 0.12, ease: EASE_OUT }
+            reduce ? { duration: 0.1 } : open ? PANEL_SPRING : { duration: 0.12, ease: EASE_OUT }
           }
           onKeyDown={onKeyDown}
           className={cn(
@@ -234,9 +214,7 @@ export function CommandPalette({
               role="combobox"
               aria-expanded={open}
               aria-controls={`${uid}-list`}
-              aria-activedescendant={
-                filtered.length > 0 ? `${uid}-opt-${active}` : undefined
-              }
+              aria-activedescendant={filtered.length > 0 ? `${uid}-opt-${active}` : undefined}
               aria-autocomplete="list"
               className="h-12 flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
             />
@@ -252,9 +230,7 @@ export function CommandPalette({
             className="max-h-[60vh] overflow-y-auto p-2"
           >
             {filtered.length === 0 ? (
-              <div className="p-8 text-center text-sm text-muted-foreground">
-                {emptyMessage}
-              </div>
+              <div className="p-8 text-center text-sm text-muted-foreground">{emptyMessage}</div>
             ) : (
               grouped.map(([group, list]) => (
                 <div key={group} className="mb-1 last:mb-0">
@@ -284,9 +260,7 @@ export function CommandPalette({
                         tabIndex={open ? 0 : -1}
                         className={cn(
                           "relative isolate flex w-full items-center gap-3 rounded-md px-2 py-2 text-left text-sm transition-colors",
-                          isActive
-                            ? "text-foreground"
-                            : "text-muted-foreground",
+                          isActive ? "text-foreground" : "text-muted-foreground",
                         )}
                       >
                         {isActive ? (
@@ -311,13 +285,9 @@ export function CommandPalette({
                         ) : hasIcons ? (
                           <span className="relative z-10 h-4 w-4" />
                         ) : null}
-                        <span className="relative z-10 flex-1 truncate">
-                          {it.label}
-                        </span>
+                        <span className="relative z-10 flex-1 truncate">{it.label}</span>
                         {it.badge ? (
-                          <span className="relative z-10 shrink-0">
-                            {it.badge}
-                          </span>
+                          <span className="relative z-10 shrink-0">{it.badge}</span>
                         ) : null}
                         {it.hint ? (
                           <kbd className="relative z-10 rounded border border-border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground">

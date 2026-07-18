@@ -1,19 +1,19 @@
-import { Metadata } from "next"
-import Link from "next/link"
+import { Metadata } from "next";
+import Link from "next/link";
 
-import { BlocksNav } from "@/components/blocks-nav"
+import { BlocksNav } from "@/components/blocks-nav";
 import {
   PageActions,
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from "@/components/page-header"
-import { PageNav } from "@/components/page-nav"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
+} from "@/components/page-header";
+import { PageNav } from "@/components/page-nav";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
 
-const title = "Examples"
+const title = "Examples";
 const description =
-  "A collection of building blocks for agents and audio that you can customize and extend."
+  "A collection of building blocks for agents and audio that you can customize and extend.";
 
 export const metadata: Metadata = {
   title,
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: `/og?title=${encodeURIComponent(
-          title
+          title,
         )}&description=${encodeURIComponent(description)}`,
       },
     ],
@@ -32,17 +32,17 @@ export const metadata: Metadata = {
     images: [
       {
         url: `/og?title=${encodeURIComponent(
-          title
+          title,
         )}&description=${encodeURIComponent(description)}`,
       },
     ],
   },
-}
+};
 
 export default function BlocksLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <>
@@ -65,5 +65,5 @@ export default function BlocksLayout({
         <div className="container">{children}</div>
       </div>
     </>
-  )
+  );
 }

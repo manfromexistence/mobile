@@ -116,7 +116,7 @@ test("fetchOpencodeQuota parses three-window quota response", async () => {
           window_monthly: { used: 20.0, limit: 60.0, reset_at: null },
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -128,7 +128,7 @@ test("fetchOpencodeQuota parses three-window quota response", async () => {
       ((calls[0].init as Record<string, unknown>).headers as Record<string, unknown>)[
         "Authorization"
       ] === "Bearer test-key",
-    "should send Bearer auth"
+    "should send Bearer auth",
   );
 
   assert.ok(quota !== null, "should return a quota object");
@@ -137,23 +137,23 @@ test("fetchOpencodeQuota parses three-window quota response", async () => {
   // window_5h: 4/12 = 33.3%
   assert.ok(
     Math.abs((quota!.windows!["window_5h"].percentUsed as number) - 4 / 12) < 0.001,
-    "window_5h percentUsed should be ~0.333"
+    "window_5h percentUsed should be ~0.333",
   );
   // window_weekly: 15/30 = 50%
   assert.ok(
     Math.abs((quota!.windows!["window_weekly"].percentUsed as number) - 0.5) < 0.001,
-    "window_weekly percentUsed should be 0.5"
+    "window_weekly percentUsed should be 0.5",
   );
   // window_monthly: 20/60 = 33.3%
   assert.ok(
     Math.abs((quota!.windows!["window_monthly"].percentUsed as number) - 20 / 60) < 0.001,
-    "window_monthly percentUsed should be ~0.333"
+    "window_monthly percentUsed should be ~0.333",
   );
 
   // Worst-case: weekly at 50%
   assert.ok(
     Math.abs(quota!.percentUsed - 0.5) < 0.001,
-    "overall percentUsed should mirror worst window"
+    "overall percentUsed should mirror worst window",
   );
 
   invalidateOpencodeQuotaCache(connectionId);
@@ -172,7 +172,7 @@ test("fetchOpencodeQuota parses reset_at timestamps in windows", async () => {
           window_monthly: { used: 55.0, limit: 60.0, reset_at: null },
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const quota = await fetchOpencodeQuota(connectionId, { apiKey: "test-key" });
@@ -183,7 +183,7 @@ test("fetchOpencodeQuota parses reset_at timestamps in windows", async () => {
   assert.ok(typeof resetAt5h === "string", "window_5h resetAt should be an ISO string");
   assert.ok(
     new Date(resetAt5h as string).getTime() > Date.now(),
-    "resetAt should be in the future"
+    "resetAt should be in the future",
   );
 
   invalidateOpencodeQuotaCache(connectionId);
@@ -201,7 +201,7 @@ test("fetchOpencodeQuota sets limitReached when any window is exhausted", async 
           window_monthly: { used: 10.0, limit: 60.0, reset_at: null },
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const quota = await fetchOpencodeQuota(connectionId, { apiKey: "test-key" });
@@ -245,7 +245,7 @@ test("fetchOpencodeQuota caches results within TTL (second call is a no-op)", as
           window_monthly: { used: 20.0, limit: 60.0, reset_at: null },
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -281,7 +281,7 @@ test("registerOpencodeQuotaFetcher exposes opencode-go quota to preflight system
           window_monthly: { used: 10.0, limit: 60.0, reset_at: null },
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const preflight = await preflightQuota("opencode-go", connectionId, {
@@ -311,7 +311,7 @@ test("preflight honors an explicit opencode limit_reached flag even before a win
           window_monthly: { used: 30.0, limit: 60.0, reset_at: null },
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const preflight = await preflightQuota("opencode-go", connectionId, {
@@ -351,7 +351,7 @@ test("registerOpencodeQuotaFetcher registers opencode-go in quotaMonitor system"
           window_monthly: { used: 58.0, limit: 60.0, reset_at: null },
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   touchSession("session-oc", connectionId);
@@ -389,7 +389,7 @@ test("404 response is cached for 5 minutes to avoid hammering", async () => {
   assert.equal(
     callsAfterSecond,
     1,
-    `expected cache hit on second 404 call, but fetch ran ${callsAfterSecond - callsAfterFirst} extra times`
+    `expected cache hit on second 404 call, but fetch ran ${callsAfterSecond - callsAfterFirst} extra times`,
   );
 
   // After invalidation: 1 fresh fetch

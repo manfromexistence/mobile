@@ -1,10 +1,4 @@
-import type {
-  ButtonProps,
-  EmptyProps,
-  PointerDownOutsideEvent,
-  RenderProps,
-  Side,
-} from "@/types";
+import type { ButtonProps, EmptyProps, PointerDownOutsideEvent, RenderProps, Side } from "@/types";
 
 export interface SpeedDialProps extends RenderProps {
   /**
@@ -77,10 +71,7 @@ export interface SpeedDialProps extends RenderProps {
 export interface SpeedDialTriggerProps
   extends Omit<
     ButtonProps,
-    | keyof React.ComponentProps<"button">
-    | "onClick"
-    | "onMouseEnter"
-    | "onMouseLeave"
+    keyof React.ComponentProps<"button"> | "onClick" | "onMouseEnter" | "onMouseLeave"
   > {
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onMouseEnter?: (event: React.MouseEvent<HTMLButtonElement>) => void;

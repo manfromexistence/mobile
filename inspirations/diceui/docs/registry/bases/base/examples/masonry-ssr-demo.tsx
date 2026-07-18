@@ -23,8 +23,7 @@ function getTricks(): SkateboardTrick[] {
     {
       id: "3",
       title: "Pizza Guy",
-      description:
-        "The Pizza Guy is a trick where you flip the board like a pizza.",
+      description: "The Pizza Guy is a trick where you flip the board like a pizza.",
     },
     {
       id: "4",
@@ -41,8 +40,7 @@ function getTricks(): SkateboardTrick[] {
     {
       id: "6",
       title: "FS 540",
-      description:
-        "The FS 540 is a trick where you spin frontside 540 degrees in the air.",
+      description: "The FS 540 is a trick where you spin frontside 540 degrees in the air.",
     },
   ];
 }
@@ -50,9 +48,7 @@ function getTricks(): SkateboardTrick[] {
 function TrickCard({ trick }: { trick: SkateboardTrick }) {
   return (
     <div className="flex flex-col gap-2 rounded-md border bg-card p-4 text-card-foreground shadow-xs">
-      <div className="font-medium text-sm leading-tight sm:text-base">
-        {trick.title}
-      </div>
+      <div className="font-medium text-sm leading-tight sm:text-base">{trick.title}</div>
       <span className="text-muted-foreground text-sm">{trick.description}</span>
     </div>
   );

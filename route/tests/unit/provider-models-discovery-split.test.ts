@@ -76,11 +76,11 @@ test("helpers.mergeLocalCatalogModels dedupes by id, registry wins", () => {
     [
       { id: "a", name: "dup" },
       { id: "b", name: "B" },
-    ]
+    ],
   );
   assert.deepEqual(
     merged.map((m) => m.id),
-    ["a", "b"]
+    ["a", "b"],
   );
   assert.equal(merged.find((m) => m.id === "a")?.name, "A");
 });
@@ -99,7 +99,7 @@ test("helpers.isLocalOpenAIStyleProvider is false for a hosted provider", () => 
 test("normalizers.normalizeOpenAiLikeModelsResponse maps ids and applies the fallback owner", () => {
   const out = normalizeOpenAiLikeModelsResponse(
     { data: [{ id: "m1" }, { id: "m2", display_name: "M2", owned_by: "x" }] },
-    "acme"
+    "acme",
   );
   assert.deepEqual(out, [
     { id: "m1", name: "m1", owned_by: "acme" },
@@ -111,7 +111,7 @@ test("normalizers.normalizeOpenAiLikeModelsResponse drops entries without an id"
   const out = normalizeOpenAiLikeModelsResponse({ data: [{}, { id: "ok" }] }, "acme");
   assert.deepEqual(
     out.map((m) => m.id),
-    ["ok"]
+    ["ok"],
   );
 });
 
@@ -171,7 +171,7 @@ test("codex.normalizeCodexModelsResponse maps data/models/map payloads to respon
       "gpt-5.4": { title: "GPT 5.4" },
       invalid: null,
     }).map((m) => ({ id: m.id, name: m.name })),
-    [{ id: "gpt-5.4", name: "GPT 5.4" }]
+    [{ id: "gpt-5.4", name: "GPT 5.4" }],
   );
 });
 
@@ -216,7 +216,7 @@ test("codex.normalizeCodexModelsResponse parses the Codex live catalog shape", (
     [
       { id: "gpt-5.4", name: "GPT-5.4" },
       { id: "gpt-5.5", name: "GPT-5.5" },
-    ]
+    ],
   );
   assert.equal(parsed.find((model) => model.id === "gpt-5.4")?.inputTokenLimit, 400000);
   assert.equal(parsed.find((model) => model.id === "gpt-5.4")?.outputTokenLimit, 128000);
@@ -256,7 +256,7 @@ test("codex.normalizeCodexGithubCatalogResponse parses current client catalog me
 
   assert.deepEqual(
     parsed.map((model) => model.id),
-    ["gpt-5.6-sol"]
+    ["gpt-5.6-sol"],
   );
   assert.equal(parsed[0]?.description, "Latest frontier agentic coding model.");
   assert.equal(parsed[0]?.inputTokenLimit, 372000);
@@ -292,12 +292,12 @@ test("codex.enrichCodexModelsFromGithubCatalog keeps live entitlement list autho
         apiFormat: "responses",
         supportedEndpoints: ["responses"],
       },
-    ]
+    ],
   );
 
   assert.deepEqual(
     enriched.map((model) => model.id),
-    ["gpt-5.6-sol"]
+    ["gpt-5.6-sol"],
   );
   assert.equal(enriched[0]?.name, "Live Sol");
   assert.equal(enriched[0]?.inputTokenLimit, 372000);
@@ -333,7 +333,7 @@ test("codex.mergeCodexLiveModelsWithLocalCatalog auto-includes remote-only model
         maxOutputTokens: 128000,
       },
       { id: "gpt-5.6-sol-low", name: "GPT 5.6 Sol (Low)", contextLength: 500000 },
-    ]
+    ],
   );
 
   const ids = merged.map((model) => model.id);
@@ -360,7 +360,7 @@ test("codex discovery filters drop the GPT-5.4 family but keep other remote mode
   ]);
   assert.deepEqual(
     filtered.map((model) => model.id),
-    ["future-codex-model", "gpt-5.6-sol"]
+    ["future-codex-model", "gpt-5.6-sol"],
   );
 });
 
@@ -393,7 +393,7 @@ test("codex.buildCodexDiscoveryCatalog merges then filters in one step", () => {
         maxOutputTokens: 128000,
       },
       { id: "gpt-5.6-sol-max", name: "GPT 5.6 Sol Max" },
-    ]
+    ],
   );
   const ids = catalog.map((model) => model.id);
   assert.ok(ids.includes("brand-new-codex"));
@@ -401,21 +401,21 @@ test("codex.buildCodexDiscoveryCatalog merges then filters in one step", () => {
   assert.ok(ids.includes("gpt-5.6-sol-max"));
   assert.equal(
     ids.some((id) => String(id).startsWith("gpt-5.4")),
-    false
+    false,
   );
 
   // Optional curated helper still available for diagnostics only.
   const curated = reconcileCuratedCodexCatalog(
     [{ id: "brand-new-codex", name: "Brand New" }],
-    [{ id: "gpt-5.6-sol", name: "GPT 5.6 Sol" }]
+    [{ id: "gpt-5.6-sol", name: "GPT 5.6 Sol" }],
   );
   assert.deepEqual(
     curated.models.map((model) => model.id),
-    ["gpt-5.6-sol"]
+    ["gpt-5.6-sol"],
   );
   assert.deepEqual(
     curated.candidateModels.map((model) => model.id),
-    ["brand-new-codex"]
+    ["brand-new-codex"],
   );
 });
 
@@ -423,7 +423,7 @@ test("codex.normalizeCodexModelsResponse drops entries without an id", () => {
   const parsed = normalizeCodexModelsResponse({ models: [{ name: "" }, { model: "gpt-5.4" }] });
   assert.deepEqual(
     parsed.map((m) => m.id),
-    ["gpt-5.4"]
+    ["gpt-5.4"],
   );
 });
 
@@ -433,7 +433,7 @@ test("codex.fetchCodexDiscoveryModels returns null for missing token, auth failu
       accessToken: null,
       fetchImpl: async () => Response.json({ data: [{ id: "never-called" }] }),
     }),
-    null
+    null,
   );
 
   assert.equal(
@@ -441,7 +441,7 @@ test("codex.fetchCodexDiscoveryModels returns null for missing token, auth failu
       accessToken: "tok",
       fetchImpl: async () => new Response("unauthorized", { status: 401 }),
     }),
-    null
+    null,
   );
 
   assert.equal(
@@ -449,7 +449,7 @@ test("codex.fetchCodexDiscoveryModels returns null for missing token, auth failu
       accessToken: "tok",
       fetchImpl: async () => Response.json({ data: [] }),
     }),
-    null
+    null,
   );
 
   assert.equal(
@@ -459,7 +459,7 @@ test("codex.fetchCodexDiscoveryModels returns null for missing token, auth failu
         throw new Error("network down");
       },
     }),
-    null
+    null,
   );
 });
 
@@ -487,7 +487,7 @@ test("codex.fetchCodexDiscoveryModels calls the Codex models endpoint with Codex
   assert.equal(seenOriginator, "codex_cli_rs");
   assert.deepEqual(
     models?.map((m) => m.id),
-    ["gpt-5.6"]
+    ["gpt-5.6"],
   );
 });
 
@@ -512,12 +512,12 @@ test("codex.fetchCodexGithubCatalogModels fetches the OpenAI Codex repo catalog"
 
   assert.equal(
     CODEX_GITHUB_MODELS_URL,
-    "https://raw.githubusercontent.com/openai/codex/refs/heads/main/codex-rs/models-manager/models.json"
+    "https://raw.githubusercontent.com/openai/codex/refs/heads/main/codex-rs/models-manager/models.json",
   );
   assert.equal(seenUrl, CODEX_GITHUB_MODELS_URL);
   assert.deepEqual(
     models?.map((model) => model.id),
-    ["gpt-5.6-terra"]
+    ["gpt-5.6-terra"],
   );
 });
 
@@ -540,7 +540,7 @@ test("codex.fetchCodexGithubCatalogModels reuses cached catalog with ETags", asy
             },
           ],
         },
-        { headers: { etag: "catalog-v1" } }
+        { headers: { etag: "catalog-v1" } },
       );
     },
   });
@@ -562,15 +562,15 @@ test("codex.fetchCodexGithubCatalogModels reuses cached catalog with ETags", asy
 
   assert.deepEqual(
     first?.map((model) => model.id),
-    ["gpt-5.6-luna"]
+    ["gpt-5.6-luna"],
   );
   assert.deepEqual(
     second?.map((model) => model.id),
-    ["gpt-5.6-luna"]
+    ["gpt-5.6-luna"],
   );
   assert.deepEqual(
     third?.map((model) => model.id),
-    ["gpt-5.6-luna"]
+    ["gpt-5.6-luna"],
   );
   assert.deepEqual(calls, [
     { url: CODEX_GITHUB_MODELS_URL, ifNoneMatch: undefined },
@@ -583,23 +583,23 @@ test("codex.fetchCodexGithubCatalogModels reuses cached catalog with ETags", asy
 test("route.ts imports the discovery leaves and no longer declares the moved consts", () => {
   const route = fs.readFileSync(
     path.join("src", "app", "api", "providers", "[id]", "models", "route.ts"),
-    "utf-8"
+    "utf-8",
   );
   for (const leaf of ["helpers", "normalizers", "providerSets", "providerModelsConfig", "codex"]) {
     assert.match(
       route,
       new RegExp(`from "\\./discovery/${leaf}"`),
-      `route must import ./discovery/${leaf}`
+      `route must import ./discovery/${leaf}`,
     );
   }
   assert.doesNotMatch(
     route,
     /const PROVIDER_MODELS_CONFIG\s*:/,
-    "PROVIDER_MODELS_CONFIG must live in the leaf, not route.ts"
+    "PROVIDER_MODELS_CONFIG must live in the leaf, not route.ts",
   );
   assert.doesNotMatch(
     route,
     /const NAMED_OPENAI_STYLE_PROVIDERS\s*=/,
-    "NAMED_OPENAI_STYLE_PROVIDERS must live in the leaf, not route.ts"
+    "NAMED_OPENAI_STYLE_PROVIDERS must live in the leaf, not route.ts",
   );
 });

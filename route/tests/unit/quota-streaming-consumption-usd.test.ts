@@ -55,7 +55,7 @@ test("recordStreamingConsumption — records REAL usd for a 200 stream (regressi
         return 0.042;
       },
       schedule: (input) => scheduled.push(input),
-    }
+    },
   );
   assert.equal(scheduled.length, 1);
   assert.equal(scheduled[0].cost.usd, 0.042, "streaming usd must reflect calculateCost, not 0");
@@ -88,7 +88,7 @@ test("recordStreamingConsumption — skips non-200 streams entirely", async () =
         return 1;
       },
       schedule: (input) => scheduled.push(input),
-    }
+    },
   );
   assert.equal(scheduled.length, 0);
   assert.equal(calcCalled, false);
@@ -113,7 +113,7 @@ test("recordStreamingConsumption — null usage still records requests:1 (usd 0)
         return 1;
       },
       schedule: (input) => scheduled.push(input),
-    }
+    },
   );
   assert.equal(scheduled.length, 1);
   assert.equal(scheduled[0].cost.usd, 0);
@@ -133,7 +133,7 @@ test("recordStreamingConsumption — missing apiKeyId/connectionId → no-op", a
       streamUsage: { prompt_tokens: 1 },
       streamStatus: 200,
     },
-    { calculateCost: async () => 1, schedule: (input) => scheduled.push(input) }
+    { calculateCost: async () => 1, schedule: (input) => scheduled.push(input) },
   );
   await recordStreamingConsumption(
     {
@@ -144,7 +144,7 @@ test("recordStreamingConsumption — missing apiKeyId/connectionId → no-op", a
       streamUsage: { prompt_tokens: 1 },
       streamStatus: 200,
     },
-    { calculateCost: async () => 1, schedule: (input) => scheduled.push(input) }
+    { calculateCost: async () => 1, schedule: (input) => scheduled.push(input) },
   );
   assert.equal(scheduled.length, 0);
 });
@@ -166,7 +166,7 @@ test("recordStreamingConsumption — calculateCost throwing → records usd 0, n
         throw new Error("pricing unavailable");
       },
       schedule: (input) => scheduled.push(input),
-    }
+    },
   );
   assert.equal(scheduled.length, 1);
   assert.equal(scheduled[0].cost.usd, 0);

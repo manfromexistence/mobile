@@ -111,13 +111,7 @@ const MentionContent = React.forwardRef<ContentElement, MentionContentProps>(
         // Hide content visually during pasting while keeping items registered
         ...(context.isPasting ? visuallyHidden : {}),
       };
-    }, [
-      style,
-      positionerContext.floatingStyles,
-      forceMount,
-      context.open,
-      context.isPasting,
-    ]);
+    }, [style, positionerContext.floatingStyles, forceMount, context.open, context.isPasting]);
 
     useDismiss({
       enabled: context.open,

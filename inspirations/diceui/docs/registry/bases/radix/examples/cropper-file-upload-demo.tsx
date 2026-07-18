@@ -92,15 +92,11 @@ interface FileWithCrop {
 
 export default function CropperFileUploadDemo() {
   const [files, setFiles] = React.useState<File[]>([]);
-  const [filesWithCrops, setFilesWithCrops] = React.useState<
-    Map<string, FileWithCrop>
-  >(new Map());
+  const [filesWithCrops, setFilesWithCrops] = React.useState<Map<string, FileWithCrop>>(new Map());
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const [crop, setCrop] = React.useState<CropperPoint>({ x: 0, y: 0 });
   const [zoom, setZoom] = React.useState(1);
-  const [croppedArea, setCroppedArea] = React.useState<CropperAreaData | null>(
-    null,
-  );
+  const [croppedArea, setCroppedArea] = React.useState<CropperAreaData | null>(null);
   const [showCropDialog, setShowCropDialog] = React.useState(false);
 
   const selectedImageUrl = React.useMemo(() => {
@@ -153,15 +149,19 @@ export default function CropperFileUploadDemo() {
     [filesWithCrops],
   );
 
-  const onCropAreaChange: NonNullable<CropperProps["onCropAreaChange"]> =
-    React.useCallback((_, croppedAreaPixels) => {
+  const onCropAreaChange: NonNullable<CropperProps["onCropAreaChange"]> = React.useCallback(
+    (_, croppedAreaPixels) => {
       setCroppedArea(croppedAreaPixels);
-    }, []);
+    },
+    [],
+  );
 
-  const onCropComplete: NonNullable<CropperProps["onCropComplete"]> =
-    React.useCallback((_, croppedAreaPixels) => {
+  const onCropComplete: NonNullable<CropperProps["onCropComplete"]> = React.useCallback(
+    (_, croppedAreaPixels) => {
       setCroppedArea(croppedAreaPixels);
-    }, []);
+    },
+    [],
+  );
 
   const onCropReset = React.useCallback(() => {
     setCrop({ x: 0, y: 0 });
@@ -200,17 +200,9 @@ export default function CropperFileUploadDemo() {
 
       onCropDialogOpenChange(false);
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to crop image",
-      );
+      toast.error(error instanceof Error ? error.message : "Failed to crop image");
     }
-  }, [
-    selectedFile,
-    croppedArea,
-    selectedImageUrl,
-    filesWithCrops,
-    onCropDialogOpenChange,
-  ]);
+  }, [selectedFile, croppedArea, selectedImageUrl, filesWithCrops, onCropDialogOpenChange]);
 
   return (
     <FileUpload
@@ -226,12 +218,8 @@ export default function CropperFileUploadDemo() {
         <div className="flex flex-col items-center gap-2 text-center">
           <UploadIcon className="size-8 text-muted-foreground" />
           <div>
-            <p className="font-medium text-sm">
-              Drop images here or click to upload
-            </p>
-            <p className="text-muted-foreground text-xs">
-              PNG, JPG, WebP up to 10MB
-            </p>
+            <p className="font-medium text-sm">Drop images here or click to upload</p>
+            <p className="text-muted-foreground text-xs">PNG, JPG, WebP up to 10MB</p>
           </div>
           <FileUploadTrigger asChild>
             <Button variant="outline" size="sm">
@@ -248,18 +236,11 @@ export default function CropperFileUploadDemo() {
             <FileUploadItem key={file.name} value={file}>
               <FileUploadItemPreview
                 render={(originalFile, fallback) => {
-                  if (
-                    fileWithCrop?.cropped &&
-                    originalFile.type.startsWith("image/")
-                  ) {
+                  if (fileWithCrop?.cropped && originalFile.type.startsWith("image/")) {
                     const url = URL.createObjectURL(fileWithCrop.cropped);
                     return (
                       // biome-ignore lint/performance/noImgElement: dynamic cropped file URLs from user uploads don't work well with Next.js Image optimization
-                      <img
-                        src={url}
-                        alt={originalFile.name}
-                        className="size-full object-cover"
-                      />
+                      <img src={url} alt={originalFile.name} className="size-full object-cover" />
                     );
                   }
 
@@ -268,10 +249,7 @@ export default function CropperFileUploadDemo() {
               />
               <FileUploadItemMetadata />
               <div className="flex gap-1">
-                <Dialog
-                  open={showCropDialog}
-                  onOpenChange={onCropDialogOpenChange}
-                >
+                <Dialog open={showCropDialog} onOpenChange={onCropDialogOpenChange}>
                   <DialogTrigger asChild>
                     <Button
                       variant="ghost"
@@ -286,8 +264,7 @@ export default function CropperFileUploadDemo() {
                     <DialogHeader>
                       <DialogTitle>Crop Image</DialogTitle>
                       <DialogDescription>
-                        Adjust the crop area and zoom level for{" "}
-                        {selectedFile?.name}
+                        Adjust the crop area and zoom level for {selectedFile?.name}
                       </DialogDescription>
                     </DialogHeader>
                     {selectedFile && selectedImageUrl && (
@@ -311,9 +288,7 @@ export default function CropperFileUploadDemo() {
                           <CropperArea />
                         </Cropper>
                         <div className="flex flex-col gap-2">
-                          <Label className="text-sm">
-                            Zoom: {zoom.toFixed(2)}
-                          </Label>
+                          <Label className="text-sm">Zoom: {zoom.toFixed(2)}</Label>
                           <Slider
                             value={[zoom]}
                             onValueChange={(value) => setZoom(value[0] ?? 1)}

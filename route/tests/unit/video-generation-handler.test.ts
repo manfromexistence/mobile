@@ -52,7 +52,7 @@ test("handleVideoGeneration routes SD WebUI payloads and normalizes mp4 output",
       JSON.stringify({
         video: "bXA0LWJhc2U2NA==",
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -116,7 +116,7 @@ test("handleVideoGeneration polls KIE market tasks and returns video URLs", asyn
             resultJson: '{"resultUrls":["https://example.com/kie-video.mp4"]}',
           },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -174,7 +174,7 @@ test("handleVideoGeneration executes ComfyUI workflow and returns fetched output
             },
           },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -203,7 +203,7 @@ test("handleVideoGeneration executes ComfyUI workflow and returns fetched output
     assert.equal(
       promptBody.prompt["4"].inputs.width,
       720,
-      "workflow should use parsed width for latent image"
+      "workflow should use parsed width for latent image",
     );
     assert.equal(promptBody.prompt["4"].inputs.height, 480);
     assert.equal(promptBody.prompt["4"].inputs.batch_size, 20);
@@ -290,7 +290,7 @@ test("handleVideoGeneration normalizes SD WebUI image arrays and applies default
       JSON.stringify({
         images: ["ZnJhbWUtMQ==", { image: "ZnJhbWUtMg==" }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -354,7 +354,7 @@ test("handleVideoGeneration returns SD WebUI upstream errors and logs them", asy
     assert.equal(result.error, "provider busy");
     assert.deepEqual(
       logEntries.map((entry) => entry[0]),
-      ["info", "error"]
+      ["info", "error"],
     );
     assert.match(logEntries[1][2], /provider busy/);
   } finally {
@@ -391,7 +391,7 @@ test("handleVideoGeneration returns provider errors for ComfyUI failures and log
             },
           },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -424,7 +424,7 @@ test("handleVideoGeneration returns provider errors for ComfyUI failures and log
     assert.match(result.error, /ComfyUI fetch output failed \(500\)/);
     assert.deepEqual(
       logEntries.map((entry) => entry[0]),
-      ["info", "error"]
+      ["info", "error"],
     );
     assert.match(logEntries[1][2], /comfyui error/i);
   } finally {
@@ -469,7 +469,7 @@ test("handleVideoGeneration submits, polls and downloads Runway text-to-video ta
           status: "SUCCEEDED",
           output: ["https://cdn.runway.dev/output-1.mp4"],
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -501,7 +501,7 @@ test("handleVideoGeneration submits, polls and downloads Runway text-to-video ta
         "https://api.dev.runwayml.com/v1/tasks/task-runway-1",
         "https://api.dev.runwayml.com/v1/tasks/task-runway-1",
         "https://cdn.runway.dev/output-1.mp4",
-      ]
+      ],
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -530,7 +530,7 @@ test("handleVideoGeneration routes Runway image-to-video requests and can return
           status: "SUCCEEDED",
           output: ["https://cdn.runway.dev/output-2.mp4"],
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 

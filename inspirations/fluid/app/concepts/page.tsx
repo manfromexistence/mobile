@@ -17,12 +17,7 @@ export default function ConceptsIndex() {
       <div className="flex min-h-screen items-center justify-center px-6">
         <NavMenu activeSlug={null} aria-label="Concepts" className="w-56">
           {CONCEPTS.map((c, i) => (
-            <NavItem
-              key={c.slug}
-              index={i}
-              href={`/concepts/${c.slug}`}
-              label={c.name}
-            />
+            <NavItem key={c.slug} index={i} href={`/concepts/${c.slug}`} label={c.name} />
           ))}
         </NavMenu>
       </div>

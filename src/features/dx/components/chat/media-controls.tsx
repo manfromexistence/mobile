@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Box,
@@ -13,37 +13,33 @@ import {
   Sliders,
   Video,
   Wifi,
-} from "lucide-react"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Slider } from "@/components/ui/slider"
-import { cn } from "@/lib/utils"
+} from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Slider } from "@/components/ui/slider";
+import { cn } from "@/lib/utils";
 
-type MediaType = "text" | "email" | "image" | "video" | "audio" | "live" | "3d"
+type MediaType = "text" | "email" | "image" | "video" | "audio" | "live" | "3d";
 
 interface MediaControlsProps {
-  mediaType: MediaType
+  mediaType: MediaType;
 }
 
 interface LiveControlsProps {
-  isConnected?: boolean
-  isSpeaking?: boolean
-  onConnect?: () => void
-  onDisconnect?: () => void
+  isConnected?: boolean;
+  isSpeaking?: boolean;
+  onConnect?: () => void;
+  onDisconnect?: () => void;
 }
 
 // Image-specific controls
 export function ImageControls() {
-  const [ratio, setRatio] = useState("1:1")
-  const [imageCount, setImageCount] = useState(1)
-  const [open, setOpen] = useState(false)
+  const [ratio, setRatio] = useState("1:1");
+  const [imageCount, setImageCount] = useState(1);
+  const [open, setOpen] = useState(false);
 
-  const ratios = ["1:1", "16:9", "9:16", "4:3", "3:4"]
+  const ratios = ["1:1", "16:9", "9:16", "4:3", "3:4"];
 
   return (
     <div className="flex items-center gap-2">
@@ -62,8 +58,8 @@ export function ImageControls() {
                 variant={ratio === r ? "default" : "ghost"}
                 size="sm"
                 onClick={() => {
-                  setRatio(r)
-                  setOpen(false)
+                  setRatio(r);
+                  setOpen(false);
                 }}
                 className="w-full justify-start gap-2"
               >
@@ -84,9 +80,7 @@ export function ImageControls() {
         </PopoverTrigger>
         <PopoverContent side="top" align="start" className="w-64 p-4">
           <div className="space-y-3">
-            <div className="text-muted-foreground text-xs font-medium">
-              Number of Images
-            </div>
+            <div className="text-muted-foreground text-xs font-medium">Number of Images</div>
             <div className="flex items-center gap-3">
               <Slider
                 value={[imageCount]}
@@ -96,9 +90,7 @@ export function ImageControls() {
                 step={1}
                 className="flex-1"
               />
-              <span className="text-foreground text-sm font-medium">
-                {imageCount}
-              </span>
+              <span className="text-foreground text-sm font-medium">{imageCount}</span>
             </div>
           </div>
         </PopoverContent>
@@ -109,12 +101,12 @@ export function ImageControls() {
         <span className="hidden text-xs sm:inline">Settings</span>
       </Button>
     </div>
-  )
+  );
 }
 
 // Video-specific controls
 function VideoControls() {
-  const [duration, setDuration] = useState(5)
+  const [duration, setDuration] = useState(5);
 
   return (
     <div className="flex items-center gap-2">
@@ -127,9 +119,7 @@ function VideoControls() {
         </PopoverTrigger>
         <PopoverContent side="top" align="start" className="w-64 p-4">
           <div className="space-y-3">
-            <div className="text-muted-foreground text-xs font-medium">
-              Video Duration
-            </div>
+            <div className="text-muted-foreground text-xs font-medium">Video Duration</div>
             <div className="flex items-center gap-3">
               <Slider
                 value={[duration]}
@@ -139,9 +129,7 @@ function VideoControls() {
                 step={1}
                 className="flex-1"
               />
-              <span className="text-foreground text-sm font-medium">
-                {duration}s
-              </span>
+              <span className="text-foreground text-sm font-medium">{duration}s</span>
             </div>
           </div>
         </PopoverContent>
@@ -152,7 +140,7 @@ function VideoControls() {
         <span className="hidden text-xs sm:inline">16:9</span>
       </Button>
     </div>
-  )
+  );
 }
 
 // Audio-specific controls
@@ -164,17 +152,12 @@ function AudioControls() {
         <span className="hidden text-xs sm:inline">Voice</span>
       </Button>
     </div>
-  )
+  );
 }
 
 // Live-specific controls with connect/disconnect
-function LiveControls({
-  isConnected,
-  isSpeaking,
-  onConnect,
-  onDisconnect,
-}: LiveControlsProps) {
-  const [quality, setQuality] = useState("HD")
+function LiveControls({ isConnected, isSpeaking, onConnect, onDisconnect }: LiveControlsProps) {
+  const [quality, setQuality] = useState("HD");
 
   return (
     <div className="flex items-center gap-2">
@@ -192,10 +175,7 @@ function LiveControls({
         <Button
           variant="default"
           size="sm"
-          className={cn(
-            "h-8 gap-2 px-3",
-            "bg-green-600 hover:bg-green-700 text-white"
-          )}
+          className={cn("h-8 gap-2 px-3", "bg-green-600 hover:bg-green-700 text-white")}
           onClick={onConnect}
         >
           <Phone className="h-3.5 w-3.5" />
@@ -235,12 +215,12 @@ function LiveControls({
         </div>
       )}
     </div>
-  )
+  );
 }
 
 // 3D-specific controls
 function ThreeDControls() {
-  const [format, setFormat] = useState("GLB")
+  const [format, setFormat] = useState("GLB");
 
   return (
     <div className="flex items-center gap-2">
@@ -274,11 +254,11 @@ function ThreeDControls() {
         <span className="hidden text-xs sm:inline">Texture</span>
       </Button>
     </div>
-  )
+  );
 }
 
 export function MediaControls({ mediaType }: MediaControlsProps) {
-  return null
+  return null;
 }
 
-export { AudioControls, LiveControls, ThreeDControls, VideoControls }
+export { AudioControls, LiveControls, ThreeDControls, VideoControls };

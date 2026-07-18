@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  type ReactNode,
-} from "react";
+import { useState, useRef, useEffect, useCallback, type ReactNode } from "react";
 import { useIcon } from "@/lib/icon-context";
 import { ConceptFrame } from "@/app/concepts/_components/concept-frame";
 import { Button } from "@/registry/radix/button";
@@ -70,9 +64,7 @@ export default function AtlasPage() {
   // Attach a real demo file to the opening message, client-side only.
   useEffect(() => {
     const f = makeDemoFile();
-    setMessages((prev) =>
-      prev.map((m) => (m.id === "u1" ? { ...m, files: [f] } : m))
-    );
+    setMessages((prev) => prev.map((m) => (m.id === "u1" ? { ...m, files: [f] } : m)));
   }, []);
 
   const scrollToBottom = useCallback(() => {
@@ -103,7 +95,7 @@ export default function AtlasPage() {
         scrollToBottom();
       }, 1800);
     },
-    [scrollToBottom]
+    [scrollToBottom],
   );
 
   const handleSend = useCallback(
@@ -123,7 +115,7 @@ export default function AtlasPage() {
       setFiles([]);
       reply(trimmed || "the attached file");
     },
-    [reply]
+    [reply],
   );
 
   return (
@@ -133,64 +125,64 @@ export default function AtlasPage() {
         <div ref={scrollRef} className="flex-1 overflow-y-auto">
           <div className="mx-auto flex max-w-[720px] flex-col gap-5 px-6 py-12">
             {messages.map((m) => (
-                <ChatMessage
-                  key={m.id}
-                  from={m.from}
-                  files={m.files}
-                  time={m.from === "user" ? "Just now" : undefined}
-                  actions={
-                    m.from === "assistant" ? (
-                      <AssistantActions copy={Copy} regen={Regenerate} />
-                    ) : undefined
-                  }
-                >
-                  {m.text}
-                </ChatMessage>
-              ))}
-              {responding && (
-                <ChatMessage from="assistant" className="max-w-full">
-                  <ThinkingIndicator className="!px-0" />
-                </ChatMessage>
-              )}
-            </div>
-          </div>
-
-          {/* Composer */}
-          <div className="px-6 pb-5 pt-1">
-            <div className="mx-auto max-w-[720px]">
-              <InputMessage
-                value={draft}
-                onValueChange={setDraft}
-                onSend={handleSend}
-                placeholder="Message Atlas…"
-                files={files}
-                onFilesChange={setFiles}
-                status={status}
-                onStop={() => {
-                  setResponding(false);
-                  setStatus("idle");
-                }}
-                queue={queue}
-                onQueueChange={setQueue}
-                minRows={1}
-                maxRows={6}
-                leftSlot={({ openFilePicker }) => (
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={() => openFilePicker()}
-                    aria-label="Attach file"
-                  >
-                    <Paperclip />
-                  </Button>
-                )}
-              />
-              <p className="mt-2 text-center text-[11px] text-muted-foreground">
-                Atlas can make mistakes. This is a concept screen.
-              </p>
-            </div>
+              <ChatMessage
+                key={m.id}
+                from={m.from}
+                files={m.files}
+                time={m.from === "user" ? "Just now" : undefined}
+                actions={
+                  m.from === "assistant" ? (
+                    <AssistantActions copy={Copy} regen={Regenerate} />
+                  ) : undefined
+                }
+              >
+                {m.text}
+              </ChatMessage>
+            ))}
+            {responding && (
+              <ChatMessage from="assistant" className="max-w-full">
+                <ThinkingIndicator className="!px-0" />
+              </ChatMessage>
+            )}
           </div>
         </div>
+
+        {/* Composer */}
+        <div className="px-6 pb-5 pt-1">
+          <div className="mx-auto max-w-[720px]">
+            <InputMessage
+              value={draft}
+              onValueChange={setDraft}
+              onSend={handleSend}
+              placeholder="Message Atlas…"
+              files={files}
+              onFilesChange={setFiles}
+              status={status}
+              onStop={() => {
+                setResponding(false);
+                setStatus("idle");
+              }}
+              queue={queue}
+              onQueueChange={setQueue}
+              minRows={1}
+              maxRows={6}
+              leftSlot={({ openFilePicker }) => (
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={() => openFilePicker()}
+                  aria-label="Attach file"
+                >
+                  <Paperclip />
+                </Button>
+              )}
+            />
+            <p className="mt-2 text-center text-[11px] text-muted-foreground">
+              Atlas can make mistakes. This is a concept screen.
+            </p>
+          </div>
+        </div>
+      </div>
     </ConceptFrame>
   );
 }

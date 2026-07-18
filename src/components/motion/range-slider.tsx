@@ -155,10 +155,7 @@ export function RangeSlider({
       )}
     >
       {/* fill — runs from the left edge to the thumb, consistent tone */}
-      <motion.div
-        className="absolute inset-y-0 left-0 bg-foreground/15"
-        style={{ width: left }}
-      />
+      <motion.div className="absolute inset-y-0 left-0 bg-foreground/15" style={{ width: left }} />
 
       {/* ticks — slight inset so the end dots don't clip */}
       <div className="pointer-events-none absolute inset-x-2 inset-y-0">

@@ -1,8 +1,4 @@
-import {
-  Status,
-  StatusIndicator,
-  StatusLabel,
-} from "@/registry/bases/base/ui/status";
+import { Status, StatusIndicator, StatusLabel } from "@/registry/bases/base/ui/status";
 
 export default function StatusDemo() {
   return (

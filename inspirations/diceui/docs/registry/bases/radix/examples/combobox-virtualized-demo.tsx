@@ -30,15 +30,7 @@ const categories = [
   "Old School",
 ] as const;
 
-const variations = [
-  "Regular",
-  "Switch",
-  "Nollie",
-  "Fakie",
-  "360",
-  "Double",
-  "Late",
-] as const;
+const variations = ["Regular", "Switch", "Nollie", "Fakie", "360", "Double", "Late"] as const;
 
 type Category = (typeof categories)[number];
 type Variation = (typeof variations)[number];
@@ -59,8 +51,7 @@ const generateItems = (count: number): Option[] => {
 const items = generateItems(10000);
 
 export default function ComboboxVirtualizedDemo() {
-  const [content, setContent] =
-    React.useState<React.ComponentRef<"div"> | null>(null);
+  const [content, setContent] = React.useState<React.ComponentRef<"div"> | null>(null);
   const [value, setValue] = React.useState("");
   const [inputValue, setInputValue] = React.useState("");
   const deferredInputValue = useDeferredValue(inputValue);
@@ -68,9 +59,7 @@ export default function ComboboxVirtualizedDemo() {
   const filteredTricks = React.useMemo(() => {
     if (!deferredInputValue) return items;
     const normalized = deferredInputValue.toLowerCase();
-    return items.filter((item) =>
-      item.label.toLowerCase().includes(normalized),
-    );
+    return items.filter((item) => item.label.toLowerCase().includes(normalized));
   }, [deferredInputValue]);
 
   const virtualizer = useVirtualizer({

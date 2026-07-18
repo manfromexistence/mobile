@@ -37,7 +37,7 @@ const SYNTHETIC_TOOLS: ToolManifestEntry[] = [
 
 // Object-keyed variant (name → entry)
 const SYNTHETIC_TOOLS_MAP: Record<string, ToolManifestEntry> = Object.fromEntries(
-  SYNTHETIC_TOOLS.map((t) => [t.name, t])
+  SYNTHETIC_TOOLS.map((t) => [t.name, t]),
 );
 
 // ---------------------------------------------------------------------------
@@ -74,7 +74,7 @@ describe("reduceToolManifest — allowScopes filter (array input)", () => {
     // Count strictly less than full manifest
     assert.ok(
       (result as ToolManifestEntry[]).length < SYNTHETIC_TOOLS.length,
-      `reduced count (${(result as ToolManifestEntry[]).length}) must be < full count (${SYNTHETIC_TOOLS.length})`
+      `reduced count (${(result as ToolManifestEntry[]).length}) must be < full count (${SYNTHETIC_TOOLS.length})`,
     );
   });
 
@@ -87,7 +87,7 @@ describe("reduceToolManifest — allowScopes filter (array input)", () => {
 
     assert.ok(
       reducedTokens < fullTokens,
-      `reduced tokens (${reducedTokens}) must be < full tokens (${fullTokens})`
+      `reduced tokens (${reducedTokens}) must be < full tokens (${fullTokens})`,
     );
   });
 });
@@ -103,7 +103,7 @@ describe("reduceToolManifest — allowScopes filter (object/map input)", () => {
     assert.ok(resultNames.includes("tool_read_a"), "should include tool_read_a");
     assert.ok(!resultNames.includes("tool_write_a"), "should NOT include tool_write_a");
     assert.ok(
-      Object.keys(result as Record<string, ToolManifestEntry>).length < SYNTHETIC_TOOLS.length
+      Object.keys(result as Record<string, ToolManifestEntry>).length < SYNTHETIC_TOOLS.length,
     );
   });
 });
@@ -195,7 +195,7 @@ describe("reduceToolManifest — maxTools cap", () => {
     const result = reduceToolManifest(SYNTHETIC_TOOLS, profile) as ToolManifestEntry[];
     // Only read:x tools pass the scope filter; maxTools doesn't shrink further
     const readXCount = SYNTHETIC_TOOLS.filter(
-      (t) => t.scopes && t.scopes.includes("read:x")
+      (t) => t.scopes && t.scopes.includes("read:x"),
     ).length;
     assert.equal(result.length, readXCount);
   });
@@ -204,7 +204,7 @@ describe("reduceToolManifest — maxTools cap", () => {
     const profile: ToolProfile = { name: "neg", allowScopes: ["read:x"], maxTools: -1 };
     const result = reduceToolManifest(SYNTHETIC_TOOLS, profile) as ToolManifestEntry[];
     const readXCount = SYNTHETIC_TOOLS.filter(
-      (t) => t.scopes && t.scopes.includes("read:x")
+      (t) => t.scopes && t.scopes.includes("read:x"),
     ).length;
     assert.equal(result.length, readXCount, "negative maxTools must not drop tail entries");
   });
@@ -228,7 +228,7 @@ describe("reduceToolManifest — allow-everything profile", () => {
     assert.equal(
       Object.keys(result).length,
       Object.keys(SYNTHETIC_TOOLS_MAP).length,
-      "all keys preserved"
+      "all keys preserved",
     );
   });
 });
@@ -244,7 +244,7 @@ describe("reduceToolManifest — immutability", () => {
     assert.deepEqual(
       copy.map((t) => t.name),
       SYNTHETIC_TOOLS.map((t) => t.name),
-      "original order and names unchanged"
+      "original order and names unchanged",
     );
   });
 
@@ -253,7 +253,7 @@ describe("reduceToolManifest — immutability", () => {
       Object.entries(SYNTHETIC_TOOLS_MAP).map(([k, v]) => [
         k,
         { ...v, scopes: [...(v.scopes ?? [])] },
-      ])
+      ]),
     );
     const keysBeforeCall = Object.keys(copyMap).sort();
 

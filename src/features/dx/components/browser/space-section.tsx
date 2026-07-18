@@ -1,54 +1,45 @@
-"use client"
+"use client";
 
-import { useSortable } from "@dnd-kit/sortable"
-import {
-  ChevronDown,
-  ChevronRight,
-  Folder,
-  MoreHorizontal,
-  Plus,
-} from "lucide-react"
-import { AnimatePresence, motion } from "motion/react"
+import { useSortable } from "@dnd-kit/sortable";
+import { ChevronDown, ChevronRight, Folder, MoreHorizontal, Plus } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu"
+} from "@/components/ui/context-menu";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import type { DropPosition, Workspace } from "./types"
+} from "@/components/ui/dropdown-menu";
+import type { DropPosition, Workspace } from "./types";
 
 interface SpaceSectionProps {
-  workspace: Workspace | undefined
-  spaceCollapsed: boolean
-  isSpaceAreaHovered: boolean
-  dropdownOpen: boolean
-  overId: string | null
-  dropPosition: DropPosition
-  workspaces: Workspace[]
-  activeWorkspace: string
-  onToggleCollapse: () => void
-  onSetSpaceAreaHovered: (hovered: boolean) => void
-  onSetDropdownOpen: (open: boolean) => void
-  onSetActiveWorkspace: (id: string) => void
-  onRenameWorkspace: () => void
-  onEditWorkspaceIcon: () => void
-  onUnloadSpace: () => void
-  onDeleteSpace: () => void
-  onCreateFolder: () => void
-  onOpenWorkspaceDialog: () => void
-  onAddNewTab?: () => void
-  onCollapseAllFolders?: () => void
-  onExpandAllFolders?: () => void
-  renderWorkspaceIcon: (
-    workspace: Workspace,
-    isActive: boolean
-  ) => React.ReactElement
+  workspace: Workspace | undefined;
+  spaceCollapsed: boolean;
+  isSpaceAreaHovered: boolean;
+  dropdownOpen: boolean;
+  overId: string | null;
+  dropPosition: DropPosition;
+  workspaces: Workspace[];
+  activeWorkspace: string;
+  onToggleCollapse: () => void;
+  onSetSpaceAreaHovered: (hovered: boolean) => void;
+  onSetDropdownOpen: (open: boolean) => void;
+  onSetActiveWorkspace: (id: string) => void;
+  onRenameWorkspace: () => void;
+  onEditWorkspaceIcon: () => void;
+  onUnloadSpace: () => void;
+  onDeleteSpace: () => void;
+  onCreateFolder: () => void;
+  onOpenWorkspaceDialog: () => void;
+  onAddNewTab?: () => void;
+  onCollapseAllFolders?: () => void;
+  onExpandAllFolders?: () => void;
+  renderWorkspaceIcon: (workspace: Workspace, isActive: boolean) => React.ReactElement;
 }
 
 export function SpaceSection({
@@ -78,7 +69,7 @@ export function SpaceSection({
   const { setNodeRef } = useSortable({
     id: "space-section",
     data: { type: "space" },
-  })
+  });
 
   return (
     <div
@@ -128,11 +119,7 @@ export function SpaceSection({
                   transition={{ duration: 0.2 }}
                   className="shrink-0 overflow-hidden"
                 >
-                  <DropdownMenu
-                    modal={false}
-                    open={dropdownOpen}
-                    onOpenChange={onSetDropdownOpen}
-                  >
+                  <DropdownMenu modal={false} open={dropdownOpen} onOpenChange={onSetDropdownOpen}>
                     <DropdownMenuTrigger asChild>
                       <button
                         className="hover:bg-accent rounded p-0.5"
@@ -142,14 +129,11 @@ export function SpaceSection({
                         <MoreHorizontal className="text-muted-foreground h-4 w-4" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      side="right"
-                      className="border-border bg-card w-56"
-                    >
+                    <DropdownMenuContent side="right" className="border-border bg-card w-56">
                       <DropdownMenuItem
                         onSelect={(e) => {
-                          e.preventDefault()
-                          onRenameWorkspace()
+                          e.preventDefault();
+                          onRenameWorkspace();
                         }}
                         className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
@@ -157,8 +141,8 @@ export function SpaceSection({
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onSelect={(e) => {
-                          e.preventDefault()
-                          onEditWorkspaceIcon()
+                          e.preventDefault();
+                          onEditWorkspaceIcon();
                         }}
                         className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
@@ -179,8 +163,8 @@ export function SpaceSection({
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onSelect={(e) => {
-                          e.preventDefault()
-                          onUnloadSpace()
+                          e.preventDefault();
+                          onUnloadSpace();
                         }}
                         className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
@@ -194,9 +178,7 @@ export function SpaceSection({
                         <div className="mr-2 h-4 w-4 flex items-center justify-center shrink-0">
                           ✓
                         </div>
-                        <span className="max-w-[75%] truncate">
-                          {workspace?.name || "Space"}
-                        </span>
+                        <span className="max-w-[75%] truncate">{workspace?.name || "Space"}</span>
                       </DropdownMenuItem>
                       {workspaces
                         .filter((w) => w.id !== activeWorkspace)
@@ -204,17 +186,15 @@ export function SpaceSection({
                           <DropdownMenuItem
                             key={w.id}
                             onSelect={(e) => {
-                              e.preventDefault()
-                              onSetActiveWorkspace(w.id)
+                              e.preventDefault();
+                              onSetActiveWorkspace(w.id);
                             }}
                             className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                           >
                             <div className="mr-2 h-4 w-4 flex items-center justify-center shrink-0">
                               {renderWorkspaceIcon(w, false)}
                             </div>
-                            <span className="max-w-[75%] truncate">
-                              {w.name}
-                            </span>
+                            <span className="max-w-[75%] truncate">{w.name}</span>
                           </DropdownMenuItem>
                         ))}
                       <div className="border-border my-1 border-t" />
@@ -227,8 +207,8 @@ export function SpaceSection({
                       <div className="border-border my-1 border-t" />
                       <DropdownMenuItem
                         onSelect={(e) => {
-                          e.preventDefault()
-                          onCreateFolder()
+                          e.preventDefault();
+                          onCreateFolder();
                         }}
                         className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
@@ -237,8 +217,8 @@ export function SpaceSection({
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onSelect={(e) => {
-                          e.preventDefault()
-                          onOpenWorkspaceDialog()
+                          e.preventDefault();
+                          onOpenWorkspaceDialog();
                         }}
                         className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                       >
@@ -246,8 +226,8 @@ export function SpaceSection({
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onSelect={(e) => {
-                          e.preventDefault()
-                          onDeleteSpace()
+                          e.preventDefault();
+                          onDeleteSpace();
                         }}
                         className="text-destructive focus:bg-accent focus:text-destructive"
                       >
@@ -275,8 +255,8 @@ export function SpaceSection({
         <ContextMenuContent className="border-border bg-card w-56">
           <ContextMenuItem
             onSelect={(e) => {
-              e.preventDefault()
-              onCreateFolder()
+              e.preventDefault();
+              onCreateFolder();
             }}
             className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
           >
@@ -306,5 +286,5 @@ export function SpaceSection({
         </ContextMenuContent>
       </ContextMenu>
     </div>
-  )
+  );
 }

@@ -35,7 +35,7 @@ test("convertOpenAIContentToParts maps input_audio mp3 -> audio/mpeg mime (#913)
   assert.equal(
     inline!.inlineData!.mimeType,
     "audio/mpeg",
-    "mp3 must canonicalize to audio/mpeg per RFC 3003"
+    "mp3 must canonicalize to audio/mpeg per RFC 3003",
   );
 });
 

@@ -25,7 +25,7 @@ test("global provider cooldown is OFF by default (opt-in)", () => {
   assert.equal(
     resolveResilienceSettings({ resilienceSettings: { providerCooldown: { enabled: true } } })
       .providerCooldown.enabled,
-    true
+    true,
   );
 });
 
@@ -157,7 +157,7 @@ test("cleanup keeps entries for configured long maxRetryCooldownMs", () => {
     assert.equal(
       getCooldownEntryCount(),
       1,
-      "cleanup must not evict entries before configured maxRetryCooldownMs"
+      "cleanup must not evict entries before configured maxRetryCooldownMs",
     );
 
     fakeNow += 30 * 60 * 1000;

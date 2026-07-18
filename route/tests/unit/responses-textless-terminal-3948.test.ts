@@ -84,7 +84,7 @@ test("#3948 aggregator recovers reconstructed message when terminal output is te
   assert.equal(
     messageText(output),
     "Hello from codex",
-    "the reconstructed delta text must survive a textless terminal snapshot"
+    "the reconstructed delta text must survive a textless terminal snapshot",
   );
 });
 
@@ -95,6 +95,6 @@ test("#3948 terminal output still wins when it carries the assistant message", (
   assert.equal(
     messageText(output),
     "Hi there",
-    "the terminal snapshot message must be preserved (not overwritten by reconstruction)"
+    "the terminal snapshot message must be preserved (not overwritten by reconstruction)",
   );
 });

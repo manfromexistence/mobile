@@ -1,39 +1,52 @@
-import { motion, AnimatePresence } from 'motion/react';
-import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { Palette, Shapes, ImageIcon } from 'lucide-react';
-import { FiType, FiCircle, FiLayers, FiImage, FiCode, FiGrid, FiZap, FiBox, FiStar, FiHeart, FiEye, FiCompass } from 'react-icons/fi';
-import { useStars } from '../../../hooks/useStars';
-import rbLogo from '../../../assets/logos/react-bits-logo-small.svg';
-import './Features.css';
+import { motion, AnimatePresence } from "motion/react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { Link } from "react-router-dom";
+import { Palette, Shapes, ImageIcon } from "lucide-react";
+import {
+  FiType,
+  FiCircle,
+  FiLayers,
+  FiImage,
+  FiCode,
+  FiGrid,
+  FiZap,
+  FiBox,
+  FiStar,
+  FiHeart,
+  FiEye,
+  FiCompass,
+} from "react-icons/fi";
+import { useStars } from "../../../hooks/useStars";
+import rbLogo from "../../../assets/logos/react-bits-logo-small.svg";
+import "./Features.css";
 
 /* ─── 1. Component Name Marquee ─── */
 
-const toSlug = (s) => s.toLowerCase().replace(/\s+/g, '-');
+const toSlug = (s) => s.toLowerCase().replace(/\s+/g, "-");
 
 const ROW_A = [
-  { name: 'Dot Field', cat: 'backgrounds' },
-  { name: 'Line Waves', cat: 'backgrounds' },
-  { name: 'Blob Cursor', cat: 'animations' },
-  { name: 'Soft Aurora', cat: 'backgrounds' },
-  { name: 'Magnet Lines', cat: 'animations' },
-  { name: 'Antigravity', cat: 'animations' },
-  { name: 'Ballpit', cat: 'backgrounds' },
-  { name: 'Pixel Trail', cat: 'animations' },
-  { name: 'Magic Rings', cat: 'animations' },
+  { name: "Dot Field", cat: "backgrounds" },
+  { name: "Line Waves", cat: "backgrounds" },
+  { name: "Blob Cursor", cat: "animations" },
+  { name: "Soft Aurora", cat: "backgrounds" },
+  { name: "Magnet Lines", cat: "animations" },
+  { name: "Antigravity", cat: "animations" },
+  { name: "Ballpit", cat: "backgrounds" },
+  { name: "Pixel Trail", cat: "animations" },
+  { name: "Magic Rings", cat: "animations" },
 ];
 
 const ROW_B = [
-  { name: 'Radar', cat: 'backgrounds' },
-  { name: 'Shape Grid', cat: 'backgrounds' },
-  { name: 'Ribbons', cat: 'animations' },
-  { name: 'Grainient', cat: 'backgrounds' },
-  { name: 'Orbit Images', cat: 'animations' },
-  { name: 'Metallic Paint', cat: 'animations' },
-  { name: 'Balatro', cat: 'backgrounds' },
-  { name: 'Aurora', cat: 'backgrounds' },
-  { name: 'Splash Cursor', cat: 'animations' },
-  { name: 'Beams', cat: 'backgrounds' },
+  { name: "Radar", cat: "backgrounds" },
+  { name: "Shape Grid", cat: "backgrounds" },
+  { name: "Ribbons", cat: "animations" },
+  { name: "Grainient", cat: "backgrounds" },
+  { name: "Orbit Images", cat: "animations" },
+  { name: "Metallic Paint", cat: "animations" },
+  { name: "Balatro", cat: "backgrounds" },
+  { name: "Aurora", cat: "backgrounds" },
+  { name: "Splash Cursor", cat: "animations" },
+  { name: "Beams", cat: "backgrounds" },
 ];
 
 const ComponentMarquee = () => (
@@ -41,14 +54,18 @@ const ComponentMarquee = () => (
     <div className="ln-feat-marquee-track">
       <div className="ln-feat-marquee-scroll">
         {[...ROW_A, ...ROW_A].map((c, i) => (
-          <Link key={i} to={`/${c.cat}/${toSlug(c.name)}`} className="ln-feat-pill">{c.name}</Link>
+          <Link key={i} to={`/${c.cat}/${toSlug(c.name)}`} className="ln-feat-pill">
+            {c.name}
+          </Link>
         ))}
       </div>
     </div>
     <div className="ln-feat-marquee-track">
       <div className="ln-feat-marquee-scroll ln-feat-marquee-scroll--rev">
         {[...ROW_B, ...ROW_B].map((c, i) => (
-          <Link key={i} to={`/${c.cat}/${toSlug(c.name)}`} className="ln-feat-pill">{c.name}</Link>
+          <Link key={i} to={`/${c.cat}/${toSlug(c.name)}`} className="ln-feat-pill">
+            {c.name}
+          </Link>
         ))}
       </div>
     </div>
@@ -64,21 +81,21 @@ const ToolsFloat = () => (
     <motion.div
       className="ln-feat-tool-box ln-feat-tool-box--center"
       animate={{ y: [-4, 4, -4] }}
-      transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
     >
       <Palette size={22} />
     </motion.div>
     <motion.div
       className="ln-feat-tool-box ln-feat-tool-box--left"
       animate={{ y: [3, -3, 3], x: [-3, 2, -3] }}
-      transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
+      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
     >
       <Shapes size={18} />
     </motion.div>
     <motion.div
       className="ln-feat-tool-box ln-feat-tool-box--right"
       animate={{ y: [3, -3, 3], x: [3, -2, 3] }}
-      transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+      transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
     >
       <ImageIcon size={18} />
     </motion.div>
@@ -138,16 +155,16 @@ const CategorySelector = () => (
 /* ─── 4. Code Variants ─── */
 
 const VARIANTS = [
-  { label: 'JS + CSS', accent: 'rgba(255,255,255,0.5)' },
-  { label: 'TS + CSS', accent: 'rgba(255,255,255,0.5)' },
-  { label: 'JS + Tailwind', accent: 'rgba(255,255,255,0.5)' },
-  { label: 'TS + Tailwind', accent: 'rgba(255,255,255,0.5)' },
+  { label: "JS + CSS", accent: "rgba(255,255,255,0.5)" },
+  { label: "TS + CSS", accent: "rgba(255,255,255,0.5)" },
+  { label: "JS + Tailwind", accent: "rgba(255,255,255,0.5)" },
+  { label: "TS + Tailwind", accent: "rgba(255,255,255,0.5)" },
 ];
 
 const VariantTabs = () => {
   const [active, setActive] = useState(0);
   useEffect(() => {
-    const id = setInterval(() => setActive(p => (p + 1) % 4), 2200);
+    const id = setInterval(() => setActive((p) => (p + 1) % 4), 2200);
     return () => clearInterval(id);
   }, []);
 
@@ -179,62 +196,62 @@ const VariantTabs = () => {
 
 const AI_CONVOS = [
   {
-    q: 'add a glowing card',
+    q: "add a glowing card",
     lines: [
-      { cls: 'kw', text: 'import ' },
-      { cls: 'comp', text: 'BorderGlow' },
-      { cls: 'kw', text: ' from ' },
-      { cls: 'str', text: '"./BorderGlow"' },
+      { cls: "kw", text: "import " },
+      { cls: "comp", text: "BorderGlow" },
+      { cls: "kw", text: " from " },
+      { cls: "str", text: '"./BorderGlow"' },
     ],
     jsx: [
-      { cls: 'tag', text: '<' },
-      { cls: 'comp', text: 'BorderGlow' },
-      { cls: 'attr', text: ' glowIntensity' },
-      { cls: 'punc', text: '=' },
-      { cls: 'num', text: '{0.8}' },
-      { cls: 'tag', text: ' />' },
+      { cls: "tag", text: "<" },
+      { cls: "comp", text: "BorderGlow" },
+      { cls: "attr", text: " glowIntensity" },
+      { cls: "punc", text: "=" },
+      { cls: "num", text: "{0.8}" },
+      { cls: "tag", text: " />" },
     ],
   },
   {
-    q: 'animate hero text',
+    q: "animate hero text",
     lines: [
-      { cls: 'kw', text: 'import ' },
-      { cls: 'comp', text: 'SplitText' },
-      { cls: 'kw', text: ' from ' },
-      { cls: 'str', text: '"./SplitText"' },
+      { cls: "kw", text: "import " },
+      { cls: "comp", text: "SplitText" },
+      { cls: "kw", text: " from " },
+      { cls: "str", text: '"./SplitText"' },
     ],
     jsx: [
-      { cls: 'tag', text: '<' },
-      { cls: 'comp', text: 'SplitText' },
-      { cls: 'attr', text: ' animation' },
-      { cls: 'punc', text: '=' },
-      { cls: 'str', text: '"fadeUp"' },
-      { cls: 'tag', text: ' />' },
+      { cls: "tag", text: "<" },
+      { cls: "comp", text: "SplitText" },
+      { cls: "attr", text: " animation" },
+      { cls: "punc", text: "=" },
+      { cls: "str", text: '"fadeUp"' },
+      { cls: "tag", text: " />" },
     ],
   },
   {
-    q: 'particle background',
+    q: "particle background",
     lines: [
-      { cls: 'kw', text: 'import ' },
-      { cls: 'comp', text: 'Ballpit' },
-      { cls: 'kw', text: ' from ' },
-      { cls: 'str', text: '"./Ballpit"' },
+      { cls: "kw", text: "import " },
+      { cls: "comp", text: "Ballpit" },
+      { cls: "kw", text: " from " },
+      { cls: "str", text: '"./Ballpit"' },
     ],
     jsx: [
-      { cls: 'tag', text: '<' },
-      { cls: 'comp', text: 'Ballpit' },
-      { cls: 'attr', text: ' count' },
-      { cls: 'punc', text: '=' },
-      { cls: 'num', text: '{200}' },
-      { cls: 'tag', text: ' />' },
+      { cls: "tag", text: "<" },
+      { cls: "comp", text: "Ballpit" },
+      { cls: "attr", text: " count" },
+      { cls: "punc", text: "=" },
+      { cls: "num", text: "{200}" },
+      { cls: "tag", text: " />" },
     ],
   },
 ];
 
 const AITerminal = () => {
   const [idx, setIdx] = useState(0);
-  const [typed, setTyped] = useState('');
-  const [phase, setPhase] = useState('prompt'); // prompt | thinking | code
+  const [typed, setTyped] = useState("");
+  const [phase, setPhase] = useState("prompt"); // prompt | thinking | code
   const [codeLines, setCodeLines] = useState(0);
   const timers = useRef([]);
 
@@ -251,8 +268,8 @@ const AITerminal = () => {
 
   useEffect(() => {
     const conv = AI_CONVOS[idx];
-    setTyped('');
-    setPhase('prompt');
+    setTyped("");
+    setPhase("prompt");
     setCodeLines(0);
 
     // Pre-schedule the entire typing sequence so there's no per-char setState race
@@ -264,11 +281,14 @@ const AITerminal = () => {
     }
 
     // Thinking phase
-    schedule(() => setPhase('thinking'), delay);
+    schedule(() => setPhase("thinking"), delay);
     delay += 900;
 
     // Code lines
-    schedule(() => { setPhase('code'); setCodeLines(1); }, delay);
+    schedule(() => {
+      setPhase("code");
+      setCodeLines(1);
+    }, delay);
     delay += 280;
     schedule(() => setCodeLines(2), delay);
     delay += 280;
@@ -276,7 +296,7 @@ const AITerminal = () => {
     delay += 2400;
 
     // Next conversation
-    schedule(() => setIdx(p => (p + 1) % AI_CONVOS.length), delay);
+    schedule(() => setIdx((p) => (p + 1) % AI_CONVOS.length), delay);
 
     return clearTimers;
   }, [idx, clearTimers, schedule]);
@@ -296,7 +316,9 @@ const AITerminal = () => {
         >
           <div className="ln-feat-aichat-head">
             <div className="ln-feat-aichat-dots">
-              <span /><span /><span />
+              <span />
+              <span />
+              <span />
             </div>
             <span className="ln-feat-aichat-title">Editor</span>
           </div>
@@ -304,32 +326,57 @@ const AITerminal = () => {
           <div className="ln-feat-aichat-prompt-row">
             <span className="ln-feat-aichat-chevron">$</span>
             <span className="ln-feat-aichat-prompt">{typed}</span>
-            {phase === 'prompt' && <span className="ln-feat-aichat-cursor" />}
+            {phase === "prompt" && <span className="ln-feat-aichat-cursor" />}
           </div>
 
-          {phase === 'thinking' && (
+          {phase === "thinking" && (
             <div className="ln-feat-aichat-thinking">
-              <span /><span /><span />
+              <span />
+              <span />
+              <span />
             </div>
           )}
 
-          {phase === 'code' && (
+          {phase === "code" && (
             <div className="ln-feat-aichat-code-block">
               {codeLines >= 1 && (
-                <motion.div className="ln-feat-aichat-code-line" initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.2 }}>
+                <motion.div
+                  className="ln-feat-aichat-code-line"
+                  initial={{ opacity: 0, x: -6 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
                   <span className="ln-feat-aichat-ln">1</span>
-                  {conv.lines.map((t, j) => <span key={j} className={`ac-${t.cls}`}>{t.text}</span>)}
+                  {conv.lines.map((t, j) => (
+                    <span key={j} className={`ac-${t.cls}`}>
+                      {t.text}
+                    </span>
+                  ))}
                 </motion.div>
               )}
               {codeLines >= 2 && (
-                <motion.div className="ln-feat-aichat-code-line" initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.2 }}>
+                <motion.div
+                  className="ln-feat-aichat-code-line"
+                  initial={{ opacity: 0, x: -6 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
                   <span className="ln-feat-aichat-ln">2</span>
                 </motion.div>
               )}
               {codeLines >= 3 && (
-                <motion.div className="ln-feat-aichat-code-line" initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.2 }}>
+                <motion.div
+                  className="ln-feat-aichat-code-line"
+                  initial={{ opacity: 0, x: -6 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
                   <span className="ln-feat-aichat-ln">3</span>
-                  {conv.jsx.map((t, j) => <span key={j} className={`ac-${t.cls}`}>{t.text}</span>)}
+                  {conv.jsx.map((t, j) => (
+                    <span key={j} className={`ac-${t.cls}`}>
+                      {t.text}
+                    </span>
+                  ))}
                 </motion.div>
               )}
             </div>
@@ -345,8 +392,8 @@ const AITerminal = () => {
 const StarCard = () => {
   const stars = useStars();
   const formatted = useMemo(
-    () => (stars >= 1000 ? `${(stars / 1000).toFixed(1).replace(/\.0$/, '')}k` : String(stars)),
-    [stars]
+    () => (stars >= 1000 ? `${(stars / 1000).toFixed(1).replace(/\.0$/, "")}k` : String(stars)),
+    [stars],
   );
 
   return (
@@ -372,7 +419,7 @@ const StarCard = () => {
             strokeLinecap="round"
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
-            transition={{ duration: 2, ease: 'easeOut' }}
+            transition={{ duration: 2, ease: "easeOut" }}
           />
         </svg>
       </div>
@@ -384,38 +431,38 @@ const StarCard = () => {
 
 const CARDS = [
   {
-    title: '130+ Components',
-    desc: 'Backgrounds, text effects, animations, UI patterns. The stuff you\'d build from scratch, already done.',
+    title: "130+ Components",
+    desc: "Backgrounds, text effects, animations, UI patterns. The stuff you'd build from scratch, already done.",
     span: 5,
     visual: <ComponentMarquee />,
   },
   {
-    title: 'Visual Editors',
-    desc: 'Three free tools to play with components and grab the code.',
+    title: "Visual Editors",
+    desc: "Three free tools to play with components and grab the code.",
     span: 3,
     visual: <ToolsFloat />,
   },
   {
-    title: 'Well Organized',
-    desc: 'Four clear categories so you\'re not scrolling through a wall of unrelated stuff.',
+    title: "Well Organized",
+    desc: "Four clear categories so you're not scrolling through a wall of unrelated stuff.",
     span: 4,
     visual: <CategorySelector />,
   },
   {
-    title: 'Pick Your Stack',
-    desc: 'JS or TypeScript, CSS or Tailwind. Every component comes in all four flavors.',
+    title: "Pick Your Stack",
+    desc: "JS or TypeScript, CSS or Tailwind. Every component comes in all four flavors.",
     span: 4,
     visual: <VariantTabs />,
   },
   {
-    title: 'AI-Ready',
-    desc: 'Works great with Cursor, Copilot, and v0. Describe what you need, drop it in, ship.',
+    title: "AI-Ready",
+    desc: "Works great with Cursor, Copilot, and v0. Describe what you need, drop it in, ship.",
     span: 5,
     visual: <AITerminal />,
   },
   {
-    title: 'Growing Fast',
-    desc: 'React\'s fastest-growing component library on GitHub. Not even close.',
+    title: "Growing Fast",
+    desc: "React's fastest-growing component library on GitHub. Not even close.",
     span: 3,
     visual: <StarCard />,
   },
@@ -435,12 +482,10 @@ const Features = () => (
             className={`ln-features-card ln-features-card--span-${card.span}`}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
+            viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.5, delay: i * 0.07, ease: [0.21, 0.47, 0.32, 0.98] }}
           >
-            <div className="ln-features-card-visual">
-              {card.visual}
-            </div>
+            <div className="ln-features-card-visual">{card.visual}</div>
             <div className="ln-features-card-body">
               <h3>{card.title}</h3>
               <p>{card.desc}</p>

@@ -188,9 +188,7 @@ describe("Stepper", () => {
     const onValidate = vi.fn().mockResolvedValue(true);
     const onValueChange = vi.fn();
 
-    render(
-      <StepperTest onValueChange={onValueChange} onValidate={onValidate} />,
-    );
+    render(<StepperTest onValueChange={onValueChange} onValidate={onValidate} />);
 
     // Click on step 2 trigger directly (this should trigger validation)
     const step2Trigger = screen.getByRole("tab", { name: /step 2/i });
@@ -209,9 +207,7 @@ describe("Stepper", () => {
     const onValidate = vi.fn().mockResolvedValue(false);
     const onValueChange = vi.fn();
 
-    render(
-      <StepperTest onValueChange={onValueChange} onValidate={onValidate} />,
-    );
+    render(<StepperTest onValueChange={onValueChange} onValidate={onValidate} />);
 
     // Click on step 2 trigger directly (this should trigger validation)
     const step2Trigger = screen.getByRole("tab", { name: /step 2/i });
@@ -232,9 +228,7 @@ describe("Stepper", () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
 
-    render(
-      <StepperTest activationMode="manual" onValueChange={onValueChange} />,
-    );
+    render(<StepperTest activationMode="manual" onValueChange={onValueChange} />);
 
     const step2Trigger = screen.getByRole("tab", { name: /step 2/i });
     step2Trigger.focus();
@@ -299,9 +293,7 @@ describe("Stepper", () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
 
-    render(
-      <StepperTest loop onValueChange={onValueChange} defaultValue="step3" />,
-    );
+    render(<StepperTest loop onValueChange={onValueChange} defaultValue="step3" />);
 
     const step3Trigger = screen.getByRole("tab", { name: /step 3/i });
     step3Trigger.focus();

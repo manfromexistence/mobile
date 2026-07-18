@@ -16,7 +16,7 @@ test("T29: Vertex executor builds regional Gemini URL from Service Account proje
 
   assert.equal(
     url,
-    "https://aiplatform.googleapis.com/v1/projects/vertex-project-123/locations/europe-west4/publishers/google/models/gemini-3.1-pro-preview:streamGenerateContent?alt=sse"
+    "https://aiplatform.googleapis.com/v1/projects/vertex-project-123/locations/europe-west4/publishers/google/models/gemini-3.1-pro-preview:streamGenerateContent?alt=sse",
   );
 });
 
@@ -29,7 +29,7 @@ test("T29: Vertex executor routes partner models to global openapi endpoint", ()
 
   assert.equal(
     url,
-    "https://aiplatform.googleapis.com/v1/projects/vertex-project-123/locations/global/endpoints/openapi/chat/completions"
+    "https://aiplatform.googleapis.com/v1/projects/vertex-project-123/locations/global/endpoints/openapi/chat/completions",
   );
 });
 
@@ -42,7 +42,7 @@ test("T29: Vertex executor defaults region to us-central1 when not configured", 
 
   assert.equal(
     url,
-    "https://aiplatform.googleapis.com/v1/projects/vertex-project-123/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent"
+    "https://aiplatform.googleapis.com/v1/projects/vertex-project-123/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
   );
 });
 
@@ -68,7 +68,7 @@ test("T29: Vertex executor rejects incomplete Service Account JSON clearly", asy
         stream: false,
         credentials: { apiKey: JSON.stringify({ project_id: "p" }) },
       }),
-    /missing required fields/i
+    /missing required fields/i,
   );
 });
 
@@ -79,10 +79,10 @@ test("T29: Vertex executor routes a non-JSON Express API key to the project-less
 
   assert.equal(
     stream,
-    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-2.5-flash:streamGenerateContent?alt=sse&key=express-key-123"
+    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-2.5-flash:streamGenerateContent?alt=sse&key=express-key-123",
   );
   assert.equal(
     nonStream,
-    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-2.5-flash:generateContent?key=express-key-123"
+    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-2.5-flash:generateContent?key=express-key-123",
   );
 });

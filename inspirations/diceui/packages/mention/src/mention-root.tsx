@@ -61,9 +61,7 @@ interface MentionContextValue {
   onItemsFilter: () => void;
   getIsItemVisible: (value: string) => boolean;
   highlightedItem: CollectionItem<ItemElement, ItemData> | null;
-  onHighlightedItemChange: (
-    item: CollectionItem<ItemElement, ItemData> | null,
-  ) => void;
+  onHighlightedItemChange: (item: CollectionItem<ItemElement, ItemData> | null) => void;
   onHighlightMove: (direction: HighlightingDirection) => void;
   mentions: Mention[];
   onMentionsChange: React.Dispatch<React.SetStateAction<Mention[]>>;
@@ -84,14 +82,10 @@ interface MentionContextValue {
   listId: string;
 }
 
-const [MentionProvider, useMentionContext] =
-  createContext<MentionContextValue>(ROOT_NAME);
+const [MentionProvider, useMentionContext] = createContext<MentionContextValue>(ROOT_NAME);
 
 interface MentionRootProps
-  extends Omit<
-    React.ComponentPropsWithoutRef<typeof Primitive.div>,
-    "value" | "defaultValue"
-  > {
+  extends Omit<React.ComponentPropsWithoutRef<typeof Primitive.div>, "value" | "defaultValue"> {
   /** The currently selected value. */
   value?: string[];
 
@@ -166,263 +160,249 @@ interface MentionRootProps
   name?: string;
 }
 
-const MentionRoot = React.forwardRef<RootElement, MentionRootProps>(
-  (props, forwardedRef) => {
-    const {
-      children,
-      open: openProp,
-      defaultOpen = false,
-      onOpenChange: onOpenChangeProp,
-      inputValue: inputValueProp,
-      onInputValueChange,
-      value: valueProp,
-      defaultValue,
-      onValueChange,
-      onFilter,
-      trigger: triggerProp = "@",
-      dir: dirProp,
-      disabled = false,
-      exactMatch = false,
-      loop = false,
-      modal = false,
-      readonly = false,
-      required = false,
-      name,
-      ...rootProps
-    } = props;
+const MentionRoot = React.forwardRef<RootElement, MentionRootProps>((props, forwardedRef) => {
+  const {
+    children,
+    open: openProp,
+    defaultOpen = false,
+    onOpenChange: onOpenChangeProp,
+    inputValue: inputValueProp,
+    onInputValueChange,
+    value: valueProp,
+    defaultValue,
+    onValueChange,
+    onFilter,
+    trigger: triggerProp = "@",
+    dir: dirProp,
+    disabled = false,
+    exactMatch = false,
+    loop = false,
+    modal = false,
+    readonly = false,
+    required = false,
+    name,
+    ...rootProps
+  } = props;
 
-    const listRef = React.useRef<ContentElement | null>(null);
-    const inputRef = React.useRef<InputElement | null>(null);
+  const listRef = React.useRef<ContentElement | null>(null);
+  const inputRef = React.useRef<InputElement | null>(null);
 
-    const inputId = useId();
-    const labelId = useId();
-    const listId = useId();
+  const inputId = useId();
+  const labelId = useId();
+  const listId = useId();
 
-    const { collectionRef, itemMap, getItems, onItemRegister } = useCollection<
-      ItemElement,
-      ItemData
-    >();
-    const { isFormControl, onTriggerChange } = useFormControl<RootElement>();
-    const composedRef = composeRefs(forwardedRef, collectionRef, (node) =>
-      onTriggerChange(node),
-    );
+  const { collectionRef, itemMap, getItems, onItemRegister } = useCollection<
+    ItemElement,
+    ItemData
+  >();
+  const { isFormControl, onTriggerChange } = useFormControl<RootElement>();
+  const composedRef = composeRefs(forwardedRef, collectionRef, (node) => onTriggerChange(node));
 
-    const dir = useDirection(dirProp);
-    const [open = false, setOpen] = useControllableState({
-      prop: openProp,
-      defaultProp: defaultOpen,
-      onChange: onOpenChangeProp,
-    });
-    const [value = [], setValue] = useControllableState({
-      prop: valueProp,
-      defaultProp: defaultValue,
-      onChange: onValueChange,
-    });
-    const [inputValue = "", setInputValue] = useControllableState({
-      prop: inputValueProp,
-      defaultProp: "",
-      onChange: onInputValueChange,
-    });
-    const [trigger, setTrigger] =
-      React.useState<MentionContextValue["trigger"]>(triggerProp);
-    const [virtualAnchor, setVirtualAnchor] =
-      React.useState<VirtualElement | null>(null);
-    const [highlightedItem, setHighlightedItem] = React.useState<CollectionItem<
-      ItemElement,
-      ItemData
-    > | null>(null);
-    const [mentions, setMentions] = React.useState<Mention[]>([]);
-    const [isPasting, setIsPasting] = React.useState(false);
+  const dir = useDirection(dirProp);
+  const [open = false, setOpen] = useControllableState({
+    prop: openProp,
+    defaultProp: defaultOpen,
+    onChange: onOpenChangeProp,
+  });
+  const [value = [], setValue] = useControllableState({
+    prop: valueProp,
+    defaultProp: defaultValue,
+    onChange: onValueChange,
+  });
+  const [inputValue = "", setInputValue] = useControllableState({
+    prop: inputValueProp,
+    defaultProp: "",
+    onChange: onInputValueChange,
+  });
+  const [trigger, setTrigger] = React.useState<MentionContextValue["trigger"]>(triggerProp);
+  const [virtualAnchor, setVirtualAnchor] = React.useState<VirtualElement | null>(null);
+  const [highlightedItem, setHighlightedItem] = React.useState<CollectionItem<
+    ItemElement,
+    ItemData
+  > | null>(null);
+  const [mentions, setMentions] = React.useState<Mention[]>([]);
+  const [isPasting, setIsPasting] = React.useState(false);
 
-    const { filterStore, onItemsFilter, getIsItemVisible } = useFilterStore({
-      itemMap,
-      onFilter,
-      exactMatch,
-      onCallback: (itemCount) => {
-        if (itemCount === 0) {
-          // Close the menu if no items match the filter
-          setOpen(false);
-          setHighlightedItem(null);
-          setVirtualAnchor(null);
-        }
-      },
-    });
-
-    const getEnabledItems = React.useCallback(() => {
-      return getItems().filter((item) => !item.disabled);
-    }, [getItems]);
-
-    const onOpenChange = React.useCallback(
-      (open: boolean) => {
-        if (open && filterStore.search && filterStore.itemCount === 0) {
-          return;
-        }
-        setOpen(open);
-        if (open) {
-          requestAnimationFrame(() => {
-            const items = getEnabledItems();
-            const firstItem = items[0] ?? null;
-            setHighlightedItem(firstItem);
-          });
-        } else {
-          setHighlightedItem(null);
-          setVirtualAnchor(null);
-        }
-      },
-      [setOpen, getEnabledItems, filterStore],
-    );
-
-    const { onHighlightMove } = useListHighlighting({
-      highlightedItem,
-      onHighlightedItemChange: setHighlightedItem,
-      getItems: React.useCallback(() => {
-        return getItems().filter(
-          (item) => !item.disabled && getIsItemVisible(item.value),
-        );
-      }, [getItems, getIsItemVisible]),
-      getIsItemSelected: (item) => value.includes(item.value),
-      loop,
-    });
-
-    const onMentionAdd = React.useCallback(
-      (payloadValue: string, triggerIndex: number) => {
-        const input = inputRef.current;
-        if (!input) return;
-
-        const mentionLabel =
-          getEnabledItems().find((item) => item.value === payloadValue)
-            ?.label ?? payloadValue;
-        const mentionText = `${trigger}${mentionLabel}`;
-        const beforeTrigger = input.value.slice(0, triggerIndex);
-        const insertionPoint = input.selectionStart ?? triggerIndex;
-        const afterSearchText = input.value.slice(insertionPoint);
-        const newValue = `${beforeTrigger}${mentionText} ${afterSearchText}`;
-
-        const insertionLength = mentionText.length + 1;
-
-        const newMention: Mention = {
-          value: payloadValue,
-          start: triggerIndex,
-          end: triggerIndex + mentionText.length,
-        };
-
-        setMentions((prev) => {
-          const updatedMentions = prev.map((mention) => {
-            if (mention.start >= insertionPoint) {
-              return {
-                ...mention,
-                start: mention.start + insertionLength,
-                end: mention.end + insertionLength,
-              };
-            }
-            return mention;
-          });
-          return [...updatedMentions, newMention];
-        });
-
-        input.value = newValue;
-        setInputValue(newValue);
-        setValue((prev) => [...(prev ?? []), payloadValue]);
-
-        const newCursorPosition = triggerIndex + mentionText.length + 1;
-        input.setSelectionRange(newCursorPosition, newCursorPosition);
-
+  const { filterStore, onItemsFilter, getIsItemVisible } = useFilterStore({
+    itemMap,
+    onFilter,
+    exactMatch,
+    onCallback: (itemCount) => {
+      if (itemCount === 0) {
+        // Close the menu if no items match the filter
         setOpen(false);
         setHighlightedItem(null);
-        filterStore.search = "";
-      },
-      [trigger, setInputValue, setValue, setOpen, getEnabledItems, filterStore],
-    );
+        setVirtualAnchor(null);
+      }
+    },
+  });
 
-    const onMentionsRemove = React.useCallback(
-      (mentionsToRemove: Mention[]) => {
-        setMentions((prev) => {
-          // must match their actual order in the text
-          const removed = [...mentionsToRemove].sort(
-            (a, b) => a.start - b.start,
-          );
+  const getEnabledItems = React.useCallback(() => {
+    return getItems().filter((item) => !item.disabled);
+  }, [getItems]);
 
-          const newMentions = prev
-            .filter((mention) => {
-              const isRemoved = removed.some((m) => m.value === mention.value);
-              return !isRemoved;
-            })
-            .map((mention) => {
-              // Shift mentions
-              const shift = removed
-                .filter((r) => r.start < mention.start)
-                .reduce((acc, r) => acc + (r.end - r.start + 1), 0);
-
-              return {
-                ...mention,
-                start: mention.start - shift,
-                end: mention.end - shift,
-              };
-            });
-
-          return newMentions;
+  const onOpenChange = React.useCallback(
+    (open: boolean) => {
+      if (open && filterStore.search && filterStore.itemCount === 0) {
+        return;
+      }
+      setOpen(open);
+      if (open) {
+        requestAnimationFrame(() => {
+          const items = getEnabledItems();
+          const firstItem = items[0] ?? null;
+          setHighlightedItem(firstItem);
         });
-      },
-      [],
-    );
+      } else {
+        setHighlightedItem(null);
+        setVirtualAnchor(null);
+      }
+    },
+    [setOpen, getEnabledItems, filterStore],
+  );
 
-    return (
-      <MentionProvider
-        open={open}
-        onOpenChange={onOpenChange}
-        inputValue={inputValue}
-        onInputValueChange={setInputValue}
-        value={value}
-        onValueChange={setValue}
-        virtualAnchor={virtualAnchor}
-        onVirtualAnchorChange={setVirtualAnchor}
-        trigger={trigger}
-        onTriggerChange={setTrigger}
-        getEnabledItems={getEnabledItems}
-        onItemRegister={onItemRegister}
-        filterStore={filterStore}
-        onFilter={onFilter}
-        onItemsFilter={onItemsFilter}
-        getIsItemVisible={getIsItemVisible}
-        highlightedItem={highlightedItem}
-        onHighlightedItemChange={setHighlightedItem}
-        onHighlightMove={onHighlightMove}
-        mentions={mentions}
-        onMentionsChange={setMentions}
-        onMentionAdd={onMentionAdd}
-        onMentionsRemove={onMentionsRemove}
-        isPasting={isPasting}
-        onIsPastingChange={setIsPasting}
-        dir={dir}
-        disabled={disabled}
-        exactMatch={exactMatch}
-        loop={loop}
-        modal={modal}
-        readonly={readonly}
-        inputRef={inputRef}
-        listRef={listRef}
-        inputId={inputId}
-        labelId={labelId}
-        listId={listId}
-      >
-        <Primitive.div ref={composedRef} {...rootProps}>
-          {children}
-          {isFormControl && name && (
-            <VisuallyHiddenInput
-              type="hidden"
-              control={collectionRef.current}
-              name={name}
-              value={value}
-              disabled={disabled}
-              readOnly={readonly}
-              required={required}
-            />
-          )}
-        </Primitive.div>
-      </MentionProvider>
-    );
-  },
-);
+  const { onHighlightMove } = useListHighlighting({
+    highlightedItem,
+    onHighlightedItemChange: setHighlightedItem,
+    getItems: React.useCallback(() => {
+      return getItems().filter((item) => !item.disabled && getIsItemVisible(item.value));
+    }, [getItems, getIsItemVisible]),
+    getIsItemSelected: (item) => value.includes(item.value),
+    loop,
+  });
+
+  const onMentionAdd = React.useCallback(
+    (payloadValue: string, triggerIndex: number) => {
+      const input = inputRef.current;
+      if (!input) return;
+
+      const mentionLabel =
+        getEnabledItems().find((item) => item.value === payloadValue)?.label ?? payloadValue;
+      const mentionText = `${trigger}${mentionLabel}`;
+      const beforeTrigger = input.value.slice(0, triggerIndex);
+      const insertionPoint = input.selectionStart ?? triggerIndex;
+      const afterSearchText = input.value.slice(insertionPoint);
+      const newValue = `${beforeTrigger}${mentionText} ${afterSearchText}`;
+
+      const insertionLength = mentionText.length + 1;
+
+      const newMention: Mention = {
+        value: payloadValue,
+        start: triggerIndex,
+        end: triggerIndex + mentionText.length,
+      };
+
+      setMentions((prev) => {
+        const updatedMentions = prev.map((mention) => {
+          if (mention.start >= insertionPoint) {
+            return {
+              ...mention,
+              start: mention.start + insertionLength,
+              end: mention.end + insertionLength,
+            };
+          }
+          return mention;
+        });
+        return [...updatedMentions, newMention];
+      });
+
+      input.value = newValue;
+      setInputValue(newValue);
+      setValue((prev) => [...(prev ?? []), payloadValue]);
+
+      const newCursorPosition = triggerIndex + mentionText.length + 1;
+      input.setSelectionRange(newCursorPosition, newCursorPosition);
+
+      setOpen(false);
+      setHighlightedItem(null);
+      filterStore.search = "";
+    },
+    [trigger, setInputValue, setValue, setOpen, getEnabledItems, filterStore],
+  );
+
+  const onMentionsRemove = React.useCallback((mentionsToRemove: Mention[]) => {
+    setMentions((prev) => {
+      // must match their actual order in the text
+      const removed = [...mentionsToRemove].sort((a, b) => a.start - b.start);
+
+      const newMentions = prev
+        .filter((mention) => {
+          const isRemoved = removed.some((m) => m.value === mention.value);
+          return !isRemoved;
+        })
+        .map((mention) => {
+          // Shift mentions
+          const shift = removed
+            .filter((r) => r.start < mention.start)
+            .reduce((acc, r) => acc + (r.end - r.start + 1), 0);
+
+          return {
+            ...mention,
+            start: mention.start - shift,
+            end: mention.end - shift,
+          };
+        });
+
+      return newMentions;
+    });
+  }, []);
+
+  return (
+    <MentionProvider
+      open={open}
+      onOpenChange={onOpenChange}
+      inputValue={inputValue}
+      onInputValueChange={setInputValue}
+      value={value}
+      onValueChange={setValue}
+      virtualAnchor={virtualAnchor}
+      onVirtualAnchorChange={setVirtualAnchor}
+      trigger={trigger}
+      onTriggerChange={setTrigger}
+      getEnabledItems={getEnabledItems}
+      onItemRegister={onItemRegister}
+      filterStore={filterStore}
+      onFilter={onFilter}
+      onItemsFilter={onItemsFilter}
+      getIsItemVisible={getIsItemVisible}
+      highlightedItem={highlightedItem}
+      onHighlightedItemChange={setHighlightedItem}
+      onHighlightMove={onHighlightMove}
+      mentions={mentions}
+      onMentionsChange={setMentions}
+      onMentionAdd={onMentionAdd}
+      onMentionsRemove={onMentionsRemove}
+      isPasting={isPasting}
+      onIsPastingChange={setIsPasting}
+      dir={dir}
+      disabled={disabled}
+      exactMatch={exactMatch}
+      loop={loop}
+      modal={modal}
+      readonly={readonly}
+      inputRef={inputRef}
+      listRef={listRef}
+      inputId={inputId}
+      labelId={labelId}
+      listId={listId}
+    >
+      <Primitive.div ref={composedRef} {...rootProps}>
+        {children}
+        {isFormControl && name && (
+          <VisuallyHiddenInput
+            type="hidden"
+            control={collectionRef.current}
+            name={name}
+            value={value}
+            disabled={disabled}
+            readOnly={readonly}
+            required={required}
+          />
+        )}
+      </Primitive.div>
+    </MentionProvider>
+  );
+});
 
 MentionRoot.displayName = ROOT_NAME;
 

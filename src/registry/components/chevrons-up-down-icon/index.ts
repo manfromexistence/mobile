@@ -1,1 +1,1 @@
-export * from "./chevrons-up-down-icon"
+export * from "./chevrons-up-down-icon";

@@ -14,9 +14,7 @@ import path from "node:path";
 //   - the legacy re-query path (no token passed) must still work unmodified
 //   - the per-minute cap must still be enforced correctly via the fast-path
 
-const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-relay-check-rate-limit-")
-);
+const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-relay-check-rate-limit-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
 
 const core = await import("../../src/lib/db/core.ts");
@@ -71,7 +69,7 @@ function insertRelayToken(overrides: {
       max_tokens_per_request, max_requests_per_minute, max_requests_per_day, max_cost_per_day,
       enabled, created_at, updated_at, expires_at, metadata)
     VALUES (?, ?, ?, ?, '', NULL, '["*"]', 128000, ?, ?, 0, 1, ?, ?, NULL, '{}')
-  `
+  `,
   ).run(
     overrides.id,
     overrides.name,
@@ -80,7 +78,7 @@ function insertRelayToken(overrides: {
     overrides.maxRequestsPerMinute,
     overrides.maxRequestsPerDay,
     now,
-    now
+    now,
   );
   const token = relayProxies.getRelayToken(overrides.id);
   if (!token) throw new Error("failed to insert test relay token");

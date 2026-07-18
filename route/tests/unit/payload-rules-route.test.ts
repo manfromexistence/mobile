@@ -74,15 +74,15 @@ test("payload rules route requires a dashboard session when management auth is e
   await enableManagementAuth();
 
   const unauthenticated = await route.GET(
-    new Request("http://localhost/api/settings/payload-rules")
+    new Request("http://localhost/api/settings/payload-rules"),
   );
   const invalidToken = await route.GET(
     new Request("http://localhost/api/settings/payload-rules", {
       headers: { authorization: "Bearer sk-invalid" },
-    })
+    }),
   );
   const authenticated = await route.GET(
-    await makeManagementSessionRequest("http://localhost/api/settings/payload-rules")
+    await makeManagementSessionRequest("http://localhost/api/settings/payload-rules"),
   );
 
   const unauthenticatedBody = (await unauthenticated.json()) as any;
@@ -138,7 +138,7 @@ test("payload rules route persists normalized config and hot reloads the runtime
     await makeManagementSessionRequest("http://localhost/api/settings/payload-rules", {
       method: "PUT",
       body: requestBody,
-    })
+    }),
   );
   const body = (await response.json()) as any;
   const settings = await settingsDb.getSettings();
@@ -163,13 +163,13 @@ test("payload rules route rejects malformed and schema-invalid payloads", async 
       method: "PUT",
       headers: { "content-type": "application/json" },
       body: "{",
-    })
+    }),
   );
   const invalidSchema = await route.PUT(
     await makeManagementSessionRequest("http://localhost/api/settings/payload-rules", {
       method: "PUT",
       body: {},
-    })
+    }),
   );
 
   const invalidJsonBody = (await invalidJson.json()) as any;

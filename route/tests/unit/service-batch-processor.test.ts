@@ -11,7 +11,11 @@ describe("batchProcessor helpers", () => {
       const input = Buffer.from(
         JSON.stringify({ url: endpoint, body: { model: "gpt-4", messages: [] }, custom_id: "r1" }) +
           "\n" +
-          JSON.stringify({ url: endpoint, body: { model: "gpt-4", messages: [] }, custom_id: "r2" })
+          JSON.stringify({
+            url: endpoint,
+            body: { model: "gpt-4", messages: [] },
+            custom_id: "r2",
+          }),
       );
       const result = mod.parseBatchItems(input, endpoint);
       assert.equal(result.error, null);
@@ -36,7 +40,7 @@ describe("batchProcessor helpers", () => {
 
     it("returns error for mismatched URL", () => {
       const input = Buffer.from(
-        JSON.stringify({ url: "/v1/embeddings", body: { model: "text-embedding" } })
+        JSON.stringify({ url: "/v1/embeddings", body: { model: "text-embedding" } }),
       );
       const result = mod.parseBatchItems(input, endpoint);
       assert.equal(result.items, null);

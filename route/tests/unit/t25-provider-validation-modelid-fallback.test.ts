@@ -136,7 +136,7 @@ test("T25 / #2032: fallback chat probe surfaces a warning on 404 model_not_found
           code: "model_not_found",
         },
       }),
-      { status: 404 }
+      { status: 404 },
     );
   };
 

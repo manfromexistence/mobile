@@ -59,11 +59,11 @@ function insertMemory(
   id: string,
   apiKeyId: string,
   content: string,
-  key?: string
+  key?: string,
 ) {
   db.prepare(
     `INSERT INTO memories (id, api_key_id, session_id, type, key, content, metadata, created_at, updated_at, expires_at)
-     VALUES (?, ?, ?, 'factual', ?, ?, '{}', datetime('now'), datetime('now'), NULL)`
+     VALUES (?, ?, ?, 'factual', ?, ?, '{}', datetime('now'), datetime('now'), NULL)`,
   ).run(id, apiKeyId, "", key ?? `key-${id}`, content);
 }
 
@@ -135,7 +135,7 @@ test("retrievePreview: hybrid with no vec store → fallbackReason is non-null",
   // No embedding source + no vec store → should have a fallbackReason
   assert.ok(
     bundle.resolution.fallbackReason !== null || bundle.resolution.strategyUsed !== "hybrid",
-    "hybrid preview with no vec store should report fallback reason or degrade strategy"
+    "hybrid preview with no vec store should report fallback reason or degrade strategy",
   );
   assert.equal(typeof bundle.totalTokens, "number");
   assert.equal(typeof bundle.budgetMaxTokens, "number");

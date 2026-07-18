@@ -16,7 +16,7 @@ test("resolveCallerScopeContext prioritizes authInfo scopes", () => {
       _meta: { scopes: ["write:combos"] },
       sessionId: "session-1",
     },
-    ["read:usage"]
+    ["read:usage"],
   );
 
   assert.equal(context.callerId, "client-auth");
@@ -32,7 +32,7 @@ test("resolveCallerScopeContext falls back to _meta scopes", () => {
       },
       sessionId: "session-meta",
     },
-    ["read:usage"]
+    ["read:usage"],
   );
 
   assert.equal(context.callerId, "session-meta");

@@ -1,14 +1,8 @@
 {
   "name": "tour-demo",
   "type": "registry:example",
-  "dependencies": [
-    "radix-ui",
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "button",
-    "tour"
-  ],
+  "dependencies": ["radix-ui", "lucide-react"],
+  "registryDependencies": ["button", "tour"],
   "files": [
     {
       "path": "examples/tour-demo.tsx",

@@ -2,27 +2,15 @@
   "name": "@pierre/theming",
   "version": "0.0.2",
   "license": "apache-2.0",
-  "files": [
-    "dist",
-    "LICENSE.md",
-    "README.md"
-  ],
+  "files": ["dist", "LICENSE.md", "README.md"],
   "type": "module",
   "sideEffects": false,
   "typesVersions": {
     "*": {
-      "*": [
-        "dist/*"
-      ],
-      "color": [
-        "dist/color.d.ts"
-      ],
-      "react": [
-        "dist/react.d.ts"
-      ],
-      "themes": [
-        "dist/themes.d.ts"
-      ]
+      "*": ["dist/*"],
+      "color": ["dist/color.d.ts"],
+      "react": ["dist/react.d.ts"],
+      "themes": ["dist/themes.d.ts"]
     }
   },
   "exports": {

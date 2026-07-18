@@ -1,8 +1,8 @@
-import code from '@content/Components/TiltedCard/TiltedCard.jsx?raw';
-import css from '@content/Components/TiltedCard/TiltedCard.css?raw';
-import tailwind from '@tailwind/Components/TiltedCard/TiltedCard.jsx?raw';
-import tsCode from '@ts-default/Components/TiltedCard/TiltedCard.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/TiltedCard/TiltedCard.tsx?raw';
+import code from "@content/Components/TiltedCard/TiltedCard.jsx?raw";
+import css from "@content/Components/TiltedCard/TiltedCard.css?raw";
+import tailwind from "@tailwind/Components/TiltedCard/TiltedCard.jsx?raw";
+import tsCode from "@ts-default/Components/TiltedCard/TiltedCard.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/TiltedCard/TiltedCard.tsx?raw";
 
 export const tiltedCard = {
   dependencies: `motion`,
@@ -32,5 +32,5 @@ export const tiltedCard = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

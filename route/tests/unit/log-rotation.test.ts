@@ -67,7 +67,7 @@ test("rotateIfNeeded — skips when file is below max size", async () => {
     assert.ok(existsSync(logPath), "log file should still exist");
     // rotated = files that match the rotated pattern AND are NOT the active log itself
     const rotated = readdirSync(dir).filter(
-      (f) => f.startsWith("app.") && f.endsWith(".log") && f !== "app.log"
+      (f) => f.startsWith("app.") && f.endsWith(".log") && f !== "app.log",
     );
     assert.equal(rotated.length, 0, "no rotated files expected");
   } finally {
@@ -88,7 +88,7 @@ test("rotateIfNeeded — rotates when file exceeds max size", async () => {
     // Original file must have been renamed
     assert.ok(!existsSync(logPath), "original log file should be renamed");
     const rotated = readdirSync(dir).find(
-      (f) => f.startsWith("app.") && f.endsWith(".log") && f !== "app.log"
+      (f) => f.startsWith("app.") && f.endsWith(".log") && f !== "app.log",
     );
     assert.ok(rotated, "a rotated file should exist");
   } finally {
@@ -143,7 +143,7 @@ test("periodic timer actually fires and rotates a large log", async () => {
       readdirSync(dir).filter((f) => f.startsWith("app.") && f.endsWith(".log")).length > 0;
     assert.ok(
       rotatedExists,
-      "a rotated file should exist after periodic check fired on an oversized log"
+      "a rotated file should exist after periodic check fired on an oversized log",
     );
   } finally {
     closeLogRotation();

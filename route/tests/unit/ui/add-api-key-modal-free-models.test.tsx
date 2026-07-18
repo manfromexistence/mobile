@@ -8,8 +8,9 @@ vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key,
 }));
 
-const { default: AddApiKeyModal } =
-  await import("../../../src/app/(dashboard)/dashboard/providers/[id]/components/modals/AddApiKeyModal");
+const { default: AddApiKeyModal } = await import(
+  "../../../src/app/(dashboard)/dashboard/providers/[id]/components/modals/AddApiKeyModal"
+);
 
 const FREE_TOGGLE = 'button[role="switch"][aria-label="importFreeModelsOnlyLabel"]';
 
@@ -26,7 +27,7 @@ function render(props: Record<string, unknown>) {
         onSave={async () => undefined}
         onClose={() => {}}
         {...(props as any)}
-      />
+      />,
     );
   });
   containers.push({ root, el });
@@ -54,8 +55,8 @@ beforeEach(() => {
   vi.stubGlobal(
     "fetch",
     vi.fn(() =>
-      Promise.resolve({ ok: true, json: () => Promise.resolve({ valid: true }) } as Response)
-    )
+      Promise.resolve({ ok: true, json: () => Promise.resolve({ valid: true }) } as Response),
+    ),
   );
 });
 
@@ -93,7 +94,7 @@ describe("AddApiKeyModal — import only free models", () => {
     });
 
     const saveBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "save"
+      (b) => b.textContent?.trim() === "save",
     )!;
     act(() => {
       saveBtn.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -113,7 +114,7 @@ describe("AddApiKeyModal — quota scraping fields", () => {
     const nameInput = el.querySelector<HTMLInputElement>('input[placeholder="productionKey"]')!;
     const apiKeyInput = el.querySelector<HTMLInputElement>('input[type="password"]')!;
     const workspaceInput = el.querySelector<HTMLInputElement>(
-      'input[name="opencodeGoWorkspaceId"]'
+      'input[name="opencodeGoWorkspaceId"]',
     )!;
     const cookieInput = el.querySelector<HTMLInputElement>('input[name="opencodeGoAuthCookie"]')!;
     setInputValue(nameInput, "OpenCode Go");
@@ -122,7 +123,7 @@ describe("AddApiKeyModal — quota scraping fields", () => {
     setInputValue(cookieInput, "auth=opencode-cookie");
 
     const saveBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "save"
+      (b) => b.textContent?.trim() === "save",
     )!;
     act(() => {
       saveBtn.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -146,7 +147,7 @@ describe("AddApiKeyModal — quota scraping fields", () => {
     setInputValue(cookieInput, "__Secure-session=ollama-cookie");
 
     const saveBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "save"
+      (b) => b.textContent?.trim() === "save",
     )!;
     act(() => {
       saveBtn.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -155,7 +156,7 @@ describe("AddApiKeyModal — quota scraping fields", () => {
     await waitFor(() => onSave.mock.calls.length > 0);
     const payload = onSave.mock.calls[0][0];
     expect(payload.providerSpecificData?.ollamaCloudUsageCookie).toBe(
-      "__Secure-session=ollama-cookie"
+      "__Secure-session=ollama-cookie",
     );
   });
 });

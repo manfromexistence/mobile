@@ -14,7 +14,7 @@ test("extractUsageFromResponse reads OpenAI chat completion usage", () => {
         completion_tokens_details: { reasoning_tokens: 2 },
       },
     },
-    "openai"
+    "openai",
   );
 
   assert.deepEqual(usage, {
@@ -35,7 +35,7 @@ test("extractUsageFromResponse reads OpenAI usage when cache/reasoning live unde
         output_tokens_details: { reasoning_tokens: 1 },
       },
     },
-    "codex"
+    "codex",
   );
 
   assert.deepEqual(usage, {
@@ -53,7 +53,7 @@ test("extractUsageFromResponse defaults missing OpenAI token fields to zero", ()
         prompt_tokens: 0,
       },
     },
-    "openai"
+    "openai",
   );
 
   assert.equal(usage.prompt_tokens, 0);
@@ -74,7 +74,7 @@ test("extractUsageFromResponse reads Responses API usage from the top-level usag
         reasoning_tokens: 3,
       },
     },
-    "github"
+    "github",
   );
 
   assert.deepEqual(usage, {
@@ -99,7 +99,7 @@ test("extractUsageFromResponse reads Responses API usage from nested response.us
         },
       },
     },
-    "codex"
+    "codex",
   );
 
   assert.deepEqual(usage, {
@@ -122,7 +122,7 @@ test("extractUsageFromResponse reads Responses API usage with prompt_tokens_deta
         completion_tokens_details: { reasoning_tokens: 5 },
       },
     },
-    "codex"
+    "codex",
   );
 
   assert.deepEqual(usage, {
@@ -146,7 +146,7 @@ test("extractUsageFromResponse reads Responses API cache_read_input_tokens as ca
         reasoning_tokens: 3,
       },
     },
-    "github"
+    "github",
   );
 
   assert.deepEqual(usage, {
@@ -169,7 +169,7 @@ test("extractUsageFromResponse totals Claude prompt tokens with cache read and c
         cache_creation_input_tokens: 6,
       },
     },
-    "claude"
+    "claude",
   );
 
   assert.deepEqual(usage, {
@@ -189,7 +189,7 @@ test("extractUsageFromResponse reads Gemini usageMetadata and thinking tokens", 
         thoughtsTokenCount: 2,
       },
     },
-    "gemini"
+    "gemini",
   );
 
   assert.deepEqual(usage, {
@@ -205,7 +205,7 @@ test("extractUsageFromResponse returns null when usage is missing", () => {
       id: "chatcmpl_no_usage",
       choices: [{ message: { role: "assistant", content: "ok" } }],
     },
-    "openai"
+    "openai",
   );
 
   assert.equal(usage, null);
@@ -306,7 +306,7 @@ test("extractUsageFromResponse reads flat cached_tokens and reasoning_tokens fro
         reasoning_tokens: 49,
       },
     },
-    "xiaomi-mimo"
+    "xiaomi-mimo",
   );
 
   assert.deepEqual(usage, {

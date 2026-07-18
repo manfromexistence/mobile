@@ -73,7 +73,7 @@ function makeRequest(
   method: string,
   url: string,
   body?: unknown,
-  headers: Record<string, string> = {}
+  headers: Record<string, string> = {},
 ): Request {
   return new Request(url, {
     method,
@@ -96,7 +96,7 @@ function asNextRequest(req: Request): NextRequest {
 function assertNoStackTrace(message: string) {
   assert.ok(
     !message.match(/\bat \/|\bat file:\/\//),
-    `Error message must not contain a stack trace: "${message}"`
+    `Error message must not contain a stack trace: "${message}"`,
   );
 }
 
@@ -116,7 +116,7 @@ test("GET /api/github-skills — 401/403 when auth is required and no token prov
 
   assert.ok(
     res.status === 401 || res.status === 403,
-    `Expected 401 or 403 without auth, got ${res.status}`
+    `Expected 401 or 403 without auth, got ${res.status}`,
   );
   const body = (await res.json()) as { error: { message: string } | string };
   const errorMsg =
@@ -134,7 +134,7 @@ test("POST /api/github-skills — 401/403 when auth is required and no token pro
 
   assert.ok(
     res.status === 401 || res.status === 403,
-    `Expected 401 or 403 without auth, got ${res.status}`
+    `Expected 401 or 403 without auth, got ${res.status}`,
   );
 });
 
@@ -177,7 +177,7 @@ test("GET /api/skills/collect/detect — 401/403 when auth is required and no to
 
   assert.ok(
     res.status === 401 || res.status === 403,
-    `Expected 401 or 403 without auth, got ${res.status}`
+    `Expected 401 or 403 without auth, got ${res.status}`,
   );
   const body = (await res.json()) as { error: { message: string } | string };
   const errorMsg =
@@ -217,7 +217,7 @@ test("POST /api/skills/collect/install — 401/403 when auth is required and no 
 
   assert.ok(
     res.status === 401 || res.status === 403,
-    `Expected 401 or 403 without auth, got ${res.status}`
+    `Expected 401 or 403 without auth, got ${res.status}`,
   );
   const body = (await res.json()) as { error: { message: string } | string };
   const errorMsg =

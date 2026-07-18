@@ -61,7 +61,7 @@ test("#6406 env-var master key (no DB metadata) sees the full catalog, not 0 mod
 
   // Baseline: unauth response.
   const unauthResponse = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const unauthBody = (await unauthResponse.json()) as ModelsCatalogResponseBody;
   assert.equal(unauthResponse.status, 200);
@@ -75,7 +75,7 @@ test("#6406 env-var master key (no DB metadata) sees the full catalog, not 0 mod
   const authResponse = await v1ModelsCatalog.getUnifiedModelsResponse(
     new Request("http://localhost/api/v1/models", {
       headers: { Authorization: `Bearer ${envKey}` },
-    })
+    }),
   );
   const authBody = (await authResponse.json()) as ModelsCatalogResponseBody;
 
@@ -85,7 +85,7 @@ test("#6406 env-var master key (no DB metadata) sees the full catalog, not 0 mod
   assert.equal(
     authBody.data.length,
     unauthCount,
-    `env-var key catalog (${authBody.data.length}) must equal unauth catalog (${unauthCount}); auth should GATE access, not FILTER inventory when the key carries no restrictions`
+    `env-var key catalog (${authBody.data.length}) must equal unauth catalog (${unauthCount}); auth should GATE access, not FILTER inventory when the key carries no restrictions`,
   );
   assert.notEqual(authBody.data.length, 0, "env-var master key must not collapse catalog to 0");
 });
@@ -99,7 +99,7 @@ test("#6406 DB-backed key with allowedModels still filters (unchanged behavior)"
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
     new Request("http://localhost/api/v1/models", {
       headers: { Authorization: `Bearer ${key.key}` },
-    })
+    }),
   );
   const body = (await response.json()) as ModelsCatalogResponseBody;
   const ids: string[] = body.data.map((item) => item.id);
@@ -107,11 +107,11 @@ test("#6406 DB-backed key with allowedModels still filters (unchanged behavior)"
   assert.equal(response.status, 200);
   assert.ok(
     ids.some((id) => id.startsWith("openai/")),
-    "DB-backed key with allowedModels=['openai/*'] must still see openai/* models"
+    "DB-backed key with allowedModels=['openai/*'] must still see openai/* models",
   );
   assert.equal(
     ids.some((id) => id.startsWith("claude/") || id.startsWith("cc/")),
     false,
-    "DB-backed allowedModels filter must still exclude non-matching families"
+    "DB-backed allowedModels filter must still exclude non-matching families",
   );
 });

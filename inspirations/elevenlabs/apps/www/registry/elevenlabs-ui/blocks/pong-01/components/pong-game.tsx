@@ -1,33 +1,33 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react";
 
 import {
   GameEngine,
   type GameState,
-} from "@/registry/elevenlabs-ui/blocks/pong-01/components/game-engine"
-import { PlayerIndicator } from "@/registry/elevenlabs-ui/blocks/pong-01/components/player-indicator"
-import { digits, Matrix, type Frame } from "@/registry/elevenlabs-ui/ui/matrix"
+} from "@/registry/elevenlabs-ui/blocks/pong-01/components/game-engine";
+import { PlayerIndicator } from "@/registry/elevenlabs-ui/blocks/pong-01/components/player-indicator";
+import { digits, Matrix, type Frame } from "@/registry/elevenlabs-ui/ui/matrix";
 
 export function PongGame() {
-  const [gameState, setGameState] = useState<GameState>("title")
-  const [playerScore, setPlayerScore] = useState(0)
-  const [aiScore, setAIScore] = useState(0)
+  const [gameState, setGameState] = useState<GameState>("title");
+  const [playerScore, setPlayerScore] = useState(0);
+  const [aiScore, setAIScore] = useState(0);
   const [currentFrame, setCurrentFrame] = useState<Frame>(() =>
     Array(7)
       .fill(0)
-      .map(() => Array(21).fill(0))
-  )
+      .map(() => Array(21).fill(0)),
+  );
 
-  const engineRef = useRef<GameEngine | null>(null)
-  const playerInputRef = useRef(0)
-  const lastTimeRef = useRef<number>(0)
-  const animationFrameRef = useRef<number>(0)
+  const engineRef = useRef<GameEngine | null>(null);
+  const playerInputRef = useRef(0);
+  const lastTimeRef = useRef<number>(0);
+  const animationFrameRef = useRef<number>(0);
 
   const renderFrameFromEngine = (): Frame => {
     const frame: Frame = Array(7)
       .fill(0)
-      .map(() => Array(21).fill(0))
+      .map(() => Array(21).fill(0));
 
     if (!engineRef.current || engineRef.current.data.state === "title") {
       const pongText = [
@@ -38,8 +38,8 @@ export function PongGame() {
         [0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0],
         [0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      ]
-      return pongText
+      ];
+      return pongText;
     }
 
     if (engineRef.current.data.state === "gameOver") {
@@ -53,8 +53,8 @@ export function PongGame() {
           [0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0],
           [0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        ]
-        return winText
+        ];
+        return winText;
       } else {
         // LOSE
         const loseText = [
@@ -65,145 +65,142 @@ export function PongGame() {
           [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
           [0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0],
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        ]
-        return loseText
+        ];
+        return loseText;
       }
     }
 
-    const data = engineRef.current.data
+    const data = engineRef.current.data;
 
     for (let col = 0; col < 21; col++) {
       if (col === 10) {
         for (let row = 0; row < 7; row += 2) {
-          frame[row][col] = 0.2
+          frame[row][col] = 0.2;
         }
       }
     }
 
-    const playerPaddleTop = Math.floor(data.playerPaddle.y)
+    const playerPaddleTop = Math.floor(data.playerPaddle.y);
     for (let i = 0; i < 3; i++) {
-      const row = playerPaddleTop + i
+      const row = playerPaddleTop + i;
       if (row >= 0 && row < 7) {
-        frame[row][0] = 1
+        frame[row][0] = 1;
       }
     }
 
-    const aiPaddleTop = Math.floor(data.aiPaddle.y)
+    const aiPaddleTop = Math.floor(data.aiPaddle.y);
     for (let i = 0; i < 3; i++) {
-      const row = aiPaddleTop + i
+      const row = aiPaddleTop + i;
       if (row >= 0 && row < 7) {
-        frame[row][20] = 1
+        frame[row][20] = 1;
       }
     }
 
-    const ballCol = Math.floor(data.ball.x)
-    const ballRow = Math.floor(data.ball.y)
+    const ballCol = Math.floor(data.ball.x);
+    const ballRow = Math.floor(data.ball.y);
     if (ballCol >= 0 && ballCol < 21 && ballRow >= 0 && ballRow < 7) {
-      frame[ballRow][ballCol] = 1
+      frame[ballRow][ballCol] = 1;
     }
 
     for (let i = 0; i < data.ball.trail.length; i++) {
-      const trailCol = Math.floor(data.ball.trail[i].x)
-      const trailRow = Math.floor(data.ball.trail[i].y)
+      const trailCol = Math.floor(data.ball.trail[i].x);
+      const trailRow = Math.floor(data.ball.trail[i].y);
       if (trailCol >= 0 && trailCol < 21 && trailRow >= 0 && trailRow < 7) {
-        frame[trailRow][trailCol] = Math.max(
-          frame[trailRow][trailCol],
-          0.5 - i * 0.15
-        )
+        frame[trailRow][trailCol] = Math.max(frame[trailRow][trailCol], 0.5 - i * 0.15);
       }
     }
 
-    return frame
-  }
+    return frame;
+  };
 
   useEffect(() => {
-    engineRef.current = new GameEngine()
-    setCurrentFrame(renderFrameFromEngine())
+    engineRef.current = new GameEngine();
+    setCurrentFrame(renderFrameFromEngine());
 
     function gameLoop(timestamp: number) {
-      if (!engineRef.current) return
+      if (!engineRef.current) return;
 
       if (lastTimeRef.current === 0) {
-        lastTimeRef.current = timestamp
+        lastTimeRef.current = timestamp;
       }
 
-      const deltaTime = Math.min((timestamp - lastTimeRef.current) / 1000, 0.1)
-      lastTimeRef.current = timestamp
+      const deltaTime = Math.min((timestamp - lastTimeRef.current) / 1000, 0.1);
+      lastTimeRef.current = timestamp;
 
-      engineRef.current.update(deltaTime, playerInputRef.current)
+      engineRef.current.update(deltaTime, playerInputRef.current);
 
-      const data = engineRef.current.data
-      setGameState(data.state)
-      setPlayerScore(data.playerScore)
-      setAIScore(data.aiScore)
+      const data = engineRef.current.data;
+      setGameState(data.state);
+      setPlayerScore(data.playerScore);
+      setAIScore(data.aiScore);
 
-      setCurrentFrame(renderFrameFromEngine())
+      setCurrentFrame(renderFrameFromEngine());
 
       if (data.state === "playing" || data.state === "paused") {
-        animationFrameRef.current = requestAnimationFrame(gameLoop)
+        animationFrameRef.current = requestAnimationFrame(gameLoop);
       }
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowUp") {
-        e.preventDefault()
-        playerInputRef.current = -1
+        e.preventDefault();
+        playerInputRef.current = -1;
       } else if (e.key === "ArrowDown") {
-        e.preventDefault()
-        playerInputRef.current = 1
+        e.preventDefault();
+        playerInputRef.current = 1;
       } else if (e.key === " ") {
-        e.preventDefault()
-        const state = engineRef.current?.data.state
+        e.preventDefault();
+        const state = engineRef.current?.data.state;
         if (state === "title" || state === "gameOver") {
           if (engineRef.current) {
-            engineRef.current.startGame()
-            setCurrentFrame(renderFrameFromEngine())
-            lastTimeRef.current = 0
+            engineRef.current.startGame();
+            setCurrentFrame(renderFrameFromEngine());
+            lastTimeRef.current = 0;
             if (animationFrameRef.current) {
-              cancelAnimationFrame(animationFrameRef.current)
+              cancelAnimationFrame(animationFrameRef.current);
             }
-            animationFrameRef.current = requestAnimationFrame(gameLoop)
+            animationFrameRef.current = requestAnimationFrame(gameLoop);
           }
         }
       } else if (e.key === "p" || e.key === "P") {
-        e.preventDefault()
-        const state = engineRef.current?.data.state
+        e.preventDefault();
+        const state = engineRef.current?.data.state;
         if (state === "playing" || state === "paused") {
           if (engineRef.current) {
-            engineRef.current.togglePause()
+            engineRef.current.togglePause();
             if (engineRef.current.data.state === "playing") {
-              lastTimeRef.current = 0
+              lastTimeRef.current = 0;
               if (animationFrameRef.current) {
-                cancelAnimationFrame(animationFrameRef.current)
+                cancelAnimationFrame(animationFrameRef.current);
               }
-              animationFrameRef.current = requestAnimationFrame(gameLoop)
+              animationFrameRef.current = requestAnimationFrame(gameLoop);
             } else {
               if (animationFrameRef.current) {
-                cancelAnimationFrame(animationFrameRef.current)
+                cancelAnimationFrame(animationFrameRef.current);
               }
             }
           }
         }
       }
-    }
+    };
 
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-        playerInputRef.current = 0
+        playerInputRef.current = 0;
       }
-    }
+    };
 
-    window.addEventListener("keydown", handleKeyDown)
-    window.addEventListener("keyup", handleKeyUp)
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-      window.removeEventListener("keyup", handleKeyUp)
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
       if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current)
+        cancelAnimationFrame(animationFrameRef.current);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   return (
     <div className="flex min-h-[600px] w-full flex-col items-center justify-center gap-8 p-8">
@@ -251,8 +248,7 @@ export function PongGame() {
         <div className="flex h-[28px] flex-col items-center justify-center gap-2">
           {gameState === "title" && (
             <div className="text-muted-foreground text-center text-xs">
-              Press <kbd className="bg-muted rounded px-2 py-1">Space</kbd> to
-              start
+              Press <kbd className="bg-muted rounded px-2 py-1">Space</kbd> to start
             </div>
           )}
 
@@ -267,19 +263,17 @@ export function PongGame() {
 
           {gameState === "paused" && (
             <div className="text-muted-foreground text-center text-xs">
-              PAUSED - Press <kbd className="bg-muted rounded px-2 py-1">P</kbd>{" "}
-              to resume
+              PAUSED - Press <kbd className="bg-muted rounded px-2 py-1">P</kbd> to resume
             </div>
           )}
 
           {gameState === "gameOver" && (
             <div className="text-muted-foreground text-center text-xs">
-              Press <kbd className="bg-muted rounded px-2 py-1">Space</kbd> to
-              play again
+              Press <kbd className="bg-muted rounded px-2 py-1">Space</kbd> to play again
             </div>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }

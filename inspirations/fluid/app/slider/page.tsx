@@ -166,7 +166,7 @@ export default function SliderPage() {
             step={100}
             label="Mid Freq"
             valuePosition="right"
-            formatValue={(v) => v >= 1000 ? `${(v / 1000).toFixed(1)} kHz` : `${v} Hz`}
+            formatValue={(v) => (v >= 1000 ? `${(v / 1000).toFixed(1)} kHz` : `${v} Hz`)}
           />
           <Slider
             value={midGain}
@@ -196,7 +196,7 @@ export default function SliderPage() {
             step={500}
             label="High Cut"
             valuePosition="right"
-            formatValue={(v) => v >= 1000 ? `${(v / 1000).toFixed(1)} kHz` : `${v} Hz`}
+            formatValue={(v) => (v >= 1000 ? `${(v / 1000).toFixed(1)} kHz` : `${v} Hz`)}
           />
         </div>
       </section>
@@ -221,7 +221,7 @@ export default function SliderPage() {
             step={100}
             label="Freq Band"
             valuePosition="right"
-            formatValue={(v) => v >= 1000 ? `${(v / 1000).toFixed(1)}k` : `${v}`}
+            formatValue={(v) => (v >= 1000 ? `${(v / 1000).toFixed(1)}k` : `${v}`)}
           />
           <Slider
             value={dynamicRange}

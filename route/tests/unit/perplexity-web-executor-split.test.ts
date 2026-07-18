@@ -27,8 +27,9 @@ test("host imports the protocol helpers back from the leaf", () => {
 });
 
 test("cleanResponse strips citations and sseChunk formats a chunk", async () => {
-  const { cleanResponse, sseChunk } =
-    await import("../../open-sse/executors/perplexity-web/protocol.ts");
+  const { cleanResponse, sseChunk } = await import(
+    "../../open-sse/executors/perplexity-web/protocol.ts"
+  );
   assert.equal(typeof cleanResponse("hello", true), "string");
   assert.match(sseChunk({ a: 1 }), /^data: \{"a":1\}\n\n$/);
 });

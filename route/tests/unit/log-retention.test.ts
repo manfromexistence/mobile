@@ -38,14 +38,14 @@ test("cleanupExpiredLogs uses separate APP and CALL retention windows", async ()
   const freshAppTs = new Date().toISOString();
 
   db.prepare(
-    "INSERT INTO usage_history (provider, model, tokens_input, tokens_output, success, latency_ms, ttft_ms, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    "INSERT INTO usage_history (provider, model, tokens_input, tokens_output, success, latency_ms, ttft_ms, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
   ).run("openai", "old-usage", 1, 1, 1, 1, 1, oldCallTs);
   db.prepare(
-    "INSERT INTO usage_history (provider, model, tokens_input, tokens_output, success, latency_ms, ttft_ms, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    "INSERT INTO usage_history (provider, model, tokens_input, tokens_output, success, latency_ms, ttft_ms, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
   ).run("openai", "fresh-usage", 1, 1, 1, 1, 1, freshCallTs);
 
   db.prepare(
-    "INSERT INTO call_logs (id, timestamp, method, path, status, model, provider, account, duration, tokens_in, tokens_out, has_pipeline_details) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    "INSERT INTO call_logs (id, timestamp, method, path, status, model, provider, account, duration, tokens_in, tokens_out, has_pipeline_details) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
   ).run(
     "old-call",
     oldCallTs,
@@ -58,10 +58,10 @@ test("cleanupExpiredLogs uses separate APP and CALL retention windows", async ()
     1,
     1,
     1,
-    0
+    0,
   );
   db.prepare(
-    "INSERT INTO call_logs (id, timestamp, method, path, status, model, provider, account, duration, tokens_in, tokens_out, has_pipeline_details) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    "INSERT INTO call_logs (id, timestamp, method, path, status, model, provider, account, duration, tokens_in, tokens_out, has_pipeline_details) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
   ).run(
     "fresh-call",
     freshCallTs,
@@ -74,47 +74,47 @@ test("cleanupExpiredLogs uses separate APP and CALL retention windows", async ()
     1,
     1,
     1,
-    0
+    0,
   );
 
   db.prepare(
-    "INSERT INTO proxy_logs (id, timestamp, status, level, latency_ms) VALUES (?, ?, ?, ?, ?)"
+    "INSERT INTO proxy_logs (id, timestamp, status, level, latency_ms) VALUES (?, ?, ?, ?, ?)",
   ).run("old-proxy", oldCallTs, "success", "direct", 1);
   db.prepare(
-    "INSERT INTO proxy_logs (id, timestamp, status, level, latency_ms) VALUES (?, ?, ?, ?, ?)"
+    "INSERT INTO proxy_logs (id, timestamp, status, level, latency_ms) VALUES (?, ?, ?, ?, ?)",
   ).run("fresh-proxy", freshCallTs, "success", "direct", 1);
 
   db.prepare("INSERT INTO request_detail_logs (id, timestamp, duration_ms) VALUES (?, ?, ?)").run(
     "old-detail",
     oldCallTs,
-    1
+    1,
   );
   db.prepare("INSERT INTO request_detail_logs (id, timestamp, duration_ms) VALUES (?, ?, ?)").run(
     "fresh-detail",
     freshCallTs,
-    1
+    1,
   );
 
   db.prepare("INSERT INTO audit_log (timestamp, action, actor) VALUES (?, ?, ?)").run(
     oldAppTs,
     "old-audit",
-    "system"
+    "system",
   );
   db.prepare("INSERT INTO audit_log (timestamp, action, actor) VALUES (?, ?, ?)").run(
     freshAppTs,
     "fresh-audit",
-    "system"
+    "system",
   );
 
   db.prepare("INSERT INTO mcp_tool_audit (tool_name, success, created_at) VALUES (?, ?, ?)").run(
     "old-tool",
     1,
-    oldAppTs
+    oldAppTs,
   );
   db.prepare("INSERT INTO mcp_tool_audit (tool_name, success, created_at) VALUES (?, ?, ?)").run(
     "fresh-tool",
     1,
-    freshAppTs
+    freshAppTs,
   );
 
   const result = await compliance.cleanupExpiredLogs();
@@ -151,14 +151,18 @@ test("cleanupExpiredLogs honors the dashboard usageHistory retention when env is
 
     const oldTs = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
     db.prepare(
-      "INSERT INTO usage_history (provider, model, tokens_input, tokens_output, success, latency_ms, ttft_ms, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+      "INSERT INTO usage_history (provider, model, tokens_input, tokens_output, success, latency_ms, ttft_ms, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
     ).run("openai", "old-usage", 1, 1, 1, 1, 1, oldTs);
 
     const result = await compliance.cleanupExpiredLogs();
 
     // 30 days < the configured 90-day dashboard retention → must be kept.
     // With the old env-default (7d) behavior this row would be deleted.
-    assert.equal(result.deletedUsage, 0, "30-day usage_history must survive a 90-day dashboard retention");
+    assert.equal(
+      result.deletedUsage,
+      0,
+      "30-day usage_history must survive a 90-day dashboard retention",
+    );
     assert.equal((db.prepare("SELECT COUNT(*) AS cnt FROM usage_history").get() as any).cnt, 1);
   } finally {
     if (savedCall !== undefined) process.env.CALL_LOG_RETENTION_DAYS = savedCall;
@@ -176,7 +180,7 @@ test("cleanupExpiredLogs enforces row count limits", async () => {
 
   for (let i = 0; i < 10; i++) {
     db.prepare(
-      "INSERT INTO call_logs (id, timestamp, method, path, status, model, provider, account, duration, tokens_in, tokens_out, has_pipeline_details) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+      "INSERT INTO call_logs (id, timestamp, method, path, status, model, provider, account, duration, tokens_in, tokens_out, has_pipeline_details) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     ).run(
       `call-${i}`,
       now,
@@ -189,13 +193,13 @@ test("cleanupExpiredLogs enforces row count limits", async () => {
       1,
       1,
       1,
-      0
+      0,
     );
   }
 
   for (let i = 0; i < 10; i++) {
     db.prepare(
-      "INSERT INTO proxy_logs (id, timestamp, status, level, latency_ms) VALUES (?, ?, ?, ?, ?)"
+      "INSERT INTO proxy_logs (id, timestamp, status, level, latency_ms) VALUES (?, ?, ?, ?, ?)",
     ).run(`proxy-${i}`, now, "success", "direct", 1);
   }
 
@@ -214,8 +218,9 @@ test("cleanupExpiredLogs enforces row count limits", async () => {
 });
 
 test("getCallLogsTableMaxRows returns configured value", async () => {
-  const { getCallLogsTableMaxRows, getProxyLogsTableMaxRows } =
-    await import("../../src/lib/logEnv.ts");
+  const { getCallLogsTableMaxRows, getProxyLogsTableMaxRows } = await import(
+    "../../src/lib/logEnv.ts"
+  );
 
   assert.equal(getCallLogsTableMaxRows(), 5);
   assert.equal(getProxyLogsTableMaxRows(), 5);
@@ -224,8 +229,9 @@ test("getCallLogsTableMaxRows returns configured value", async () => {
 test("call log pipeline env helpers parse stream chunk flag and size cap", async () => {
   const originalCapture = process.env.CALL_LOG_PIPELINE_CAPTURE_STREAM_CHUNKS;
   const originalMaxSize = process.env.CALL_LOG_PIPELINE_MAX_SIZE_KB;
-  const { getCallLogPipelineCaptureStreamChunks, getCallLogPipelineMaxSizeBytes } =
-    await import("../../src/lib/logEnv.ts");
+  const { getCallLogPipelineCaptureStreamChunks, getCallLogPipelineMaxSizeBytes } = await import(
+    "../../src/lib/logEnv.ts"
+  );
 
   try {
     process.env.CALL_LOG_PIPELINE_CAPTURE_STREAM_CHUNKS = "false";

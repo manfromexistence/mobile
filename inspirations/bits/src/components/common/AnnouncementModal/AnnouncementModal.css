@@ -1,5 +1,5 @@
 @property --announcement-angle {
-  syntax: '<angle>';
+  syntax: "<angle>";
   initial-value: 0deg;
   inherits: false;
 }
@@ -61,10 +61,8 @@
   border-radius: 22px;
   background: #0e0b13;
   overflow: hidden;
-  box-shadow:
-    0 4px 32px rgba(0, 0, 0, 0.4),
-    0 0 80px rgba(82, 39, 255, 0.15),
-    inset 0 0.5px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.4), 0 0 80px rgba(82, 39, 255, 0.15), inset 0 0.5px 0
+    rgba(255, 255, 255, 0.06);
 }
 
 .announcement-modal-close {
@@ -126,7 +124,7 @@
 
 .announcement-modal-title {
   margin: 0 0 8px;
-  font-family: 'Geist', sans-serif;
+  font-family: "Geist", sans-serif;
   font-size: 24px;
   font-weight: 500;
   letter-spacing: -0.02em;
@@ -136,14 +134,14 @@
 
 .announcement-modal-description {
   margin: 0 0 18px;
-  font-family: 'Geist', sans-serif;
+  font-family: "Geist", sans-serif;
   font-size: 13.5px;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.65);
 }
 
 .announcement-modal-description strong {
-  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-family: "Geist Mono", ui-monospace, monospace;
   font-size: 12.5px;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -160,7 +158,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-family: 'Geist Mono', ui-monospace, monospace;
+  font-family: "Geist Mono", ui-monospace, monospace;
   font-size: 13px;
   font-weight: 500;
   padding: 11px 18px;
@@ -221,5 +219,3 @@
     font-size: 13px;
   }
 }
-
-

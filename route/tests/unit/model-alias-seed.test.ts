@@ -10,8 +10,9 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const core = await import("../../src/lib/db/core.ts");
 const modelsDb = await import("../../src/lib/db/models.ts");
 const sseModelService = await import("../../src/sse/services/model.ts");
-const { DEFAULT_MODEL_ALIAS_SEED, seedDefaultModelAliases } =
-  await import("../../src/lib/modelAliasSeed.ts");
+const { DEFAULT_MODEL_ALIAS_SEED, seedDefaultModelAliases } = await import(
+  "../../src/lib/modelAliasSeed.ts"
+);
 
 async function resetStorage() {
   core.resetDbInstance();

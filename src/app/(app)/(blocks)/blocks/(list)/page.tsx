@@ -1,20 +1,20 @@
-import type { Metadata } from "next"
-import { Fragment } from "react"
-import type { CollectionPage, WithContext } from "schema-dts"
-import { BlockDisplay } from "@/app/(preview)/components/block-display"
-import { JSON_LD_ID } from "@/config/json-ld"
-import { X_HANDLE } from "@/config/site"
-import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
-import { absoluteUrl } from "@/lib/utils"
-import blocks from "@/registry/__blocks__.json"
+import type { Metadata } from "next";
+import { Fragment } from "react";
+import type { CollectionPage, WithContext } from "schema-dts";
+import { BlockDisplay } from "@/app/(preview)/components/block-display";
+import { JSON_LD_ID } from "@/config/json-ld";
+import { X_HANDLE } from "@/config/site";
+import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld";
+import { absoluteUrl } from "@/lib/utils";
+import blocks from "@/registry/__blocks__.json";
 
-export const dynamic = "force-static"
-export const revalidate = false
+export const dynamic = "force-static";
+export const revalidate = false;
 
-const title = "Blocks"
-const description = "Beautifully designed, production-ready."
+const title = "Blocks";
+const description = "Beautifully designed, production-ready.";
 
-const ogImage = "/og/default.png"
+const ogImage = "/og/default.png";
 
 export const metadata: Metadata = {
   title,
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     creator: X_HANDLE,
     images: [ogImage],
   },
-}
+};
 
 function getCollectionPageJsonLd(): WithContext<CollectionPage> {
   return {
@@ -58,7 +58,7 @@ function getCollectionPageJsonLd(): WithContext<CollectionPage> {
       })),
     },
     isPartOf: { "@id": JSON_LD_ID.website },
-  }
+  };
 }
 
 export default function BlocksPage() {
@@ -86,7 +86,7 @@ export default function BlocksPage() {
         </Fragment>
       ))}
     </>
-  )
+  );
 }
 
 function Separator() {
@@ -94,5 +94,5 @@ function Separator() {
     <div className="screen-line-top screen-line-bottom">
       <div className="stripe-divider" />
     </div>
-  )
+  );
 }

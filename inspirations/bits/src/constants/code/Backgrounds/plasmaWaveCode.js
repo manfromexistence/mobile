@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/PlasmaWave/PlasmaWave.jsx?raw';
-import css from '@content/Backgrounds/PlasmaWave/PlasmaWave.css?raw';
-import tailwind from '@tailwind/Backgrounds/PlasmaWave/PlasmaWave.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/PlasmaWave/PlasmaWave.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/PlasmaWave/PlasmaWave.tsx?raw';
+import code from "@content/Backgrounds/PlasmaWave/PlasmaWave.jsx?raw";
+import css from "@content/Backgrounds/PlasmaWave/PlasmaWave.css?raw";
+import tailwind from "@tailwind/Backgrounds/PlasmaWave/PlasmaWave.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/PlasmaWave/PlasmaWave.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/PlasmaWave/PlasmaWave.tsx?raw";
 
 export const plasmaWave = {
   dependencies: `ogl`,
@@ -22,5 +22,5 @@ export const plasmaWave = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

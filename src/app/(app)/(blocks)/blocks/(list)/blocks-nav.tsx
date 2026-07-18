@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import type { Route } from "next"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { blockCategories } from "@/config/registry"
-import type { NavItem } from "@/types/nav"
+import type { Route } from "next";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { blockCategories } from "@/config/registry";
+import type { NavItem } from "@/types/nav";
 
 const NAV_ITEMS: NavItem<Route>[] = [
   {
@@ -15,10 +15,10 @@ const NAV_ITEMS: NavItem<Route>[] = [
     href: `/blocks/${category.name}` as Route,
     title: category.title,
   })),
-]
+];
 
 export function BlocksNav() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <div className="no-scrollbar scroll-fade-x overflow-x-auto">
@@ -35,5 +35,5 @@ export function BlocksNav() {
         ))}
       </nav>
     </div>
-  )
+  );
 }

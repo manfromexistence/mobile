@@ -3,7 +3,7 @@
   --row-gap: 5%;
   --cube-perspective: 99999999px;
   --cube-face-border: 1px solid #fff;
-  --cube-face-bg: #120F17;
+  --cube-face-bg: #120f17;
 }
 
 .default-animation {
@@ -32,7 +32,7 @@
 }
 
 .cube::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -36px;
   right: -36px;

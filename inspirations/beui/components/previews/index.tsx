@@ -7,9 +7,7 @@ export const previews: Record<string, ComponentType> = {
   "blocks/dynamic-island": dynamic(() =>
     import("./blocks/dynamic-island.preview").then((m) => m.DynamicIslandPreview),
   ),
-  "blocks/swap": dynamic(() =>
-    import("./blocks/swap.preview").then((m) => m.SwapPreview),
-  ),
+  "blocks/swap": dynamic(() => import("./blocks/swap.preview").then((m) => m.SwapPreview)),
   "blocks/command-palette": dynamic(() =>
     import("./blocks/command-palette.preview").then((m) => m.CommandPalettePreview),
   ),
@@ -35,41 +33,29 @@ export const previews: Record<string, ComponentType> = {
     import("./blocks/file-upload.preview").then((m) => m.FileUploadPreview),
   ),
   "blocks/prediction-market": dynamic(() =>
-    import("./blocks/prediction-market.preview").then(
-      (m) => m.PredictionMarketPreview,
-    ),
+    import("./blocks/prediction-market.preview").then((m) => m.PredictionMarketPreview),
   ),
-  "motion/table": dynamic(() =>
-    import("./motion/table.preview").then((m) => m.TablePreview),
-  ),
+  "motion/table": dynamic(() => import("./motion/table.preview").then((m) => m.TablePreview)),
   "motion/table-editable": dynamic(() =>
-    import("./motion/table-editable.preview").then(
-      (m) => m.TableEditablePreview,
-    ),
+    import("./motion/table-editable.preview").then((m) => m.TableEditablePreview),
   ),
   "motion/table-async": dynamic(() =>
     import("./motion/table-async.preview").then((m) => m.TableAsyncPreview),
   ),
   "motion/bouncy-accordion": dynamic(() =>
-    import("./motion/bouncy-accordion.preview").then(
-      (m) => m.BouncyAccordionPreview,
-    ),
+    import("./motion/bouncy-accordion.preview").then((m) => m.BouncyAccordionPreview),
   ),
   "motion/tilt-card": dynamic(() =>
     import("./motion/tilt-card.preview").then((m) => m.TiltCardPreview),
   ),
-  "motion/marquee": dynamic(() =>
-    import("./motion/marquee.preview").then((m) => m.MarqueePreview),
-  ),
+  "motion/marquee": dynamic(() => import("./motion/marquee.preview").then((m) => m.MarqueePreview)),
   "motion/text-animation": dynamic(() =>
     import("./motion/text-animation.preview").then((m) => m.TextAnimationPreview),
   ),
   "motion/text-shimmer": dynamic(() =>
     import("./motion/text-shimmer.preview").then((m) => m.TextShimmerPreview),
   ),
-  "motion/number": dynamic(() =>
-    import("./motion/number.preview").then((m) => m.NumberPreview),
-  ),
+  "motion/number": dynamic(() => import("./motion/number.preview").then((m) => m.NumberPreview)),
   "motion/animated-number": dynamic(() =>
     import("./motion/animated-number.preview").then((m) => m.AnimatedNumberPreview),
   ),
@@ -97,27 +83,17 @@ export const previews: Record<string, ComponentType> = {
   "motion/bottom-sheet": dynamic(() =>
     import("./motion/bottom-sheet.preview").then((m) => m.BottomSheetPreview),
   ),
-  "motion/tabs": dynamic(() =>
-    import("./motion/tabs.preview").then((m) => m.TabsPreview),
-  ),
-  "motion/switch": dynamic(() =>
-    import("./motion/switch.preview").then((m) => m.SwitchPreview),
-  ),
-  "motion/input": dynamic(() =>
-    import("./motion/input.preview").then((m) => m.InputPreview),
-  ),
-  "motion/select": dynamic(() =>
-    import("./motion/select.preview").then((m) => m.SelectPreview),
-  ),
+  "motion/tabs": dynamic(() => import("./motion/tabs.preview").then((m) => m.TabsPreview)),
+  "motion/switch": dynamic(() => import("./motion/switch.preview").then((m) => m.SwitchPreview)),
+  "motion/input": dynamic(() => import("./motion/input.preview").then((m) => m.InputPreview)),
+  "motion/select": dynamic(() => import("./motion/select.preview").then((m) => m.SelectPreview)),
   "motion/select-morph": dynamic(() =>
     import("./motion/select-morph.preview").then((m) => m.SelectMorphPreview),
   ),
   "motion/checkbox": dynamic(() =>
     import("./motion/checkbox.preview").then((m) => m.CheckboxPreview),
   ),
-  "motion/radio": dynamic(() =>
-    import("./motion/radio.preview").then((m) => m.RadioPreview),
-  ),
+  "motion/radio": dynamic(() => import("./motion/radio.preview").then((m) => m.RadioPreview)),
   "blocks/otp-input": dynamic(() =>
     import("./blocks/otp-input.preview").then((m) => m.OTPInputPreview),
   ),
@@ -136,18 +112,12 @@ export const previews: Record<string, ComponentType> = {
   "blocks/not-found-terminal": dynamic(() =>
     import("./blocks/not-found-terminal.preview").then((m) => m.NotFoundTerminalPreview),
   ),
-  "motion/drawer": dynamic(() =>
-    import("./motion/drawer.preview").then((m) => m.DrawerPreview),
-  ),
+  "motion/drawer": dynamic(() => import("./motion/drawer.preview").then((m) => m.DrawerPreview)),
   "motion/shared-layout-bg": dynamic(() =>
     import("./motion/shared-layout-bg.preview").then((m) => m.SharedLayoutBgPreview),
   ),
-  "motion/dock": dynamic(() =>
-    import("./motion/dock.preview").then((m) => m.DockPreview),
-  ),
-  "motion/tooltip": dynamic(() =>
-    import("./motion/tooltip.preview").then((m) => m.TooltipPreview),
-  ),
+  "motion/dock": dynamic(() => import("./motion/dock.preview").then((m) => m.DockPreview)),
+  "motion/tooltip": dynamic(() => import("./motion/tooltip.preview").then((m) => m.TooltipPreview)),
   "motion/morphing-modal": dynamic(() =>
     import("./motion/morphing-modal.preview").then((m) => m.MorphingModalPreview),
   ),
@@ -191,9 +161,7 @@ export const previews: Record<string, ComponentType> = {
     import("./motion/range-slider.preview").then((m) => m.RangeSliderPreview),
   ),
   "motion/shader-background": dynamic(() =>
-    import("./motion/shader-background.preview").then(
-      (m) => m.ShaderBackgroundPreview,
-    ),
+    import("./motion/shader-background.preview").then((m) => m.ShaderBackgroundPreview),
   ),
 };
 

@@ -33,7 +33,7 @@ test("P0: refreshGitLabDuoToken exists and handles invalid_grant as unrecoverabl
   assert.match(
     src,
     /export\s+async\s+function\s+refreshGitLabDuoToken\(/,
-    "refreshGitLabDuoToken must be exported"
+    "refreshGitLabDuoToken must be exported",
   );
 
   // Extract the function body
@@ -63,7 +63,7 @@ test("P1: refreshKimiCodingToken accepts providerSpecificData parameter", async 
   assert.match(
     src,
     /export\s+async\s+function\s+refreshKimiCodingToken\([^)]*providerSpecificData/,
-    "refreshKimiCodingToken must accept providerSpecificData"
+    "refreshKimiCodingToken must accept providerSpecificData",
   );
 });
 
@@ -75,7 +75,7 @@ test("P1: refreshKimiCodingToken does NOT use ephemeral Date.now() device ID", a
   assert.doesNotMatch(
     fnMatch[0],
     /["']kimi-refresh-["']\s*\+\s*Date\.now\(\)/,
-    "must NOT use ephemeral kimi-refresh-+Date.now() device ID"
+    "must NOT use ephemeral kimi-refresh-+Date.now() device ID",
   );
 });
 
@@ -93,7 +93,7 @@ test("P1: _getAccessTokenInternal passes providerSpecificData to refreshKimiCodi
   assert.match(
     src,
     /case\s+["']kimi-coding["']:[\s\S]{1,300}providerSpecificData/,
-    "kimi-coding case must pass providerSpecificData"
+    "kimi-coding case must pass providerSpecificData",
   );
 });
 
@@ -127,7 +127,7 @@ test("P1: tokenHealthCheck checks copilotTokenExpiresAt before refreshing", asyn
 test("P1: ROTATING_REFRESH_PROVIDERS.has() normalizes conn.provider case before lookup", async () => {
   const src = await read("src/lib/tokenHealthCheck.ts");
   const assignMatch = src.match(
-    /const\s+isRotatingProvider\s*=\s*ROTATING_REFRESH_PROVIDERS\.has\(\s*([\s\S]{0,80}?)\s*\);/
+    /const\s+isRotatingProvider\s*=\s*ROTATING_REFRESH_PROVIDERS\.has\(\s*([\s\S]{0,80}?)\s*\);/,
   );
   assert.ok(assignMatch, "isRotatingProvider assignment not found");
   const arg = assignMatch[1];
@@ -135,7 +135,7 @@ test("P1: ROTATING_REFRESH_PROVIDERS.has() normalizes conn.provider case before 
     arg,
     /String\(\s*conn\.provider\s*\|\|\s*["']["']\s*\)\.toLowerCase\(\)/,
     "ROTATING_REFRESH_PROVIDERS.has() must lowercase-normalize conn.provider before the lookup " +
-      "(bare `conn.provider` fails for 'OpenAI'/'Github' since the Set is all-lowercase)"
+      "(bare `conn.provider` fails for 'OpenAI'/'Github' since the Set is all-lowercase)",
   );
 });
 
@@ -144,7 +144,7 @@ test("P1: GitHub Copilot sub-token guard normalizes conn.provider case", async (
   // Scope the match to the Copilot sub-token refresh block via its own comment,
   // not an arbitrary occurrence elsewhere in the file.
   const blockMatch = src.match(
-    /GitHub Copilot sub-token refresh[\s\S]{0,600}?if\s*\(([\s\S]{0,80}?)\)\s*\{/
+    /GitHub Copilot sub-token refresh[\s\S]{0,600}?if\s*\(([\s\S]{0,80}?)\)\s*\{/,
   );
   assert.ok(blockMatch, "Copilot sub-token refresh block not found");
   const condition = blockMatch[1];
@@ -152,7 +152,7 @@ test("P1: GitHub Copilot sub-token guard normalizes conn.provider case", async (
     condition,
     /String\(\s*conn\.provider\s*\|\|\s*["']["']\s*\)\.toLowerCase\(\)\s*===\s*["']github["']/,
     "the Copilot sub-token refresh guard must lowercase-normalize conn.provider before comparing " +
-      "to 'github' (bare `conn.provider === \"github\"` fails for mixed-case values like 'Github')"
+      "to 'github' (bare `conn.provider === \"github\"` fails for mixed-case values like 'Github')",
   );
 });
 
@@ -185,7 +185,7 @@ test("P2: refreshKiroToken parses AWS InvalidGrantException", async () => {
   assert.match(
     fnMatch[0],
     /InvalidGrantException|ExpiredTokenException/,
-    "must detect AWS error types"
+    "must detect AWS error types",
   );
   assert.match(fnMatch[0], /unrecoverable_refresh_error/, "must return unrecoverable sentinel");
 });
@@ -198,7 +198,7 @@ test("P2: refreshKiroToken handles AWS errors on both AWS OIDC and social auth p
   const matchCount = (fnMatch[0].match(/InvalidGrantException/g) || []).length;
   assert.ok(
     matchCount >= 2,
-    `InvalidGrantException should be checked in both paths (found ${matchCount} occurrences)`
+    `InvalidGrantException should be checked in both paths (found ${matchCount} occurrences)`,
   );
 });
 
@@ -211,13 +211,13 @@ test("P3: refreshClaudeOAuthToken normalizes invalid_grant to unrecoverable_refr
   assert.match(
     fnMatch[0],
     /unrecoverable_refresh_error[\s\S]{1,100}invalid_grant|invalid_grant[\s\S]{1,100}unrecoverable_refresh_error/,
-    "invalid_grant must map to unrecoverable_refresh_error sentinel"
+    "invalid_grant must map to unrecoverable_refresh_error sentinel",
   );
   // Must NOT return the old non-normalized shape { error: errorBody.error, code: "http_..." }
   assert.doesNotMatch(
     fnMatch[0],
     /code:\s*`http_\$\{response\.status\}`/,
-    "must NOT return http_NNN code format for invalid_grant"
+    "must NOT return http_NNN code format for invalid_grant",
   );
 });
 
@@ -230,7 +230,7 @@ test("P3: refreshWindsurfToken parses Firebase USER_DISABLED/TOKEN_EXPIRED error
   assert.match(
     fnMatch[0],
     /USER_DISABLED|TOKEN_EXPIRED|INVALID_REFRESH_TOKEN/,
-    "must detect Firebase error codes"
+    "must detect Firebase error codes",
   );
   assert.match(fnMatch[0], /unrecoverable_refresh_error/, "must return unrecoverable sentinel");
 });
@@ -244,6 +244,6 @@ test("isUnrecoverableRefreshError detects the normalized sentinel shape", async 
   assert.match(
     fnMatch[0],
     /unrecoverable_refresh_error/,
-    "must detect unrecoverable_refresh_error"
+    "must detect unrecoverable_refresh_error",
   );
 });

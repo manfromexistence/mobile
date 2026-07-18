@@ -46,7 +46,8 @@ vi.mock("next-intl", () => ({
     if (key === "scenarioSystemPrompt") return "System Prompt";
     if (key === "scenarioStreaming") return "Streaming";
     if (key === "advancedTestBenchTitle") return "Test Bench (8 cenários)";
-    if (key === "advancedTestBenchSubtitle") return "Roda todos os cenários e reporta pass/fail + compatibilidade %.";
+    if (key === "advancedTestBenchSubtitle")
+      return "Roda todos os cenários e reporta pass/fail + compatibilidade %.";
     return key;
   },
 }));
@@ -89,7 +90,11 @@ vi.mock("@/shared/components", () => ({
   }: {
     children: React.ReactNode;
     className?: string;
-  }) => <div data-testid="card" className={className}>{children}</div>,
+  }) => (
+    <div data-testid="card" className={className}>
+      {children}
+    </div>
+  ),
 
   Button: ({
     children,
@@ -160,128 +165,122 @@ vi.mock("@/shared/components", () => ({
 }));
 
 // ── Hook stubs ──────────────────────────────────────────────────────────────
-vi.mock(
-  "@/app/(dashboard)/dashboard/translator/hooks/useProviderOptions",
-  () => ({
-    useProviderOptions: () => ({
-      provider: "openai",
-      setProvider: vi.fn(),
-      providerOptions: [
-        { value: "openai", label: "OpenAI" },
-        { value: "anthropic", label: "Anthropic" },
-      ],
-      loading: false,
-    }),
+vi.mock("@/app/(dashboard)/dashboard/translator/hooks/useProviderOptions", () => ({
+  useProviderOptions: () => ({
+    provider: "openai",
+    setProvider: vi.fn(),
+    providerOptions: [
+      { value: "openai", label: "OpenAI" },
+      { value: "anthropic", label: "Anthropic" },
+    ],
+    loading: false,
   }),
-);
+}));
 
-vi.mock(
-  "@/app/(dashboard)/dashboard/translator/hooks/useAvailableModels",
-  () => ({
-    useAvailableModels: () => ({
-      model: "gpt-4o",
-      setModel: vi.fn(),
-      availableModels: ["gpt-4o", "gpt-3.5-turbo", "claude-sonnet-4-20250514"],
-      loading: false,
-      pickModelForFormat: (format: string) => {
-        if (format === "claude") return "claude-sonnet-4-20250514";
-        return "gpt-4o";
-      },
-    }),
+vi.mock("@/app/(dashboard)/dashboard/translator/hooks/useAvailableModels", () => ({
+  useAvailableModels: () => ({
+    model: "gpt-4o",
+    setModel: vi.fn(),
+    availableModels: ["gpt-4o", "gpt-3.5-turbo", "claude-sonnet-4-20250514"],
+    loading: false,
+    pickModelForFormat: (format: string) => {
+      if (format === "claude") return "claude-sonnet-4-20250514";
+      return "gpt-4o";
+    },
   }),
-);
+}));
 
 // ── exampleTemplates stub ───────────────────────────────────────────────────
-vi.mock(
-  "@/app/(dashboard)/dashboard/translator/exampleTemplates",
-  () => ({
-    getExampleTemplates: () => [
-      {
-        id: "simple-chat",
-        name: "Simple Chat",
-        icon: "chat",
-        description: "Simple chat",
-        formats: {
-          claude: { model: "claude-sonnet-4-20250514", messages: [{ role: "user", content: "Hello" }] },
-          openai: { model: "gpt-4o", messages: [{ role: "user", content: "Hello" }] },
+vi.mock("@/app/(dashboard)/dashboard/translator/exampleTemplates", () => ({
+  getExampleTemplates: () => [
+    {
+      id: "simple-chat",
+      name: "Simple Chat",
+      icon: "chat",
+      description: "Simple chat",
+      formats: {
+        claude: {
+          model: "claude-sonnet-4-20250514",
+          messages: [{ role: "user", content: "Hello" }],
         },
+        openai: { model: "gpt-4o", messages: [{ role: "user", content: "Hello" }] },
       },
-      {
-        id: "tool-calling",
-        name: "Tool Calling",
-        icon: "build",
-        description: "Tool calling",
-        formats: {
-          openai: { model: "gpt-4o", messages: [{ role: "user", content: "Weather?" }] },
-        },
-      },
-      {
-        id: "multi-turn",
-        name: "Multi-Turn",
-        icon: "forum",
-        description: "Multi-turn",
-        formats: {
-          openai: { model: "gpt-4o", messages: [] },
-        },
-      },
-      {
-        id: "thinking",
-        name: "Thinking",
-        icon: "psychology",
-        description: "Thinking",
-        formats: {
-          openai: { model: "o3-mini", messages: [] },
-        },
-      },
-      {
-        id: "system-prompt",
-        name: "System Prompt",
-        icon: "settings",
-        description: "System prompt",
-        formats: {
-          openai: { model: "gpt-4o", messages: [] },
-        },
-      },
-      {
-        id: "streaming",
-        name: "Streaming",
-        icon: "stream",
-        description: "Streaming",
-        formats: {
-          openai: { model: "gpt-4o", messages: [] },
-        },
-      },
-      {
-        id: "vision",
-        name: "Vision",
-        icon: "image",
-        description: "Vision",
-        formats: {
-          openai: { model: "gpt-4o", messages: [] },
-        },
-      },
-      {
-        id: "schema-coercion",
-        name: "Schema Coercion",
-        icon: "schema",
-        description: "Schema coercion",
-        formats: {
-          openai: { model: "gpt-4o", messages: [] },
-        },
-      },
-    ],
-    FORMAT_META: {
-      openai: { label: "OpenAI", color: "emerald", icon: "smart_toy" },
-      claude: { label: "Claude", color: "orange", icon: "psychology" },
-      gemini: { label: "Gemini", color: "blue", icon: "auto_awesome" },
     },
-    FORMAT_OPTIONS: [
-      { value: "openai", label: "OpenAI" },
-      { value: "claude", label: "Claude" },
-      { value: "gemini", label: "Gemini" },
-    ],
-  }),
-);
+    {
+      id: "tool-calling",
+      name: "Tool Calling",
+      icon: "build",
+      description: "Tool calling",
+      formats: {
+        openai: { model: "gpt-4o", messages: [{ role: "user", content: "Weather?" }] },
+      },
+    },
+    {
+      id: "multi-turn",
+      name: "Multi-Turn",
+      icon: "forum",
+      description: "Multi-turn",
+      formats: {
+        openai: { model: "gpt-4o", messages: [] },
+      },
+    },
+    {
+      id: "thinking",
+      name: "Thinking",
+      icon: "psychology",
+      description: "Thinking",
+      formats: {
+        openai: { model: "o3-mini", messages: [] },
+      },
+    },
+    {
+      id: "system-prompt",
+      name: "System Prompt",
+      icon: "settings",
+      description: "System prompt",
+      formats: {
+        openai: { model: "gpt-4o", messages: [] },
+      },
+    },
+    {
+      id: "streaming",
+      name: "Streaming",
+      icon: "stream",
+      description: "Streaming",
+      formats: {
+        openai: { model: "gpt-4o", messages: [] },
+      },
+    },
+    {
+      id: "vision",
+      name: "Vision",
+      icon: "image",
+      description: "Vision",
+      formats: {
+        openai: { model: "gpt-4o", messages: [] },
+      },
+    },
+    {
+      id: "schema-coercion",
+      name: "Schema Coercion",
+      icon: "schema",
+      description: "Schema coercion",
+      formats: {
+        openai: { model: "gpt-4o", messages: [] },
+      },
+    },
+  ],
+  FORMAT_META: {
+    openai: { label: "OpenAI", color: "emerald", icon: "smart_toy" },
+    claude: { label: "Claude", color: "orange", icon: "psychology" },
+    gemini: { label: "Gemini", color: "blue", icon: "auto_awesome" },
+  },
+  FORMAT_OPTIONS: [
+    { value: "openai", label: "OpenAI" },
+    { value: "claude", label: "Claude" },
+    { value: "gemini", label: "Gemini" },
+  ],
+}));
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -297,12 +296,14 @@ function makeContainer(): HTMLElement {
 /**
  * Build a mock fetch that returns success for translate + a readable stream for send.
  */
-function makeFetchMock(opts: {
-  translateOk?: boolean;
-  sendOk?: boolean;
-  translateError?: string;
-  sendHttpStatus?: number;
-} = {}) {
+function makeFetchMock(
+  opts: {
+    translateOk?: boolean;
+    sendOk?: boolean;
+    translateError?: string;
+    sendHttpStatus?: number;
+  } = {},
+) {
   const { translateOk = true, sendOk = true, translateError, sendHttpStatus = 200 } = opts;
 
   return vi.fn().mockImplementation((url: string) => {
@@ -469,8 +470,8 @@ describe("TestBenchAccordion", () => {
     });
     const buttons = container.querySelectorAll("[data-testid='button']");
     // 1 Run All + 8 scenario Run Test buttons
-    const runTestBtns = Array.from(buttons).filter((b) =>
-      b.textContent?.includes("Run Test") || b.textContent?.includes("Re-Run")
+    const runTestBtns = Array.from(buttons).filter(
+      (b) => b.textContent?.includes("Run Test") || b.textContent?.includes("Re-Run"),
     );
     expect(runTestBtns.length).toBe(8);
   });
@@ -537,9 +538,9 @@ describe("TestBenchAccordion", () => {
     });
 
     // After completion, scenario buttons should show "Re-Run" (result exists)
-    const reRunBtns = Array.from(
-      container.querySelectorAll("[data-testid='button']"),
-    ).filter((b) => b.textContent?.includes("Re-Run"));
+    const reRunBtns = Array.from(container.querySelectorAll("[data-testid='button']")).filter((b) =>
+      b.textContent?.includes("Re-Run"),
+    );
     // All 8 should show re-run
     expect(reRunBtns.length).toBe(8);
   });
@@ -606,9 +607,9 @@ describe("TestBenchAccordion", () => {
     expect(callCountAfterAll).toBe(16);
 
     // Now click Re-Run on first scenario
-    const reRunBtns = Array.from(
-      container.querySelectorAll("[data-testid='button']"),
-    ).filter((b) => b.textContent?.includes("Re-Run")) as HTMLButtonElement[];
+    const reRunBtns = Array.from(container.querySelectorAll("[data-testid='button']")).filter((b) =>
+      b.textContent?.includes("Re-Run"),
+    ) as HTMLButtonElement[];
     expect(reRunBtns.length).toBeGreaterThan(0);
 
     await act(async () => {
@@ -637,9 +638,9 @@ describe("TestBenchAccordion", () => {
 
     // Run first scenario only
     const buttons = container.querySelectorAll("[data-testid='button']");
-    const firstRunBtn = Array.from(buttons).find((b) =>
-      b.textContent?.includes("Run Test"),
-    ) as HTMLButtonElement | undefined;
+    const firstRunBtn = Array.from(buttons).find((b) => b.textContent?.includes("Run Test")) as
+      | HTMLButtonElement
+      | undefined;
     await act(async () => {
       firstRunBtn?.click();
     });
@@ -666,9 +667,9 @@ describe("TestBenchAccordion", () => {
     });
 
     const buttons = container.querySelectorAll("[data-testid='button']");
-    const firstRunBtn = Array.from(buttons).find((b) =>
-      b.textContent?.includes("Run Test"),
-    ) as HTMLButtonElement | undefined;
+    const firstRunBtn = Array.from(buttons).find((b) => b.textContent?.includes("Run Test")) as
+      | HTMLButtonElement
+      | undefined;
     await act(async () => {
       firstRunBtn?.click();
     });
@@ -700,9 +701,9 @@ describe("TestBenchAccordion", () => {
     });
 
     const buttons = container.querySelectorAll("[data-testid='button']");
-    const firstRunBtn = Array.from(buttons).find((b) =>
-      b.textContent?.includes("Run Test"),
-    ) as HTMLButtonElement | undefined;
+    const firstRunBtn = Array.from(buttons).find((b) => b.textContent?.includes("Run Test")) as
+      | HTMLButtonElement
+      | undefined;
     await act(async () => {
       firstRunBtn?.click();
     });
@@ -720,7 +721,9 @@ describe("TestBenchAccordion", () => {
       "fetch",
       vi.fn().mockImplementation((url: string) => {
         if ((url as string).includes("/api/translator/translate")) {
-          const errWithStack = new Error("foo\n    at /home/user/dev/file.ts:42:10\n    at /node_modules/bar.js:1:1");
+          const errWithStack = new Error(
+            "foo\n    at /home/user/dev/file.ts:42:10\n    at /node_modules/bar.js:1:1",
+          );
           return Promise.reject(errWithStack);
         }
         return Promise.reject(new Error("Unexpected"));
@@ -737,9 +740,9 @@ describe("TestBenchAccordion", () => {
     });
 
     const buttons = container.querySelectorAll("[data-testid='button']");
-    const firstRunBtn = Array.from(buttons).find((b) =>
-      b.textContent?.includes("Run Test"),
-    ) as HTMLButtonElement | undefined;
+    const firstRunBtn = Array.from(buttons).find((b) => b.textContent?.includes("Run Test")) as
+      | HTMLButtonElement
+      | undefined;
     await act(async () => {
       firstRunBtn?.click();
     });
@@ -793,9 +796,9 @@ describe("TestBenchAccordion", () => {
     });
 
     const buttons = container.querySelectorAll("[data-testid='button']");
-    const firstRunBtn = Array.from(buttons).find((b) =>
-      b.textContent?.includes("Run Test"),
-    ) as HTMLButtonElement | undefined;
+    const firstRunBtn = Array.from(buttons).find((b) => b.textContent?.includes("Run Test")) as
+      | HTMLButtonElement
+      | undefined;
     await act(async () => {
       firstRunBtn?.click();
     });
@@ -828,9 +831,9 @@ describe("TestBenchAccordion", () => {
     });
 
     const buttons = container.querySelectorAll("[data-testid='button']");
-    const firstRunBtn = Array.from(buttons).find((b) =>
-      b.textContent?.includes("Run Test"),
-    ) as HTMLButtonElement | undefined;
+    const firstRunBtn = Array.from(buttons).find((b) => b.textContent?.includes("Run Test")) as
+      | HTMLButtonElement
+      | undefined;
     await act(async () => {
       firstRunBtn?.click();
     });

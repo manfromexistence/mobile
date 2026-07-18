@@ -30,7 +30,7 @@
 }
 
 .gradient-overlay::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
@@ -40,7 +40,7 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background-color: #120F17;
+  background-color: #120f17;
   z-index: -1;
 }
 

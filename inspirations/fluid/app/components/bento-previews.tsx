@@ -11,10 +11,7 @@ import {
 } from "@/registry/radix/accordion";
 import { Badge } from "@/registry/default/badge";
 import { Button } from "@/registry/radix/button";
-import {
-  CheckboxGroup,
-  CheckboxItem,
-} from "@/registry/radix/checkbox-group";
+import { CheckboxGroup, CheckboxItem } from "@/registry/radix/checkbox-group";
 import { ColorPicker, ColorPickerPortalContainer } from "@/registry/default/color-picker";
 import {
   Dialog,
@@ -31,12 +28,7 @@ import { MenuItem } from "@/registry/default/menu-item";
 import { InputCopy } from "@/registry/default/input-copy";
 import { InputGroup, InputField } from "@/registry/default/input-group";
 import { RadioGroup, RadioItem } from "@/registry/radix/radio-group";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-} from "@/registry/default/select";
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@/registry/default/select";
 import { Slider, SliderComfortable } from "@/registry/radix/slider";
 import { Switch } from "@/registry/radix/switch";
 import {
@@ -48,10 +40,7 @@ import {
   TableCell,
 } from "@/registry/default/table";
 import { Tabs, TabsList, TabItem } from "@/registry/radix/tabs";
-import {
-  TabsSubtle,
-  TabsSubtleItem,
-} from "@/registry/default/tabs-subtle";
+import { TabsSubtle, TabsSubtleItem } from "@/registry/default/tabs-subtle";
 import { ThinkingIndicator } from "@/registry/default/thinking-indicator";
 import {
   ThinkingSteps,
@@ -63,10 +52,7 @@ import {
   ThinkingStepSource,
 } from "@/registry/default/thinking-steps";
 import { Tooltip } from "@/registry/radix/tooltip";
-import {
-  AskUserQuestions,
-  type AskUserQuestion,
-} from "@/registry/default/ask-user-questions";
+import { AskUserQuestions, type AskUserQuestion } from "@/registry/default/ask-user-questions";
 
 function AccordionPreview() {
   return (
@@ -75,19 +61,22 @@ function AccordionPreview() {
         <AccordionItem value="item-1" index={0}>
           <AccordionTrigger>What is Fluid Functionalism?</AccordionTrigger>
           <AccordionContent>
-            A design philosophy where every animation serves a functional purpose — motion is information, not decoration.
+            A design philosophy where every animation serves a functional purpose — motion is
+            information, not decoration.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2" index={1}>
           <AccordionTrigger>How does proximity hover work?</AccordionTrigger>
           <AccordionContent>
-            The closest item to your cursor is highlighted before you click, reducing targeting errors.
+            The closest item to your cursor is highlighted before you click, reducing targeting
+            errors.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-3" index={2}>
           <AccordionTrigger>Why spring physics?</AccordionTrigger>
           <AccordionContent>
-            Springs respond naturally to interruption — if a user reverses mid-transition, the animation adapts.
+            Springs respond naturally to interruption — if a user reverses mid-transition, the
+            animation adapts.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-4" index={3}>
@@ -110,9 +99,15 @@ function AccordionPreview() {
 function BadgePreview() {
   return (
     <div className="flex flex-wrap gap-1.5 items-center">
-      <Badge variant="dot" color="blue">Published</Badge>
-      <Badge variant="dot" color="green">Active</Badge>
-      <Badge variant="dot" color="red">Declined</Badge>
+      <Badge variant="dot" color="blue">
+        Published
+      </Badge>
+      <Badge variant="dot" color="green">
+        Active
+      </Badge>
+      <Badge variant="dot" color="red">
+        Declined
+      </Badge>
     </div>
   );
 }
@@ -120,17 +115,31 @@ function BadgePreview() {
 function ButtonPreview() {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Button variant="primary" size="sm">Primary</Button>
-      <Button variant="secondary" size="sm">Secondary</Button>
-      <Button variant="tertiary" size="sm">Tertiary</Button>
-      <Button variant="ghost" size="sm">Ghost</Button>
+      <Button variant="primary" size="sm">
+        Primary
+      </Button>
+      <Button variant="secondary" size="sm">
+        Secondary
+      </Button>
+      <Button variant="tertiary" size="sm">
+        Tertiary
+      </Button>
+      <Button variant="ghost" size="sm">
+        Ghost
+      </Button>
     </div>
   );
 }
 
 function CheckboxPreview() {
   const [checked, setChecked] = useState<Set<number>>(new Set());
-  const items = ["Spring physics", "Proximity hover", "Font weight transitions", "Keyboard navigation", "Dark mode support"];
+  const items = [
+    "Spring physics",
+    "Proximity hover",
+    "Font weight transitions",
+    "Keyboard navigation",
+    "Dark mode support",
+  ];
   return (
     <div className="w-full max-w-[220px]">
       <CheckboxGroup checkedIndices={checked}>
@@ -159,14 +168,14 @@ function DialogPreview() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="secondary" size="sm">Open Dialog</Button>
+        <Button variant="secondary" size="sm">
+          Open Dialog
+        </Button>
       </DialogTrigger>
       <DialogContent size="sm">
         <DialogHeader>
           <DialogTitle>Create teamspace</DialogTitle>
-          <DialogDescription>
-            Add a new teamspace to organize your projects.
-          </DialogDescription>
+          <DialogDescription>Add a new teamspace to organize your projects.</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
@@ -282,10 +291,18 @@ function SelectPreview() {
       <Select value={value} onValueChange={setValue}>
         <SelectTrigger placeholder="Select role..." variant="bordered" />
         <SelectContent>
-          <SelectItem index={0} value="Owner">Owner</SelectItem>
-          <SelectItem index={1} value="Editor">Editor</SelectItem>
-          <SelectItem index={2} value="Viewer">Viewer</SelectItem>
-          <SelectItem index={3} value="Guest">Guest</SelectItem>
+          <SelectItem index={0} value="Owner">
+            Owner
+          </SelectItem>
+          <SelectItem index={1} value="Editor">
+            Editor
+          </SelectItem>
+          <SelectItem index={2} value="Viewer">
+            Viewer
+          </SelectItem>
+          <SelectItem index={3} value="Guest">
+            Guest
+          </SelectItem>
         </SelectContent>
       </Select>
     </div>
@@ -394,7 +411,13 @@ function TabsSubtlePreview() {
   ];
   return (
     <div className="w-fit mx-auto">
-      <TabsSubtle idPrefix="bento-tabs" selectedIndex={tab} onSelect={setTab} activeLabel aria-label="Navigation">
+      <TabsSubtle
+        idPrefix="bento-tabs"
+        selectedIndex={tab}
+        onSelect={setTab}
+        activeLabel
+        aria-label="Navigation"
+      >
         {items.map((item, i) => (
           <TabsSubtleItem key={item.label} index={i} icon={item.icon} label={item.label} />
         ))}
@@ -541,8 +564,13 @@ function ThinkingStepsPreview() {
               <ThinkingStepSource>behance.net</ThinkingStepSource>
             </ThinkingStepSources>
           </ThinkingStep>
-          <ThinkingStep status="active" icon="brain" label="Analyzing results"
-            description="Compiling findings into a summary." isLast />
+          <ThinkingStep
+            status="active"
+            icon="brain"
+            label="Analyzing results"
+            description="Compiling findings into a summary."
+            isLast
+          />
         </ThinkingStepsContent>
       </ThinkingSteps>
     </div>
@@ -553,7 +581,9 @@ function TooltipPreview() {
   return (
     <div className="relative z-10">
       <Tooltip content="Copy to clipboard">
-        <Button variant="secondary" size="sm">Hover me</Button>
+        <Button variant="secondary" size="sm">
+          Hover me
+        </Button>
       </Tooltip>
     </div>
   );

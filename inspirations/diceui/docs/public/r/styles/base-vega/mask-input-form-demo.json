@@ -1,16 +1,8 @@
 {
   "name": "mask-input-form-demo",
   "type": "registry:example",
-  "dependencies": [
-    "@hookform/resolvers/zod",
-    "react-hook-form",
-    "zod"
-  ],
-  "registryDependencies": [
-    "button",
-    "form",
-    "mask-input"
-  ],
+  "dependencies": ["@hookform/resolvers/zod", "react-hook-form", "zod"],
+  "registryDependencies": ["button", "form", "mask-input"],
   "files": [
     {
       "path": "examples/mask-input-form-demo.tsx",

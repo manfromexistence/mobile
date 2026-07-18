@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/Grainient/Grainient.jsx?raw';
-import css from '@content/Backgrounds/Grainient/Grainient.css?raw';
-import tailwind from '@tailwind/Backgrounds/Grainient/Grainient.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/Grainient/Grainient.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/Grainient/Grainient.tsx?raw';
+import code from "@content/Backgrounds/Grainient/Grainient.jsx?raw";
+import css from "@content/Backgrounds/Grainient/Grainient.css?raw";
+import tailwind from "@tailwind/Backgrounds/Grainient/Grainient.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/Grainient/Grainient.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/Grainient/Grainient.tsx?raw";
 
 export const grainient = {
   dependencies: `ogl`,
@@ -38,5 +38,5 @@ export const grainient = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

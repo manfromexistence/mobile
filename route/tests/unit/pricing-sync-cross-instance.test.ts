@@ -68,13 +68,13 @@ test("getSyncStatus reflects a sync performed by a different module instance", a
   assert.equal(
     status.lastSyncModelCount,
     result.modelCount,
-    "should read model count from persisted state"
+    "should read model count from persisted state",
   );
   assert.ok(status.lastSyncModelCount > 0, "persisted model count should be non-zero");
   assert.notEqual(status.lastSync, null, "should read lastSync from persisted state");
   assert.notEqual(
     status.nextSync,
     null,
-    "nextSync must be computed from persisted state, not the local (unset) syncTimer"
+    "nextSync must be computed from persisted state, not the local (unset) syncTimer",
   );
 });

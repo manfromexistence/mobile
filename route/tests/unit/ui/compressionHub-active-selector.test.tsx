@@ -19,7 +19,9 @@ function mount(ui: React.ReactElement): HTMLElement {
 }
 
 beforeEach(() => {
-  (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+  (
+    globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+  ).IS_REACT_ACT_ENVIRONMENT = true;
 });
 
 afterEach(async () => {
@@ -76,7 +78,7 @@ function setupFetchMock(): { puts: CapturedPut[] } {
         return json(initialConfig);
       }
       return json({}, 404);
-    }
+    },
   );
   return { puts };
 }
@@ -103,7 +105,9 @@ describe("CompressionHub — active-profile selector", () => {
   it("renders the active-profile select with Default + each named combo", async () => {
     setupFetchMock();
     const container = await render();
-    const select = container.querySelector('[data-testid="active-profile-select"]') as HTMLSelectElement | null;
+    const select = container.querySelector(
+      '[data-testid="active-profile-select"]',
+    ) as HTMLSelectElement | null;
     expect(select).toBeTruthy();
     expect(container.textContent).toContain("Default (from panel)");
     expect(container.textContent).toContain("RTK only");
@@ -112,7 +116,9 @@ describe("CompressionHub — active-profile selector", () => {
   it("changing the select to a combo PUTs activeComboId === that id", async () => {
     const { puts } = setupFetchMock();
     const container = await render();
-    const select = container.querySelector('[data-testid="active-profile-select"]') as HTMLSelectElement;
+    const select = container.querySelector(
+      '[data-testid="active-profile-select"]',
+    ) as HTMLSelectElement;
     await act(async () => {
       setSelectValue(select, "c1");
     });
@@ -128,7 +134,9 @@ describe("CompressionHub — active-profile selector", () => {
     const preview = () => container.querySelector('[data-testid="active-profile-preview"]');
     expect(preview()).toBeTruthy();
     expect(preview()!.textContent).toContain("Default");
-    const select = container.querySelector('[data-testid="active-profile-select"]') as HTMLSelectElement;
+    const select = container.querySelector(
+      '[data-testid="active-profile-select"]',
+    ) as HTMLSelectElement;
     await act(async () => {
       setSelectValue(select, "c1");
     });

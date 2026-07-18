@@ -1,13 +1,8 @@
 {
   "name": "speed-dial-side-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react",
-    "sonner"
-  ],
-  "registryDependencies": [
-    "speed-dial"
-  ],
+  "dependencies": ["lucide-react", "sonner"],
+  "registryDependencies": ["speed-dial"],
   "files": [
     {
       "path": "examples/speed-dial-side-demo.tsx",

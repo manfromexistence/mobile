@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const indexPath = path.join(
   repoRoot,
-  "src/app/(dashboard)/dashboard/usage/components/ProviderLimits/index.tsx"
+  "src/app/(dashboard)/dashboard/usage/components/ProviderLimits/index.tsx",
 );
 const source = fs.readFileSync(indexPath, "utf8");
 

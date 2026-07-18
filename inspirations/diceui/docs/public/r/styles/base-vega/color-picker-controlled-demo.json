@@ -1,10 +1,7 @@
 {
   "name": "color-picker-controlled-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "color-picker",
-    "button"
-  ],
+  "registryDependencies": ["color-picker", "button"],
   "files": [
     {
       "path": "examples/color-picker-controlled-demo.tsx",

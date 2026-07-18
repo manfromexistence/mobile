@@ -175,7 +175,7 @@ test("deleteGroup throws when a pool still references the group", () => {
   assert.throws(
     () => groupsDb.deleteGroup(group.id),
     /pools/i,
-    "deleteGroup should throw a message mentioning pools"
+    "deleteGroup should throw a message mentioning pools",
   );
 
   // Group should still exist.
@@ -187,6 +187,6 @@ test("deleteGroup('group-demo') throws (protected seed group)", () => {
   assert.throws(
     () => groupsDb.deleteGroup("group-demo"),
     /group-demo/i,
-    "deleteGroup should throw for the protected group-demo id"
+    "deleteGroup should throw for the protected group-demo id",
   );
 });

@@ -26,8 +26,7 @@ function describeValue(n: number, prop: string) {
     return `${Math.round(n * 100)}% size${n > 1 ? ", bigger" : n < 1 ? ", smaller" : ", normal"}`;
   if (prop === "opacity")
     return `${Math.round(n * 100)}% visible${n === 0 ? ", invisible" : n === 1 ? ", solid" : ""}`;
-  if (prop === "rotate")
-    return `rotated ${n}°${n === 0 ? ", upright" : ""}`;
+  if (prop === "rotate") return `rotated ${n}°${n === 0 ? ", upright" : ""}`;
   return `${n}px ${n > 0 ? "right of" : n < 0 ? "left of" : "at"} start`;
 }
 
@@ -57,9 +56,7 @@ function KeyframesPreview({
         key={`${replayKey}-${prop}-${dur}-${rep}-${frames.join(",")}`}
         animate={reduce ? undefined : { [prop]: frames }}
         transition={
-          reduce
-            ? { duration: 0 }
-            : { duration: dur, ease: "easeInOut", ...repeatOf(rep) }
+          reduce ? { duration: 0 } : { duration: dur, ease: "easeInOut", ...repeatOf(rep) }
         }
         className="h-14 w-14 rounded-2xl bg-primary"
       />
@@ -69,8 +66,7 @@ function KeyframesPreview({
 
 function repeatCode(rep: string) {
   if (rep === "loop") return ",\n        repeat: Infinity";
-  if (rep === "mirror")
-    return ',\n        repeat: Infinity,\n        repeatType: "mirror"';
+  if (rep === "mirror") return ',\n        repeat: Infinity,\n        repeatType: "mirror"';
   return "";
 }
 
@@ -131,9 +127,15 @@ export const keyframesItem: PlaygroundItem = {
       ? { ...next, frames: SEQ[str(next, "property", "scale")] ?? SEQ.scale }
       : next,
   presets: [
-    { name: "Pulse", values: { property: "scale", frames: [1, 1.4, 1], duration: 1.4, repeat: "mirror" } },
+    {
+      name: "Pulse",
+      values: { property: "scale", frames: [1, 1.4, 1], duration: 1.4, repeat: "mirror" },
+    },
     { name: "Spin", values: { property: "rotate", frames: [0, 360], duration: 2, repeat: "loop" } },
-    { name: "Blink", values: { property: "opacity", frames: [1, 0.2, 1], duration: 1.2, repeat: "mirror" } },
+    {
+      name: "Blink",
+      values: { property: "opacity", frames: [1, 0.2, 1], duration: 1.2, repeat: "mirror" },
+    },
   ],
   Preview: KeyframesPreview,
   explain: (v) => {

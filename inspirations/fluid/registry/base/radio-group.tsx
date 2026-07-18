@@ -72,7 +72,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
     const resolvedSelectedIndex =
       value !== undefined
         ? childValues.findIndex((childValue) => childValue === value)
-        : selectedIndex ?? -1;
+        : (selectedIndex ?? -1);
     // Covers all three selection APIs: value, selectedIndex, per-item selected.
     const hasSelection =
       resolvedSelectedIndex >= 0 ||
@@ -82,10 +82,8 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
 
     const activeRect = activeIndex !== null ? itemRects[activeIndex] : null;
     const focusRect = focusedIndex !== null ? itemRects[focusedIndex] : null;
-    const selectedRect =
-      resolvedSelectedIndex >= 0 ? itemRects[resolvedSelectedIndex] : null;
-    const isHoveringOther =
-      activeIndex !== null && activeIndex !== resolvedSelectedIndex;
+    const selectedRect = resolvedSelectedIndex >= 0 ? itemRects[resolvedSelectedIndex] : null;
+    const isHoveringOther = activeIndex !== null && activeIndex !== resolvedSelectedIndex;
     const shape = useShape();
 
     const content = (
@@ -105,9 +103,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
           if (indexAttr != null) {
             const idx = Number(indexAttr);
             setActiveIndex(idx);
-            setFocusedIndex(
-              (e.target as HTMLElement).matches(":focus-visible") ? idx : null
-            );
+            setFocusedIndex((e.target as HTMLElement).matches(":focus-visible") ? idx : null);
           }
         }}
         onBlur={(e) => {
@@ -120,7 +116,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
           // carries role="radio", so a bare [role="radio"] selector matches
           // twice per row and arrows land on the invisible control.
           const items = Array.from(
-            containerRef.current?.querySelectorAll("[data-proximity-index]") ?? []
+            containerRef.current?.querySelectorAll("[data-proximity-index]") ?? [],
           ) as HTMLElement[];
           const currentIdx = items.indexOf(e.target as HTMLElement);
           if (currentIdx === -1) return;
@@ -128,9 +124,8 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
           // In value mode this handler is merged with Base UI RadioGroup's
           // composite onto the same element; suppress the composite's own
           // roving focus (it targets the hidden sr-only radios).
-          const preventBaseUI = (
-            e as unknown as { preventBaseUIHandler?: () => void }
-          ).preventBaseUIHandler;
+          const preventBaseUI = (e as unknown as { preventBaseUIHandler?: () => void })
+            .preventBaseUIHandler;
 
           if (["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft"].includes(e.key)) {
             e.preventDefault();
@@ -153,10 +148,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
           }
         }}
         role="radiogroup"
-        className={cn(
-          "relative flex flex-col w-72 max-w-full select-none",
-          className
-        )}
+        className={cn("relative flex flex-col w-72 max-w-full select-none", className)}
         {...props}
       >
         {/* Selected background */}
@@ -271,7 +263,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
         {content}
       </RadioGroupContext.Provider>
     );
-  }
+  },
 );
 
 RadioGroup.displayName = "RadioGroup";
@@ -288,14 +280,8 @@ const RadioItem = forwardRef<HTMLDivElement, RadioItemProps>(
   ({ label, index, selected, onSelect, value, className, ...props }, ref) => {
     const internalRef = useRef<HTMLDivElement>(null);
     const hasMounted = useRef(false);
-    const {
-      registerItem,
-      activeIndex,
-      selectedIndex,
-      selectedValue,
-      onValueChange,
-      hasSelection,
-    } = useRadioGroupContext();
+    const { registerItem, activeIndex, selectedIndex, selectedValue, onValueChange, hasSelection } =
+      useRadioGroupContext();
 
     useEffect(() => {
       registerItem(index, internalRef.current);
@@ -312,7 +298,7 @@ const RadioItem = forwardRef<HTMLDivElement, RadioItemProps>(
     const isSelected =
       value !== undefined && selectedValue !== undefined
         ? selectedValue === value
-        : selected ?? selectedIndex === index;
+        : (selected ?? selectedIndex === index);
 
     const handleSelect = () => {
       if (value !== undefined) {
@@ -344,7 +330,7 @@ const RadioItem = forwardRef<HTMLDivElement, RadioItemProps>(
           // move (click still fires) and land focus on the row instead. Skip
           // genuinely interactive children so we don't hijack their focus.
           const interactive = (e.target as HTMLElement).closest(
-            'button:not([tabindex="-1"]), a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            'button:not([tabindex="-1"]), a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
           );
           if (interactive && interactive !== e.currentTarget) return;
           e.preventDefault();
@@ -358,7 +344,7 @@ const RadioItem = forwardRef<HTMLDivElement, RadioItemProps>(
         }}
         className={cn(
           `relative z-10 flex items-center gap-2.5 ${shape.item} px-3 py-1.5 cursor-pointer outline-none`,
-          className
+          className,
         )}
         {...props}
       >
@@ -371,8 +357,8 @@ const RadioItem = forwardRef<HTMLDivElement, RadioItemProps>(
               isSelected
                 ? "border-[1.5px] border-transparent"
                 : isActive
-                ? "border-[1.5px] border-neutral-400 dark:border-neutral-500"
-                : "border-[1.5px] border-border"
+                  ? "border-[1.5px] border-neutral-400 dark:border-neutral-500"
+                  : "border-[1.5px] border-border",
             )}
           />
           {/* Dot */}
@@ -406,14 +392,10 @@ const RadioItem = forwardRef<HTMLDivElement, RadioItemProps>(
           <span
             className={cn(
               "col-start-1 row-start-1 transition-[color,font-variation-settings] duration-80",
-              isSelected || isActive
-                ? "text-foreground"
-                : "text-muted-foreground"
+              isSelected || isActive ? "text-foreground" : "text-muted-foreground",
             )}
             style={{
-              fontVariationSettings: isSelected
-                ? fontWeights.semibold
-                : fontWeights.normal,
+              fontVariationSettings: isSelected ? fontWeights.semibold : fontWeights.normal,
             }}
           >
             {label}
@@ -422,16 +404,11 @@ const RadioItem = forwardRef<HTMLDivElement, RadioItemProps>(
 
         {/* Hidden Base UI Radio input for accessibility */}
         {value !== undefined && (
-          <RadioPrimitive.Root
-            value={value}
-            className="sr-only"
-            tabIndex={-1}
-            aria-hidden
-          />
+          <RadioPrimitive.Root value={value} className="sr-only" tabIndex={-1} aria-hidden />
         )}
       </div>
     );
-  }
+  },
 );
 
 RadioItem.displayName = "RadioItem";

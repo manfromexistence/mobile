@@ -19,14 +19,14 @@ class TestHandler extends MitmHandlerBase {
   async publicHookStart(
     req: IncomingMessage,
     body: Buffer,
-    mapped: string
+    mapped: string,
   ): Promise<ReturnType<MitmHandlerBase["hookBufferStart"]>> {
     return this.hookBufferStart(req, body, mapped);
   }
 
   publicHookUpdate(
     intercepted: Parameters<MitmHandlerBase["hookBufferUpdate"]>[0],
-    opts?: Parameters<MitmHandlerBase["hookBufferUpdate"]>[1]
+    opts?: Parameters<MitmHandlerBase["hookBufferUpdate"]>[1],
   ): void {
     return this.hookBufferUpdate(intercepted, opts);
   }
@@ -81,7 +81,7 @@ test("base.hookBufferStart — local stub returns InterceptedRequest with saniti
     !auth ||
       (typeof auth === "string" &&
         !auth.includes("abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKL")),
-    `sanitizeHeaders failed to mask authorization: ${JSON.stringify(auth)}`
+    `sanitizeHeaders failed to mask authorization: ${JSON.stringify(auth)}`,
   );
 });
 
@@ -129,7 +129,7 @@ test("base.hookBufferUpdate — extended opts form still works", async () => {
       responseSize: 0,
       proxyLatencyMs: 1,
       upstreamLatencyMs: 2,
-    })
+    }),
   );
 });
 
@@ -152,7 +152,7 @@ test("base.writeError — writes sanitized JSON error body", async () => {
   await (h as unknown as { writeError: MitmHandlerBase["writeError"] }).writeError(
     res,
     new Error("boom"),
-    502
+    502,
   );
   assert.equal(status, 502);
   const obj = JSON.parse(payload);

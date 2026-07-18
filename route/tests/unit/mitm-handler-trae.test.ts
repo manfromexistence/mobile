@@ -18,6 +18,6 @@ test("trae handler — intercept throws structured error (viability=investigatin
 
   await assert.rejects(
     () => h.intercept(req, res, Buffer.from("{}"), "gpt-4o"),
-    /investigation|invalid|not.*implement/i
+    /investigation|invalid|not.*implement/i,
   );
 });

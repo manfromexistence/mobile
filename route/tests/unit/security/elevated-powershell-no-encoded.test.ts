@@ -17,7 +17,7 @@ test("buildElevatedScriptWrapper does not contain -EncodedCommand fingerprint", 
   const wrapper = buildElevatedScriptWrapper("C:\\Temp\\omniroute-elevate-x.ps1");
   assert.ok(
     !wrapper.includes("-EncodedCommand"),
-    "wrapper must not contain -EncodedCommand (Socket.dev textbook fingerprint)"
+    "wrapper must not contain -EncodedCommand (Socket.dev textbook fingerprint)",
   );
   assert.ok(wrapper.includes("-File"), "wrapper must reference the payload via -File");
   assert.ok(wrapper.includes("Start-Process"), "wrapper must use Start-Process -Verb RunAs");
@@ -30,7 +30,7 @@ test("buildElevatedScriptWrapper quotes the script path safely (no shell injecti
   // helper does that. Confirm both the original and the escaped form are present.
   assert.ok(
     wrapper.includes("'C:\\Temp\\path with spaces''and-quote.ps1'"),
-    "single quotes in the path must be doubled per PowerShell escaping rules"
+    "single quotes in the path must be doubled per PowerShell escaping rules",
   );
 });
 
@@ -47,7 +47,7 @@ test("_runElevatedPowerShellForTest writes payload to a temp .ps1 file and unlin
       const content = fs.readFileSync(tempPath, "utf8");
       assert.match(content, /Write-Output 'omniroute regression test'/);
       return "ok";
-    }
+    },
   );
 
   assert.ok(capturedWrapper, "wrapper must be captured");
@@ -56,11 +56,11 @@ test("_runElevatedPowerShellForTest writes payload to a temp .ps1 file and unlin
   assert.ok(
     capturedTempPath!.startsWith(path.resolve(os.tmpdir())) ||
       capturedTempPath!.startsWith(os.tmpdir()),
-    "temp .ps1 must live inside os.tmpdir()"
+    "temp .ps1 must live inside os.tmpdir()",
   );
   assert.ok(
     !fs.existsSync(capturedTempPath!),
-    "temp .ps1 file must be unlinked after the runner returns"
+    "temp .ps1 file must be unlinked after the runner returns",
   );
 });
 
@@ -82,6 +82,6 @@ test("_runElevatedPowerShellForTest unlinks the temp file even when the runner t
   assert.ok(capturedTempPath, "temp path must still be captured");
   assert.ok(
     !fs.existsSync(capturedTempPath!),
-    "temp .ps1 must be removed by the finally block even after a failed call"
+    "temp .ps1 must be removed by the finally block even after a failed call",
   );
 });

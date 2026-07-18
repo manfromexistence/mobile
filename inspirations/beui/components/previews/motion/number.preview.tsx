@@ -19,7 +19,7 @@ export function NumberPreview() {
 
   useEffect(() => {
     const id = window.setInterval(() => {
-      setVariant((currentVariant) => currentVariant === "ticker" ? "animated" : "ticker");
+      setVariant((currentVariant) => (currentVariant === "ticker" ? "animated" : "ticker"));
     }, 3000);
     return () => window.clearInterval(id);
   }, []);

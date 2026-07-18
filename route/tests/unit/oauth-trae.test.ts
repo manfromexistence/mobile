@@ -44,7 +44,7 @@ test("trae provider exposes the expected shape", () => {
   assert.equal(
     provider.flowType,
     "import_token",
-    "Trae uses import_token until ByteDance publishes a public OAuth client"
+    "Trae uses import_token until ByteDance publishes a public OAuth client",
   );
   assert.ok(provider.config, "trae provider must have a config object");
   assert.equal(typeof provider.mapTokens, "function", "trae provider must expose mapTokens");

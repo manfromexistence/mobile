@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 
 const { getRegistryEntry } = await import("../../open-sse/config/providerRegistry.ts");
 const { getModelInfoCore } = await import("../../open-sse/services/model.ts");
-const { DEFAULT_PRICING_INFERENCE } =
-  await import("../../src/shared/constants/pricing/inference-hosts.ts");
+const { DEFAULT_PRICING_INFERENCE } = await import(
+  "../../src/shared/constants/pricing/inference-hosts.ts"
+);
 
 const INCLUDED_DIRECT_MODELS = [
   "hf:openai/gpt-oss-120b",

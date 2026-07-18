@@ -46,9 +46,7 @@ const Switch = forwardRef<HTMLDivElement, SwitchProps>(
       originX: number;
     } | null>(null);
 
-    const motionX = useMotionValue(
-      checked ? THUMB_OFFSET + THUMB_TRAVEL : THUMB_OFFSET
-    );
+    const motionX = useMotionValue(checked ? THUMB_OFFSET + THUMB_TRAVEL : THUMB_OFFSET);
 
     useEffect(() => {
       hasMounted.current = true;
@@ -62,9 +60,7 @@ const Switch = forwardRef<HTMLDivElement, SwitchProps>(
     const thumbHeight = pressed ? THUMB_SIZE - PRESS_SHRINK : THUMB_SIZE;
     const thumbY = pressed ? THUMB_OFFSET + PRESS_SHRINK / 2 : THUMB_OFFSET;
     const extraWidth = thumbWidth - THUMB_SIZE;
-    const thumbX = checked
-      ? THUMB_OFFSET + THUMB_TRAVEL - extraWidth
-      : THUMB_OFFSET;
+    const thumbX = checked ? THUMB_OFFSET + THUMB_TRAVEL - extraWidth : THUMB_OFFSET;
 
     useEffect(() => {
       if (dragging.current) return;
@@ -88,7 +84,7 @@ const Switch = forwardRef<HTMLDivElement, SwitchProps>(
         };
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
       },
-      [disabled, motionX]
+      [disabled, motionX],
     );
 
     const handlePointerMove = useCallback(
@@ -107,62 +103,52 @@ const Switch = forwardRef<HTMLDivElement, SwitchProps>(
         const rawX = pointerStart.current.originX + delta;
         motionX.set(Math.max(dragMin, Math.min(dragMax, rawX)));
       },
-      [motionX]
+      [motionX],
     );
 
-    const handlePointerUp = useCallback(
-      () => {
-        if (!pointerStart.current) return;
-        setPressed(false);
+    const handlePointerUp = useCallback(() => {
+      if (!pointerStart.current) return;
+      setPressed(false);
 
-        if (dragging.current) {
-          didDrag.current = true;
-          dragging.current = false;
+      if (dragging.current) {
+        didDrag.current = true;
+        dragging.current = false;
 
-          const currentX = motionX.get();
-          const dragMin = THUMB_OFFSET;
-          const pressedThumbWidth = THUMB_SIZE + PRESS_EXTEND;
-          const dragMax = TRACK_WIDTH - THUMB_OFFSET - pressedThumbWidth;
-          const midpoint = (dragMin + dragMax) / 2;
+        const currentX = motionX.get();
+        const dragMin = THUMB_OFFSET;
+        const pressedThumbWidth = THUMB_SIZE + PRESS_EXTEND;
+        const dragMax = TRACK_WIDTH - THUMB_OFFSET - pressedThumbWidth;
+        const midpoint = (dragMin + dragMax) / 2;
 
-          const shouldBeOn = currentX > midpoint;
+        const shouldBeOn = currentX > midpoint;
 
-          if (shouldBeOn !== checked) {
-            onToggle();
-          } else {
-            const snapTarget = checked
-              ? THUMB_OFFSET + THUMB_TRAVEL
-              : THUMB_OFFSET;
-            animate(motionX, snapTarget, thumbTransition ?? spring.moderate);
-          }
-
-          requestAnimationFrame(() => {
-            didDrag.current = false;
-          });
-        }
-
-        pointerStart.current = null;
-      },
-      [checked, onToggle, motionX, thumbTransition]
-    );
-
-    const handlePointerCancel = useCallback(
-      () => {
-        if (!pointerStart.current) return;
-        setPressed(false);
-
-        if (dragging.current) {
-          dragging.current = false;
-          const snapTarget = checked
-            ? THUMB_OFFSET + THUMB_TRAVEL
-            : THUMB_OFFSET;
+        if (shouldBeOn !== checked) {
+          onToggle();
+        } else {
+          const snapTarget = checked ? THUMB_OFFSET + THUMB_TRAVEL : THUMB_OFFSET;
           animate(motionX, snapTarget, thumbTransition ?? spring.moderate);
         }
 
-        pointerStart.current = null;
-      },
-      [checked, motionX, thumbTransition]
-    );
+        requestAnimationFrame(() => {
+          didDrag.current = false;
+        });
+      }
+
+      pointerStart.current = null;
+    }, [checked, onToggle, motionX, thumbTransition]);
+
+    const handlePointerCancel = useCallback(() => {
+      if (!pointerStart.current) return;
+      setPressed(false);
+
+      if (dragging.current) {
+        dragging.current = false;
+        const snapTarget = checked ? THUMB_OFFSET + THUMB_TRAVEL : THUMB_OFFSET;
+        animate(motionX, snapTarget, thumbTransition ?? spring.moderate);
+      }
+
+      pointerStart.current = null;
+    }, [checked, motionX, thumbTransition]);
 
     return (
       <div
@@ -170,7 +156,7 @@ const Switch = forwardRef<HTMLDivElement, SwitchProps>(
         className={cn(
           "relative z-10 flex items-center gap-2.5 px-3 py-2 cursor-pointer select-none touch-none",
           disabled && "opacity-50 pointer-events-none",
-          className
+          className,
         )}
         onPointerEnter={(e) => {
           if (e.pointerType === "mouse") setHovered(true);
@@ -200,13 +186,15 @@ const Switch = forwardRef<HTMLDivElement, SwitchProps>(
           className={cn(
             "relative shrink-0 rounded-full outline-none cursor-pointer",
             "transition-colors duration-80",
-            "focus-visible:ring-1 focus-visible:ring-[#6B97FF] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            "focus-visible:ring-1 focus-visible:ring-[#6B97FF] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
           )}
           style={{
             width: TRACK_WIDTH,
             height: TRACK_HEIGHT,
             backgroundColor: checked
-              ? hovered ? "#5C89F2" : "#6B97FF"
+              ? hovered
+                ? "#5C89F2"
+                : "#6B97FF"
               : hovered
                 ? "color-mix(in oklab, var(--accent), rgb(var(--overlay)) 10%)"
                 : "var(--accent)",
@@ -239,7 +227,9 @@ const Switch = forwardRef<HTMLDivElement, SwitchProps>(
                     width: thumbWidth,
                     height: thumbHeight,
                   }}
-                  transition={hasMounted.current ? (thumbTransition ?? spring.moderate) : { duration: 0 }}
+                  transition={
+                    hasMounted.current ? (thumbTransition ?? spring.moderate) : { duration: 0 }
+                  }
                 />
               );
             }}
@@ -251,14 +241,14 @@ const Switch = forwardRef<HTMLDivElement, SwitchProps>(
           id={labelId}
           className={cn(
             "text-[13px] transition-[color] duration-80",
-            checked ? "text-foreground" : "text-muted-foreground"
+            checked ? "text-foreground" : "text-muted-foreground",
           )}
         >
           {label}
         </span>
       </div>
     );
-  }
+  },
 );
 
 Switch.displayName = "Switch";

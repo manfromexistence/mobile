@@ -41,7 +41,7 @@ test("RequestTelemetry: measure() records errors", async () => {
       t.measure("connect", async () => {
         throw new Error("timeout");
       }),
-    (err) => (err as any).message === "timeout"
+    (err) => (err as any).message === "timeout",
   );
   assert.equal(t.getSummary().phases[0].error, "timeout");
 });
@@ -98,7 +98,7 @@ test("comboResolver: least-used picks model with lowest count", () => {
 test("comboResolver: throws on empty models", () => {
   assert.throws(
     () => resolveComboModel({ name: "empty", strategy: "priority", models: [] }),
-    /no models configured/
+    /no models configured/,
   );
 });
 

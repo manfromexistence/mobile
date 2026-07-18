@@ -36,7 +36,7 @@ test("model cooldown body includes optional retry_after ISO + credentials_coolin
         retry_after: iso,
         credentials_cooling: 3,
       },
-    }
+    },
   );
 });
 
@@ -58,7 +58,7 @@ test("model cooldown body omits retry_after / credentials_cooling when absent or
         model: "x",
         reset_seconds: 5,
       },
-    }
+    },
   );
 });
 

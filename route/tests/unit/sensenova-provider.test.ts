@@ -17,7 +17,7 @@ test("SenseNova Token Plan catalog exposes only supported chat models with 64K o
     assert.equal(
       model.maxOutputTokens,
       65536,
-      `${model.id} should use Token Plan's 64K output cap`
+      `${model.id} should use Token Plan's 64K output cap`,
     );
   }
 

@@ -70,23 +70,13 @@ export default function TourControlledDemo() {
       </div>
       <div className="flex w-full flex-col gap-6">
         <div className="grid grid-cols-2 gap-6">
-          <div
-            id="controlled-step-1"
-            className="rounded-lg border p-6 text-center"
-          >
+          <div id="controlled-step-1" className="rounded-lg border p-6 text-center">
             <h3 className="font-semibold">Step 1</h3>
-            <p className="text-muted-foreground text-sm">
-              First step in our controlled tour
-            </p>
+            <p className="text-muted-foreground text-sm">First step in our controlled tour</p>
           </div>
-          <div
-            id="controlled-step-2"
-            className="rounded-lg border p-6 text-center"
-          >
+          <div id="controlled-step-2" className="rounded-lg border p-6 text-center">
             <h3 className="font-semibold">Step 2</h3>
-            <p className="text-muted-foreground text-sm">
-              Second step with external controls
-            </p>
+            <p className="text-muted-foreground text-sm">Second step with external controls</p>
           </div>
         </div>
         {open && value >= 2 && (
@@ -95,9 +85,7 @@ export default function TourControlledDemo() {
             className="fade-in slide-in-from-bottom-4 animate-in rounded-lg border border-primary/50 bg-primary/5 p-6 text-center duration-300"
           >
             <h3 className="font-semibold">Step 3</h3>
-            <p className="text-muted-foreground text-sm">
-              Dynamic step that appears after step 2
-            </p>
+            <p className="text-muted-foreground text-sm">Dynamic step that appears after step 2</p>
           </div>
         )}
       </div>
@@ -127,8 +115,7 @@ export default function TourControlledDemo() {
           <TourHeader>
             <TourTitle>Controlled Tour</TourTitle>
             <TourDescription>
-              This tour's state is controlled externally. Notice how the step
-              counter updates.
+              This tour's state is controlled externally. Notice how the step counter updates.
             </TourDescription>
           </TourHeader>
           <TourClose />
@@ -138,8 +125,8 @@ export default function TourControlledDemo() {
           <TourHeader>
             <TourTitle>External Controls</TourTitle>
             <TourDescription>
-              You can control this tour using the external buttons above, or use
-              the built-in navigation.
+              You can control this tour using the external buttons above, or use the built-in
+              navigation.
             </TourDescription>
           </TourHeader>
           <TourClose />
@@ -149,8 +136,7 @@ export default function TourControlledDemo() {
           <TourHeader>
             <TourTitle>Second Feature</TourTitle>
             <TourDescription>
-              The tour state is fully controlled by the parent component. Watch
-              what happens next!
+              The tour state is fully controlled by the parent component. Watch what happens next!
             </TourDescription>
           </TourHeader>
           <TourClose />
@@ -160,8 +146,8 @@ export default function TourControlledDemo() {
           <TourHeader>
             <TourTitle>Dynamic Layout</TourTitle>
             <TourDescription>
-              This element appeared when you reached this step, demonstrating
-              how the tour handles dynamic content and layout shifts.
+              This element appeared when you reached this step, demonstrating how the tour handles
+              dynamic content and layout shifts.
             </TourDescription>
           </TourHeader>
           <TourClose />

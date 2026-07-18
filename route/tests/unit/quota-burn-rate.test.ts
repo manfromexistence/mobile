@@ -64,11 +64,11 @@ test("computeBurnRate: remaining=100, rate=10 → timeToExhaustionMs ≈ 10000",
   // Should be close to 10000ms (10s), allow ±10% tolerance
   assert.ok(
     result.timeToExhaustionMs! > 9000,
-    `Expected >9000ms, got ${result.timeToExhaustionMs}`
+    `Expected >9000ms, got ${result.timeToExhaustionMs}`,
   );
   assert.ok(
     result.timeToExhaustionMs! < 11000,
-    `Expected <11000ms, got ${result.timeToExhaustionMs}`
+    `Expected <11000ms, got ${result.timeToExhaustionMs}`,
   );
 });
 

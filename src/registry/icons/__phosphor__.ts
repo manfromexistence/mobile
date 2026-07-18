@@ -17,4 +17,4 @@ export {
   TextAlignLeftIcon,
   TextTIcon,
   XCircleIcon,
-} from "@phosphor-icons/react"
+} from "@phosphor-icons/react";

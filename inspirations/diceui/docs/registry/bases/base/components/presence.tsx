@@ -3,9 +3,7 @@
 import * as React from "react";
 
 interface PresenceProps {
-  children:
-    | React.ReactElement
-    | ((props: { present: boolean }) => React.ReactElement);
+  children: React.ReactElement | ((props: { present: boolean }) => React.ReactElement);
   present: boolean;
 }
 
@@ -28,9 +26,7 @@ function Presence({ children, present }: PresenceProps) {
 
   if (!mounted) return null;
 
-  return typeof children === "function"
-    ? children({ present: mounted && present })
-    : children;
+  return typeof children === "function" ? children({ present: mounted && present }) : children;
 }
 
 export { Presence };

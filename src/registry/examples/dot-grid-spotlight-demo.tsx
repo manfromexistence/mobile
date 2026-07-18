@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useTheme } from "next-themes"
+import { useTheme } from "next-themes";
 
-import { DotGridSpotlight } from "@/registry/transformed/components/dot-grid-spotlight"
+import { DotGridSpotlight } from "@/registry/transformed/components/dot-grid-spotlight";
 
 const DOT_COLOR = {
   light: {
@@ -13,11 +13,11 @@ const DOT_COLOR = {
     default: "rgba(255, 255, 255, 0.06)",
     active: "rgba(255, 255, 255, 0.12)",
   },
-} as const
+} as const;
 
 export default function DotGridSpotlightDemo() {
-  const { resolvedTheme } = useTheme()
-  const theme = resolvedTheme === "dark" ? "dark" : "light"
+  const { resolvedTheme } = useTheme();
+  const theme = resolvedTheme === "dark" ? "dark" : "light";
 
   return (
     <div className="relative aspect-square w-xs max-w-full overflow-hidden rounded-xl border bg-black/1 dark:bg-white/5">
@@ -26,5 +26,5 @@ export default function DotGridSpotlightDemo() {
         activeDotColor={DOT_COLOR[theme]?.active}
       />
     </div>
-  )
+  );
 }

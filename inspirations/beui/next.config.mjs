@@ -1,11 +1,6 @@
 // Components that moved from the motion category to blocks. Old page URLs
 // stay alive; install slugs were never category-scoped so /r/* is untouched.
-const MOVED_TO_BLOCKS = [
-  "swap",
-  "dynamic-island",
-  "command-palette",
-  "expandable-action-bar",
-];
+const MOVED_TO_BLOCKS = ["swap", "dynamic-island", "command-palette", "expandable-action-bar"];
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -18,19 +13,9 @@ const nextConfig = {
     }));
   },
   outputFileTracingIncludes: {
-    "/components/*": [
-      "./components/motion/**/*",
-      "./components/previews/**/*",
-    ],
-    "/r/*": [
-      "./components/motion/**/*",
-      "./components/previews/**/*",
-      "./lib/**/*",
-    ],
-    "/*": [
-      "./components/motion/**/*",
-      "./lib/**/*",
-    ],
+    "/components/*": ["./components/motion/**/*", "./components/previews/**/*"],
+    "/r/*": ["./components/motion/**/*", "./components/previews/**/*", "./lib/**/*"],
+    "/*": ["./components/motion/**/*", "./lib/**/*"],
   },
 };
 

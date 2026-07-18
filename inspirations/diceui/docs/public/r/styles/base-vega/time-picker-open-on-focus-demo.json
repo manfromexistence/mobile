@@ -1,10 +1,7 @@
 {
   "name": "time-picker-open-on-focus-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "time-picker",
-    "label"
-  ],
+  "registryDependencies": ["time-picker", "label"],
   "files": [
     {
       "path": "examples/time-picker-open-on-focus-demo.tsx",

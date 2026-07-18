@@ -38,8 +38,9 @@ const groupsDb = await import("../../src/lib/db/quotaGroups.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 const v1ModelsCatalog = await import("../../src/app/api/v1/models/catalog.ts");
 const { syncQuotaCombos } = await import("../../src/lib/quota/quotaCombos.ts");
-const { quotaGroupSlug, isQuotaModelName, parseQuotaModelName } =
-  await import("../../src/lib/quota/quotaModelNaming.ts");
+const { quotaGroupSlug, isQuotaModelName, parseQuotaModelName } = await import(
+  "../../src/lib/quota/quotaModelNaming.ts"
+);
 
 async function resetStorage() {
   apiKeysDb.resetApiKeyState();
@@ -95,28 +96,28 @@ test("#4806 quota-exclusive key lists its qtSd/* virtual models in GET /v1/model
   const res = await v1ModelsCatalog.getUnifiedModelsResponse(
     new Request("http://localhost/api/v1/models", {
       headers: { Authorization: `Bearer ${created.key}` },
-    })
+    }),
   );
   assert.equal(res.status, 200);
   const body = (await res.json()) as { data: Array<{ id: string }> };
 
   const slug = quotaGroupSlug("Times"); // "times"
   const qtsdForKey = body.data.filter(
-    (m) => isQuotaModelName(m.id) && parseQuotaModelName(m.id)?.groupSlug === slug
+    (m) => isQuotaModelName(m.id) && parseQuotaModelName(m.id)?.groupSlug === slug,
   );
 
   assert.ok(
     qtsdForKey.length > 0,
     `quota-exclusive key must see its qtSd/${slug}/glm/* models in /v1/models; ` +
       `got ${body.data.length} total, ${qtsdForKey.length} qtSd. ` +
-      `ids=${JSON.stringify(body.data.map((m) => m.id).slice(0, 8))}`
+      `ids=${JSON.stringify(body.data.map((m) => m.id).slice(0, 8))}`,
   );
 
   // Every returned model must belong to the key's group (no leakage of other pools/raw models).
   for (const m of body.data) {
     assert.ok(
       isQuotaModelName(m.id) && parseQuotaModelName(m.id)?.groupSlug === slug,
-      `quota-exclusive key should only see its own qtSd/${slug}/* models; leaked: ${m.id}`
+      `quota-exclusive key should only see its own qtSd/${slug}/* models; leaked: ${m.id}`,
     );
   }
 });
@@ -159,7 +160,7 @@ test("#4806 quota-exclusive key does NOT see qtSd/* of a group it is not allocat
   const res = await v1ModelsCatalog.getUnifiedModelsResponse(
     new Request("http://localhost/api/v1/models", {
       headers: { Authorization: `Bearer ${created.key}` },
-    })
+    }),
   );
   assert.equal(res.status, 200);
   const body = (await res.json()) as { data: Array<{ id: string }> };
@@ -169,14 +170,14 @@ test("#4806 quota-exclusive key does NOT see qtSd/* of a group it is not allocat
 
   assert.ok(
     body.data.some((m) => parseQuotaModelName(m.id)?.groupSlug === slugA),
-    "key must see its own group A qtSd/* models"
+    "key must see its own group A qtSd/* models",
   );
   const leakedFromB = body.data.filter((m) => parseQuotaModelName(m.id)?.groupSlug === slugB);
   assert.equal(
     leakedFromB.length,
     0,
     `key in group A must NOT see group B (${slugB}) models; leaked: ${JSON.stringify(
-      leakedFromB.map((m) => m.id)
-    )}`
+      leakedFromB.map((m) => m.id),
+    )}`,
   );
 });

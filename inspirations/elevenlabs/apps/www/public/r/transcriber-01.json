@@ -2,10 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "transcriber-01",
   "description": "Transcriber",
-  "dependencies": [
-    "@elevenlabs/elevenlabs-js",
-    "streamdown"
-  ],
+  "dependencies": ["@elevenlabs/elevenlabs-js", "streamdown"],
   "registryDependencies": [
     "https://ui.elevenlabs.io/r/live-waveform.json",
     "button",
@@ -32,8 +29,6 @@
     "container": "w-full bg-surface min-h-svh flex px-4 py-12 items-center md:py-20 justify-center min-w-0",
     "mobile": "component"
   },
-  "categories": [
-    "audio"
-  ],
+  "categories": ["audio"],
   "type": "registry:block"
 }

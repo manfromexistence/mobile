@@ -65,20 +65,14 @@ export function ComponentSourceImpl({
           >
             {open ? "Collapse" : "Expand"}
             <ChevronDownIcon
-              className={cn(
-                "size-3.5 transition-transform",
-                open && "rotate-180",
-              )}
+              className={cn("size-3.5 transition-transform", open && "rotate-180")}
             />
           </Button>
         )}
         <CopyButton value={code} />
       </figcaption>
       <div
-        className={cn(
-          "relative overflow-hidden transition-all duration-200",
-          !open && "max-h-64",
-        )}
+        className={cn("relative overflow-hidden transition-all duration-200", !open && "max-h-64")}
       >
         <div
           className="[&>pre]:max-h-none [&>pre]:overflow-visible [&>pre]:bg-secondary/50 [&>pre]:px-4 [&>pre]:py-4 [&>pre]:text-sm"

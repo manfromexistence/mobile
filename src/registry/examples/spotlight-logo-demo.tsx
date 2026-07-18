@@ -1,4 +1,4 @@
-import { SpotlightLogo } from "@/registry/transformed/components/spotlight-logo"
+import { SpotlightLogo } from "@/registry/transformed/components/spotlight-logo";
 
 export default function SpotlightLogoDemo() {
   return (
@@ -11,10 +11,8 @@ export default function SpotlightLogoDemo() {
         <span className="hidden pointer-fine:inline-block">
           Move your cursor around, then click the mark
         </span>
-        <span className="hidden pointer-coarse:inline-block">
-          Press the mark below
-        </span>
+        <span className="hidden pointer-coarse:inline-block">Press the mark below</span>
       </div>
     </div>
-  )
+  );
 }

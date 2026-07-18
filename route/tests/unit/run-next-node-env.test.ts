@@ -23,7 +23,7 @@ test("run-next.mjs forces NODE_ENV to track the run mode", () => {
   assert.match(
     source,
     NODE_ENV_NORMALIZE,
-    "expected NODE_ENV to be forced to development in dev mode, production otherwise"
+    "expected NODE_ENV to be forced to development in dev mode, production otherwise",
   );
 });
 
@@ -37,7 +37,7 @@ test("NODE_ENV normalization runs after the merged-env copy and before next()", 
   assert.ok(nextCallIdx !== -1, "expected the next() construction to exist");
   assert.ok(
     normalizeIdx > copyLoopIdx,
-    "NODE_ENV must be normalized AFTER the env copy loop (else .env overwrites it)"
+    "NODE_ENV must be normalized AFTER the env copy loop (else .env overwrites it)",
   );
   assert.ok(normalizeIdx < nextCallIdx, "NODE_ENV must be normalized BEFORE next() reads it");
 });

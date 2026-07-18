@@ -1,14 +1,14 @@
-import { useRef, useEffect, useState } from 'react';
-import { gsap } from 'gsap';
+import { useRef, useEffect, useState } from "react";
+import { gsap } from "gsap";
 
 function FlowingMenu({
   items = [],
   speed = 15,
-  textColor = '#fff',
-  bgColor = '#120F17',
-  marqueeBgColor = '#fff',
-  marqueeTextColor = '#120F17',
-  borderColor = '#fff'
+  textColor = "#fff",
+  bgColor = "#120F17",
+  marqueeBgColor = "#fff",
+  marqueeTextColor = "#120F17",
+  borderColor = "#fff",
 }) {
   return (
     <div className="w-full h-full overflow-hidden" style={{ backgroundColor: bgColor }}>
@@ -30,25 +30,35 @@ function FlowingMenu({
   );
 }
 
-function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marqueeTextColor, borderColor, isFirst }) {
+function MenuItem({
+  link,
+  text,
+  image,
+  speed,
+  textColor,
+  marqueeBgColor,
+  marqueeTextColor,
+  borderColor,
+  isFirst,
+}) {
   const itemRef = useRef(null);
   const marqueeRef = useRef(null);
   const marqueeInnerRef = useRef(null);
   const animationRef = useRef(null);
   const [repetitions, setRepetitions] = useState(4);
 
-  const animationDefaults = { duration: 0.6, ease: 'expo' };
+  const animationDefaults = { duration: 0.6, ease: "expo" };
 
   const findClosestEdge = (mouseX, mouseY, width, height) => {
     const topEdgeDist = (mouseX - width / 2) ** 2 + mouseY ** 2;
     const bottomEdgeDist = (mouseX - width / 2) ** 2 + (mouseY - height) ** 2;
-    return topEdgeDist < bottomEdgeDist ? 'top' : 'bottom';
+    return topEdgeDist < bottomEdgeDist ? "top" : "bottom";
   };
 
   useEffect(() => {
     const calculateRepetitions = () => {
       if (!marqueeInnerRef.current) return;
-      const marqueeContent = marqueeInnerRef.current.querySelector('.marquee-part');
+      const marqueeContent = marqueeInnerRef.current.querySelector(".marquee-part");
       if (!marqueeContent) return;
       const contentWidth = marqueeContent.offsetWidth;
       const viewportWidth = window.innerWidth;
@@ -57,14 +67,14 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
     };
 
     calculateRepetitions();
-    window.addEventListener('resize', calculateRepetitions);
-    return () => window.removeEventListener('resize', calculateRepetitions);
+    window.addEventListener("resize", calculateRepetitions);
+    return () => window.removeEventListener("resize", calculateRepetitions);
   }, [text, image]);
 
   useEffect(() => {
     const setupMarquee = () => {
       if (!marqueeInnerRef.current) return;
-      const marqueeContent = marqueeInnerRef.current.querySelector('.marquee-part');
+      const marqueeContent = marqueeInnerRef.current.querySelector(".marquee-part");
       if (!marqueeContent) return;
       const contentWidth = marqueeContent.offsetWidth;
       if (contentWidth === 0) return;
@@ -76,8 +86,8 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
       animationRef.current = gsap.to(marqueeInnerRef.current, {
         x: -contentWidth,
         duration: speed,
-        ease: 'none',
-        repeat: -1
+        ease: "none",
+        repeat: -1,
       });
     };
 
@@ -90,34 +100,44 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
     };
   }, [text, image, repetitions, speed]);
 
-  const handleMouseEnter = ev => {
+  const handleMouseEnter = (ev) => {
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
     const rect = itemRef.current.getBoundingClientRect();
-    const edge = findClosestEdge(ev.clientX - rect.left, ev.clientY - rect.top, rect.width, rect.height);
+    const edge = findClosestEdge(
+      ev.clientX - rect.left,
+      ev.clientY - rect.top,
+      rect.width,
+      rect.height,
+    );
 
     gsap
       .timeline({ defaults: animationDefaults })
-      .set(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' }, 0)
-      .set(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' }, 0)
-      .to([marqueeRef.current, marqueeInnerRef.current], { y: '0%' }, 0);
+      .set(marqueeRef.current, { y: edge === "top" ? "-101%" : "101%" }, 0)
+      .set(marqueeInnerRef.current, { y: edge === "top" ? "101%" : "-101%" }, 0)
+      .to([marqueeRef.current, marqueeInnerRef.current], { y: "0%" }, 0);
   };
 
-  const handleMouseLeave = ev => {
+  const handleMouseLeave = (ev) => {
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current) return;
     const rect = itemRef.current.getBoundingClientRect();
-    const edge = findClosestEdge(ev.clientX - rect.left, ev.clientY - rect.top, rect.width, rect.height);
+    const edge = findClosestEdge(
+      ev.clientX - rect.left,
+      ev.clientY - rect.top,
+      rect.width,
+      rect.height,
+    );
 
     gsap
       .timeline({ defaults: animationDefaults })
-      .to(marqueeRef.current, { y: edge === 'top' ? '-101%' : '101%' }, 0)
-      .to(marqueeInnerRef.current, { y: edge === 'top' ? '101%' : '-101%' }, 0);
+      .to(marqueeRef.current, { y: edge === "top" ? "-101%" : "101%" }, 0)
+      .to(marqueeInnerRef.current, { y: edge === "top" ? "101%" : "-101%" }, 0);
   };
 
   return (
     <div
       className="flex-1 relative overflow-hidden text-center"
       ref={itemRef}
-      style={{ borderTop: isFirst ? 'none' : `1px solid ${borderColor}` }}
+      style={{ borderTop: isFirst ? "none" : `1px solid ${borderColor}` }}
     >
       <a
         className="flex items-center justify-center h-full relative cursor-pointer uppercase no-underline font-semibold text-[4vh]"
@@ -135,8 +155,14 @@ function MenuItem({ link, text, image, speed, textColor, marqueeBgColor, marquee
       >
         <div className="h-full w-fit flex" ref={marqueeInnerRef}>
           {[...Array(repetitions)].map((_, idx) => (
-            <div className="marquee-part flex items-center flex-shrink-0" key={idx} style={{ color: marqueeTextColor }}>
-              <span className="whitespace-nowrap uppercase font-normal text-[4vh] leading-[1] px-[1vw]">{text}</span>
+            <div
+              className="marquee-part flex items-center flex-shrink-0"
+              key={idx}
+              style={{ color: marqueeTextColor }}
+            >
+              <span className="whitespace-nowrap uppercase font-normal text-[4vh] leading-[1] px-[1vw]">
+                {text}
+              </span>
               <div
                 className="w-[200px] h-[7vh] my-[2em] mx-[2vw] py-[1em] rounded-[50px] bg-cover bg-center"
                 style={{ backgroundImage: `url(${image})` }}

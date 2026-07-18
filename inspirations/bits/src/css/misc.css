@@ -136,9 +136,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50px;
-  transition:
-    background-color 0.2s ease,
-    border 0.2s ease;
+  transition: background-color 0.2s ease, border 0.2s ease;
 }
 
 .announcement-close {
@@ -329,10 +327,7 @@
   border-radius: 10px;
   padding: 8px 10px;
   cursor: pointer;
-  transition:
-    transform 120ms ease,
-    filter 120ms ease,
-    box-shadow 120ms ease;
+  transition: transform 120ms ease, filter 120ms ease, box-shadow 120ms ease;
   box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15);
 }
 

@@ -12,10 +12,7 @@ import {
 
 export default function EditableAutosizeDemo() {
   return (
-    <Editable
-      defaultValue="Adjust the size of the input with the text inside."
-      autosize
-    >
+    <Editable defaultValue="Adjust the size of the input with the text inside." autosize>
       <EditableLabel>Autosize editable</EditableLabel>
       <EditableArea>
         <EditablePreview className="whitespace-pre-wrap" />
@@ -23,9 +20,7 @@ export default function EditableAutosizeDemo() {
       </EditableArea>
       <EditableToolbar>
         <EditableSubmit render={<Button size="sm" />}>Save</EditableSubmit>
-        <EditableCancel render={<Button variant="outline" size="sm" />}>
-          Cancel
-        </EditableCancel>
+        <EditableCancel render={<Button variant="outline" size="sm" />}>Cancel</EditableCancel>
       </EditableToolbar>
     </Editable>
   );

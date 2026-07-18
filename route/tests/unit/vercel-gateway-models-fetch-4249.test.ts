@@ -66,11 +66,7 @@ test("#4249 Vercel AI Gateway import fetches the live /v1/models catalog", async
       fetched = true;
       return Response.json({
         object: "list",
-        data: [
-          { id: "xai/grok-4" },
-          { id: "openai/gpt-5.1" },
-          { id: "anthropic/claude-opus-4.5" },
-        ],
+        data: [{ id: "xai/grok-4" }, { id: "openai/gpt-5.1" }, { id: "anthropic/claude-opus-4.5" }],
       });
     }
     // Bogus probe variants (…/v1/v1/models, …/chat/completions/models) → 404
@@ -80,7 +76,7 @@ test("#4249 Vercel AI Gateway import fetches the live /v1/models catalog", async
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as ModelsBody;
@@ -93,7 +89,7 @@ test("#4249 Vercel AI Gateway import fetches the live /v1/models catalog", async
     // The stale hardcoded registry entry must not be what we serve.
     assert.ok(
       !ids.includes("vercel/v0-1.5-md"),
-      "served the stale hardcoded registry catalog instead of the live list"
+      "served the stale hardcoded registry catalog instead of the live list",
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -115,7 +111,7 @@ test("#4249 Vercel AI Gateway import falls back to the local catalog when the li
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as ModelsBody;

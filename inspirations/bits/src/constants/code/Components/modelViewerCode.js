@@ -1,7 +1,7 @@
-import code from '@content/Components/ModelViewer/ModelViewer.jsx?raw';
-import tailwind from '@tailwind/Components/ModelViewer/ModelViewer.jsx?raw';
-import tsCode from '@ts-default/Components/ModelViewer/ModelViewer.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/ModelViewer/ModelViewer.tsx?raw';
+import code from "@content/Components/ModelViewer/ModelViewer.jsx?raw";
+import tailwind from "@tailwind/Components/ModelViewer/ModelViewer.jsx?raw";
+import tsCode from "@ts-default/Components/ModelViewer/ModelViewer.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/ModelViewer/ModelViewer.tsx?raw";
 
 export const modelViewer = {
   dependencies: `three @react-three/fiber @react-three/drei`,
@@ -16,5 +16,5 @@ export const modelViewer = {
   code,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

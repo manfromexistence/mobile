@@ -102,7 +102,7 @@ test("Qiniu import fetches the live /v1/models catalog", async () => {
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as ModelsBody;
@@ -132,7 +132,7 @@ test("Qiniu import falls back to an empty local catalog when live fetch fails", 
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as ModelsBody;
@@ -140,7 +140,7 @@ test("Qiniu import falls back to an empty local catalog when live fetch fails", 
     assert.equal(body.source, "local_catalog", "import must not break when upstream is down");
     assert.deepEqual(
       body.models.map((model) => model.id),
-      []
+      [],
     );
   } finally {
     globalThis.fetch = originalFetch;

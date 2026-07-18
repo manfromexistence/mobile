@@ -87,7 +87,7 @@ test("openapi try route requires management authentication before proxying", asy
     makeRequest({
       method: "GET",
       path: "/api/monitoring/health",
-    }) as any
+    }) as any,
   );
   const body = (await response.json()) as any;
 
@@ -109,8 +109,8 @@ test("openapi try route rejects protocol-relative targets after authentication",
         method: "GET",
         path: "//evil.example/api",
       },
-      await createAuthCookie()
-    ) as any
+      await createAuthCookie(),
+    ) as any,
   );
   const body = (await response.json()) as any;
 
@@ -144,8 +144,8 @@ test("openapi try route strips hop-by-hop headers and proxies same-origin API pa
         },
         body: { comboName: "smoke" },
       },
-      cookie
-    ) as any
+      cookie,
+    ) as any,
   );
   const body = (await response.json()) as any;
   const forwardedHeaders = fetchInit?.headers as Record<string, string>;

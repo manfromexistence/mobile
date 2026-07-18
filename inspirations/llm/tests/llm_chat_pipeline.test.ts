@@ -8,12 +8,8 @@ jest.mock("@mlc-ai/web-xgrammar", () => {
   const compileBuiltinJSONGrammar = jest
     .fn()
     .mockImplementation(async () => ({ dispose: jest.fn() }));
-  const compileJSONSchema = jest
-    .fn()
-    .mockImplementation(async () => ({ dispose: jest.fn() }));
-  const compileGrammar = jest
-    .fn()
-    .mockImplementation(async () => ({ dispose: jest.fn() }));
+  const compileJSONSchema = jest.fn().mockImplementation(async () => ({ dispose: jest.fn() }));
+  const compileGrammar = jest.fn().mockImplementation(async () => ({ dispose: jest.fn() }));
   return {
     TokenizerInfo: {
       createTokenizerInfo: jest.fn(async () => "tokenInfo"),
@@ -119,18 +115,16 @@ function createPipeline(): PipelineLike {
   pipeline["device"] = {
     sync: jest.fn(async () => undefined),
   } as any;
-  pipeline["embedAndForward"] = jest.fn(
-    async (_chunk: any, chunkLen: number) => {
-      pipeline["filledKVCacheLength"] += chunkLen;
-      return {
-        dispose: jest.fn(),
-        shape: [],
-        dtype: "float32",
-        device: {},
-        ndim: 0,
-      };
-    },
-  ) as any;
+  pipeline["embedAndForward"] = jest.fn(async (_chunk: any, chunkLen: number) => {
+    pipeline["filledKVCacheLength"] += chunkLen;
+    return {
+      dispose: jest.fn(),
+      shape: [],
+      dtype: "float32",
+      device: {},
+      ndim: 0,
+    };
+  }) as any;
   pipeline["sampleTokenFromLogits"] = jest.fn(async () => 2);
   pipeline["resetRuntimeStats"] = jest.fn();
   pipeline["resetStatsPerPrefill"] = false;
@@ -184,9 +178,7 @@ test("processNextToken respects max_tokens and updates token frequency", () => {
 
 test("processNextToken throws when max_tokens is below zero", () => {
   const pipeline = createPipeline();
-  expect(() =>
-    (pipeline as any).processNextToken(1, { max_tokens: -1 }),
-  ).toThrow(MinValueError);
+  expect(() => (pipeline as any).processNextToken(1, { max_tokens: -1 })).toThrow(MinValueError);
 });
 
 test("triggerStop converts conversation reply to finished state", () => {
@@ -216,9 +208,7 @@ test("prefillStep adds thinking reply header when thinking disabled", async () =
   await pipeline.prefillStep("hello", Role.user, undefined, {
     enable_thinking: false,
   });
-  expect(
-    pipeline["conversation"].appendEmptyThinkingReplyHeader,
-  ).toHaveBeenCalled();
+  expect(pipeline["conversation"].appendEmptyThinkingReplyHeader).toHaveBeenCalled();
   expect(pipeline["conversation"].appendReplyHeader).not.toHaveBeenCalled();
   expect(pipeline["outputIds"].length).toBeGreaterThan(0);
   expect(pipeline["processNextToken"]).toHaveBeenCalled();
@@ -228,12 +218,8 @@ test("prefillStep appends standard reply header when thinking enabled", async ()
   const pipeline = preparePrefillPipeline();
   pipeline["tokenizer"].encode = jest.fn(() => Int32Array.from([2]));
   await pipeline.prefillStep("hi", Role.user);
-  expect(pipeline["conversation"].appendReplyHeader).toHaveBeenCalledWith(
-    Role.assistant,
-  );
-  expect(
-    pipeline["conversation"].appendEmptyThinkingReplyHeader,
-  ).not.toHaveBeenCalled();
+  expect(pipeline["conversation"].appendReplyHeader).toHaveBeenCalledWith(Role.assistant);
+  expect(pipeline["conversation"].appendEmptyThinkingReplyHeader).not.toHaveBeenCalled();
 });
 
 test("prefillStep reuses grammar matcher when schema unchanged", async () => {

@@ -1,11 +1,5 @@
 import type * as React from "react";
-import type {
-  ButtonProps,
-  CompositionProps,
-  Direction,
-  EmptyProps,
-  Orientation,
-} from "@/types";
+import type { ButtonProps, CompositionProps, Direction, EmptyProps, Orientation } from "@/types";
 
 export interface StepperProps extends EmptyProps<"div">, CompositionProps {
   /**
@@ -61,10 +55,7 @@ export interface StepperProps extends EmptyProps<"div">, CompositionProps {
    * }}
    * ```
    */
-  onValidate?: (
-    value: string,
-    direction: "next" | "prev",
-  ) => boolean | Promise<boolean>;
+  onValidate?: (value: string, direction: "next" | "prev") => boolean | Promise<boolean>;
 
   /**
    * Event handler called when a step is added to the stepper.
@@ -166,9 +157,7 @@ export interface StepperTriggerProps
   extends Omit<ButtonProps, keyof React.ComponentProps<"button">>,
     CompositionProps {}
 
-export interface StepperIndicatorProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface StepperIndicatorProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The display content for the indicator (e.g., step number).
    *
@@ -184,21 +173,13 @@ export interface StepperIndicatorProps
     | ((dataState: "inactive" | "active" | "completed") => React.ReactNode);
 }
 
-export interface StepperSeparatorProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface StepperSeparatorProps extends EmptyProps<"div">, CompositionProps {}
 
-export interface StepperTitleProps
-  extends EmptyProps<"span">,
-    CompositionProps {}
+export interface StepperTitleProps extends EmptyProps<"span">, CompositionProps {}
 
-export interface StepperDescriptionProps
-  extends EmptyProps<"span">,
-    CompositionProps {}
+export interface StepperDescriptionProps extends EmptyProps<"span">, CompositionProps {}
 
-export interface StepperContentProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface StepperContentProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The unique value that links the content with the item.
    *
@@ -217,10 +198,6 @@ export interface StepperContentProps
   forceMount?: boolean;
 }
 
-export interface StepperPrevProps
-  extends EmptyProps<"button">,
-    CompositionProps {}
+export interface StepperPrevProps extends EmptyProps<"button">, CompositionProps {}
 
-export interface StepperNextProps
-  extends EmptyProps<"button">,
-    CompositionProps {}
+export interface StepperNextProps extends EmptyProps<"button">, CompositionProps {}

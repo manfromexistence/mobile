@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/FaultyTerminal/FaultyTerminal.jsx?raw';
-import css from '@content/Backgrounds/FaultyTerminal/FaultyTerminal.css?raw';
-import tailwind from '@tailwind/Backgrounds/FaultyTerminal/FaultyTerminal.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/FaultyTerminal/FaultyTerminal.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/FaultyTerminal/FaultyTerminal.tsx?raw';
+import code from "@content/Backgrounds/FaultyTerminal/FaultyTerminal.jsx?raw";
+import css from "@content/Backgrounds/FaultyTerminal/FaultyTerminal.css?raw";
+import tailwind from "@tailwind/Backgrounds/FaultyTerminal/FaultyTerminal.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/FaultyTerminal/FaultyTerminal.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/FaultyTerminal/FaultyTerminal.tsx?raw";
 
 export const faultyTerminal = {
   dependencies: `ogl`,
@@ -33,5 +33,5 @@ export const faultyTerminal = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

@@ -15,8 +15,9 @@ const localDb = await import("../../src/lib/localDb.ts");
 const providerLimits = await import("../../src/lib/db/providerLimits.ts");
 const usageHistory = await import("../../src/lib/usage/usageHistory.ts");
 const costRules = await import("../../src/domain/costRules.ts");
-const { getProviderWindowCostBreakdown } =
-  await import("../../src/lib/usage/providerWindowCosts.ts");
+const { getProviderWindowCostBreakdown } = await import(
+  "../../src/lib/usage/providerWindowCosts.ts"
+);
 
 async function resetStorage() {
   core.resetDbInstance();
@@ -223,7 +224,7 @@ test("provider window costs use the recorded reset event as the cost cutoff", as
          observed_at, previous_remaining_percentage, new_remaining_percentage,
          previous_used_percentage, new_used_percentage, raw_data)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `
+    `,
     )
     .run(
       "claude",
@@ -236,7 +237,7 @@ test("provider window costs use the recorded reset event as the cost cutoff", as
       100,
       100,
       0,
-      null
+      null,
     );
 
   await usageHistory.saveRequestUsage({
@@ -297,7 +298,7 @@ test("provider window costs cut at an observed same-resetAt quota reset", async 
        observed_at, previous_remaining_percentage, new_remaining_percentage,
        previous_used_percentage, new_used_percentage, raw_data)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `
+  `,
   ).run(
     "claude",
     "claude-early-reset",
@@ -309,7 +310,7 @@ test("provider window costs cut at an observed same-resetAt quota reset", async 
     100,
     100,
     0,
-    null
+    null,
   );
 
   const insertSnapshot = db.prepare(`
@@ -334,7 +335,7 @@ test("provider window costs cut at an observed same-resetAt quota reset", async 
     targetResetAt,
     null,
     null,
-    "2026-07-01T00:05:00.000Z"
+    "2026-07-01T00:05:00.000Z",
   );
   insertSnapshot.run(
     "claude",
@@ -345,7 +346,7 @@ test("provider window costs cut at an observed same-resetAt quota reset", async 
     targetResetAt,
     null,
     null,
-    "2026-07-01T21:41:13.293Z"
+    "2026-07-01T21:41:13.293Z",
   );
   insertSnapshot.run(
     "claude",
@@ -356,7 +357,7 @@ test("provider window costs cut at an observed same-resetAt quota reset", async 
     targetResetAt,
     null,
     null,
-    "2026-07-02T00:04:00.000Z"
+    "2026-07-02T00:04:00.000Z",
   );
 
   await usageHistory.saveRequestUsage({

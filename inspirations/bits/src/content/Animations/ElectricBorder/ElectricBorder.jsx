@@ -1,14 +1,14 @@
-import { useEffect, useRef, useCallback } from 'react';
-import './ElectricBorder.css';
+import { useEffect, useRef, useCallback } from "react";
+import "./ElectricBorder.css";
 
 const ElectricBorder = ({
   children,
-  color = '#5227FF',
+  color = "#5227FF",
   speed = 1,
   chaos = 0.12,
   borderRadius = 24,
   className,
-  style
+  style,
 }) => {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -17,7 +17,7 @@ const ElectricBorder = ({
   const lastFrameTimeRef = useRef(0);
 
   // Noise functions
-  const random = useCallback(x => {
+  const random = useCallback((x) => {
     return (Math.sin(x * 12.9898) * 43758.5453) % 1;
   }, []);
 
@@ -38,7 +38,7 @@ const ElectricBorder = ({
 
       return a * (1 - ux) * (1 - uy) + b * ux * (1 - uy) + c * (1 - ux) * uy + d * ux * uy;
     },
-    [random]
+    [random],
   );
 
   const octavedNoise = useCallback(
@@ -59,16 +59,19 @@ const ElectricBorder = ({
 
       return y;
     },
-    [noise2D]
+    [noise2D],
   );
 
-  const getCornerPoint = useCallback((centerX, centerY, radius, startAngle, arcLength, progress) => {
-    const angle = startAngle + progress * arcLength;
-    return {
-      x: centerX + radius * Math.cos(angle),
-      y: centerY + radius * Math.sin(angle)
-    };
-  }, []);
+  const getCornerPoint = useCallback(
+    (centerX, centerY, radius, startAngle, arcLength, progress) => {
+      const angle = startAngle + progress * arcLength;
+      return {
+        x: centerX + radius * Math.cos(angle),
+        y: centerY + radius * Math.sin(angle),
+      };
+    },
+    [],
+  );
 
   const getRoundedRectPoint = useCallback(
     (t, left, top, width, height, radius) => {
@@ -90,7 +93,14 @@ const ElectricBorder = ({
       // Top-right corner
       if (distance <= accumulated + cornerArc) {
         const progress = (distance - accumulated) / cornerArc;
-        return getCornerPoint(left + width - radius, top + radius, radius, -Math.PI / 2, Math.PI / 2, progress);
+        return getCornerPoint(
+          left + width - radius,
+          top + radius,
+          radius,
+          -Math.PI / 2,
+          Math.PI / 2,
+          progress,
+        );
       }
       accumulated += cornerArc;
 
@@ -104,7 +114,14 @@ const ElectricBorder = ({
       // Bottom-right corner
       if (distance <= accumulated + cornerArc) {
         const progress = (distance - accumulated) / cornerArc;
-        return getCornerPoint(left + width - radius, top + height - radius, radius, 0, Math.PI / 2, progress);
+        return getCornerPoint(
+          left + width - radius,
+          top + height - radius,
+          radius,
+          0,
+          Math.PI / 2,
+          progress,
+        );
       }
       accumulated += cornerArc;
 
@@ -118,7 +135,14 @@ const ElectricBorder = ({
       // Bottom-left corner
       if (distance <= accumulated + cornerArc) {
         const progress = (distance - accumulated) / cornerArc;
-        return getCornerPoint(left + radius, top + height - radius, radius, Math.PI / 2, Math.PI / 2, progress);
+        return getCornerPoint(
+          left + radius,
+          top + height - radius,
+          radius,
+          Math.PI / 2,
+          Math.PI / 2,
+          progress,
+        );
       }
       accumulated += cornerArc;
 
@@ -133,7 +157,7 @@ const ElectricBorder = ({
       const progress = (distance - accumulated) / cornerArc;
       return getCornerPoint(left + radius, top + radius, radius, Math.PI, Math.PI / 2, progress);
     },
-    [getCornerPoint]
+    [getCornerPoint],
   );
 
   useEffect(() => {
@@ -141,7 +165,7 @@ const ElectricBorder = ({
     const container = containerRef.current;
     if (!canvas || !container) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     // Configuration
@@ -173,7 +197,7 @@ const ElectricBorder = ({
     let { width, height } = updateSize();
     let lastDpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    const drawElectricBorder = currentTime => {
+    const drawElectricBorder = (currentTime) => {
       if (!canvas || !ctx) return;
 
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -194,8 +218,8 @@ const ElectricBorder = ({
 
       ctx.strokeStyle = color;
       ctx.lineWidth = 1;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
 
       const scale = displacement;
       const left = borderOffset;
@@ -224,7 +248,7 @@ const ElectricBorder = ({
           frequency,
           timeRef.current,
           0,
-          baseFlatness
+          baseFlatness,
         );
 
         const yNoise = octavedNoise(
@@ -236,7 +260,7 @@ const ElectricBorder = ({
           frequency,
           timeRef.current,
           1,
-          baseFlatness
+          baseFlatness,
         );
 
         const displacedX = point.x + xNoise * scale;
@@ -275,12 +299,16 @@ const ElectricBorder = ({
   }, [color, speed, chaos, borderRadius, octavedNoise, getRoundedRectPoint]);
 
   const vars = {
-    '--electric-border-color': color,
-    borderRadius: borderRadius
+    "--electric-border-color": color,
+    borderRadius: borderRadius,
   };
 
   return (
-    <div ref={containerRef} className={`electric-border ${className ?? ''}`} style={{ ...vars, ...style }}>
+    <div
+      ref={containerRef}
+      className={`electric-border ${className ?? ""}`}
+      style={{ ...vars, ...style }}
+    >
       <div className="eb-canvas-container">
         <canvas ref={canvasRef} className="eb-canvas" />
       </div>

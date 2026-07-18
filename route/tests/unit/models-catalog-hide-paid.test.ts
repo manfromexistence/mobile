@@ -21,7 +21,7 @@ const v1ModelsCatalog = await import("../../src/app/api/v1/models/catalog.ts");
 
 async function fetchCatalog(): Promise<Array<{ id: string; type?: string }>> {
   const res = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models", { method: "GET" })
+    new Request("http://localhost/api/v1/models", { method: "GET" }),
   );
   assert.equal(res.status, 200);
   const body = (await res.json()) as { data: Array<{ id: string; type?: string }> };
@@ -86,6 +86,6 @@ test("#6328 hidePaidModels also filters user-defined custom model rows", async (
   assert.equal(
     hasCustom(await fetchCatalog()),
     false,
-    "custom paid model must be hidden when hidePaidModels is on (#6328)"
+    "custom paid model must be hidden when hidePaidModels is on (#6328)",
   );
 });

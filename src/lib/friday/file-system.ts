@@ -201,9 +201,7 @@ function buildInitial(): FileSystemState {
       );
       if (id) rootIds.push(id);
     } else {
-      const parent = Object.values(nodes).find(
-        (n) => n.kind === "folder" && n.name === f.parentId,
-      );
+      const parent = Object.values(nodes).find((n) => n.kind === "folder" && n.name === f.parentId);
       if (parent) {
         const id = Object.keys(nodes).find(
           (k) => nodes[k].name === f.name && nodes[k].parentId === parent.id,

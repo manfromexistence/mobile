@@ -154,7 +154,11 @@ test("ensureReady: signature change triggers reset + marks memories needs_reinde
   const needsRows = db
     .prepare("SELECT COUNT(*) AS cnt FROM memories WHERE needs_reindex = 1")
     .get() as { cnt: number };
-  assert.equal(needsRows.cnt, 3, "all memories should be marked needs_reindex=1 after signature change");
+  assert.equal(
+    needsRows.cnt,
+    3,
+    "all memories should be marked needs_reindex=1 after signature change",
+  );
 });
 
 test("ensureReady: returns {ready: false} when dimensions are null (no probe done yet)", async (t) => {

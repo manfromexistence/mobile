@@ -1,21 +1,21 @@
-import { useMemo } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box, Text } from '@chakra-ui/react';
-import { FiInfo } from 'react-icons/fi';
+import { useMemo } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box, Text } from "@chakra-ui/react";
+import { FiInfo } from "react-icons/fi";
 
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
-import Customize from '../../components/common/Preview/Customize';
-import CodeExample from '../../components/code/CodeExample';
+import Customize from "../../components/common/Preview/Customize";
+import CodeExample from "../../components/code/CodeExample";
 
-import PropTable from '../../components/common/Preview/PropTable';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import Dependencies from '../../components/code/Dependencies';
+import PropTable from "../../components/common/Preview/PropTable";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import Dependencies from "../../components/code/Dependencies";
 
-import { domeGallery } from '../../constants/code/Components/domeGalleryCode';
-import DomeGallery from '../../content/Components/DomeGallery/DomeGallery';
+import { domeGallery } from "../../constants/code/Components/domeGalleryCode";
+import DomeGallery from "../../content/Components/DomeGallery/DomeGallery";
 
 const DEFAULT_PROPS = {
   fit: 0.8,
@@ -23,7 +23,7 @@ const DEFAULT_PROPS = {
   maxVerticalRotationDeg: 0,
   segments: 34,
   dragDampening: 2,
-  grayscale: true
+  grayscale: true,
 };
 
 const DomeGalleryDemo = () => {
@@ -33,113 +33,119 @@ const DomeGalleryDemo = () => {
   const propData = useMemo(
     () => [
       {
-        name: 'images',
-        type: '(string | { src: string; alt?: string })[]',
-        default: 'DEFAULT_IMAGES',
-        description: 'Array of image URLs (strings) or image objects with src and optional alt text'
+        name: "images",
+        type: "(string | { src: string; alt?: string })[]",
+        default: "DEFAULT_IMAGES",
+        description:
+          "Array of image URLs (strings) or image objects with src and optional alt text",
       },
       {
-        name: 'fit',
-        type: 'number',
-        default: '0.5',
-        description: 'Size factor for the dome radius based on container dimensions'
+        name: "fit",
+        type: "number",
+        default: "0.5",
+        description: "Size factor for the dome radius based on container dimensions",
       },
       {
-        name: 'fitBasis',
+        name: "fitBasis",
         type: "'auto' | 'min' | 'max' | 'width' | 'height'",
         default: "'auto'",
-        description: 'Basis for calculating the dome size'
+        description: "Basis for calculating the dome size",
       },
       {
-        name: 'minRadius',
-        type: 'number',
-        default: '600',
-        description: 'Minimum radius for the dome in pixels'
+        name: "minRadius",
+        type: "number",
+        default: "600",
+        description: "Minimum radius for the dome in pixels",
       },
       {
-        name: 'maxRadius',
-        type: 'number',
-        default: 'Infinity',
-        description: 'Maximum radius for the dome in pixels'
+        name: "maxRadius",
+        type: "number",
+        default: "Infinity",
+        description: "Maximum radius for the dome in pixels",
       },
       {
-        name: 'padFactor',
-        type: 'number',
-        default: '0.25',
-        description: 'Padding factor for the viewer area'
+        name: "padFactor",
+        type: "number",
+        default: "0.25",
+        description: "Padding factor for the viewer area",
       },
       {
-        name: 'overlayBlurColor',
-        type: 'string',
+        name: "overlayBlurColor",
+        type: "string",
         default: "'#120F17'",
-        description: 'Color for the outer portion of the radial overlay blur'
+        description: "Color for the outer portion of the radial overlay blur",
       },
       {
-        name: 'maxVerticalRotationDeg',
-        type: 'number',
-        default: '5',
-        description: 'Maximum vertical rotation angle in degrees'
+        name: "maxVerticalRotationDeg",
+        type: "number",
+        default: "5",
+        description: "Maximum vertical rotation angle in degrees",
       },
       {
-        name: 'dragSensitivity',
-        type: 'number',
-        default: '20',
-        description: 'Sensitivity of drag interactions'
+        name: "dragSensitivity",
+        type: "number",
+        default: "20",
+        description: "Sensitivity of drag interactions",
       },
       {
-        name: 'enlargeTransitionMs',
-        type: 'number',
-        default: '300',
-        description: 'Duration of image enlargement transition in milliseconds'
+        name: "enlargeTransitionMs",
+        type: "number",
+        default: "300",
+        description: "Duration of image enlargement transition in milliseconds",
       },
       {
-        name: 'segments',
-        type: 'number',
-        default: '35',
-        description: 'Number of segments for both X and Y to keep the dome proportional'
+        name: "segments",
+        type: "number",
+        default: "35",
+        description: "Number of segments for both X and Y to keep the dome proportional",
       },
       {
-        name: 'dragDampening',
-        type: 'number',
-        default: '2',
-        description: 'Damping factor for drag inertia (0-1, higher = more damping)'
+        name: "dragDampening",
+        type: "number",
+        default: "2",
+        description: "Damping factor for drag inertia (0-1, higher = more damping)",
       },
       {
-        name: 'openedImageWidth',
-        type: 'string',
+        name: "openedImageWidth",
+        type: "string",
         default: "'400px'",
-        description: 'Width of the enlarged image'
+        description: "Width of the enlarged image",
       },
       {
-        name: 'openedImageHeight',
-        type: 'string',
+        name: "openedImageHeight",
+        type: "string",
         default: "'400px'",
-        description: 'Height of the enlarged image'
+        description: "Height of the enlarged image",
       },
       {
-        name: 'imageBorderRadius',
-        type: 'string',
+        name: "imageBorderRadius",
+        type: "string",
         default: "'30px'",
-        description: 'Border radius for closed tile images'
+        description: "Border radius for closed tile images",
       },
       {
-        name: 'openedImageBorderRadius',
-        type: 'string',
+        name: "openedImageBorderRadius",
+        type: "string",
         default: "'30px'",
-        description: 'Border radius for opened/enlarged images'
+        description: "Border radius for opened/enlarged images",
       },
       {
-        name: 'grayscale',
-        type: 'boolean',
-        default: 'true',
-        description: 'Whether to render all images in grayscale'
-      }
+        name: "grayscale",
+        type: "boolean",
+        default: "true",
+        description: "Whether to render all images in grayscale",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box position="relative" className="demo-container" h={500} p={0} overflow="hidden">
@@ -165,8 +171,8 @@ const DomeGalleryDemo = () => {
               max={1}
               step={0.05}
               value={fit}
-              onChange={value => {
-                updateProp('fit', value);
+              onChange={(value) => {
+                updateProp("fit", value);
               }}
             />
 
@@ -177,8 +183,8 @@ const DomeGalleryDemo = () => {
               step={50}
               value={minRadius}
               valueUnit="px"
-              onChange={value => {
-                updateProp('minRadius', value);
+              onChange={(value) => {
+                updateProp("minRadius", value);
               }}
             />
 
@@ -189,8 +195,8 @@ const DomeGalleryDemo = () => {
               step={1}
               value={maxVerticalRotationDeg}
               valueUnit="°"
-              onChange={value => {
-                updateProp('maxVerticalRotationDeg', value);
+              onChange={(value) => {
+                updateProp("maxVerticalRotationDeg", value);
               }}
             />
 
@@ -200,8 +206,8 @@ const DomeGalleryDemo = () => {
               max={34}
               step={2}
               value={segments}
-              onChange={value => {
-                updateProp('segments', value);
+              onChange={(value) => {
+                updateProp("segments", value);
               }}
             />
 
@@ -211,22 +217,22 @@ const DomeGalleryDemo = () => {
               max={5}
               step={0.2}
               value={dragDampening}
-              onChange={value => {
-                updateProp('dragDampening', value);
+              onChange={(value) => {
+                updateProp("dragDampening", value);
               }}
             />
 
             <PreviewSwitch
               title="Grayscale"
               isChecked={grayscale}
-              onChange={checked => {
-                updateProp('grayscale', checked);
+              onChange={(checked) => {
+                updateProp("grayscale", checked);
               }}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['@use-gesture/react']} />
+          <Dependencies dependencyList={["@use-gesture/react"]} />
         </PreviewTab>
 
         <CodeTab>

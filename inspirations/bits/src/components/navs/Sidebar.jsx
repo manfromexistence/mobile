@@ -1,49 +1,69 @@
-import { useRef, useState, useLayoutEffect, useCallback, useMemo, memo, useEffect, Fragment } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Box, Flex, VStack, Text, Stack, Icon, IconButton, Drawer, Image, Separator } from '@chakra-ui/react';
-import { ArrowRight, MenuIcon, SearchIcon, Sparkles, XIcon, HeartIcon } from 'lucide-react';
+import {
+  useRef,
+  useState,
+  useLayoutEffect,
+  useCallback,
+  useMemo,
+  memo,
+  useEffect,
+  Fragment,
+} from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Box,
+  Flex,
+  VStack,
+  Text,
+  Stack,
+  Icon,
+  IconButton,
+  Drawer,
+  Image,
+  Separator,
+} from "@chakra-ui/react";
+import { ArrowRight, MenuIcon, SearchIcon, Sparkles, XIcon, HeartIcon } from "lucide-react";
 
-import { TOOLS } from '../../constants/Tools';
-import { colors } from '../../constants/colors';
+import { TOOLS } from "../../constants/Tools";
+import { colors } from "../../constants/colors";
 
-import { useSearch } from '../context/SearchContext/useSearch';
-import { useTransition } from '../../hooks/useTransition';
-import { CATEGORIES, NEW, UPDATED } from '../../constants/Categories';
-import { componentMap } from '../../constants/Components';
-import { getSavedComponents } from '../../utils/favorites';
+import { useSearch } from "../context/SearchContext/useSearch";
+import { useTransition } from "../../hooks/useTransition";
+import { CATEGORIES, NEW, UPDATED } from "../../constants/Categories";
+import { componentMap } from "../../constants/Components";
+import { getSavedComponents } from "../../utils/favorites";
 
-import Logo from '../../assets/logos/react-bits-logo.svg';
-import SponsorsCard from '../common/SponsorsCard';
+import Logo from "../../assets/logos/react-bits-logo.svg";
+import SponsorsCard from "../common/SponsorsCard";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 const SCROLL_OFFSET = 100;
 
 const ICON_BUTTON_STYLES = {
-  rounded: '10px',
-  border: '1px solid #ffffff1c',
-  bg: colors.bgBody
+  rounded: "10px",
+  border: "1px solid #ffffff1c",
+  bg: colors.bgBody,
 };
 
-const ARROW_ICON_PROPS = { boxSize: 4, transform: 'rotate(-45deg)' };
+const ARROW_ICON_PROPS = { boxSize: 4, transform: "rotate(-45deg)" };
 
 const LINE_STYLES = {
-  position: 'absolute',
-  left: '0',
-  w: '2px',
-  h: '16px',
-  rounded: '1px',
-  transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
-  pointerEvents: 'none'
+  position: "absolute",
+  left: "0",
+  w: "2px",
+  h: "16px",
+  rounded: "1px",
+  transition: "all 0.2s cubic-bezier(0.4,0,0.2,1)",
+  pointerEvents: "none",
 };
 
 // ─── Utility Functions ───────────────────────────────────────────────────────
 const scrollToTop = () => window.scrollTo(0, 0);
-const slug = str => str.replace(/\s+/g, '-').toLowerCase();
-const toPascal = str =>
+const slug = (str) => str.replace(/\s+/g, "-").toLowerCase();
+const toPascal = (str) =>
   str
-    .split('-')
-    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-    .join('');
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join("");
 
 // ─── Custom Hooks ────────────────────────────────────────────────────────────
 const useFavoritesSync = () => {
@@ -51,24 +71,24 @@ const useFavoritesSync = () => {
 
   useEffect(() => {
     const updateSaved = () => setSavedSet(new Set(getSavedComponents()));
-    const onStorage = e => {
-      if (!e || e.key === 'savedComponents') updateSaved();
+    const onStorage = (e) => {
+      if (!e || e.key === "savedComponents") updateSaved();
     };
 
-    window.addEventListener('favorites:updated', updateSaved);
-    window.addEventListener('storage', onStorage);
+    window.addEventListener("favorites:updated", updateSaved);
+    window.addEventListener("storage", onStorage);
     updateSaved();
 
     return () => {
-      window.removeEventListener('favorites:updated', updateSaved);
-      window.removeEventListener('storage', onStorage);
+      window.removeEventListener("favorites:updated", updateSaved);
+      window.removeEventListener("storage", onStorage);
     };
   }, []);
 
   return savedSet;
 };
 
-const useScrolledToBottom = ref => {
+const useScrolledToBottom = (ref) => {
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
 
   useEffect(() => {
@@ -80,9 +100,9 @@ const useScrolledToBottom = ref => {
       setIsScrolledToBottom(scrollTop + clientHeight >= scrollHeight - 10);
     };
 
-    el.addEventListener('scroll', handleScroll);
+    el.addEventListener("scroll", handleScroll);
     handleScroll();
-    return () => el.removeEventListener('scroll', handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
   }, [ref]);
 
   return isScrolledToBottom;
@@ -94,7 +114,9 @@ const ActiveLine = ({ position, isVisible }) => (
     {...LINE_STYLES}
     bg={colors.accent}
     zIndex={2}
-    transform={isVisible && position !== null ? `translateY(${position - 8}px)` : 'translateY(-100px)'}
+    transform={
+      isVisible && position !== null ? `translateY(${position - 8}px)` : "translateY(-100px)"
+    }
     opacity={isVisible ? 1 : 0}
   />
 );
@@ -104,13 +126,22 @@ const HoverLine = ({ position, isVisible }) => (
     {...LINE_STYLES}
     bg={colors.accentMuted}
     zIndex={1}
-    transform={position !== null ? `translateY(${position - 8}px)` : 'translateY(-100px)'}
+    transform={position !== null ? `translateY(${position - 8}px)` : "translateY(-100px)"}
     opacity={isVisible ? 1 : 0}
   />
 );
 
 const MobileHeader = ({ onSearchClick, onSponsorsClick, onMenuClick }) => (
-  <Box display={{ md: 'none' }} position="fixed" top="60px" left={0} zIndex="overlay" w="100%" bg={colors.bgBody} p="1em">
+  <Box
+    display={{ md: "none" }}
+    position="fixed"
+    top="60px"
+    left={0}
+    zIndex="overlay"
+    w="100%"
+    bg={colors.bgBody}
+    p="1em"
+  >
     <Flex align="center" justify="space-between" gap="1em">
       <Link to="/">
         <Image src={Logo} h="22px" alt="React Bits logo" />
@@ -141,14 +172,14 @@ const ToolsLinks = ({ onClose }) => (
       Tools
     </Text>
     <Flex direction="column" gap={2}>
-      {TOOLS.map(tool => (
+      {TOOLS.map((tool) => (
         <Link
           key={tool.id}
-          to={tool.comingSoon ? '#' : tool.path}
-          onClick={tool.comingSoon ? e => e.preventDefault() : onClose}
+          to={tool.comingSoon ? "#" : tool.path}
+          onClick={tool.comingSoon ? (e) => e.preventDefault() : onClose}
           style={{
             opacity: tool.comingSoon ? 0.5 : 1,
-            cursor: tool.comingSoon ? 'not-allowed' : 'pointer'
+            cursor: tool.comingSoon ? "not-allowed" : "pointer",
           }}
         >
           <Flex alignItems="center" gap="8px">
@@ -174,11 +205,18 @@ const UsefulLinks = ({ onClose }) => (
     </Text>
     <Flex direction="column" gap={2}>
       {[
-        { to: 'https://github.com/DavidHDev/react-bits', label: 'GitHub', external: true },
-        { to: '/showcase', label: 'Showcase' },
-        { to: 'https://x.com/davidhdev', label: 'Who made this?', external: true }
+        { to: "https://github.com/DavidHDev/react-bits", label: "GitHub", external: true },
+        { to: "/showcase", label: "Showcase" },
+        { to: "https://x.com/davidhdev", label: "Who made this?", external: true },
       ].map(({ to, label, external }) => (
-        <Link key={to} to={to} target={external ? '_blank' : undefined} onClick={onClose} display="block" mb={2}>
+        <Link
+          key={to}
+          to={to}
+          target={external ? "_blank" : undefined}
+          onClick={onClose}
+          display="block"
+          mb={2}
+        >
           <Flex alignItems="center" gap="4px">
             <span>{label}</span>
             <Icon as={ArrowRight} {...ARROW_ICON_PROPS} />
@@ -189,7 +227,15 @@ const UsefulLinks = ({ onClose }) => (
   </>
 );
 
-const MainDrawer = ({ isOpen, onClose, categories, location, pendingActivePath, onNavigation, isTransitioning }) => (
+const MainDrawer = ({
+  isOpen,
+  onClose,
+  categories,
+  location,
+  pendingActivePath,
+  onNavigation,
+  isTransitioning,
+}) => (
   <Drawer.Root open={isOpen} onOpenChange={onClose} placement="left" size="full">
     <Drawer.Backdrop mt="50px" h="calc(100vh - 50px)" />
     <Drawer.Positioner
@@ -198,9 +244,9 @@ const MainDrawer = ({ isOpen, onClose, categories, location, pendingActivePath, 
       mt="50px"
       h="calc(100vh - 50px)"
       sx={{
-        transition: 'transform 0.3s ease',
-        "&[data-state='closed']": { transform: 'translateX(-100%)' },
-        "&[data-state='open']": { transform: 'translateX(0)' }
+        transition: "transform 0.3s ease",
+        "&[data-state='closed']": { transform: "translateX(-100%)" },
+        "&[data-state='open']": { transform: "translateX(0)" },
       }}
     >
       <Drawer.Content bg={colors.bgBody} h="100%">
@@ -248,9 +294,9 @@ const SponsorsDrawer = ({ isOpen, onClose }) => (
       w="100vw"
       maxW="100vw"
       sx={{
-        transition: 'transform 0.3s ease',
-        "&[data-state='closed']": { transform: 'translateX(-100%)' },
-        "&[data-state='open']": { transform: 'translateX(0)' }
+        transition: "transform 0.3s ease",
+        "&[data-state='closed']": { transform: "translateX(-100%)" },
+        "&[data-state='open']": { transform: "translateX(0)" },
       }}
     >
       <Drawer.Content bg={colors.bgBody}>
@@ -289,11 +335,11 @@ const Category = memo(
     itemRefs,
     isTransitioning,
     isFirstCategory,
-    savedSet
+    savedSet,
   }) => {
     const items = useMemo(
       () =>
-        category.subcategories.map(sub => {
+        category.subcategories.map((sub) => {
           const path = `/${slug(category.name)}/${slug(sub)}`;
           const activePath = pendingActivePath || location.pathname;
           const favoriteKey = `${toPascal(slug(category.name))}/${toPascal(slug(sub))}`;
@@ -303,10 +349,10 @@ const Category = memo(
             isActive: activePath === path,
             isNew: NEW.includes(sub),
             isUpdated: UPDATED.includes(sub),
-            isFavorited: savedSet?.has?.(favoriteKey)
+            isFavorited: savedSet?.has?.(favoriteKey),
           };
         }),
-      [category.name, category.subcategories, location.pathname, pendingActivePath, savedSet]
+      [category.name, category.subcategories, location.pathname, pendingActivePath, savedSet],
     );
 
     return (
@@ -318,29 +364,31 @@ const Category = memo(
           {items.map(({ sub, path, isActive, isNew, isUpdated, isFavorited }) => (
             <Link
               key={path}
-              ref={el => itemRefs.current && (itemRefs.current[path] = el)}
+              ref={(el) => itemRefs.current && (itemRefs.current[path] = el)}
               to={path}
-              className={`sidebar-item ${isActive ? 'active-sidebar-item' : ''} ${isTransitioning ? 'transitioning' : ''}`}
-              onClick={e => {
+              className={`sidebar-item ${isActive ? "active-sidebar-item" : ""} ${isTransitioning ? "transitioning" : ""}`}
+              onClick={(e) => {
                 e.preventDefault();
                 handleTransitionNavigation ? handleTransitionNavigation(path, sub) : handleClick();
               }}
-              onMouseEnter={e => onItemMouseEnter(path, e)}
+              onMouseEnter={(e) => onItemMouseEnter(path, e)}
               onMouseLeave={onItemMouseLeave}
             >
               {sub}
               {isNew && <span className="new-tag">New</span>}
               {isUpdated && <span className="updated-tag">Updated</span>}
-              {isFavorited && <Icon as={HeartIcon} color={colors.accent} boxSize={3} style={{ marginLeft: 6 }} />}
+              {isFavorited && (
+                <Icon as={HeartIcon} color={colors.accent} boxSize={3} style={{ marginLeft: 6 }} />
+              )}
             </Link>
           ))}
         </Stack>
       </Box>
     );
-  }
+  },
 );
 
-Category.displayName = 'Category';
+Category.displayName = "Category";
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 const Sidebar = () => {
@@ -372,13 +420,15 @@ const Sidebar = () => {
   const findActiveElement = useCallback(() => {
     const activePath = pendingActivePath || location.pathname;
     for (const category of CATEGORIES) {
-      const activeItem = category.subcategories.find(sub => activePath === `/${slug(category.name)}/${slug(sub)}`);
+      const activeItem = category.subcategories.find(
+        (sub) => activePath === `/${slug(category.name)}/${slug(sub)}`,
+      );
       if (activeItem) return itemRefs.current[`/${slug(category.name)}/${slug(activeItem)}`];
     }
     return null;
   }, [location.pathname, pendingActivePath]);
 
-  const updateLinePosition = useCallback(el => {
+  const updateLinePosition = useCallback((el) => {
     if (!el || !sidebarRef.current?.offsetParent) return null;
     const sidebarRect = sidebarRef.current.getBoundingClientRect();
     const elRect = el.getBoundingClientRect();
@@ -393,12 +443,16 @@ const Sidebar = () => {
     const elementRect = activeEl.getBoundingClientRect();
 
     const isOutOfView =
-      elementRect.top < containerRect.top + SCROLL_OFFSET || elementRect.bottom > containerRect.bottom - SCROLL_OFFSET;
+      elementRect.top < containerRect.top + SCROLL_OFFSET ||
+      elementRect.bottom > containerRect.bottom - SCROLL_OFFSET;
 
     if (isOutOfView) {
       sidebarContainerRef.current.scrollTo({
-        top: sidebarContainerRef.current.scrollTop + (elementRect.top - containerRect.top) - SCROLL_OFFSET,
-        behavior: 'smooth'
+        top:
+          sidebarContainerRef.current.scrollTop +
+          (elementRect.top - containerRect.top) -
+          SCROLL_OFFSET,
+        behavior: "smooth",
       });
     }
   }, [findActiveElement]);
@@ -412,7 +466,7 @@ const Sidebar = () => {
   }, [closeDrawer, toggleSearch]);
 
   const createNavigationHandler = useCallback(
-    shouldCloseDrawer => async (path, subcategory) => {
+    (shouldCloseDrawer) => async (path, subcategory) => {
       if (isTransitioning || location.pathname === path) return;
 
       if (shouldCloseDrawer) closeDrawer();
@@ -424,12 +478,18 @@ const Sidebar = () => {
         setPendingActivePath(null);
       });
     },
-    [isTransitioning, location.pathname, startTransition, navigate, closeDrawer]
+    [isTransitioning, location.pathname, startTransition, navigate, closeDrawer],
   );
 
-  const handleTransitionNavigation = useMemo(() => createNavigationHandler(false), [createNavigationHandler]);
+  const handleTransitionNavigation = useMemo(
+    () => createNavigationHandler(false),
+    [createNavigationHandler],
+  );
 
-  const handleMobileNavigation = useMemo(() => createNavigationHandler(true), [createNavigationHandler]);
+  const handleMobileNavigation = useMemo(
+    () => createNavigationHandler(true),
+    [createNavigationHandler],
+  );
 
   const onItemEnter = useCallback(
     (path, e) => {
@@ -441,7 +501,7 @@ const Sidebar = () => {
 
       hoverDelayTimeoutRef.current = setTimeout(() => setIsHoverLineVisible(true), 200);
     },
-    [updateLinePosition]
+    [updateLinePosition],
   );
 
   const onItemLeave = useCallback(() => {
@@ -471,7 +531,7 @@ const Sidebar = () => {
       clearTimeout(hoverTimeoutRef.current);
       clearTimeout(hoverDelayTimeoutRef.current);
     },
-    []
+    [],
   );
 
   useEffect(() => {
@@ -501,11 +561,11 @@ const Sidebar = () => {
         top="0"
         left="2em"
         h="100vh"
-        w={{ base: 0, md: 'fit-content' }}
+        w={{ base: 0, md: "fit-content" }}
         maxW="200px"
         p={5}
         overflowY="auto"
-        className={`sidebar ${isScrolledToBottom ? 'sidebar-no-fade' : ''}`}
+        className={`sidebar ${isScrolledToBottom ? "sidebar-no-fade" : ""}`}
       >
         <Box ref={sidebarRef} position="relative">
           <ActiveLine position={linePosition} isVisible={isLineVisible} />
@@ -534,12 +594,17 @@ const Sidebar = () => {
                     <Text className="category-name" mb={2} mt={4}>
                       Tools
                     </Text>
-                    <Stack spacing={0.5} pl={4} borderLeft={`1px solid ${colors.borderSecondary}`} position="relative">
-                      {TOOLS.map(tool => (
+                    <Stack
+                      spacing={0.5}
+                      pl={4}
+                      borderLeft={`1px solid ${colors.borderSecondary}`}
+                      position="relative"
+                    >
+                      {TOOLS.map((tool) => (
                         <Link
                           key={tool.id}
                           to={tool.path}
-                          className={`sidebar-item ${location.pathname === tool.path ? 'active-sidebar-item' : ''}`}
+                          className={`sidebar-item ${location.pathname === tool.path ? "active-sidebar-item" : ""}`}
                           onClick={scrollToTop}
                         >
                           <Flex alignItems="center" gap="6px">

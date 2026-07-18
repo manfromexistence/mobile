@@ -1,11 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { prepareClaudeRequest, NON_ANTHROPIC_THINKING_PLACEHOLDER: PLACEHOLDER } = await import("../../open-sse/translator/helpers/claudeHelper.ts");
-const { DEFAULT_THINKING_CLAUDE_SIGNATURE } =
-  await import("../../open-sse/config/defaultThinkingSignature.ts");
+const { prepareClaudeRequest, NON_ANTHROPIC_THINKING_PLACEHOLDER: PLACEHOLDER } = await import(
+  "../../open-sse/translator/helpers/claudeHelper.ts"
+);
+const { DEFAULT_THINKING_CLAUDE_SIGNATURE } = await import(
+  "../../open-sse/config/defaultThinkingSignature.ts"
+);
 const reasoningCache = await import("../../open-sse/services/reasoningCache.ts");
-
 
 function multiTurnBodyWithoutThinkingBlock() {
   return {
@@ -93,7 +95,7 @@ test("claude provider — existing thinking block converted to redacted_thinking
   assert.equal(
     olderContent[0].thinking,
     undefined,
-    "plain text stripped (Anthropic does not trust replay text)"
+    "plain text stripped (Anthropic does not trust replay text)",
   );
   assert.equal(olderContent[0].signature, undefined);
   assert.equal(olderContent[1].type, "tool_use");
@@ -133,7 +135,7 @@ test("kimi-coding provider — empty content + cache hit on tool_use.id, injects
     "call_x",
     "kimi-coding",
     "kimi-k2.6",
-    "the model actually thought this"
+    "the model actually thought this",
   );
   const body = multiTurnBodyWithoutThinkingBlock();
   const result = prepareClaudeRequest(body as any, "kimi-coding");
@@ -154,7 +156,7 @@ test("kimi-coding provider — existing thinking block: client text preserved, s
   assert.equal(
     content[0].signature,
     undefined,
-    "client-stored signature stripped (no value for kimi)"
+    "client-stored signature stripped (no value for kimi)",
   );
 });
 
@@ -277,7 +279,7 @@ test("preserves verbatim thinking on the LATEST assistant message; rewrites only
   // Older assistant thinking: rewritten to redacted_thinking { data }
   assert.equal(olderAssistant.content[0].type, "redacted_thinking");
   assert.ok(
-    typeof olderAssistant.content[0].data === "string" && olderAssistant.content[0].data.length > 0
+    typeof olderAssistant.content[0].data === "string" && olderAssistant.content[0].data.length > 0,
   );
   assert.equal(olderAssistant.content[0].thinking, undefined);
   assert.equal(olderAssistant.content[0].signature, undefined);
@@ -324,6 +326,6 @@ test("non-Anthropic upstream: preserves latest assistant thinking text verbatim,
   assert.equal(body.messages[0].content[0].type, "thinking");
   assert.ok(
     typeof body.messages[0].content[0].thinking === "string" &&
-      body.messages[0].content[0].thinking.length > 0
+      body.messages[0].content[0].thinking.length > 0,
   );
 });

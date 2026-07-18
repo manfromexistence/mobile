@@ -1,10 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  SegmentedInput,
-  SegmentedInputItem,
-} from "@/registry/bases/radix/ui/segmented-input";
+import { SegmentedInput, SegmentedInputItem } from "@/registry/bases/radix/ui/segmented-input";
 
 export default function SegmentedInputRgbDemo() {
   const [rgb, setRgb] = React.useState({
@@ -14,16 +11,15 @@ export default function SegmentedInputRgbDemo() {
   });
 
   const onChannelChange = React.useCallback(
-    (channel: keyof typeof rgb) =>
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Number.parseInt(event.target.value, 10);
-        if (!Number.isNaN(value) && value >= 0 && value <= 255) {
-          setRgb((prev) => ({
-            ...prev,
-            [channel]: value,
-          }));
-        }
-      },
+    (channel: keyof typeof rgb) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = Number.parseInt(event.target.value, 10);
+      if (!Number.isNaN(value) && value >= 0 && value <= 255) {
+        setRgb((prev) => ({
+          ...prev,
+          [channel]: value,
+        }));
+      }
+    },
     [],
   );
 

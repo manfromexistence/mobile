@@ -28,10 +28,7 @@ export type ThemeName = Theme["name"];
 export type BaseColorName = BaseColor["name"];
 
 // Derive font values from registry fonts (e.g., "font-inter" -> "inter").
-const fontValues = fonts.map((f) => f.name.replace("font-", "")) as [
-  string,
-  ...string[],
-];
+const fontValues = fonts.map((f) => f.name.replace("font-", "")) as [string, ...string[]];
 
 export type FontValue = (typeof fontValues)[number];
 
@@ -48,10 +45,7 @@ export type RadiusValue = Radius["name"];
 
 const baseNames = BASES.map((b) => b.name) as [BaseName, ...BaseName[]];
 const styleNames = STYLES.map((s) => s.name) as [StyleName, ...StyleName[]];
-const baseColorNames = BASE_COLORS.map((c) => c.name) as [
-  BaseColorName,
-  ...BaseColorName[],
-];
+const baseColorNames = BASE_COLORS.map((c) => c.name) as [BaseColorName, ...BaseColorName[]];
 const themeNames = THEMES.map((t) => t.name) as [ThemeName, ...ThemeName[]];
 const radiusNames = RADII.map((r) => r.name) as [RadiusValue, ...RadiusValue[]];
 
@@ -119,9 +113,7 @@ export function buildRegistryTheme(config: DesignSystemConfig) {
   const theme = getTheme(config.theme);
 
   if (!baseColor || !theme) {
-    throw new Error(
-      `Base color "${config.baseColor}" or theme "${config.theme}" not found`,
-    );
+    throw new Error(`Base color "${config.baseColor}" or theme "${config.theme}" not found`);
   }
 
   // Merge base color and theme CSS vars.

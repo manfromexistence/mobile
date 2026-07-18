@@ -48,7 +48,7 @@ const core = await import("../../../../src/lib/db/core.ts");
 const db = core.getDbInstance();
 db.prepare(
   `INSERT OR IGNORE INTO version_manager (tool, status, port, auto_start, auto_update, provider_expose)
-   VALUES ('bifrost', 'not_installed', 8080, 0, 1, 1)`
+   VALUES ('bifrost', 'not_installed', 8080, 0, 1, 1)`,
 ).run();
 
 const {
@@ -131,7 +131,7 @@ test("resolveSpawnArgs shape: command is node, bin.js path, Go single-dash flags
   assert.ok(
     typeof args.env.BIFROST_TRANSPORT_VERSION === "string" &&
       args.env.BIFROST_TRANSPORT_VERSION.length > 0,
-    "BIFROST_TRANSPORT_VERSION must be set in env"
+    "BIFROST_TRANSPORT_VERSION must be set in env",
   );
 });
 
@@ -146,7 +146,7 @@ test("INSTALL_DIR constant points into DATA_DIR/services/bifrost", () => {
   assert.ok(BIFROST_INSTALL_DIR.includes("bifrost"), "install dir must include 'bifrost'");
   assert.ok(
     BIFROST_INSTALL_DIR.startsWith(TEST_DATA_DIR),
-    "install dir must be under TEST_DATA_DIR"
+    "install dir must be under TEST_DATA_DIR",
   );
   assert.equal(INSTALL_DIR, BIFROST_INSTALL_DIR);
 });

@@ -51,7 +51,10 @@ export interface ExpandableActionBarProps {
   collapseDelay?: number;
   className?: string;
   classNames?: ExpandableActionBarClassNames;
-  renderItem?: (item: ExpandableActionBarItem, state: { expanded: boolean; active: boolean }) => ReactNode;
+  renderItem?: (
+    item: ExpandableActionBarItem,
+    state: { expanded: boolean; active: boolean },
+  ) => ReactNode;
 }
 
 const ITEM_TRANSITION: Transition = {
@@ -320,10 +323,7 @@ export function useExpandableActionBar(items: ExpandableActionBarItem[]) {
   const [expanded, setExpanded] = useState(false);
   const [activeId, setActiveId] = useState(items[0]?.id);
 
-  const activeItem = useMemo(
-    () => items.find((item) => item.id === activeId),
-    [activeId, items],
-  );
+  const activeItem = useMemo(() => items.find((item) => item.id === activeId), [activeId, items]);
 
   return useMemo(
     () => ({ expanded, setExpanded, activeId, setActiveId, activeItem }),

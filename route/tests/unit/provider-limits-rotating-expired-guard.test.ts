@@ -27,7 +27,7 @@ test("rotating providers are NEVER flagged expired from the quota path", () => {
     assert.equal(
       quotaPathShouldMarkExpired(provider, "Token expired, please re-authenticate", "active"),
       false,
-      `${provider} (rotating) must not be marked expired by the quota sync`
+      `${provider} (rotating) must not be marked expired by the quota sync`,
     );
   }
 });
@@ -56,7 +56,11 @@ test("an already-expired connection is left untouched (no redundant write)", () 
 test("bulk path never refreshes rotating providers (preserves #3019)", () => {
   for (const provider of ["codex", "openai", "claude", "kiro", "qwen", "gitlab-duo"]) {
     assert.equal(shouldAttemptRotatingRefresh(provider, undefined), false, `${provider} bulk`);
-    assert.equal(shouldAttemptRotatingRefresh(provider, false), false, `${provider} explicit false`);
+    assert.equal(
+      shouldAttemptRotatingRefresh(provider, false),
+      false,
+      `${provider} explicit false`,
+    );
   }
 });
 

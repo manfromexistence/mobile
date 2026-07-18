@@ -32,12 +32,9 @@ const { pluginManager } = await import("../../src/lib/plugins/manager.ts");
 // ── Source files for scan-based tests ────────────────────────────────────────
 const managerSource = readFileSync(
   pathResolve(process.cwd(), "src/lib/plugins/manager.ts"),
-  "utf-8"
+  "utf-8",
 );
-const loaderSource = readFileSync(
-  pathResolve(process.cwd(), "src/lib/plugins/loader.ts"),
-  "utf-8"
-);
+const loaderSource = readFileSync(pathResolve(process.cwd(), "src/lib/plugins/loader.ts"), "utf-8");
 
 // ── Fixture helpers ───────────────────────────────────────────────────────────
 
@@ -70,11 +67,12 @@ function writePluginWithMain(opts: {
       hooks: { onRequest: false, onResponse: false, onError: false },
       enabledByDefault: false,
       requires: { permissions: [] },
-    })
+    }),
   );
 
   // Write the main file only for safe relative paths
-  const shouldWrite = opts.writeMainFile !== false && !opts.main.startsWith("..") && !path.isAbsolute(opts.main);
+  const shouldWrite =
+    opts.writeMainFile !== false && !opts.main.startsWith("..") && !path.isAbsolute(opts.main);
   if (shouldWrite) {
     const mainAbs = path.join(sourceDir, opts.main);
     fs.mkdirSync(path.dirname(mainAbs), { recursive: true });
@@ -91,7 +89,7 @@ const activeDirs: string[] = [];
 const DEFAULT_PLUGIN_DIR = path.join(
   process.env.HOME || process.env.USERPROFILE || "/tmp",
   ".omniroute",
-  "plugins"
+  "plugins",
 );
 
 /** Known plugin names created by this test file — cleaned between tests. */
@@ -174,10 +172,10 @@ test("install rejects manifest.main with path traversal (../../escape.js)", asyn
         err.message.includes("escapes") ||
           err.message.includes("outside") ||
           err.message.includes("Refusing"),
-        `Expected containment error, got: ${err.message}`
+        `Expected containment error, got: ${err.message}`,
       );
       return true;
-    }
+    },
   );
 
   // No partial install dir or staging dir should be left behind
@@ -188,7 +186,7 @@ test("install rejects manifest.main with path traversal (../../escape.js)", asyn
     assert.deepEqual(
       leftover,
       [],
-      `Staging/install dir left behind after failed install: ${leftover.join(", ")}`
+      `Staging/install dir left behind after failed install: ${leftover.join(", ")}`,
     );
   }
 });
@@ -209,10 +207,10 @@ test("install rejects manifest.main with deep traversal escape (../../../evil.js
         err.message.includes("escapes") ||
           err.message.includes("outside") ||
           err.message.includes("Refusing"),
-        `Expected containment error, got: ${err.message}`
+        `Expected containment error, got: ${err.message}`,
       );
       return true;
-    }
+    },
   );
 
   // No staging residue
@@ -273,10 +271,10 @@ test("upgrade rejects manifest.main with path traversal and leaves old install i
         err.message.includes("escapes") ||
           err.message.includes("outside") ||
           err.message.includes("Refusing"),
-        `Expected containment error, got: ${err.message}`
+        `Expected containment error, got: ${err.message}`,
       );
       return true;
-    }
+    },
   );
 
   // Old v1 install should still be in DB (upgrade rolled back before deleting old dir)
@@ -294,7 +292,7 @@ test("upgrade rejects manifest.main with path traversal and leaves old install i
 test("source: assertWithinPluginDir helper is defined in manager.ts", () => {
   assert.ok(
     managerSource.includes("assertWithinPluginDir"),
-    "assertWithinPluginDir must be defined in manager.ts"
+    "assertWithinPluginDir must be defined in manager.ts",
   );
 });
 
@@ -306,7 +304,8 @@ test("source: assertWithinPluginDir is called before rm in uninstall", () => {
   // Get the slice from uninstall through the next method
   const afterUninstall = managerSource.slice(uninstallIdx);
   const nextMethodIdx = afterUninstall.indexOf("\n  async ", 10);
-  const uninstallBody = nextMethodIdx !== -1 ? afterUninstall.slice(0, nextMethodIdx) : afterUninstall;
+  const uninstallBody =
+    nextMethodIdx !== -1 ? afterUninstall.slice(0, nextMethodIdx) : afterUninstall;
 
   const guardIdx = uninstallBody.indexOf("assertWithinPluginDir");
   const rmIdx = uninstallBody.indexOf("await rm(");
@@ -314,7 +313,7 @@ test("source: assertWithinPluginDir is called before rm in uninstall", () => {
   assert.ok(rmIdx !== -1, "rm() must be called in uninstall");
   assert.ok(
     guardIdx < rmIdx,
-    `assertWithinPluginDir (pos ${guardIdx}) must appear before rm() (pos ${rmIdx}) in uninstall`
+    `assertWithinPluginDir (pos ${guardIdx}) must appear before rm() (pos ${rmIdx}) in uninstall`,
   );
 });
 
@@ -332,7 +331,7 @@ test("source: assertWithinPluginDir is called before rm in upgrade", () => {
   assert.ok(rmIdx !== -1, "rm() must be called in upgrade");
   assert.ok(
     guardIdx < rmIdx,
-    `assertWithinPluginDir (pos ${guardIdx}) must appear before rm() (pos ${rmIdx}) in upgrade`
+    `assertWithinPluginDir (pos ${guardIdx}) must appear before rm() (pos ${rmIdx}) in upgrade`,
   );
 });
 
@@ -342,16 +341,18 @@ test("source: assertWithinPluginDir throws for path outside pluginDir", () => {
   // resolve("/tmp/evil") is not fine when root is "/plugins".
   // Since we can't easily import the unexported helper, verify it uses resolve + sep.
   assert.ok(
-    managerSource.includes('resolve(pluginRoot)') || managerSource.includes('resolve(this_pluginDir)') || managerSource.includes('resolve('),
-    "assertWithinPluginDir must call resolve()"
+    managerSource.includes("resolve(pluginRoot)") ||
+      managerSource.includes("resolve(this_pluginDir)") ||
+      managerSource.includes("resolve("),
+    "assertWithinPluginDir must call resolve()",
   );
   assert.ok(
     managerSource.includes("sep"),
-    "assertWithinPluginDir must use path.sep for boundary check"
+    "assertWithinPluginDir must use path.sep for boundary check",
   );
   assert.ok(
     managerSource.includes("Refusing to delete"),
-    "assertWithinPluginDir must throw with 'Refusing to delete' message"
+    "assertWithinPluginDir must throw with 'Refusing to delete' message",
   );
 });
 
@@ -362,7 +363,7 @@ test("source: assertWithinPluginDir throws for path outside pluginDir", () => {
 test("source: assertEntryPointWithinDest helper is defined in manager.ts", () => {
   assert.ok(
     managerSource.includes("assertEntryPointWithinDest"),
-    "assertEntryPointWithinDest must be defined in manager.ts"
+    "assertEntryPointWithinDest must be defined in manager.ts",
   );
 });
 
@@ -380,7 +381,7 @@ test("source: assertEntryPointWithinDest is called in install before insertPlugi
   assert.ok(insertIdx !== -1, "insertPlugin must be called in install");
   assert.ok(
     guardIdx < insertIdx,
-    `assertEntryPointWithinDest (pos ${guardIdx}) must appear before insertPlugin (pos ${insertIdx}) in install`
+    `assertEntryPointWithinDest (pos ${guardIdx}) must appear before insertPlugin (pos ${insertIdx}) in install`,
   );
 });
 
@@ -398,7 +399,7 @@ test("source: assertEntryPointWithinDest is called in upgrade before insertPlugi
   assert.ok(insertIdx !== -1, "insertPlugin must be called in upgrade");
   assert.ok(
     guardIdx < insertIdx,
-    `assertEntryPointWithinDest (pos ${guardIdx}) must appear before insertPlugin (pos ${insertIdx}) in upgrade`
+    `assertEntryPointWithinDest (pos ${guardIdx}) must appear before insertPlugin (pos ${insertIdx}) in upgrade`,
   );
 });
 
@@ -409,11 +410,11 @@ test("source: assertEntryPointWithinDest is called in upgrade before insertPlugi
 test("source: install uses atomic staging rename pattern", () => {
   assert.ok(
     managerSource.includes(".staging-"),
-    "install must use a staging dir with .staging- suffix"
+    "install must use a staging dir with .staging- suffix",
   );
   assert.ok(
     managerSource.includes("rename(stagingDir"),
-    "install must atomically rename staging dir to final dest"
+    "install must atomically rename staging dir to final dest",
   );
 });
 
@@ -426,7 +427,7 @@ test("source: install cleans up staging dir on failure (rm in catch)", () => {
   // There must be a rm(stagingDir) inside a catch block
   assert.ok(
     installBody.includes("rm(stagingDir"),
-    "install must rm(stagingDir) in the catch/failure path"
+    "install must rm(stagingDir) in the catch/failure path",
   );
 });
 
@@ -437,21 +438,21 @@ test("source: install cleans up staging dir on failure (rm in catch)", () => {
 test('source: loader uses flag:"wx" (O_EXCL) when writing host script', () => {
   assert.ok(
     loaderSource.includes('"wx"') || loaderSource.includes("'wx'"),
-    'loader.ts must use flag: "wx" (O_EXCL) for the host script writeFile'
+    'loader.ts must use flag: "wx" (O_EXCL) for the host script writeFile',
   );
 });
 
 test("source: loader uses mode:0o600 when writing host script", () => {
   assert.ok(
     loaderSource.includes("0o600"),
-    "loader.ts must use mode: 0o600 for the host script writeFile"
+    "loader.ts must use mode: 0o600 for the host script writeFile",
   );
 });
 
 test("source: loader retries on EEXIST collision when writing host script", () => {
   assert.ok(
     loaderSource.includes("EEXIST"),
-    "loader.ts must handle EEXIST on O_EXCL write (retry once with fresh UUID)"
+    "loader.ts must handle EEXIST on O_EXCL write (retry once with fresh UUID)",
   );
 });
 

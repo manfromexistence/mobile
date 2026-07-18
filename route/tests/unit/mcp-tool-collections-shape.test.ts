@@ -45,7 +45,7 @@ for (const [collectionName, collection] of Object.entries(COLLECTIONS)) {
     assert.ok(collection != null);
     assert.ok(
       Object.keys(collection).length > 0,
-      `${collectionName} should expose at least one tool`
+      `${collectionName} should expose at least one tool`,
     );
   });
 
@@ -53,29 +53,33 @@ for (const [collectionName, collection] of Object.entries(COLLECTIONS)) {
     for (const toolDef of Object.values(collection)) {
       assert.ok(
         typeof toolDef.name === "string" && toolDef.name.length > 0,
-        `${collectionName}: a tool is missing a name`
+        `${collectionName}: a tool is missing a name`,
       );
       assert.ok(
         typeof toolDef.description === "string" && toolDef.description.length > 0,
-        `${toolDef.name}: description missing`
+        `${toolDef.name}: description missing`,
       );
       // inputSchema must be a zod-like schema — the loop calls .parse(args ?? {})
       assert.ok(toolDef.inputSchema != null, `${toolDef.name}: inputSchema missing`);
       assert.equal(
         typeof toolDef.inputSchema.parse,
         "function",
-        `${toolDef.name}: inputSchema.parse must be callable`
+        `${toolDef.name}: inputSchema.parse must be callable`,
       );
       // handler must be callable — the loop awaits toolDef.handler(parsedArgs)
-      assert.equal(typeof toolDef.handler, "function", `${toolDef.name}: handler must be a function`);
+      assert.equal(
+        typeof toolDef.handler,
+        "function",
+        `${toolDef.name}: handler must be a function`,
+      );
       // scopes feeds the 3-arg withScopeEnforcement(name, handler, scopes)
       assert.ok(
         Array.isArray(toolDef.scopes) && toolDef.scopes.length > 0,
-        `${toolDef.name}: scopes must be a non-empty array`
+        `${toolDef.name}: scopes must be a non-empty array`,
       );
       assert.ok(
         toolDef.scopes.every((scope) => typeof scope === "string" && scope.length > 0),
-        `${toolDef.name}: every scope must be a non-empty string`
+        `${toolDef.name}: every scope must be a non-empty string`,
       );
     }
   });
@@ -85,7 +89,7 @@ for (const [collectionName, collection] of Object.entries(COLLECTIONS)) {
       assert.equal(
         toolDef.name,
         key,
-        `${collectionName}: map key "${key}" must equal tool name "${toolDef.name}"`
+        `${collectionName}: map key "${key}" must equal tool name "${toolDef.name}"`,
       );
     }
   });

@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { createProviderSchema, updateProviderConnectionSchema } =
-  await import("../../src/shared/validation/schemas.ts");
+const { createProviderSchema, updateProviderConnectionSchema } = await import(
+  "../../src/shared/validation/schemas.ts"
+);
 
 test("provider schemas accept boolean openaiStoreEnabled in providerSpecificData", () => {
   const created = createProviderSchema.safeParse({

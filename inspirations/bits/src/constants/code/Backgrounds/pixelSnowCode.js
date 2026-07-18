@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/PixelSnow/PixelSnow.jsx?raw';
-import css from '@content/Backgrounds/PixelSnow/PixelSnow.css?raw';
-import tailwind from '@tailwind/Backgrounds/PixelSnow/PixelSnow.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/PixelSnow/PixelSnow.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/PixelSnow/PixelSnow.tsx?raw';
+import code from "@content/Backgrounds/PixelSnow/PixelSnow.jsx?raw";
+import css from "@content/Backgrounds/PixelSnow/PixelSnow.css?raw";
+import tailwind from "@tailwind/Backgrounds/PixelSnow/PixelSnow.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/PixelSnow/PixelSnow.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/PixelSnow/PixelSnow.tsx?raw";
 
 export const pixelSnow = {
   dependencies: `three`,
@@ -24,5 +24,5 @@ export const pixelSnow = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

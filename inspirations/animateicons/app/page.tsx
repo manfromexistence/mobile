@@ -8,22 +8,22 @@ import NpmSection from "../components/NpmSection";
 import Sponsors from "../components/Sponsors";
 
 const page = () => {
-	return (
-		<>
-			<AnnouncementBanner />
-			<Navbar />
-			<main>
-				<div className="relative min-h-dvh overflow-hidden">
-					<HeroSection />
-					<NpmSection />
-					<IconLibrariesSection />
-					<FeatureSection />
-					<Sponsors />
-				</div>
-			</main>
-			<Footer />
-		</>
-	);
+  return (
+    <>
+      <AnnouncementBanner />
+      <Navbar />
+      <main>
+        <div className="relative min-h-dvh overflow-hidden">
+          <HeroSection />
+          <NpmSection />
+          <IconLibrariesSection />
+          <FeatureSection />
+          <Sponsors />
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
 };
 
 export default page;

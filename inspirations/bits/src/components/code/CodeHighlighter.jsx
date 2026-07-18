@@ -1,15 +1,15 @@
-import { TbCopy, TbCopyCheckFilled, TbMoodSad } from 'react-icons/tb';
-import { Box, Button, Flex, Icon, Text } from '@chakra-ui/react';
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { colors } from '../../constants/colors';
-import codeTheme from '../../utils/codeTheme';
+import { TbCopy, TbCopyCheckFilled, TbMoodSad } from "react-icons/tb";
+import { Box, Button, Flex, Icon, Text } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { colors } from "../../constants/colors";
+import codeTheme from "../../utils/codeTheme";
 
 const routeExpansionState = {};
 
-const hashSnippet = str => {
-  if (!str) return 'empty';
+const hashSnippet = (str) => {
+  if (!str) return "empty";
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
@@ -19,16 +19,22 @@ const hashSnippet = str => {
 };
 
 const COPY_BTN_STYLE = {
-  borderRadius: '10px',
+  borderRadius: "10px",
   fontWeight: 500,
   border: `1px solid ${colors.borderSecondary}`,
-  transition: 'background-color 0.3s ease',
+  transition: "background-color 0.3s ease",
   h: 10,
 };
 
-const CodeHighlighter = ({ language, codeString, showLineNumbers = true, maxLines = 25, snippetId }) => {
+const CodeHighlighter = ({
+  language,
+  codeString,
+  showLineNumbers = true,
+  maxLines = 25,
+  snippetId,
+}) => {
   const { pathname } = useLocation();
-  const key = snippetId || hashSnippet(codeString + '|' + language);
+  const key = snippetId || hashSnippet(codeString + "|" + language);
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(() => routeExpansionState[pathname]?.[key] ?? false);
 
@@ -43,11 +49,11 @@ const CodeHighlighter = ({ language, codeString, showLineNumbers = true, maxLine
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      console.error('Failed to copy text: ', error);
+      console.error("Failed to copy text: ", error);
     }
   };
 
-  const codeLines = codeString?.split('\n').length;
+  const codeLines = codeString?.split("\n").length;
   const shouldCollapse = codeLines > maxLines;
 
   return (
@@ -55,7 +61,7 @@ const CodeHighlighter = ({ language, codeString, showLineNumbers = true, maxLine
       <Box
         position="relative"
         overflow="hidden"
-        maxHeight={shouldCollapse && !expanded ? `calc(1.2em * ${maxLines})` : 'none'}
+        maxHeight={shouldCollapse && !expanded ? `calc(1.2em * ${maxLines})` : "none"}
       >
         {codeString ? (
           <SyntaxHighlighter
@@ -96,9 +102,9 @@ const CodeHighlighter = ({ language, codeString, showLineNumbers = true, maxLine
             _hover={{ bg: colors.bgElevated }}
             _active={{ bg: colors.bgElevated }}
             zIndex={2}
-            onClick={() => setExpanded(prev => !prev)}
+            onClick={() => setExpanded((prev) => !prev)}
           >
-            {expanded ? 'Collapse Snippet' : 'Expand Snippet'}
+            {expanded ? "Collapse Snippet" : "Expand Snippet"}
           </Button>
         )}
       </Box>
@@ -110,7 +116,7 @@ const CodeHighlighter = ({ language, codeString, showLineNumbers = true, maxLine
           top=".65em"
           right=".6em"
           bg={copied ? colors.primary : colors.bgBody}
-          color={copied ? 'black' : 'white'}
+          color={copied ? "black" : "white"}
           _hover={{ bg: copied ? colors.primary : colors.bgElevated }}
           _active={{ bg: colors.primary }}
           onClick={handleCopy}

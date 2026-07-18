@@ -1,7 +1,7 @@
-import code from '@content/Animations/ShapeBlur/ShapeBlur.jsx?raw';
-import tailwind from '@tailwind/Animations/ShapeBlur/ShapeBlur.jsx?raw';
-import tsCode from '@ts-default/Animations/ShapeBlur/ShapeBlur.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/ShapeBlur/ShapeBlur.tsx?raw';
+import code from "@content/Animations/ShapeBlur/ShapeBlur.jsx?raw";
+import tailwind from "@tailwind/Animations/ShapeBlur/ShapeBlur.jsx?raw";
+import tsCode from "@ts-default/Animations/ShapeBlur/ShapeBlur.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/ShapeBlur/ShapeBlur.tsx?raw";
 
 export const shapeBlur = {
   dependencies: `three`,
@@ -21,5 +21,5 @@ export const shapeBlur = {
   code,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

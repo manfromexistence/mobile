@@ -1,10 +1,7 @@
 {
   "name": "relative-time-card-timezones-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "hover-card",
-    "relative-time-card"
-  ],
+  "registryDependencies": ["hover-card", "relative-time-card"],
   "files": [
     {
       "path": "examples/relative-time-card-timezones-demo.tsx",

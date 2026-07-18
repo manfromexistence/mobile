@@ -1,7 +1,7 @@
-import { useRef, useEffect, useMemo } from 'react';
-import { gsap } from 'gsap';
-import { Draggable } from 'gsap/Draggable';
-import './StickerPeel.css';
+import { useRef, useEffect, useMemo } from "react";
+import { gsap } from "gsap";
+import { Draggable } from "gsap/Draggable";
+import "./StickerPeel.css";
 
 gsap.registerPlugin(Draggable);
 
@@ -10,14 +10,14 @@ const StickerPeel = ({
   rotate = 30,
   peelBackHoverPct = 30,
   peelBackActivePct = 40,
-  peelEasing = 'power3.out',
-  peelHoverEasing = 'power2.out',
+  peelEasing = "power3.out",
+  peelHoverEasing = "power2.out",
   width = 200,
   shadowIntensity = 0.6,
   lightingIntensity = 0.1,
-  initialPosition = 'center',
+  initialPosition = "center",
   peelDirection = 0,
-  className = ''
+  className = "",
 }) => {
   const containerRef = useRef(null);
   const dragTargetRef = useRef(null);
@@ -34,11 +34,15 @@ const StickerPeel = ({
     let startX = 0,
       startY = 0;
 
-    if (initialPosition === 'center') {
+    if (initialPosition === "center") {
       return;
     }
 
-    if (typeof initialPosition === 'object' && initialPosition.x !== undefined && initialPosition.y !== undefined) {
+    if (
+      typeof initialPosition === "object" &&
+      initialPosition.x !== undefined &&
+      initialPosition.y !== undefined
+    ) {
       startX = initialPosition.x;
       startY = initialPosition.y;
     }
@@ -51,26 +55,26 @@ const StickerPeel = ({
     const boundsEl = target.parentNode;
 
     draggableInstanceRef.current = Draggable.create(target, {
-      type: 'x,y',
+      type: "x,y",
       bounds: boundsEl,
       inertia: true,
       onDrag() {
         const rot = gsap.utils.clamp(-24, 24, this.deltaX * 0.4);
-        gsap.to(target, { rotation: rot, duration: 0.15, ease: 'power1.out' });
+        gsap.to(target, { rotation: rot, duration: 0.15, ease: "power1.out" });
       },
       onDragEnd() {
-        const rotationEase = 'power2.out';
+        const rotationEase = "power2.out";
         const duration = 0.8;
         gsap.to(target, { rotation: 0, duration, ease: rotationEase });
-      }
+      },
     })[0];
 
     const handleResize = () => {
       if (draggableInstanceRef.current) {
         draggableInstanceRef.current.update();
 
-        const currentX = gsap.getProperty(target, 'x');
-        const currentY = gsap.getProperty(target, 'y');
+        const currentX = gsap.getProperty(target, "x");
+        const currentY = gsap.getProperty(target, "y");
 
         const boundsRect = boundsEl.getBoundingClientRect();
         const targetRect = target.getBoundingClientRect();
@@ -86,18 +90,18 @@ const StickerPeel = ({
             x: newX,
             y: newY,
             duration: 0.3,
-            ease: 'power2.out'
+            ease: "power2.out",
           });
         }
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('orientationchange', handleResize);
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('orientationchange', handleResize);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
       if (draggableInstanceRef.current) {
         draggableInstanceRef.current.kill();
       }
@@ -105,7 +109,7 @@ const StickerPeel = ({
   }, []);
 
   useEffect(() => {
-    const updateLight = e => {
+    const updateLight = (e) => {
       const rect = containerRef.current?.getBoundingClientRect();
       if (!rect) return;
 
@@ -124,8 +128,8 @@ const StickerPeel = ({
 
     const container = containerRef.current;
     if (container) {
-      container.addEventListener('mousemove', updateLight);
-      return () => container.removeEventListener('mousemove', updateLight);
+      container.addEventListener("mousemove", updateLight);
+      return () => container.removeEventListener("mousemove", updateLight);
     }
   }, [peelDirection]);
 
@@ -134,36 +138,36 @@ const StickerPeel = ({
     if (!container) return;
 
     const handleTouchStart = () => {
-      container.classList.add('touch-active');
+      container.classList.add("touch-active");
     };
 
     const handleTouchEnd = () => {
-      container.classList.remove('touch-active');
+      container.classList.remove("touch-active");
     };
 
-    container.addEventListener('touchstart', handleTouchStart);
-    container.addEventListener('touchend', handleTouchEnd);
-    container.addEventListener('touchcancel', handleTouchEnd);
+    container.addEventListener("touchstart", handleTouchStart);
+    container.addEventListener("touchend", handleTouchEnd);
+    container.addEventListener("touchcancel", handleTouchEnd);
 
     return () => {
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchend', handleTouchEnd);
-      container.removeEventListener('touchcancel', handleTouchEnd);
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchend", handleTouchEnd);
+      container.removeEventListener("touchcancel", handleTouchEnd);
     };
   }, []);
 
   const cssVars = useMemo(
     () => ({
-      '--sticker-rotate': `${rotate}deg`,
-      '--sticker-p': `${defaultPadding}px`,
-      '--sticker-peelback-hover': `${peelBackHoverPct}%`,
-      '--sticker-peelback-active': `${peelBackActivePct}%`,
-      '--sticker-peel-easing': peelEasing,
-      '--sticker-peel-hover-easing': peelHoverEasing,
-      '--sticker-width': `${width}px`,
-      '--sticker-shadow-opacity': shadowIntensity,
-      '--sticker-lighting-constant': lightingIntensity,
-      '--peel-direction': `${peelDirection}deg`
+      "--sticker-rotate": `${rotate}deg`,
+      "--sticker-p": `${defaultPadding}px`,
+      "--sticker-peelback-hover": `${peelBackHoverPct}%`,
+      "--sticker-peelback-active": `${peelBackActivePct}%`,
+      "--sticker-peel-easing": peelEasing,
+      "--sticker-peel-hover-easing": peelHoverEasing,
+      "--sticker-width": `${width}px`,
+      "--sticker-shadow-opacity": shadowIntensity,
+      "--sticker-lighting-constant": lightingIntensity,
+      "--peel-direction": `${peelDirection}deg`,
     }),
     [
       rotate,
@@ -174,8 +178,8 @@ const StickerPeel = ({
       width,
       shadowIntensity,
       lightingIntensity,
-      peelDirection
-    ]
+      peelDirection,
+    ],
   );
 
   return (
@@ -238,7 +242,7 @@ const StickerPeel = ({
               alt=""
               className="sticker-image"
               draggable="false"
-              onContextMenu={e => e.preventDefault()}
+              onContextMenu={(e) => e.preventDefault()}
             />
           </div>
         </div>
@@ -250,7 +254,7 @@ const StickerPeel = ({
               alt=""
               className="flap-image"
               draggable="false"
-              onContextMenu={e => e.preventDefault()}
+              onContextMenu={(e) => e.preventDefault()}
             />
           </div>
         </div>

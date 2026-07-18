@@ -18,7 +18,9 @@ import { loadFileSystem, saveFileSystem, type FileSystemState } from "@/lib/frid
 import type { Attachment } from "@/features/dx/components/friday/attachment-chip";
 import { ZEN_MODELS, type ZenModel } from "@/lib/friday/models";
 
-export function FridayChatShell({ onModelPickerOpenChange }: { onModelPickerOpenChange?: (open: boolean) => void }) {
+export function FridayChatShell({
+  onModelPickerOpenChange,
+}: { onModelPickerOpenChange?: (open: boolean) => void }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [streamingId, setStreamingId] = useState<string | null>(null);
   const [rightPane, setRightPane] = useState<RightPaneTab>("menu");
@@ -68,9 +70,7 @@ export function FridayChatShell({ onModelPickerOpenChange }: { onModelPickerOpen
           if (abortRef.current.aborted) break;
           await new Promise<void>((resolve) => {
             setMessages((prev) =>
-              prev.map((m) =>
-                m.id === assistantId ? { ...m, content: m.content + token } : m,
-              ),
+              prev.map((m) => (m.id === assistantId ? { ...m, content: m.content + token } : m)),
             );
             requestAnimationFrame(() => resolve());
           });

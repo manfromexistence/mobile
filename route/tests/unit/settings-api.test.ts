@@ -91,7 +91,7 @@ describe("Settings API - persisted preferences", () => {
       assert.deepStrictEqual(
         settings.hiddenSidebarItems,
         ["translator"],
-        "hiddenSidebarItems should contain translator"
+        "hiddenSidebarItems should contain translator",
       );
     });
 
@@ -103,7 +103,7 @@ describe("Settings API - persisted preferences", () => {
       assert.deepStrictEqual(
         settings.hiddenSidebarItems,
         [],
-        "hiddenSidebarItems should be empty array"
+        "hiddenSidebarItems should be empty array",
       );
     });
   });
@@ -117,7 +117,7 @@ describe("Settings API - persisted preferences", () => {
       assert.deepStrictEqual(
         settings.hiddenSidebarGroupLabels,
         ["logs", "audit"],
-        "hiddenSidebarGroupLabels should contain logs and audit"
+        "hiddenSidebarGroupLabels should contain logs and audit",
       );
     });
 
@@ -126,7 +126,7 @@ describe("Settings API - persisted preferences", () => {
         await makeManagementSessionRequest("http://localhost/api/settings", {
           method: "PATCH",
           body: { hiddenSidebarGroupLabels: ["system"] },
-        })
+        }),
       );
       const body = (await response.json()) as Record<string, unknown>;
 
@@ -151,7 +151,7 @@ describe("Settings API - persisted preferences", () => {
       assert.deepStrictEqual(
         settings.hiddenSidebarItems,
         ["translator"],
-        "hiddenSidebarItems should be updated"
+        "hiddenSidebarItems should be updated",
       );
     });
 
@@ -165,7 +165,7 @@ describe("Settings API - persisted preferences", () => {
       assert.strictEqual(
         settings.antigravitySignatureCacheMode,
         "bypass-strict",
-        "antigravitySignatureCacheMode should be updated"
+        "antigravitySignatureCacheMode should be updated",
       );
     });
 
@@ -178,7 +178,7 @@ describe("Settings API - persisted preferences", () => {
             hideEndpointTailscaleFunnel: true,
             hideEndpointNgrokTunnel: true,
           },
-        })
+        }),
       );
       const body = (await response.json()) as Record<string, unknown>;
 
@@ -198,7 +198,7 @@ describe("Settings API - persisted preferences", () => {
         await makeManagementSessionRequest("http://localhost/api/settings", {
           method: "PATCH",
           body: { responsesPreviousResponseIdMode: "strip" },
-        })
+        }),
       );
       const body = (await response.json()) as Record<string, unknown>;
 
@@ -213,13 +213,13 @@ describe("Settings API - persisted preferences", () => {
       const response = await harness.settingsRoute.GET(
         await makeManagementSessionRequest("http://localhost/api/settings", {
           method: "GET",
-        })
+        }),
       );
       assert.equal(response.status, 200);
       assert.equal(
         response.headers.get("Cache-Control"),
         "no-store",
-        "GET /api/settings must return Cache-Control: no-store so persisted settings stay fresh after refresh/restart"
+        "GET /api/settings must return Cache-Control: no-store so persisted settings stay fresh after refresh/restart",
       );
     });
 
@@ -228,13 +228,13 @@ describe("Settings API - persisted preferences", () => {
         await makeManagementSessionRequest("http://localhost/api/settings", {
           method: "PATCH",
           body: { debugMode: true },
-        })
+        }),
       );
       assert.equal(response.status, 200);
       assert.equal(
         response.headers.get("Cache-Control"),
         "no-store",
-        "PATCH /api/settings must return Cache-Control: no-store"
+        "PATCH /api/settings must return Cache-Control: no-store",
       );
     });
 
@@ -243,7 +243,7 @@ describe("Settings API - persisted preferences", () => {
         await makeManagementSessionRequest("http://localhost/api/settings", {
           method: "PUT",
           body: { antigravitySignatureCacheMode: "bypass" },
-        })
+        }),
       );
       const body = (await response.json()) as Record<string, unknown>;
 

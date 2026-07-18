@@ -27,7 +27,7 @@ test("#6687 codex: display order stays session-then-weekly regardless of remaini
   // Sanity check: quotaParsing.ts's sortCodexOrder should order session before weekly.
   assert.deepEqual(
     parsed.map((q: TestQuota) => q.name),
-    ["session", "weekly"]
+    ["session", "weekly"],
   );
 
   // The display layer must NOT undo the fixed order, even though weekly
@@ -35,7 +35,7 @@ test("#6687 codex: display order stays session-then-weekly regardless of remaini
   const displayed = resolveQuotaDisplayOrder("codex", parsed);
   assert.deepEqual(
     displayed.map((q: TestQuota) => q.name),
-    ["session", "weekly"]
+    ["session", "weekly"],
   );
 });
 
@@ -50,13 +50,13 @@ test("#6687 glm family: display order stays session-then-weekly regardless of re
   const parsed = parseQuotaData("glm", rawGlmData);
   assert.deepEqual(
     parsed.map((q: TestQuota) => q.name),
-    ["session", "weekly"]
+    ["session", "weekly"],
   );
 
   const displayed = resolveQuotaDisplayOrder("glm", parsed);
   assert.deepEqual(
     displayed.map((q: TestQuota) => q.name),
-    ["session", "weekly"]
+    ["session", "weekly"],
   );
 });
 
@@ -69,6 +69,6 @@ test("#6687 non-fixed-order providers still sort by remaining percentage descend
   const displayed = resolveQuotaDisplayOrder("openai", quotas);
   assert.deepEqual(
     displayed.map((q: TestQuota) => q.name),
-    ["high", "low"]
+    ["high", "low"],
   );
 });

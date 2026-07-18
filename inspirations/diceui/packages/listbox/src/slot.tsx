@@ -18,17 +18,11 @@ interface SlotCloneProps {
 
 const isSlottable = function isSlottable(
   child: React.ReactNode,
-): child is React.ReactElement<
-  { children: React.ReactNode },
-  typeof Slottable
-> {
+): child is React.ReactElement<{ children: React.ReactNode }, typeof Slottable> {
   return React.isValidElement(child) && child.type === Slottable;
 };
 
-function mergeProps(
-  slotProps: PrimitiveProps,
-  childProps: PrimitiveProps,
-): PrimitiveProps {
+function mergeProps(slotProps: PrimitiveProps, childProps: PrimitiveProps): PrimitiveProps {
   const overrideProps: PrimitiveProps = { ...childProps };
 
   for (const propName in childProps) {
@@ -36,10 +30,7 @@ function mergeProps(
     const childPropValue = childProps[propName];
 
     if (/^on[A-Z]/.test(propName)) {
-      if (
-        typeof slotPropValue === "function" &&
-        typeof childPropValue === "function"
-      ) {
+      if (typeof slotPropValue === "function" && typeof childPropValue === "function") {
         overrideProps[propName] = (...args: unknown[]) => {
           childPropValue(...args);
           slotPropValue(...args);
@@ -53,48 +44,37 @@ function mergeProps(
         ...(childPropValue as React.CSSProperties),
       };
     } else if (propName === "className") {
-      overrideProps[propName] = [slotPropValue, childPropValue]
-        .filter(Boolean)
-        .join(" ");
+      overrideProps[propName] = [slotPropValue, childPropValue].filter(Boolean).join(" ");
     }
   }
 
   return { ...slotProps, ...overrideProps };
 }
 
-const SlotClone = React.forwardRef<HTMLElement, SlotCloneProps>(
-  (props, forwardedRef) => {
-    const { children, ...slotProps } = props;
+const SlotClone = React.forwardRef<HTMLElement, SlotCloneProps>((props, forwardedRef) => {
+  const { children, ...slotProps } = props;
 
-    if (!React.isValidElement(children)) {
-      return React.Children.count(children) > 1
-        ? React.Children.only(null)
-        : null;
-    }
+  if (!React.isValidElement(children)) {
+    return React.Children.count(children) > 1 ? React.Children.only(null) : null;
+  }
 
-    const childrenRef = getElementRef(children);
-    const mergedProps = mergeProps(
-      slotProps as PrimitiveProps,
-      children.props as PrimitiveProps,
-    );
+  const childrenRef = getElementRef(children);
+  const mergedProps = mergeProps(slotProps as PrimitiveProps, children.props as PrimitiveProps);
 
-    // Handle intrinsic elements (like 'div', 'span', etc.)
-    if (typeof children.type === "string") {
-      return React.cloneElement(children, {
-        ...mergedProps,
-        ref: forwardedRef
-          ? composeRefs(forwardedRef, childrenRef)
-          : childrenRef,
-      } as React.HTMLAttributes<HTMLElement>);
-    }
-
-    // Handle custom components
+  // Handle intrinsic elements (like 'div', 'span', etc.)
+  if (typeof children.type === "string") {
     return React.cloneElement(children, {
       ...mergedProps,
       ref: forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef,
-    } as React.ComponentProps<typeof children.type>);
-  },
-);
+    } as React.HTMLAttributes<HTMLElement>);
+  }
+
+  // Handle custom components
+  return React.cloneElement(children, {
+    ...mergedProps,
+    ref: forwardedRef ? composeRefs(forwardedRef, childrenRef) : childrenRef,
+  } as React.ComponentProps<typeof children.type>);
+});
 
 SlotClone.displayName = "SlotClone";
 
@@ -115,9 +95,8 @@ const Slot = React.forwardRef<HTMLElement, SlotProps>((props, forwardedRef) => {
     return null;
   }
 
-  const newElement = (
-    slottable as React.ReactElement<{ children: React.ReactNode }>
-  ).props.children;
+  const newElement = (slottable as React.ReactElement<{ children: React.ReactNode }>).props
+    .children;
 
   const newChildren = childrenArray.map((child) => {
     if (child === slottable) {

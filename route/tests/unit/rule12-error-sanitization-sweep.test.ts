@@ -41,7 +41,7 @@ function makeLeakyError(): Error {
   const err = new Error(
     `SqliteError: disk I/O error while opening ${LEAK_PATH_POSIX}:42\n` +
       `    at Database.prepare (${LEAK_PATH_WIN}:10:5)\n` +
-      `    at listEntries (/opt/omniroute/src/lib/db/x.ts:88:12)`
+      `    at listEntries (/opt/omniroute/src/lib/db/x.ts:88:12)`,
   );
   return err;
 }
@@ -111,7 +111,7 @@ test("GET /api/settings/compression → 500 body is sanitized (shape { error })"
   const restore = patchPrepareToThrow("FROM key_value WHERE namespace = ?");
   try {
     const res = await compressionRoute.GET(
-      makeRequest("http://localhost/api/settings/compression")
+      makeRequest("http://localhost/api/settings/compression"),
     );
     assert.equal(res.status, 500);
     const body = (await res.json()) as { error: string };

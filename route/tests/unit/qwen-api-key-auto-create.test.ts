@@ -70,8 +70,9 @@ test("getOrCreateApiKey() returns existing key when keyId is provided", async ()
 });
 
 test("Qwen guide-settings POST creates valid DB-backed key (no keyId)", async () => {
-  const guideSettingsRoute =
-    await import("../../src/app/api/cli-tools/guide-settings/[toolId]/route.ts");
+  const guideSettingsRoute = await import(
+    "../../src/app/api/cli-tools/guide-settings/[toolId]/route.ts"
+  );
 
   const cookie = await createAuthCookie();
   const req = new Request("http://localhost/api/cli-tools/guide-settings/qwen", {
@@ -96,7 +97,7 @@ test("Qwen guide-settings POST creates valid DB-backed key (no keyId)", async ()
   assert.equal(
     content.security?.auth?.baseUrl,
     "http://localhost:20128/v1",
-    "Should have base URL"
+    "Should have base URL",
   );
   assert.equal(content.model?.name, "qwen3-coder-flash", "Should have model name");
 
@@ -110,8 +111,9 @@ test("Qwen guide-settings POST creates valid DB-backed key (no keyId)", async ()
 });
 
 test("Qwen guide-settings POST with keyId uses existing key", async () => {
-  const guideSettingsRoute =
-    await import("../../src/app/api/cli-tools/guide-settings/[toolId]/route.ts");
+  const guideSettingsRoute = await import(
+    "../../src/app/api/cli-tools/guide-settings/[toolId]/route.ts"
+  );
 
   // Pre-create a key via getOrCreateApiKey
   const existingKey = await getOrCreateApiKey(null);
@@ -146,7 +148,7 @@ test("Qwen guide-settings POST with keyId uses existing key", async () => {
   assert.equal(
     content.security?.auth?.apiKey,
     existingKey,
-    "Should use existing key when keyId provided"
+    "Should use existing key when keyId provided",
   );
   assert.equal(content.security?.auth?.baseUrl, "http://localhost:20128/v1");
   assert.equal(content.model?.name, "qwen3-coder-plus");

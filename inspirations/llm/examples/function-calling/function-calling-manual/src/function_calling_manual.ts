@@ -22,10 +22,10 @@ async function hermes2_example() {
   // Same formatting for Hermes-2-Pro-Llama-3, Hermes-2-Theta-Llama-3
   // const selectedModel = "Hermes-2-Theta-Llama-3-8B-q4f16_1-MLC";
   const selectedModel = "Hermes-2-Pro-Llama-3-8B-q4f16_1-MLC";
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    { initProgressCallback: initProgressCallback, logLevel: "INFO" },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+    logLevel: "INFO",
+  });
   const seed = 0;
 
   // 1. First request, expect to generate tool call
@@ -155,10 +155,10 @@ Reminder:
 You are a helpful Assistant.`;
 
   const selectedModel = "Llama-3.1-8B-Instruct-q4f16_1-MLC";
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    { initProgressCallback: initProgressCallback, logLevel: "INFO" },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+    logLevel: "INFO",
+  });
   const seed = 0;
 
   // 1. First request, expect to generate tool call to get temperature of Paris

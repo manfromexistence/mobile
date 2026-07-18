@@ -91,7 +91,7 @@ test("call_logs table has correlation_id column", () => {
   const idxNames = indexes.map((i) => i.name);
   assert.ok(
     idxNames.includes("idx_cl_correlation_id"),
-    "call_logs should have idx_cl_correlation_id index"
+    "call_logs should have idx_cl_correlation_id index",
   );
 });
 

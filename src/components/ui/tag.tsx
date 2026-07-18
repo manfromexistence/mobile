@@ -1,6 +1,6 @@
-import type React from "react"
+import type React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 function Tag({ className, ...props }: React.ComponentProps<"span">) {
   return (
@@ -9,11 +9,11 @@ function Tag({ className, ...props }: React.ComponentProps<"span">) {
       className={cn(
         "inline-flex items-center rounded-full border bg-zinc-50 px-1.5 py-0.5 font-mono text-xs text-muted-foreground dark:bg-zinc-900",
         "[&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
-export { Tag }
+export { Tag };

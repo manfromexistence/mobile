@@ -25,12 +25,12 @@ test("shared api utils send JSON requests with merged headers", async () => {
   const postResult = await post(
     "http://localhost/post",
     { hello: "world" },
-    { headers: { "X-Test": "1" } }
+    { headers: { "X-Test": "1" } },
   );
   const putResult = await put(
     "http://localhost/put",
     { enabled: true },
-    { headers: { "X-Put": "1" } }
+    { headers: { "X-Put": "1" } },
   );
   const deleteResult = await api.del("http://localhost/delete", {
     headers: { "X-Delete": "1" },
@@ -85,7 +85,7 @@ test("shared api utils send JSON requests with merged headers", async () => {
         },
         body: null,
       },
-    ]
+    ],
   );
 });
 
@@ -106,7 +106,7 @@ test("shared api utils throw enriched errors for non-OK responses", async () => 
         detail: "broken payload",
       });
       return true;
-    }
+    },
   );
 });
 
@@ -125,6 +125,6 @@ test("shared api utils throw a clean error for non-JSON non-OK responses", async
       assert.equal((error as any).status, 502);
       assert.equal((error as any).data, "Bad Gateway");
       return true;
-    }
+    },
   );
 });

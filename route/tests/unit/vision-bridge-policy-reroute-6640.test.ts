@@ -21,8 +21,15 @@ import assert from "node:assert/strict";
 import { createChatPipelineHarness } from "../integration/_chatPipelineHarness.ts";
 
 const harness = await createChatPipelineHarness("vision-bridge-policy-reroute-6640");
-const { handleChat, buildRequest, buildOpenAIResponse, resetStorage, seedConnection, seedApiKey, settingsDb } =
-  harness;
+const {
+  handleChat,
+  buildRequest,
+  buildOpenAIResponse,
+  resetStorage,
+  seedConnection,
+  seedApiKey,
+  settingsDb,
+} = harness;
 
 function imageBearingBody(model: string) {
   return {
@@ -68,7 +75,7 @@ test("#6640: guardrail reroute to a model outside allowedModels is rejected — 
     buildRequest({
       authKey: apiKey.key,
       body: imageBearingBody("openai/gpt-3.5-turbo"),
-    })
+    }),
   );
 
   // The reroute target (gpt-4o-mini) is not in allowedModels — the request
@@ -80,7 +87,7 @@ test("#6640: guardrail reroute to a model outside allowedModels is rejected — 
     assert.equal(
       fetchCalls[0].body?.model,
       "gpt-3.5-turbo",
-      "must fall back to the original allowed model, not silently execute the disallowed reroute target"
+      "must fall back to the original allowed model, not silently execute the disallowed reroute target",
     );
   } else {
     assert.equal(fetchCalls.length, 0, "a rejected request must never reach the upstream");
@@ -106,7 +113,7 @@ test("#6640: guardrail reroute to a model inside allowedModels is honored (no re
     buildRequest({
       authKey: apiKey.key,
       body: imageBearingBody("openai/gpt-3.5-turbo"),
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -114,7 +121,7 @@ test("#6640: guardrail reroute to a model inside allowedModels is honored (no re
   assert.equal(
     fetchCalls[0].body?.model,
     "gpt-4o-mini",
-    "reroute to an allowed vision model must still be honored"
+    "reroute to an allowed vision model must still be honored",
   );
 });
 
@@ -136,7 +143,7 @@ test("#6640: reroute honors an explicit settings.visionBridgeModel override (con
     buildRequest({
       authKey: apiKey.key,
       body: imageBearingBody("openai/gpt-3.5-turbo"),
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -144,6 +151,6 @@ test("#6640: reroute honors an explicit settings.visionBridgeModel override (con
   assert.equal(
     fetchCalls[0].body?.model,
     "gpt-4o-mini",
-    "the configured settings.visionBridgeModel must be honored as the reroute target"
+    "the configured settings.visionBridgeModel must be honored as the reroute target",
   );
 });

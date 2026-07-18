@@ -95,7 +95,7 @@ describe("fuzzyExtractCursorTokensFromRows", () => {
         { key: "cursorAuth/someOtherAccessTokenKey", value: "fallback-token" },
         { key: "storage.someMachineId", value: "fallback-machine" },
       ],
-      { accessToken: "already-have-it" }
+      { accessToken: "already-have-it" },
     );
     assert.equal(tokens.accessToken, "already-have-it");
     assert.equal(tokens.machineId, "fallback-machine");
@@ -121,9 +121,7 @@ describe("cursorDbCandidatePaths", () => {
 
   it("returns a single path on Linux", () => {
     const paths = cursorDbCandidatePaths("linux", { home: "/home/test" });
-    assert.deepEqual(paths, [
-      "/home/test/.config/Cursor/User/globalStorage/state.vscdb",
-    ]);
+    assert.deepEqual(paths, ["/home/test/.config/Cursor/User/globalStorage/state.vscdb"]);
   });
 
   it("returns a single path on Windows using APPDATA", () => {

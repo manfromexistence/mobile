@@ -1,9 +1,9 @@
-import { Metadata } from "next"
+import { Metadata } from "next";
 
-import { RadioSpeaker } from "./components/radio-speaker"
+import { RadioSpeaker } from "./components/radio-speaker";
 
-const title = "Cube.fm Radio"
-const description = "Listen to Cube.fm's live radio stream"
+const title = "Cube.fm Radio";
+const description = "Listen to Cube.fm's live radio stream";
 
 export const metadata: Metadata = {
   title,
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: `/og?title=${encodeURIComponent(
-          title
+          title,
         )}&description=${encodeURIComponent(description)}`,
       },
     ],
@@ -22,12 +22,12 @@ export const metadata: Metadata = {
     images: [
       {
         url: `/og?title=${encodeURIComponent(
-          title
+          title,
         )}&description=${encodeURIComponent(description)}`,
       },
     ],
   },
-}
+};
 
 export default function RadioPage() {
   return (
@@ -36,5 +36,5 @@ export default function RadioPage() {
         <RadioSpeaker />
       </div>
     </div>
-  )
+  );
 }

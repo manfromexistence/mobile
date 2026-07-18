@@ -26,7 +26,7 @@ test("buildUrl Express: streaming google model uses streamGenerateContent + ?alt
   const url = executor.buildUrl("gemini-3-flash-preview", true, 0, { apiKey: "k-express" });
   assert.equal(
     url,
-    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-3-flash-preview:streamGenerateContent?alt=sse&key=k-express"
+    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-3-flash-preview:streamGenerateContent?alt=sse&key=k-express",
   );
 });
 
@@ -35,7 +35,7 @@ test("buildUrl Express: non-streaming google model uses generateContent?key=", (
   const url = executor.buildUrl("gemini-3-flash-preview", false, 0, { apiKey: "k-express" });
   assert.equal(
     url,
-    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-3-flash-preview:generateContent?key=k-express"
+    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-3-flash-preview:generateContent?key=k-express",
   );
 });
 
@@ -44,7 +44,7 @@ test("buildUrl Express: the API key is URL-encoded and trimmed", () => {
   const url = executor.buildUrl("gemini-2.5-flash", false, 0, { apiKey: "  a/b+c=d  " });
   assert.equal(
     url,
-    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-2.5-flash:generateContent?key=a%2Fb%2Bc%3Dd"
+    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-2.5-flash:generateContent?key=a%2Fb%2Bc%3Dd",
   );
 });
 
@@ -57,7 +57,7 @@ test("buildUrl Express: a present accessToken takes the Service Account path, no
   });
   assert.equal(
     url,
-    "https://aiplatform.googleapis.com/v1/projects/unknown-project/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent"
+    "https://aiplatform.googleapis.com/v1/projects/unknown-project/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
   );
 });
 
@@ -94,7 +94,7 @@ test("execute with an Express key calls the publisher endpoint directly (no OAut
     assert.equal(calls.length, 1);
     assert.equal(
       calls[0],
-      "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-3-flash-preview:generateContent?key=AIzaSyExpressKey"
+      "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-3-flash-preview:generateContent?key=AIzaSyExpressKey",
     );
   } finally {
     globalThis.fetch = originalFetch;

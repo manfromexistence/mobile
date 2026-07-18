@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { ConversationProvider } from "@elevenlabs/react"
+import { ConversationProvider } from "@elevenlabs/react";
 
-import { CardsActivityGoal } from "@/components/cards/activity-goal"
-import { CardsBarVisualizer } from "@/components/cards/bar-visualizer"
-import { CardsLiveRecording } from "@/components/cards/live-recording"
-import MusicPlayer01 from "@/registry/elevenlabs-ui/blocks/music-player-01/page"
-import MusicPlayer02 from "@/registry/elevenlabs-ui/blocks/music-player-02/page"
-import Speaker01 from "@/registry/elevenlabs-ui/blocks/speaker-01/page"
-import { VoiceChat01 } from "@/registry/elevenlabs-ui/blocks/voice-chat-01/page"
-import { VoiceChat02 } from "@/registry/elevenlabs-ui/blocks/voice-chat-02/page"
-import VoiceForm from "@/registry/elevenlabs-ui/blocks/voice-form-01/page"
-import ConversationDemo from "@/registry/elevenlabs-ui/examples/conversation-demo"
-import OrbDemo from "@/registry/elevenlabs-ui/examples/orb-demo"
-import VoicePickerDemo from "@/registry/elevenlabs-ui/examples/voice-picker-demo"
-import WaveformDemo from "@/registry/elevenlabs-ui/examples/waveform-demo"
-import { ConversationBar } from "@/registry/elevenlabs-ui/ui/conversation-bar"
+import { CardsActivityGoal } from "@/components/cards/activity-goal";
+import { CardsBarVisualizer } from "@/components/cards/bar-visualizer";
+import { CardsLiveRecording } from "@/components/cards/live-recording";
+import MusicPlayer01 from "@/registry/elevenlabs-ui/blocks/music-player-01/page";
+import MusicPlayer02 from "@/registry/elevenlabs-ui/blocks/music-player-02/page";
+import Speaker01 from "@/registry/elevenlabs-ui/blocks/speaker-01/page";
+import { VoiceChat01 } from "@/registry/elevenlabs-ui/blocks/voice-chat-01/page";
+import { VoiceChat02 } from "@/registry/elevenlabs-ui/blocks/voice-chat-02/page";
+import VoiceForm from "@/registry/elevenlabs-ui/blocks/voice-form-01/page";
+import ConversationDemo from "@/registry/elevenlabs-ui/examples/conversation-demo";
+import OrbDemo from "@/registry/elevenlabs-ui/examples/orb-demo";
+import VoicePickerDemo from "@/registry/elevenlabs-ui/examples/voice-picker-demo";
+import WaveformDemo from "@/registry/elevenlabs-ui/examples/waveform-demo";
+import { ConversationBar } from "@/registry/elevenlabs-ui/ui/conversation-bar";
 
 export function CardsDemo() {
   return (
@@ -27,9 +27,7 @@ export function CardsDemo() {
             <div className="pt-3 sm:pt-0 sm:pl-2 xl:pl-4">
               <CardsActivityGoal />
             </div>
-            <div className="pt-3 sm:col-span-2 xl:pt-4">
-              {/* <CardsExerciseMinutes /> */}
-            </div>
+            <div className="pt-3 sm:col-span-2 xl:pt-4">{/* <CardsExerciseMinutes /> */}</div>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
             <div className="flex flex-col gap-4">
@@ -76,5 +74,5 @@ export function CardsDemo() {
         </div>
       </div>
     </ConversationProvider>
-  )
+  );
 }

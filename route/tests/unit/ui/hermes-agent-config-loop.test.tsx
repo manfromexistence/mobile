@@ -68,7 +68,7 @@ beforeEach(() => {
         } as any;
       }
       return { ok: true, json: async () => ({}) } as any;
-    })
+    }),
   );
 });
 
@@ -95,7 +95,7 @@ function renderExpandedCard() {
         apiKeys={[{ id: "key-1" }]}
         activeProviders={[]}
         batchStatus={null}
-      />
+      />,
     );
   });
   return container;

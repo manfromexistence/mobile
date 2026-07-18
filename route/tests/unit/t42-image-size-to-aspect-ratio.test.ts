@@ -38,7 +38,7 @@ test("T42: Imagen3 requests send mapped aspect_ratio and normalize to OpenAI res
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 

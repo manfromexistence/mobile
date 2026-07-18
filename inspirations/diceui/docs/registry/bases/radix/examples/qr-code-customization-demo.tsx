@@ -1,8 +1,4 @@
-import {
-  QRCode,
-  QRCodeCanvas,
-  QRCodeSkeleton,
-} from "@/registry/bases/radix/ui/qr-code";
+import { QRCode, QRCodeCanvas, QRCodeSkeleton } from "@/registry/bases/radix/ui/qr-code";
 
 export default function QRCodeCustomizationDemo() {
   return (
@@ -21,12 +17,7 @@ export default function QRCodeCustomizationDemo() {
       </div>
 
       <div className="flex flex-col items-center gap-2">
-        <QRCode
-          value="https://diceui.com"
-          size={150}
-          level="H"
-          foregroundColor="#dc2626"
-        >
+        <QRCode value="https://diceui.com" size={150} level="H" foregroundColor="#dc2626">
           <QRCodeCanvas />
           <QRCodeSkeleton />
         </QRCode>

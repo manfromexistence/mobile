@@ -37,7 +37,7 @@ test("#4041 withInjectionGuard passes the parsed body as 3rd arg to the inner ha
   assert.deepEqual(
     receivedPreParsed,
     payload,
-    "withInjectionGuard must thread the body it already parsed into the inner handler as 3rd arg"
+    "withInjectionGuard must thread the body it already parsed into the inner handler as 3rd arg",
   );
 });
 
@@ -64,7 +64,7 @@ test("#4041 withInjectionGuard passes null as 3rd arg when body cannot be parsed
   assert.equal(
     receivedPreParsed,
     null,
-    "withInjectionGuard must pass null (not undefined) when body could not be parsed"
+    "withInjectionGuard must pass null (not undefined) when body could not be parsed",
   );
 });
 
@@ -142,7 +142,7 @@ test("#4041 withCodexPreferredModel accepts a pre-parsed body and avoids re-clon
   assert.equal(
     innerJsonCalls,
     0,
-    "resolveChatRequestBody must not call request.json() when preParsedBody is provided"
+    "resolveChatRequestBody must not call request.json() when preParsedBody is provided",
   );
 });
 
@@ -195,11 +195,11 @@ test("#4041 the body is parsed AT MOST ONCE through withInjectionGuard + inner h
 
   assert.ok(
     jsonParseCount <= 1,
-    `Expected at most 1 JSON parse through withInjectionGuard, got ${jsonParseCount}`
+    `Expected at most 1 JSON parse through withInjectionGuard, got ${jsonParseCount}`,
   );
   assert.deepEqual(
     preParsedBodyReceived,
     payload,
-    "inner handler must receive the pre-parsed body as 3rd arg"
+    "inner handler must receive the pre-parsed body as 3rd arg",
   );
 });

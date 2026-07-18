@@ -16,10 +16,18 @@ function ButtonPreview() {
   // size="lg" → h-9 / text-[14px], matching shadcn's size="sm" (h-9 / text-sm)
   return (
     <div className="flex flex-wrap items-center justify-center gap-2">
-      <Button variant="primary" size="lg">Primary</Button>
-      <Button variant="secondary" size="lg">Secondary</Button>
-      <Button variant="tertiary" size="lg">Tertiary</Button>
-      <Button variant="ghost" size="lg">Ghost</Button>
+      <Button variant="primary" size="lg">
+        Primary
+      </Button>
+      <Button variant="secondary" size="lg">
+        Secondary
+      </Button>
+      <Button variant="tertiary" size="lg">
+        Tertiary
+      </Button>
+      <Button variant="ghost" size="lg">
+        Ghost
+      </Button>
     </div>
   );
 }
@@ -28,14 +36,26 @@ function BadgePreview() {
   return (
     <div className="flex flex-col items-center gap-3">
       <div className="flex flex-wrap gap-1.5 items-center justify-center">
-        <Badge variant="solid" color="blue">Published</Badge>
-        <Badge variant="solid" color="green">Active</Badge>
-        <Badge variant="solid" color="red">Declined</Badge>
+        <Badge variant="solid" color="blue">
+          Published
+        </Badge>
+        <Badge variant="solid" color="green">
+          Active
+        </Badge>
+        <Badge variant="solid" color="red">
+          Declined
+        </Badge>
       </div>
       <div className="flex flex-wrap gap-1.5 items-center justify-center">
-        <Badge variant="dot" color="blue">Published</Badge>
-        <Badge variant="dot" color="green">Active</Badge>
-        <Badge variant="dot" color="red">Declined</Badge>
+        <Badge variant="dot" color="blue">
+          Published
+        </Badge>
+        <Badge variant="dot" color="green">
+          Active
+        </Badge>
+        <Badge variant="dot" color="red">
+          Declined
+        </Badge>
       </div>
     </div>
   );

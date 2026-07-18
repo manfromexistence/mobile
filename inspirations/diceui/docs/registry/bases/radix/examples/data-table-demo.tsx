@@ -1,14 +1,7 @@
 "use client";
 
 import type { Column, ColumnDef } from "@tanstack/react-table";
-import {
-  CheckCircle,
-  CheckCircle2,
-  DollarSign,
-  MoreHorizontal,
-  Text,
-  XCircle,
-} from "lucide-react";
+import { CheckCircle, CheckCircle2, DollarSign, MoreHorizontal, Text, XCircle } from "lucide-react";
 import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 import * as React from "react";
 import { DataTable } from "@/components/data-table/data-table";
@@ -61,19 +54,14 @@ const data: Project[] = [
 
 export default function DataTableDemo() {
   const [title] = useQueryState("title", parseAsString.withDefault(""));
-  const [status] = useQueryState(
-    "status",
-    parseAsArrayOf(parseAsString).withDefault([]),
-  );
+  const [status] = useQueryState("status", parseAsArrayOf(parseAsString).withDefault([]));
 
   // Ideally we would filter the data server-side, but for the sake of this example, we'll filter the data client-side
   const filteredData = React.useMemo(() => {
     return data.filter((project) => {
       const matchesTitle =
-        title === "" ||
-        project.title.toLowerCase().includes(title.toLowerCase());
-      const matchesStatus =
-        status.length === 0 || status.includes(project.status);
+        title === "" || project.title.toLowerCase().includes(title.toLowerCase());
+      const matchesStatus = status.length === 0 || status.includes(project.status);
 
       return matchesTitle && matchesStatus;
     });
@@ -89,9 +77,7 @@ export default function DataTableDemo() {
               table.getIsAllPageRowsSelected() ||
               (table.getIsSomePageRowsSelected() && "indeterminate")
             }
-            onCheckedChange={(value) =>
-              table.toggleAllPageRowsSelected(!!value)
-            }
+            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
             aria-label="Select all"
           />
         ),
@@ -178,9 +164,7 @@ export default function DataTableDemo() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem>Edit</DropdownMenuItem>
-                <DropdownMenuItem variant="destructive">
-                  Delete
-                </DropdownMenuItem>
+                <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           );

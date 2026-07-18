@@ -20,7 +20,7 @@ import path from "node:path";
 // (the function combo.ts calls) picks it up.
 
 const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-provider-model-context-override-4125-")
+  path.join(os.tmpdir(), "omniroute-provider-model-context-override-4125-"),
 );
 process.env.DATA_DIR = TEST_DATA_DIR;
 
@@ -62,7 +62,7 @@ test("PUT with contextWindowOverride persists a manual override that wins over t
     "chat-completions",
     ["chat"],
     undefined,
-    { inputTokenLimit: 1_000_000 } // provider misreports 1M
+    { inputTokenLimit: 1_000_000 }, // provider misreports 1M
   );
 
   const putRes = await providerModelsRoute.PUT(
@@ -70,7 +70,7 @@ test("PUT with contextWindowOverride persists a manual override that wins over t
       provider: "openai-compatible-demo",
       modelId: "misreported-model",
       contextWindowOverride: 131072, // real window per the operator
-    })
+    }),
   );
   const putBody = (await putRes.json()) as { contextWindowOverride?: number | null };
 
@@ -80,7 +80,7 @@ test("PUT with contextWindowOverride persists a manual override that wins over t
   // Persisted as a "manual" source in the Feature-5004 table.
   const record = contextOverrides.getModelContextOverrideRecord(
     "openai-compatible-demo",
-    "misreported-model"
+    "misreported-model",
   );
   assert.ok(record, "override record should exist");
   assert.equal(record!.realContext, 131072);
@@ -90,7 +90,7 @@ test("PUT with contextWindowOverride persists a manual override that wins over t
   // manual override must win over the (wrong) 1M value on the custom-model row.
   const limit = modelCapabilities.getModelContextLimit(
     "openai-compatible-demo",
-    "misreported-model"
+    "misreported-model",
   );
   assert.equal(limit, 131072);
 });
@@ -100,10 +100,14 @@ test("GET surfaces contextWindowOverride on the custom model row", async () => {
   contextOverrides.setModelContextOverride("openai-compatible-demo", "m1", 200000, "manual");
 
   const getRes = await providerModelsRoute.GET(
-    new Request("http://localhost/api/provider-models?provider=openai-compatible-demo")
+    new Request("http://localhost/api/provider-models?provider=openai-compatible-demo"),
   );
   const body = (await getRes.json()) as {
-    models: Array<{ id?: string; contextWindowOverride?: number; contextWindowOverrideSource?: string }>;
+    models: Array<{
+      id?: string;
+      contextWindowOverride?: number;
+      contextWindowOverrideSource?: string;
+    }>;
   };
 
   const row = body.models.find((m) => m.id === "m1");
@@ -121,7 +125,7 @@ test("PUT with contextWindowOverride: null clears a previously set override", as
       provider: "openai-compatible-demo",
       modelId: "m2",
       contextWindowOverride: null,
-    })
+    }),
   );
   assert.equal(putRes.status, 200);
 

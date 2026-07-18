@@ -59,7 +59,7 @@ describe("enrichRunWithConnectionCooldown", () => {
     assert.equal(
       out.targets[1].cooldownCount,
       undefined,
-      "provider with no cooldown gets no badge"
+      "provider with no cooldown gets no badge",
     );
   });
 
@@ -110,8 +110,9 @@ describe("enrichRunWithConnectionCooldown", () => {
   });
 
   it("composes with enrichRunWithBreakers without clobbering cbState", async () => {
-    const { enrichRunWithBreakers } =
-      await import("../../../src/app/(dashboard)/dashboard/combos/live/comboFlowModel.ts");
+    const { enrichRunWithBreakers } = await import(
+      "../../../src/app/(dashboard)/dashboard/combos/live/comboFlowModel.ts"
+    );
     const run = mkRun([{ provider: "anthropic" }]);
     const withBreaker = enrichRunWithBreakers(run, {
       anthropic: { state: "OPEN", retryAfterMs: 41_000 },

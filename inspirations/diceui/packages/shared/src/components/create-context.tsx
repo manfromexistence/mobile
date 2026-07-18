@@ -10,10 +10,7 @@ import * as React from "react";
  * @param name The name of the root component for error messages
  * @param defaultValue Optional default value for the context
  */
-function createContext<T extends object | null>(
-  rootComponentName: string,
-  defaultValue?: T,
-) {
+function createContext<T extends object | null>(rootComponentName: string, defaultValue?: T) {
   const Context = React.createContext<T | undefined>(defaultValue);
   Context.displayName = rootComponentName;
 
@@ -32,9 +29,7 @@ function createContext<T extends object | null>(
 
   Provider.displayName = `${rootComponentName}Provider`;
 
-  type ContextReturn<Optional extends boolean> = Optional extends true
-    ? T | undefined
-    : T;
+  type ContextReturn<Optional extends boolean> = Optional extends true ? T | undefined : T;
 
   /**
    * @param consumerName The name of the component that is consuming the context
@@ -47,9 +42,7 @@ function createContext<T extends object | null>(
     const context = React.useContext(Context);
 
     if (!context && !optional) {
-      throw new Error(
-        `\`${consumerName}\` must be used within \`${rootComponentName}\``,
-      );
+      throw new Error(`\`${consumerName}\` must be used within \`${rootComponentName}\``);
     }
 
     if (context) return context;

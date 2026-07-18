@@ -1,9 +1,7 @@
 {
   "name": "timeline-horizontal-alternate-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "timeline"
-  ],
+  "registryDependencies": ["timeline"],
   "files": [
     {
       "path": "examples/timeline-horizontal-alternate-demo.tsx",

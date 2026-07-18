@@ -1,31 +1,31 @@
-import { useMemo } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box, Flex } from '@chakra-ui/react';
+import { useMemo } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box, Flex } from "@chakra-ui/react";
 
-import OpenInStudioButton from '../../components/common/Preview/OpenInStudioButton';
-import RefreshButton from '../../components/common/Preview/RefreshButton';
-import CodeExample from '../../components/code/CodeExample';
-import Dependencies from '../../components/code/Dependencies';
-import useForceRerender from '../../hooks/useForceRerender';
-import PropTable from '../../components/common/Preview/PropTable';
+import OpenInStudioButton from "../../components/common/Preview/OpenInStudioButton";
+import RefreshButton from "../../components/common/Preview/RefreshButton";
+import CodeExample from "../../components/code/CodeExample";
+import Dependencies from "../../components/code/Dependencies";
+import useForceRerender from "../../hooks/useForceRerender";
+import PropTable from "../../components/common/Preview/PropTable";
 
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import Customize from '../../components/common/Preview/Customize';
-import BackgroundContent from '../../components/common/Preview/BackgroundContent';
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import Customize from "../../components/common/Preview/Customize";
+import BackgroundContent from "../../components/common/Preview/BackgroundContent";
 
-import Ballpit from '../../content/Backgrounds/Ballpit/Ballpit';
-import { ballpit } from '../../constants/code/Backgrounds/ballpitCode';
+import Ballpit from "../../content/Backgrounds/Ballpit/Ballpit";
+import { ballpit } from "../../constants/code/Backgrounds/ballpitCode";
 
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
 const DEFAULT_PROPS = {
   count: 100,
   gravity: 0.01,
   friction: 0.9975,
   wallBounce: 0.95,
-  followCursor: false
+  followCursor: false,
 };
 
 const BallpitDemo = () => {
@@ -38,110 +38,121 @@ const BallpitDemo = () => {
   const propData = useMemo(
     () => [
       {
-        name: 'count',
-        type: 'number',
-        default: '200',
-        description: 'Sets the number of balls in the ballpit.'
+        name: "count",
+        type: "number",
+        default: "200",
+        description: "Sets the number of balls in the ballpit.",
       },
       {
-        name: 'gravity',
-        type: 'number',
-        default: '0.5',
-        description: 'Controls the gravity affecting the balls.'
+        name: "gravity",
+        type: "number",
+        default: "0.5",
+        description: "Controls the gravity affecting the balls.",
       },
       {
-        name: 'friction',
-        type: 'number',
-        default: '0.9975',
-        description: 'Sets the friction applied to the ball movement.'
+        name: "friction",
+        type: "number",
+        default: "0.9975",
+        description: "Sets the friction applied to the ball movement.",
       },
       {
-        name: 'wallBounce',
-        type: 'number',
-        default: '0.95',
-        description: 'Determines how much balls bounce off walls.'
+        name: "wallBounce",
+        type: "number",
+        default: "0.95",
+        description: "Determines how much balls bounce off walls.",
       },
       {
-        name: 'followCursor',
-        type: 'boolean',
-        default: 'true',
-        description: 'Enables or disables the sphere following the cursor.'
+        name: "followCursor",
+        type: "boolean",
+        default: "true",
+        description: "Enables or disables the sphere following the cursor.",
       },
       {
-        name: 'colors',
-        type: 'array',
-        default: '[0, 0, 0]',
-        description: 'Defines the colors of the balls.'
+        name: "colors",
+        type: "array",
+        default: "[0, 0, 0]",
+        description: "Defines the colors of the balls.",
       },
       {
-        name: 'ambientColor',
-        type: 'number',
-        default: '16777215',
-        description: 'Sets the ambient light color.'
+        name: "ambientColor",
+        type: "number",
+        default: "16777215",
+        description: "Sets the ambient light color.",
       },
       {
-        name: 'ambientIntensity',
-        type: 'number',
-        default: '1',
-        description: 'Controls the intensity of ambient light.'
+        name: "ambientIntensity",
+        type: "number",
+        default: "1",
+        description: "Controls the intensity of ambient light.",
       },
       {
-        name: 'lightIntensity',
-        type: 'number',
-        default: '200',
-        description: 'Sets the intensity of the main light source.'
+        name: "lightIntensity",
+        type: "number",
+        default: "200",
+        description: "Sets the intensity of the main light source.",
       },
       {
-        name: 'minSize',
-        type: 'number',
-        default: '0.5',
-        description: 'Specifies the minimum size of the balls.'
+        name: "minSize",
+        type: "number",
+        default: "0.5",
+        description: "Specifies the minimum size of the balls.",
       },
       {
-        name: 'maxSize',
-        type: 'number',
-        default: '1',
-        description: 'Specifies the maximum size of the balls.'
+        name: "maxSize",
+        type: "number",
+        default: "1",
+        description: "Specifies the maximum size of the balls.",
       },
       {
-        name: 'size0',
-        type: 'number',
-        default: '1',
-        description: 'Initial size value for the cursor ball.'
+        name: "size0",
+        type: "number",
+        default: "1",
+        description: "Initial size value for the cursor ball.",
       },
       {
-        name: 'maxVelocity',
-        type: 'number',
-        default: '0.15',
-        description: 'Limits the maximum velocity of the balls.'
+        name: "maxVelocity",
+        type: "number",
+        default: "0.15",
+        description: "Limits the maximum velocity of the balls.",
       },
       {
-        name: 'maxX',
-        type: 'number',
-        default: '5',
-        description: 'Defines the maximum X-coordinate boundary.'
+        name: "maxX",
+        type: "number",
+        default: "5",
+        description: "Defines the maximum X-coordinate boundary.",
       },
       {
-        name: 'maxY',
-        type: 'number',
-        default: '5',
-        description: 'Defines the maximum Y-coordinate boundary.'
+        name: "maxY",
+        type: "number",
+        default: "5",
+        description: "Defines the maximum Y-coordinate boundary.",
       },
       {
-        name: 'maxZ',
-        type: 'number',
-        default: '2',
-        description: 'Defines the maximum Z-coordinate boundary.'
-      }
+        name: "maxZ",
+        type: "number",
+        default: "2",
+        description: "Defines the maximum Z-coordinate boundary.",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
-          <Box position="relative" className="demo-container" minH={500} maxH={500} overflow="hidden">
+          <Box
+            position="relative"
+            className="demo-container"
+            minH={500}
+            maxH={500}
+            overflow="hidden"
+          >
             <RefreshButton onClick={forceRerender} />
             <Ballpit
               className="ballpit-demo"
@@ -155,7 +166,10 @@ const BallpitDemo = () => {
             />
 
             {/* For Demo Purposes Only */}
-            <BackgroundContent pillText="New Background" headline="Balls! What's not to like about them?" />
+            <BackgroundContent
+              pillText="New Background"
+              headline="Balls! What's not to like about them?"
+            />
           </Box>
 
           <Flex justify="flex-end" mt={2} mb={-2}>
@@ -166,7 +180,7 @@ const BallpitDemo = () => {
                 gravity,
                 friction,
                 wallBounce,
-                followCursor
+                followCursor,
               }}
               defaultProps={{
                 count: 100,
@@ -174,7 +188,7 @@ const BallpitDemo = () => {
                 friction: 0.9975,
                 wallBounce: 0.95,
                 followCursor: true,
-                colors: ['#5227FF', '#7cff67', '#ff6b6b']
+                colors: ["#5227FF", "#7cff67", "#ff6b6b"],
               }}
             />
           </Flex>
@@ -183,8 +197,8 @@ const BallpitDemo = () => {
             <PreviewSwitch
               title="Display Cursor"
               isChecked={followCursor}
-              onChange={checked => {
-                updateProp('followCursor', checked);
+              onChange={(checked) => {
+                updateProp("followCursor", checked);
                 forceRerender();
               }}
             />
@@ -195,8 +209,8 @@ const BallpitDemo = () => {
               max={500}
               step={10}
               value={count}
-              onChange={val => {
-                updateProp('count', val);
+              onChange={(val) => {
+                updateProp("count", val);
                 forceRerender();
               }}
             />
@@ -207,8 +221,8 @@ const BallpitDemo = () => {
               max={1}
               step={0.1}
               value={gravity}
-              onChange={val => {
-                updateProp('gravity', val);
+              onChange={(val) => {
+                updateProp("gravity", val);
                 forceRerender();
               }}
             />
@@ -219,8 +233,8 @@ const BallpitDemo = () => {
               max={1}
               step={0.001}
               value={friction}
-              onChange={val => {
-                updateProp('friction', val);
+              onChange={(val) => {
+                updateProp("friction", val);
                 forceRerender();
               }}
             />
@@ -231,15 +245,15 @@ const BallpitDemo = () => {
               max={1}
               step={0.05}
               value={wallBounce}
-              onChange={val => {
-                updateProp('wallBounce', val);
+              onChange={(val) => {
+                updateProp("wallBounce", val);
                 forceRerender();
               }}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['three']} />
+          <Dependencies dependencyList={["three"]} />
         </PreviewTab>
 
         <CodeTab>

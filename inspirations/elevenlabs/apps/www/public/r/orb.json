@@ -1,12 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "orb",
-  "dependencies": [
-    "@react-three/drei",
-    "@react-three/fiber",
-    "three",
-    "@types/three"
-  ],
+  "dependencies": ["@react-three/drei", "@react-three/fiber", "three", "@types/three"],
   "files": [
     {
       "path": "components/ui/orb.tsx",

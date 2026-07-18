@@ -18,7 +18,7 @@ const { validateProviderApiKey } = await import("../../src/lib/providers/validat
 
 async function withMockServer(
   handler: (req: http.IncomingMessage, res: http.ServerResponse) => void,
-  fn: (baseUrl: string) => Promise<void>
+  fn: (baseUrl: string) => Promise<void>,
 ): Promise<void> {
   const server = http.createServer(handler);
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
@@ -47,7 +47,7 @@ test("zai validator returns Invalid API key on 401", async () => {
       });
       assert.equal(result.valid, false);
       assert.equal(result.error, "Invalid API key");
-    }
+    },
   );
 });
 
@@ -65,7 +65,7 @@ test("zai validator returns Invalid API key on 403", async () => {
       });
       assert.equal(result.valid, false);
       assert.equal(result.error, "Invalid API key");
-    }
+    },
   );
 });
 
@@ -83,7 +83,7 @@ test("zai validator accepts a successful 200 probe", async () => {
       });
       assert.equal(result.valid, true);
       assert.equal(result.error, null);
-    }
+    },
   );
 });
 
@@ -100,7 +100,7 @@ test("zai validator treats 502 as valid (z.ai queue timeout is not an auth error
         providerSpecificData: { baseUrl },
       });
       assert.equal(result.valid, true);
-    }
+    },
   );
 });
 
@@ -118,7 +118,7 @@ test("zai validator returns error on 404 (wrong endpoint)", async () => {
       });
       assert.equal(result.valid, false);
       assert.equal(result.error, "Provider validation endpoint not supported");
-    }
+    },
   );
 });
 
@@ -136,7 +136,7 @@ test("zai validator returns error on 5xx other than 502 (provider down)", async 
       });
       assert.equal(result.valid, false);
       assert.equal(result.error, "Provider unavailable (503)");
-    }
+    },
   );
 });
 
@@ -165,18 +165,18 @@ test("zai validator sends x-api-key header (Anthropic wire format, not Bearer)",
         apiKey: "test-zai-key-123",
         providerSpecificData: { baseUrl },
       });
-    }
+    },
   );
 
   assert.equal(capturedMethod, "POST");
   assert.equal(
     capturedHeaders["x-api-key"],
     "test-zai-key-123",
-    "must use x-api-key, not Authorization: Bearer"
+    "must use x-api-key, not Authorization: Bearer",
   );
   assert.ok(
     !capturedHeaders["authorization"],
-    `must not send Authorization header, got: ${capturedHeaders["authorization"]}`
+    `must not send Authorization header, got: ${capturedHeaders["authorization"]}`,
   );
   assert.equal(capturedHeaders["anthropic-version"], "2023-06-01");
   assert.equal(capturedHeaders["content-type"], "application/json");
@@ -212,7 +212,7 @@ test("zai validator uses directHttpsRequest (does not proxy through undici pool)
           apiKey: "key",
           providerSpecificData: { baseUrl },
         });
-      }
+      },
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -221,6 +221,6 @@ test("zai validator uses directHttpsRequest (does not proxy through undici pool)
   assert.equal(
     mockCalled,
     false,
-    "zai validator must use bypassProxyPatch path, not the patched globalThis.fetch"
+    "zai validator must use bypassProxyPatch path, not the patched globalThis.fetch",
   );
 });

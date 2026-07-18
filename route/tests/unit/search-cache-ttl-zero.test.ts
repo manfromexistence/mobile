@@ -111,7 +111,7 @@ describe("getOrCoalesce — ttlMs=0 bypass", () => {
     assert.equal(
       callCount,
       1,
-      "fetchFn should be called exactly once when coalescing with ttlMs>0"
+      "fetchFn should be called exactly once when coalescing with ttlMs>0",
     );
     assert.equal(r1.data, "shared");
     assert.equal(r2.data, "shared");

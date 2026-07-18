@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
-import { Card } from "@/registry/elevenlabs-ui/ui/card"
+import { Card } from "@/registry/elevenlabs-ui/ui/card";
 import {
   Conversation,
   ConversationContent,
   ConversationEmptyState,
   ConversationScrollButton,
-} from "@/registry/elevenlabs-ui/ui/conversation"
-import { Message, MessageContent } from "@/registry/elevenlabs-ui/ui/message"
-import { Orb } from "@/registry/elevenlabs-ui/ui/orb"
-import { Response } from "@/registry/elevenlabs-ui/ui/response"
+} from "@/registry/elevenlabs-ui/ui/conversation";
+import { Message, MessageContent } from "@/registry/elevenlabs-ui/ui/message";
+import { Orb } from "@/registry/elevenlabs-ui/ui/orb";
+import { Response } from "@/registry/elevenlabs-ui/ui/response";
 
 const allMessages = [
   {
@@ -166,67 +166,65 @@ const allMessages = [
       },
     ],
   },
-]
+];
 
 const ConversationDemo = () => {
-  const [messages, setMessages] = useState<typeof allMessages>([])
-  const [streamingMessageIndex, setStreamingMessageIndex] = useState<
-    number | null
-  >(null)
-  const [streamingContent, setStreamingContent] = useState("")
+  const [messages, setMessages] = useState<typeof allMessages>([]);
+  const [streamingMessageIndex, setStreamingMessageIndex] = useState<number | null>(null);
+  const [streamingContent, setStreamingContent] = useState("");
 
   useEffect(() => {
-    const timeouts: NodeJS.Timeout[] = []
-    const intervals: NodeJS.Timeout[] = []
-    let currentMessageIndex = 0
+    const timeouts: NodeJS.Timeout[] = [];
+    const intervals: NodeJS.Timeout[] = [];
+    let currentMessageIndex = 0;
 
     const addNextMessage = () => {
-      if (currentMessageIndex >= allMessages.length) return
+      if (currentMessageIndex >= allMessages.length) return;
 
-      const message = allMessages[currentMessageIndex]
-      const part = message.parts[0]
+      const message = allMessages[currentMessageIndex];
+      const part = message.parts[0];
 
       if (message.role === "assistant" && "tokens" in part && part.tokens) {
-        setStreamingMessageIndex(currentMessageIndex)
-        setStreamingContent("")
+        setStreamingMessageIndex(currentMessageIndex);
+        setStreamingContent("");
 
-        let currentContent = ""
-        let tokenIndex = 0
+        let currentContent = "";
+        let tokenIndex = 0;
 
         const streamInterval = setInterval(() => {
           if (tokenIndex < part.tokens.length) {
-            currentContent += part.tokens[tokenIndex]
-            setStreamingContent(currentContent)
-            tokenIndex++
+            currentContent += part.tokens[tokenIndex];
+            setStreamingContent(currentContent);
+            tokenIndex++;
           } else {
-            clearInterval(streamInterval)
-            setMessages((prev) => [...prev, message])
-            setStreamingMessageIndex(null)
-            setStreamingContent("")
-            currentMessageIndex++
+            clearInterval(streamInterval);
+            setMessages((prev) => [...prev, message]);
+            setStreamingMessageIndex(null);
+            setStreamingContent("");
+            currentMessageIndex++;
 
             // Add next message after a delay
-            timeouts.push(setTimeout(addNextMessage, 500))
+            timeouts.push(setTimeout(addNextMessage, 500));
           }
-        }, 100)
+        }, 100);
 
-        intervals.push(streamInterval)
+        intervals.push(streamInterval);
       } else {
-        setMessages((prev) => [...prev, message])
-        currentMessageIndex++
+        setMessages((prev) => [...prev, message]);
+        currentMessageIndex++;
 
-        timeouts.push(setTimeout(addNextMessage, 800))
+        timeouts.push(setTimeout(addNextMessage, 800));
       }
-    }
+    };
 
     // Start after 1 second
-    timeouts.push(setTimeout(addNextMessage, 1000))
+    timeouts.push(setTimeout(addNextMessage, 1000));
 
     return () => {
-      timeouts.forEach((timeout) => clearTimeout(timeout))
-      intervals.forEach((interval) => clearInterval(interval))
-    }
-  }, [])
+      timeouts.forEach((timeout) => clearTimeout(timeout));
+      intervals.forEach((interval) => clearInterval(interval));
+    };
+  }, []);
 
   return (
     <Card className="relative mx-auto my-0 size-full h-[400px] py-0">
@@ -247,13 +245,9 @@ const ConversationDemo = () => {
                       {message.parts.map((part, i) => {
                         switch (part.type) {
                           case "text":
-                            return (
-                              <Response key={`${message.id}-${i}`}>
-                                {part.text}
-                              </Response>
-                            )
+                            return <Response key={`${message.id}-${i}`}>{part.text}</Response>;
                           default:
-                            return null
+                            return null;
                         }
                       })}
                     </MessageContent>
@@ -272,8 +266,7 @@ const ConversationDemo = () => {
                     <MessageContent>
                       <Response>{streamingContent || "\u200B"}</Response>
                     </MessageContent>
-                    {allMessages[streamingMessageIndex].role ===
-                      "assistant" && (
+                    {allMessages[streamingMessageIndex].role === "assistant" && (
                       <div className="ring-border size-8 overflow-hidden rounded-full ring-1">
                         <Orb className="h-full w-full" agentState="talking" />
                       </div>
@@ -287,7 +280,7 @@ const ConversationDemo = () => {
         </Conversation>
       </div>
     </Card>
-  )
-}
+  );
+};
 
-export default ConversationDemo
+export default ConversationDemo;

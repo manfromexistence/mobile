@@ -17,7 +17,7 @@ test("#5461 Scaleway website points at a live docs URL, not the 404 marketing pa
   assert.equal(scaleway.website, "https://www.scaleway.com/en/docs/ai-data/generative-apis/");
   assert.ok(
     !scaleway.website.includes("/en/ai/generative-apis"),
-    "must not keep the 404 marketing URL"
+    "must not keep the 404 marketing URL",
   );
 });
 

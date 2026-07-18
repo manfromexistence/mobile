@@ -3,11 +3,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/registry/bases/base/ui/hover-card";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/registry/bases/base/ui/hover-card";
 
 function pluralize(n: number, word: string) {
   return `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -50,10 +46,7 @@ interface TimezoneCardProps extends React.ComponentProps<"div"> {
 function TimezoneCard(props: TimezoneCardProps) {
   const { date, timezone, ...cardProps } = props;
 
-  const locale = React.useMemo(
-    () => Intl.DateTimeFormat().resolvedOptions().locale,
-    [],
-  );
+  const locale = React.useMemo(() => Intl.DateTimeFormat().resolvedOptions().locale, []);
 
   const timezoneName = React.useMemo(
     () =>
@@ -90,9 +83,7 @@ function TimezoneCard(props: TimezoneCardProps) {
       {...cardProps}
       className="flex items-center justify-between gap-2 text-muted-foreground text-sm"
     >
-      <span className="w-fit rounded bg-accent px-1 font-medium text-xs">
-        {timezoneName}
-      </span>
+      <span className="w-fit rounded bg-accent px-1 font-medium text-xs">{timezoneName}</span>
       <div className="flex items-center gap-2">
         <time dateTime={date.toISOString()}>{formattedDate}</time>
         <time className="tabular-nums" dateTime={date.toISOString()}>
@@ -160,14 +151,9 @@ function RelativeTimeCard(props: RelativeTimeCardProps) {
     [dateProp],
   );
 
-  const locale = React.useMemo(
-    () => Intl.DateTimeFormat().resolvedOptions().locale,
-    [],
-  );
+  const locale = React.useMemo(() => Intl.DateTimeFormat().resolvedOptions().locale, []);
 
-  const [formattedTime, setFormattedTime] = React.useState<string>(() =>
-    date.toLocaleDateString(),
-  );
+  const [formattedTime, setFormattedTime] = React.useState<string>(() => date.toLocaleDateString());
 
   React.useEffect(() => {
     setFormattedTime(formatRelativeTime(date));
@@ -179,11 +165,7 @@ function RelativeTimeCard(props: RelativeTimeCardProps) {
   }, [date, updateInterval]);
 
   return (
-    <HoverCard
-      open={open}
-      defaultOpen={defaultOpen}
-      onOpenChange={onOpenChange}
-    >
+    <HoverCard open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
       <HoverCardTrigger
         {...triggerProps}
         delay={delay}
@@ -210,20 +192,12 @@ function RelativeTimeCard(props: RelativeTimeCardProps) {
         alignOffset={alignOffset}
         className="flex w-full max-w-[420px] flex-col gap-2 p-3"
       >
-        <time
-          dateTime={date.toISOString()}
-          className="text-muted-foreground text-sm"
-        >
+        <time dateTime={date.toISOString()} className="text-muted-foreground text-sm">
           {formattedTime}
         </time>
         <div role="list" className="flex flex-col gap-1">
           {timezones.map((timezone) => (
-            <TimezoneCard
-              key={timezone}
-              role="listitem"
-              date={date}
-              timezone={timezone}
-            />
+            <TimezoneCard key={timezone} role="listitem" date={date} timezone={timezone} />
           ))}
           <TimezoneCard role="listitem" date={date} />
         </div>

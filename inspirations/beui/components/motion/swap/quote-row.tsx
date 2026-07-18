@@ -32,13 +32,9 @@ export function QuoteRow({
         )}
       </span>
       <span className="text-muted-foreground">Network fee</span>
-      <span className="text-right tabular-nums text-foreground">
-        ${fee.toFixed(2)}
-      </span>
+      <span className="text-right tabular-nums text-foreground">${fee.toFixed(2)}</span>
       <span className="text-muted-foreground">Slippage</span>
-      <span className="text-right tabular-nums text-foreground">
-        {slippage.toFixed(2)}%
-      </span>
+      <span className="text-right tabular-nums text-foreground">{slippage.toFixed(2)}%</span>
       <span className="text-muted-foreground">ETA</span>
       <span className="text-right text-foreground">{eta}</span>
     </div>

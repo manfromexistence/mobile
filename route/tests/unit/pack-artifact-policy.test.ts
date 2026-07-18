@@ -15,7 +15,7 @@ import {
 test("normalizeArtifactPath normalizes slashes and leading relative markers", () => {
   assert.equal(
     normalizeArtifactPath("./app\\scripts\\ad-hoc\\test.js"),
-    "app/scripts/ad-hoc/test.js"
+    "app/scripts/ad-hoc/test.js",
   );
 });
 
@@ -31,7 +31,7 @@ test("findUnexpectedArtifactPaths flags staged app files outside the allowlist",
     {
       exactPaths: APP_STAGING_ALLOWED_EXACT_PATHS,
       prefixPaths: APP_STAGING_ALLOWED_PATH_PREFIXES,
-    }
+    },
   );
 
   assert.deepEqual(unexpectedPaths, ["package-lock.json"]);
@@ -50,7 +50,7 @@ test("findUnexpectedArtifactPaths flags app pack files outside the allowlist", (
     {
       exactPaths: PACK_ARTIFACT_ALLOWED_EXACT_PATHS,
       prefixPaths: PACK_ARTIFACT_ALLOWED_PATH_PREFIXES,
-    }
+    },
   );
 
   assert.deepEqual(unexpectedPaths, ["dist/scripts/build/prepublish.mjs", "docs/extra.md"]);
@@ -76,7 +76,7 @@ test("dist/tls-options.mjs is a required tarball path (regression guard for #545
   const missingPaths = findMissingArtifactPaths([], PACK_ARTIFACT_REQUIRED_PATHS);
   assert.ok(
     missingPaths.includes("dist/tls-options.mjs"),
-    "dist/tls-options.mjs must be enforced by the pack-artifact gate"
+    "dist/tls-options.mjs must be enforced by the pack-artifact gate",
   );
 });
 
@@ -98,7 +98,7 @@ test("findMissingArtifactPaths flags missing root runtime files in the tarball",
       "scripts/build/postinstall.mjs",
       "scripts/build/postinstallSupport.mjs",
     ],
-    PACK_ARTIFACT_REQUIRED_PATHS
+    PACK_ARTIFACT_REQUIRED_PATHS,
   );
 
   // findMissingArtifactPaths returns the missing required paths sorted

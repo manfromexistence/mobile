@@ -28,10 +28,10 @@ export enum BookmarkCategory {
 }
 
 export type Bookmark = {
-  title: string
-  url: string
-  author?: string
-  icon?: React.ReactElement
-  category: BookmarkCategory
-  bookmarkedAt: string
-}
+  title: string;
+  url: string;
+  author?: string;
+  icon?: React.ReactElement;
+  category: BookmarkCategory;
+  bookmarkedAt: string;
+};

@@ -1,13 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { isModelUnavailableError, getNextFamilyFallback } =
-  await import("../../open-sse/services/modelFamilyFallback.ts");
+const { isModelUnavailableError, getNextFamilyFallback } = await import(
+  "../../open-sse/services/modelFamilyFallback.ts"
+);
 
 test("T30: Kiro 'improperly formed request' 400 is treated as model-unavailable", () => {
   const unavailable = isModelUnavailableError(
     400,
-    "Bad Request: improperly formed request for selected model"
+    "Bad Request: improperly formed request for selected model",
   );
   assert.equal(unavailable, true);
 });
@@ -31,7 +32,7 @@ test("T30: model family helper returns a sibling candidate when available", () =
 test('T30: Kiro exact "Invalid model. Please select a different model to continue." 400 is treated as model-unavailable', () => {
   const unavailable = isModelUnavailableError(
     400,
-    "Invalid model. Please select a different model to continue."
+    "Invalid model. Please select a different model to continue.",
   );
   assert.equal(unavailable, true);
 });

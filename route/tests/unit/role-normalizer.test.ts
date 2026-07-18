@@ -27,7 +27,7 @@ test("#2281 normalizeDeveloperRole maps developer to system for non-openai provi
     assert.deepEqual(
       result,
       [{ role: "system", content: "internal policy" }],
-      `expected developer→system for provider ${provider}`
+      `expected developer→system for provider ${provider}`,
     );
   }
 });
@@ -100,7 +100,7 @@ test("normalizeSystemRole preserves the system role for GLM > 5.0 (glm-5.1/5.2 s
     assert.deepEqual(
       normalizeSystemRole(messages, "glm", model),
       messages,
-      `expected system role preserved for ${model}`
+      `expected system role preserved for ${model}`,
     );
   }
 });
@@ -110,14 +110,12 @@ test("normalizeSystemRole still strips the system role for pre-5.1 GLM and bare 
     { role: "system", content: "policy" },
     { role: "user", content: "ok" },
   ];
-  const merged = [
-    { role: "user", content: "[System Instructions]\npolicy\n\n[User Message]\nok" },
-  ];
+  const merged = [{ role: "user", content: "[System Instructions]\npolicy\n\n[User Message]\nok" }];
   for (const model of ["glm", "glm-4.7", "glm-5", "glm-5-turbo", "glm-5.0", "glm-5.0-turbo"]) {
     assert.deepEqual(
       normalizeSystemRole(messages, "openai", model),
       merged,
-      `expected system role stripped for ${model}`
+      `expected system role stripped for ${model}`,
     );
   }
 });

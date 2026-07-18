@@ -61,8 +61,8 @@ export default function StepperVerticalDemo() {
             <p className="text-muted-foreground text-sm">{step.description}</p>
           </div>
           <p className="text-sm">
-            This is the content for {step.title}. You can add forms,
-            information, or any other content here.
+            This is the content for {step.title}. You can add forms, information, or any other
+            content here.
           </p>
         </StepperContent>
       ))}

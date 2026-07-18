@@ -3,15 +3,8 @@
   "displayName": "Pierre Theme",
   "version": "1.1.0",
   "description": "Pierre theme for Shiki, VS Code, and more",
-  "categories": [
-    "Themes"
-  ],
-  "keywords": [
-    "dark",
-    "light",
-    "pierre",
-    "theme"
-  ],
+  "categories": ["Themes"],
+  "keywords": ["dark", "light", "pierre", "theme"],
   "homepage": "https://github.com/pierrecomputer/pierre/tree/main/packages/theme",
   "bugs": {
     "url": "https://github.com/pierrecomputer/pierre/issues"
@@ -24,13 +17,7 @@
     "directory": "packages/theme"
   },
   "publisher": "pierrecomputer",
-  "files": [
-    "dist",
-    "themes",
-    "icon.png",
-    "LICENSE",
-    "README.md"
-  ],
+  "files": ["dist", "themes", "icon.png", "LICENSE", "README.md"],
   "sideEffects": false,
   "exports": {
     ".": {

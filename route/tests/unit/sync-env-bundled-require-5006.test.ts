@@ -50,7 +50,7 @@ function writeOauthEnvExample(rootDir: string) {
       "# ─────────────────────────────────────────────────────────────────────────────",
       "",
     ].join("\n"),
-    "utf8"
+    "utf8",
   );
 }
 
@@ -64,7 +64,7 @@ test("#5006: sync-env.mjs does not call createRequire at module top-level scope"
   assert.doesNotMatch(
     source,
     /^const\s+require\s*=\s*createRequire\s*\(/m,
-    "createRequire(import.meta.url) must not run at top-level module scope (bundled import.meta.url is frozen → throws on module load → route 500)"
+    "createRequire(import.meta.url) must not run at top-level module scope (bundled import.meta.url is frozen → throws on module load → route 500)",
   );
 
   // `createRequire` is still used lazily where better-sqlite3 is needed — but only
@@ -74,7 +74,7 @@ test("#5006: sync-env.mjs does not call createRequire at module top-level scope"
       assert.match(
         line,
         /^\s+/,
-        `createRequire must be called from inside a function (indented), found top-level: ${line}`
+        `createRequire must be called from inside a function (indented), found top-level: ${line}`,
       );
     }
   }

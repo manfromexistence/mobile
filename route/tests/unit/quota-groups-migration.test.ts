@@ -56,7 +56,9 @@ test.after(async () => {
 // Helper to get a raw DB handle for inspection / seeding.
 function getDb() {
   return core.getDbInstance() as unknown as {
-    prepare: <TRow = unknown>(sql: string) => {
+    prepare: <TRow = unknown>(
+      sql: string,
+    ) => {
       all: (...params: unknown[]) => TRow[];
       get: (...params: unknown[]) => TRow | undefined;
       run: (...params: unknown[]) => { changes: number };
@@ -72,55 +74,40 @@ test("migration 087 file exists", () => {
 });
 
 test("migration 087 contains quota_groups CREATE TABLE", () => {
-  const sql = fs.readFileSync(
-    path.resolve("src/lib/db/migrations/088_quota_groups.sql"),
-    "utf8"
-  );
+  const sql = fs.readFileSync(path.resolve("src/lib/db/migrations/088_quota_groups.sql"), "utf8");
   assert.ok(sql.includes("quota_groups"), "migration SQL should reference quota_groups");
   assert.ok(
     sql.includes("CREATE TABLE IF NOT EXISTS quota_groups"),
-    "migration SQL should create quota_groups with IF NOT EXISTS"
+    "migration SQL should create quota_groups with IF NOT EXISTS",
   );
 });
 
 test("migration 087 seeds group-demo", () => {
-  const sql = fs.readFileSync(
-    path.resolve("src/lib/db/migrations/088_quota_groups.sql"),
-    "utf8"
-  );
-  assert.ok(
-    sql.includes("group-demo"),
-    "migration SQL should insert the 'group-demo' seed row"
-  );
+  const sql = fs.readFileSync(path.resolve("src/lib/db/migrations/088_quota_groups.sql"), "utf8");
+  assert.ok(sql.includes("group-demo"), "migration SQL should insert the 'group-demo' seed row");
   assert.ok(
     sql.includes("INSERT OR IGNORE INTO quota_groups"),
-    "migration SQL should use INSERT OR IGNORE for idempotency"
+    "migration SQL should use INSERT OR IGNORE for idempotency",
   );
 });
 
 test("migration 087 adds group_id column to quota_pools", () => {
-  const sql = fs.readFileSync(
-    path.resolve("src/lib/db/migrations/088_quota_groups.sql"),
-    "utf8"
-  );
+  const sql = fs.readFileSync(path.resolve("src/lib/db/migrations/088_quota_groups.sql"), "utf8");
   assert.ok(
     sql.includes("ALTER TABLE quota_pools ADD COLUMN group_id"),
-    "migration SQL should ALTER TABLE quota_pools to add group_id"
+    "migration SQL should ALTER TABLE quota_pools to add group_id",
   );
 });
 
 test("migration 087 contains backfill UPDATE for existing pools", () => {
-  const sql = fs.readFileSync(
-    path.resolve("src/lib/db/migrations/088_quota_groups.sql"),
-    "utf8"
-  );
+  const sql = fs.readFileSync(path.resolve("src/lib/db/migrations/088_quota_groups.sql"), "utf8");
   assert.ok(
     sql.includes("UPDATE quota_pools SET group_id = 'group-demo'"),
-    "migration SQL should backfill existing pools to group-demo"
+    "migration SQL should backfill existing pools to group-demo",
   );
   assert.ok(
     sql.includes("group_id IS NULL OR group_id = ''"),
-    "backfill should only touch pools without a group"
+    "backfill should only touch pools without a group",
   );
 });
 
@@ -132,7 +119,7 @@ test("after migrations run, quota_groups has a group-demo row named GroupDemo", 
 
   const row = db
     .prepare<{ id: string; name: string }>(
-      "SELECT id, name FROM quota_groups WHERE id = 'group-demo'"
+      "SELECT id, name FROM quota_groups WHERE id = 'group-demo'",
     )
     .get();
 

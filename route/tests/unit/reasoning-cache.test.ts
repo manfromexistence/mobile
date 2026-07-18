@@ -91,7 +91,7 @@ describe("Reasoning Replay Cache — Service Layer", () => {
       "call_test_1",
       "deepseek",
       "deepseek-reasoner",
-      "The user wants to read the file..."
+      "The user wants to read the file...",
     );
     const result = lookupReasoning("call_test_1");
     assert.equal(result, "The user wants to read the file...");
@@ -131,7 +131,7 @@ describe("Reasoning Replay Cache — Service Layer", () => {
       ["call_batch_1", "call_batch_2", "call_batch_3"],
       "deepseek",
       "deepseek-reasoner",
-      "Batch reasoning content"
+      "Batch reasoning content",
     );
     assert.equal(lookupReasoning("call_batch_1"), "Batch reasoning content");
     assert.equal(lookupReasoning("call_batch_2"), "Batch reasoning content");
@@ -148,7 +148,7 @@ describe("Reasoning Replay Cache — Service Layer", () => {
         tool_calls: [{ id: "call_capture_1" }, { id: "call_capture_2" }],
       },
       "deepseek",
-      "deepseek-reasoner"
+      "deepseek-reasoner",
     );
 
     assert.equal(cached, 2);
@@ -197,7 +197,7 @@ describe("Reasoning Replay Cache — Service Layer", () => {
         tool_calls: [{ id: "call_capture_alias" }],
       },
       "kimi",
-      "kimi-k2.5"
+      "kimi-k2.5",
     );
 
     assert.equal(cached, 1);
@@ -214,7 +214,7 @@ describe("Reasoning Replay Cache — Service Layer", () => {
       },
       "deepseek",
       "deepseek-reasoner",
-      { requestId: "req_no_tools", messageIndex: 3 }
+      { requestId: "req_no_tools", messageIndex: 3 },
     );
 
     assert.equal(cached, 1);
@@ -230,7 +230,7 @@ describe("Reasoning Replay Cache — Service Layer", () => {
         reasoning_content: "Missing key context",
       },
       "deepseek",
-      "deepseek-reasoner"
+      "deepseek-reasoner",
     );
 
     assert.equal(cached, 0);
@@ -244,7 +244,7 @@ describe("Reasoning Replay Cache — Service Layer", () => {
       "request:req_direct:message:1",
       "deepseek",
       "deepseek-reasoner",
-      "Keyed plan"
+      "Keyed plan",
     );
 
     assert.equal(lookupReasoning("request:req_direct:message:1"), "Keyed plan");
@@ -383,26 +383,26 @@ describe("Reasoning Replay Cache — Service Layer", () => {
     db.prepare(
       `INSERT INTO reasoning_cache
          (tool_call_id, provider, model, reasoning, char_count, created_at, expires_at)
-       VALUES (?, ?, ?, ?, ?, datetime('now'), ?)`
+       VALUES (?, ?, ?, ?, ?, datetime('now'), ?)`,
     ).run(
       "call_legacy_iso_active",
       "deepseek",
       "deepseek-chat",
       "Legacy ISO reasoning",
       "Legacy ISO reasoning".length,
-      futureIso
+      futureIso,
     );
     db.prepare(
       `INSERT INTO reasoning_cache
          (tool_call_id, provider, model, reasoning, char_count, created_at, expires_at)
-       VALUES (?, ?, ?, ?, ?, datetime('now'), ?)`
+       VALUES (?, ?, ?, ?, ?, datetime('now'), ?)`,
     ).run(
       "call_legacy_iso_expired",
       "deepseek",
       "deepseek-chat",
       "Expired legacy ISO reasoning",
       "Expired legacy ISO reasoning".length,
-      expiredIso
+      expiredIso,
     );
 
     assert.equal(lookupReasoning("call_legacy_iso_active"), "Legacy ISO reasoning");
@@ -413,7 +413,7 @@ describe("Reasoning Replay Cache — Service Layer", () => {
     }>;
     assert.equal(
       entries.some((entry) => entry.expiresAt === futureIso),
-      true
+      true,
     );
     assert.equal(cleanupReasoningCache(), 1);
   });
@@ -435,21 +435,21 @@ describe("Reasoning Replay Cache — Provider Detection", () => {
   it("should not replay deepseek-r1 model pattern", () => {
     assert.equal(
       requiresReasoningReplay({ provider: "unknown-provider", model: "deepseek-r1" }),
-      false
+      false,
     );
   });
 
   it("should detect deepseek-reasoner model pattern", () => {
     assert.equal(
       requiresReasoningReplay({ provider: "unknown-provider", model: "deepseek-reasoner" }),
-      false
+      false,
     );
   });
 
   it("should detect DeepSeek V4 model pattern", () => {
     assert.equal(
       requiresReasoningReplay({ provider: "unknown-provider", model: "deepseek/v4-pro" }),
-      true
+      true,
     );
   });
 
@@ -460,7 +460,7 @@ describe("Reasoning Replay Cache — Provider Detection", () => {
         model: "deepseek-v4.flash",
         thinkingEnabled: true,
       }),
-      true
+      true,
     );
   });
 
@@ -471,28 +471,28 @@ describe("Reasoning Replay Cache — Provider Detection", () => {
         model: "deepseek-v4.flash",
         thinkingEnabled: false,
       }),
-      false
+      false,
     );
   });
 
   it("should detect kimi-k2 model pattern", () => {
     assert.equal(
       requiresReasoningReplay({ provider: "unknown-provider", model: "kimi-k2.5" }),
-      true
+      true,
     );
   });
 
   it("should detect qwq model pattern", () => {
     assert.equal(
       requiresReasoningReplay({ provider: "unknown-provider", model: "qwq-32b-preview" }),
-      true
+      true,
     );
   });
 
   it("should detect qwen-thinking model pattern", () => {
     assert.equal(
       requiresReasoningReplay({ provider: "unknown-provider", model: "qwen3-thinking-235b" }),
-      true
+      true,
     );
   });
 
@@ -506,7 +506,7 @@ describe("Reasoning Replay Cache — Provider Detection", () => {
     // in the thinking mode must be passed back to the API."
     assert.equal(
       requiresReasoningReplay({ provider: "xiaomi-mimo", model: "mimo-v2.5-pro" }),
-      true
+      true,
     );
     assert.equal(requiresReasoningReplay({ provider: "XIAOMI-MIMO", model: "mimo-v2.5" }), true);
   });
@@ -514,12 +514,12 @@ describe("Reasoning Replay Cache — Provider Detection", () => {
   it("should detect mimo-v* model pattern under any provider id", () => {
     assert.equal(
       requiresReasoningReplay({ provider: "unknown-provider", model: "mimo-v2.5-pro" }),
-      true
+      true,
     );
     assert.equal(requiresReasoningReplay({ provider: "unknown-provider", model: "mimo-v3" }), true);
     assert.equal(
       requiresReasoningReplay({ provider: "unknown-provider", model: "MimoV2.5-pro" }),
-      true
+      true,
     );
   });
 
@@ -563,7 +563,7 @@ describe("Reasoning Replay Cache — Translator Replay", () => {
       },
       false,
       null,
-      provider
+      provider,
     );
   }
 
@@ -584,7 +584,7 @@ describe("Reasoning Replay Cache — Translator Replay", () => {
     const translated = translateWithToolHistory(
       "deepseek",
       "deepseek-reasoner",
-      "call_translate_ds"
+      "call_translate_ds",
     );
 
     assert.equal(translated.messages[1].reasoning_content, "DeepSeek cached plan");
@@ -628,7 +628,7 @@ describe("Reasoning Replay Cache — Translator Replay", () => {
       },
       false,
       null,
-      "deepseek"
+      "deepseek",
     );
 
     assert.equal(translated.messages[1].reasoning_content, "Client reasoning");
@@ -696,7 +696,7 @@ describe("Reasoning Replay Cache — Translator Replay", () => {
         tool_calls: [{ id: "call_full_flow", type: "function" }],
       },
       "deepseek",
-      "deepseek-reasoner"
+      "deepseek-reasoner",
     );
 
     const translated = translateWithToolHistory("deepseek", "deepseek-reasoner", "call_full_flow");
@@ -726,7 +726,7 @@ describe("Reasoning Replay Cache — Translator Replay", () => {
       },
       false,
       null,
-      "deepseek"
+      "deepseek",
     );
 
     assert.equal(translated.messages[1].reasoning_content, undefined);
@@ -749,7 +749,7 @@ describe("Reasoning Replay Cache — Translator Replay", () => {
     const translated = translateWithToolHistory(
       "testprovider",
       "test-reasoning-details",
-      "call_details"
+      "call_details",
     );
 
     assert.equal(translated.messages[1].reasoning_content, undefined);
@@ -772,8 +772,9 @@ describe("Reasoning Replay Cache — Translator Replay", () => {
       },
     });
 
-    const { NON_ANTHROPIC_THINKING_PLACEHOLDER } =
-      await import("../../open-sse/translator/helpers/claudeHelper.ts");
+    const { NON_ANTHROPIC_THINKING_PLACEHOLDER } = await import(
+      "../../open-sse/translator/helpers/claudeHelper.ts"
+    );
 
     // No cache entry → cache miss
     const translated = translateRequest(
@@ -800,13 +801,13 @@ describe("Reasoning Replay Cache — Translator Replay", () => {
       },
       false,
       null,
-      "deepseek"
+      "deepseek",
     );
 
     assert.equal(
       translated.messages[1].reasoning_content,
       NON_ANTHROPIC_THINKING_PLACEHOLDER,
-      "empty reasoning_content should be replaced with placeholder on cache miss"
+      "empty reasoning_content should be replaced with placeholder on cache miss",
     );
   });
 
@@ -827,8 +828,9 @@ describe("Reasoning Replay Cache — Translator Replay", () => {
       },
     });
 
-    const { NON_ANTHROPIC_THINKING_PLACEHOLDER } =
-      await import("../../open-sse/translator/helpers/claudeHelper.ts");
+    const { NON_ANTHROPIC_THINKING_PLACEHOLDER } = await import(
+      "../../open-sse/translator/helpers/claudeHelper.ts"
+    );
 
     const translated = translateRequest(
       FORMATS.OPENAI,
@@ -844,13 +846,13 @@ describe("Reasoning Replay Cache — Translator Replay", () => {
       },
       false,
       null,
-      "deepseek"
+      "deepseek",
     );
 
     assert.equal(
       translated.messages[1].reasoning_content,
       NON_ANTHROPIC_THINKING_PLACEHOLDER,
-      "plain DeepSeek assistant turn missing reasoning_content should get the placeholder"
+      "plain DeepSeek assistant turn missing reasoning_content should get the placeholder",
     );
   });
 
@@ -875,7 +877,7 @@ describe("Reasoning Replay Cache — Translator Replay", () => {
       "request:req-plain-1:message:0",
       "deepseek",
       "deepseek-v4-pro",
-      "Real cached plain-turn reasoning"
+      "Real cached plain-turn reasoning",
     );
 
     const translated = translateRequest(
@@ -892,13 +894,13 @@ describe("Reasoning Replay Cache — Translator Replay", () => {
       },
       false,
       null,
-      "deepseek"
+      "deepseek",
     );
 
     assert.equal(
       translated.messages[1].reasoning_content,
       "Real cached plain-turn reasoning",
-      "plain DeepSeek assistant turn should replay the real cached reasoning when present"
+      "plain DeepSeek assistant turn should replay the real cached reasoning when present",
     );
     assert.equal(getReasoningCacheServiceStats().replays, 1);
   });
@@ -933,7 +935,7 @@ describe("Reasoning Replay Cache — API Route", () => {
     cacheReasoning("call_api_get", "deepseek", "deepseek-reasoner", "API visible reasoning");
 
     const response = await GET(
-      authedRequest("http://localhost/api/cache/reasoning?provider=deepseek") as never
+      authedRequest("http://localhost/api/cache/reasoning?provider=deepseek") as never,
     );
     const body = await response.json();
 
@@ -949,7 +951,7 @@ describe("Reasoning Replay Cache — API Route", () => {
     cacheReasoning("call_api_delete_2", "deepseek", "deepseek-reasoner", "Keep API");
 
     const response = await DELETE(
-      authedRequest("http://localhost/api/cache/reasoning?toolCallId=call_api_delete_1") as never
+      authedRequest("http://localhost/api/cache/reasoning?toolCallId=call_api_delete_1") as never,
     );
     const body = await response.json();
 
@@ -966,7 +968,7 @@ describe("Reasoning Replay Cache — API Route", () => {
     cacheReasoning("call_api_provider_kimi", "kimi", "kimi-k2.5", "Keep provider");
 
     const response = await DELETE(
-      authedRequest("http://localhost/api/cache/reasoning?provider=deepseek") as never
+      authedRequest("http://localhost/api/cache/reasoning?provider=deepseek") as never,
     );
     const body = await response.json();
 

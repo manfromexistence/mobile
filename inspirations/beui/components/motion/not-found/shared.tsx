@@ -20,8 +20,7 @@ export interface NotFoundProps {
 export const NOT_FOUND_DEFAULTS = {
   code: "404",
   title: "Page not found",
-  description:
-    "The page you are looking for moved, vanished, or never existed.",
+  description: "The page you are looking for moved, vanished, or never existed.",
   homeHref: "/",
   homeLabel: "Back home",
   browseHref: "/components/motion",
@@ -47,12 +46,7 @@ export function NotFoundActions({
   const whileHover = reduce || !canHover ? undefined : { scale: 1.02 };
 
   return (
-    <div
-      className={cn(
-        "flex flex-wrap items-center justify-center gap-3",
-        className,
-      )}
-    >
+    <div className={cn("flex flex-wrap items-center justify-center gap-3", className)}>
       <motion.a
         href={homeHref}
         whileTap={whileTap}

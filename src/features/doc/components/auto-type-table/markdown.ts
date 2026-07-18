@@ -1,28 +1,23 @@
-import { highlightHast } from "fumadocs-core/highlight"
-import type { ElementContent, Nodes } from "hast"
-import rehypeExternalLinks from "rehype-external-links"
-import { remark } from "remark"
-import remarkGfm from "remark-gfm"
-import remarkRehype from "remark-rehype"
-import type {
-  BundledTheme,
-  CodeOptionsThemes,
-  CodeToHastOptionsCommon,
-} from "shiki"
+import { highlightHast } from "fumadocs-core/highlight";
+import type { ElementContent, Nodes } from "hast";
+import rehypeExternalLinks from "rehype-external-links";
+import { remark } from "remark";
+import remarkGfm from "remark-gfm";
+import remarkRehype from "remark-rehype";
+import type { BundledTheme, CodeOptionsThemes, CodeToHastOptionsCommon } from "shiki";
 
 import {
   rehypeCodeRawString,
   rehypeHighlightCode,
   rehypeHighlightCodeRawString,
-} from "@/lib/rehype-code-block"
+} from "@/lib/rehype-code-block";
 
 export interface MarkdownRenderer {
-  renderTypeToHast: (type: string) => Nodes | Promise<Nodes>
-  renderMarkdownToHast: (md: string) => Nodes | Promise<Nodes>
+  renderTypeToHast: (type: string) => Nodes | Promise<Nodes>;
+  renderMarkdownToHast: (md: string) => Nodes | Promise<Nodes>;
 }
 
-export type ShikiOptions = Omit<CodeToHastOptionsCommon, "lang"> &
-  CodeOptionsThemes<BundledTheme>
+export type ShikiOptions = Omit<CodeToHastOptionsCommon, "lang"> & CodeOptionsThemes<BundledTheme>;
 
 export function markdownRenderer(options?: ShikiOptions): MarkdownRenderer {
   const processor = remark()
@@ -35,7 +30,7 @@ export function markdownRenderer(options?: ShikiOptions): MarkdownRenderer {
     // Code highlighting and raw string extraction for copy button
     .use(rehypeCodeRawString)
     .use(rehypeHighlightCode)
-    .use(rehypeHighlightCodeRawString)
+    .use(rehypeHighlightCodeRawString);
 
   return {
     async renderTypeToHast(type) {
@@ -48,7 +43,7 @@ export function markdownRenderer(options?: ShikiOptions): MarkdownRenderer {
         },
         defaultColor: false,
         ...options,
-      })
+      });
 
       return {
         type: "element",
@@ -64,11 +59,11 @@ export function markdownRenderer(options?: ShikiOptions): MarkdownRenderer {
             children: nodes.children as ElementContent[],
           },
         ],
-      }
+      };
     },
     renderMarkdownToHast(md) {
-      md = md.replace(/{@link ([^}]*)}/g, "$1") // replace jsdoc links
-      return processor.run(processor.parse(md))
+      md = md.replace(/{@link ([^}]*)}/g, "$1"); // replace jsdoc links
+      return processor.run(processor.parse(md));
     },
-  }
+  };
 }

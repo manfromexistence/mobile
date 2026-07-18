@@ -1,23 +1,23 @@
-import { useMemo } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box, Flex } from '@chakra-ui/react';
+import { useMemo } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box, Flex } from "@chakra-ui/react";
 
-import Customize from '../../components/common/Preview/Customize';
-import CodeExample from '../../components/code/CodeExample';
+import Customize from "../../components/common/Preview/Customize";
+import CodeExample from "../../components/code/CodeExample";
 
-import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '../../components/code/Dependencies';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
-import BackgroundContent from '../../components/common/Preview/BackgroundContent';
-import OpenInStudioButton from '../../components/common/Preview/OpenInStudioButton';
-import useForceRerender from '../../hooks/useForceRerender';
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import PropTable from "../../components/common/Preview/PropTable";
+import Dependencies from "../../components/code/Dependencies";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
+import BackgroundContent from "../../components/common/Preview/BackgroundContent";
+import OpenInStudioButton from "../../components/common/Preview/OpenInStudioButton";
+import useForceRerender from "../../hooks/useForceRerender";
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
-import { faultyTerminal } from '../../constants/code/Backgrounds/faultyTerminalCode';
-import FaultyTerminal from '../../content/Backgrounds/FaultyTerminal/FaultyTerminal';
+import { faultyTerminal } from "../../constants/code/Backgrounds/faultyTerminalCode";
+import FaultyTerminal from "../../content/Backgrounds/FaultyTerminal/FaultyTerminal";
 
 const DEFAULT_PROPS = {
   scale: 1.5,
@@ -25,12 +25,12 @@ const DEFAULT_PROPS = {
   timeScale: 0.5,
   scanlineIntensity: 0.5,
   curvature: 0.1,
-  tint: '#A7EF9E',
+  tint: "#A7EF9E",
   mouseReact: true,
   mouseStrength: 0.5,
   pageLoadAnimation: true,
   noiseAmp: 1,
-  brightness: 0.6
+  brightness: 0.6,
 };
 
 const FaultyTerminalDemo = () => {
@@ -46,11 +46,11 @@ const FaultyTerminalDemo = () => {
     mouseStrength,
     pageLoadAnimation,
     noiseAmp,
-    brightness
+    brightness,
   } = props;
   const [key, forceRerender] = useForceRerender();
 
-  const handleChange = propName => value => {
+  const handleChange = (propName) => (value) => {
     updateProp(propName, value);
     forceRerender();
   };
@@ -58,125 +58,130 @@ const FaultyTerminalDemo = () => {
   const propData = useMemo(
     () => [
       {
-        name: 'scale',
-        type: 'number',
-        default: '1.5',
-        description: 'Controls the zoom/scale of the pattern.'
+        name: "scale",
+        type: "number",
+        default: "1.5",
+        description: "Controls the zoom/scale of the pattern.",
       },
       {
-        name: 'gridMul',
-        type: 'Vec2',
-        default: '[2, 1]',
-        description: 'Grid multiplier for glyph density [x, y].'
+        name: "gridMul",
+        type: "Vec2",
+        default: "[2, 1]",
+        description: "Grid multiplier for glyph density [x, y].",
       },
       {
-        name: 'digitSize',
-        type: 'number',
-        default: '1.2',
-        description: 'Size of individual glyphs.'
+        name: "digitSize",
+        type: "number",
+        default: "1.2",
+        description: "Size of individual glyphs.",
       },
       {
-        name: 'timeScale',
-        type: 'number',
-        default: '1',
-        description: 'Animation speed multiplier.'
+        name: "timeScale",
+        type: "number",
+        default: "1",
+        description: "Animation speed multiplier.",
       },
       {
-        name: 'pause',
-        type: 'boolean',
-        default: 'false',
-        description: 'Pause/resume animation.'
+        name: "pause",
+        type: "boolean",
+        default: "false",
+        description: "Pause/resume animation.",
       },
       {
-        name: 'scanlineIntensity',
-        type: 'number',
-        default: '1',
-        description: 'Strength of scanline effects.'
+        name: "scanlineIntensity",
+        type: "number",
+        default: "1",
+        description: "Strength of scanline effects.",
       },
       {
-        name: 'glitchAmount',
-        type: 'number',
-        default: '1',
-        description: 'Glitch displacement intensity.'
+        name: "glitchAmount",
+        type: "number",
+        default: "1",
+        description: "Glitch displacement intensity.",
       },
       {
-        name: 'flickerAmount',
-        type: 'number',
-        default: '1',
-        description: 'Flicker effect strength.'
+        name: "flickerAmount",
+        type: "number",
+        default: "1",
+        description: "Flicker effect strength.",
       },
       {
-        name: 'noiseAmp',
-        type: 'number',
-        default: '1',
-        description: 'Noise pattern amplitude.'
+        name: "noiseAmp",
+        type: "number",
+        default: "1",
+        description: "Noise pattern amplitude.",
       },
       {
-        name: 'chromaticAberration',
-        type: 'number',
-        default: '0',
-        description: 'RGB channel separation in pixels.'
+        name: "chromaticAberration",
+        type: "number",
+        default: "0",
+        description: "RGB channel separation in pixels.",
       },
       {
-        name: 'dither',
-        type: 'number | boolean',
-        default: '0',
-        description: 'Dithering effect intensity.'
+        name: "dither",
+        type: "number | boolean",
+        default: "0",
+        description: "Dithering effect intensity.",
       },
       {
-        name: 'curvature',
-        type: 'number',
-        default: '0',
-        description: 'Barrel distortion amount.'
+        name: "curvature",
+        type: "number",
+        default: "0",
+        description: "Barrel distortion amount.",
       },
       {
-        name: 'tint',
-        type: 'string',
+        name: "tint",
+        type: "string",
         default: "'#ffffff'",
-        description: 'Color tint (hex).'
+        description: "Color tint (hex).",
       },
       {
-        name: 'mouseReact',
-        type: 'boolean',
-        default: 'true',
-        description: 'Enable/disable mouse interaction.'
+        name: "mouseReact",
+        type: "boolean",
+        default: "true",
+        description: "Enable/disable mouse interaction.",
       },
       {
-        name: 'mouseStrength',
-        type: 'number',
-        default: '0.5',
-        description: 'Mouse interaction intensity.'
+        name: "mouseStrength",
+        type: "number",
+        default: "0.5",
+        description: "Mouse interaction intensity.",
       },
       {
-        name: 'pageLoadAnimation',
-        type: 'boolean',
-        default: 'false',
-        description: 'Enable fade-in animation on load.'
+        name: "pageLoadAnimation",
+        type: "boolean",
+        default: "false",
+        description: "Enable fade-in animation on load.",
       },
       {
-        name: 'brightness',
-        type: 'number',
-        default: '1',
-        description: 'Overall opacity/brightness control.'
+        name: "brightness",
+        type: "number",
+        default: "1",
+        description: "Overall opacity/brightness control.",
       },
       {
-        name: 'className',
-        type: 'string',
+        name: "className",
+        type: "string",
         default: "''",
-        description: 'Additional CSS classes.'
+        description: "Additional CSS classes.",
       },
       {
-        name: 'style',
-        type: 'React.CSSProperties',
-        default: '{}',
-        description: 'Inline styles.'
-      }
+        name: "style",
+        type: "React.CSSProperties",
+        default: "{}",
+        description: "Inline styles.",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box position="relative" className="demo-container" h={500} p={0} overflow="hidden">
@@ -195,7 +200,10 @@ const FaultyTerminalDemo = () => {
               brightness={brightness}
             />
 
-            <BackgroundContent pillText="New Background" headline="It works on my machine, please check again" />
+            <BackgroundContent
+              pillText="New Background"
+              headline="It works on my machine, please check again"
+            />
           </Box>
 
           <Flex justify="flex-end" mt={2} mb={-2}>
@@ -210,7 +218,7 @@ const FaultyTerminalDemo = () => {
                 mouseReact,
                 mouseStrength,
                 noiseAmp,
-                brightness
+                brightness,
               }}
               defaultProps={{
                 scale: 1,
@@ -222,18 +230,29 @@ const FaultyTerminalDemo = () => {
                 chromaticAberration: 0,
                 dither: 0,
                 curvature: 0.2,
-                tint: '#ffffff',
+                tint: "#ffffff",
                 mouseReact: true,
                 mouseStrength: 0.2,
-                brightness: 1
+                brightness: 1,
               }}
             />
           </Flex>
 
           <Customize>
-            <PreviewColorPickerCustom title="Tint Color" color={tint} onChange={val => handleChange('tint')(val)} />
+            <PreviewColorPickerCustom
+              title="Tint Color"
+              color={tint}
+              onChange={(val) => handleChange("tint")(val)}
+            />
 
-            <PreviewSlider title="Scale" min={1} max={3} step={0.1} value={scale} onChange={handleChange('scale')} />
+            <PreviewSlider
+              title="Scale"
+              min={1}
+              max={3}
+              step={0.1}
+              value={scale}
+              onChange={handleChange("scale")}
+            />
 
             <PreviewSlider
               title="Digit Size"
@@ -241,7 +260,7 @@ const FaultyTerminalDemo = () => {
               max={3}
               step={0.1}
               value={digitSize}
-              onChange={handleChange('digitSize')}
+              onChange={handleChange("digitSize")}
             />
 
             <PreviewSlider
@@ -250,7 +269,7 @@ const FaultyTerminalDemo = () => {
               max={3}
               step={0.1}
               value={timeScale}
-              onChange={handleChange('timeScale')}
+              onChange={handleChange("timeScale")}
             />
 
             <PreviewSlider
@@ -259,7 +278,7 @@ const FaultyTerminalDemo = () => {
               max={1}
               step={0.1}
               value={noiseAmp}
-              onChange={handleChange('noiseAmp')}
+              onChange={handleChange("noiseAmp")}
             />
 
             <PreviewSlider
@@ -268,7 +287,7 @@ const FaultyTerminalDemo = () => {
               max={1}
               step={0.1}
               value={brightness}
-              onChange={handleChange('brightness')}
+              onChange={handleChange("brightness")}
             />
 
             <PreviewSlider
@@ -277,7 +296,7 @@ const FaultyTerminalDemo = () => {
               max={2}
               step={0.1}
               value={scanlineIntensity}
-              onChange={handleChange('scanlineIntensity')}
+              onChange={handleChange("scanlineIntensity")}
             />
 
             <PreviewSlider
@@ -286,7 +305,7 @@ const FaultyTerminalDemo = () => {
               max={0.5}
               step={0.01}
               value={curvature}
-              onChange={handleChange('curvature')}
+              onChange={handleChange("curvature")}
             />
 
             <PreviewSlider
@@ -295,20 +314,24 @@ const FaultyTerminalDemo = () => {
               max={2}
               step={0.1}
               value={mouseStrength}
-              onChange={handleChange('mouseStrength')}
+              onChange={handleChange("mouseStrength")}
             />
 
-            <PreviewSwitch title="Mouse React" isChecked={mouseReact} onChange={handleChange('mouseReact')} />
+            <PreviewSwitch
+              title="Mouse React"
+              isChecked={mouseReact}
+              onChange={handleChange("mouseReact")}
+            />
 
             <PreviewSwitch
               title="Page Load Animation"
               isChecked={pageLoadAnimation}
-              onChange={handleChange('pageLoadAnimation')}
+              onChange={handleChange("pageLoadAnimation")}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['ogl']} />
+          <Dependencies dependencyList={["ogl"]} />
         </PreviewTab>
 
         <CodeTab>

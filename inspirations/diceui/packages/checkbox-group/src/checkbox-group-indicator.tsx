@@ -10,24 +10,23 @@ interface CheckboxGroupIndicatorProps
   forceMount?: boolean;
 }
 
-const CheckboxGroupIndicator = React.forwardRef<
-  HTMLSpanElement,
-  CheckboxGroupIndicatorProps
->((props, ref) => {
-  const { forceMount = false, ...indicatorProps } = props;
-  const itemContext = useCheckboxGroupItem(INDICATOR_NAME);
+const CheckboxGroupIndicator = React.forwardRef<HTMLSpanElement, CheckboxGroupIndicatorProps>(
+  (props, ref) => {
+    const { forceMount = false, ...indicatorProps } = props;
+    const itemContext = useCheckboxGroupItem(INDICATOR_NAME);
 
-  return (
-    <Presence present={forceMount || itemContext.checked}>
-      <Primitive.span
-        data-state={getDataState(itemContext.checked)}
-        data-disabled={itemContext.disabled ? "" : undefined}
-        {...indicatorProps}
-        ref={ref}
-      />
-    </Presence>
-  );
-});
+    return (
+      <Presence present={forceMount || itemContext.checked}>
+        <Primitive.span
+          data-state={getDataState(itemContext.checked)}
+          data-disabled={itemContext.disabled ? "" : undefined}
+          {...indicatorProps}
+          ref={ref}
+        />
+      </Presence>
+    );
+  },
+);
 
 CheckboxGroupIndicator.displayName = INDICATOR_NAME;
 

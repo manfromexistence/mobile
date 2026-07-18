@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/LightPillar/LightPillar.jsx?raw';
-import css from '@content/Backgrounds/LightPillar/LightPillar.css?raw';
-import tailwind from '@tailwind/Backgrounds/LightPillar/LightPillar.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/LightPillar/LightPillar.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/LightPillar/LightPillar.tsx?raw';
+import code from "@content/Backgrounds/LightPillar/LightPillar.jsx?raw";
+import css from "@content/Backgrounds/LightPillar/LightPillar.css?raw";
+import tailwind from "@tailwind/Backgrounds/LightPillar/LightPillar.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/LightPillar/LightPillar.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/LightPillar/LightPillar.tsx?raw";
 
 export const lightPillar = {
   dependencies: `three`,
@@ -27,5 +27,5 @@ export const lightPillar = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

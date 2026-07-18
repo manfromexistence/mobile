@@ -3,7 +3,5 @@ export function diceBearGlassUrl(seed: string) {
 }
 
 export function truncateAddress(address: string) {
-  return address.length > 12
-    ? `${address.slice(0, 6)}…${address.slice(-4)}`
-    : address;
+  return address.length > 12 ? `${address.slice(0, 6)}…${address.slice(-4)}` : address;
 }

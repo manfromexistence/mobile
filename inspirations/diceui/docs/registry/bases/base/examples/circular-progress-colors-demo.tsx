@@ -67,20 +67,12 @@ export default function CircularProgressColorsDemo() {
     <>
       <div className="hidden grid-cols-4 gap-4 sm:grid">
         {themes.map((theme, index) => (
-          <AnimatedCircularProgress
-            key={theme.name}
-            theme={theme}
-            index={index}
-          />
+          <AnimatedCircularProgress key={theme.name} theme={theme} index={index} />
         ))}
       </div>
       <div className="grid grid-cols-2 gap-4 sm:hidden">
         {themes.slice(0, 4).map((theme, index) => (
-          <AnimatedCircularProgress
-            key={theme.name}
-            theme={theme}
-            index={index}
-          />
+          <AnimatedCircularProgress key={theme.name} theme={theme} index={index} />
         ))}
       </div>
     </>
@@ -92,10 +84,7 @@ interface AnimatedCircularProgressProps {
   index: number;
 }
 
-function AnimatedCircularProgress({
-  theme,
-  index,
-}: AnimatedCircularProgressProps) {
+function AnimatedCircularProgress({ theme, index }: AnimatedCircularProgressProps) {
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -144,15 +133,11 @@ function AnimatedCircularProgress({
           <CircularProgressTrack className={theme.trackClass} />
           <CircularProgressRange className={theme.rangeClass} />
         </CircularProgressIndicator>
-        <CircularProgressValueText
-          className={cn("font-semibold text-sm", theme.textClass)}
-        />
+        <CircularProgressValueText className={cn("font-semibold text-sm", theme.textClass)} />
       </CircularProgress>
       <div className="flex flex-col items-center gap-1 text-center">
         <h4 className="font-medium text-sm">{theme.name}</h4>
-        <p className="text-muted-foreground text-xs">
-          {displayValue}% complete
-        </p>
+        <p className="text-muted-foreground text-xs">{displayValue}% complete</p>
       </div>
     </motion.div>
   );

@@ -1,25 +1,25 @@
-import { useMemo } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box, Flex } from '@chakra-ui/react';
+import { useMemo } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box, Flex } from "@chakra-ui/react";
 
-import CodeExample from '../../components/code/CodeExample';
+import CodeExample from "../../components/code/CodeExample";
 
-import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '../../components/code/Dependencies';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
+import PropTable from "../../components/common/Preview/PropTable";
+import Dependencies from "../../components/code/Dependencies";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
 
-import ScrollVelocity from '../../content/TextAnimations/ScrollVelocity/ScrollVelocity';
-import { scrollVelocity } from '../../constants/code/TextAnimations/scrollVelocityCode';
-import Customize from '../../components/common/Preview/Customize';
+import ScrollVelocity from "../../content/TextAnimations/ScrollVelocity/ScrollVelocity";
+import { scrollVelocity } from "../../constants/code/TextAnimations/scrollVelocityCode";
+import Customize from "../../components/common/Preview/Customize";
 
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
 const DEFAULT_PROPS = {
   velocity: 100,
   numCopies: 6,
   damping: 50,
-  stiffness: 400
+  stiffness: 400,
 };
 
 const ScrollVelocityDemo = () => {
@@ -29,89 +29,95 @@ const ScrollVelocityDemo = () => {
   const propData = useMemo(
     () => [
       {
-        name: 'scrollContainerRef',
-        type: 'React.RefObject<HTMLElement>',
-        default: 'undefined',
-        description: 'Optional ref for a custom scroll container to track scroll position.'
+        name: "scrollContainerRef",
+        type: "React.RefObject<HTMLElement>",
+        default: "undefined",
+        description: "Optional ref for a custom scroll container to track scroll position.",
       },
       {
-        name: 'texts',
-        type: 'React.ReactNode[]',
-        default: '[]',
-        description: 'Array of items to display as scrolling content. Accepts strings, JSX elements, icons, or any valid React node.'
+        name: "texts",
+        type: "React.ReactNode[]",
+        default: "[]",
+        description:
+          "Array of items to display as scrolling content. Accepts strings, JSX elements, icons, or any valid React node.",
       },
       {
-        name: 'velocity',
-        type: 'number',
-        default: '100',
-        description: 'Base velocity for scrolling; sign is flipped for odd indexed texts.'
+        name: "velocity",
+        type: "number",
+        default: "100",
+        description: "Base velocity for scrolling; sign is flipped for odd indexed texts.",
       },
       {
-        name: 'className',
-        type: 'string',
+        name: "className",
+        type: "string",
         default: '""',
-        description: 'CSS class applied to each text copy (span).'
+        description: "CSS class applied to each text copy (span).",
       },
       {
-        name: 'damping',
-        type: 'number',
-        default: '50',
-        description: 'Damping value for the spring animation.'
+        name: "damping",
+        type: "number",
+        default: "50",
+        description: "Damping value for the spring animation.",
       },
       {
-        name: 'stiffness',
-        type: 'number',
-        default: '400',
-        description: 'Stiffness value for the spring animation.'
+        name: "stiffness",
+        type: "number",
+        default: "400",
+        description: "Stiffness value for the spring animation.",
       },
       {
-        name: 'numCopies',
-        type: 'number',
-        default: '6',
-        description: 'Number of copies of the text rendered for a continuous scrolling effect.'
+        name: "numCopies",
+        type: "number",
+        default: "6",
+        description: "Number of copies of the text rendered for a continuous scrolling effect.",
       },
       {
-        name: 'velocityMapping',
-        type: '{ input: number[]; output: number[] }',
-        default: '{ input: [0, 1000], output: [0, 5] }',
-        description: 'Mapping from scroll velocity to a movement multiplier for dynamic scrolling.'
+        name: "velocityMapping",
+        type: "{ input: number[]; output: number[] }",
+        default: "{ input: [0, 1000], output: [0, 5] }",
+        description: "Mapping from scroll velocity to a movement multiplier for dynamic scrolling.",
       },
       {
-        name: 'parallaxClassName',
-        type: 'string',
+        name: "parallaxClassName",
+        type: "string",
         default: '"parallax"',
-        description: 'CSS class for the parallax container.'
+        description: "CSS class for the parallax container.",
       },
       {
-        name: 'scrollerClassName',
-        type: 'string',
+        name: "scrollerClassName",
+        type: "string",
         default: '"scroller"',
-        description: 'CSS class for the scroller container.'
+        description: "CSS class for the scroller container.",
       },
       {
-        name: 'parallaxStyle',
-        type: 'React.CSSProperties',
-        default: 'undefined',
-        description: 'Inline styles for the parallax container.'
+        name: "parallaxStyle",
+        type: "React.CSSProperties",
+        default: "undefined",
+        description: "Inline styles for the parallax container.",
       },
       {
-        name: 'scrollerStyle',
-        type: 'React.CSSProperties',
-        default: 'undefined',
-        description: 'Inline styles for the scroller container.'
-      }
+        name: "scrollerStyle",
+        type: "React.CSSProperties",
+        default: "undefined",
+        description: "Inline styles for the scroller container.",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
-          <Box position="relative" className="demo-container" h={400} overflow={'hidden'}>
+          <Box position="relative" className="demo-container" h={400} overflow={"hidden"}>
             <Flex position="relative" justifyContent="center" alignItems="center">
               <ScrollVelocity
-                texts={['React Bits', 'Scroll Down']}
+                texts={["React Bits", "Scroll Down"]}
                 velocity={velocity}
                 numCopies={numCopies}
                 damping={damping}
@@ -128,7 +134,7 @@ const ScrollVelocityDemo = () => {
               max={500}
               step={10}
               value={velocity}
-              onChange={val => updateProp('velocity', val)}
+              onChange={(val) => updateProp("velocity", val)}
             />
             <PreviewSlider
               title="Num Copies"
@@ -136,7 +142,7 @@ const ScrollVelocityDemo = () => {
               max={12}
               step={1}
               value={numCopies}
-              onChange={val => updateProp('numCopies', val)}
+              onChange={(val) => updateProp("numCopies", val)}
             />
             <PreviewSlider
               title="Damping"
@@ -144,7 +150,7 @@ const ScrollVelocityDemo = () => {
               max={100}
               step={5}
               value={damping}
-              onChange={val => updateProp('damping', val)}
+              onChange={(val) => updateProp("damping", val)}
             />
             <PreviewSlider
               title="Stiffness"
@@ -152,12 +158,12 @@ const ScrollVelocityDemo = () => {
               max={800}
               step={50}
               value={stiffness}
-              onChange={val => updateProp('stiffness', val)}
+              onChange={(val) => updateProp("stiffness", val)}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['motion']} />
+          <Dependencies dependencyList={["motion"]} />
           <Box mb="50vh"></Box>
         </PreviewTab>
 

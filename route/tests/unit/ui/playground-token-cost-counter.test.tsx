@@ -15,7 +15,7 @@ const containers: Array<{ root: ReturnType<typeof createRoot>; el: HTMLDivElemen
 function renderCounter(
   tokensIn: number,
   tokensOut: number,
-  costUsd: number | null
+  costUsd: number | null,
 ): HTMLDivElement {
   const el = document.createElement("div");
   document.body.appendChild(el);
@@ -31,8 +31,9 @@ function renderCounter(
 
 describe("TokenCostCounter", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean })
-      .IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {

@@ -1,5 +1,5 @@
-import type { TestimonialType } from "@/registry/blocks/testimonials-02/components/testimonial-list"
-import { TestimonialList } from "@/registry/blocks/testimonials-02/components/testimonial-list"
+import type { TestimonialType } from "@/registry/blocks/testimonials-02/components/testimonial-list";
+import { TestimonialList } from "@/registry/blocks/testimonials-02/components/testimonial-list";
 
 export default function Testimonials02() {
   return (
@@ -22,7 +22,7 @@ export default function Testimonials02() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 const TESTIMONIALS_1: TestimonialType[] = [
@@ -38,8 +38,7 @@ const TESTIMONIALS_1: TestimonialType[] = [
     authorName: "Guillermo Rauch",
     authorTagline: "CEO @Vercel",
     url: "https://x.com/rauchg/status/1978913158514237669",
-    quote:
-      "awesome. Love the components, especially slide-to-unlock. Great job",
+    quote: "awesome. Love the components, especially slide-to-unlock. Great job",
   },
   {
     authorAvatar: "https://unavatar.io/x/iamsahaj_xyz",
@@ -54,8 +53,7 @@ const TESTIMONIALS_1: TestimonialType[] = [
     authorName: "Francesco Ciulla",
     authorTagline: "Developer Advocate @daily.dev",
     url: "https://x.com/FrancescoCiull4/status/2006332479536529608",
-    quote:
-      "your portfolio is stunning. i created mine some weeks ago but this is another planet.",
+    quote: "your portfolio is stunning. i created mine some weeks ago but this is another planet.",
   },
   {
     authorAvatar: "https://unavatar.io/x/orcdev",
@@ -86,7 +84,7 @@ const TESTIMONIALS_1: TestimonialType[] = [
     quote:
       "i like this subtle version a lot more than the over-the-top examples i see everywhere, very nice",
   },
-]
+];
 
 const TESTIMONIALS_2: TestimonialType[] = [
   {
@@ -152,4 +150,4 @@ const TESTIMONIALS_2: TestimonialType[] = [
     url: "https://x.com/joshpuckett/status/2038713206764617896",
     quote: "Yooo I love this 🎨",
   },
-]
+];

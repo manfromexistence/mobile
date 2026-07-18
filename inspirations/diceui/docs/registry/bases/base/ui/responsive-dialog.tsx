@@ -47,10 +47,7 @@ interface Store {
 
 const StoreContext = React.createContext<Store | null>(null);
 
-function useStore<T>(
-  selector: (state: StoreState) => T,
-  ogStore?: Store | null,
-): T {
+function useStore<T>(selector: (state: StoreState) => T, ogStore?: Store | null): T {
   const contextStore = React.useContext(StoreContext);
   const store = ogStore ?? contextStore;
 
@@ -58,10 +55,7 @@ function useStore<T>(
     throw new Error(`\`useStore\` must be used within \`${ROOT_NAME}\``);
   }
 
-  const getSnapshot = React.useCallback(
-    () => selector(store.getState()),
-    [store, selector],
-  );
+  const getSnapshot = React.useCallback(() => selector(store.getState()), [store, selector]);
 
   return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
@@ -155,11 +149,7 @@ interface ResponsiveDialogTriggerProps extends React.ComponentProps<"button"> {
   render?: React.ComponentProps<typeof DialogTrigger>["render"];
 }
 
-function ResponsiveDialogTrigger({
-  render,
-  children,
-  ...props
-}: ResponsiveDialogTriggerProps) {
+function ResponsiveDialogTrigger({ render, children, ...props }: ResponsiveDialogTriggerProps) {
   const isMobile = useStore((state) => state.isMobile);
 
   if (isMobile) {
@@ -187,11 +177,7 @@ interface ResponsiveDialogCloseProps extends React.ComponentProps<"button"> {
   render?: React.ComponentProps<typeof DialogClose>["render"];
 }
 
-function ResponsiveDialogClose({
-  render,
-  children,
-  ...props
-}: ResponsiveDialogCloseProps) {
+function ResponsiveDialogClose({ render, children, ...props }: ResponsiveDialogCloseProps) {
   const isMobile = useStore((state) => state.isMobile);
 
   if (isMobile) {
@@ -215,15 +201,11 @@ function ResponsiveDialogClose({
   );
 }
 
-interface ResponsiveDialogPortalProps
-  extends React.ComponentProps<typeof DialogPortal> {
+interface ResponsiveDialogPortalProps extends React.ComponentProps<typeof DialogPortal> {
   container?: HTMLElement | null;
 }
 
-function ResponsiveDialogPortal({
-  children,
-  container,
-}: ResponsiveDialogPortalProps) {
+function ResponsiveDialogPortal({ children, container }: ResponsiveDialogPortalProps) {
   const isMobile = useStore((state) => state.isMobile);
 
   if (isMobile) {
@@ -246,30 +228,15 @@ interface ResponsiveDialogOverlayProps
   className?: string;
 }
 
-function ResponsiveDialogOverlay({
-  forceRender,
-  render,
-  ...props
-}: ResponsiveDialogOverlayProps) {
+function ResponsiveDialogOverlay({ forceRender, render, ...props }: ResponsiveDialogOverlayProps) {
   const isMobile = useStore((state) => state.isMobile);
 
   if (isMobile) {
-    return (
-      <DrawerOverlay
-        data-variant="drawer"
-        forceMount={forceRender as true}
-        {...props}
-      />
-    );
+    return <DrawerOverlay data-variant="drawer" forceMount={forceRender as true} {...props} />;
   }
 
   return (
-    <DialogOverlay
-      data-variant="dialog"
-      render={render}
-      forceRender={forceRender}
-      {...props}
-    />
+    <DialogOverlay data-variant="dialog" render={render} forceRender={forceRender} {...props} />
   );
 }
 
@@ -282,11 +249,7 @@ function ResponsiveDialogContent({
 
   if (isMobile) {
     return (
-      <DrawerContent
-        data-variant="drawer"
-        className={cn("px-4 pb-4", className)}
-        {...props}
-      />
+      <DrawerContent data-variant="drawer" className={cn("px-4 pb-4", className)} {...props} />
     );
   }
 
@@ -300,9 +263,7 @@ function ResponsiveDialogContent({
   );
 }
 
-function ResponsiveDialogHeader({
-  ...props
-}: React.ComponentProps<typeof DialogHeader>) {
+function ResponsiveDialogHeader({ ...props }: React.ComponentProps<typeof DialogHeader>) {
   const isMobile = useStore((state) => state.isMobile);
 
   if (isMobile) {
@@ -322,13 +283,7 @@ function ResponsiveDialogFooter({
     return <DrawerFooter data-variant="drawer" {...props} />;
   }
 
-  return (
-    <DialogFooter
-      data-variant="dialog"
-      showCloseButton={showCloseButton}
-      {...props}
-    />
-  );
+  return <DialogFooter data-variant="dialog" showCloseButton={showCloseButton} {...props} />;
 }
 
 function ResponsiveDialogTitle({ ...props }: React.ComponentProps<"h2">) {

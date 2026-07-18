@@ -4,8 +4,7 @@ import { useComboboxContext } from "./combobox-root";
 
 const LOADING_NAME = "ComboboxLoading";
 
-interface ComboboxLoadingProps
-  extends React.ComponentPropsWithoutRef<typeof Primitive.div> {
+interface ComboboxLoadingProps extends React.ComponentPropsWithoutRef<typeof Primitive.div> {
   /**
    * The current progress value.
    * @default null

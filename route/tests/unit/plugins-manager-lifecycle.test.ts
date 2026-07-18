@@ -14,17 +14,19 @@ function makeTmpPlugin(name: string, manifest: Record<string, unknown> = {}) {
   mkdirSync(pluginDir, { recursive: true });
   writeFileSync(
     join(pluginDir, "plugin.json"),
-    JSON.stringify({ name, version: "1.0.0", ...manifest })
+    JSON.stringify({ name, version: "1.0.0", ...manifest }),
   );
   writeFileSync(
     join(pluginDir, "index.js"),
-    `module.exports = { onRequest: async (ctx) => ({ metadata: { banner: "hello" } }) };`
+    `module.exports = { onRequest: async (ctx) => ({ metadata: { banner: "hello" } }) };`,
   );
   return pluginDir;
 }
 
 function cleanup(name: string) {
-  try { db.deletePlugin(name); } catch {}
+  try {
+    db.deletePlugin(name);
+  } catch {}
 }
 
 describe("pluginManager lifecycle", () => {
@@ -37,7 +39,9 @@ describe("pluginManager lifecycle", () => {
     getDbInstance();
     // Clean up test plugins
     for (const name of testPlugins) {
-      try { db.deletePlugin(name); } catch {}
+      try {
+        db.deletePlugin(name);
+      } catch {}
     }
     testPlugins.length = 0;
   });

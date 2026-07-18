@@ -188,7 +188,7 @@ describe("ComboLiveStudio", () => {
     it("shows fleet overview after clicking Fleet toggle", () => {
       const container = mount(<ComboLiveStudio run={SAMPLE_RUN} comboEvents={[]} />);
       const fleetBtn = container.querySelector(
-        "[data-testid='mode-fleet']"
+        "[data-testid='mode-fleet']",
       ) as HTMLButtonElement | null;
       expect(fleetBtn).toBeTruthy();
       act(() => {

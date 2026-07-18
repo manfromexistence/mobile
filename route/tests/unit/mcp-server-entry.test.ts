@@ -62,7 +62,7 @@ describe("resolveMcpEntry (#MCP — dist/ path resolution)", () => {
     for (const path of checked) {
       assert.ok(
         path.startsWith(FAKE_ROOT),
-        `checked path "${path}" should be inside rootDir "${FAKE_ROOT}"`
+        `checked path "${path}" should be inside rootDir "${FAKE_ROOT}"`,
       );
     }
   });
@@ -72,7 +72,7 @@ describe("resolveMcpEntry (#MCP — dist/ path resolution)", () => {
     if (result) {
       assert.ok(
         result.endsWith("server.js") || result.endsWith("server.ts"),
-        `resolved path "${result}" should end with server.js or server.ts`
+        `resolved path "${result}" should end with server.js or server.ts`,
       );
     } else {
       assert.equal(result, null, "should return null if no entry exists at the real root");

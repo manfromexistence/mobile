@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  AlertCircle,
-  AlertTriangle,
-  CheckCircle,
-  Info,
-  ServerCrash,
-  Sparkles,
-} from "lucide-react";
+import { AlertCircle, AlertTriangle, CheckCircle, Info, ServerCrash, Sparkles } from "lucide-react";
 import * as React from "react";
 import {
   BannerActions,
@@ -42,9 +35,7 @@ function BannerControls() {
           </BannerIcon>
           <BannerContent>
             <BannerTitle>Information</BannerTitle>
-            <BannerDescription>
-              This is an informational message.
-            </BannerDescription>
+            <BannerDescription>This is an informational message.</BannerDescription>
           </BannerContent>
           <BannerClose />
         </>
@@ -62,9 +53,7 @@ function BannerControls() {
           </BannerIcon>
           <BannerContent>
             <BannerTitle>Success!</BannerTitle>
-            <BannerDescription>
-              Your changes have been saved successfully.
-            </BannerDescription>
+            <BannerDescription>Your changes have been saved successfully.</BannerDescription>
           </BannerContent>
           <BannerClose />
         </>
@@ -82,9 +71,7 @@ function BannerControls() {
           </BannerIcon>
           <BannerContent>
             <BannerTitle>Warning</BannerTitle>
-            <BannerDescription>
-              Please review your changes before continuing.
-            </BannerDescription>
+            <BannerDescription>Please review your changes before continuing.</BannerDescription>
           </BannerContent>
           <BannerActions>
             <Button size="sm" variant="default">
@@ -174,9 +161,7 @@ function BannerControls() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2.5">
-        <h3 className="font-semibold text-base">
-          Stacked Banners ({banners.length} in queue)
-        </h3>
+        <h3 className="font-semibold text-base">Stacked Banners ({banners.length} in queue)</h3>
         <div className="flex flex-wrap gap-2">
           <Button onClick={onInfoBannerAdd} variant="outline" size="sm">
             Add Info
@@ -205,8 +190,7 @@ function BannerControls() {
         <div className="text-muted-foreground text-sm">
           Higher priority banners jump ahead in the queue.
           <br />
-          Try adding the app version banner first, then the system health
-          banner.
+          Try adding the app version banner first, then the system health banner.
         </div>
       </div>
     </div>

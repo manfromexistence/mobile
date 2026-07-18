@@ -48,7 +48,7 @@ test("#6408 — 10 concurrent identical GET /v1/models calls collapse to ONE bui
   const N = 10;
   const requests = Array.from({ length: N }, () => new Request("http://localhost/v1/models"));
   const responses = await Promise.all(
-    requests.map((req) => v1ModelsCatalog.getUnifiedModelsResponse(req))
+    requests.map((req) => v1ModelsCatalog.getUnifiedModelsResponse(req)),
   );
 
   for (const res of responses) assert.equal(res.status, 200);
@@ -61,25 +61,25 @@ test("#6408 — 10 concurrent identical GET /v1/models calls collapse to ONE bui
   assert.equal(
     runs,
     1,
-    `builder ran ${runs} times for ${N} concurrent requests — expected exactly 1 (in-flight coalescing)`
+    `builder ran ${runs} times for ${N} concurrent requests — expected exactly 1 (in-flight coalescing)`,
   );
 });
 
 test("#6408 — a second call within the TTL window is served from cache without re-running the builder", async () => {
   const res1 = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/v1/models")
+    new Request("http://localhost/v1/models"),
   );
   assert.equal(res1.status, 200);
   assert.equal(v1ModelsCatalog.__getCatalogBuilderRunsForTest(), 1);
 
   const res2 = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/v1/models")
+    new Request("http://localhost/v1/models"),
   );
   assert.equal(res2.status, 200);
   assert.equal(
     v1ModelsCatalog.__getCatalogBuilderRunsForTest(),
     1,
-    "second call within TTL should reuse cache — builder must not run again"
+    "second call within TTL should reuse cache — builder must not run again",
   );
 
   assert.equal(await res2.text(), await res1.text());
@@ -87,16 +87,16 @@ test("#6408 — a second call within the TTL window is served from cache without
 
 test("#6408 — requests with different cache keys (prefix param) run the builder independently", async () => {
   const resAlias = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/v1/models?prefix=alias")
+    new Request("http://localhost/v1/models?prefix=alias"),
   );
   const resCanon = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/v1/models?prefix=canonical")
+    new Request("http://localhost/v1/models?prefix=canonical"),
   );
   assert.equal(resAlias.status, 200);
   assert.equal(resCanon.status, 200);
   assert.equal(
     v1ModelsCatalog.__getCatalogBuilderRunsForTest(),
     2,
-    "distinct cache keys must not collapse into each other"
+    "distinct cache keys must not collapse into each other",
   );
 });

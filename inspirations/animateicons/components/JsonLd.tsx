@@ -15,22 +15,22 @@
  */
 
 type Props = {
-	data: Record<string, unknown> | Record<string, unknown>[];
+  data: Record<string, unknown> | Record<string, unknown>[];
 };
 
 const JsonLd: React.FC<Props> = ({ data }) => {
-	// Escape `<` to prevent any nested string from breaking out of the
-	// <script> tag. JSON spec allows the literal character, but in HTML
-	// context it can prematurely close the tag.
-	const json = JSON.stringify(data).replace(/</g, "\\u003c");
+  // Escape `<` to prevent any nested string from breaking out of the
+  // <script> tag. JSON spec allows the literal character, but in HTML
+  // context it can prematurely close the tag.
+  const json = JSON.stringify(data).replace(/</g, "\\u003c");
 
-	return (
-		<script
-			type="application/ld+json"
-			// biome-ignore lint/security/noDangerouslySetInnerHtml: required for JSON-LD
-			dangerouslySetInnerHTML={{ __html: json }}
-		/>
-	);
+  return (
+    <script
+      type="application/ld+json"
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: required for JSON-LD
+      dangerouslySetInnerHTML={{ __html: json }}
+    />
+  );
 };
 
 export default JsonLd;

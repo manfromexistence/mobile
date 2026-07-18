@@ -76,7 +76,7 @@ test("EPSILON (unconfigured) plan does not block after the first request", async
   assert.equal(
     first.kind,
     "allow",
-    `first request should be allowed; got ${JSON.stringify(first)}`
+    `first request should be allowed; got ${JSON.stringify(first)}`,
   );
 
   // Record consumption on the EPSILON dimension (tokens/5h).
@@ -93,6 +93,6 @@ test("EPSILON (unconfigured) plan does not block after the first request", async
   assert.equal(
     second.kind,
     "allow",
-    `unconfigured EPSILON plan must not block after the first request; got ${JSON.stringify(second)}`
+    `unconfigured EPSILON plan must not block after the first request; got ${JSON.stringify(second)}`,
   );
 });

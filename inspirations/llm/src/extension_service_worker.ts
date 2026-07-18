@@ -2,11 +2,7 @@ import * as tvmjs from "@mlc-ai/web-runtime";
 import log from "loglevel";
 import { ChatOptions, MLCEngineConfig } from "./config";
 import { ReloadParams, WorkerRequest } from "./message";
-import {
-  ChatWorker,
-  WebWorkerMLCEngineHandler,
-  WebWorkerMLCEngine,
-} from "./web_worker";
+import { ChatWorker, WebWorkerMLCEngineHandler, WebWorkerMLCEngine } from "./web_worker";
 import { areArraysEqual, areChatOptionsListEqual } from "./utils";
 import { WebGPUNotFoundError } from "./error";
 
@@ -121,10 +117,7 @@ export async function CreateServiceWorkerMLCEngine(
   chatOpts?: ChatOptions | ChatOptions[],
   keepAliveMs = 10000,
 ): Promise<ServiceWorkerMLCEngine> {
-  const serviceWorkerMLCEngine = new ServiceWorkerMLCEngine(
-    engineConfig,
-    keepAliveMs,
-  );
+  const serviceWorkerMLCEngine = new ServiceWorkerMLCEngine(engineConfig, keepAliveMs);
   await serviceWorkerMLCEngine.reload(modelId, chatOpts);
   return serviceWorkerMLCEngine;
 }

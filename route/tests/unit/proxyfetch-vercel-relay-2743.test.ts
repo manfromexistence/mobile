@@ -55,7 +55,7 @@ test.beforeEach(() => {
 test("buildVercelRelayHeaders splits target into origin + path/query and forwards auth", () => {
   const headers = buildVercelRelayHeaders(
     "https://api.anthropic.com/v1/messages?beta=true",
-    "secret-relay-token"
+    "secret-relay-token",
   );
 
   assert.deepEqual(headers, {
@@ -115,7 +115,7 @@ test("proxyFetch routes a vercel-type context through the relay endpoint with re
     proxyFetch("https://api.anthropic.com/v1/messages?x=1", {
       method: "POST",
       headers: { "x-existing": "keep-me" },
-    })
+    }),
   );
 
   // The canned relay response proves the relay sink (originalFetch) was hit and the
@@ -145,9 +145,9 @@ test("proxyFetch routes a vercel-type context through the relay endpoint with re
 test("proxyFetch throws (without dispatching) when a vercel context is missing relayAuth", async () => {
   await assert.rejects(
     runWithProxyContext({ type: "vercel", host: "relay.vercel.app" }, () =>
-      proxyFetch("https://api.anthropic.com/v1/messages", { method: "POST" })
+      proxyFetch("https://api.anthropic.com/v1/messages", { method: "POST" }),
     ),
-    /Vercel relay configuration error: missing relayAuth/
+    /Vercel relay configuration error: missing relayAuth/,
   );
 
   // Fail-closed: no request was sent to the relay endpoint.

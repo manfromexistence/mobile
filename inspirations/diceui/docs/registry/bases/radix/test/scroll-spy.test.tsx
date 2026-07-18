@@ -148,9 +148,7 @@ describe("ScrollSpy", () => {
     const onValueChange = vi.fn();
     window.scrollTo = vi.fn();
 
-    const { rerender } = render(
-      <ScrollSpyTest value="section1" onValueChange={onValueChange} />,
-    );
+    const { rerender } = render(<ScrollSpyTest value="section1" onValueChange={onValueChange} />);
 
     const links = screen.getAllByRole("link");
     expect(links).toHaveLength(3);
@@ -261,17 +259,13 @@ describe("ScrollSpy", () => {
   it("handles section registration and unregistration", () => {
     const { unmount } = render(<ScrollSpyTest />);
 
-    const sections = document.querySelectorAll(
-      "[data-slot='scroll-spy-section']",
-    );
+    const sections = document.querySelectorAll("[data-slot='scroll-spy-section']");
     expect(sections).toHaveLength(3);
 
     unmount();
 
     // After unmount, observer should be disconnected
-    const sectionsAfter = document.querySelectorAll(
-      "[data-slot='scroll-spy-section']",
-    );
+    const sectionsAfter = document.querySelectorAll("[data-slot='scroll-spy-section']");
     expect(sectionsAfter).toHaveLength(0);
   });
 
@@ -303,9 +297,7 @@ describe("ScrollSpy", () => {
     render(<ScrollSpyTest />);
 
     const sections = screen.getAllByRole("generic").filter((el) => {
-      return (
-        el.hasAttribute("data-slot") && el.dataset.slot === "scroll-spy-section"
-      );
+      return el.hasAttribute("data-slot") && el.dataset.slot === "scroll-spy-section";
     });
 
     sections.forEach((section) => {
@@ -325,12 +317,8 @@ describe("ScrollSpy", () => {
           </ScrollSpyNav>
           <ScrollSpyViewport>
             <ScrollSpySection value="intro">Intro Content</ScrollSpySection>
-            <ScrollSpySection value="introduction">
-              Introduction Content
-            </ScrollSpySection>
-            <ScrollSpySection value="intro-details">
-              Intro Details Content
-            </ScrollSpySection>
+            <ScrollSpySection value="introduction">Introduction Content</ScrollSpySection>
+            <ScrollSpySection value="intro-details">Intro Details Content</ScrollSpySection>
           </ScrollSpyViewport>
         </ScrollSpy>
       );

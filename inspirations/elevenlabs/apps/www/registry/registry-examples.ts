@@ -1,4 +1,4 @@
-import { type Registry } from "shadcn/schema"
+import { type Registry } from "shadcn/schema";
 
 export const examples: Registry["items"] = [
   {
@@ -42,10 +42,7 @@ export const examples: Registry["items"] = [
   {
     name: "live-waveform-demo",
     type: "registry:example",
-    registryDependencies: [
-      "https://ui.elevenlabs.io/r/live-waveform.json",
-      "button",
-    ],
+    registryDependencies: ["https://ui.elevenlabs.io/r/live-waveform.json", "button"],
     files: [
       {
         path: "examples/live-waveform-demo.tsx",
@@ -56,10 +53,7 @@ export const examples: Registry["items"] = [
   {
     name: "bar-visualizer-demo",
     type: "registry:example",
-    registryDependencies: [
-      "https://ui.elevenlabs.io/r/bar-visualizer.json",
-      "button",
-    ],
+    registryDependencies: ["https://ui.elevenlabs.io/r/bar-visualizer.json", "button"],
     files: [
       {
         path: "examples/bar-visualizer-demo.tsx",
@@ -210,11 +204,7 @@ export const examples: Registry["items"] = [
   {
     name: "speech-input-demo",
     type: "registry:example",
-    registryDependencies: [
-      "https://ui.elevenlabs.io/r/speech-input.json",
-      "input",
-      "textarea",
-    ],
+    registryDependencies: ["https://ui.elevenlabs.io/r/speech-input.json", "input", "textarea"],
     files: [
       {
         path: "examples/speech-input-demo.tsx",
@@ -222,4 +212,4 @@ export const examples: Registry["items"] = [
       },
     ],
   },
-]
+];

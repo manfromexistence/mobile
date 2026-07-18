@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { validateProviderApiKey, validateClaudeCodeCompatibleProvider } =
-  await import("../../src/lib/providers/validation.ts");
+const { validateProviderApiKey, validateClaudeCodeCompatibleProvider } = await import(
+  "../../src/lib/providers/validation.ts"
+);
 
 const originalFetch = globalThis.fetch;
 
@@ -80,7 +81,7 @@ test("gemini validation distinguishes non-auth 400 responses from auth failures 
           details: [],
         },
       }),
-      { status: 400 }
+      { status: 400 },
     );
 
   const invalidRequest = await validateProviderApiKey({
@@ -99,7 +100,7 @@ test("gemini validation distinguishes non-auth 400 responses from auth failures 
           status: "UNAVAILABLE",
         },
       }),
-      { status: 503 }
+      { status: 503 },
     );
 
   const unavailable = await validateProviderApiKey({
@@ -181,11 +182,11 @@ test("#2545 gemini validation does not produce /models/models", async () => {
   assert.ok(calls.length > 0, "validator must make a request");
   assert.ok(
     !calls.some((u) => u.includes("/models/models")),
-    `outbound URL must not contain /models/models — got ${calls.join(", ")}`
+    `outbound URL must not contain /models/models — got ${calls.join(", ")}`,
   );
   assert.ok(
     calls.some((u) => /\/v1beta\/models(\?|$)/.test(u)),
-    `outbound URL must hit a single /models segment — got ${calls.join(", ")}`
+    `outbound URL must hit a single /models segment — got ${calls.join(", ")}`,
   );
 });
 
@@ -207,11 +208,11 @@ test("qoder regular API key validates against dashscope, not the Cosy PAT endpoi
   assert.equal(result.valid, true);
   assert.ok(
     calls.some((u) => u.includes("dashscope.aliyuncs.com/compatible-mode/v1/models")),
-    `regular qoder key must validate against dashscope — got ${calls.join(", ")}`
+    `regular qoder key must validate against dashscope — got ${calls.join(", ")}`,
   );
   assert.ok(
     !calls.some((u) => u.includes("api1.qoder.sh")),
-    "regular (non-PAT) key must not hit the Cosy PAT endpoint"
+    "regular (non-PAT) key must not hit the Cosy PAT endpoint",
   );
 });
 

@@ -19,18 +19,17 @@ test("string types: enum, formats, and a plain default", () => {
   assert.equal(generateExampleFromSchema({ type: "string", enum: ["a", "b"] }, NO_COMPONENTS), "a");
   assert.equal(
     generateExampleFromSchema({ type: "string", format: "date-time" }, NO_COMPONENTS),
-    "2024-01-01T00:00:00Z"
+    "2024-01-01T00:00:00Z",
   );
   assert.equal(
     generateExampleFromSchema({ type: "string", format: "email" }, NO_COMPONENTS),
-    "user@example.com"
+    "user@example.com",
   );
   assert.equal(generateExampleFromSchema({ type: "string" }, NO_COMPONENTS), "string");
 });
 
 test("string property-name heuristics produce realistic values", () => {
-  const s = (name: string) =>
-    generateExampleFromSchema({ type: "string" }, NO_COMPONENTS, 0, name);
+  const s = (name: string) => generateExampleFromSchema({ type: "string" }, NO_COMPONENTS, 0, name);
   assert.equal(s("model"), "openai/gpt-4o");
   assert.equal(s("prompt"), "Write a function to sort an array");
   assert.equal(s("system"), "You are a concise, helpful assistant.");
@@ -48,7 +47,7 @@ test("number / integer / boolean defaults", () => {
 test("arrays wrap a single generated item", () => {
   assert.deepEqual(
     generateExampleFromSchema({ type: "array", items: { type: "string" } }, NO_COMPONENTS),
-    ["string"]
+    ["string"],
   );
 });
 
@@ -72,15 +71,20 @@ test("objects include all required + only the first 3 optional properties", () =
 
 test("resolves $ref against components and merges allOf", () => {
   const components = { Msg: { type: "object", properties: { role: { type: "string" } } } };
-  const refOut = generateExampleFromSchema({ $ref: "#/components/schemas/Msg" }, components) as Record<
-    string,
-    unknown
-  >;
+  const refOut = generateExampleFromSchema(
+    { $ref: "#/components/schemas/Msg" },
+    components,
+  ) as Record<string, unknown>;
   assert.equal(refOut.role, "string");
 
   const allOfOut = generateExampleFromSchema(
-    { allOf: [{ type: "object", properties: { x: { type: "boolean" } } }, { $ref: "#/components/schemas/Msg" }] },
-    components
+    {
+      allOf: [
+        { type: "object", properties: { x: { type: "boolean" } } },
+        { $ref: "#/components/schemas/Msg" },
+      ],
+    },
+    components,
   ) as Record<string, unknown>;
   assert.equal(allOfOut.x, false);
   assert.equal(allOfOut.role, "string");
@@ -89,11 +93,11 @@ test("resolves $ref against components and merges allOf", () => {
 test("oneOf / anyOf pick the first branch", () => {
   assert.equal(
     generateExampleFromSchema({ oneOf: [{ type: "string" }, { type: "number" }] }, NO_COMPONENTS),
-    "string"
+    "string",
   );
   assert.equal(
     generateExampleFromSchema({ anyOf: [{ type: "integer", minimum: 5 }] }, NO_COMPONENTS),
-    5
+    5,
   );
 });
 

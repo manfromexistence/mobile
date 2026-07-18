@@ -1,9 +1,7 @@
 {
   "name": "timeline-custom-dot-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "timeline"
-  ],
+  "registryDependencies": ["timeline"],
   "files": [
     {
       "path": "examples/timeline-custom-dot-demo.tsx",

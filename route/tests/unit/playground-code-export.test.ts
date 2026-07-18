@@ -93,9 +93,7 @@ test("chat.completions: uses systemPrompt when messages is empty", () => {
 test("chat.completions: uses messages when provided", () => {
   const state = {
     ...baseState,
-    messages: [
-      { role: "user" as const, content: "My custom message" },
-    ],
+    messages: [{ role: "user" as const, content: "My custom message" }],
   };
   for (const lang of ["curl", "python", "typescript"] as const) {
     const generated = exportCode(state, lang);
@@ -321,7 +319,10 @@ test("chat.completions: defaults model when not provided", () => {
     // default prompt "Hello!" should appear (no messages, no systemPrompt, no prompt)
     assert.ok(generated.includes("Hello!"), `${lang}: default prompt fallback`);
     // default stream=false
-    assert.ok(generated.includes("false") || generated.includes("stream"), `${lang}: stream default`);
+    assert.ok(
+      generated.includes("false") || generated.includes("stream"),
+      `${lang}: stream default`,
+    );
   }
 });
 

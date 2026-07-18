@@ -8,11 +8,9 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-const {
-  TOKEN_EXTRACTION_CONFIGS,
-  getExtractionConfig,
-  listExtractionConfigs,
-} = await import("../../open-sse/services/tokenExtractionConfig.ts");
+const { TOKEN_EXTRACTION_CONFIGS, getExtractionConfig, listExtractionConfigs } = await import(
+  "../../open-sse/services/tokenExtractionConfig.ts"
+);
 
 describe("tokenExtractionConfig", () => {
   it("exports TOKEN_EXTRACTION_CONFIGS as a Map", () => {
@@ -31,11 +29,11 @@ describe("tokenExtractionConfig", () => {
       assert.ok(cfg.displayName.length > 0, `${providerId}: empty displayName`);
       assert.ok(
         cfg.loginUrl.startsWith("http"),
-        `${providerId}: loginUrl "${cfg.loginUrl}" must start with http`
+        `${providerId}: loginUrl "${cfg.loginUrl}" must start with http`,
       );
       assert.ok(
         cfg.homeUrl.startsWith("http"),
-        `${providerId}: homeUrl "${cfg.homeUrl}" must start with http`
+        `${providerId}: homeUrl "${cfg.homeUrl}" must start with http`,
       );
       assert.ok(Array.isArray(cfg.tokenSources), `${providerId}: tokenSources must be an array`);
       assert.ok(cfg.tokenSources.length > 0, `${providerId}: must have at least one tokenSource`);
@@ -50,7 +48,7 @@ describe("tokenExtractionConfig", () => {
       for (const src of cfg.tokenSources) {
         assert.ok(
           validTypes.includes(src.type),
-          `${providerId}: invalid tokenSource type "${src.type}"`
+          `${providerId}: invalid tokenSource type "${src.type}"`,
         );
         if (src.type === "cookie") {
           assert.ok(typeof src.name === "string", `${providerId}: cookie source missing name`);
@@ -84,7 +82,7 @@ describe("tokenExtractionConfig", () => {
       assert.equal(
         loginRoot,
         homeRoot,
-        `${providerId}: loginUrl (${cfg.loginUrl}) and homeUrl (${cfg.homeUrl}) should share the same root domain`
+        `${providerId}: loginUrl (${cfg.loginUrl}) and homeUrl (${cfg.homeUrl}) should share the same root domain`,
       );
     }
   });
@@ -121,7 +119,7 @@ describe("tokenExtractionConfig", () => {
     for (const providerId of TOKEN_EXTRACTION_CONFIGS.keys()) {
       assert.ok(
         providerId.endsWith("-web"),
-        `Provider ID "${providerId}" should follow the "-web" naming convention`
+        `Provider ID "${providerId}" should follow the "-web" naming convention`,
       );
     }
   });
@@ -132,7 +130,7 @@ describe("tokenExtractionConfig", () => {
         if (src.type === "cookie" && src.domain) {
           assert.ok(
             src.domain.startsWith(".") || src.domain.startsWith("http"),
-            `${providerId}: cookie domain "${src.domain}" should start with "." or "http"`
+            `${providerId}: cookie domain "${src.domain}" should start with "." or "http"`,
           );
         }
       }
@@ -143,15 +141,15 @@ describe("tokenExtractionConfig", () => {
     for (const [providerId, cfg] of TOKEN_EXTRACTION_CONFIGS) {
       assert.ok(
         cfg.pollingConfig.pollInterval >= 100,
-        `${providerId}: pollInterval too low (${cfg.pollingConfig.pollInterval})`
+        `${providerId}: pollInterval too low (${cfg.pollingConfig.pollInterval})`,
       );
       assert.ok(
         cfg.pollingConfig.timeout >= 10000,
-        `${providerId}: timeout too low (${cfg.pollingConfig.timeout})`
+        `${providerId}: timeout too low (${cfg.pollingConfig.timeout})`,
       );
       assert.ok(
         cfg.pollingConfig.minLoginTime >= 1000,
-        `${providerId}: minLoginTime too low (${cfg.pollingConfig.minLoginTime})`
+        `${providerId}: minLoginTime too low (${cfg.pollingConfig.minLoginTime})`,
       );
     }
   });

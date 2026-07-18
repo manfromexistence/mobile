@@ -6,5 +6,5 @@ import NotFound from "@/components/NotFound";
  * All UI lives in the client component so it can drive motion.
  */
 export default function NotFoundPage() {
-	return <NotFound />;
+  return <NotFound />;
 }

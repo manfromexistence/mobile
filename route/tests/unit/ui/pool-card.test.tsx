@@ -13,7 +13,9 @@ vi.mock("next/dynamic", () => ({
 }));
 
 vi.mock("@/shared/components/Card", () => ({
-  default: ({ children }: { children: React.ReactNode }) => <div data-testid="card">{children}</div>,
+  default: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="card">{children}</div>
+  ),
 }));
 
 vi.mock("@/shared/components/ProviderIcon", () => ({
@@ -23,24 +25,25 @@ vi.mock("@/shared/components/ProviderIcon", () => ({
 }));
 
 // Stub sub-components
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/costs/quota-share/components/DimensionBar",
-  () => ({ default: ({ dimension }: { dimension: { unit: string } }) => <div data-testid="dim-bar">{dimension.unit}</div> })
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/costs/quota-share/components/DimensionBar", () => ({
+  default: ({ dimension }: { dimension: { unit: string } }) => (
+    <div data-testid="dim-bar">{dimension.unit}</div>
+  ),
+}));
 vi.mock(
   "../../../src/app/(dashboard)/dashboard/costs/quota-share/components/AllocationTable",
-  () => ({ default: () => <div data-testid="alloc-table" /> })
+  () => ({ default: () => <div data-testid="alloc-table" /> }),
 );
 vi.mock(
   "../../../src/app/(dashboard)/dashboard/costs/quota-share/components/BurnRateChart",
-  () => ({ default: () => <div data-testid="burn-rate-chart" /> })
+  () => ({ default: () => <div data-testid="burn-rate-chart" /> }),
 );
 vi.mock(
   "../../../src/app/(dashboard)/dashboard/costs/quota-share/components/StackedAllocationBar",
   () => ({
     default: ({ allocations }: { allocations: Array<unknown> }) =>
       allocations.length > 0 ? <div data-testid="stacked-alloc-bar" /> : null,
-  })
+  }),
 );
 
 const { default: PoolCard } = await import(
@@ -59,8 +62,9 @@ let container: HTMLDivElement | null = null;
 let root: ReturnType<typeof createRoot> | null = null;
 
 async function renderCard(usage = null as null | object) {
-  (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-    true;
+  (
+    globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+  ).IS_REACT_ACT_ENVIRONMENT = true;
   container = document.createElement("div");
   document.body.appendChild(container);
   await act(async () => {
@@ -74,7 +78,7 @@ async function renderCard(usage = null as null | object) {
         provider="openai"
         onEdit={vi.fn()}
         onRemove={vi.fn()}
-      />
+      />,
     );
   });
 }
@@ -106,7 +110,9 @@ describe("PoolCard", { timeout: 10000 }, () => {
 
   it("renders DimensionBar when usage has dimensions", async () => {
     const usage = {
-      dimensions: [{ unit: "tokens", window: "daily", limit: 1000, consumedTotal: 500, perKey: [] }],
+      dimensions: [
+        { unit: "tokens", window: "daily", limit: 1000, consumedTotal: 500, perKey: [] },
+      ],
       burnRate: null,
     };
     await renderCard(usage);
@@ -115,7 +121,9 @@ describe("PoolCard", { timeout: 10000 }, () => {
 
   it("renders BurnRateChart when usage is non-null", async () => {
     const usage = {
-      dimensions: [{ unit: "tokens", window: "daily", limit: 1000, consumedTotal: 200, perKey: [] }],
+      dimensions: [
+        { unit: "tokens", window: "daily", limit: 1000, consumedTotal: 200, perKey: [] },
+      ],
       burnRate: null,
     };
     await renderCard(usage);
@@ -142,7 +150,7 @@ describe("PoolCard", { timeout: 10000 }, () => {
           provider="openai"
           onEdit={onEdit}
           onRemove={vi.fn()}
-        />
+        />,
       );
     });
     const editBtn = document.querySelector("button[title='editAllocations']") as HTMLButtonElement;

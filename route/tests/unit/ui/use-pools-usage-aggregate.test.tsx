@@ -45,8 +45,9 @@ function TestComponent({
 }
 
 async function renderHook(pools: { id: string; allocations: unknown[] }[]) {
-  (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-    true;
+  (
+    globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+  ).IS_REACT_ACT_ENVIRONMENT = true;
   container = document.createElement("div");
   document.body.appendChild(container);
   capturedState = null;
@@ -58,7 +59,7 @@ async function renderHook(pools: { id: string; allocations: unknown[] }[]) {
         onState={(s) => {
           capturedState = s;
         }}
-      />
+      />,
     );
   });
 }

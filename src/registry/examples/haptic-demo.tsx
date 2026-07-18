@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import Image from "next/image"
+import Image from "next/image";
 
-import { Button } from "@/components/ui/button"
-import { haptic } from "@/registry/lib/haptic"
+import { Button } from "@/components/ui/button";
+import { haptic } from "@/registry/lib/haptic";
 
 export default function HapticDemo() {
   return (
@@ -12,7 +12,7 @@ export default function HapticDemo() {
 
       <ScanToTryOnMobile />
     </div>
-  )
+  );
 }
 
 function ScanToTryOnMobile() {
@@ -34,5 +34,5 @@ function ScanToTryOnMobile() {
         unoptimized
       />
     </div>
-  )
+  );
 }

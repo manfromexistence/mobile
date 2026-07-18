@@ -81,7 +81,7 @@ test("synced pricing round-trips through SQLite and skips corrupted rows", () =>
   const db = core.getDbInstance();
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES ('pricing_synced', ?, ?)").run(
     "broken-provider",
-    "{"
+    "{",
   );
 
   const warnings = [];

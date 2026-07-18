@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/Lightfall/Lightfall.jsx?raw';
-import css from '@content/Backgrounds/Lightfall/Lightfall.css?raw';
-import tailwind from '@tailwind/Backgrounds/Lightfall/Lightfall.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/Lightfall/Lightfall.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/Lightfall/Lightfall.tsx?raw';
+import code from "@content/Backgrounds/Lightfall/Lightfall.jsx?raw";
+import css from "@content/Backgrounds/Lightfall/Lightfall.css?raw";
+import tailwind from "@tailwind/Backgrounds/Lightfall/Lightfall.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/Lightfall/Lightfall.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/Lightfall/Lightfall.tsx?raw";
 
 export const lightfall = {
   dependencies: `ogl`,
@@ -31,5 +31,5 @@ export const lightfall = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

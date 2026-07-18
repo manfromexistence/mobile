@@ -14,8 +14,9 @@ const {
   tryParseJSON,
 } = await import("../../open-sse/translator/helpers/geminiHelper.ts");
 const { ANTIGRAVITY_DEFAULT_SYSTEM } = await import("../../open-sse/config/constants.ts");
-const { clearGeminiThoughtSignatures } =
-  await import("../../open-sse/services/geminiThoughtSignatureStore.ts");
+const { clearGeminiThoughtSignatures } = await import(
+  "../../open-sse/services/geminiThoughtSignatureStore.ts"
+);
 
 type UnknownRecord = Record<string, unknown>;
 type GeminiRequestWithConfig = { generationConfig: UnknownRecord };
@@ -37,7 +38,7 @@ function getFunctionResponse(part: unknown) {
   const functionResponse = (part as UnknownRecord).functionResponse;
   assert.ok(
     functionResponse && typeof functionResponse === "object",
-    "expected functionResponse payload"
+    "expected functionResponse payload",
   );
   return functionResponse as { id?: string; name: string; response?: unknown };
 }
@@ -45,7 +46,7 @@ function getFunctionResponse(part: unknown) {
 function getFunctionDeclarationParameters(parameters: unknown) {
   assert.ok(
     parameters && typeof parameters === "object",
-    "expected function declaration parameters"
+    "expected function declaration parameters",
   );
   return parameters as UnknownRecord & {
     properties?: Record<string, UnknownRecord>;
@@ -82,21 +83,21 @@ test("OpenAI -> Gemini does not inject default maxOutputTokens for unknown caps"
   const withoutRequestLimit = openaiToGeminiRequest(
     "gemini-2.5-pro",
     { messages: [{ role: "user", content: "Hello" }] },
-    false
+    false,
   );
   assert.equal(
     (withoutRequestLimit as GeminiRequestWithConfig).generationConfig.maxOutputTokens,
-    undefined
+    undefined,
   );
 
   const withRequestLimit = openaiToGeminiRequest(
     "gemini-2.5-pro",
     { messages: [{ role: "user", content: "Hello" }], max_tokens: 32000 },
-    false
+    false,
   );
   assert.equal(
     (withRequestLimit as GeminiRequestWithConfig).generationConfig.maxOutputTokens,
-    32000
+    32000,
   );
 });
 
@@ -258,7 +259,7 @@ test("OpenAI -> Gemini request maps messages, merged system instructions, tools 
         },
       },
     },
-    false
+    false,
   );
 
   const systemInstruction = (result as GeminiRequestWithSystem).systemInstruction;
@@ -271,7 +272,7 @@ test("OpenAI -> Gemini request maps messages, merged system instructions, tools 
   ]);
 
   const modelTurn = result.contents.find(
-    (content) => content.role === "model" && content.parts.some((part) => part.functionCall)
+    (content) => content.role === "model" && content.parts.some((part) => part.functionCall),
   );
   assert.ok(modelTurn, "expected a model turn with functionCall");
   const modelTurnThought = modelTurn.parts[0] as { thought?: boolean; text?: string };
@@ -283,7 +284,7 @@ test("OpenAI -> Gemini request maps messages, merged system instructions, tools 
   assert.deepEqual(modelTurnFunctionCall.args, { city: "Tokyo" });
 
   const toolResponseTurn = result.contents.find(
-    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse)
+    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse),
   );
   assert.ok(toolResponseTurn, "expected a tool response turn");
   assert.deepEqual(getFunctionResponse(toolResponseTurn.parts[0]), {
@@ -304,7 +305,7 @@ test("OpenAI -> Gemini request maps messages, merged system instructions, tools 
   assert.equal(responseSchema.properties.answer.type, "string");
   assert.deepEqual(responseSchema.properties.answer.enum, ["ok"]);
   const parameters = getFunctionDeclarationParameters(
-    (result as any).tools[0].functionDeclarations[0].parameters
+    (result as any).tools[0].functionDeclarations[0].parameters,
   );
   assert.deepEqual(parameters, {
     type: "object",
@@ -325,7 +326,7 @@ test("OpenAI -> Gemini request preserves custom safety settings and handles syst
       messages: [{ role: "system", content: "Only rules" }],
       safetySettings: customSafety,
     },
-    false
+    false,
   );
 
   assert.deepEqual(result.safetySettings, customSafety);
@@ -368,7 +369,7 @@ test("OpenAI -> Cloud Code Gemini adds thinking config and normalizes namespaced
       ],
       reasoning_effort: "high",
     },
-    false
+    false,
   );
 
   assert.equal((result as any).generationConfig.thinkingConfig.includeThoughts, true);
@@ -381,7 +382,7 @@ test("OpenAI -> Cloud Code Gemini adds thinking config and normalizes namespaced
   assert.equal(getFunctionCall(modelTurn.parts[0]).name, "weather");
 
   const responseTurn = result.contents.find(
-    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse)
+    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse),
   );
   assert.ok(responseTurn, "expected a function response turn");
   assert.equal(getFunctionResponse(responseTurn.parts[0]).name, "weather");
@@ -431,7 +432,7 @@ test("OpenAI -> Gemini request sanitizes long MCP tool names and strips unsuppor
         },
       ],
     },
-    false
+    false,
   );
 
   const sanitizedToolName = (result as any).tools[0].functionDeclarations[0].name;
@@ -445,12 +446,12 @@ test("OpenAI -> Gemini request sanitizes long MCP tool names and strips unsuppor
   assert.equal(getFunctionCall(modelTurn.parts[0]).name, sanitizedToolName);
 
   const toolTurn = result.contents.find(
-    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse)
+    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse),
   );
   assert.ok(toolTurn, "expected a tool response turn");
   assert.equal(getFunctionResponse(toolTurn.parts[0]).name, sanitizedToolName);
   const longToolParameters = getFunctionDeclarationParameters(
-    (result as any).tools[0].functionDeclarations[0].parameters
+    (result as any).tools[0].functionDeclarations[0].parameters,
   ) as UnknownRecord & {
     properties?: {
       paths?: {
@@ -480,7 +481,7 @@ test("OpenAI -> Gemini request gives googleSearch precedence over function tools
         { type: "web_search" },
       ],
     },
-    false
+    false,
   );
 
   assert.deepEqual((result as any).tools, [{ googleSearch: {} }]);
@@ -503,7 +504,7 @@ test("OpenAI -> Antigravity keeps googleSearch without function calling config",
       ],
     },
     false,
-    { projectId: "proj-search" } as any
+    { projectId: "proj-search" } as any,
   );
 
   assert.deepEqual((result as any).request?.tools, [{ googleSearch: {} }]);
@@ -528,7 +529,7 @@ test("OpenAI -> Cloud Code Gemini applies native request defaults", () => {
       messages: [{ role: "user", content: "Hello" }],
       reasoning_effort: "high",
     },
-    true
+    true,
   ) as any;
 
   assert.equal(request.model, "gemini-3.1-pro");
@@ -537,8 +538,10 @@ test("OpenAI -> Cloud Code Gemini applies native request defaults", () => {
   const flash = openaiToCloudCodeGeminiRequest(
     "gemini-3-flash-preview",
     { messages: [{ role: "user", content: "Hello" }], reasoning_effort: "high" },
-    true
-  ) as { generationConfig: { thinkingConfig: { thinkingBudget: number; includeThoughts: boolean } } };
+    true,
+  ) as {
+    generationConfig: { thinkingConfig: { thinkingBudget: number; includeThoughts: boolean } };
+  };
   assert.equal(flash.generationConfig.thinkingConfig.thinkingBudget, 0);
   assert.equal(flash.generationConfig.thinkingConfig.includeThoughts, false);
   assert.equal(request.generationConfig.topK, undefined);
@@ -568,11 +571,11 @@ test("OpenAI -> Cloud Code Gemini emits native functionResponse result", () => {
         },
       ],
     },
-    true
+    true,
   ) as any;
 
   const toolTurn = request.contents.find(
-    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse)
+    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse),
   );
   assert.ok(toolTurn, "expected Cloud Code Gemini tool response turn");
   assert.deepEqual(getFunctionResponse(toolTurn.parts[0]), {
@@ -599,7 +602,7 @@ test("OpenAI -> Antigravity wraps Gemini requests in a Cloud Code envelope", () 
       reasoning_effort: "medium",
     },
     false,
-    { projectId: "proj-1" } as any
+    { projectId: "proj-1" } as any,
   );
 
   assert.equal(result.project, "proj-1");
@@ -621,7 +624,7 @@ test("OpenAI -> Antigravity wraps Gemini requests in a Cloud Code envelope", () 
   assert.equal(result.request.generationConfig.topP, 1.0);
   assert.equal(
     (result as any).request?.systemInstruction.parts[0].text,
-    ANTIGRAVITY_DEFAULT_SYSTEM
+    ANTIGRAVITY_DEFAULT_SYSTEM,
   );
   assert.deepEqual(result.request.toolConfig, {
     functionCallingConfig: { mode: "VALIDATED" },
@@ -661,7 +664,7 @@ test("OpenAI -> Antigravity Gemini omits signature-less historical tool calls an
       ],
     },
     false,
-    { projectId: "proj-antigravity-gemini" } as any
+    { projectId: "proj-antigravity-gemini" } as any,
   );
 
   const modelTurn = result.request.contents.find((content) => content.role === "model");
@@ -669,41 +672,41 @@ test("OpenAI -> Antigravity Gemini omits signature-less historical tool calls an
     !modelTurn ||
       !modelTurn.parts.some(
         (part) =>
-          typeof part.text === "string" && part.text.includes("Historical tool-call record only")
+          typeof part.text === "string" && part.text.includes("Historical tool-call record only"),
       ),
-    "signature-less historical call must not be emitted as visible historical text"
+    "signature-less historical call must not be emitted as visible historical text",
   );
   assert.equal(
     modelTurn?.parts.some(
-      (part) => typeof part.text === "string" && part.text.includes("[Tool call:")
+      (part) => typeof part.text === "string" && part.text.includes("[Tool call:"),
     ) ?? false,
     false,
-    "signature-less historical call must not use executable textual tool-call markers"
+    "signature-less historical call must not use executable textual tool-call markers",
   );
   // With skip_thought_signature_validator bypass, functionCall IS emitted natively
   assert.equal(
     modelTurn?.parts.some((part) => part.functionCall) ?? false,
     true,
-    "signature-less historical call MUST be emitted as native functionCall (bypass applied)"
+    "signature-less historical call MUST be emitted as native functionCall (bypass applied)",
   );
   assert.equal(
     modelTurn?.parts.some((part) => part.thoughtSignature === "skip_thought_signature_validator") ??
       false,
     true,
-    "the bypass sentinel must be injected as thoughtSignature"
+    "the bypass sentinel must be injected as thoughtSignature",
   );
 
   const toolTurn = result.request.contents.find(
-    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse)
+    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse),
   );
   assert.ok(
     toolTurn,
-    "expected signature-less tool response to be preserved as native functionResponse (bypass applied)"
+    "expected signature-less tool response to be preserved as native functionResponse (bypass applied)",
   );
   assert.equal(
     toolTurn.parts.some((part) => part.functionResponse),
     true,
-    "signature-less historical response MUST be emitted as native functionResponse (bypass applied)"
+    "signature-less historical response MUST be emitted as native functionResponse (bypass applied)",
   );
 });
 
@@ -742,29 +745,30 @@ test("OpenAI -> Antigravity preserves multiple signature-less historical tool re
       ],
     },
     false,
-    { projectId: "proj-antigravity-gemini" } as any
+    { projectId: "proj-antigravity-gemini" } as any,
   );
 
   // With skip_thought_signature_validator bypass: native functionCall + functionResponse expected
   const modelTurn = result.request.contents.find(
-    (c) => c.role === "model" && c.parts.some((p) => p.functionCall)
+    (c) => c.role === "model" && c.parts.some((p) => p.functionCall),
   );
   assert.ok(modelTurn, "expected native functionCall turns");
   assert.equal(
     modelTurn.parts.filter((p) => p.functionCall).length,
     2,
-    "expected 2 functionCall parts"
+    "expected 2 functionCall parts",
   );
   assert.equal(
     result.request.contents.some((c) => c.parts.some((p) => p.functionResponse)),
     true,
-    "signature-less historical responses MUST be emitted as native functionResponse (bypass applied)"
+    "signature-less historical responses MUST be emitted as native functionResponse (bypass applied)",
   );
 });
 
 test("OpenAI -> Antigravity preserves signed Gemini tool calls in native form", async () => {
-  const { buildGeminiThoughtSignatureKey, storeGeminiThoughtSignature } =
-    await import("../../open-sse/services/geminiThoughtSignatureStore.ts");
+  const { buildGeminiThoughtSignatureKey, storeGeminiThoughtSignature } = await import(
+    "../../open-sse/services/geminiThoughtSignatureStore.ts"
+  );
   const ns = "conn-antigravity-signed";
   const toolId = "call_signed_history";
   storeGeminiThoughtSignature(buildGeminiThoughtSignatureKey(ns, toolId), "SIG_AG_SIGNED_XYZ");
@@ -788,7 +792,7 @@ test("OpenAI -> Antigravity preserves signed Gemini tool calls in native form", 
       ],
     },
     false,
-    { projectId: "proj-antigravity-gemini", _signatureNamespace: ns } as any
+    { projectId: "proj-antigravity-gemini", _signatureNamespace: ns } as any,
   );
 
   const text = JSON.stringify(result.request.contents);
@@ -796,15 +800,15 @@ test("OpenAI -> Antigravity preserves signed Gemini tool calls in native form", 
   assert.equal(
     text.includes("previous_tool_result_context"),
     false,
-    "signed tool calls must stay native, not context text"
+    "signed tool calls must stay native, not context text",
   );
   assert.ok(
     result.request.contents.some((content) => content.parts.some((part) => part.functionCall)),
-    "signed historical call must be emitted as native functionCall"
+    "signed historical call must be emitted as native functionCall",
   );
   assert.ok(
     result.request.contents.some((content) => content.parts.some((part) => part.functionResponse)),
-    "signed historical response must be emitted as native functionResponse"
+    "signed historical response must be emitted as native functionResponse",
   );
 });
 
@@ -832,13 +836,13 @@ test("OpenAI -> Antigravity escapes signature-less tool response context content
       ],
     },
     false,
-    { projectId: "proj-antigravity-gemini" } as any
+    { projectId: "proj-antigravity-gemini" } as any,
   );
 
   // With skip_thought_signature_validator bypass: native functionResponse is emitted
   // The legacy XML escaping is no longer needed since we send native functionResponse
   const toolResponseTurn = result.request.contents.find(
-    (c) => c.role === "user" && c.parts.some((p) => p.functionResponse)
+    (c) => c.role === "user" && c.parts.some((p) => p.functionResponse),
   );
   assert.ok(toolResponseTurn, "expected native functionResponse turn");
 });
@@ -881,7 +885,7 @@ test("OpenAI -> Antigravity maps Claude-family models to Gemini-compatible schem
       ],
     },
     false,
-    { projectId: "proj-claude" } as any
+    { projectId: "proj-claude" } as any,
   );
 
   assert.equal(result.project, "proj-claude");
@@ -897,7 +901,7 @@ test("OpenAI -> Antigravity maps Claude-family models to Gemini-compatible schem
   assert.equal((result as any).request?.stream, undefined);
 
   const modelTurn = result.request.contents.find(
-    (content) => content.role === "model" && content.parts.some((part) => part.functionCall)
+    (content) => content.role === "model" && content.parts.some((part) => part.functionCall),
   );
   assert.ok(modelTurn, "expected a Gemini-compatible model turn");
   const bridgeFunctionCall = getFunctionCall(modelTurn.parts[0]);
@@ -905,7 +909,7 @@ test("OpenAI -> Antigravity maps Claude-family models to Gemini-compatible schem
   assert.deepEqual(bridgeFunctionCall.args, { path: "/tmp/demo" });
 
   const toolTurn = result.request.contents.find(
-    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse)
+    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse),
   );
   assert.ok(toolTurn, "expected a Gemini-compatible tool response turn");
   const toolResultBlock = getFunctionResponse(toolTurn.parts[0]);
@@ -952,25 +956,25 @@ test("OpenAI -> Antigravity Claude path sanitizes tool names for Gemini schema",
       ],
     },
     false,
-    { projectId: "proj-claude-map" } as any
+    { projectId: "proj-claude-map" } as any,
   );
 
   const sanitizedToolName = (result as any).request?.tools[0].functionDeclarations[0].name;
   assert.notEqual(sanitizedToolName, longToolName);
   assert.match(
     sanitizedToolName,
-    /^mcp_filesystem_read_multiple_files_with_validation_and__\w{8}$/
+    /^mcp_filesystem_read_multiple_files_with_validation_and__\w{8}$/,
   );
 
   const modelTurn = result.request.contents.find(
-    (content) => content.role === "model" && content.parts.some((part) => part.functionCall)
+    (content) => content.role === "model" && content.parts.some((part) => part.functionCall),
   );
   assert.ok(modelTurn, "expected a model turn");
   const toolUseBlock = getFunctionCall(modelTurn.parts[0]);
   assert.equal(toolUseBlock.name, sanitizedToolName);
 
   const toolTurn = result.request.contents.find(
-    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse)
+    (content) => content.role === "user" && content.parts.some((part) => part.functionResponse),
   );
   assert.ok(toolTurn, "expected a tool response turn");
   const toolResultBlock = getFunctionResponse(toolTurn.parts[0]);
@@ -992,7 +996,7 @@ test("OpenAI -> Antigravity Claude path applies output cap and strips thinkingCo
       reasoning_effort: "high",
     },
     false,
-    { projectId: "proj-claude-thinking" } as any
+    { projectId: "proj-claude-thinking" } as any,
   );
 
   assert.equal((result as any).request?.generationConfig.maxOutputTokens, 32769);
@@ -1012,7 +1016,7 @@ test("OpenAI -> Antigravity Claude path preserves lower requested output and str
       reasoning_effort: "high",
     },
     false,
-    { projectId: "proj-claude-short" } as any
+    { projectId: "proj-claude-short" } as any,
   );
 
   assert.equal((result as any).request?.generationConfig.maxOutputTokens, 32769);
@@ -1033,14 +1037,14 @@ test("OpenAI -> Antigravity Gemini path preserves thinkingConfig (only Claude is
       reasoning_effort: "high",
     },
     false,
-    { projectId: "proj-gemini-thinking" } as any
+    { projectId: "proj-gemini-thinking" } as any,
   );
 
   // For Gemini, thinkingConfig must remain in place because the Cloud Code
   // Gemini endpoint understands and uses it.
   assert.ok(
     (result as any).request?.generationConfig.thinkingConfig,
-    "thinkingConfig must be preserved for Gemini models on Antigravity"
+    "thinkingConfig must be preserved for Gemini models on Antigravity",
   );
   assert.equal((result as any).request?.generationConfig.thinkingConfig.thinkingBudget > 0, true);
   assert.equal((result as any).request?.generationConfig.thinkingConfig.includeThoughts, true);
@@ -1054,7 +1058,7 @@ test("openaiToAntigravityRequest falls back to providerSpecificData.projectId (#
     "gemini-3.1-flash-lite",
     { messages: [{ role: "user", content: "Hello" }] },
     false,
-    { providerSpecificData: { projectId: "proj-from-psd" } } as any
+    { providerSpecificData: { projectId: "proj-from-psd" } } as any,
   );
   assert.equal(result.project, "proj-from-psd");
 });
@@ -1064,7 +1068,7 @@ test("openaiToAntigravityRequest prefers top-level projectId over providerSpecif
     "gemini-3.1-flash-lite",
     { messages: [{ role: "user", content: "Hello" }] },
     false,
-    { projectId: "proj-top", providerSpecificData: { projectId: "proj-psd" } } as any
+    { projectId: "proj-top", providerSpecificData: { projectId: "proj-psd" } } as any,
   );
   assert.equal(result.project, "proj-top");
 });
@@ -1098,7 +1102,7 @@ test("convertOpenAIContentToParts handles rec.image with nested {url} as base64 
   const inline = parts.find((p) => (p as any).inlineData);
   assert.ok(
     inline,
-    "rec.image with nested {url} must produce an inlineData part (was previously silently dropped)"
+    "rec.image with nested {url} must produce an inlineData part (was previously silently dropped)",
   );
   assert.equal((inline as any).inlineData.data, "iVBORw0KGgo=");
   assert.equal((inline as any).inlineData.mimeType, "image/png");
@@ -1114,7 +1118,7 @@ test("convertOpenAIContentToParts passes remote http(s) image_url URLs through a
   assert.equal(
     parts.find((p) => (p as any).inlineData),
     undefined,
-    "remote URL is not base64-inlined (sync function)"
+    "remote URL is not base64-inlined (sync function)",
   );
   assert.deepEqual(parts, [
     { fileData: { fileUri: "https://example.com/cat.png", mimeType: "image/*" } },
@@ -1131,7 +1135,7 @@ test("convertOpenAIContentToParts passes remote rec.image http(s) URLs through a
   assert.equal(
     parts.find((p) => (p as any).inlineData),
     undefined,
-    "rec.image remote URL is not base64-inlined (sync function cannot fetch)"
+    "rec.image remote URL is not base64-inlined (sync function cannot fetch)",
   );
   assert.deepEqual(parts, [
     { fileData: { fileUri: "https://example.com/remote.png", mimeType: "image/*" } },
@@ -1141,8 +1145,9 @@ test("convertOpenAIContentToParts passes remote rec.image http(s) URLs through a
 // Regression for #2504: with credentials._signatureNamespace set, a previously-cached
 // Gemini thoughtSignature must be re-attached to the functionCall on the follow-up turn.
 test("openaiToGeminiRequest re-attaches cached thoughtSignature for FORMATS.GEMINI (#2504)", async () => {
-  const { buildGeminiThoughtSignatureKey, storeGeminiThoughtSignature } =
-    await import("../../open-sse/services/geminiThoughtSignatureStore.ts");
+  const { buildGeminiThoughtSignatureKey, storeGeminiThoughtSignature } = await import(
+    "../../open-sse/services/geminiThoughtSignatureStore.ts"
+  );
   const ns = "conn-2504";
   const toolId = "call_2504_abc";
   storeGeminiThoughtSignature(buildGeminiThoughtSignatureKey(ns, toolId), "SIG_2504_XYZ");
@@ -1162,13 +1167,13 @@ test("openaiToGeminiRequest re-attaches cached thoughtSignature for FORMATS.GEMI
       ],
     },
     false,
-    { _signatureNamespace: ns }
+    { _signatureNamespace: ns },
   );
 
   const json = JSON.stringify(result);
   assert.ok(
     json.includes("SIG_2504_XYZ"),
-    "cached thoughtSignature must be re-attached to the functionCall"
+    "cached thoughtSignature must be re-attached to the functionCall",
   );
 });
 test("OpenAI -> Gemini request maps reasoning_effort to thinkingConfig", () => {
@@ -1178,7 +1183,7 @@ test("OpenAI -> Gemini request maps reasoning_effort to thinkingConfig", () => {
       messages: [{ role: "user", content: "Solve this complex puzzle" }],
       reasoning_effort: "high",
     },
-    false
+    false,
   );
 
   assert.ok((result as any).generationConfig.thinkingConfig, "expected thinkingConfig");
@@ -1199,7 +1204,7 @@ test("OpenAI -> Gemini reasoning_effort=high stays within gemini-2.5-flash cap (
       messages: [{ role: "user", content: "Solve this complex puzzle" }],
       reasoning_effort: "high",
     },
-    false
+    false,
   ) as any;
   const budget = result.generationConfig.thinkingConfig.thinkingBudget;
   assert.ok(budget <= 24576, `expected <= 24576 (real cap), got ${budget}`);
@@ -1213,13 +1218,13 @@ test("OpenAI -> Gemini request maps google_search tool", () => {
       messages: [{ role: "user", content: "What happened today?" }],
       tools: [{ type: "function", function: { name: "google_search" } }],
     },
-    false
+    false,
   );
 
   assert.ok(Array.isArray((result as any).tools), "expected tools array");
   assert.ok(
     (result as any).tools.some((t: any) => t.googleSearch),
-    "expected googleSearch tool"
+    "expected googleSearch tool",
   );
 });
 
@@ -1252,27 +1257,27 @@ test("text-mode assistant tool_calls produce [tool_history_call:] format, not th
     },
     false,
     null,
-    { signaturelessToolCallMode: "text" }
+    { signaturelessToolCallMode: "text" },
   );
 
   const body = JSON.stringify(result);
   assert.ok(
     body.includes("[tool_history_call: get_weather]"),
-    "expected compact [tool_history_call:] format for text-mode tool calls"
+    "expected compact [tool_history_call:] format for text-mode tool calls",
   );
   assert.ok(
     body.includes("[tool_history_result: get_weather]"),
-    "expected compact [tool_history_result:] format for text-mode tool responses"
+    "expected compact [tool_history_result:] format for text-mode tool responses",
   );
   assert.equal(
     body.includes("Historical tool-call record only"),
     false,
-    "old leaky 'Historical tool-call record only' text must NOT appear"
+    "old leaky 'Historical tool-call record only' text must NOT appear",
   );
   assert.equal(
     body.includes("Historical tool-response record only"),
     false,
-    "old leaky 'Historical tool-response record only' text must NOT appear"
+    "old leaky 'Historical tool-response record only' text must NOT appear",
   );
 });
 
@@ -1303,14 +1308,14 @@ test("text-mode tool calls without credentials produce compact format, no though
     },
     false,
     null, // no credentials — no thought signatures at all
-    { signaturelessToolCallMode: "text" }
+    { signaturelessToolCallMode: "text" },
   );
 
   const body = JSON.stringify(result);
   assert.ok(body.includes("[tool_history_call: search_web]"), "compact format without credentials");
   assert.ok(
     body.includes("[tool_history_result: search_web]"),
-    "compact format for tool response without credentials"
+    "compact format for tool response without credentials",
   );
 });
 
@@ -1341,18 +1346,18 @@ test("native-mode assistant tool_calls produce functionCall parts, not text labe
     },
     false,
     null,
-    { signaturelessToolCallMode: "native" }
+    { signaturelessToolCallMode: "native" },
   );
 
   const modelTurn = result.contents.find(
-    (c) => c.role === "model" && c.parts?.some((p) => p.functionCall)
+    (c) => c.role === "model" && c.parts?.some((p) => p.functionCall),
   );
   assert.ok(modelTurn, "expected model turn with functionCall in native mode");
   const body = JSON.stringify(result);
   assert.equal(
     body.includes("[tool_history_call:"),
     false,
-    "native mode must NOT produce text labels"
+    "native mode must NOT produce text labels",
   );
 });
 
@@ -1391,7 +1396,7 @@ test("registered OPENAI->GEMINI translator uses context-mode for signature-less 
         { role: "user", content: "Short summary" },
       ],
     },
-    false
+    false,
   ) as any;
 
   const body = JSON.stringify(result);
@@ -1399,33 +1404,33 @@ test("registered OPENAI->GEMINI translator uses context-mode for signature-less 
   assert.equal(
     body.includes('"functionCall"'),
     false,
-    "registered translator must NOT emit bare native functionCall parts for signature-less calls (would trigger HTTP 400)"
+    "registered translator must NOT emit bare native functionCall parts for signature-less calls (would trigger HTTP 400)",
   );
   assert.equal(
     body.includes('"functionResponse"'),
     false,
-    "registered translator must NOT emit native functionResponse for signature-less calls"
+    "registered translator must NOT emit native functionResponse for signature-less calls",
   );
   // Old leaky text labels must never appear.
   assert.equal(
     body.includes("Historical tool-call record only"),
     false,
-    "old leaky format must NOT appear in registered translator output"
+    "old leaky format must NOT appear in registered translator output",
   );
   assert.equal(
     body.includes("Historical tool-response record only"),
     false,
-    "old leaky response format must NOT appear"
+    "old leaky response format must NOT appear",
   );
   assert.equal(
     body.includes("[tool_history_call:"),
     false,
-    "text-label format must NOT be used by registered GEMINI translator"
+    "text-label format must NOT be used by registered GEMINI translator",
   );
   // Context-mode: tool result must appear as <previous_tool_result_context> block.
   assert.ok(
     body.includes("previous_tool_result_context"),
-    "signature-less tool result must be represented as context text block"
+    "signature-less tool result must be represented as context text block",
   );
 });
 
@@ -1465,7 +1470,7 @@ test("registered OPENAI->GEMINI translator falls back to context mode for signat
       ],
     },
     false,
-    { _signatureNamespace: "conn-3688-test" }
+    { _signatureNamespace: "conn-3688-test" },
   ) as any;
 
   const body = JSON.stringify(result);
@@ -1474,23 +1479,23 @@ test("registered OPENAI->GEMINI translator falls back to context mode for signat
   // A functionCall without a thoughtSignature is the exact payload that triggers
   // Gemini's HTTP 400 "Function call is missing a thought_signature".
   const modelTurn = result.contents.find(
-    (c: any) => c.role === "model" && c.parts?.some((p: any) => p.functionCall)
+    (c: any) => c.role === "model" && c.parts?.some((p: any) => p.functionCall),
   );
   assert.equal(
     modelTurn,
     undefined,
-    "standard GEMINI translator must NOT emit a functionCall part when thoughtSignature is absent (would trigger HTTP 400)"
+    "standard GEMINI translator must NOT emit a functionCall part when thoughtSignature is absent (would trigger HTTP 400)",
   );
 
   // (b) The tool call/result must be represented as context/text fallback instead.
   // In "context" mode the response is wrapped in <previous_tool_result_context> tags.
   assert.ok(
     body.includes("previous_tool_result_context"),
-    "signature-less tool result must be represented as a context text block when signature is absent"
+    "signature-less tool result must be represented as a context text block when signature is absent",
   );
   assert.ok(
     body.includes("file-a.txt"),
-    "context text block must contain the tool response content"
+    "context text block must contain the tool response content",
   );
 });
 
@@ -1498,8 +1503,9 @@ test("registered OPENAI->GEMINI translator falls back to context mode for signat
 // OPENAI->GEMINI translator must still emit native functionCall + thoughtSignature
 // (no regression on the signed-signature path fixed by #2504).
 test("registered OPENAI->GEMINI translator keeps native functionCall+thoughtSignature when signature is present (#2504 no-regression)", async () => {
-  const { buildGeminiThoughtSignatureKey, storeGeminiThoughtSignature } =
-    await import("../../open-sse/services/geminiThoughtSignatureStore.ts");
+  const { buildGeminiThoughtSignatureKey, storeGeminiThoughtSignature } = await import(
+    "../../open-sse/services/geminiThoughtSignatureStore.ts"
+  );
   const ns = "conn-3688-signed-happy";
   const toolId = "call_3688_signed";
   storeGeminiThoughtSignature(buildGeminiThoughtSignatureKey(ns, toolId), "SIG_3688_HAPPY_PATH");
@@ -1526,7 +1532,7 @@ test("registered OPENAI->GEMINI translator keeps native functionCall+thoughtSign
       ],
     },
     false,
-    { _signatureNamespace: ns }
+    { _signatureNamespace: ns },
   ) as any;
 
   const body = JSON.stringify(result);
@@ -1534,19 +1540,19 @@ test("registered OPENAI->GEMINI translator keeps native functionCall+thoughtSign
   // The functionCall part WITH the thoughtSignature must be present.
   assert.ok(
     body.includes("SIG_3688_HAPPY_PATH"),
-    "cached thoughtSignature must be re-attached to the functionCall (happy-path regression check)"
+    "cached thoughtSignature must be re-attached to the functionCall (happy-path regression check)",
   );
   assert.ok(
     body.includes('"functionCall"'),
-    "signed tool call must be emitted as native functionCall (not context text)"
+    "signed tool call must be emitted as native functionCall (not context text)",
   );
   assert.ok(
     body.includes('"functionResponse"'),
-    "signed tool response must be emitted as native functionResponse"
+    "signed tool response must be emitted as native functionResponse",
   );
   assert.equal(
     body.includes("previous_tool_result_context"),
     false,
-    "signed tool call must NOT fall back to context text"
+    "signed tool call must NOT fall back to context text",
   );
 });

@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/GridScan/GridScan.jsx?raw';
-import css from '@content/Backgrounds/GridScan/GridScan.css?raw';
-import tailwind from '@tailwind/Backgrounds/GridScan/GridScan.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/GridScan/GridScan.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/GridScan/GridScan.tsx?raw';
+import code from "@content/Backgrounds/GridScan/GridScan.jsx?raw";
+import css from "@content/Backgrounds/GridScan/GridScan.css?raw";
+import tailwind from "@tailwind/Backgrounds/GridScan/GridScan.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/GridScan/GridScan.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/GridScan/GridScan.tsx?raw";
 
 export const gridScan = {
   dependencies: `three face-api.js`,
@@ -26,5 +26,5 @@ export const gridScan = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

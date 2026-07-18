@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unknown-property */
-'use client';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Canvas, extend, useFrame, type ThreeElement, type ThreeEvent } from '@react-three/fiber';
-import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei';
+"use client";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Canvas, extend, useFrame, type ThreeElement, type ThreeEvent } from "@react-three/fiber";
+import { useGLTF, useTexture, Environment, Lightformer } from "@react-three/drei";
 import {
   BallCollider,
   CuboidCollider,
@@ -11,20 +11,20 @@ import {
   useRopeJoint,
   useSphericalJoint,
   type RapierRigidBody,
-  type RigidBodyProps
-} from '@react-three/rapier';
-import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
-import * as THREE from 'three';
+  type RigidBodyProps,
+} from "@react-three/rapier";
+import { MeshLineGeometry, MeshLineMaterial } from "meshline";
+import * as THREE from "three";
 
 // replace with your own imports, see the usage snippet for details
-import cardGLB from './card.glb';
-import lanyard from './lanyard.png';
+import cardGLB from "./card.glb";
+import lanyard from "./lanyard.png";
 
-import './Lanyard.css';
+import "./Lanyard.css";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
-declare module '@react-three/fiber' {
+declare module "@react-three/fiber" {
   interface ThreeElements {
     meshLineGeometry: ThreeElement<typeof MeshLineGeometry>;
     meshLineMaterial: ThreeElement<typeof MeshLineMaterial>;
@@ -34,7 +34,7 @@ declare module '@react-three/fiber' {
 // 1x1 transparent pixel — lets useTexture be called unconditionally when a
 // front/back image isn't supplied.
 const BLANK_PIXEL =
-  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 
 // The card model's front face is UV-mapped to the LEFT half of the texture
 // atlas and the back face to the RIGHT half (measured from card.glb). Each
@@ -50,7 +50,7 @@ interface LanyardProps {
   transparent?: boolean;
   frontImage?: string | null;
   backImage?: string | null;
-  imageFit?: 'cover' | 'contain';
+  imageFit?: "cover" | "contain";
   lanyardImage?: string | null;
   lanyardWidth?: number;
 }
@@ -62,16 +62,18 @@ export default function Lanyard({
   transparent = true,
   frontImage = null,
   backImage = null,
-  imageFit = 'cover',
+  imageFit = "cover",
   lanyardImage = null,
-  lanyardWidth = 1
+  lanyardWidth = 1,
 }: LanyardProps) {
-  const [isMobile, setIsMobile] = useState<boolean>(() => typeof window !== 'undefined' && window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState<boolean>(
+    () => typeof window !== "undefined" && window.innerWidth < 768,
+  );
 
   useEffect(() => {
     const handleResize = (): void => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
@@ -134,7 +136,7 @@ interface BandProps {
   isMobile?: boolean;
   frontImage?: string | null;
   backImage?: string | null;
-  imageFit?: 'cover' | 'contain';
+  imageFit?: "cover" | "contain";
   lanyardImage?: string | null;
   lanyardWidth?: number;
 }
@@ -149,11 +151,13 @@ function Band({
   isMobile = false,
   frontImage = null,
   backImage = null,
-  imageFit = 'cover',
+  imageFit = "cover",
   lanyardImage = null,
-  lanyardWidth = 1
+  lanyardWidth = 1,
 }: BandProps) {
-  const band = useRef<THREE.Mesh<InstanceType<typeof MeshLineGeometry>, InstanceType<typeof MeshLineMaterial>>>(null!);
+  const band = useRef<
+    THREE.Mesh<InstanceType<typeof MeshLineGeometry>, InstanceType<typeof MeshLineMaterial>>
+  >(null!);
   const fixed = useRef<RapierRigidBody>(null!);
   const j1 = useRef<LanyardRigidBody>(null!);
   const j2 = useRef<LanyardRigidBody>(null!);
@@ -166,11 +170,11 @@ function Band({
   const dir = new THREE.Vector3();
 
   const segmentProps: RigidBodyProps = {
-    type: 'dynamic',
+    type: "dynamic",
     canSleep: true,
     colliders: false,
     angularDamping: 4,
-    linearDamping: 4
+    linearDamping: 4,
   };
 
   const getLerped = (body: LanyardRigidBody): THREE.Vector3 => {
@@ -197,10 +201,10 @@ function Band({
     const baseImg = baseMap.image as any;
     const W = baseImg.width;
     const H = baseImg.height;
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.width = W;
     canvas.height = H;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return baseMap;
     // Keep the original baked atlas for the card edges and any untouched face.
     ctx.drawImage(baseImg, 0, 0, W, H);
@@ -210,7 +214,7 @@ function Band({
       const ry = rect.y * H;
       const rw = rect.w * W;
       const rh = rect.h * H;
-      const pick = imageFit === 'contain' ? Math.min : Math.max;
+      const pick = imageFit === "contain" ? Math.min : Math.max;
       const scale = pick(rw / img.width, rh / img.height);
       const dw = img.width * scale;
       const dh = img.height * scale;
@@ -236,7 +240,12 @@ function Band({
   }, [frontImage, backImage, imageFit, frontTex, backTex, materials.base.map]);
   const [curve] = useState(
     () =>
-      new THREE.CatmullRomCurve3([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()])
+      new THREE.CatmullRomCurve3([
+        new THREE.Vector3(),
+        new THREE.Vector3(),
+        new THREE.Vector3(),
+        new THREE.Vector3(),
+      ]),
   );
   const [dragged, drag] = useState<false | THREE.Vector3>(false);
   const [hovered, hover] = useState(false);
@@ -246,35 +255,41 @@ function Band({
   useRopeJoint(j2, j3, [[0, 0, 0], [0, 0, 0], 1]);
   useSphericalJoint(j3, card, [
     [0, 0, 0],
-    [0, 1.45, 0]
+    [0, 1.45, 0],
   ]);
 
   useEffect(() => {
     if (hovered) {
-      document.body.style.cursor = dragged ? 'grabbing' : 'grab';
+      document.body.style.cursor = dragged ? "grabbing" : "grab";
       return () => {
-        document.body.style.cursor = 'auto';
+        document.body.style.cursor = "auto";
       };
     }
   }, [hovered, dragged]);
 
   useFrame((state, delta) => {
-    if (dragged && typeof dragged !== 'boolean') {
+    if (dragged && typeof dragged !== "boolean") {
       vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera);
       dir.copy(vec).sub(state.camera.position).normalize();
       vec.add(dir.multiplyScalar(state.camera.position.length()));
-      [card, j1, j2, j3, fixed].forEach(ref => ref.current?.wakeUp());
+      [card, j1, j2, j3, fixed].forEach((ref) => ref.current?.wakeUp());
       card.current?.setNextKinematicTranslation({
         x: vec.x - dragged.x,
         y: vec.y - dragged.y,
-        z: vec.z - dragged.z
+        z: vec.z - dragged.z,
       });
     }
     if (fixed.current) {
-      [j1, j2].forEach(ref => {
+      [j1, j2].forEach((ref) => {
         const lerped = getLerped(ref.current);
-        const clampedDistance = Math.max(0.1, Math.min(1, lerped.distanceTo(ref.current.translation())));
-        lerped.lerp(ref.current.translation(), delta * (minSpeed + clampedDistance * (maxSpeed - minSpeed)));
+        const clampedDistance = Math.max(
+          0.1,
+          Math.min(1, lerped.distanceTo(ref.current.translation())),
+        );
+        lerped.lerp(
+          ref.current.translation(),
+          delta * (minSpeed + clampedDistance * (maxSpeed - minSpeed)),
+        );
       });
       curve.points[0].copy(j3.current.translation());
       curve.points[1].copy(getLerped(j2.current));
@@ -287,7 +302,7 @@ function Band({
     }
   });
 
-  curve.curveType = 'chordal';
+  curve.curveType = "chordal";
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 
   return (
@@ -307,7 +322,7 @@ function Band({
           position={[2, 0, 0]}
           ref={card}
           {...segmentProps}
-          type={dragged ? 'kinematicPosition' : 'dynamic'}
+          type={dragged ? "kinematicPosition" : "dynamic"}
         >
           <CuboidCollider args={[0.8, 1.125, 0.01]} />
           <group
@@ -334,7 +349,11 @@ function Band({
                 metalness={0.8}
               />
             </mesh>
-            <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
+            <mesh
+              geometry={nodes.clip.geometry}
+              material={materials.metal}
+              material-roughness={0.3}
+            />
             <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
           </group>
         </RigidBody>

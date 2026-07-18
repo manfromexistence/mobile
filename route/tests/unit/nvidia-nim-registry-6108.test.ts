@@ -14,7 +14,7 @@ test("#6108: NVIDIA NIM registry contains the refreshed live models", () => {
   assert.ok(modelIds.has("z-ai/glm-5.2"), "z-ai/glm-5.2 must be present");
   assert.ok(
     modelIds.has("nvidia/nemotron-3-ultra-550b-a55b"),
-    "nvidia/nemotron-3-ultra-550b-a55b must be present"
+    "nvidia/nemotron-3-ultra-550b-a55b must be present",
   );
 });
 

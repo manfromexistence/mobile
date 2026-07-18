@@ -1,8 +1,8 @@
-import code from '@content/Animations/StarBorder/StarBorder.jsx?raw';
-import css from '@content/Animations/StarBorder/StarBorder.css?raw';
-import tailwind from '@tailwind/Animations/StarBorder/StarBorder.jsx?raw';
-import tsCode from '@ts-default/Animations/StarBorder/StarBorder.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/StarBorder/StarBorder.tsx?raw';
+import code from "@content/Animations/StarBorder/StarBorder.jsx?raw";
+import css from "@content/Animations/StarBorder/StarBorder.css?raw";
+import tailwind from "@tailwind/Animations/StarBorder/StarBorder.jsx?raw";
+import tsCode from "@ts-default/Animations/StarBorder/StarBorder.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/StarBorder/StarBorder.tsx?raw";
 
 export const starBorder = {
   usage: `import StarBorder from './StarBorder'
@@ -19,5 +19,5 @@ export const starBorder = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

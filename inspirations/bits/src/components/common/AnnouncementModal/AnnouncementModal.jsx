@@ -1,19 +1,19 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import { useLocation } from 'react-router-dom';
-import { LuX } from 'react-icons/lu';
-import { FiArrowRight } from 'react-icons/fi';
-import './AnnouncementModal.css';
+import { useEffect, useState, useCallback, useRef } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { useLocation } from "react-router-dom";
+import { LuX } from "react-icons/lu";
+import { FiArrowRight } from "react-icons/fi";
+import "./AnnouncementModal.css";
 
-const STORAGE_KEY = 'rb-pro-yearly-pricing-seen';
+const STORAGE_KEY = "rb-pro-yearly-pricing-seen";
 const SHOW_DELAY = 1500;
-const PROMO_IMAGE = '/assets/rbp/yearly.png';
+const PROMO_IMAGE = "/assets/rbp/yearly.png";
 
 const DISABLED = true;
 
 const AnnouncementModal = () => {
   const location = useLocation();
-  const isLandingPage = location.pathname === '/';
+  const isLandingPage = location.pathname === "/";
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const modalRef = useRef(null);
@@ -48,10 +48,10 @@ const AnnouncementModal = () => {
     const previousTop = body.style.top;
     const previousWidth = body.style.width;
 
-    body.style.overflow = 'hidden';
-    body.style.position = 'fixed';
+    body.style.overflow = "hidden";
+    body.style.position = "fixed";
     body.style.top = `-${scrollY}px`;
-    body.style.width = '100%';
+    body.style.width = "100%";
 
     return () => {
       body.style.overflow = previousOverflow;
@@ -64,7 +64,7 @@ const AnnouncementModal = () => {
 
   const handleDismiss = useCallback(() => {
     setIsClosing(true);
-    localStorage.setItem(STORAGE_KEY, 'true');
+    localStorage.setItem(STORAGE_KEY, "true");
 
     setTimeout(() => {
       setIsVisible(false);
@@ -76,14 +76,14 @@ const AnnouncementModal = () => {
   }, []);
 
   useEffect(() => {
-    const handleKeyDown = e => {
-      if (e.key === 'Escape' && isVisible && !isClosing) {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && isVisible && !isClosing) {
         handleDismiss();
       }
 
-      if (e.key === 'Tab' && isVisible && modalRef.current) {
+      if (e.key === "Tab" && isVisible && modalRef.current) {
         const focusableElements = modalRef.current.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
         );
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];
@@ -98,11 +98,11 @@ const AnnouncementModal = () => {
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isVisible, isClosing, handleDismiss]);
 
-  const handleBackdropClick = e => {
+  const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
       handleDismiss();
     }
@@ -134,7 +134,7 @@ const AnnouncementModal = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 16 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            onClick={e => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="announcement-modal-border" aria-hidden="true" />
 
@@ -161,7 +161,8 @@ const AnnouncementModal = () => {
                 </h2>
 
                 <p id="announcement-modal-description" className="announcement-modal-description">
-                  Alongside our lifetime plans, React Bits Pro now offers yearly pricing, a more flexible and affordable way to get access.
+                  Alongside our lifetime plans, React Bits Pro now offers yearly pricing, a more
+                  flexible and affordable way to get access.
                 </p>
 
                 <a

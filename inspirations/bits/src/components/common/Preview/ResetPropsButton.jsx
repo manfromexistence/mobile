@@ -1,6 +1,6 @@
-import { RotateCcw } from 'lucide-react';
-import { Tooltip, Box, Icon } from '@chakra-ui/react';
-import { colors } from '../../../constants/colors';
+import { RotateCcw } from "lucide-react";
+import { Tooltip, Box, Icon } from "@chakra-ui/react";
+import { colors } from "../../../constants/colors";
 
 /**
  * Reset button to restore demo props to default values.
@@ -10,7 +10,7 @@ const ResetPropsButton = ({ onReset, hasChanges }) => {
   if (!hasChanges) return null;
 
   return (
-    <Tooltip.Root openDelay={200} closeDelay={100} positioning={{ placement: 'top', gutter: 8 }}>
+    <Tooltip.Root openDelay={200} closeDelay={100} positioning={{ placement: "top", gutter: 8 }}>
       <Tooltip.Trigger asChild>
         <Box
           as="button"

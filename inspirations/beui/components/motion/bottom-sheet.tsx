@@ -115,9 +115,7 @@ export function BottomSheet({
 
   const snapValue = snapPoints[snap];
   const heightStyle =
-    snapValue === "auto"
-      ? { maxHeight: "92vh" }
-      : { height: `${snapValue * 100}vh` };
+    snapValue === "auto" ? { maxHeight: "92vh" } : { height: `${snapValue * 100}vh` };
 
   // Portal to <body>: an ancestor with backdrop-filter or transform becomes
   // the containing block for fixed descendants, which would position the
@@ -153,8 +151,7 @@ export function BottomSheet({
             exit={reduce ? { y: 0, opacity: 0 } : { y: "100%" }}
             transition={reduce ? { duration: 0.18, ease: EASE_DRAWER } : DRAWER}
             onAnimationComplete={() => {
-              if (sheetRef.current)
-                heightRef.current = sheetRef.current.offsetHeight;
+              if (sheetRef.current) heightRef.current = sheetRef.current.offsetHeight;
             }}
             style={heightStyle}
             className={cn(
@@ -174,14 +171,10 @@ export function BottomSheet({
               {title || description ? (
                 <div className="mt-3 w-full">
                   {title ? (
-                    <h2 className="text-base font-semibold text-foreground">
-                      {title}
-                    </h2>
+                    <h2 className="text-base font-semibold text-foreground">{title}</h2>
                   ) : null}
                   {description ? (
-                    <p className="mt-0.5 text-sm text-muted-foreground">
-                      {description}
-                    </p>
+                    <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>
                   ) : null}
                 </div>
               ) : null}

@@ -7,8 +7,9 @@ import assert from "node:assert/strict";
 // (Firecrawl AI SDK) have JSON parsers that break on this non-standard
 // extension even when there is no visible content, so the default
 // "keep reasoning-only messages" behavior is not sufficient.
-const { isStripReasoningRequested, getHeaderValueCaseInsensitive } =
-  await import("../../open-sse/handlers/chatCore/headers.ts");
+const { isStripReasoningRequested, getHeaderValueCaseInsensitive } = await import(
+  "../../open-sse/handlers/chatCore/headers.ts"
+);
 const { sanitizeOpenAIResponse } = await import("../../open-sse/handlers/responseSanitizer.ts");
 
 test("isStripReasoningRequested is true for truthy header values", () => {
@@ -16,7 +17,7 @@ test("isStripReasoningRequested is true for truthy header values", () => {
     assert.equal(
       isStripReasoningRequested({ "x-omniroute-strip-reasoning": v }),
       true,
-      `expected true for ${JSON.stringify(v)}`
+      `expected true for ${JSON.stringify(v)}`,
     );
   }
 });
@@ -45,9 +46,9 @@ test("getHeaderValueCaseInsensitive still resolves the header (sanity)", () => {
   assert.equal(
     getHeaderValueCaseInsensitive(
       { "x-omniroute-strip-reasoning": "true" },
-      "x-omniroute-strip-reasoning"
+      "x-omniroute-strip-reasoning",
     ),
-    "true"
+    "true",
   );
 });
 
@@ -89,7 +90,7 @@ test("stripReasoning=true: reasoning-only message has reasoning_content removed"
         },
       ],
     },
-    { stripReasoning: true }
+    { stripReasoning: true },
   ) as { choices: Array<{ message: Record<string, unknown> }> };
   assert.equal(out.choices[0].message.reasoning_content, undefined);
   assert.equal("reasoning_content" in out.choices[0].message, false);
@@ -117,7 +118,7 @@ test("stripReasoning=true: message with content has all OpenAI-compatible reason
         },
       ],
     },
-    { stripReasoning: true }
+    { stripReasoning: true },
   ) as { choices: Array<{ message: Record<string, unknown> }> };
   assert.equal(out.choices[0].message.reasoning_content, undefined);
   assert.equal(out.choices[0].message.reasoning, undefined);

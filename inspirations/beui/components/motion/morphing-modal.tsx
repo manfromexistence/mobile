@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  AnimatePresence,
-  motion,
-  useReducedMotion,
-} from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { type ReactNode, useEffect } from "react";
 import { EASE_OUT, SPRING_PANEL } from "@/lib/ease";
 import { cn } from "@/lib/utils";
@@ -43,10 +39,7 @@ export function MorphingModal({
   return (
     <div
       aria-hidden={!open}
-      className={cn(
-        "fixed inset-0 z-[80]",
-        open ? "pointer-events-auto" : "pointer-events-none",
-      )}
+      className={cn("fixed inset-0 z-[80]", open ? "pointer-events-auto" : "pointer-events-none")}
     >
       <motion.div
         initial={false}
@@ -88,11 +81,7 @@ export function MorphingModal({
                 <AnimatePresence mode="popLayout" initial={false}>
                   <motion.div
                     key={viewId}
-                    initial={
-                      reduce
-                        ? { opacity: 0 }
-                        : { opacity: 0, y: 8, filter: "blur(4px)" }
-                    }
+                    initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8, filter: "blur(4px)" }}
                     animate={
                       reduce
                         ? {

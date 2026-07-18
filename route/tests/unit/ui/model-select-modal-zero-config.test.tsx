@@ -27,7 +27,7 @@ async function renderModal(props: Partial<React.ComponentProps<typeof ModelSelec
         showCombos={false}
         activeProviders={[]}
         {...props}
-      />
+      />,
     );
   });
 
@@ -52,7 +52,7 @@ beforeEach(() => {
         return { ok: true, json: async () => ({ combos: [] }) };
       }
       return { ok: true, json: async () => ({}) };
-    })
+    }),
   );
 });
 

@@ -84,7 +84,7 @@ describe("ops runbook scripts (bin/*.sh)", () => {
       let db = new Database(dbPath);
       db.exec(
         "CREATE TABLE api_keys (id TEXT PRIMARY KEY, name TEXT);" +
-          "INSERT INTO api_keys VALUES ('k1','orig');"
+          "INSERT INTO api_keys VALUES ('k1','orig');",
       );
       db.close();
 
@@ -95,7 +95,7 @@ describe("ops runbook scripts (bin/*.sh)", () => {
       assert.ok(id, "snapshot id not printed on stdout");
       assert.ok(
         fs.existsSync(path.join(dataDir, "db_backups", `snapshot_${id}`, "storage.sqlite")),
-        "snapshot dir not created"
+        "snapshot dir not created",
       );
 
       // Mutate the live DB so a successful restore is observable.
@@ -111,7 +111,7 @@ describe("ops runbook scripts (bin/*.sh)", () => {
       assert.equal(
         (db.prepare("SELECT name FROM api_keys WHERE id='k1'").get() as { name: string }).name,
         "changed",
-        "blocked restore must not have changed the DB"
+        "blocked restore must not have changed the DB",
       );
       db.close();
 
@@ -122,7 +122,7 @@ describe("ops runbook scripts (bin/*.sh)", () => {
       assert.equal(
         (db.prepare("SELECT name FROM api_keys WHERE id='k1'").get() as { name: string }).name,
         "orig",
-        "restore did not revert the row"
+        "restore did not revert the row",
       );
       db.close();
     } finally {
@@ -143,7 +143,7 @@ describe("ops runbook scripts (bin/*.sh)", () => {
           "CREATE TABLE api_keys (id TEXT PRIMARY KEY, name TEXT);" +
             "INSERT INTO api_keys VALUES ('k1','orig');" +
             "CREATE TABLE sessions (id TEXT PRIMARY KEY);" +
-            "INSERT INTO sessions VALUES ('s-old');"
+            "INSERT INTO sessions VALUES ('s-old');",
         );
         db.close();
 
@@ -155,7 +155,7 @@ describe("ops runbook scripts (bin/*.sh)", () => {
         db = new Database(dbPath);
         db.exec(
           "UPDATE api_keys SET name='changed' WHERE id='k1';" +
-            "INSERT INTO sessions VALUES ('s-new');"
+            "INSERT INTO sessions VALUES ('s-new');",
         );
         db.close();
 
@@ -167,18 +167,18 @@ describe("ops runbook scripts (bin/*.sh)", () => {
         assert.equal(
           (db.prepare("SELECT name FROM api_keys WHERE id='k1'").get() as { name: string }).name,
           "orig",
-          "api_keys policy was not restored"
+          "api_keys policy was not restored",
         );
         // …non-policy table left intact (live usage not rewound).
         assert.equal(
           (db.prepare("SELECT COUNT(*) c FROM sessions").get() as { c: number }).c,
           2,
-          "non-policy table must not be touched by restore-policies"
+          "non-policy table must not be touched by restore-policies",
         );
         db.close();
       } finally {
         fs.rmSync(dataDir, { recursive: true, force: true });
       }
-    }
+    },
   );
 });

@@ -29,7 +29,7 @@ function setupFetch(strategy: string) {
       if (String(url).includes("/combo-defaults")) return okJson({ comboDefaults: { strategy } });
       if (String(url).includes("/api/providers")) return okJson({ connections: [] });
       return okJson({}); // /api/settings
-    })
+    }),
   );
 }
 

@@ -60,14 +60,14 @@ test("issue #7134: tlsFetchStreaming surfaces the real error body for a non-SSE 
     { method: "POST" },
     "[DONE]",
     null,
-    5_000
+    5_000,
   );
 
   assert.equal(result.status, 400);
   assert.equal(result.body, null);
   assert.ok(
     result.text && result.text.includes("does not exist or you do not have access to it"),
-    `expected the real Claude error body to be surfaced, got: ${JSON.stringify(result.text)}`
+    `expected the real Claude error body to be surfaced, got: ${JSON.stringify(result.text)}`,
   );
 });
 
@@ -94,7 +94,7 @@ test("issue #7134: tlsFetchStreaming still uses r.body when the native client DO
     { method: "POST" },
     "[DONE]",
     null,
-    5_000
+    5_000,
   );
 
   assert.equal(result.status, 403);

@@ -48,7 +48,7 @@ test("stream execution marks task as failed when handler throws", async () => {
       executeA2ATaskWithState(tm, task, async () => {
         throw new Error("upstream failure");
       }),
-    /upstream failure/
+    /upstream failure/,
   );
 
   const loaded = tm.getTask(task.id);

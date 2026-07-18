@@ -1,8 +1,4 @@
-import {
-  Status,
-  StatusIndicator,
-  StatusLabel,
-} from "@/registry/bases/radix/ui/status";
+import { Status, StatusIndicator, StatusLabel } from "@/registry/bases/radix/ui/status";
 
 const services = [
   { name: "API Server", status: "success" as const, uptime: "99.9%" },
@@ -22,9 +18,7 @@ export default function StatusListDemo() {
         >
           <div className="flex flex-col gap-0.5">
             <span className="font-medium text-sm">{service.name}</span>
-            <span className="text-muted-foreground text-xs">
-              Uptime: {service.uptime}
-            </span>
+            <span className="text-muted-foreground text-xs">Uptime: {service.uptime}</span>
           </div>
           <Status variant={service.status}>
             <StatusIndicator />

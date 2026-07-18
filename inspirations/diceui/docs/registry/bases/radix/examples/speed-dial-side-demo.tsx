@@ -18,9 +18,7 @@ export default function SpeedDialSideDemo() {
     <div className="grid grid-cols-2 gap-24">
       {sides.map((side) => (
         <div key={side} className="flex flex-col items-center gap-2">
-          <span className="text-muted-foreground text-sm capitalize">
-            {side}
-          </span>
+          <span className="text-muted-foreground text-sm capitalize">{side}</span>
           <SpeedDial side={side}>
             <SpeedDialTrigger className="transition-transform duration-200 ease-out data-[state=closed]:rotate-0 data-[state=open]:rotate-135">
               <Plus />

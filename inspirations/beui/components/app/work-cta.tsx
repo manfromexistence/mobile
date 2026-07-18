@@ -24,8 +24,8 @@ export function WorkCta() {
                 Want components built for your product?
               </h2>
               <p className="mt-5 max-w-md text-base leading-7 text-muted-foreground">
-                Custom motion components and frontend systems, built to spec.
-                Book a call or drop a line, whichever's easier.
+                Custom motion components and frontend systems, built to spec. Book a call or drop a
+                line, whichever's easier.
               </p>
 
               <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
@@ -99,9 +99,7 @@ function CtaVisual() {
             +24%
           </span>
         </div>
-        <div className="mt-3 font-pixel text-2xl font-semibold text-foreground">
-          48,210
-        </div>
+        <div className="mt-3 font-pixel text-2xl font-semibold text-foreground">48,210</div>
         <div className="mt-3 flex items-end gap-1">
           {[5, 8, 6, 10, 7, 12, 9].map((h, i) => (
             <div

@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  type MotionValue,
-  motion,
-  useReducedMotion,
-  useSpring,
-  useTransform,
-} from "motion/react";
+import { type MotionValue, motion, useReducedMotion, useSpring, useTransform } from "motion/react";
 
 import { useSmoothScroll } from "@/components/motion/smooth-scroll";
 import { cn } from "@/lib/utils";
@@ -40,9 +34,7 @@ export interface ScrollProgressCircleProps extends CommonProps {
   thickness?: number;
 }
 
-export type ScrollProgressProps =
-  | ScrollProgressBarProps
-  | ScrollProgressCircleProps;
+export type ScrollProgressProps = ScrollProgressBarProps | ScrollProgressCircleProps;
 
 function useProgressValue(source: MotionValue<number> | undefined, spring: boolean) {
   const reduce = useReducedMotion();

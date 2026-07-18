@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { parseSSEToOpenAIResponse, parseSSEToResponsesOutput } =
-  await import("../../open-sse/handlers/sseParser.ts");
+const { parseSSEToOpenAIResponse, parseSSEToResponsesOutput } = await import(
+  "../../open-sse/handlers/sseParser.ts"
+);
 
 test("parseSSEToOpenAIResponse coerces numeric top-level id to string", () => {
   const rawSSE = [

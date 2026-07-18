@@ -36,20 +36,20 @@ test("resolveReasoningControls: falls back to canonical values when tiers absent
   assert.deepEqual(resolveReasoningControls({ supportsThinking: true }).effortOptions, canonical);
   assert.deepEqual(
     resolveReasoningControls({ supportsThinking: true, effort_tiers: [] }).effortOptions,
-    canonical
+    canonical,
   );
   // Non-array / dirty tiers → fallback + only string members kept.
   assert.deepEqual(
     resolveReasoningControls({ supportsThinking: true, effort_tiers: "nope" as never })
       .effortOptions,
-    canonical
+    canonical,
   );
   assert.deepEqual(
     resolveReasoningControls({
       supportsThinking: true,
       effort_tiers: ["low", 3, "", "high"] as never,
     }).effortOptions,
-    ["low", "high"]
+    ["low", "high"],
   );
 });
 

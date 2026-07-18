@@ -1,8 +1,8 @@
-import code from '@content/Animations/ImageTrail/ImageTrail.jsx?raw';
-import css from '@content/Animations/ImageTrail/ImageTrail.css?raw';
-import tailwind from '@tailwind/Animations/ImageTrail/ImageTrail.jsx?raw';
-import tsCode from '@ts-default/Animations/ImageTrail/ImageTrail.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/ImageTrail/ImageTrail.tsx?raw';
+import code from "@content/Animations/ImageTrail/ImageTrail.jsx?raw";
+import css from "@content/Animations/ImageTrail/ImageTrail.css?raw";
+import tailwind from "@tailwind/Animations/ImageTrail/ImageTrail.jsx?raw";
+import tsCode from "@ts-default/Animations/ImageTrail/ImageTrail.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/ImageTrail/ImageTrail.tsx?raw";
 
 export const imageTrail = {
   dependencies: `gsap`,
@@ -29,5 +29,5 @@ export const imageTrail = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

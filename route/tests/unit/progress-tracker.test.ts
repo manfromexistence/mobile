@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { createProgressTransform, wantsProgress } =
-  await import("../../open-sse/utils/progressTracker.ts");
+const { createProgressTransform, wantsProgress } = await import(
+  "../../open-sse/utils/progressTracker.ts"
+);
 
 function withFakeIntervals(fn) {
   const originalSetInterval = globalThis.setInterval;

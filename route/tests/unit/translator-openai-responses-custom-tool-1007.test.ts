@@ -1,10 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiResponsesToOpenAIRequest } =
-  await import("../../open-sse/translator/request/openai-responses.ts");
-const { openaiToOpenAIResponsesResponse } =
-  await import("../../open-sse/translator/response/openai-responses.ts");
+const { openaiResponsesToOpenAIRequest } = await import(
+  "../../open-sse/translator/request/openai-responses.ts"
+);
+const { openaiToOpenAIResponsesResponse } = await import(
+  "../../open-sse/translator/response/openai-responses.ts"
+);
 const { initState } = await import("../../open-sse/translator/index.ts");
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 
@@ -35,7 +37,7 @@ test("Responses -> Chat: custom tool is normalized to a { input: string } functi
       ],
     },
     false,
-    {}
+    {},
   );
 
   assert.equal(Array.isArray(result.tools), true);
@@ -73,11 +75,11 @@ test("Responses -> Chat: custom_tool_call + output items map to tool_calls and t
       ],
     },
     false,
-    {}
+    {},
   );
 
   const assistant = result.messages.find(
-    (m) => m.role === "assistant" && Array.isArray(m.tool_calls)
+    (m) => m.role === "assistant" && Array.isArray(m.tool_calls),
   );
   assert.ok(assistant, "expected an assistant message carrying the custom tool call");
   const tc = assistant.tool_calls[0];
@@ -142,7 +144,7 @@ test("OpenAI -> Responses: apply_patch streams as custom_tool_call with raw inpu
 
   assert.ok(
     events.some((e) => e.event === "response.custom_tool_call_input.delta"),
-    "expected a custom_tool_call_input.delta event"
+    "expected a custom_tool_call_input.delta event",
   );
   // No function_call_arguments.* events should leak for a custom tool.
   assert.ok(!events.some((e) => e.event === "response.function_call_arguments.delta"));
@@ -153,7 +155,7 @@ test("OpenAI -> Responses: apply_patch streams as custom_tool_call with raw inpu
   assert.equal(inputDone.data.input, "PATCH_BODY");
 
   const itemDone = events.find(
-    (e) => e.event === "response.output_item.done" && e.data.item.type === "custom_tool_call"
+    (e) => e.event === "response.output_item.done" && e.data.item.type === "custom_tool_call",
   );
   assert.ok(itemDone);
   assert.equal(itemDone.data.item.input, "PATCH_BODY");

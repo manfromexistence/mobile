@@ -39,16 +39,10 @@ export default function RatingThemesDemo() {
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
       {themes.map((theme) => (
-        <div
-          key={theme.label}
-          className="flex flex-col items-center gap-3 rounded-lg border p-4"
-        >
+        <div key={theme.label} className="flex flex-col items-center gap-3 rounded-lg border p-4">
           <h4 className="font-medium text-sm">{theme.label}</h4>
 
-          <Rating
-            defaultValue={theme.value}
-            className={cn("gap-1", theme.className)}
-          >
+          <Rating defaultValue={theme.value} className={cn("gap-1", theme.className)}>
             {Array.from({ length: 5 }, (_, i) => (
               <RatingItem key={i}>
                 <theme.icon />

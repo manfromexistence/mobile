@@ -34,7 +34,7 @@ afterEach(() => {
 
 function makeFakeParams(
   name: string,
-  path: string[]
+  path: string[],
 ): { params: Promise<{ name: string; path: string[] }> } {
   return { params: Promise.resolve({ name, path }) };
 }
@@ -83,7 +83,7 @@ describe("embed proxy route", () => {
     };
 
     const req = new Request(
-      "http://localhost/dashboard/providers/services/9router/embed/ui/index.html"
+      "http://localhost/dashboard/providers/services/9router/embed/ui/index.html",
     );
     const resp = await GET(req, makeFakeParams("9router", ["ui", "index.html"]));
 
@@ -101,7 +101,7 @@ describe("embed proxy route", () => {
     };
 
     const req = new Request(
-      "http://localhost/dashboard/providers/services/9router/embed/api/models?page=2"
+      "http://localhost/dashboard/providers/services/9router/embed/api/models?page=2",
     );
     await GET(req, makeFakeParams("9router", ["api", "models"]));
     assert.ok(capturedUrl.includes("?page=2"));
@@ -218,7 +218,7 @@ describe("embed proxy route", () => {
     assert.notEqual(
       capturedAuth,
       "Bearer client-token-should-not-leak",
-      "client authorization must not be forwarded as-is"
+      "client authorization must not be forwarded as-is",
     );
   });
 
@@ -232,7 +232,7 @@ describe("embed proxy route", () => {
 
     const resp = await GET(
       new Request("http://localhost/dashboard/providers/services/9router/embed/"),
-      makeFakeParams("9router", [])
+      makeFakeParams("9router", []),
     );
     assert.equal(resp.headers.get("set-cookie"), null, "set-cookie must be stripped from response");
   });
@@ -247,7 +247,7 @@ describe("embed proxy route", () => {
 
     const resp = await GET(
       new Request("http://localhost/dashboard/providers/services/9router/embed/"),
-      makeFakeParams("9router", [])
+      makeFakeParams("9router", []),
     );
     assert.equal(resp.headers.get("x-frame-options"), null, "x-frame-options must be stripped");
   });
@@ -265,12 +265,12 @@ describe("embed proxy route", () => {
 
     const resp = await GET(
       new Request("http://localhost/dashboard/providers/services/9router/embed/"),
-      makeFakeParams("9router", [])
+      makeFakeParams("9router", []),
     );
     assert.equal(
       resp.headers.get("content-security-policy"),
       null,
-      "content-security-policy must be stripped"
+      "content-security-policy must be stripped",
     );
   });
 
@@ -289,22 +289,22 @@ describe("embed proxy route", () => {
 
     const resp = await GET(
       new Request("http://localhost/dashboard/providers/services/9router/embed/"),
-      makeFakeParams("9router", [])
+      makeFakeParams("9router", []),
     );
     assert.equal(
       resp.headers.get("cross-origin-embedder-policy"),
       null,
-      "cross-origin-embedder-policy must be stripped"
+      "cross-origin-embedder-policy must be stripped",
     );
     assert.equal(
       resp.headers.get("cross-origin-opener-policy"),
       null,
-      "cross-origin-opener-policy must be stripped"
+      "cross-origin-opener-policy must be stripped",
     );
     assert.equal(
       resp.headers.get("cross-origin-resource-policy"),
       null,
-      "cross-origin-resource-policy must be stripped"
+      "cross-origin-resource-policy must be stripped",
     );
   });
 
@@ -318,12 +318,12 @@ describe("embed proxy route", () => {
 
     const resp = await GET(
       new Request("http://localhost/dashboard/providers/services/9router/embed/"),
-      makeFakeParams("9router", [])
+      makeFakeParams("9router", []),
     );
     const body = await resp.text();
     assert.ok(
       body.includes('<base href="/dashboard/providers/services/9router/embed/">'),
-      `Expected <base href> in rewritten HTML. Got: ${body.substring(0, 200)}`
+      `Expected <base href> in rewritten HTML. Got: ${body.substring(0, 200)}`,
     );
   });
 
@@ -337,12 +337,12 @@ describe("embed proxy route", () => {
 
     const resp = await GET(
       new Request("http://localhost/dashboard/providers/services/9router/embed/"),
-      makeFakeParams("9router", [])
+      makeFakeParams("9router", []),
     );
     const body = await resp.text();
     assert.ok(
       body.includes('href="/dashboard/providers/services/9router/embed/ui/page"'),
-      `Expected rewritten href. Got: ${body.substring(0, 300)}`
+      `Expected rewritten href. Got: ${body.substring(0, 300)}`,
     );
   });
 
@@ -357,7 +357,7 @@ describe("embed proxy route", () => {
 
     const resp = await GET(
       new Request("http://localhost/dashboard/providers/services/9router/embed/api/models"),
-      makeFakeParams("9router", ["api", "models"])
+      makeFakeParams("9router", ["api", "models"]),
     );
     const body = await resp.text();
     assert.equal(body, jsonPayload, "JSON response must pass through unchanged");

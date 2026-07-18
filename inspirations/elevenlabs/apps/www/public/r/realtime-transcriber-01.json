@@ -2,10 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "realtime-transcriber-01",
   "description": "Scribe V2 Realtime Transcriber",
-  "dependencies": [
-    "@elevenlabs/react",
-    "framer-motion"
-  ],
+  "dependencies": ["@elevenlabs/react", "framer-motion"],
   "registryDependencies": [
     "badge",
     "button",
@@ -37,8 +34,6 @@
     "container": "w-full bg-surface min-h-svh flex px-4 py-12 items-center md:py-20 justify-center min-w-0",
     "mobile": "component"
   },
-  "categories": [
-    "audio"
-  ],
+  "categories": ["audio"],
   "type": "registry:block"
 }

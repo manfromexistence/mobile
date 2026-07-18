@@ -108,7 +108,7 @@ test("#6714 synced row present but limit_output missing falls through to the reg
   assert.equal(
     cap,
     maxOutputTokens,
-    "must fall through to the registry maxOutputTokens, not short-circuit to null"
+    "must fall through to the registry maxOutputTokens, not short-circuit to null",
   );
 });
 

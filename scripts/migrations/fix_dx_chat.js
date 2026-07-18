@@ -1,11 +1,11 @@
-const fs = require("fs")
-let content = fs.readFileSync("src/features/dx/components/dx-chat.tsx", "utf8")
+const fs = require("fs");
+let content = fs.readFileSync("src/features/dx/components/dx-chat.tsx", "utf8");
 
-const startStr = "{/* Chat Input */}"
-const endStr = "</main>"
+const startStr = "{/* Chat Input */}";
+const endStr = "</main>";
 
-const startIndex = content.indexOf(startStr)
-const endIndex = content.indexOf(endStr, startIndex)
+const startIndex = content.indexOf(startStr);
+const endIndex = content.indexOf(endStr, startIndex);
 
 if (startIndex !== -1 && endIndex !== -1) {
   const newChatInput = `{/* Chat Input */}
@@ -25,14 +25,11 @@ if (startIndex !== -1 && endIndex !== -1) {
             />
           </div>
         </div>
-      `
+      `;
 
-  content =
-    content.substring(0, startIndex) +
-    newChatInput +
-    content.substring(endIndex)
-  fs.writeFileSync("src/features/dx/components/dx-chat.tsx", content)
-  console.log("Replaced Chat Input")
+  content = content.substring(0, startIndex) + newChatInput + content.substring(endIndex);
+  fs.writeFileSync("src/features/dx/components/dx-chat.tsx", content);
+  console.log("Replaced Chat Input");
 } else {
-  console.log("Could not find Chat Input or main end tag")
+  console.log("Could not find Chat Input or main end tag");
 }

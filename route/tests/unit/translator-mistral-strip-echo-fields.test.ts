@@ -32,7 +32,7 @@ test("#1649: assistant echo fields are stripped on the OpenAI target path", () =
     body,
     false,
     null,
-    "mistral"
+    "mistral",
   ) as { messages: Record<string, unknown>[] };
 
   const asst = out.messages[1];

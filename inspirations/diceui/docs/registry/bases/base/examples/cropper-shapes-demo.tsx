@@ -36,10 +36,8 @@ export default function CropperShapesDemo() {
   const id = React.useId();
   const [crop, setCrop] = React.useState<CropperPoint>({ x: 0, y: 0 });
   const [zoom, setZoom] = React.useState(1);
-  const [shape, setShape] =
-    React.useState<NonNullable<CropperShape>>("rectangle");
-  const [objectFit, setObjectFit] =
-    React.useState<NonNullable<CropperObjectFit>>("contain");
+  const [shape, setShape] = React.useState<NonNullable<CropperShape>>("rectangle");
+  const [objectFit, setObjectFit] = React.useState<NonNullable<CropperObjectFit>>("contain");
   const [withGrid, setWithGrid] = React.useState(false);
   const [allowOverflow, setAllowOverflow] = React.useState(false);
 
@@ -87,11 +85,7 @@ export default function CropperShapesDemo() {
           </Select>
         </div>
         <div className="flex items-center gap-2">
-          <Switch
-            id={`${id}-grid`}
-            checked={withGrid}
-            onCheckedChange={setWithGrid}
-          />
+          <Switch id={`${id}-grid`} checked={withGrid} onCheckedChange={setWithGrid} />
           <Label htmlFor={`${id}-grid`}>Show Grid</Label>
         </div>
         <div className="flex items-center gap-2">

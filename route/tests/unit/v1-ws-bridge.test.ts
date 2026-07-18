@@ -68,11 +68,11 @@ test("v1 ws bridge streams correlated request chunks and survives protocol error
 
       res.writeHead(200, { "content-type": "text/event-stream; charset=utf-8" });
       res.write(
-        `data: ${JSON.stringify({ choices: [{ delta: { content: `${content}:part1` } }] })}\n\n`
+        `data: ${JSON.stringify({ choices: [{ delta: { content: `${content}:part1` } }] })}\n\n`,
       );
       setTimeout(() => {
         res.write(
-          `data: ${JSON.stringify({ choices: [{ delta: { content: `${content}:part2` } }] })}\n\n`
+          `data: ${JSON.stringify({ choices: [{ delta: { content: `${content}:part2` } }] })}\n\n`,
         );
         res.end("data: [DONE]\n\n");
       }, 10);
@@ -118,7 +118,7 @@ test("v1 ws bridge streams correlated request chunks and survives protocol error
         model: "openai/gpt-4.1-mini",
         messages: [{ role: "user", content: "alpha" }],
       },
-    })
+    }),
   );
   ws.send(
     JSON.stringify({
@@ -129,7 +129,7 @@ test("v1 ws bridge streams correlated request chunks and survives protocol error
         model: "anthropic/claude-3.7-sonnet",
         messages: [{ role: "user", content: "beta" }],
       },
-    })
+    }),
   );
 
   await waitFor(() => {

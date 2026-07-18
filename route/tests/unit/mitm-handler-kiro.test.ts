@@ -8,7 +8,7 @@ test("kiro handler — forwards Anthropic-style body to OmniRoute /v1/messages",
     new KiroHandler(),
     { model: "claude-3.5-sonnet", messages: [{ role: "user", content: "hi" }] },
     "claude-sonnet-4.5",
-    { upstreamBody: "event: message_start\n\n" }
+    { upstreamBody: "event: message_start\n\n" },
   );
   assert.ok(r.fetchCalled);
   assert.equal(r.status, 200);

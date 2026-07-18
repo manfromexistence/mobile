@@ -29,7 +29,7 @@ describe("ManualConfigModal — clipboard migration to shared hook", () => {
     assert.match(
       src,
       /useCopyToClipboard/,
-      "expected ManualConfigModal to consume the shared useCopyToClipboard hook"
+      "expected ManualConfigModal to consume the shared useCopyToClipboard hook",
     );
   });
 
@@ -37,7 +37,7 @@ describe("ManualConfigModal — clipboard migration to shared hook", () => {
     assert.doesNotMatch(
       src,
       /navigator\.clipboard/,
-      "ManualConfigModal must not call navigator.clipboard directly; use the shared hook"
+      "ManualConfigModal must not call navigator.clipboard directly; use the shared hook",
     );
   });
 
@@ -45,7 +45,7 @@ describe("ManualConfigModal — clipboard migration to shared hook", () => {
     assert.doesNotMatch(
       src,
       /document\.execCommand\(\s*["']copy["']\s*\)/,
-      "ManualConfigModal must not inline the execCommand fallback; use the shared hook"
+      "ManualConfigModal must not inline the execCommand fallback; use the shared hook",
     );
   });
 
@@ -53,7 +53,7 @@ describe("ManualConfigModal — clipboard migration to shared hook", () => {
     assert.doesNotMatch(
       src,
       /isSecureContext/,
-      "ManualConfigModal must not gate on isSecureContext; the shared helper handles fallback correctly"
+      "ManualConfigModal must not gate on isSecureContext; the shared helper handles fallback correctly",
     );
   });
 });

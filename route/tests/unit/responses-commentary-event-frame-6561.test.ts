@@ -162,7 +162,7 @@ test("#6561: dropping commentary via event+data frames must not leave event-only
   assert.deepEqual(
     eventOnlyFrames,
     [],
-    `expected no event-only (data-less) SSE frames, got:\n${JSON.stringify(eventOnlyFrames, null, 2)}`
+    `expected no event-only (data-less) SSE frames, got:\n${JSON.stringify(eventOnlyFrames, null, 2)}`,
   );
 
   // The final answer must still be forwarded correctly with its data line intact.

@@ -3,10 +3,7 @@
   "name": "switch",
   "title": "Switch",
   "description": "Animated toggle switch with spring-based thumb animation and fluid font-weight label transitions. Built on Radix UI Switch.",
-  "dependencies": [
-    "framer-motion",
-    "@radix-ui/react-switch"
-  ],
+  "dependencies": ["framer-motion", "@radix-ui/react-switch"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

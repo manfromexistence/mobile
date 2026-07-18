@@ -1,12 +1,7 @@
 "use client";
 
 import { History, Search } from "lucide-react";
-import {
-  AnimatePresence,
-  motion,
-  type Transition,
-  useReducedMotion,
-} from "motion/react";
+import { AnimatePresence, motion, type Transition, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { EASE_OUT } from "@/lib/ease";
 import { cn } from "@/lib/utils";
@@ -62,14 +57,10 @@ export function SearchBar({
   // ...but the leading icon + input travel across the row, so their own layout
   // uses a critically-damped spring — they glide to place without inheriting the
   // box's overshoot (which read as the icon jittering right-then-left).
-  const glide: Transition = reduce
-    ? { duration: 0 }
-    : { type: "spring", duration: 0.5, bounce: 0 };
+  const glide: Transition = reduce ? { duration: 0 } : { type: "spring", duration: 0.5, bounce: 0 };
 
   const query = value.trim().toLowerCase();
-  const filtered = query
-    ? recent.filter((r) => r.toLowerCase().includes(query))
-    : recent;
+  const filtered = query ? recent.filter((r) => r.toLowerCase().includes(query)) : recent;
 
   const submit = (next: string) => {
     onSubmit?.(next);
@@ -113,11 +104,7 @@ export function SearchBar({
             className="absolute top-0 -right-2 -left-2 z-40 overflow-hidden border border-border/30 bg-background backdrop-blur-md"
           >
             <div className="flex h-9 items-center gap-2 px-3">
-              <motion.span
-                layout="position"
-                transition={glide}
-                className="shrink-0"
-              >
+              <motion.span layout="position" transition={glide} className="shrink-0">
                 <Search className="h-4 w-4 text-muted-foreground" />
               </motion.span>
               <motion.input
@@ -150,17 +137,10 @@ export function SearchBar({
                 initial="hidden"
                 animate="show"
                 variants={reduce ? undefined : LIST}
-                className={cn(
-                  "max-h-56 overflow-y-auto p-1.5",
-                  armed ? "" : "pointer-events-none",
-                )}
+                className={cn("max-h-56 overflow-y-auto p-1.5", armed ? "" : "pointer-events-none")}
               >
                 {filtered.map((term) => (
-                  <motion.li
-                    key={term}
-                    layout="position"
-                    variants={reduce ? undefined : ITEM}
-                  >
+                  <motion.li key={term} layout="position" variants={reduce ? undefined : ITEM}>
                     <button
                       type="button"
                       onClick={() => {

@@ -58,16 +58,13 @@ vi.mock("@/shared/components", () => ({
 }));
 
 // ── FORMAT_META stub ──────────────────────────────────────────────────────────
-vi.mock(
-  "@/app/(dashboard)/dashboard/translator/exampleTemplates",
-  () => ({
-    FORMAT_META: {
-      openai: { label: "OpenAI", color: "green" },
-      claude: { label: "Claude", color: "orange" },
-      gemini: { label: "Gemini", color: "blue" },
-    },
-  }),
-);
+vi.mock("@/app/(dashboard)/dashboard/translator/exampleTemplates", () => ({
+  FORMAT_META: {
+    openai: { label: "OpenAI", color: "green" },
+    claude: { label: "Claude", color: "orange" },
+    gemini: { label: "Gemini", color: "blue" },
+  },
+}));
 
 // ── fetch mock helpers ────────────────────────────────────────────────────────
 function mockFetchEmpty() {
@@ -137,8 +134,9 @@ async function mountAndFlushInitialFetch(
 describe("MonitorTab", () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-      true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {
@@ -152,9 +150,7 @@ describe("MonitorTab", () => {
 
   // ── 1. Smoke render ──────────────────────────────────────────────────────────
   it("exports a default function component", async () => {
-    const mod = await import(
-      "@/app/(dashboard)/dashboard/translator/components/MonitorTab"
-    );
+    const mod = await import("@/app/(dashboard)/dashboard/translator/components/MonitorTab");
     expect(typeof mod.default).toBe("function");
   });
 
@@ -230,7 +226,9 @@ describe("MonitorTab", () => {
     const onGoToTranslate = vi.fn();
     await mountAndFlushInitialFetch(<MonitorTab onGoToTranslate={onGoToTranslate} />, container);
 
-    const actionBtn = container.querySelector("[data-testid='empty-action']") as HTMLButtonElement | null;
+    const actionBtn = container.querySelector(
+      "[data-testid='empty-action']",
+    ) as HTMLButtonElement | null;
     expect(actionBtn).toBeTruthy();
     // Label comes from monitorOpenTranslateButton fallback
     expect(actionBtn?.textContent).toContain("Ir para Translate");
@@ -452,9 +450,9 @@ describe("MonitorTab", () => {
   it("fetch error does not leak stack traces into the DOM", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockRejectedValue(
-        new Error("Network Error\n    at fetch (/some/internal/path.ts:42:10)"),
-      ),
+      vi
+        .fn()
+        .mockRejectedValue(new Error("Network Error\n    at fetch (/some/internal/path.ts:42:10)")),
     );
 
     const { default: MonitorTab } = await import(

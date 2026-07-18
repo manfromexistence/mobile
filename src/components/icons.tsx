@@ -1,6 +1,6 @@
-import { FileIcon, TerminalSquareIcon } from "lucide-react"
+import { FileIcon, TerminalSquareIcon } from "lucide-react";
 
-type IconProps = React.ComponentProps<"svg">
+type IconProps = React.ComponentProps<"svg">;
 
 // Source: https://simpleicons.org
 export function JsonIcon(props: IconProps) {
@@ -11,7 +11,7 @@ export function JsonIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function CssIcon(props: IconProps) {
@@ -22,7 +22,7 @@ export function CssIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function JsIcon(props: IconProps) {
@@ -33,7 +33,7 @@ export function JsIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function TsIcon(props: IconProps) {
@@ -44,7 +44,7 @@ export function TsIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function ReactIcon(props: IconProps) {
@@ -55,7 +55,7 @@ export function ReactIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function PnpmIcon(props: IconProps) {
@@ -66,7 +66,7 @@ export function PnpmIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function YarnIcon(props: IconProps) {
@@ -77,7 +77,7 @@ export function YarnIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function NpmIcon(props: IconProps) {
@@ -88,7 +88,7 @@ export function NpmIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function BunIcon(props: IconProps) {
@@ -99,7 +99,7 @@ export function BunIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function GitHubIcon(props: IconProps) {
@@ -110,7 +110,7 @@ export function GitHubIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function VercelIcon(props: IconProps) {
@@ -118,7 +118,7 @@ export function VercelIcon(props: IconProps) {
     <svg viewBox="0 0 24 24" aria-hidden {...props}>
       <path d="m12 3 10 17H2L12 3Z" fill="currentColor" />
     </svg>
-  )
+  );
 }
 
 export function MetaIcon(props: IconProps) {
@@ -129,7 +129,7 @@ export function MetaIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function GoogleIcon(props: IconProps) {
@@ -140,7 +140,7 @@ export function GoogleIcon(props: IconProps) {
         d="M12.452 11.01v3.007h7.375c-.226 1.686-.803 2.921-1.681 3.788-1.08 1.052-2.76 2.2-5.694 2.2-4.541 0-8.09-3.568-8.09-7.993s3.549-7.993 8.09-7.993c2.446 0 4.24.941 5.557 2.151l2.17-2.115C18.347 2.32 15.889 1 12.452 1 6.23 1 1 5.938 1 12s5.23 11 11.452 11c3.36 0 5.895-1.075 7.876-3.08C22.36 17.94 23 15.141 23 12.892c0-.697-.05-1.345-.163-1.882z"
       />
     </svg>
-  )
+  );
 }
 
 export function MicrosoftIcon(props: IconProps) {
@@ -151,18 +151,15 @@ export function MicrosoftIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function AccentureIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden {...props}>
-      <path
-        d="m3 16.125 11.093-4.105L3 7.71V2l19 7.61v4.735L3 22v-5.875Z"
-        fill="currentColor"
-      />
+      <path d="m3 16.125 11.093-4.105L3 7.71V2l19 7.61v4.735L3 22v-5.875Z" fill="currentColor" />
     </svg>
-  )
+  );
 }
 
 export function CourseraIcon(props: IconProps) {
@@ -173,7 +170,7 @@ export function CourseraIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function OpenAIIcon(props: IconProps) {
@@ -184,7 +181,7 @@ export function OpenAIIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function ClaudeIcon(props: IconProps) {
@@ -195,7 +192,7 @@ export function ClaudeIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function GrokIcon(props: IconProps) {
@@ -206,7 +203,7 @@ export function GrokIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function CursorIcon(props: IconProps) {
@@ -217,7 +214,7 @@ export function CursorIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function MarkdownIcon(props: IconProps) {
@@ -228,7 +225,7 @@ export function MarkdownIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function XIcon(props: IconProps) {
@@ -239,7 +236,7 @@ export function XIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function LinkedInIcon(props: IconProps) {
@@ -250,7 +247,7 @@ export function LinkedInIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function AppleIcon(props: IconProps) {
@@ -261,7 +258,7 @@ export function AppleIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function DailyDotDevIcon(props: IconProps) {
@@ -272,7 +269,7 @@ export function DailyDotDevIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function DiscordIcon(props: IconProps) {
@@ -283,7 +280,7 @@ export function DiscordIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function YouTubeIcon(props: IconProps) {
@@ -294,7 +291,7 @@ export function YouTubeIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function ShadcnIcon(props: IconProps) {
@@ -309,7 +306,7 @@ export function ShadcnIcon(props: IconProps) {
         d="m208 128-80 80M192 40 40 192"
       />
     </svg>
-  )
+  );
 }
 
 export function V0Icon(props: IconProps) {
@@ -324,7 +321,7 @@ export function V0Icon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function DmcaIcon(props: IconProps) {
@@ -335,7 +332,7 @@ export function DmcaIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function SciraIcon(props: IconProps) {
@@ -356,7 +353,7 @@ export function SciraIcon(props: IconProps) {
         d="M13.562 1.15c.054 0 .099.04.105.093.112 1.014.449 1.79 1 2.342.551.552 1.328.888 2.342 1a.105.105 0 0 1 0 .21c-1.014.112-1.79.448-2.342 1-.551.551-.888 1.328-1 2.342a.105.105 0 0 1-.21 0c-.112-1.014-.448-1.79-1-2.342-.55-.552-1.328-.888-2.341-1a.105.105 0 0 1 0-.21c1.013-.112 1.79-.448 2.341-1 .552-.551.888-1.328 1-2.342a.105.105 0 0 1 .105-.093ZM20.78 0c.053 0 .098.04.104.093.084.756.334 1.333.743 1.741.408.408.985.659 1.74.743a.105.105 0 0 1 0 .209c-.756.084-1.332.334-1.74.742-.409.409-.66.985-.743 1.741a.105.105 0 0 1-.209 0c-.084-.756-.334-1.332-.743-1.74-.408-.409-.984-.66-1.74-.743a.105.105 0 0 1 0-.209c.756-.084 1.332-.335 1.74-.743.409-.408.66-.985.743-1.74A.105.105 0 0 1 20.78 0Z"
       />
     </svg>
-  )
+  );
 }
 
 export function AnimationsDevIcon(props: IconProps) {
@@ -369,7 +366,7 @@ export function AnimationsDevIcon(props: IconProps) {
         clipRule="evenodd"
       />
     </svg>
-  )
+  );
 }
 
 export function TailwindCssIcon(props: IconProps) {
@@ -380,7 +377,7 @@ export function TailwindCssIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function ResendIcon(props: IconProps) {
@@ -391,7 +388,7 @@ export function ResendIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export function SearchIcon(props: IconProps) {
@@ -410,21 +407,10 @@ export function SearchIcon(props: IconProps) {
         strokeWidth="2"
         strokeLinecap="round"
       /> */}
-      <circle
-        cx="10.5"
-        cy="10.5"
-        r="7.5"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
-      <path
-        d="M21 21L16 16"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
+      <circle cx="10.5" cy="10.5" r="7.5" stroke="currentColor" strokeWidth="2" />
+      <path d="M21 21L16 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
-  )
+  );
 }
 
 // Source: hugeicons.com
@@ -444,32 +430,21 @@ export function SmartPhoneIcon(props: IconProps) {
       <path d="M13.5 2H10.5C8.14298 2 6.96447 2 6.23223 2.73223C5.5 3.46447 5.5 4.64298 5.5 7V17C5.5 19.357 5.5 20.5355 6.23223 21.2678C6.96447 22 8.14298 22 10.5 22H13.5C15.857 22 17.0355 22 17.7678 21.2678C18.5 20.5355 18.5 19.357 18.5 17V7C18.5 4.64298 18.5 3.46447 17.7678 2.73223C17.0355 2 15.857 2 13.5 2Z" />
       <path d="M14 2H10L10.5 3H13.5L14 2Z" />
     </svg>
-  )
+  );
 }
 
 export function TabletIcon(props: IconProps) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden
-      {...props}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden {...props}>
       <path
         d="M14.5 2H9.5C6.67157 2 5.25736 2 4.37868 2.87868C3.5 3.75736 3.5 5.17157 3.5 8V16C3.5 18.8284 3.5 20.2426 4.37868 21.1213C5.25736 22 6.67157 22 9.5 22H14.5C17.3284 22 18.7426 22 19.6213 21.1213C20.5 20.2426 20.5 18.8284 20.5 16V8C20.5 5.17157 20.5 3.75736 19.6213 2.87868C18.7426 2 17.3284 2 14.5 2Z"
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"
       />
-      <path
-        d="M12 19H12.01"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
+      <path d="M12 19H12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
     </svg>
-  )
+  );
 }
 
 export function DesktopIcon(props: IconProps) {
@@ -488,18 +463,12 @@ export function DesktopIcon(props: IconProps) {
       <path d="M14 21H16M14 21C13.1716 21 12.5 20.3284 12.5 19.5V17L12 17M14 21H10M10 21H8M10 21C10.8284 21 11.5 20.3284 11.5 19.5V17L12 17M12 17V21" />
       <path d="M16 3H8C5.17157 3 3.75736 3 2.87868 3.87868C2 4.75736 2 6.17157 2 9V11C2 13.8284 2 15.2426 2.87868 16.1213C3.75736 17 5.17157 17 8 17H16C18.8284 17 20.2426 17 21.1213 16.1213C22 15.2426 22 13.8284 22 11V9C22 6.17157 22 4.75736 21.1213 3.87868C20.2426 3 18.8284 3 16 3Z" />
     </svg>
-  )
+  );
 }
 
 export function FullScreenIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden
-      {...props}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden {...props}>
       <path
         d="M15.5 21C16.8956 21 17.5933 21 18.1611 20.8278C19.4395 20.44 20.44 19.4395 20.8278 18.1611C21 17.5933 21 16.8956 21 15.5M21 8.5C21 7.10444 21 6.40666 20.8278 5.83886C20.44 4.56046 19.4395 3.56004 18.1611 3.17224C17.5933 3 16.8956 3 15.5 3M8.5 21C7.10444 21 6.40666 21 5.83886 20.8278C4.56046 20.44 3.56004 19.4395 3.17224 18.1611C3 17.5933 3 16.8956 3 15.5M3 8.5C3 7.10444 3 6.40666 3.17224 5.83886C3.56004 4.56046 4.56046 3.56004 5.83886 3.17224C6.40666 3 7.10444 3 8.5 3"
         stroke="currentColor"
@@ -508,7 +477,7 @@ export function FullScreenIcon(props: React.SVGProps<SVGSVGElement>) {
         strokeLinejoin="round"
       />
     </svg>
-  )
+  );
 }
 
 export function RefreshIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -527,18 +496,12 @@ export function RefreshIcon(props: React.SVGProps<SVGSVGElement>) {
       <path d="M20.4879 15C19.2524 18.4956 15.9187 21 12 21C7.02943 21 3 16.9706 3 12C3 7.02943 7.02943 3 12 3C15.7292 3 18.9286 5.26806 20.2941 8.5" />
       <path d="M15 9H18C19.4142 9 20.1213 9 20.5607 8.56066C21 8.12132 21 7.41421 21 6V3" />
     </svg>
-  )
+  );
 }
 
 export function FolderIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden
-      {...props}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden {...props}>
       <path
         d="M8 7H16.75C18.8567 7 19.91 7 20.6667 7.50559C20.9943 7.72447 21.2755 8.00572 21.4944 8.33329C22 9.08996 22 10.1433 22 12.25C22 15.7612 22 17.5167 21.1573 18.7779C20.7926 19.3238 20.3238 19.7926 19.7779 20.1573C18.5167 21 16.7612 21 13.25 21H12C7.28595 21 4.92893 21 3.46447 19.5355C2 18.0711 2 15.714 2 11V7.94427C2 6.1278 2 5.21956 2.38032 4.53806C2.65142 4.05227 3.05227 3.65142 3.53806 3.38032C4.21956 3 5.1278 3 6.94427 3C8.10802 3 8.6899 3 9.19926 3.19101C10.3622 3.62712 10.8418 4.68358 11.3666 5.73313L12 7"
         stroke="currentColor"
@@ -546,7 +509,7 @@ export function FolderIcon(props: React.SVGProps<SVGSVGElement>) {
         strokeLinecap="round"
       />
     </svg>
-  )
+  );
 }
 
 export function FolderOpenIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -567,7 +530,7 @@ export function FolderOpenIcon(props: React.SVGProps<SVGSVGElement>) {
       />
       <path d="M3.15802 15.5144L3.45643 14.7717C4.19029 12.9449 4.55723 12.0316 5.3224 11.5158C6.08757 11 7.07557 11 9.05157 11H17.1119C19.8004 11 21.1446 11 21.7422 11.8787C22.3397 12.7575 21.8405 14.0002 20.842 16.4856L20.5436 17.2283C19.8097 19.0551 19.4428 19.9684 18.6776 20.4842C17.9124 21 16.9244 21 14.9484 21H6.88812C4.19961 21 2.85535 21 2.25782 20.1213C1.66029 19.2425 2.15953 17.9998 3.15802 15.5144Z" />
     </svg>
-  )
+  );
 }
 
 export function TerminalIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -582,7 +545,7 @@ export function TerminalIcon(props: React.SVGProps<SVGSVGElement>) {
       <path d="M3.29301 4.29301C3.68354 3.90249 4.31655 3.90249 4.70708 4.29301L10.7071 10.293C11.0976 10.6835 11.0976 11.3166 10.7071 11.7071L4.70708 17.7071C4.31655 18.0976 3.68353 18.0976 3.29301 17.7071C2.90252 17.3166 2.90252 16.6835 3.29301 16.293L8.58598 11L3.29301 5.70708C2.90249 5.31655 2.90249 4.68354 3.29301 4.29301Z" />
       <path d="M20 18C20.5523 18 21 18.4477 21 19C21 19.5523 20.5523 20 20 20H12C11.4477 20 11 19.5523 11 19C11 18.4477 11.4477 18 12 18H20Z" />
     </svg>
-  )
+  );
 }
 
 export function GridViewIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -602,7 +565,7 @@ export function GridViewIcon(props: React.SVGProps<SVGSVGElement>) {
       <path d="M3.88884 20.6629C4.39329 21 5.09552 21 6.49998 21C7.90445 21 8.60668 21 9.11113 20.6629C9.32951 20.517 9.51701 20.3295 9.66292 20.1111C9.99998 19.6067 9.99998 18.9045 9.99998 17.5C9.99998 16.0955 9.99998 15.3933 9.66292 14.8889C9.51701 14.6705 9.32951 14.483 9.11113 14.3371C8.60668 14 7.90445 14 6.49998 14C5.09552 14 4.39329 14 3.88884 14.3371C3.67046 14.483 3.48296 14.6705 3.33705 14.8889C2.99998 15.3933 2.99998 16.0955 2.99998 17.5C2.99998 18.9045 2.99998 19.6067 3.33705 20.1111C3.48296 20.3295 3.67046 20.517 3.88884 20.6629Z" />
       <path d="M14.8888 20.6629C15.3933 21 16.0955 21 17.5 21C18.9044 21 19.6067 21 20.1111 20.6629C20.3295 20.517 20.517 20.3295 20.6629 20.1111C21 19.6067 21 18.9045 21 17.5C21 16.0955 21 15.3933 20.6629 14.8889C20.517 14.6705 20.3295 14.483 20.1111 14.3371C19.6067 14 18.9044 14 17.5 14C16.0955 14 15.3933 14 14.8888 14.3371C14.6705 14.483 14.483 14.6705 14.337 14.8889C14 15.3933 14 16.0955 14 17.5C14 18.9045 14 19.6067 14.337 20.1111C14.483 20.3295 14.6705 20.517 14.8888 20.6629Z" />
     </svg>
-  )
+  );
 }
 
 export function NewsIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -624,18 +587,12 @@ export function NewsIcon(props: React.SVGProps<SVGSVGElement>) {
       <path d="M6 16L10 16" />
       <path d="M18 8H19C20.4142 8 21.1213 8 21.5607 8.43934C22 8.87868 22 9.58579 22 11V19C22 20.1046 21.1046 21 20 21C18.8954 21 18 20.1046 18 19V8Z" />
     </svg>
-  )
+  );
 }
 
 export function FavouriteIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden
-      {...props}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden {...props}>
       <path
         d="M10.4107 19.9677C7.58942 17.858 2 13.0348 2 8.69444C2 5.82563 4.10526 3.5 7 3.5C8.5 3.5 10 4 12 6C14 4 15.5 3.5 17 3.5C19.8947 3.5 22 5.82563 22 8.69444C22 13.0348 16.4106 17.858 13.5893 19.9677C12.6399 20.6776 11.3601 20.6776 10.4107 19.9677Z"
         stroke="currentColor"
@@ -644,7 +601,7 @@ export function FavouriteIcon(props: React.SVGProps<SVGSVGElement>) {
         strokeLinejoin="round"
       />
     </svg>
-  )
+  );
 }
 
 // Designed by @ncdai
@@ -664,39 +621,39 @@ export function TrustedRegistryIcon(props: React.SVGProps<SVGSVGElement>) {
       <path d="M19 17L14 22" />
       <path d="M18 12L9 21" />
     </svg>
-  )
+  );
 }
 
 export function getIconForLanguageExtension(language: string) {
   switch (language) {
     case "json":
-      return <JsonIcon />
+      return <JsonIcon />;
     case "css":
-      return <CssIcon />
+      return <CssIcon />;
     case "js":
-      return <JsIcon />
+      return <JsIcon />;
     case "ts":
     case "typescript":
-      return <TsIcon />
+      return <TsIcon />;
     case "jsx":
     case "tsx":
-      return <ReactIcon />
+      return <ReactIcon />;
     default:
-      return <FileIcon />
+      return <FileIcon />;
   }
 }
 
 export function getIconForPackageManager(manager: string) {
   switch (manager) {
     case "pnpm":
-      return <PnpmIcon />
+      return <PnpmIcon />;
     case "yarn":
-      return <YarnIcon />
+      return <YarnIcon />;
     case "npm":
-      return <NpmIcon />
+      return <NpmIcon />;
     case "bun":
-      return <BunIcon />
+      return <BunIcon />;
     default:
-      return <TerminalSquareIcon />
+      return <TerminalSquareIcon />;
   }
 }

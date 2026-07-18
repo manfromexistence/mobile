@@ -29,9 +29,7 @@ export default function ComboboxCustomFilterDemo() {
   const [value, setValue] = React.useState("");
 
   function onFilter(options: string[], inputValue: string) {
-    const trickOptions = tricks.filter((trick) =>
-      options.includes(trick.value),
-    );
+    const trickOptions = tricks.filter((trick) => options.includes(trick.value));
     return matchSorter(trickOptions, inputValue, {
       keys: ["label", "value"],
       threshold: matchSorter.rankings.MATCHES,

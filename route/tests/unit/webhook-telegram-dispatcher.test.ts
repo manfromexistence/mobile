@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { buildTelegramPayload, buildTelegramUrl } =
-  await import("../../src/lib/webhooks/integrations/telegram.ts");
+const { buildTelegramPayload, buildTelegramUrl } = await import(
+  "../../src/lib/webhooks/integrations/telegram.ts"
+);
 
 const VALID_TOKEN = "123456789:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghi";
 
@@ -15,7 +16,7 @@ test("buildTelegramUrl throws on invalid botToken format", () => {
   assert.throws(() => buildTelegramUrl("123456:SHORT"), /Invalid Telegram bot token/);
   assert.throws(
     () => buildTelegramUrl("notanumber:ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghi"),
-    /Invalid Telegram bot token/
+    /Invalid Telegram bot token/,
   );
   assert.throws(() => buildTelegramUrl(""), /Invalid Telegram bot token/);
 });
@@ -24,14 +25,14 @@ test("buildTelegramPayload — request.failed includes model and event label", (
   const payload = buildTelegramPayload(
     "request.failed",
     { model: "claude-opus-4-7", error: "503" },
-    "-100123"
+    "-100123",
   );
   assert.equal(payload.chat_id, "-100123");
   assert.ok(payload.text.includes("claude-opus-4-7"), "should include model name");
   assert.ok(
     payload.text.toLowerCase().includes("request failed") ||
       payload.text.toLowerCase().includes("failed"),
-    "should include event label"
+    "should include event label",
   );
   assert.equal(payload.parse_mode, "Markdown");
 });
@@ -47,7 +48,7 @@ test("buildTelegramPayload — request.completed includes provider, account, com
       latencyMs: 1421,
       fallbackCount: 2,
     },
-    "-100123"
+    "-100123",
   );
 
   assert.ok(payload.text.includes("Model: `codex/gpt-5.5`"));
@@ -65,7 +66,7 @@ test("buildTelegramPayload — accountId falls back to short account label", () 
       provider: "codex",
       accountId: "12345678-abcd-efgh-ijkl-1234567890ab",
     },
-    "-100123"
+    "-100123",
   );
 
   assert.ok(payload.text.includes("Account: `Account #123456`"));
@@ -91,7 +92,7 @@ test("buildTelegramPayload — all WEBHOOK_EVENTS produce valid payloads with ch
     assert.equal(payload.chat_id, "99999");
     assert.ok(
       typeof payload.text === "string" && payload.text.length > 0,
-      `event ${event} must produce non-empty text`
+      `event ${event} must produce non-empty text`,
     );
   }
 });

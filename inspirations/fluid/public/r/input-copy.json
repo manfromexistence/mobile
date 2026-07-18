@@ -3,10 +3,7 @@
   "name": "input-copy",
   "title": "Input Copy",
   "description": "Read-only input with a copy-to-clipboard button and animated check feedback. Supports optional label and shape context.",
-  "dependencies": [
-    "framer-motion",
-    "lucide-react"
-  ],
+  "dependencies": ["framer-motion", "lucide-react"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

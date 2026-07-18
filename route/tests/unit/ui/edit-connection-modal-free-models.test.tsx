@@ -11,8 +11,9 @@ vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key,
 }));
 
-const { default: EditConnectionModal } =
-  await import("../../../src/app/(dashboard)/dashboard/providers/[id]/components/modals/EditConnectionModal");
+const { default: EditConnectionModal } = await import(
+  "../../../src/app/(dashboard)/dashboard/providers/[id]/components/modals/EditConnectionModal"
+);
 
 const FREE_TOGGLE = 'button[role="switch"][aria-label="importFreeModelsOnlyLabel"]';
 
@@ -30,7 +31,7 @@ function render(props: Record<string, unknown>) {
         onSave={async () => undefined}
         onClose={() => {}}
         {...(props as any)}
-      />
+      />,
     );
   });
   containers.push({ root, el });
@@ -59,8 +60,8 @@ beforeEach(() => {
   vi.stubGlobal(
     "fetch",
     vi.fn(() =>
-      Promise.resolve({ ok: true, json: async () => ({}), text: async () => "" } as Response)
-    )
+      Promise.resolve({ ok: true, json: async () => ({}), text: async () => "" } as Response),
+    ),
   );
   vi.stubGlobal("localStorage", {
     getItem: () => null,
@@ -126,7 +127,7 @@ describe("EditConnectionModal — import only free models", () => {
     });
 
     const saveBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "save"
+      (b) => b.textContent?.trim() === "save",
     )!;
     act(() => {
       saveBtn.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -154,7 +155,7 @@ describe("EditConnectionModal — import only free models", () => {
     });
 
     const saveBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "save"
+      (b) => b.textContent?.trim() === "save",
     )!;
     act(() => {
       saveBtn.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -185,7 +186,7 @@ describe("EditConnectionModal — quota scraping fields", () => {
     });
 
     const workspaceInput = el.querySelector<HTMLInputElement>(
-      'input[name="opencodeGoWorkspaceId"]'
+      'input[name="opencodeGoWorkspaceId"]',
     )!;
     const cookieInput = el.querySelector<HTMLInputElement>('input[name="opencodeGoAuthCookie"]')!;
     expect(workspaceInput.value).toBe("workspace-existing");
@@ -193,7 +194,7 @@ describe("EditConnectionModal — quota scraping fields", () => {
     setInputValue(cookieInput, "auth=opencode-cookie");
 
     const saveBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "save"
+      (b) => b.textContent?.trim() === "save",
     )!;
     act(() => {
       saveBtn.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -222,7 +223,7 @@ describe("EditConnectionModal — quota scraping fields", () => {
     expect(el.querySelector<HTMLInputElement>('input[name="ollamaCloudUsageCookie"]')).toBeTruthy();
 
     const saveBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "save"
+      (b) => b.textContent?.trim() === "save",
     )!;
     act(() => {
       saveBtn.dispatchEvent(new MouseEvent("click", { bubbles: true }));

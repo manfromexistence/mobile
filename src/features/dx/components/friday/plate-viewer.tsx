@@ -132,19 +132,13 @@ function renderElement(props: RenderElementProps) {
       );
     case "h3":
       return (
-        <h3
-          {...attributes}
-          className="text-[1.05rem] font-semibold mt-4 mb-1.5 text-foreground"
-        >
+        <h3 {...attributes} className="text-[1.05rem] font-semibold mt-4 mb-1.5 text-foreground">
           {children}
         </h3>
       );
     case "h4":
       return (
-        <h4
-          {...attributes}
-          className="text-[1rem] font-semibold mt-3 mb-1 text-foreground"
-        >
+        <h4 {...attributes} className="text-[1rem] font-semibold mt-3 mb-1 text-foreground">
           {children}
         </h4>
       );

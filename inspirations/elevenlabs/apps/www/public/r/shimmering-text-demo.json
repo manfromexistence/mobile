@@ -1,9 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "shimmering-text-demo",
-  "registryDependencies": [
-    "https://ui.elevenlabs.io/r/shimmering-text.json"
-  ],
+  "registryDependencies": ["https://ui.elevenlabs.io/r/shimmering-text.json"],
   "files": [
     {
       "path": "examples/shimmering-text-demo.tsx",

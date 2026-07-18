@@ -7,8 +7,9 @@ import assert from "node:assert/strict";
 //  buildAuthHeaders — shared abstractions from PR #167
 // ═══════════════════════════════════════════════════════════════
 
-const { parseModelFromRegistry, getAllModelsFromRegistry, buildAuthHeaders } =
-  await import("../../open-sse/config/registryUtils.ts");
+const { parseModelFromRegistry, getAllModelsFromRegistry, buildAuthHeaders } = await import(
+  "../../open-sse/config/registryUtils.ts"
+);
 
 // ─── Test fixtures ────────────────────────────────────────────
 

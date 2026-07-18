@@ -53,12 +53,7 @@ function ConceptNav() {
       <NavMenu activeSlug={pathname} aria-label="Concept screens">
         <NavItem index={0} href="/" label="Home" icon={Home} />
         {CONCEPTS.map((c, i) => (
-          <NavItem
-            key={c.slug}
-            index={i + 1}
-            href={`/concepts/${c.slug}`}
-            label={c.name}
-          />
+          <NavItem key={c.slug} index={i + 1} href={`/concepts/${c.slug}`} label={c.name} />
         ))}
       </NavMenu>
     </aside>

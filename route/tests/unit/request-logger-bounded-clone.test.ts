@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { cloneBoundedForLog, MAX_LOG_ARRAY_ITEMS } =
-  await import("../../open-sse/utils/requestLogger.ts");
+const { cloneBoundedForLog, MAX_LOG_ARRAY_ITEMS } = await import(
+  "../../open-sse/utils/requestLogger.ts"
+);
 
 test("cloneBoundedForLog: tools array is exempt from truncation (debug-critical)", () => {
   const tools = Array.from({ length: 45 }, (_, i) => ({
@@ -16,7 +17,7 @@ test("cloneBoundedForLog: tools array is exempt from truncation (debug-critical)
   // No truncation marker should appear inside tools
   assert.ok(
     !("_omniroute_truncated_array" in result.tools[0]),
-    "tools array should NOT have truncation marker"
+    "tools array should NOT have truncation marker",
   );
 });
 

@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { isCloudflareChallenge, looksLikeSse, TlsClientUnavailableError } =
-  await import("../../open-sse/services/perplexityTlsClient.ts");
+const { isCloudflareChallenge, looksLikeSse, TlsClientUnavailableError } = await import(
+  "../../open-sse/services/perplexityTlsClient.ts"
+);
 
 // Regression for #2459: a Cloudflare 403 challenge page must be distinguishable from a
 // genuine auth failure so the executor/validator can surface an actionable error.

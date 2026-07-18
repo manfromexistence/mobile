@@ -1,17 +1,8 @@
 {
   "name": "key-value-form-demo",
   "type": "registry:example",
-  "dependencies": [
-    "@hookform/resolvers/zod",
-    "react-hook-form",
-    "zod"
-  ],
-  "registryDependencies": [
-    "key-value",
-    "button",
-    "form",
-    "input"
-  ],
+  "dependencies": ["@hookform/resolvers/zod", "react-hook-form", "zod"],
+  "registryDependencies": ["key-value", "button", "form", "input"],
   "files": [
     {
       "path": "examples/key-value-form-demo.tsx",

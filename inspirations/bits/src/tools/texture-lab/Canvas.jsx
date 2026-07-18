@@ -1,12 +1,22 @@
-import { Box, Flex, Text, Icon, Slider } from '@chakra-ui/react';
-import { useRef, useEffect, useState, useCallback } from 'react';
-import { ZoomIn, ZoomOut, SplitSquareHorizontal, Upload, Maximize, GripVertical, Play, Pause, Eye } from 'lucide-react';
+import { Box, Flex, Text, Icon, Slider } from "@chakra-ui/react";
+import { useRef, useEffect, useState, useCallback } from "react";
+import {
+  ZoomIn,
+  ZoomOut,
+  SplitSquareHorizontal,
+  Upload,
+  Maximize,
+  GripVertical,
+  Play,
+  Pause,
+  Eye,
+} from "lucide-react";
 
-const formatTime = seconds => {
-  if (!seconds || isNaN(seconds)) return '0:00';
+const formatTime = (seconds) => {
+  if (!seconds || isNaN(seconds)) return "0:00";
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, '0')}`;
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
 };
 
 export default function Canvas({
@@ -23,7 +33,7 @@ export default function Canvas({
   duration,
   onPlayPause,
   onSeek,
-  isExporting
+  isExporting,
 }) {
   const containerRef = useRef(null);
   const canvasWrapperRef = useRef(null);
@@ -40,7 +50,7 @@ export default function Canvas({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const observer = new ResizeObserver(entries => {
+    const observer = new ResizeObserver((entries) => {
       const { width, height } = entries[0].contentRect;
       setContainerSize({ width, height });
     });
@@ -51,7 +61,7 @@ export default function Canvas({
 
   const lastFitMediaRef = useRef(null);
   useEffect(() => {
-    const media = mediaType === 'video' ? video : image;
+    const media = mediaType === "video" ? video : image;
     if (!media || !containerSize.width) return;
     // Only fit-to-view when the media itself changes, not on every container
     // resize (which would otherwise discard the user's manual zoom/pan).
@@ -69,29 +79,29 @@ export default function Canvas({
     setPan({ x: 0, y: 0 });
   }, [image, video, mediaType, containerSize]);
 
-  const handleWheel = useCallback(e => {
+  const handleWheel = useCallback((e) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    setZoom(z => Math.min(Math.max(z * delta, 0.1), 10));
+    setZoom((z) => Math.min(Math.max(z * delta, 0.1), 10));
   }, []);
 
   const handleMouseDown = useCallback(
-    e => {
+    (e) => {
       if (e.button === 1 || (e.button === 0 && spaceHeld)) {
         e.preventDefault();
         setIsPanning(true);
         setLastMouse({ x: e.clientX, y: e.clientY });
       }
     },
-    [spaceHeld]
+    [spaceHeld],
   );
 
   const handleMouseMove = useCallback(
-    e => {
+    (e) => {
       if (isPanning) {
-        setPan(p => ({
+        setPan((p) => ({
           x: p.x + (e.clientX - lastMouse.x),
-          y: p.y + (e.clientY - lastMouse.y)
+          y: p.y + (e.clientY - lastMouse.y),
         }));
         setLastMouse({ x: e.clientX, y: e.clientY });
       }
@@ -102,7 +112,7 @@ export default function Canvas({
         setSplitPosition(Math.max(0.05, Math.min(0.95, pos)));
       }
     },
-    [isPanning, isDraggingSplit, lastMouse]
+    [isPanning, isDraggingSplit, lastMouse],
   );
 
   const handleMouseUp = useCallback(() => {
@@ -111,44 +121,44 @@ export default function Canvas({
   }, []);
 
   useEffect(() => {
-    const handleKeyDown = e => {
-      if (e.code === 'Space' && !e.repeat && document.activeElement?.tagName !== 'INPUT') {
+    const handleKeyDown = (e) => {
+      if (e.code === "Space" && !e.repeat && document.activeElement?.tagName !== "INPUT") {
         e.preventDefault();
         setSpaceHeld(true);
       }
     };
-    const handleKeyUp = e => {
-      if (e.code === 'Space') {
+    const handleKeyUp = (e) => {
+      if (e.code === "Space") {
         setSpaceHeld(false);
         setIsPanning(false);
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
 
   useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [handleMouseMove, handleMouseUp]);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    el.addEventListener('wheel', handleWheel, { passive: false });
-    return () => el.removeEventListener('wheel', handleWheel);
+    el.addEventListener("wheel", handleWheel, { passive: false });
+    return () => el.removeEventListener("wheel", handleWheel);
   }, [handleWheel]);
 
   const handleResetView = useCallback(() => {
-    const media = mediaType === 'video' ? video : image;
+    const media = mediaType === "video" ? video : image;
     if (!media || !containerSize.width) return;
 
     const mediaWidth = media.width || media.videoWidth;
@@ -161,24 +171,24 @@ export default function Canvas({
   }, [image, video, mediaType, containerSize]);
 
   const handleDragOver = useCallback(
-    e => {
+    (e) => {
       e.preventDefault();
       e.stopPropagation();
-      if (!isExporting && e.dataTransfer.types.includes('Files')) {
+      if (!isExporting && e.dataTransfer.types.includes("Files")) {
         setIsDragOver(true);
       }
     },
-    [isExporting]
+    [isExporting],
   );
 
-  const handleDragLeave = useCallback(e => {
+  const handleDragLeave = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragOver(false);
   }, []);
 
   const handleDrop = useCallback(
-    e => {
+    (e) => {
       e.preventDefault();
       e.stopPropagation();
       setIsDragOver(false);
@@ -186,23 +196,27 @@ export default function Canvas({
       if (isExporting) return;
 
       const file = e.dataTransfer.files?.[0];
-      if (file && (file.type.startsWith('image/') || file.type.startsWith('video/')) && onMediaDrop) {
+      if (
+        file &&
+        (file.type.startsWith("image/") || file.type.startsWith("video/")) &&
+        onMediaDrop
+      ) {
         onMediaDrop(file);
       }
     },
-    [onMediaDrop, isExporting]
+    [onMediaDrop, isExporting],
   );
 
   const fileInputRef = useRef(null);
   const handleFileSelect = useCallback(
-    e => {
+    (e) => {
       const file = e.target.files?.[0];
       if (file) {
-        onMediaLoad(file, 'file');
+        onMediaLoad(file, "file");
       }
-      e.target.value = '';
+      e.target.value = "";
     },
-    [onMediaLoad]
+    [onMediaLoad],
   );
 
   return (
@@ -213,7 +227,7 @@ export default function Canvas({
       h="100%"
       bg="var(--bg-body)"
       overflow="hidden"
-      cursor={isPanning ? 'grabbing' : spaceHeld ? 'grab' : 'default'}
+      cursor={isPanning ? "grabbing" : spaceHeld ? "grab" : "default"}
       onMouseDown={handleMouseDown}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -251,8 +265,8 @@ export default function Canvas({
             linear-gradient(to right, var(--border-primary) 1px, transparent 1px),
             linear-gradient(to bottom, var(--border-primary) 1px, transparent 1px)
           `,
-          backgroundSize: '20px 20px',
-          backgroundPosition: '0 0, 0 0',
+          backgroundSize: "20px 20px",
+          backgroundPosition: "0 0, 0 0",
           maskImage: `
             repeating-linear-gradient(
               to right,
@@ -287,8 +301,8 @@ export default function Canvas({
             ),
             radial-gradient(ellipse 60% 60% at 50% 50%, #000 30%, transparent 70%)
           `,
-          maskComposite: 'intersect',
-          WebkitMaskComposite: 'source-in'
+          maskComposite: "intersect",
+          WebkitMaskComposite: "source-in",
         }}
       />
 
@@ -299,19 +313,19 @@ export default function Canvas({
         left="50%"
         transform={`translate(calc(-50% + ${pan.x}px), calc(-50% + ${pan.y}px)) scale(${zoom})`}
         transformOrigin="center"
-        transition={isPanning ? 'none' : 'transform 0.1s ease-out'}
-        style={{ background: 'none' }}
-        display={image || video ? 'flex' : 'none'}
+        transition={isPanning ? "none" : "transform 0.1s ease-out"}
+        style={{ background: "none" }}
+        display={image || video ? "flex" : "none"}
       >
         <canvas
           ref={canvasRef}
           style={{
-            display: 'block',
-            borderRadius: '4px'
+            display: "block",
+            borderRadius: "4px",
           }}
         />
 
-        {viewMode === 'split' && image && (
+        {viewMode === "split" && image && (
           <Box
             position="absolute"
             top={0}
@@ -321,7 +335,7 @@ export default function Canvas({
             overflow="hidden"
             borderRadius="4px"
             pointerEvents="none"
-            style={{ background: 'none' }}
+            style={{ background: "none" }}
           >
             <Box
               position="absolute"
@@ -330,22 +344,22 @@ export default function Canvas({
               h="100%"
               w="100%"
               style={{
-                background: 'none',
-                clipPath: `inset(0 ${(1 - splitPosition) * 100}% 0 0)`
+                background: "none",
+                clipPath: `inset(0 ${(1 - splitPosition) * 100}% 0 0)`,
               }}
             >
               <img
                 src={image.src}
                 alt="Original"
                 draggable={false}
-                onDragStart={e => e.preventDefault()}
+                onDragStart={(e) => e.preventDefault()}
                 style={{
                   width: canvasRef.current?.width || image.width,
                   height: canvasRef.current?.height || image.height,
-                  display: 'block',
-                  background: 'none',
-                  userSelect: 'none',
-                  pointerEvents: 'none'
+                  display: "block",
+                  background: "none",
+                  userSelect: "none",
+                  pointerEvents: "none",
                 }}
               />
             </Box>
@@ -361,7 +375,7 @@ export default function Canvas({
               boxShadow="0 0 8px rgba(0,0,0,0.5)"
               pointerEvents="auto"
               cursor="ew-resize"
-              onMouseDown={e => {
+              onMouseDown={(e) => {
                 e.stopPropagation();
                 setIsDraggingSplit(true);
               }}
@@ -383,11 +397,11 @@ export default function Canvas({
               pointerEvents="auto"
               boxShadow="0 2px 12px rgba(0,0,0,0.5)"
               zIndex={11}
-              onMouseDown={e => {
+              onMouseDown={(e) => {
                 e.stopPropagation();
                 setIsDraggingSplit(true);
               }}
-              _hover={{ bg: '#f0f0f0' }}
+              _hover={{ bg: "#f0f0f0" }}
               transition="background 0.15s"
             >
               <Icon as={GripVertical} boxSize={4} color="#000" />
@@ -424,17 +438,17 @@ export default function Canvas({
           </Box>
         )}
 
-        {viewMode === 'before-after' && image && (
+        {viewMode === "before-after" && image && (
           <Box position="absolute" top={0} left={0} right={0} bottom={0} pointerEvents="none">
             <img
               src={image.src}
               alt="Original"
               style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
                 opacity: 0,
-                transition: 'opacity 0.2s'
+                transition: "opacity 0.2s",
               }}
               className="before-image"
             />
@@ -462,9 +476,16 @@ export default function Canvas({
             ref={fileInputRef}
             onChange={handleFileSelect}
             accept="image/png,image/jpeg,image/webp,video/mp4,video/webm,video/ogg"
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
-          <Box w="60px" h="60px" borderRadius="16px" display="flex" alignItems="center" justifyContent="center">
+          <Box
+            w="60px"
+            h="60px"
+            borderRadius="16px"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
             <Icon as={Upload} boxSize={8} color="var(--border-primary)" />
           </Box>
           <Text fontSize="14px" color="var(--text-muted)" textAlign="center">
@@ -487,7 +508,7 @@ export default function Canvas({
         p={1}
         align="center"
       >
-        {mediaType === 'video' && video && (
+        {mediaType === "video" && video && (
           <>
             <Flex
               as="button"
@@ -496,11 +517,11 @@ export default function Canvas({
               w={7}
               h={7}
               borderRadius="4px"
-              cursor={isExporting ? 'not-allowed' : 'pointer'}
+              cursor={isExporting ? "not-allowed" : "pointer"}
               bg="rgba(168, 85, 247, 0.2)"
               onClick={isExporting ? undefined : onPlayPause}
               transition="all 0.15s"
-              _hover={{ bg: isExporting ? 'rgba(168, 85, 247, 0.2)' : 'rgba(168, 85, 247, 0.4)' }}
+              _hover={{ bg: isExporting ? "rgba(168, 85, 247, 0.2)" : "rgba(168, 85, 247, 0.4)" }}
               opacity={isExporting ? 0.5 : 1}
             >
               <Icon as={isPlaying ? Pause : Play} boxSize={4} color="var(--color-accent)" />
@@ -518,7 +539,7 @@ export default function Canvas({
                 flex={1}
                 disabled={isExporting}
               >
-                <Slider.Control css={{ cursor: isExporting ? 'not-allowed' : 'pointer' }}>
+                <Slider.Control css={{ cursor: isExporting ? "not-allowed" : "pointer" }}>
                   <Slider.Track bg="var(--bg-elevated)" h="4px" borderRadius="2px">
                     <Slider.Range bg="var(--color-primary)" />
                   </Slider.Track>
@@ -527,7 +548,7 @@ export default function Canvas({
                     boxSize={2.5}
                     bg="#fff"
                     borderRadius="full"
-                    css={{ display: isExporting ? 'none' : 'block' }}
+                    css={{ display: isExporting ? "none" : "block" }}
                   />
                 </Slider.Control>
               </Slider.Root>
@@ -538,23 +559,27 @@ export default function Canvas({
             <Box w="1px" h={5} bg="var(--border-primary)" mx={1} />
           </>
         )}
-        <ControlButton icon={ZoomOut} onClick={() => setZoom(z => Math.max(z * 0.8, 0.1))} />
+        <ControlButton icon={ZoomOut} onClick={() => setZoom((z) => Math.max(z * 0.8, 0.1))} />
         <Flex align="center" justify="center" px={2} minW="50px">
           <Text fontSize="11px" color="var(--text-muted)" fontFamily="mono">
             {Math.round(zoom * 100)}%
           </Text>
         </Flex>
-        <ControlButton icon={ZoomIn} onClick={() => setZoom(z => Math.min(z * 1.2, 10))} />
+        <ControlButton icon={ZoomIn} onClick={() => setZoom((z) => Math.min(z * 1.2, 10))} />
         <Box w="1px" h={5} bg="var(--border-primary)" mx={1} />
         <ControlButton icon={Maximize} onClick={handleResetView} />
-        {mediaType !== 'video' && (
+        {mediaType !== "video" && (
           <>
             <Box w="1px" h={5} bg="var(--border-primary)" mx={1} />
-            <ControlButton icon={Eye} isActive={viewMode === 'preview'} onClick={() => onViewModeChange('preview')} />
+            <ControlButton
+              icon={Eye}
+              isActive={viewMode === "preview"}
+              onClick={() => onViewModeChange("preview")}
+            />
             <ControlButton
               icon={SplitSquareHorizontal}
-              isActive={viewMode === 'split'}
-              onClick={() => onViewModeChange('split')}
+              isActive={viewMode === "split"}
+              onClick={() => onViewModeChange("split")}
             />
           </>
         )}
@@ -566,7 +591,7 @@ export default function Canvas({
         right={4}
         fontSize="10px"
         color="var(--border-primary)"
-        display={{ base: 'none', lg: 'block' }}
+        display={{ base: "none", lg: "block" }}
       >
         Scroll to zoom • Space + Drag to pan
       </Text>
@@ -583,11 +608,15 @@ const ControlButton = ({ icon: IconComponent, onClick, isActive }) => (
     h={7}
     borderRadius="4px"
     cursor="pointer"
-    bg={isActive ? 'rgba(168, 85, 247, 0.2)' : 'transparent'}
+    bg={isActive ? "rgba(168, 85, 247, 0.2)" : "transparent"}
     onClick={onClick}
     transition="all 0.15s"
-    _hover={{ bg: isActive ? 'rgba(168, 85, 247, 0.3)' : 'rgba(255,255,255,0.1)' }}
+    _hover={{ bg: isActive ? "rgba(168, 85, 247, 0.3)" : "rgba(255,255,255,0.1)" }}
   >
-    <Icon as={IconComponent} boxSize={4} color={isActive ? 'var(--color-accent)' : 'var(--text-muted)'} />
+    <Icon
+      as={IconComponent}
+      boxSize={4}
+      color={isActive ? "var(--color-accent)" : "var(--text-muted)"}
+    />
   </Flex>
 );

@@ -1,18 +1,8 @@
 {
   "name": "media-player-hls-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react",
-    "media-chrome",
-    "@mux/mux-video-react"
-  ],
-  "registryDependencies": [
-    "button",
-    "media-player",
-    "select",
-    "slider",
-    "tooltip"
-  ],
+  "dependencies": ["lucide-react", "media-chrome", "@mux/mux-video-react"],
+  "registryDependencies": ["button", "media-player", "select", "slider", "tooltip"],
   "files": [
     {
       "path": "examples/media-player-hls-demo.tsx",

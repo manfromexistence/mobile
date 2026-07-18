@@ -19,8 +19,9 @@ function makeContainer(): HTMLElement {
 
 describe("EmbeddingSourceSelector", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-      true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {
@@ -143,11 +144,7 @@ describe("EmbeddingSourceSelector", () => {
     const root = createRoot(container);
     await act(async () => {
       root.render(
-        <EmbeddingSourceSelector
-          settings={defaultSettings}
-          providers={[]}
-          onSave={onSave}
-        />,
+        <EmbeddingSourceSelector settings={defaultSettings} providers={[]} onSave={onSave} />,
       );
     });
     const toggleBtn = container.querySelector(
@@ -169,11 +166,7 @@ describe("EmbeddingSourceSelector", () => {
     const root = createRoot(container);
     await act(async () => {
       root.render(
-        <EmbeddingSourceSelector
-          settings={defaultSettings}
-          providers={[]}
-          onSave={onSave}
-        />,
+        <EmbeddingSourceSelector settings={defaultSettings} providers={[]} onSave={onSave} />,
       );
     });
     const toggleBtn = container.querySelector(

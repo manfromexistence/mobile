@@ -3,10 +3,7 @@
   "name": "mobile-drawer",
   "title": "Mobile Drawer",
   "description": "Left-anchored navigation drawer built on Base UI Dialog — modal scroll lock, focus trap and restore, Esc/outside-click dismissal, and a spring-animated slide-in panel with surface-aware elevation.",
-  "dependencies": [
-    "@base-ui/react",
-    "framer-motion"
-  ],
+  "dependencies": ["@base-ui/react", "framer-motion"],
   "registryDependencies": [
     "https://www.fluidfunctionalism.com/r/springs.json",
     "https://www.fluidfunctionalism.com/r/surface-context.json",

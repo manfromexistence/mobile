@@ -34,7 +34,7 @@ function makeIntlTranslator(message: string) {
     message.replace(/\{(\w+)\}/g, (_m, name: string) => {
       if (!values || !(name in values)) {
         throw new Error(
-          `FORMATTING_ERROR: The intl string context variable "${name}" was not provided to the string "${message}"`
+          `FORMATTING_ERROR: The intl string context variable "${name}" was not provided to the string "${message}"`,
         );
       }
       return String(values[name]);

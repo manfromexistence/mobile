@@ -35,7 +35,7 @@ after(() => {
 
 function makeFetch(
   status: number,
-  body: unknown
+  body: unknown,
 ): (input: string | URL | Request, init?: RequestInit) => Promise<Response> {
   return async () =>
     new Response(JSON.stringify(body), {
@@ -79,12 +79,12 @@ describe("syncServiceModels", () => {
     assert.equal(
       available[0].id,
       "9router-prefix-test/cx/gpt-5-mini",
-      "model id must be prefixed with tool name"
+      "model id must be prefixed with tool name",
     );
     assert.equal(
       available[1].id,
       "9router-prefix-test/auto/sonnet",
-      "model id must be prefixed with tool name"
+      "model id must be prefixed with tool name",
     );
   });
 
@@ -101,7 +101,7 @@ describe("syncServiceModels", () => {
     assert.equal(
       available[0].id,
       "9router/cx/gpt-5-mini",
-      "already-prefixed ids must not be double-prefixed"
+      "already-prefixed ids must not be double-prefixed",
     );
   });
 
@@ -115,7 +115,7 @@ describe("syncServiceModels", () => {
     const stored = getServiceModels("9router-getmodels-test");
     assert.ok(
       stored.every((m) => m.id.startsWith("9router-getmodels-test/")),
-      "all returned model ids must start with tool name prefix"
+      "all returned model ids must start with tool name prefix",
     );
   });
 

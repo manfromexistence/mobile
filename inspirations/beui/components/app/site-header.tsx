@@ -33,14 +33,11 @@ export function SiteHeader({
   const pathname = usePathname();
   const isComponents =
     pathname.startsWith("/components/motion") ||
-    (pathname.startsWith("/components") &&
-      !pathname.startsWith("/components/blocks"));
+    (pathname.startsWith("/components") && !pathname.startsWith("/components/blocks"));
   const isBlocks = pathname.startsWith("/components/blocks");
   const isPlayground = pathname.startsWith("/playground");
   const formattedStarCount =
-    typeof githubStarCount === "number"
-      ? formatStarCount(githubStarCount)
-      : null;
+    typeof githubStarCount === "number" ? formatStarCount(githubStarCount) : null;
 
   useMotionValueEvent(scrollY, "change", (v) => {
     setScrolled(v > 8);
@@ -77,9 +74,7 @@ export function SiteHeader({
               href="/components/motion"
               className={cn(
                 "rounded-md px-3 py-1.5 text-sm transition-colors",
-                isComponents
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground",
+                isComponents ? "text-foreground" : "text-muted-foreground hover:text-foreground",
               )}
             >
               Components
@@ -88,9 +83,7 @@ export function SiteHeader({
               href="/components/blocks"
               className={cn(
                 "rounded-md px-3 py-1.5 text-sm transition-colors",
-                isBlocks
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground",
+                isBlocks ? "text-foreground" : "text-muted-foreground hover:text-foreground",
               )}
             >
               Blocks
@@ -99,9 +92,7 @@ export function SiteHeader({
               href="/playground"
               className={cn(
                 "rounded-md px-3 py-1.5 text-sm transition-colors",
-                isPlayground
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground",
+                isPlayground ? "text-foreground" : "text-muted-foreground hover:text-foreground",
               )}
             >
               Playground
@@ -127,9 +118,7 @@ export function SiteHeader({
             rel="noreferrer noopener"
             className="group inline-flex items-center gap-1.5 rounded-2xl border border-border bg-card/20 px-3 py-2 text-xs font-medium text-foreground hover:border-(--color-border-strong)"
             aria-label={
-              formattedStarCount
-                ? `Star on GitHub, ${formattedStarCount} stars`
-                : "Star on GitHub"
+              formattedStarCount ? `Star on GitHub, ${formattedStarCount} stars` : "Star on GitHub"
             }
           >
             <GithubIcon className="h-3.5 w-3.5" />

@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import ComponentPropsContext from '../components/context/ComponentPropsContext';
+import { useContext } from "react";
+import ComponentPropsContext from "../components/context/ComponentPropsContext";
 
 /**
  * Hook to access component demo props from context.

@@ -1,9 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "conversation-bar",
-  "dependencies": [
-    "@elevenlabs/react"
-  ],
+  "dependencies": ["@elevenlabs/react"],
   "registryDependencies": [
     "button",
     "https://ui.elevenlabs.io/r/live-waveform.json",

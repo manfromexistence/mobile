@@ -45,18 +45,13 @@ async function main() {
     }
     tvm.initWebGPU(gpuDetectOutput.device);
     tvm.beginScope();
-    const vm = tvm.detachFromCurrentScope(
-      tvm.createVirtualMachine(tvm.webgpu()),
-    );
+    const vm = tvm.detachFromCurrentScope(tvm.createVirtualMachine(tvm.webgpu()));
     // 4. Get metadata from the vm
     let fgetMetadata: any;
     try {
       fgetMetadata = vm.getFunction("_metadata");
     } catch (err) {
-      log.error(
-        "The wasm needs to have function `_metadata` to inspect vram requirement.",
-        err,
-      );
+      log.error("The wasm needs to have function `_metadata` to inspect vram requirement.", err);
     }
     const ret_value = fgetMetadata();
     const metadataStr = tvm.detachFromCurrentScope(ret_value).toString();
@@ -69,18 +64,12 @@ async function main() {
         // Possible to have shape -1 signifying a dynamic shape -- we disregard them
         const dtypeBytes = dtypeBytesMap.get(param.dtype);
         if (dtypeBytes === undefined) {
-          throw Error(
-            "Cannot find size of " +
-              param.dtype +
-              ", add it to `dtypeBytesMap`.",
-          );
+          throw Error("Cannot find size of " + param.dtype + ", add it to `dtypeBytesMap`.");
         }
         const numParams = param.shape.reduce((a: number, b: number) => a * b);
         paramBytes += numParams * dtypeBytes;
       } else {
-        log.info(
-          `${model_id}'s ${param.name} has dynamic shape; excluded from vRAM calculation.`,
-        );
+        log.info(`${model_id}'s ${param.name} has dynamic shape; excluded from vRAM calculation.`);
       }
     });
     // 5.2. Get maximum bytes needed for temporary buffer across all functions

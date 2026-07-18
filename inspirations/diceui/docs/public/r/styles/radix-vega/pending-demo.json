@@ -1,10 +1,7 @@
 {
   "name": "pending-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "pending",
-    "button"
-  ],
+  "registryDependencies": ["pending", "button"],
   "files": [
     {
       "path": "examples/pending-demo.tsx",

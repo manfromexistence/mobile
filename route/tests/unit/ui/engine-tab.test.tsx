@@ -39,122 +39,104 @@ vi.mock("@/shared/components", () => ({
 }));
 
 // Mock the hooks directly to avoid swr dependency resolution issues
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/memory/hooks/useEngineStatus",
-  () => ({
-    useEngineStatus: () => ({
-      status: {
-        keyword: { available: true, backend: "FTS5" },
-        embedding: {
-          source: "remote",
-          model: "openai/text-embedding-3-small",
-          dimensions: 1536,
-          available: true,
-          reason: "provider openai with key configured",
-          cacheStats: { hits: 0, misses: 0, size: 0 },
-        },
-        vectorStore: {
-          backend: "sqlite-vec",
-          available: true,
-          rowCount: 10,
-          needsReindex: 0,
-          reason: "sqlite-vec loaded",
-        },
-        qdrant: { enabled: false, healthy: null, latencyMs: null, error: null },
-        rerank: {
-          enabled: false,
-          provider: null,
-          model: null,
-          available: false,
-          reason: "rerank disabled",
-        },
+vi.mock("../../../src/app/(dashboard)/dashboard/memory/hooks/useEngineStatus", () => ({
+  useEngineStatus: () => ({
+    status: {
+      keyword: { available: true, backend: "FTS5" },
+      embedding: {
+        source: "remote",
+        model: "openai/text-embedding-3-small",
+        dimensions: 1536,
+        available: true,
+        reason: "provider openai with key configured",
+        cacheStats: { hits: 0, misses: 0, size: 0 },
       },
-      isLoading: false,
-      isError: false,
-      mutate: vi.fn(),
-    }),
+      vectorStore: {
+        backend: "sqlite-vec",
+        available: true,
+        rowCount: 10,
+        needsReindex: 0,
+        reason: "sqlite-vec loaded",
+      },
+      qdrant: { enabled: false, healthy: null, latencyMs: null, error: null },
+      rerank: {
+        enabled: false,
+        provider: null,
+        model: null,
+        available: false,
+        reason: "rerank disabled",
+      },
+    },
+    isLoading: false,
+    isError: false,
+    mutate: vi.fn(),
   }),
-);
+}));
 
 const mockSave = vi.fn().mockResolvedValue(true);
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/memory/hooks/useMemorySettings",
-  () => ({
-    useMemorySettings: () => ({
-      settings: {
-        enabled: true,
-        maxTokens: 2000,
-        retentionDays: 30,
-        strategy: "hybrid",
-        skillsEnabled: false,
-        embeddingSource: "auto",
-        embeddingProviderModel: null,
-        transformersEnabled: false,
-        staticEnabled: false,
-        rerankEnabled: false,
-        rerankProviderModel: null,
-        vectorStore: "auto",
-      },
-      isLoading: false,
-      isError: false,
-      mutate: vi.fn(),
-      save: mockSave,
-    }),
+vi.mock("../../../src/app/(dashboard)/dashboard/memory/hooks/useMemorySettings", () => ({
+  useMemorySettings: () => ({
+    settings: {
+      enabled: true,
+      maxTokens: 2000,
+      retentionDays: 30,
+      strategy: "hybrid",
+      skillsEnabled: false,
+      embeddingSource: "auto",
+      embeddingProviderModel: null,
+      transformersEnabled: false,
+      staticEnabled: false,
+      rerankEnabled: false,
+      rerankProviderModel: null,
+      vectorStore: "auto",
+    },
+    isLoading: false,
+    isError: false,
+    mutate: vi.fn(),
+    save: mockSave,
   }),
-);
+}));
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/memory/components/MemoryEngineStatus",
-  () => ({
-    default: ({ status }: { status: { embedding: { available: boolean } } }) =>
+vi.mock("../../../src/app/(dashboard)/dashboard/memory/components/MemoryEngineStatus", () => ({
+  default: ({ status }: { status: { embedding: { available: boolean } } }) =>
+    React.createElement(
+      "div",
+      { "data-testid": "engine-status-panel" },
+      status.embedding.available ? "embedding:available" : "embedding:unavailable",
+    ),
+}));
+
+vi.mock("../../../src/app/(dashboard)/dashboard/memory/components/EmbeddingSourceSelector", () => ({
+  default: ({
+    onSave,
+  }: {
+    settings: unknown;
+    providers: unknown[];
+    onSave: (u: unknown) => Promise<boolean>;
+    saving?: boolean;
+  }) =>
+    React.createElement(
+      "div",
+      { "data-testid": "embedding-selector" },
       React.createElement(
-        "div",
-        { "data-testid": "engine-status-panel" },
-        status.embedding.available ? "embedding:available" : "embedding:unavailable",
+        "button",
+        {
+          "data-testid": "toggle-transformers-btn",
+          onClick: () => onSave({ transformersEnabled: true }),
+        },
+        "toggle-transformers",
       ),
-  }),
-);
+    ),
+}));
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/memory/components/EmbeddingSourceSelector",
-  () => ({
-    default: ({
-      onSave,
-    }: {
-      settings: unknown;
-      providers: unknown[];
-      onSave: (u: unknown) => Promise<boolean>;
-      saving?: boolean;
-    }) =>
-      React.createElement(
-        "div",
-        { "data-testid": "embedding-selector" },
-        React.createElement(
-          "button",
-          {
-            "data-testid": "toggle-transformers-btn",
-            onClick: () => onSave({ transformersEnabled: true }),
-          },
-          "toggle-transformers",
-        ),
-      ),
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/memory/components/QdrantConfigCard", () => ({
+  default: () => React.createElement("div", { "data-testid": "qdrant-config-card" }, "QdrantCard"),
+}));
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/memory/components/QdrantConfigCard",
-  () => ({
-    default: () => React.createElement("div", { "data-testid": "qdrant-config-card" }, "QdrantCard"),
-  }),
-);
-
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/memory/components/RerankConfigCard",
-  () => ({
-    default: () => React.createElement("div", { "data-testid": "rerank-config-card" }, "RerankCard"),
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/memory/components/RerankConfigCard", () => ({
+  default: () => React.createElement("div", { "data-testid": "rerank-config-card" }, "RerankCard"),
+}));
 
 const cleanupCallbacks: Array<() => void> = [];
 
@@ -167,8 +149,9 @@ function makeContainer(): HTMLElement {
 
 describe("EngineTab", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-      true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
     globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ providers: [] }),

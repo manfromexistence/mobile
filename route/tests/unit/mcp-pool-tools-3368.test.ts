@@ -32,7 +32,7 @@ const POOL_TOOL_NAMES = [
 
 const serverSource = readFileSync(
   new URL("../../open-sse/mcp-server/server.ts", import.meta.url),
-  "utf8"
+  "utf8",
 );
 
 // ── Wiring guard (the actual #3368 fix) ───────────────────────────────────
@@ -43,7 +43,7 @@ test("server.ts imports the poolTools collection", () => {
   assert.match(
     serverSource,
     /import\s*\{\s*poolTools\s*\}\s*from\s*"\.\/tools\/poolTools\.ts"/,
-    "server.ts must import poolTools so the tools reach the live MCP server"
+    "server.ts must import poolTools so the tools reach the live MCP server",
   );
 });
 
@@ -51,7 +51,7 @@ test("server.ts registers poolTools via the standard registration loop", () => {
   assert.match(
     serverSource,
     /Object\.values\(poolTools\)\.forEach/,
-    "server.ts must iterate poolTools through server.registerTool like the other collections"
+    "server.ts must iterate poolTools through server.registerTool like the other collections",
   );
 });
 
@@ -59,7 +59,7 @@ test("server.ts reserves the poolTools names", () => {
   assert.match(
     serverSource,
     /\.\.\.Object\.keys\(poolTools\)/,
-    "poolTools names must be in RESERVED_MCP_NAMES to avoid collisions"
+    "poolTools names must be in RESERVED_MCP_NAMES to avoid collisions",
   );
 });
 
@@ -76,7 +76,7 @@ test("every poolTools inline scope is a known MCP scope", () => {
   for (const toolDef of Object.values(poolTools) as Array<{ name: string; scopes: string[] }>) {
     assert.ok(
       Array.isArray(toolDef.scopes) && toolDef.scopes.length > 0,
-      `${toolDef.name}: scopes must be a non-empty array`
+      `${toolDef.name}: scopes must be a non-empty array`,
     );
     for (const scope of toolDef.scopes) {
       assert.ok(known.has(scope), `${toolDef.name}: "${scope}" is not in MCP_SCOPE_LIST`);
@@ -91,7 +91,7 @@ test("inline poolTools scopes match the canonical MCP_TOOL_SCOPES map", () => {
     assert.deepEqual(
       [...toolDef.scopes].sort(),
       [...canonical].sort(),
-      `${toolDef.name}: inline scopes must equal MCP_TOOL_SCOPES entry`
+      `${toolDef.name}: inline scopes must equal MCP_TOOL_SCOPES entry`,
     );
   }
 });
@@ -160,8 +160,9 @@ test("handlePoolReset reports reset:false for an unknown provider", async () => 
 // ── #3368 PR7 — browser pool observability ────────────────────────────────
 
 test("handleBrowserPoolStatus returns status + cumulative metrics shape", async () => {
-  const { __resetBrowserPoolMetricsForTest } =
-    await import("../../open-sse/services/browserPool.ts");
+  const { __resetBrowserPoolMetricsForTest } = await import(
+    "../../open-sse/services/browserPool.ts"
+  );
   __resetBrowserPoolMetricsForTest();
 
   const result = (await handleBrowserPoolStatus()) as {
@@ -188,8 +189,9 @@ test("handleBrowserPoolStatus returns status + cumulative metrics shape", async 
 });
 
 test("shutdownPool increments the shutdowns counter and records the reason", async () => {
-  const { shutdownPool, getBrowserPoolMetrics, __resetBrowserPoolMetricsForTest } =
-    await import("../../open-sse/services/browserPool.ts");
+  const { shutdownPool, getBrowserPoolMetrics, __resetBrowserPoolMetricsForTest } = await import(
+    "../../open-sse/services/browserPool.ts"
+  );
   __resetBrowserPoolMetricsForTest();
 
   await shutdownPool("unit-test-reason");

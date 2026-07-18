@@ -48,7 +48,8 @@ export const registry: CategoryEntry[] = [
       {
         slug: "button",
         name: "Button",
-        description: "Spring-pressed Button plus StatefulButton (idle → loading → success / error) and MagneticButton.",
+        description:
+          "Spring-pressed Button plus StatefulButton (idle → loading → success / error) and MagneticButton.",
         file: "components/motion/button/index.tsx",
         extraFiles: [
           "components/motion/button/base.tsx",
@@ -68,7 +69,8 @@ export const registry: CategoryEntry[] = [
           {
             slug: "stateful",
             name: "Stateful Button",
-            description: "Idle → loading → success / error with blur-swap slots and morphing width.",
+            description:
+              "Idle → loading → success / error with blur-swap slots and morphing width.",
             installSlug: "button-stateful",
             file: "components/motion/button/stateful.tsx",
             previewKey: "motion/button-stateful",
@@ -106,7 +108,8 @@ export const registry: CategoryEntry[] = [
       {
         slug: "input",
         name: "Input",
-        description: "Text input with label, left/right icons, a gliding caret, error shake and success check draw.",
+        description:
+          "Text input with label, left/right icons, a gliding caret, error shake and success check draw.",
         file: "components/motion/input.tsx",
         keywords: [
           "react animated input",
@@ -119,14 +122,16 @@ export const registry: CategoryEntry[] = [
       {
         slug: "select",
         name: "Select",
-        description: "Composable select primitives whose panel bouncily unfolds out of the trigger and separates, plus a Morph variant where the trigger grows into the panel via shared layout.",
+        description:
+          "Composable select primitives whose panel bouncily unfolds out of the trigger and separates, plus a Morph variant where the trigger grows into the panel via shared layout.",
         file: "components/motion/select.tsx",
         badge: "new",
         examples: [
           {
             slug: "default",
             name: "Select",
-            description: "Composable primitives (Select, SelectTrigger, SelectValue, SelectContent, SelectItem); the panel pinches off the trigger and separates, with staggered items. Position-aware (opens upward when needed).",
+            description:
+              "Composable primitives (Select, SelectTrigger, SelectValue, SelectContent, SelectItem); the panel pinches off the trigger and separates, with staggered items. Position-aware (opens upward when needed).",
             installSlug: "select",
             file: "components/motion/select.tsx",
             previewKey: "motion/select",
@@ -135,7 +140,8 @@ export const registry: CategoryEntry[] = [
           {
             slug: "morph",
             name: "Morph Select",
-            description: "Composable primitives (MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem) where the trigger morphs into the panel via a shared layoutId — one continuous surface that grows open and shrinks back, never detaching.",
+            description:
+              "Composable primitives (MorphSelect, MorphSelectTrigger, MorphSelectValue, MorphSelectContent, MorphSelectItem) where the trigger morphs into the panel via a shared layoutId — one continuous surface that grows open and shrinks back, never detaching.",
             installSlug: "select-morph",
             file: "components/motion/select-morph.tsx",
             previewKey: "motion/select-morph",
@@ -162,13 +168,15 @@ export const registry: CategoryEntry[] = [
       {
         slug: "bottom-sheet",
         name: "Bottom Sheet",
-        description: "Vaul-inspired draggable bottom sheet with snap points, inertia and glass surface.",
+        description:
+          "Vaul-inspired draggable bottom sheet with snap points, inertia and glass surface.",
         file: "components/motion/bottom-sheet.tsx",
       },
       {
         slug: "shared-layout-bg",
         name: "Shared Layout Background",
-        description: "A pill that glides between hovered items via motion's shared layout, with blur enter/exit.",
+        description:
+          "A pill that glides between hovered items via motion's shared layout, with blur enter/exit.",
         file: "components/motion/shared-layout-bg.tsx",
       },
       {
@@ -186,18 +194,17 @@ export const registry: CategoryEntry[] = [
       {
         slug: "morphing-modal",
         name: "Morphing Modal",
-        description: "Family-app-style modal. A single panel that morphs its height as you navigate between inner views, with blur cross-fade on content.",
+        description:
+          "Family-app-style modal. A single panel that morphs its height as you navigate between inner views, with blur cross-fade on content.",
         file: "components/motion/morphing-modal.tsx",
       },
       {
         slug: "text-animation",
         name: "Text Animation",
-        description: "Animated text primitives for reveal sequences, shimmer loading states and letter-cascade swaps.",
+        description:
+          "Animated text primitives for reveal sequences, shimmer loading states and letter-cascade swaps.",
         file: "components/motion/text-reveal.tsx",
-        extraFiles: [
-          "components/motion/text-shimmer.tsx",
-          "components/motion/text-cascade.tsx",
-        ],
+        extraFiles: ["components/motion/text-shimmer.tsx", "components/motion/text-cascade.tsx"],
         examples: [
           {
             slug: "reveal",
@@ -220,7 +227,8 @@ export const registry: CategoryEntry[] = [
           {
             slug: "cascade",
             name: "Text Cascade",
-            description: "Letter-by-letter slot roll for standalone text — old letters drop away as new ones land, left to right.",
+            description:
+              "Letter-by-letter slot roll for standalone text — old letters drop away as new ones land, left to right.",
             installSlug: "text-cascade",
             file: "components/motion/text-cascade.tsx",
             previewKey: "motion/text-cascade",
@@ -258,7 +266,8 @@ export const registry: CategoryEntry[] = [
       {
         slug: "animated-badge",
         name: "Animated Badge",
-        description: "Status badge with animated state icons, pulse feedback and compact size variants.",
+        description:
+          "Status badge with animated state icons, pulse feedback and compact size variants.",
         file: "components/motion/animated-badge.tsx",
       },
       {
@@ -270,7 +279,8 @@ export const registry: CategoryEntry[] = [
           {
             slug: "cascade",
             name: "Cascade",
-            description: "Letter-by-letter slot roll — the old label's letters drop away as the new ones land, left to right.",
+            description:
+              "Letter-by-letter slot roll — the old label's letters drop away as the new ones land, left to right.",
             installSlug: "action-swap-cascade",
             file: "components/motion/action-swap-cascade.tsx",
             previewKey: "motion/action-swap-cascade",
@@ -299,31 +309,36 @@ export const registry: CategoryEntry[] = [
       {
         slug: "animated-toast-stack",
         name: "Animated Toast Stack",
-        description: "Stacked toasts with status morphs, swipe dismissal, actions and layout-aware motion.",
+        description:
+          "Stacked toasts with status morphs, swipe dismissal, actions and layout-aware motion.",
         file: "components/motion/animated-toast-stack.tsx",
       },
       {
         slug: "theme-toggle",
         name: "Theme Toggle",
-        description: "Theme toggle button with a full-page rectangle clip-path reveal via the View Transition API.",
+        description:
+          "Theme toggle button with a full-page rectangle clip-path reveal via the View Transition API.",
         file: "components/motion/theme-toggle.tsx",
       },
       {
         slug: "bouncy-accordion",
         name: "Bouncy Accordion",
-        description: "Single-open accordion with weighted spring layout, icon rows and reduced-motion-safe content reveals.",
+        description:
+          "Single-open accordion with weighted spring layout, icon rows and reduced-motion-safe content reveals.",
         file: "components/motion/bouncy-accordion.tsx",
       },
       {
         slug: "drawer",
         name: "Drawer",
-        description: "Side panel that slides in from the left or right with a spring, backdrop blur, body scroll lock and esc-to-close.",
+        description:
+          "Side panel that slides in from the left or right with a spring, backdrop blur, body scroll lock and esc-to-close.",
         file: "components/motion/drawer.tsx",
       },
       {
         slug: "scroll-animation",
         name: "Scroll Animation",
-        description: "Scroll-driven motion: a Lenis smooth-scroll provider and a reading-progress indicator that reads from it.",
+        description:
+          "Scroll-driven motion: a Lenis smooth-scroll provider and a reading-progress indicator that reads from it.",
         file: "components/motion/smooth-scroll.tsx",
         extraFiles: [
           "components/motion/scroll-progress.tsx",
@@ -343,7 +358,8 @@ export const registry: CategoryEntry[] = [
           {
             slug: "smooth-scroll",
             name: "Smooth Scroll",
-            description: "Smooth-scroll provider over Lenis with a useSmoothScroll hook exposing scroll offset, progress and velocity. Reduced-motion safe.",
+            description:
+              "Smooth-scroll provider over Lenis with a useSmoothScroll hook exposing scroll offset, progress and velocity. Reduced-motion safe.",
             installSlug: "smooth-scroll",
             file: "components/motion/smooth-scroll.tsx",
             previewKey: "motion/smooth-scroll",
@@ -352,7 +368,8 @@ export const registry: CategoryEntry[] = [
           {
             slug: "scroll-progress",
             name: "Scroll Progress",
-            description: "Reading-progress indicator — fixed bar or circular ring — driven by scroll position via useSmoothScroll, with spring smoothing.",
+            description:
+              "Reading-progress indicator — fixed bar or circular ring — driven by scroll position via useSmoothScroll, with spring smoothing.",
             installSlug: "scroll-progress",
             file: "components/motion/scroll-progress.tsx",
             previewKey: "motion/scroll-progress",
@@ -361,7 +378,8 @@ export const registry: CategoryEntry[] = [
           {
             slug: "parallax",
             name: "Parallax",
-            description: "Wrapper that drifts its children at a speed factor as they cross the viewport, on either axis. Reduced-motion safe.",
+            description:
+              "Wrapper that drifts its children at a speed factor as they cross the viewport, on either axis. Reduced-motion safe.",
             installSlug: "parallax",
             file: "components/motion/parallax.tsx",
             previewKey: "motion/parallax",
@@ -370,7 +388,8 @@ export const registry: CategoryEntry[] = [
           {
             slug: "scroll-to",
             name: "Scroll To",
-            description: "Button that smooth-scrolls to a target (offset, selector or element) via the active SmoothScroll provider; reduced-motion jumps instantly.",
+            description:
+              "Button that smooth-scrolls to a target (offset, selector or element) via the active SmoothScroll provider; reduced-motion jumps instantly.",
             installSlug: "scroll-to",
             file: "components/motion/scroll-to.tsx",
             previewKey: "motion/scroll-to",
@@ -379,7 +398,8 @@ export const registry: CategoryEntry[] = [
           {
             slug: "scroll-reveal",
             name: "Scroll Reveal",
-            description: "Reveals its children with a spring slide and blur as they enter the viewport, once or every time. Reduced-motion keeps a fade.",
+            description:
+              "Reveals its children with a spring slide and blur as they enter the viewport, once or every time. Reduced-motion keeps a fade.",
             installSlug: "scroll-reveal",
             file: "components/motion/scroll-reveal.tsx",
             previewKey: "motion/scroll-reveal",
@@ -390,7 +410,8 @@ export const registry: CategoryEntry[] = [
       {
         slug: "range-slider",
         name: "Range Slider",
-        description: "Range slider with tick dots and a bouncy vertical-bar thumb that glides between snapped steps; drag and keyboard control, reduced-motion safe.",
+        description:
+          "Range slider with tick dots and a bouncy vertical-bar thumb that glides between snapped steps; drag and keyboard control, reduced-motion safe.",
         file: "components/motion/range-slider.tsx",
         badge: "new",
         keywords: ["slider", "range slider", "range input", "stepped slider", "ticks"],
@@ -469,13 +490,15 @@ export const registry: CategoryEntry[] = [
       {
         slug: "swap",
         name: "Multi-chain Swap",
-        description: "Cross-chain swap widget with chain + token selectors, morphing views, animated flip and quote.",
+        description:
+          "Cross-chain swap widget with chain + token selectors, morphing views, animated flip and quote.",
         file: "components/motion/swap.tsx",
       },
       {
         slug: "dynamic-island",
         name: "Dynamic Island",
-        description: "iOS-style island pill that morphs between live activity views with bouncy shell resize and blur crossfades.",
+        description:
+          "iOS-style island pill that morphs between live activity views with bouncy shell resize and blur crossfades.",
         file: "components/motion/dynamic-island.tsx",
       },
       {
@@ -487,56 +510,65 @@ export const registry: CategoryEntry[] = [
       {
         slug: "expandable-action-bar",
         name: "Expandable Action Bar",
-        description: "Compact icon actions that expand into labeled controls on hover or focus with shared layout motion.",
+        description:
+          "Compact icon actions that expand into labeled controls on hover or focus with shared layout motion.",
         file: "components/motion/expandable-action-bar.tsx",
       },
       {
         slug: "overflow-actions",
         name: "Overflow Actions",
-        description: "Connected pill rail for primary actions that springs open to reveal extra controls.",
+        description:
+          "Connected pill rail for primary actions that springs open to reveal extra controls.",
         file: "components/motion/overflow-actions.tsx",
       },
       {
         slug: "expandable-tabs",
         name: "Expandable Tabs",
-        description: "Icon tab bar where the active tab expands to a labelled pill, with a panel above that morphs height and slides content direction-aware on switch.",
+        description:
+          "Icon tab bar where the active tab expands to a labelled pill, with a panel above that morphs height and slides content direction-aware on switch.",
         file: "components/motion/expandable-tabs.tsx",
       },
       {
         slug: "swipeable-list",
         name: "Swipeable List",
-        description: "Mobile-style list rows that swipe left or right to reveal contextual action buttons.",
+        description:
+          "Mobile-style list rows that swipe left or right to reveal contextual action buttons.",
         file: "components/motion/swipeable-list.tsx",
       },
       {
         slug: "file-upload",
         name: "File Upload",
-        description: "Drag-and-drop upload queue with progress rows, retry/remove actions and reduced-motion-safe state changes.",
+        description:
+          "Drag-and-drop upload queue with progress rows, retry/remove actions and reduced-motion-safe state changes.",
         file: "components/motion/file-upload.tsx",
       },
       {
         slug: "prediction-market",
         name: "Prediction Market",
-        description: "Prediction market trade ticket with buy/sell modes, outcome prices, rolling amount entry, quick add chips and trade states.",
+        description:
+          "Prediction market trade ticket with buy/sell modes, outcome prices, rolling amount entry, quick add chips and trade states.",
         file: "components/motion/prediction-market.tsx",
       },
       {
         slug: "otp-input",
         name: "OTP Input",
-        description: "One-time-code input with a gliding focus ring, digits that roll in per slot, error shake and a success check draw.",
+        description:
+          "One-time-code input with a gliding focus ring, digits that roll in per slot, error shake and a success check draw.",
         file: "components/motion/otp-input.tsx",
       },
       {
         slug: "bloom-menu",
         name: "Bloom Menu",
-        description: "A button that morphs open into a menu and blooms iris-out from the center, the grid revealing in every direction with radially staggered items.",
+        description:
+          "A button that morphs open into a menu and blooms iris-out from the center, the grid revealing in every direction with radially staggered items.",
         file: "components/motion/bloom-menu.tsx",
         badge: "new",
       },
       {
         slug: "feedback-widget",
         name: "Feedback Widget",
-        description: "Corner trigger that morphs open into a feedback popup with message entry and animated sending, success and retry states.",
+        description:
+          "Corner trigger that morphs open into a feedback popup with message entry and animated sending, success and retry states.",
         file: "components/motion/feedback-widget.tsx",
         badge: "new",
         keywords: [
@@ -550,7 +582,8 @@ export const registry: CategoryEntry[] = [
       {
         slug: "not-found",
         name: "404 / Not Found",
-        description: "Animated 404 pages in five styles: glitch scramble, magnetic digits, cursor spotlight, a fanning card stack and a typed terminal.",
+        description:
+          "Animated 404 pages in five styles: glitch scramble, magnetic digits, cursor spotlight, a fanning card stack and a typed terminal.",
         file: "components/motion/not-found/index.tsx",
         extraFiles: [
           "components/motion/not-found/shared.tsx",
@@ -594,8 +627,7 @@ export const registry: CategoryEntry[] = [
           {
             slug: "stacked",
             name: "Stacked",
-            description:
-              "A code card over a hidden stack that fans out with a spring on hover.",
+            description: "A code card over a hidden stack that fans out with a spring on hover.",
             installSlug: "not-found-stacked",
             file: "components/motion/not-found/stacked.tsx",
             previewKey: "blocks/not-found-stacked",
@@ -626,16 +658,11 @@ export function findComponent(categorySlug: string, slug: string) {
 }
 
 export function allComponents() {
-  return registry.flatMap((c) =>
-    c.components.map((comp) => ({ ...comp, category: c }))
-  );
+  return registry.flatMap((c) => c.components.map((comp) => ({ ...comp, category: c })));
 }
 
 /** Top-level components and total installable targets (counting variants). */
-export const COMPONENT_COUNT = registry.reduce(
-  (n, c) => n + c.components.length,
-  0,
-);
+export const COMPONENT_COUNT = registry.reduce((n, c) => n + c.components.length, 0);
 
 export const INSTALLABLE_COUNT = registry.reduce(
   (n, c) =>

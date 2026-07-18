@@ -27,8 +27,7 @@ function makeSpyLogger() {
   return {
     logger: {
       error: (payload: unknown, msg: string) => errorCalls.push({ payload, msg }),
-      info: (payload: unknown, msg?: string) =>
-        infoCalls.push({ payload, msg: msg ?? "" }),
+      info: (payload: unknown, msg?: string) => infoCalls.push({ payload, msg: msg ?? "" }),
     },
     errorCalls,
     infoCalls,
@@ -46,7 +45,7 @@ test("provisionDnsEntries: default DNS step failure does NOT abort (graceful deg
       getAgentStates: () => [],
       listEnabledCustomHosts: () => [],
       logger: spy.logger,
-    })
+    }),
   );
 });
 
@@ -68,7 +67,7 @@ test("provisionDnsEntries: failed default DNS step logs the stderr to the logger
   assert.match(
     err.message,
     /sudo: a password is required/,
-    "the privileged command stderr must reach the log payload"
+    "the privileged command stderr must reach the log payload",
   );
 });
 
@@ -83,8 +82,7 @@ test("provisionDnsEntries: a failing agent/custom step does not stop the others 
       // Custom-hosts call must still happen even after default + agent errors.
       if (hosts.includes("custom.example.com")) customCalled = true;
     },
-    getAgentStates: () =>
-      [{ dns_enabled: true, agent_id: "__nonexistent_agent__" }] as never,
+    getAgentStates: () => [{ dns_enabled: true, agent_id: "__nonexistent_agent__" }] as never,
     listEnabledCustomHosts: () => [{ host: "custom.example.com" }] as never,
     logger: spy.logger,
   });

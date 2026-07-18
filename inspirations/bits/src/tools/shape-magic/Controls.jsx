@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Icon, Input, Kbd } from '@chakra-ui/react';
+import { Box, Flex, Text, Icon, Input, Kbd } from "@chakra-ui/react";
 import {
   Plus,
   Trash2,
@@ -24,23 +24,23 @@ import {
   Sun,
   Shapes,
   SlidersHorizontal,
-  RotateCcw
-} from 'lucide-react';
-import { useState, useCallback } from 'react';
+  RotateCcw,
+} from "lucide-react";
+import { useState, useCallback } from "react";
 import {
   generateMergedSVG,
   generateMergedClipPathSVG,
   generateReactComponent,
   generateCSSClipPath,
   getRoundedRectPath,
-  getBridgePathAt
-} from './svgRenderers';
-import { computeBridges, computeCornerRadii } from './computeBridges';
-import { DEFAULT_STYLE } from './types';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSelect from '../../components/common/Preview/PreviewSelect';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
+  getBridgePathAt,
+} from "./svgRenderers";
+import { computeBridges, computeCornerRadii } from "./computeBridges";
+import { DEFAULT_STYLE } from "./types";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSelect from "../../components/common/Preview/PreviewSelect";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
 
 const ColorInput = ({ label, value, onChange }) => (
   <PreviewColorPickerCustom title={label} color={value} onChange={onChange} />
@@ -54,7 +54,7 @@ const NumberInput = ({ label, value, onChange, min, max, step = 1 }) => (
     <Input
       type="number"
       value={Math.round(value)}
-      onChange={e => onChange(parseFloat(e.target.value) || 0)}
+      onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
       min={min}
       max={max}
       step={step}
@@ -68,7 +68,7 @@ const NumberInput = ({ label, value, onChange, min, max, step = 1 }) => (
       h="32px"
       flex={1}
       minW={0}
-      _focus={{ borderColor: 'var(--color-primary)', boxShadow: 'none' }}
+      _focus={{ borderColor: "var(--color-primary)", boxShadow: "none" }}
     />
   </Flex>
 );
@@ -83,25 +83,35 @@ const ToggleButton = ({ icon: IconComponent, label, isActive, onClick, disabled,
     px={2.5}
     py={1.5}
     flex={flex}
-    bg={isActive ? 'rgba(168, 85, 247, 0.15)' : 'var(--bg-elevated)'}
-    border={isActive ? '1px solid var(--color-primary)' : '1px solid var(--border-primary)'}
+    bg={isActive ? "rgba(168, 85, 247, 0.15)" : "var(--bg-elevated)"}
+    border={isActive ? "1px solid var(--color-primary)" : "1px solid var(--border-primary)"}
     borderRadius="var(--radius-sm)"
-    cursor={disabled ? 'not-allowed' : 'pointer'}
+    cursor={disabled ? "not-allowed" : "pointer"}
     opacity={disabled ? 0.5 : 1}
     onClick={disabled ? undefined : onClick}
     transition="all 0.15s"
-    _hover={{ borderColor: disabled ? 'var(--border-primary)' : 'var(--color-primary)' }}
+    _hover={{ borderColor: disabled ? "var(--border-primary)" : "var(--color-primary)" }}
   >
-    <Icon as={IconComponent} boxSize={3.5} color={isActive ? 'var(--color-primary)' : 'var(--text-muted)'} />
+    <Icon
+      as={IconComponent}
+      boxSize={3.5}
+      color={isActive ? "var(--color-primary)" : "var(--text-muted)"}
+    />
     {label && (
-      <Text fontSize="11px" color={isActive ? 'var(--color-primary)' : 'var(--text-muted)'}>
+      <Text fontSize="11px" color={isActive ? "var(--color-primary)" : "var(--text-muted)"}>
         {label}
       </Text>
     )}
   </Flex>
 );
 
-const CollapsibleSection = ({ title, icon: IconComponent, action, defaultOpen = true, children }) => {
+const CollapsibleSection = ({
+  title,
+  icon: IconComponent,
+  action,
+  defaultOpen = true,
+  children,
+}) => {
   const [open, setOpen] = useState(defaultOpen);
   return (
     <Box mb={4}>
@@ -112,7 +122,7 @@ const CollapsibleSection = ({ title, icon: IconComponent, action, defaultOpen = 
           align="center"
           gap={1.5}
           flex={1}
-          onClick={() => setOpen(o => !o)}
+          onClick={() => setOpen((o) => !o)}
           cursor="pointer"
         >
           {IconComponent && <Icon as={IconComponent} boxSize={3} color="var(--text-muted)" />}
@@ -129,14 +139,14 @@ const CollapsibleSection = ({ title, icon: IconComponent, action, defaultOpen = 
             as={ChevronUp}
             boxSize={3}
             color="var(--text-muted)"
-            transform={open ? 'rotate(0deg)' : 'rotate(180deg)'}
+            transform={open ? "rotate(0deg)" : "rotate(180deg)"}
             transition="transform 0.2s ease"
             ml={1}
           />
         </Flex>
         {action}
       </Flex>
-      <Box display={open ? 'block' : 'none'}>{children}</Box>
+      <Box display={open ? "block" : "none"}>{children}</Box>
     </Box>
   );
 };
@@ -152,7 +162,7 @@ const PresetTile = ({ preset, onClick }) => {
     minY = Infinity,
     maxX = -Infinity,
     maxY = -Infinity;
-  shapes.forEach(s => {
+  shapes.forEach((s) => {
     minX = Math.min(minX, s.x);
     minY = Math.min(minY, s.y);
     maxX = Math.max(maxX, s.x + s.w);
@@ -176,7 +186,7 @@ const PresetTile = ({ preset, onClick }) => {
       borderRadius="var(--radius-sm)"
       cursor="pointer"
       transition="all 0.15s"
-      _hover={{ borderColor: 'var(--color-primary)', bg: 'rgba(168, 85, 247, 0.08)' }}
+      _hover={{ borderColor: "var(--color-primary)", bg: "rgba(168, 85, 247, 0.08)" }}
       onClick={onClick}
       title={preset.name}
     >
@@ -188,7 +198,7 @@ const PresetTile = ({ preset, onClick }) => {
           preserveAspectRatio="xMidYMid meet"
         >
           <g fill="var(--text-muted)">
-            {shapes.map(s => (
+            {shapes.map((s) => (
               <path
                 key={s.id}
                 d={getRoundedRectPath(
@@ -200,12 +210,12 @@ const PresetTile = ({ preset, onClick }) => {
                     tl: preset.radius,
                     tr: preset.radius,
                     br: preset.radius,
-                    bl: preset.radius
-                  }
+                    bl: preset.radius,
+                  },
                 )}
               />
             ))}
-            {bridges.map(b => (
+            {bridges.map((b) => (
               <path key={b.id} d={getBridgePathAt(b.x, b.y, b.r, b.rotation, 0.6)} />
             ))}
           </g>
@@ -241,19 +251,34 @@ const ExportButton = ({ icon: IconComponent, label, active, onClick, flex, prima
     align="center"
     justify="center"
     gap={2}
-    bg={primary ? 'var(--color-primary)' : active ? 'rgba(168, 85, 247, 0.15)' : 'var(--bg-elevated)'}
-    border={primary ? 'none' : active ? '1px solid var(--color-primary)' : '1px solid var(--border-primary)'}
+    bg={
+      primary ? "var(--color-primary)" : active ? "rgba(168, 85, 247, 0.15)" : "var(--bg-elevated)"
+    }
+    border={
+      primary
+        ? "none"
+        : active
+          ? "1px solid var(--color-primary)"
+          : "1px solid var(--border-primary)"
+    }
     borderRadius="var(--radius-sm)"
     py={primary ? 2.5 : 2}
     cursor="pointer"
     onClick={onClick}
     transition="all 0.15s"
-    _hover={{ borderColor: primary ? 'none' : 'var(--color-primary)', bg: primary ? '#b96dfa' : undefined }}
+    _hover={{
+      borderColor: primary ? "none" : "var(--color-primary)",
+      bg: primary ? "#b96dfa" : undefined,
+    }}
   >
-    <Icon as={IconComponent} boxSize={4} color={primary ? 'var(--text-primary)' : 'var(--text-muted)'} />
+    <Icon
+      as={IconComponent}
+      boxSize={4}
+      color={primary ? "var(--text-primary)" : "var(--text-muted)"}
+    />
     <Text
       fontSize="12px"
-      color={primary ? 'var(--text-primary)' : 'var(--text-muted)'}
+      color={primary ? "var(--text-primary)" : "var(--text-muted)"}
       fontWeight={primary ? 600 : 500}
     >
       {label}
@@ -287,60 +312,81 @@ export default function Controls({
   onToggleGrid,
   onGridSizeChange,
   toolSelector,
-  disabled = false
+  disabled = false,
 }) {
   const [copyStatus, setCopyStatus] = useState(null);
   const [shortcutsHovered, setShortcutsHovered] = useState(false);
-  const [pngScale, setPngScale] = useState('2');
+  const [pngScale, setPngScale] = useState("2");
   const [exportPad, setExportPad] = useState(16);
   const [includeBg, setIncludeBg] = useState(false);
 
-  const selectedShape = shapes.find(s => s.id === selectedIds[0]);
+  const selectedShape = shapes.find((s) => s.id === selectedIds[0]);
   const hasMultiSelection = selectedIds.length > 1;
   const hasThreeOrMoreSelected = selectedIds.length >= 3;
 
-  const setStyle = useCallback(patch => onStyleChange({ ...style, ...patch }), [onStyleChange, style]);
+  const setStyle = useCallback(
+    (patch) => onStyleChange({ ...style, ...patch }),
+    [onStyleChange, style],
+  );
 
   const exportOpts = { padding: exportPad, forceBackground: includeBg };
 
-  const flash = key => {
+  const flash = (key) => {
     setCopyStatus(key);
     setTimeout(() => setCopyStatus(null), 2000);
   };
 
   const handleCopySVG = useCallback(() => {
     navigator.clipboard.writeText(
-      generateMergedSVG(shapes, bridges, cornerRadii || {}, style, globalRadius, smoothing, exportOpts)
+      generateMergedSVG(
+        shapes,
+        bridges,
+        cornerRadii || {},
+        style,
+        globalRadius,
+        smoothing,
+        exportOpts,
+      ),
     );
-    flash('svg');
+    flash("svg");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shapes, bridges, cornerRadii, globalRadius, style, smoothing, exportPad, includeBg]);
 
   const handleCopyReact = useCallback(() => {
     navigator.clipboard.writeText(
-      generateReactComponent(shapes, bridges, cornerRadii || {}, style, globalRadius, smoothing)
+      generateReactComponent(shapes, bridges, cornerRadii || {}, style, globalRadius, smoothing),
     );
-    flash('react');
+    flash("react");
   }, [shapes, bridges, cornerRadii, globalRadius, style, smoothing]);
 
   const handleCopyMerged = useCallback(() => {
     navigator.clipboard.writeText(
-      generateMergedClipPathSVG(shapes, bridges, cornerRadii || {}, style, globalRadius, smoothing)
+      generateMergedClipPathSVG(shapes, bridges, cornerRadii || {}, style, globalRadius, smoothing),
     );
-    flash('merged');
+    flash("merged");
   }, [shapes, bridges, cornerRadii, globalRadius, style, smoothing]);
 
   const handleCopyCSS = useCallback(() => {
-    navigator.clipboard.writeText(generateCSSClipPath(shapes, bridges, cornerRadii || {}, globalRadius, smoothing));
-    flash('css');
+    navigator.clipboard.writeText(
+      generateCSSClipPath(shapes, bridges, cornerRadii || {}, globalRadius, smoothing),
+    );
+    flash("css");
   }, [shapes, bridges, cornerRadii, globalRadius, smoothing]);
 
   const handleDownloadSVG = useCallback(() => {
-    const svg = generateMergedSVG(shapes, bridges, cornerRadii || {}, style, globalRadius, smoothing, exportOpts);
-    const blob = new Blob([svg], { type: 'image/svg+xml' });
+    const svg = generateMergedSVG(
+      shapes,
+      bridges,
+      cornerRadii || {},
+      style,
+      globalRadius,
+      smoothing,
+      exportOpts,
+    );
+    const blob = new Blob([svg], { type: "image/svg+xml" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.download = 'merged-shape.svg';
+    const link = document.createElement("a");
+    link.download = "merged-shape.svg";
     link.href = url;
     link.click();
     URL.revokeObjectURL(url);
@@ -348,46 +394,54 @@ export default function Controls({
   }, [shapes, bridges, cornerRadii, globalRadius, style, smoothing, exportPad, includeBg]);
 
   const downloadRaster = useCallback(
-    format => {
-      const isJpg = format === 'jpg';
+    (format) => {
+      const isJpg = format === "jpg";
       // JPG has no alpha, so always bake a background for it.
       const opts = { padding: exportPad, forceBackground: includeBg || isJpg };
-      const svg = generateMergedSVG(shapes, bridges, cornerRadii || {}, style, globalRadius, smoothing, opts);
-      const blob = new Blob([svg], { type: 'image/svg+xml' });
+      const svg = generateMergedSVG(
+        shapes,
+        bridges,
+        cornerRadii || {},
+        style,
+        globalRadius,
+        smoothing,
+        opts,
+      );
+      const blob = new Blob([svg], { type: "image/svg+xml" });
       const url = URL.createObjectURL(blob);
       const img = new window.Image();
       img.onload = () => {
         const scale = parseInt(pngScale, 10) || 2;
-        const canvas = document.createElement('canvas');
+        const canvas = document.createElement("canvas");
         canvas.width = img.width * scale;
         canvas.height = img.height * scale;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
         if (isJpg) {
-          ctx.fillStyle = style.backgroundColor || '#ffffff';
+          ctx.fillStyle = style.backgroundColor || "#ffffff";
           ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
         ctx.scale(scale, scale);
         ctx.drawImage(img, 0, 0);
         URL.revokeObjectURL(url);
         canvas.toBlob(
-          outBlob => {
+          (outBlob) => {
             const outUrl = URL.createObjectURL(outBlob);
-            const link = document.createElement('a');
+            const link = document.createElement("a");
             link.download = `merged-shape.${format}`;
             link.href = outUrl;
             link.click();
             URL.revokeObjectURL(outUrl);
           },
-          isJpg ? 'image/jpeg' : 'image/png',
-          isJpg ? 0.92 : undefined
+          isJpg ? "image/jpeg" : "image/png",
+          isJpg ? 0.92 : undefined,
         );
       };
       img.src = url;
     },
-    [shapes, bridges, cornerRadii, globalRadius, style, smoothing, pngScale, exportPad, includeBg]
+    [shapes, bridges, cornerRadii, globalRadius, style, smoothing, pngScale, exportPad, includeBg],
   );
 
-  const isGradient = style.fillType === 'linear' || style.fillType === 'radial';
+  const isGradient = style.fillType === "linear" || style.fillType === "radial";
 
   return (
     <Flex
@@ -395,7 +449,7 @@ export default function Controls({
       h="100%"
       overflow="hidden"
       opacity={disabled ? 0.5 : 1}
-      pointerEvents={disabled ? 'none' : 'auto'}
+      pointerEvents={disabled ? "none" : "auto"}
       transition="opacity 0.2s"
     >
       {toolSelector && (
@@ -408,15 +462,15 @@ export default function Controls({
         flex={1}
         overflowY="auto"
         css={{
-          '&::-webkit-scrollbar': { display: 'none' },
-          scrollbarWidth: 'none'
+          "&::-webkit-scrollbar": { display: "none" },
+          scrollbarWidth: "none",
         }}
       >
         {/* Presets */}
         {presets.length > 0 && (
           <CollapsibleSection title="Presets" icon={Sparkles} defaultOpen>
             <Box display="grid" gridTemplateColumns="repeat(4, 1fr)" gap={2}>
-              {presets.map(p => (
+              {presets.map((p) => (
                 <PresetTile key={p.id} preset={p} onClick={() => onApplyPreset?.(p.id)} />
               ))}
             </Box>
@@ -437,12 +491,30 @@ export default function Controls({
                 Align
               </Text>
               <Flex gap={2} flexWrap="wrap">
-                <ToggleButton icon={AlignHorizontalJustifyStart} onClick={() => onAlignShapes('left')} />
-                <ToggleButton icon={AlignHorizontalJustifyCenter} onClick={() => onAlignShapes('centerH')} />
-                <ToggleButton icon={AlignHorizontalJustifyEnd} onClick={() => onAlignShapes('right')} />
-                <ToggleButton icon={AlignVerticalJustifyStart} onClick={() => onAlignShapes('top')} />
-                <ToggleButton icon={AlignVerticalJustifyCenter} onClick={() => onAlignShapes('centerV')} />
-                <ToggleButton icon={AlignVerticalJustifyEnd} onClick={() => onAlignShapes('bottom')} />
+                <ToggleButton
+                  icon={AlignHorizontalJustifyStart}
+                  onClick={() => onAlignShapes("left")}
+                />
+                <ToggleButton
+                  icon={AlignHorizontalJustifyCenter}
+                  onClick={() => onAlignShapes("centerH")}
+                />
+                <ToggleButton
+                  icon={AlignHorizontalJustifyEnd}
+                  onClick={() => onAlignShapes("right")}
+                />
+                <ToggleButton
+                  icon={AlignVerticalJustifyStart}
+                  onClick={() => onAlignShapes("top")}
+                />
+                <ToggleButton
+                  icon={AlignVerticalJustifyCenter}
+                  onClick={() => onAlignShapes("centerV")}
+                />
+                <ToggleButton
+                  icon={AlignVerticalJustifyEnd}
+                  onClick={() => onAlignShapes("bottom")}
+                />
               </Flex>
               {hasThreeOrMoreSelected && (
                 <>
@@ -453,13 +525,13 @@ export default function Controls({
                     <ToggleButton
                       icon={AlignHorizontalSpaceAround}
                       label="Horizontal"
-                      onClick={() => onDistributeShapes('horizontal')}
+                      onClick={() => onDistributeShapes("horizontal")}
                       flex={1}
                     />
                     <ToggleButton
                       icon={AlignVerticalSpaceAround}
                       label="Vertical"
-                      onClick={() => onDistributeShapes('vertical')}
+                      onClick={() => onDistributeShapes("vertical")}
                       flex={1}
                     />
                   </Flex>
@@ -476,25 +548,25 @@ export default function Controls({
                 <NumberInput
                   label="X"
                   value={selectedShape.x}
-                  onChange={v => onShapeUpdate(selectedShape.id, { x: v })}
+                  onChange={(v) => onShapeUpdate(selectedShape.id, { x: v })}
                 />
                 <NumberInput
                   label="Y"
                   value={selectedShape.y}
-                  onChange={v => onShapeUpdate(selectedShape.id, { y: v })}
+                  onChange={(v) => onShapeUpdate(selectedShape.id, { y: v })}
                 />
               </Flex>
               <Flex gap={2}>
                 <NumberInput
                   label="W"
                   value={selectedShape.w}
-                  onChange={v => onShapeUpdate(selectedShape.id, { w: Math.max(20, v) })}
+                  onChange={(v) => onShapeUpdate(selectedShape.id, { w: Math.max(20, v) })}
                   min={20}
                 />
                 <NumberInput
                   label="H"
                   value={selectedShape.h}
-                  onChange={v => onShapeUpdate(selectedShape.id, { h: Math.max(20, v) })}
+                  onChange={(v) => onShapeUpdate(selectedShape.id, { h: Math.max(20, v) })}
                   min={20}
                 />
               </Flex>
@@ -505,7 +577,7 @@ export default function Controls({
                 step={1}
                 value={selectedShape.r !== undefined ? selectedShape.r : globalRadius}
                 valueUnit="px"
-                onChange={v => onShapeUpdate(selectedShape.id, { r: v })}
+                onChange={(v) => onShapeUpdate(selectedShape.id, { r: v })}
               />
               {selectedShape.r !== undefined && (
                 <Flex
@@ -519,7 +591,7 @@ export default function Controls({
                   border="1px solid var(--border-primary)"
                   borderRadius="var(--radius-sm)"
                   cursor="pointer"
-                  _hover={{ borderColor: 'var(--color-primary)' }}
+                  _hover={{ borderColor: "var(--color-primary)" }}
                   onClick={() => onShapeUpdate(selectedShape.id, { r: undefined })}
                 >
                   <Icon as={RotateCcw} boxSize={3} color="var(--text-muted)" />
@@ -548,7 +620,7 @@ export default function Controls({
               bg="var(--bg-elevated)"
               border="1px solid var(--border-primary)"
               cursor="pointer"
-              _hover={{ borderColor: 'var(--color-primary)' }}
+              _hover={{ borderColor: "var(--color-primary)" }}
               onClick={() => onStyleChange({ ...DEFAULT_STYLE })}
               title="Reset all styles"
             >
@@ -562,23 +634,27 @@ export default function Controls({
           <Flex direction="column" gap={2}>
             <PreviewSelect
               title="Type"
-              value={style.fillType || 'solid'}
+              value={style.fillType || "solid"}
               options={[
-                { value: 'solid', label: 'Solid' },
-                { value: 'linear', label: 'Linear Gradient' },
-                { value: 'radial', label: 'Radial Gradient' }
+                { value: "solid", label: "Solid" },
+                { value: "linear", label: "Linear Gradient" },
+                { value: "radial", label: "Radial Gradient" },
               ]}
-              onChange={v => setStyle({ fillType: v })}
+              onChange={(v) => setStyle({ fillType: v })}
             />
             <ColorInput
-              label={isGradient ? 'Color 1' : 'Color'}
+              label={isGradient ? "Color 1" : "Color"}
               value={style.fill}
-              onChange={v => setStyle({ fill: v })}
+              onChange={(v) => setStyle({ fill: v })}
             />
             {isGradient && (
-              <ColorInput label="Color 2" value={style.fillColor2} onChange={v => setStyle({ fillColor2: v })} />
+              <ColorInput
+                label="Color 2"
+                value={style.fillColor2}
+                onChange={(v) => setStyle({ fillColor2: v })}
+              />
             )}
-            {style.fillType === 'linear' && (
+            {style.fillType === "linear" && (
               <PreviewSlider
                 title="Angle"
                 min={0}
@@ -586,7 +662,7 @@ export default function Controls({
                 step={1}
                 value={style.gradientAngle}
                 valueUnit="°"
-                onChange={v => setStyle({ gradientAngle: v })}
+                onChange={(v) => setStyle({ gradientAngle: v })}
               />
             )}
             <PreviewSlider
@@ -595,8 +671,8 @@ export default function Controls({
               max={1}
               step={0.01}
               value={style.opacity ?? 1}
-              displayValue={v => `${Math.round(v * 100)}%`}
-              onChange={v => setStyle({ opacity: v })}
+              displayValue={(v) => `${Math.round(v * 100)}%`}
+              onChange={(v) => setStyle({ opacity: v })}
             />
           </Flex>
         </CollapsibleSection>
@@ -607,9 +683,13 @@ export default function Controls({
             <PreviewSwitch
               title="Enable outline"
               isChecked={!!style.strokeEnabled}
-              onChange={v => setStyle({ strokeEnabled: v })}
+              onChange={(v) => setStyle({ strokeEnabled: v })}
             />
-            <ColorInput label="Color" value={style.strokeColor} onChange={v => setStyle({ strokeColor: v })} />
+            <ColorInput
+              label="Color"
+              value={style.strokeColor}
+              onChange={(v) => setStyle({ strokeColor: v })}
+            />
             <PreviewSlider
               title="Width"
               min={1}
@@ -618,7 +698,7 @@ export default function Controls({
               value={style.strokeWidth}
               valueUnit="px"
               isDisabled={!style.strokeEnabled}
-              onChange={v => setStyle({ strokeWidth: v })}
+              onChange={(v) => setStyle({ strokeWidth: v })}
             />
           </Flex>
         </CollapsibleSection>
@@ -629,9 +709,13 @@ export default function Controls({
             <PreviewSwitch
               title="Enable shadow"
               isChecked={!!style.shadowEnabled}
-              onChange={v => setStyle({ shadowEnabled: v })}
+              onChange={(v) => setStyle({ shadowEnabled: v })}
             />
-            <ColorInput label="Color" value={style.shadowColor} onChange={v => setStyle({ shadowColor: v })} />
+            <ColorInput
+              label="Color"
+              value={style.shadowColor}
+              onChange={(v) => setStyle({ shadowColor: v })}
+            />
             <PreviewSlider
               title="Blur"
               min={0}
@@ -640,7 +724,7 @@ export default function Controls({
               value={style.shadowBlur}
               valueUnit="px"
               isDisabled={!style.shadowEnabled}
-              onChange={v => setStyle({ shadowBlur: v })}
+              onChange={(v) => setStyle({ shadowBlur: v })}
             />
             <PreviewSlider
               title="Offset X"
@@ -650,7 +734,7 @@ export default function Controls({
               value={style.shadowOffsetX}
               valueUnit="px"
               isDisabled={!style.shadowEnabled}
-              onChange={v => setStyle({ shadowOffsetX: v })}
+              onChange={(v) => setStyle({ shadowOffsetX: v })}
             />
             <PreviewSlider
               title="Offset Y"
@@ -660,7 +744,7 @@ export default function Controls({
               value={style.shadowOffsetY}
               valueUnit="px"
               isDisabled={!style.shadowEnabled}
-              onChange={v => setStyle({ shadowOffsetY: v })}
+              onChange={(v) => setStyle({ shadowOffsetY: v })}
             />
             <PreviewSlider
               title="Strength"
@@ -668,9 +752,9 @@ export default function Controls({
               max={1}
               step={0.01}
               value={style.shadowOpacity}
-              displayValue={v => `${Math.round(v * 100)}%`}
+              displayValue={(v) => `${Math.round(v * 100)}%`}
               isDisabled={!style.shadowEnabled}
-              onChange={v => setStyle({ shadowOpacity: v })}
+              onChange={(v) => setStyle({ shadowOpacity: v })}
             />
           </Flex>
         </CollapsibleSection>
@@ -693,7 +777,7 @@ export default function Controls({
               max={1}
               step={0.01}
               value={smoothing}
-              displayValue={v => `${Math.round(v * 100)}%`}
+              displayValue={(v) => `${Math.round(v * 100)}%`}
               onChange={onSmoothingChange}
             />
           </Flex>
@@ -705,17 +789,25 @@ export default function Controls({
             <PreviewSwitch
               title="Background"
               isChecked={!!style.backgroundEnabled}
-              onChange={v => setStyle({ backgroundEnabled: v })}
+              onChange={(v) => setStyle({ backgroundEnabled: v })}
             />
             {style.backgroundEnabled && (
               <ColorInput
                 label="Color"
                 value={style.backgroundColor}
-                onChange={v => setStyle({ backgroundColor: v })}
+                onChange={(v) => setStyle({ backgroundColor: v })}
               />
             )}
-            <PreviewSwitch title="Show grid" isChecked={!!showGrid} onChange={v => onToggleGrid?.(v)} />
-            <PreviewSwitch title="Snap to grid" isChecked={!!snapToGrid} onChange={v => onToggleSnap?.(v)} />
+            <PreviewSwitch
+              title="Show grid"
+              isChecked={!!showGrid}
+              onChange={(v) => onToggleGrid?.(v)}
+            />
+            <PreviewSwitch
+              title="Snap to grid"
+              isChecked={!!snapToGrid}
+              onChange={(v) => onToggleSnap?.(v)}
+            />
             <PreviewSlider
               title="Grid Size"
               min={5}
@@ -724,7 +816,7 @@ export default function Controls({
               value={gridSize}
               valueUnit="px"
               isDisabled={!snapToGrid && !showGrid}
-              onChange={v => onGridSizeChange?.(v)}
+              onChange={(v) => onGridSizeChange?.(v)}
             />
           </Flex>
         </CollapsibleSection>
@@ -758,12 +850,12 @@ export default function Controls({
             as={ChevronUp}
             boxSize={3}
             color="var(--text-muted)"
-            transform={shortcutsHovered ? 'rotate(0deg)' : 'rotate(180deg)'}
+            transform={shortcutsHovered ? "rotate(0deg)" : "rotate(180deg)"}
             transition="transform 0.2s ease"
           />
         </Flex>
         <Box
-          maxH={shortcutsHovered ? '240px' : '0px'}
+          maxH={shortcutsHovered ? "240px" : "0px"}
           opacity={shortcutsHovered ? 1 : 0}
           overflow="hidden"
           transition="all 0.2s ease"
@@ -772,13 +864,13 @@ export default function Controls({
         >
           <Flex direction="column" gap={1.5}>
             {[
-              ['Undo', ['⌘', 'Z']],
-              ['Redo', ['⌘', '⇧', 'Z']],
-              ['Duplicate', ['⌘', 'D']],
-              ['Copy / Paste', ['⌘', 'C/V']],
-              ['Delete', ['⌫']],
-              ['Pan', ['Space+Drag']],
-              ['Duplicate-drag', ['Alt+Drag']]
+              ["Undo", ["⌘", "Z"]],
+              ["Redo", ["⌘", "⇧", "Z"]],
+              ["Duplicate", ["⌘", "D"]],
+              ["Copy / Paste", ["⌘", "C/V"]],
+              ["Delete", ["⌫"]],
+              ["Pan", ["Space+Drag"]],
+              ["Duplicate-drag", ["Alt+Drag"]],
             ].map(([label, keys]) => (
               <Flex key={label} justify="space-between" align="center">
                 <Text fontSize="12px" color="var(--text-muted)">
@@ -823,10 +915,10 @@ export default function Controls({
             title="Raster scale"
             value={pngScale}
             options={[
-              { value: '1', label: '1x' },
-              { value: '2', label: '2x' },
-              { value: '3', label: '3x' },
-              { value: '4', label: '4x' }
+              { value: "1", label: "1x" },
+              { value: "2", label: "2x" },
+              { value: "3", label: "3x" },
+              { value: "4", label: "4x" },
             ]}
             onChange={setPngScale}
           />
@@ -835,36 +927,54 @@ export default function Controls({
         <Flex direction="column" gap={2}>
           <ExportButton
             icon={Merge}
-            label={copyStatus === 'merged' ? 'Copied!' : 'Merge & Copy (Mask-Ready)'}
-            active={copyStatus === 'merged'}
+            label={copyStatus === "merged" ? "Copied!" : "Merge & Copy (Mask-Ready)"}
+            active={copyStatus === "merged"}
             onClick={handleCopyMerged}
           />
           <Flex gap={2}>
             <ExportButton
               icon={Code2}
-              label={copyStatus === 'svg' ? 'Copied!' : 'Copy SVG'}
-              active={copyStatus === 'svg'}
+              label={copyStatus === "svg" ? "Copied!" : "Copy SVG"}
+              active={copyStatus === "svg"}
               onClick={handleCopySVG}
               flex={1}
             />
             <ExportButton
               icon={Code2}
-              label={copyStatus === 'react' ? 'Copied!' : 'Copy React'}
-              active={copyStatus === 'react'}
+              label={copyStatus === "react" ? "Copied!" : "Copy React"}
+              active={copyStatus === "react"}
               onClick={handleCopyReact}
               flex={1}
             />
           </Flex>
           <ExportButton
             icon={FileCode2}
-            label={copyStatus === 'css' ? 'Copied!' : 'Copy CSS clip-path'}
-            active={copyStatus === 'css'}
+            label={copyStatus === "css" ? "Copied!" : "Copy CSS clip-path"}
+            active={copyStatus === "css"}
             onClick={handleCopyCSS}
           />
           <Flex gap={2}>
-            <ExportButton icon={Download} label="SVG" onClick={handleDownloadSVG} flex={1} primary />
-            <ExportButton icon={Image} label="PNG" onClick={() => downloadRaster('png')} flex={1} primary />
-            <ExportButton icon={Image} label="JPG" onClick={() => downloadRaster('jpg')} flex={1} primary />
+            <ExportButton
+              icon={Download}
+              label="SVG"
+              onClick={handleDownloadSVG}
+              flex={1}
+              primary
+            />
+            <ExportButton
+              icon={Image}
+              label="PNG"
+              onClick={() => downloadRaster("png")}
+              flex={1}
+              primary
+            />
+            <ExportButton
+              icon={Image}
+              label="JPG"
+              onClick={() => downloadRaster("jpg")}
+              flex={1}
+              primary
+            />
           </Flex>
         </Flex>
       </Box>

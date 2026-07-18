@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
-import { Card, CardContent } from "@/registry/elevenlabs-ui/ui/card"
-import { ScrollingWaveform } from "@/registry/elevenlabs-ui/ui/waveform"
+import { Card, CardContent } from "@/registry/elevenlabs-ui/ui/card";
+import { ScrollingWaveform } from "@/registry/elevenlabs-ui/ui/waveform";
 
 export function CardsLiveRecording() {
-  const [remountKey, setRemountKey] = useState(0)
+  const [remountKey, setRemountKey] = useState(0);
 
   useEffect(() => {
     const handleResize = () => {
       // Force remount on significant size changes
-      setRemountKey((prev) => prev + 1)
-    }
+      setRemountKey((prev) => prev + 1);
+    };
 
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <Card className="hidden w-full p-0 sm:flex">
@@ -44,5 +44,5 @@ export function CardsLiveRecording() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

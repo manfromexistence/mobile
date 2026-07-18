@@ -86,11 +86,9 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
     const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
 
     const activeRect = activeIndex !== null ? itemRects[activeIndex] : null;
-    const checkedRect =
-      checkedIndex != null ? itemRects[checkedIndex] : null;
+    const checkedRect = checkedIndex != null ? itemRects[checkedIndex] : null;
     const focusRect = focusedIndex !== null ? itemRects[focusedIndex] : null;
-    const isHoveringOther =
-      activeIndex !== null && activeIndex !== checkedIndex;
+    const isHoveringOther = activeIndex !== null && activeIndex !== checkedIndex;
 
     return (
       <DropdownContext.Provider value={{ registerItem, activeIndex, checkedIndex }}>
@@ -112,9 +110,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
             if (indexAttr != null) {
               const idx = Number(indexAttr);
               setActiveIndex(idx);
-              setFocusedIndex(
-                (e.target as HTMLElement).matches(":focus-visible") ? idx : null
-              );
+              setFocusedIndex((e.target as HTMLElement).matches(":focus-visible") ? idx : null);
             }
           }}
           onBlur={(e) => {
@@ -124,9 +120,8 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
           }}
           onKeyDown={(e) => {
             const items = Array.from(
-              containerRef.current?.querySelectorAll(
-                '[role="menuitem"], [role="menuitemradio"]'
-              ) ?? []
+              containerRef.current?.querySelectorAll('[role="menuitem"], [role="menuitemradio"]') ??
+                [],
             ) as HTMLElement[];
             const currentIdx = items.indexOf(e.target as HTMLElement);
             if (currentIdx === -1) return;
@@ -148,7 +143,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
           role="group"
           className={cn(
             `relative flex flex-col gap-0.5 w-72 max-w-full ${shape.container} p-1 select-none`,
-            className
+            className,
           )}
           {...props}
         >
@@ -228,7 +223,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
         </Elevated>
       </DropdownContext.Provider>
     );
-  }
+  },
 );
 
 Dropdown.displayName = "Dropdown";
@@ -258,10 +253,7 @@ const DropdownMenuContext = createContext<DropdownMenuContextValue | null>(null)
 
 function useDropdownMenuContext() {
   const ctx = useContext(DropdownMenuContext);
-  if (!ctx)
-    throw new Error(
-      "DropdownMenu compound components must be inside <DropdownMenu>"
-    );
+  if (!ctx) throw new Error("DropdownMenu compound components must be inside <DropdownMenu>");
   return ctx;
 }
 
@@ -289,7 +281,7 @@ function DropdownMenu({
       if (openProp === undefined) setInternalOpen(next);
       onOpenChange?.(next);
     },
-    [openProp, onOpenChange]
+    [openProp, onOpenChange],
   );
 
   const ctx = useMemo(() => ({ open, actionsRef }), [open]);
@@ -351,15 +343,8 @@ interface DropdownContentProps {
 
 const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
   (
-    {
-      className,
-      children,
-      checkedIndex,
-      side = "bottom",
-      align = "start",
-      sideOffset = 6,
-    },
-    ref
+    { className, children, checkedIndex, side = "bottom", align = "start", sideOffset = 6 },
+    ref,
   ) => {
     const { open, actionsRef } = useDropdownMenuContext();
     const containerRef = useRef<HTMLDivElement>(null);
@@ -406,12 +391,11 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
     const activeRect = activeIndex !== null ? itemRects[activeIndex] : null;
     const checkedRect = checkedIndex != null ? itemRects[checkedIndex] : null;
     const focusRect = focusedIndex !== null ? itemRects[focusedIndex] : null;
-    const isHoveringOther =
-      activeIndex !== null && activeIndex !== checkedIndex;
+    const isHoveringOther = activeIndex !== null && activeIndex !== checkedIndex;
 
     const contentCtx = useMemo(
       () => ({ registerItem, activeIndex, checkedIndex, inMenu: true }),
-      [registerItem, activeIndex, checkedIndex]
+      [registerItem, activeIndex, checkedIndex],
     );
 
     return (
@@ -424,11 +408,7 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
         >
           <motion.div
             initial={{ opacity: 0, y: -4, scaleY: 0.96 }}
-            animate={
-              open
-                ? { opacity: 1, y: 0, scaleY: 1 }
-                : { opacity: 0, y: -4, scaleY: 0.96 }
-            }
+            animate={open ? { opacity: 1, y: 0, scaleY: 1 } : { opacity: 0, y: -4, scaleY: 0.96 }}
             transition={open ? spring.fast : spring.fast.exit}
             style={{ transformOrigin: "top center" }}
             // Base UI defers unmount while actionsRef is set; release it once
@@ -444,14 +424,11 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
                     offset={2}
                     shadowLevel={3}
                     ref={(node: HTMLDivElement | null) => {
-                      (
-                        containerRef as React.MutableRefObject<HTMLDivElement | null>
-                      ).current = node;
+                      (containerRef as React.MutableRefObject<HTMLDivElement | null>).current =
+                        node;
                       if (typeof ref === "function") ref(node);
                       else if (ref)
-                        (
-                          ref as React.MutableRefObject<HTMLDivElement | null>
-                        ).current = node;
+                        (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
                     }}
                   />
                 }
@@ -469,21 +446,18 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
                     const idx = Number(indexAttr);
                     setActiveIndex(idx);
                     setFocusedIndex(
-                      (e.target as HTMLElement).matches(":focus-visible")
-                        ? idx
-                        : null
+                      (e.target as HTMLElement).matches(":focus-visible") ? idx : null,
                     );
                   }
                 }}
                 onBlur={(e) => {
-                  if (containerRef.current?.contains(e.relatedTarget as Node))
-                    return;
+                  if (containerRef.current?.contains(e.relatedTarget as Node)) return;
                   setFocusedIndex(null);
                   setActiveIndex(null);
                 }}
                 className={cn(
                   `relative flex flex-col gap-0.5 w-72 max-w-full max-h-[min(480px,var(--available-height))] overflow-y-auto ${shape.container} p-1 select-none outline-none`,
-                  className
+                  className,
                 )}
               >
                 {/* Selected background */}
@@ -561,10 +535,7 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
                 {/* display: contents keeps items direct flex children of the
                     popup so proximity measurement and gap layout still work,
                     while the group provides the radio value context. */}
-                <Menu.RadioGroup
-                  value={checkedIndex ?? null}
-                  className="contents"
-                >
+                <Menu.RadioGroup value={checkedIndex ?? null} className="contents">
                   {children}
                 </Menu.RadioGroup>
               </Menu.Popup>
@@ -573,7 +544,7 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
         </Menu.Positioner>
       </Menu.Portal>
     );
-  }
+  },
 );
 
 DropdownContent.displayName = "DropdownContent";
@@ -586,13 +557,10 @@ const DropdownLabel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(
-        "px-2 py-1.5 text-[11px] text-muted-foreground",
-        className
-      )}
+      className={cn("px-2 py-1.5 text-[11px] text-muted-foreground", className)}
       {...props}
     />
-  )
+  ),
 );
 
 DropdownLabel.displayName = "DropdownLabel";
@@ -601,17 +569,16 @@ DropdownLabel.displayName = "DropdownLabel";
 // DropdownSeparator
 // ---------------------------------------------------------------------------
 
-const DropdownSeparator = forwardRef<
-  HTMLDivElement,
-  HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    role="separator"
-    className={cn("my-1 -mx-1 h-px bg-border/60", className)}
-    {...props}
-  />
-));
+const DropdownSeparator = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      role="separator"
+      className={cn("my-1 -mx-1 h-px bg-border/60", className)}
+      {...props}
+    />
+  ),
+);
 
 DropdownSeparator.displayName = "DropdownSeparator";
 
@@ -623,10 +590,5 @@ export {
   DropdownTrigger,
   DropdownContent,
 };
-export type {
-  DropdownProps,
-  DropdownMenuProps,
-  DropdownTriggerProps,
-  DropdownContentProps,
-};
+export type { DropdownProps, DropdownMenuProps, DropdownTriggerProps, DropdownContentProps };
 export default Dropdown;

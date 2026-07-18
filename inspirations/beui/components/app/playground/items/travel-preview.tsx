@@ -70,12 +70,8 @@ export function TravelPreview({
 
       {caption ? (
         <div className="w-full max-w-sm rounded-xl border border-border bg-background px-4 py-3 text-center">
-          <p className="font-mono text-xs font-medium text-foreground">
-            {caption.title}
-          </p>
-          <p className="mt-1 text-xs leading-5 text-muted-foreground">
-            {caption.text}
-          </p>
+          <p className="font-mono text-xs font-medium text-foreground">{caption.title}</p>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">{caption.text}</p>
         </div>
       ) : null}
     </div>

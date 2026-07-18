@@ -14,7 +14,11 @@ import {
 // performs a real OAuth token exchange (getAccessToken is skipped when accessToken is present).
 function saCredentials(region = "us-central1") {
   return {
-    apiKey: JSON.stringify({ project_id: "proj-test", client_email: "svc@x.iam", private_key: "x" }),
+    apiKey: JSON.stringify({
+      project_id: "proj-test",
+      client_email: "svc@x.iam",
+      private_key: "x",
+    }),
     accessToken: "test-bearer-token",
     providerSpecificData: { region },
   };
@@ -63,7 +67,11 @@ test("vertexGenerateSpeech posts generateContent with AUDIO modality and returns
   const calls = installFetch([
     () => ({
       candidates: [
-        { content: { parts: [{ inlineData: { data: pcmB64, mimeType: "audio/L16;codec=pcm;rate=24000" } }] } },
+        {
+          content: {
+            parts: [{ inlineData: { data: pcmB64, mimeType: "audio/L16;codec=pcm;rate=24000" } }],
+          },
+        },
       ],
     }),
   ]);
@@ -78,22 +86,37 @@ test("vertexGenerateSpeech posts generateContent with AUDIO modality and returns
   assert.equal(audio.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(
     calls[0].url,
-    "https://europe-west4-aiplatform.googleapis.com/v1/projects/proj-test/locations/europe-west4/publishers/google/models/gemini-2.5-flash-preview-tts:generateContent"
+    "https://europe-west4-aiplatform.googleapis.com/v1/projects/proj-test/locations/europe-west4/publishers/google/models/gemini-2.5-flash-preview-tts:generateContent",
   );
   const body = JSON.parse(calls[0].init.body);
   assert.deepEqual(body.generationConfig.responseModalities, ["AUDIO"]);
-  assert.equal(body.generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName, "Puck");
+  assert.equal(
+    body.generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName,
+    "Puck",
+  );
   assert.equal(calls[0].init.headers.Authorization, "Bearer test-bearer-token");
 });
 
 test("vertexGenerateSpeech defaults the voice to Kore", async () => {
   const pcmB64 = Buffer.from([1, 2]).toString("base64");
   const calls = installFetch([
-    () => ({ candidates: [{ content: { parts: [{ inlineData: { data: pcmB64, mimeType: "audio/L16;rate=16000" } }] } }] }),
+    () => ({
+      candidates: [
+        {
+          content: { parts: [{ inlineData: { data: pcmB64, mimeType: "audio/L16;rate=16000" } }] },
+        },
+      ],
+    }),
   ]);
-  await vertexGenerateSpeech(saCredentials(), { model: "gemini-2.5-flash-preview-tts", input: "hi" });
+  await vertexGenerateSpeech(saCredentials(), {
+    model: "gemini-2.5-flash-preview-tts",
+    input: "hi",
+  });
   const body = JSON.parse(calls[0].init.body);
-  assert.equal(body.generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName, "Kore");
+  assert.equal(
+    body.generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName,
+    "Kore",
+  );
 });
 
 test("vertexTranscribe posts audio inlineData and returns the joined text", async () => {
@@ -160,12 +183,21 @@ test("vertexGenerateVideo submits predictLongRunning then polls fetchPredictOper
 test("Express API key uses the project-less publisher endpoint with ?key=", async () => {
   const pcmB64 = Buffer.from([1]).toString("base64");
   const calls = installFetch([
-    () => ({ candidates: [{ content: { parts: [{ inlineData: { data: pcmB64, mimeType: "audio/L16;rate=24000" } }] } }] }),
+    () => ({
+      candidates: [
+        {
+          content: { parts: [{ inlineData: { data: pcmB64, mimeType: "audio/L16;rate=24000" } }] },
+        },
+      ],
+    }),
   ]);
-  await vertexGenerateSpeech(expressCredentials(), { model: "gemini-2.5-flash-preview-tts", input: "hi" });
+  await vertexGenerateSpeech(expressCredentials(), {
+    model: "gemini-2.5-flash-preview-tts",
+    input: "hi",
+  });
   assert.equal(
     calls[0].url,
-    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-2.5-flash-preview-tts:generateContent?key=express-key-abc"
+    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-2.5-flash-preview-tts:generateContent?key=express-key-abc",
   );
   assert.equal(calls[0].init.headers.Authorization, undefined);
 });

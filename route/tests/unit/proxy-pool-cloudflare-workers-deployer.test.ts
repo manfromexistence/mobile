@@ -57,7 +57,7 @@ test("buildCloudflareWorkerScript embeds the supplied relayAuth literal", () => 
   const src = buildCloudflareWorkerScript("a-very-specific-secret-token");
   assert.ok(
     src.includes('"a-very-specific-secret-token"'),
-    "worker source must embed the relayAuth secret as a string literal"
+    "worker source must embed the relayAuth secret as a string literal",
   );
 });
 
@@ -66,13 +66,10 @@ test("buildCloudflareWorkerScript rejects requests without a valid x-relay-auth 
   // a 401 short-circuit when x-relay-auth does not match the embedded token.
   // We don't run the worker here — we check the source contains the guard.
   const src = buildCloudflareWorkerScript("the-secret");
-  assert.ok(
-    /x-relay-auth/.test(src),
-    "worker source must reference the x-relay-auth header"
-  );
+  assert.ok(/x-relay-auth/.test(src), "worker source must reference the x-relay-auth header");
   assert.ok(
     /401|Unauthorized/.test(src),
-    "worker source must short-circuit unauthorised requests with 401"
+    "worker source must short-circuit unauthorised requests with 401",
   );
 });
 
@@ -97,11 +94,11 @@ test("buildCloudflareWorkerScript uses Service Worker syntax, not an ES module (
   const src = buildCloudflareWorkerScript("tok");
   assert.ok(
     !/^\s*export\s+default/m.test(src),
-    "must not be an ES module (no top-level `export default`)"
+    "must not be an ES module (no top-level `export default`)",
   );
   assert.ok(
     /addEventListener\(\s*["']fetch["']/.test(src),
-    "must register a fetch event listener (Service Worker syntax)"
+    "must register a fetch event listener (Service Worker syntax)",
   );
 });
 
@@ -120,7 +117,7 @@ test("proxyFetch routes a cloudflare-type context through the relay endpoint wit
     proxyFetch("https://api.anthropic.com/v1/messages?x=1", {
       method: "POST",
       headers: { "x-existing": "keep-me" },
-    })
+    }),
   );
 
   assert.deepEqual(await response.json(), { via: "cloudflare-relay" });
@@ -142,9 +139,9 @@ test("proxyFetch routes a cloudflare-type context through the relay endpoint wit
 test("proxyFetch throws (without dispatching) when a cloudflare context is missing relayAuth", async () => {
   await assert.rejects(
     runWithProxyContext({ type: "cloudflare", host: "x.workers.dev" }, () =>
-      proxyFetch("https://api.anthropic.com/v1/messages", { method: "POST" })
+      proxyFetch("https://api.anthropic.com/v1/messages", { method: "POST" }),
     ),
-    /relay configuration error: missing relayAuth/
+    /relay configuration error: missing relayAuth/,
   );
   assert.equal(relayCalls.length, 0, "no relay dispatch when relayAuth is missing");
 });
@@ -180,10 +177,7 @@ test("proxyConfigToUrl returns the cloudflare worker URL (no HTTP-proxy dispatch
 // --------------------------------------------------------------------------
 
 test("buildVercelRelayHeaders is the shared relay-header builder used for cloudflare too", () => {
-  const headers = buildVercelRelayHeaders(
-    "https://api.openai.com/v1/chat/completions",
-    "cf-tok"
-  );
+  const headers = buildVercelRelayHeaders("https://api.openai.com/v1/chat/completions", "cf-tok");
   assert.deepEqual(headers, {
     "x-relay-target": "https://api.openai.com",
     "x-relay-path": "/v1/chat/completions",

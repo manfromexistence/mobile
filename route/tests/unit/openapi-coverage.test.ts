@@ -66,6 +66,6 @@ test("openapi.yaml does not regress documented-route coverage below the agreed f
   assert.ok(
     coverage >= OPENAPI_COVERAGE_FLOOR_PERCENT,
     `OpenAPI coverage regressed: ${coverage.toFixed(1)}% < floor ${OPENAPI_COVERAGE_FLOOR_PERCENT}%. ` +
-      `Missing: ${missing.slice(0, 10).join(", ")}${missing.length > 10 ? ` ... +${missing.length - 10} more` : ""}`
+      `Missing: ${missing.slice(0, 10).join(", ")}${missing.length > 10 ? ` ... +${missing.length - 10} more` : ""}`,
   );
 });

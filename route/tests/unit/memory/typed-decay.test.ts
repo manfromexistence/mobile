@@ -14,9 +14,7 @@ before(() => {
   process.env.DATA_DIR = dataDir;
 });
 
-const {
-  MemoryType,
-} = await import("../../../src/lib/memory/types.ts");
+const { MemoryType } = await import("../../../src/lib/memory/types.ts");
 const {
   resolveTypedDecayConfig,
   isTypeImmune,
@@ -113,7 +111,10 @@ describe("typedDecay — env config", () => {
     const cfg = resolveTypedDecayConfig({} as NodeJS.ProcessEnv);
     assert.equal(cfg.enabled, false);
     assert.equal(cfg.accessImmunityThreshold, DEFAULT_ACCESS_IMMUNITY_THRESHOLD);
-    assert.equal(cfg.ttlDaysByType[MemoryType.EPISODIC], DEFAULT_TTL_DAYS_BY_TYPE[MemoryType.EPISODIC]);
+    assert.equal(
+      cfg.ttlDaysByType[MemoryType.EPISODIC],
+      DEFAULT_TTL_DAYS_BY_TYPE[MemoryType.EPISODIC],
+    );
   });
 
   it("MEMORY_TYPED_DECAY_EPISODIC_DAYS=0 makes episodic immune too", () => {
@@ -231,7 +232,7 @@ describe("typedDecay — access tracking + sweep (DB)", () => {
     db.prepare("UPDATE memories SET created_at = ? WHERE id IN (?, ?)").run(
       old,
       decaying.id,
-      durable.id
+      durable.id,
     );
 
     const enabled = resolveTypedDecayConfig({

@@ -1,8 +1,5 @@
 import * as React from "react";
-import {
-  DATA_DISMISSABLE_LAYER_ATTR,
-  DATA_DISMISSABLE_LAYER_STYLE_ATTR,
-} from "../constants";
+import { DATA_DISMISSABLE_LAYER_ATTR, DATA_DISMISSABLE_LAYER_STYLE_ATTR } from "../constants";
 import { getOwnerDocument } from "../lib/dock";
 import { useCallbackRef } from "./use-callback-ref";
 import { useEscapeKeydown } from "./use-escape-keydown";
@@ -26,9 +23,7 @@ interface UseDismissProps {
    * Callback called when the dismissable layer is dismissed.
    * @param event - The event that triggered the dismissal.
    */
-  onDismiss: (
-    event?: FocusOutsideEvent | KeyboardEvent,
-  ) => void | Promise<void>;
+  onDismiss: (event?: FocusOutsideEvent | KeyboardEvent) => void | Promise<void>;
 
   /** References to elements that should not trigger dismissal when clicked. */
   refs: React.RefObject<Element | null>[];
@@ -56,9 +51,7 @@ interface UseDismissProps {
    *
    * @param event - The event that triggered the interaction outside.
    */
-  onInteractOutside?: (
-    event: PointerDownOutsideEvent | FocusOutsideEvent,
-  ) => void;
+  onInteractOutside?: (event: PointerDownOutsideEvent | FocusOutsideEvent) => void;
 
   /**
    * Event handler called when the a `pointerdown` event happens outside of the dismissable layer.
@@ -133,15 +126,13 @@ function useDismiss(params: UseDismissProps) {
     enabled: enabled && !!onDismiss && !!onEscapeKeyDown,
   });
 
-  const onPointerDownOutsideCallback = useCallbackRef(
-    (event: PointerDownOutsideEvent) => {
-      onPointerDownOutside?.(event);
-      onInteractOutside?.(event);
-      if (!event.defaultPrevented) {
-        onDismiss(event);
-      }
-    },
-  );
+  const onPointerDownOutsideCallback = useCallbackRef((event: PointerDownOutsideEvent) => {
+    onPointerDownOutside?.(event);
+    onInteractOutside?.(event);
+    if (!event.defaultPrevented) {
+      onDismiss(event);
+    }
+  });
 
   const onFocusOutsideCallback = useCallbackRef((event: FocusOutsideEvent) => {
     onFocusOutside?.(event);

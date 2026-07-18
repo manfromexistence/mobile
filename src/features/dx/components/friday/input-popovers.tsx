@@ -167,8 +167,7 @@ export function SlashMenu({ open, query, onSelect, onClose }: SlashMenuProps) {
   const [tab, setTab] = useState<"commands" | "plugins" | "files">("commands");
   const ref = useRef<HTMLDivElement>(null);
 
-  const pool =
-    tab === "commands" ? SLASH_COMMANDS : tab === "plugins" ? PLUGINS : MOCK_FILES;
+  const pool = tab === "commands" ? SLASH_COMMANDS : tab === "plugins" ? PLUGINS : MOCK_FILES;
 
   const filtered = pool.filter((c) => {
     const q = query.toLowerCase();
@@ -200,9 +199,7 @@ export function SlashMenu({ open, query, onSelect, onClose }: SlashMenuProps) {
             whileTap={{ scale: 0.98 }}
             className={cn(
               "relative px-3 py-1.5 text-[12px] font-medium transition-colors rounded-md",
-              tab === t.id
-                ? "text-foreground"
-                : "text-muted-foreground hover:text-foreground",
+              tab === t.id ? "text-foreground" : "text-muted-foreground hover:text-foreground",
             )}
           >
             {tab === t.id && (
@@ -418,12 +415,7 @@ export function SpecialCharMenu({
           />
         </div>
       </div>
-      <SpecialCharList
-        key={q}
-        filtered={filtered}
-        onSelect={onSelect}
-        onClose={onClose}
-      />
+      <SpecialCharList key={q} filtered={filtered} onSelect={onSelect} onClose={onClose} />
     </motion.div>
   );
 }
@@ -533,12 +525,7 @@ export function MentionMenu({
       <div className="px-3 py-2 text-[10.5px] font-semibold uppercase tracking-wider text-muted-foreground">
         Mention a model
       </div>
-      <MentionList
-        key={query}
-        filtered={filtered}
-        onSelect={onSelect}
-        onClose={onClose}
-      />
+      <MentionList key={query} filtered={filtered} onSelect={onSelect} onClose={onClose} />
     </motion.div>
   );
 }
@@ -689,9 +676,7 @@ export function PlusMenu({
               {it.icon}
             </div>
             <div className="text-[12.5px] font-medium text-foreground">{it.label}</div>
-            <div className="text-[10.5px] text-muted-foreground leading-tight">
-              {it.desc}
-            </div>
+            <div className="text-[10.5px] text-muted-foreground leading-tight">{it.desc}</div>
           </motion.button>
         ))}
       </div>

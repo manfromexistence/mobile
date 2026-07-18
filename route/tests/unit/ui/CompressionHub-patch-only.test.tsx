@@ -43,9 +43,7 @@ import CompressionHub from "../../../src/app/(dashboard)/dashboard/context/combo
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function getLastPutBody(): Record<string, unknown> | null {
-  const putCall = [...fetchCalls].reverse().find(
-    (c) => c.init?.method === "PUT"
-  );
+  const putCall = [...fetchCalls].reverse().find((c) => c.init?.method === "PUT");
   if (!putCall) return null;
   return JSON.parse(putCall.init.body as string);
 }
@@ -78,7 +76,7 @@ describe("CompressionHub — PUT sends patch only, not full settings", () => {
             { engine: "caveman", intensity: "lite" },
           ],
         }),
-      })
+      }),
     );
 
     // GET /api/settings/compression/combos
@@ -86,7 +84,7 @@ describe("CompressionHub — PUT sends patch only, not full settings", () => {
       Promise.resolve({
         ok: true,
         json: async () => ({ combos: [{ id: "c1", name: "My Combo", pipeline: [] }] }),
-      })
+      }),
     );
 
     container = document.createElement("div");
@@ -95,7 +93,9 @@ describe("CompressionHub — PUT sends patch only, not full settings", () => {
   });
 
   afterEach(() => {
-    act(() => { root.unmount(); });
+    act(() => {
+      root.unmount();
+    });
     document.body.removeChild(container);
   });
 

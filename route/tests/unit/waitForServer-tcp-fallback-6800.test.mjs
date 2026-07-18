@@ -33,7 +33,7 @@ test("#6800: waitForServer must NOT report ready when TCP accepts but HTTP never
       false,
       `waitForServer() incorrectly reported ready=true after ${elapsedMs}ms even though ` +
         `/api/monitoring/health never returned a response (only a TCP-accepting, ` +
-        `non-responding socket) — this is the readiness-lies-about-HTTP bug from #6800.`
+        `non-responding socket) — this is the readiness-lies-about-HTTP bug from #6800.`,
     );
   } finally {
     server.close();
@@ -70,7 +70,7 @@ test("#2460: waitForServer still recovers when health route briefly errors befor
       ready,
       true,
       "waitForServer() should still recover once the health route starts answering " +
-        "(regression guard for the original #2460 Windows cold-start fix)"
+        "(regression guard for the original #2460 Windows cold-start fix)",
     );
   } finally {
     server.close();

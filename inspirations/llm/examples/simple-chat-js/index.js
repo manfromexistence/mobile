@@ -8,9 +8,7 @@ const messages = [
   },
 ];
 
-const availableModels = webllm.prebuiltAppConfig.model_list.map(
-  (m) => m.model_id,
-);
+const availableModels = webllm.prebuiltAppConfig.model_list.map((m) => m.model_id);
 let selectedModel = "Llama-3.1-8B-Instruct-q4f32_1-1k";
 
 // Callback function for initializing progress
@@ -75,9 +73,7 @@ function onMessageSend() {
   appendMessage(message);
 
   document.getElementById("user-input").value = "";
-  document
-    .getElementById("user-input")
-    .setAttribute("placeholder", "Generating...");
+  document.getElementById("user-input").setAttribute("placeholder", "Generating...");
 
   const aiMessage = {
     content: "typing...",
@@ -97,12 +93,7 @@ function onMessageSend() {
     document.getElementById("chat-stats").textContent = usageText;
   };
 
-  streamingGenerating(
-    messages,
-    updateLastMessage,
-    onFinishGenerating,
-    console.error,
-  );
+  streamingGenerating(messages, updateLastMessage, onFinishGenerating, console.error);
 }
 
 function appendMessage(message) {
@@ -125,9 +116,7 @@ function appendMessage(message) {
 }
 
 function updateLastMessage(content) {
-  const messageDoms = document
-    .getElementById("chat-box")
-    .querySelectorAll(".message");
+  const messageDoms = document.getElementById("chat-box").querySelectorAll(".message");
   const lastMessageDom = messageDoms[messageDoms.length - 1];
   lastMessageDom.textContent = content;
 }

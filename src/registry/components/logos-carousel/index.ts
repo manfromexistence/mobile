@@ -1,1 +1,1 @@
-export * from "./logos-carousel"
+export * from "./logos-carousel";

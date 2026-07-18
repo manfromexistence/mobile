@@ -42,7 +42,7 @@ function seedDb(dataDir: string): string {
       key TEXT NOT NULL,
       value TEXT NOT NULL,
       PRIMARY KEY (namespace, key)
-    )`
+    )`,
   ).run();
   db.close();
   return dbPath;
@@ -92,7 +92,7 @@ test("omniroute reset-password subcommand applies the reset over piped stdin (#6
     assert.doesNotMatch(
       out,
       /unknown command|unknown option|error: unknown/i,
-      `must not be treated as an unknown command:\n${out}`
+      `must not be treated as an unknown command:\n${out}`,
     );
     assert.match(out, /Password Reset/i, `must enter the reset flow:\n${out}`);
     assert.match(out, /reset successfully/i, `must print the success line:\n${out}`);
@@ -101,7 +101,7 @@ test("omniroute reset-password subcommand applies the reset over piped stdin (#6
     assert.ok(stored, "a password must be persisted to the DB");
     assert.ok(
       await bcrypt.compare("ChangeMe", stored as string),
-      "the stored password must verify against the piped value"
+      "the stored password must verify against the piped value",
     );
   } finally {
     fs.rmSync(dataDir, { recursive: true, force: true });
@@ -130,7 +130,7 @@ test("omniroute-reset-password applies the reset over piped two-line stdin (#625
     assert.ok(stored, "a password must be persisted to the DB");
     assert.ok(
       await bcrypt.compare("ChangeMe", stored as string),
-      "the stored password must verify against the piped value"
+      "the stored password must verify against the piped value",
     );
   } finally {
     fs.rmSync(dataDir, { recursive: true, force: true });
@@ -159,7 +159,7 @@ test("omniroute-reset-password --password-stdin reads the whole stdin as the pas
     assert.ok(stored, "a password must be persisted to the DB");
     assert.ok(
       await bcrypt.compare("ChangeMe", stored as string),
-      "the stored password must verify against the --password-stdin value"
+      "the stored password must verify against the --password-stdin value",
     );
   } finally {
     fs.rmSync(dataDir, { recursive: true, force: true });

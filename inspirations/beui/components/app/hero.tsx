@@ -52,8 +52,7 @@ export function Hero() {
         transition={{ duration: 0.5, ease: EASE_OUT, delay: subDelay }}
         className="mx-auto mt-6 max-w-md text-pretty text-base leading-7 text-muted-foreground"
       >
-        Copy-paste animated components built on Framer Motion and Tailwind. Free
-        and open source.
+        Copy-paste animated components built on Framer Motion and Tailwind. Free and open source.
       </motion.p>
 
       <motion.div

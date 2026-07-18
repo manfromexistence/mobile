@@ -12,8 +12,9 @@ import assert from "node:assert/strict";
 
 const { prepareClaudeRequest } = await import("../../open-sse/translator/helpers/claudeHelper.ts");
 const reasoningCache = await import("../../open-sse/services/reasoningCache.ts");
-const { openaiToGeminiRequest } =
-  await import("../../open-sse/translator/request/openai-to-gemini.ts");
+const { openaiToGeminiRequest } = await import(
+  "../../open-sse/translator/request/openai-to-gemini.ts"
+);
 const { capThinkingBudget } = await import("../../src/lib/modelCapabilities.ts");
 
 // ──────────────── Fix (a): DeepSeek placeholder has NO signature field ────────────────
@@ -42,7 +43,7 @@ test("deepseek: injected thinking placeholder has no signature field", () => {
   assert.equal(
     assistant.content[0].signature,
     undefined,
-    "DeepSeek placeholder must NOT have a signature field"
+    "DeepSeek placeholder must NOT have a signature field",
   );
   assert.equal(assistant.content[1].type, "tool_use", "tool_use should follow the thinking block");
 });
@@ -75,13 +76,13 @@ test("deepseek: existing thinking blocks are preserved as-is (text and type unch
   assert.equal(
     assistant.content[0].thinking,
     "my actual reasoning",
-    "DeepSeek must keep existing thinking text verbatim"
+    "DeepSeek must keep existing thinking text verbatim",
   );
   // Signature stripping is acceptable (DeepSeek doesn't need it), but text must not
   // be overwritten with placeholder or cache content.
   assert.ok(
     assistant.content.length >= 2,
-    "should not drop blocks: thinking + tool_use both present"
+    "should not drop blocks: thinking + tool_use both present",
   );
   assert.equal(assistant.content[1].type, "tool_use");
 });
@@ -111,12 +112,12 @@ test("deepseek: injected placeholder thinking text is non-empty dot sentinel", (
   // The value is either "." (upstream canonical) or another non-empty fallback.
   assert.ok(
     typeof assistant.content[0].thinking === "string" && assistant.content[0].thinking.length > 0,
-    `thinking placeholder must be non-empty, got: ${JSON.stringify(assistant.content[0].thinking)}`
+    `thinking placeholder must be non-empty, got: ${JSON.stringify(assistant.content[0].thinking)}`,
   );
   assert.equal(
     assistant.content[0].signature,
     undefined,
-    "no signature on injected DeepSeek block"
+    "no signature on injected DeepSeek block",
   );
 });
 
@@ -129,20 +130,20 @@ test("Gemini: reasoning_effort 'auto' maps to a defined (non-zero) thinking budg
       messages: [{ role: "user", content: "hello" }],
       reasoning_effort: "auto",
     },
-    false
+    false,
   ) as any;
 
   const thinkingBudget = out.generationConfig?.thinkingConfig?.thinkingBudget;
   assert.ok(
     typeof thinkingBudget === "number" && thinkingBudget > 0,
-    `reasoning_effort 'auto' should produce a positive thinkingBudget, got: ${thinkingBudget}`
+    `reasoning_effort 'auto' should produce a positive thinkingBudget, got: ${thinkingBudget}`,
   );
   // Specifically should be at least the high-tier budget level (clamped to model max)
   const highBudget = capThinkingBudget("gemini-3-pro", 32768);
   assert.equal(
     thinkingBudget,
     highBudget,
-    `reasoning_effort 'auto' should map to high budget (${highBudget})`
+    `reasoning_effort 'auto' should map to high budget (${highBudget})`,
   );
 });
 
@@ -155,7 +156,7 @@ test("Gemini: reasoning_effort 'max' clamps to high budget (not default fallback
       messages: [{ role: "user", content: "hello" }],
       reasoning_effort: "max",
     },
-    false
+    false,
   ) as any;
 
   const thinkingBudget = out.generationConfig?.thinkingConfig?.thinkingBudget;
@@ -163,7 +164,7 @@ test("Gemini: reasoning_effort 'max' clamps to high budget (not default fallback
   assert.equal(
     thinkingBudget,
     highBudget,
-    `reasoning_effort 'max' should clamp to high budget (${highBudget})`
+    `reasoning_effort 'max' should clamp to high budget (${highBudget})`,
   );
 });
 
@@ -174,7 +175,7 @@ test("Gemini: reasoning_effort 'xhigh' clamps to high budget (not default fallba
       messages: [{ role: "user", content: "hello" }],
       reasoning_effort: "xhigh",
     },
-    false
+    false,
   ) as any;
 
   const thinkingBudget = out.generationConfig?.thinkingConfig?.thinkingBudget;
@@ -182,6 +183,6 @@ test("Gemini: reasoning_effort 'xhigh' clamps to high budget (not default fallba
   assert.equal(
     thinkingBudget,
     highBudget,
-    `reasoning_effort 'xhigh' should clamp to high budget (${highBudget})`
+    `reasoning_effort 'xhigh' should clamp to high budget (${highBudget})`,
   );
 });

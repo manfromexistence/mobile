@@ -1,26 +1,26 @@
-import fs from "fs"
-import matter from "gray-matter"
-import path from "path"
-import { cache } from "react"
+import fs from "fs";
+import matter from "gray-matter";
+import path from "path";
+import { cache } from "react";
 
-import type { Doc, DocMetadata } from "@/features/doc/types/document"
+import type { Doc, DocMetadata } from "@/features/doc/types/document";
 
 function parseFrontmatter(fileContent: string) {
-  const file = matter(fileContent)
+  const file = matter(fileContent);
 
   return {
     metadata: file.data as DocMetadata,
     content: file.content,
-  }
+  };
 }
 
 function getMDXFiles(dir: string) {
-  return fs.readdirSync(dir).filter((file) => path.extname(file) === ".mdx")
+  return fs.readdirSync(dir).filter((file) => path.extname(file) === ".mdx");
 }
 
 function readMDXFile(filePath: string) {
-  const rawContent = fs.readFileSync(filePath, "utf-8")
-  return parseFrontmatter(rawContent)
+  const rawContent = fs.readFileSync(filePath, "utf-8");
+  return parseFrontmatter(rawContent);
 }
 
 /**
@@ -33,73 +33,68 @@ function readMDXFile(filePath: string) {
 function getMDXData(dir: string) {
   const categoryDirs = fs
     .readdirSync(dir, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
+    .filter((entry) => entry.isDirectory());
 
   return categoryDirs.flatMap((categoryDir) => {
-    const category = categoryDir.name
-    const categoryPath = path.join(dir, category)
+    const category = categoryDir.name;
+    const categoryPath = path.join(dir, category);
 
     return getMDXFiles(categoryPath).map<Doc>((file) => {
-      const { metadata, content } = readMDXFile(path.join(categoryPath, file))
+      const { metadata, content } = readMDXFile(path.join(categoryPath, file));
 
-      const slug = path.basename(file, path.extname(file))
+      const slug = path.basename(file, path.extname(file));
 
       return {
         metadata: { ...metadata, category },
         slug,
         content,
-      }
-    })
-  })
+      };
+    });
+  });
 }
 
 export const getAllDocs = cache(() => {
-  return getMDXData(path.join(process.cwd(), "src/features/doc/content")).sort(
-    (a, b) => {
-      if (a.metadata.pinned && !b.metadata.pinned) return -1
-      if (!a.metadata.pinned && b.metadata.pinned) return 1
+  return getMDXData(path.join(process.cwd(), "src/features/doc/content")).sort((a, b) => {
+    if (a.metadata.pinned && !b.metadata.pinned) return -1;
+    if (!a.metadata.pinned && b.metadata.pinned) return 1;
 
-      return (
-        new Date(b.metadata.createdAt).getTime() -
-        new Date(a.metadata.createdAt).getTime()
-      )
-    }
-  )
-})
+    return new Date(b.metadata.createdAt).getTime() - new Date(a.metadata.createdAt).getTime();
+  });
+});
 
 export function getDocBySlug(slug: string) {
-  return getAllDocs().find((doc) => doc.slug === slug)
+  return getAllDocs().find((doc) => doc.slug === slug);
 }
 
 export function getDocsByCategory(category: string) {
-  return getAllDocs().filter((doc) => doc.metadata?.category === category)
+  return getAllDocs().filter((doc) => doc.metadata?.category === category);
 }
 
 /** Categories derived from the doc's content subfolder. */
-export const BLOG_CATEGORY = "blog"
-export const COMPONENTS_CATEGORY = "components"
+export const BLOG_CATEGORY = "blog";
+export const COMPONENTS_CATEGORY = "components";
 
 /** Blog posts — docs under the `blog/` content folder. */
 export function getBlogPosts() {
-  return getDocsByCategory(BLOG_CATEGORY)
+  return getDocsByCategory(BLOG_CATEGORY);
 }
 
 /** Component docs — docs under the `components/` content folder. */
 export function getComponentDocs() {
-  return getDocsByCategory(COMPONENTS_CATEGORY)
+  return getDocsByCategory(COMPONENTS_CATEGORY);
 }
 
 export function findNeighbour(docs: Doc[], slug: string) {
-  const len = docs.length
+  const len = docs.length;
 
   for (let i = 0; i < len; ++i) {
     if (docs[i].slug === slug) {
       return {
         previous: i > 0 ? docs[i - 1] : null,
         next: i < len - 1 ? docs[i + 1] : null,
-      }
+      };
     }
   }
 
-  return { previous: null, next: null }
+  return { previous: null, next: null };
 }

@@ -62,7 +62,7 @@ beforeEach(() => {
         return Promise.resolve({ ok: true, json: () => Promise.resolve({ rules: [] }) });
       }
       return Promise.resolve({ ok: false, json: () => Promise.resolve(null) });
-    })
+    }),
   );
 });
 
@@ -75,8 +75,9 @@ afterEach(() => {
 });
 
 async function renderTab() {
-  const { default: CompressionSettingsTab } =
-    await import("@/app/(dashboard)/dashboard/settings/components/CompressionSettingsTab");
+  const { default: CompressionSettingsTab } = await import(
+    "@/app/(dashboard)/dashboard/settings/components/CompressionSettingsTab"
+  );
   await act(async () => {
     root = createRoot(container);
     root.render(<CompressionSettingsTab />);
@@ -115,7 +116,7 @@ describe("CompressionSettingsTab — compression controls consolidation (T11)", 
   it("renders the preserveSystemPrompt 3-way mode select reflecting the shim (T05/C5)", async () => {
     await renderTab();
     const select = container.querySelector<HTMLSelectElement>(
-      '[data-testid="preserve-system-mode-select"]'
+      '[data-testid="preserve-system-mode-select"]',
     );
     expect(select).not.toBeNull();
     const values = Array.from(select!.querySelectorAll("option")).map((o) => o.value);
@@ -127,7 +128,7 @@ describe("CompressionSettingsTab — compression controls consolidation (T11)", 
   it("saves the chosen mode via PUT (T05/C5)", async () => {
     await renderTab();
     const select = container.querySelector<HTMLSelectElement>(
-      '[data-testid="preserve-system-mode-select"]'
+      '[data-testid="preserve-system-mode-select"]',
     );
     await act(async () => {
       select!.value = "never";
@@ -135,7 +136,7 @@ describe("CompressionSettingsTab — compression controls consolidation (T11)", 
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
     const putCall = (globalThis.fetch as ReturnType<typeof vi.fn>).mock.calls.find(
-      ([, init]) => (init as RequestInit | undefined)?.method === "PUT"
+      ([, init]) => (init as RequestInit | undefined)?.method === "PUT",
     );
     expect(putCall).toBeTruthy();
     const body = JSON.parse(String((putCall![1] as RequestInit).body));

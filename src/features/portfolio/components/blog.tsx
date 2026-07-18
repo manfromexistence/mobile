@@ -1,21 +1,21 @@
-import { ArrowRightIcon } from "lucide-react"
-import Link from "next/link"
-import { Button } from "@/components/base/ui/button"
-import { PostItem } from "@/features/blog/components/post-item"
-import { getBlogPosts } from "@/features/doc/data/documents"
+import { ArrowRightIcon } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/base/ui/button";
+import { PostItem } from "@/features/blog/components/post-item";
+import { getBlogPosts } from "@/features/doc/data/documents";
 import {
   Panel,
   PanelHeader,
   PanelTitle,
   PanelTitleSup,
-} from "@/features/portfolio/components/panel"
-import { PanelTitleCopy } from "@/features/portfolio/components/panel-title-copy"
-import { cn } from "@/lib/utils"
+} from "@/features/portfolio/components/panel";
+import { PanelTitleCopy } from "@/features/portfolio/components/panel-title-copy";
+import { cn } from "@/lib/utils";
 
-const ID = "blog"
+const ID = "blog";
 
 export function Blog() {
-  const allPosts = getBlogPosts()
+  const allPosts = getBlogPosts();
 
   return (
     <Panel id={ID}>
@@ -39,7 +39,7 @@ export function Blog() {
               key={post.slug}
               className={cn(
                 "max-sm:screen-line-top max-sm:screen-line-bottom",
-                "sm:nth-[2n+1]:screen-line-top sm:nth-[2n+1]:screen-line-bottom"
+                "sm:nth-[2n+1]:screen-line-top sm:nth-[2n+1]:screen-line-bottom",
               )}
             >
               <PostItem post={post} headingAs="h3" imageLoading="lazy" />
@@ -61,5 +61,5 @@ export function Blog() {
         </Button>
       </div>
     </Panel>
-  )
+  );
 }

@@ -22,11 +22,11 @@ test("push respects byte limit (evicts oldest)", () => {
   assert.ok(!snap.some((e) => e.line === "first"), "first should be evicted");
   assert.ok(
     snap.some((e) => e.line === "second"),
-    "second should be retained"
+    "second should be retained",
   );
   assert.ok(
     snap.some((e) => e.line === "third"),
-    "third should be retained"
+    "third should be retained",
   );
 });
 

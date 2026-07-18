@@ -1,13 +1,8 @@
 {
   "name": "relative-time-card-variants-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "button",
-    "relative-time-card"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["button", "relative-time-card"],
   "files": [
     {
       "path": "examples/relative-time-card-variants-demo.tsx",

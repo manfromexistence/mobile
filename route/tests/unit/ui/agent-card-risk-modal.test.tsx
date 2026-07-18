@@ -121,7 +121,7 @@ describe("AgentCard RiskNoticeModal", { timeout: 30000 }, () => {
           mappings: [],
           onDnsToggle,
           onMappingsSave: vi.fn(),
-        })
+        }),
       );
     });
 
@@ -133,7 +133,7 @@ describe("AgentCard RiskNoticeModal", { timeout: 30000 }, () => {
 
     // Click DNS toggle (Start DNS)
     const dnsBtn = Array.from(container.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("startDns")
+      b.textContent?.includes("startDns"),
     );
     expect(dnsBtn).not.toBeNull();
 
@@ -166,7 +166,7 @@ describe("AgentCard RiskNoticeModal", { timeout: 30000 }, () => {
           mappings: [],
           onDnsToggle,
           onMappingsSave: vi.fn(),
-        })
+        }),
       );
     });
 
@@ -178,7 +178,7 @@ describe("AgentCard RiskNoticeModal", { timeout: 30000 }, () => {
 
     // Click DNS toggle to open modal
     const dnsBtn = Array.from(container.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("startDns")
+      b.textContent?.includes("startDns"),
     );
     await act(async () => {
       dnsBtn?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -189,7 +189,7 @@ describe("AgentCard RiskNoticeModal", { timeout: 30000 }, () => {
 
     // Click "I understand" (accept) button — uses t("understand") key
     const acceptBtn = Array.from(document.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("understand")
+      b.textContent?.includes("understand"),
     );
     expect(acceptBtn).not.toBeNull();
 
@@ -228,7 +228,7 @@ describe("AgentCard RiskNoticeModal", { timeout: 30000 }, () => {
           mappings: [],
           onDnsToggle,
           onMappingsSave: vi.fn(),
-        })
+        }),
       );
     });
 
@@ -240,7 +240,7 @@ describe("AgentCard RiskNoticeModal", { timeout: 30000 }, () => {
 
     // Click DNS toggle to open modal
     const dnsBtn = Array.from(container.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("startDns")
+      b.textContent?.includes("startDns"),
     );
     await act(async () => {
       dnsBtn?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -248,7 +248,7 @@ describe("AgentCard RiskNoticeModal", { timeout: 30000 }, () => {
 
     // Accept modal
     const acceptBtn = Array.from(document.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("understand")
+      b.textContent?.includes("understand"),
     );
     await act(async () => {
       acceptBtn?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -288,7 +288,7 @@ describe("AgentCard RiskNoticeModal", { timeout: 30000 }, () => {
           mappings: [],
           onDnsToggle,
           onMappingsSave: vi.fn(),
-        })
+        }),
       );
     });
 
@@ -300,7 +300,7 @@ describe("AgentCard RiskNoticeModal", { timeout: 30000 }, () => {
 
     // Click DNS toggle
     const dnsBtn = Array.from(container.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("startDns")
+      b.textContent?.includes("startDns"),
     );
     await act(async () => {
       dnsBtn?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -331,7 +331,7 @@ describe("AgentCard RiskNoticeModal", { timeout: 30000 }, () => {
           mappings: [],
           onDnsToggle,
           onMappingsSave: vi.fn(),
-        })
+        }),
       );
     });
 
@@ -343,7 +343,7 @@ describe("AgentCard RiskNoticeModal", { timeout: 30000 }, () => {
 
     // Click DNS toggle to open modal
     const dnsBtn = Array.from(container.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("startDns")
+      b.textContent?.includes("startDns"),
     );
     await act(async () => {
       dnsBtn?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
@@ -354,7 +354,7 @@ describe("AgentCard RiskNoticeModal", { timeout: 30000 }, () => {
 
     // Click Cancel button
     const cancelBtn = Array.from(document.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("cancel")
+      b.textContent?.includes("cancel"),
     );
     expect(cancelBtn).not.toBeNull();
 

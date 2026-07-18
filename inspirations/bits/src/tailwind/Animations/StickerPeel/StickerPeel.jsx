@@ -1,6 +1,6 @@
-import { useRef, useEffect, useMemo } from 'react';
-import { gsap } from 'gsap';
-import { Draggable } from 'gsap/Draggable';
+import { useRef, useEffect, useMemo } from "react";
+import { gsap } from "gsap";
+import { Draggable } from "gsap/Draggable";
 
 gsap.registerPlugin(Draggable);
 
@@ -9,14 +9,14 @@ const StickerPeel = ({
   rotate = 30,
   peelBackHoverPct = 30,
   peelBackActivePct = 40,
-  peelEasing = 'power3.out',
-  peelHoverEasing = 'power2.out',
+  peelEasing = "power3.out",
+  peelHoverEasing = "power2.out",
   width = 200,
   shadowIntensity = 0.6,
   lightingIntensity = 0.1,
-  initialPosition = 'center',
+  initialPosition = "center",
   peelDirection = 0,
-  className = ''
+  className = "",
 }) => {
   const containerRef = useRef(null);
   const dragTargetRef = useRef(null);
@@ -33,11 +33,15 @@ const StickerPeel = ({
     let startX = 0,
       startY = 0;
 
-    if (initialPosition === 'center') {
+    if (initialPosition === "center") {
       return;
     }
 
-    if (typeof initialPosition === 'object' && initialPosition.x !== undefined && initialPosition.y !== undefined) {
+    if (
+      typeof initialPosition === "object" &&
+      initialPosition.x !== undefined &&
+      initialPosition.y !== undefined
+    ) {
       startX = initialPosition.x;
       startY = initialPosition.y;
     }
@@ -50,26 +54,26 @@ const StickerPeel = ({
     const boundsEl = target.parentNode;
 
     draggableInstanceRef.current = Draggable.create(target, {
-      type: 'x,y',
+      type: "x,y",
       bounds: boundsEl,
       inertia: true,
       onDrag() {
         const rot = gsap.utils.clamp(-24, 24, this.deltaX * 0.4);
-        gsap.to(target, { rotation: rot, duration: 0.15, ease: 'power1.out' });
+        gsap.to(target, { rotation: rot, duration: 0.15, ease: "power1.out" });
       },
       onDragEnd() {
-        const rotationEase = 'power2.out';
+        const rotationEase = "power2.out";
         const duration = 0.8;
         gsap.to(target, { rotation: 0, duration, ease: rotationEase });
-      }
+      },
     })[0];
 
     const handleResize = () => {
       if (draggableInstanceRef.current) {
         draggableInstanceRef.current.update();
 
-        const currentX = gsap.getProperty(target, 'x');
-        const currentY = gsap.getProperty(target, 'y');
+        const currentX = gsap.getProperty(target, "x");
+        const currentY = gsap.getProperty(target, "y");
 
         const boundsRect = boundsEl.getBoundingClientRect();
         const targetRect = target.getBoundingClientRect();
@@ -85,18 +89,18 @@ const StickerPeel = ({
             x: newX,
             y: newY,
             duration: 0.3,
-            ease: 'power2.out'
+            ease: "power2.out",
           });
         }
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('orientationchange', handleResize);
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('orientationchange', handleResize);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
       if (draggableInstanceRef.current) {
         draggableInstanceRef.current.kill();
       }
@@ -104,7 +108,7 @@ const StickerPeel = ({
   }, []);
 
   useEffect(() => {
-    const updateLight = e => {
+    const updateLight = (e) => {
       const rect = containerRef.current?.getBoundingClientRect();
       if (!rect) return;
 
@@ -123,8 +127,8 @@ const StickerPeel = ({
 
     const container = containerRef.current;
     if (container) {
-      container.addEventListener('mousemove', updateLight);
-      return () => container.removeEventListener('mousemove', updateLight);
+      container.addEventListener("mousemove", updateLight);
+      return () => container.removeEventListener("mousemove", updateLight);
     }
   }, [peelDirection]);
 
@@ -133,38 +137,38 @@ const StickerPeel = ({
     if (!container) return;
 
     const handleTouchStart = () => {
-      container.classList.add('touch-active');
+      container.classList.add("touch-active");
     };
 
     const handleTouchEnd = () => {
-      container.classList.remove('touch-active');
+      container.classList.remove("touch-active");
     };
 
-    container.addEventListener('touchstart', handleTouchStart);
-    container.addEventListener('touchend', handleTouchEnd);
-    container.addEventListener('touchcancel', handleTouchEnd);
+    container.addEventListener("touchstart", handleTouchStart);
+    container.addEventListener("touchend", handleTouchEnd);
+    container.addEventListener("touchcancel", handleTouchEnd);
 
     return () => {
-      container.removeEventListener('touchstart', handleTouchStart);
-      container.removeEventListener('touchend', handleTouchEnd);
-      container.removeEventListener('touchcancel', handleTouchEnd);
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchend", handleTouchEnd);
+      container.removeEventListener("touchcancel", handleTouchEnd);
     };
   }, []);
 
   const cssVars = useMemo(
     () => ({
-      '--sticker-rotate': `${rotate}deg`,
-      '--sticker-p': `${defaultPadding}px`,
-      '--sticker-peelback-hover': `${peelBackHoverPct}%`,
-      '--sticker-peelback-active': `${peelBackActivePct}%`,
-      '--sticker-peel-easing': peelEasing,
-      '--sticker-peel-hover-easing': peelHoverEasing,
-      '--sticker-width': `${width}px`,
-      '--sticker-shadow-opacity': shadowIntensity,
-      '--sticker-lighting-constant': lightingIntensity,
-      '--peel-direction': `${peelDirection}deg`,
-      '--sticker-start': `calc(-1 * ${defaultPadding}px)`,
-      '--sticker-end': `calc(100% + ${defaultPadding}px)`
+      "--sticker-rotate": `${rotate}deg`,
+      "--sticker-p": `${defaultPadding}px`,
+      "--sticker-peelback-hover": `${peelBackHoverPct}%`,
+      "--sticker-peelback-active": `${peelBackActivePct}%`,
+      "--sticker-peel-easing": peelEasing,
+      "--sticker-peel-hover-easing": peelHoverEasing,
+      "--sticker-width": `${width}px`,
+      "--sticker-shadow-opacity": shadowIntensity,
+      "--sticker-lighting-constant": lightingIntensity,
+      "--peel-direction": `${peelDirection}deg`,
+      "--sticker-start": `calc(-1 * ${defaultPadding}px)`,
+      "--sticker-end": `calc(100% + ${defaultPadding}px)`,
     }),
     [
       rotate,
@@ -176,33 +180,33 @@ const StickerPeel = ({
       shadowIntensity,
       lightingIntensity,
       peelDirection,
-      defaultPadding
-    ]
+      defaultPadding,
+    ],
   );
 
   const stickerMainStyle = {
     clipPath: `polygon(var(--sticker-start) var(--sticker-start), var(--sticker-end) var(--sticker-start), var(--sticker-end) var(--sticker-end), var(--sticker-start) var(--sticker-end))`,
-    transition: 'clip-path 0.6s ease-out',
-    filter: 'url(#dropShadow)',
-    willChange: 'clip-path, transform'
+    transition: "clip-path 0.6s ease-out",
+    filter: "url(#dropShadow)",
+    willChange: "clip-path, transform",
   };
 
   const flapStyle = {
     clipPath: `polygon(var(--sticker-start) var(--sticker-start), var(--sticker-end) var(--sticker-start), var(--sticker-end) var(--sticker-start), var(--sticker-start) var(--sticker-start))`,
     top: `calc(-100% - var(--sticker-p) - var(--sticker-p))`,
-    transform: 'scaleY(-1)',
-    transition: 'all 0.6s ease-out',
-    willChange: 'clip-path, transform'
+    transform: "scaleY(-1)",
+    transition: "all 0.6s ease-out",
+    willChange: "clip-path, transform",
   };
 
   const imageStyle = {
     transform: `rotate(calc(${rotate}deg - ${peelDirection}deg))`,
-    width: `${width}px`
+    width: `${width}px`,
   };
 
   const shadowImageStyle = {
     ...imageStyle,
-    filter: 'url(#expandAndFill)'
+    filter: "url(#expandAndFill)",
   };
 
   return (
@@ -230,7 +234,7 @@ const StickerPeel = ({
             clip-path: polygon(var(--sticker-start) var(--sticker-start), var(--sticker-end) var(--sticker-start), var(--sticker-end) var(--sticker-peelback-active), var(--sticker-start) var(--sticker-peelback-active)) !important;
             top: calc(-100% + 2 * var(--sticker-peelback-active) - 1px) !important;
           }
-        `
+        `,
         }}
       />
 
@@ -288,28 +292,31 @@ const StickerPeel = ({
         className="sticker-container relative select-none touch-none sm:touch-auto"
         ref={containerRef}
         style={{
-          WebkitUserSelect: 'none',
-          userSelect: 'none',
-          WebkitTouchCallout: 'none',
-          WebkitTapHighlightColor: 'transparent',
+          WebkitUserSelect: "none",
+          userSelect: "none",
+          WebkitTouchCallout: "none",
+          WebkitTapHighlightColor: "transparent",
           transform: `rotate(${peelDirection}deg)`,
-          transformOrigin: 'center'
+          transformOrigin: "center",
         }}
       >
         <div className="sticker-main" style={stickerMainStyle}>
-          <div style={{ filter: 'url(#pointLight)' }}>
+          <div style={{ filter: "url(#pointLight)" }}>
             <img
               src={imageSrc}
               alt=""
               className="block"
               style={imageStyle}
               draggable="false"
-              onContextMenu={e => e.preventDefault()}
+              onContextMenu={(e) => e.preventDefault()}
             />
           </div>
         </div>
 
-        <div className="absolute top-4 left-2 w-full h-full opacity-40" style={{ filter: 'brightness(0) blur(8px)' }}>
+        <div
+          className="absolute top-4 left-2 w-full h-full opacity-40"
+          style={{ filter: "brightness(0) blur(8px)" }}
+        >
           <div className="sticker-flap" style={flapStyle}>
             <img
               src={imageSrc}
@@ -317,20 +324,20 @@ const StickerPeel = ({
               className="block"
               style={shadowImageStyle}
               draggable="false"
-              onContextMenu={e => e.preventDefault()}
+              onContextMenu={(e) => e.preventDefault()}
             />
           </div>
         </div>
 
         <div className="sticker-flap absolute w-full h-full left-0" style={flapStyle}>
-          <div style={{ filter: 'url(#pointLightFlipped)' }}>
+          <div style={{ filter: "url(#pointLightFlipped)" }}>
             <img
               src={imageSrc}
               alt=""
               className="block"
               style={shadowImageStyle}
               draggable="false"
-              onContextMenu={e => e.preventDefault()}
+              onContextMenu={(e) => e.preventDefault()}
             />
           </div>
         </div>

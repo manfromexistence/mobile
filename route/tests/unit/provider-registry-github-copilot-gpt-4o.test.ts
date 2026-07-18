@@ -30,7 +30,7 @@ test("github/gpt-4o-2024-11-20 routes via chat/completions (no openai-responses)
   assert.notEqual(
     model.targetFormat,
     "openai-responses",
-    "GPT-4o on GitHub Copilot is a chat/completions model — Responses API would reject it"
+    "GPT-4o on GitHub Copilot is a chat/completions model — Responses API would reject it",
   );
 });
 
@@ -41,6 +41,6 @@ test("getModelsByProviderId(github) exposes gpt-4o-2024-11-20", () => {
   assert.equal(
     models.some((m) => m.id === "gpt-4o"),
     false,
-    "bare gpt-4o is not in the curated list"
+    "bare gpt-4o is not in the curated list",
   );
 });

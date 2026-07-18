@@ -23,9 +23,7 @@ describe("Test basic conversation loading and getPromptArray", () => {
     const conversation = getConversation(config.conv_template);
     const config_obj = conversation.config;
 
-    expect(config_obj.system_template).toEqual(
-      "[INST] <<SYS>>\n{system_message}\n<</SYS>>\n\n",
-    );
+    expect(config_obj.system_template).toEqual("[INST] <<SYS>>\n{system_message}\n<</SYS>>\n\n");
     expect(config_obj.system_message).toEqual(
       "You are a helpful, respectful and honest assistant.",
     );
@@ -61,10 +59,7 @@ describe("Test getConversationFromChatCompletionRequest with Qwen3", () => {
     conversation.appendMessage(Role.user, "test1");
     conversation.appendMessage(Role.assistant, "test2");
     const emptyThinkingBlockStr = "<think>\n\n</think>\n\n";
-    conversation.appendEmptyThinkingReplyHeader(
-      Role.user,
-      emptyThinkingBlockStr,
-    );
+    conversation.appendEmptyThinkingReplyHeader(Role.user, emptyThinkingBlockStr);
     const prompt = conversation.getPromptArray().join("");
     expect(prompt).toEqual(
       "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n" +
@@ -78,9 +73,7 @@ describe("Test getConversationFromChatCompletionRequest with Qwen3", () => {
 
     const message = emptyThinkingBlockStr + "test3";
     conversation.finishReply(message);
-    expect(conversation.messages[conversation.messages.length - 1][2]).toEqual(
-      message,
-    );
+    expect(conversation.messages[conversation.messages.length - 1][2]).toEqual(message);
   });
 });
 
@@ -168,26 +161,10 @@ describe("Test getConversationFromChatCompletionRequest with image", () => {
     const request2: ChatCompletionRequest = { messages: messages2 };
     const request3: ChatCompletionRequest = { messages: messages3 };
     const request4: ChatCompletionRequest = { messages: messages4 };
-    const conv1 = getConversationFromChatCompletionRequest(
-      request1,
-      config,
-      true,
-    );
-    const conv2 = getConversationFromChatCompletionRequest(
-      request2,
-      config,
-      true,
-    );
-    const conv3 = getConversationFromChatCompletionRequest(
-      request3,
-      config,
-      true,
-    );
-    const conv4 = getConversationFromChatCompletionRequest(
-      request4,
-      config,
-      true,
-    );
+    const conv1 = getConversationFromChatCompletionRequest(request1, config, true);
+    const conv2 = getConversationFromChatCompletionRequest(request2, config, true);
+    const conv3 = getConversationFromChatCompletionRequest(request3, config, true);
+    const conv4 = getConversationFromChatCompletionRequest(request4, config, true);
     expect(compareConversationObject(conv1, conv2)).toEqual(true);
     expect(compareConversationObject(conv1, conv3)).toEqual(false);
     expect(compareConversationObject(conv2, conv3)).toEqual(false);
@@ -220,16 +197,8 @@ describe("Test getConversationFromChatCompletionRequest with image", () => {
     ];
     const request1: ChatCompletionRequest = { messages: messages1 };
     const request2: ChatCompletionRequest = { messages: messages2 };
-    const conv1 = getConversationFromChatCompletionRequest(
-      request1,
-      config,
-      true,
-    );
-    const conv2 = getConversationFromChatCompletionRequest(
-      request2,
-      config,
-      true,
-    );
+    const conv1 = getConversationFromChatCompletionRequest(request1, config, true);
+    const conv2 = getConversationFromChatCompletionRequest(request2, config, true);
     expect(conv1.getPromptArray()).toEqual([
       dummySystemPromptStr,
       `<|user|>\n${dummyRequestStr}<|end|>\n`,
@@ -242,43 +211,23 @@ describe("Test getConversationFromChatCompletionRequest with image", () => {
     const config = { ...config_json } as ChatConfig;
     const messages1 = JSON.parse(JSON.stringify(singleImageInputMessages));
     const request1: ChatCompletionRequest = { messages: messages1 };
-    const conv1 = getConversationFromChatCompletionRequest(
-      request1,
-      config,
-      true,
-    );
+    const conv1 = getConversationFromChatCompletionRequest(request1, config, true);
     expect(conv1.getPromptArray(config)).toEqual([
       dummySystemPromptStr, // phi3_5-vision does not have system template
-      [
-        `<|user|>\n`,
-        { url: imageUrl1 } as ImageURL,
-        `\n`,
-        `${dummyRequestStr}<|end|>\n`,
-      ],
+      [`<|user|>\n`, { url: imageUrl1 } as ImageURL, `\n`, `${dummyRequestStr}<|end|>\n`],
     ]);
   });
 
   test("Test multiple round with multiple image input, with reply header", () => {
     const config_json = JSON.parse(phi3_5VisionChatConfigJSONString);
     const config = { ...config_json } as ChatConfig;
-    const messages1 = JSON.parse(
-      JSON.stringify(multiImageMultiRoundInputMessages),
-    );
+    const messages1 = JSON.parse(JSON.stringify(multiImageMultiRoundInputMessages));
     const request1: ChatCompletionRequest = { messages: messages1 };
-    const conv1 = getConversationFromChatCompletionRequest(
-      request1,
-      config,
-      true,
-    );
+    const conv1 = getConversationFromChatCompletionRequest(request1, config, true);
     conv1.appendReplyHeader(Role.assistant);
     expect(conv1.getPromptArray(config)).toEqual([
       dummySystemPromptStr, // phi3_5-vision does not have system template
-      [
-        `<|user|>\n`,
-        { url: imageUrl1 } as ImageURL,
-        `\n`,
-        `${dummyRequestStr}<|end|>\n`,
-      ],
+      [`<|user|>\n`, { url: imageUrl1 } as ImageURL, `\n`, `${dummyRequestStr}<|end|>\n`],
       `<|assistant|>\n${dummyResponseStr}<|end|>\n`,
       [
         `<|user|>\n`,

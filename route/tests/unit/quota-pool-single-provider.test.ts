@@ -78,7 +78,7 @@ test("createPool with two different-provider connections throws /single provider
         connectionIds: [idA, idB],
         name: "Mixed",
       }),
-    /same provider|single provider/i
+    /same provider|single provider/i,
   );
 });
 
@@ -140,7 +140,7 @@ test("updatePool replacing connectionIds with mixed providers throws /single pro
   // Try updating to mixed-provider set → should throw.
   assert.throws(
     () => poolsDb.updatePool(pool.id, { connectionIds: [idA, idB] }),
-    /same provider|single provider/i
+    /same provider|single provider/i,
   );
 });
 

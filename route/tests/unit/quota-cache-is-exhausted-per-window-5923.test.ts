@@ -49,11 +49,11 @@ test("#5923 setQuotaCache writes is_exhausted per-window, not the connection-wid
   assert.equal(
     (sessionRow as any).isExhausted ?? (sessionRow as any).is_exhausted,
     1,
-    "the 0%-remaining session window must be flagged is_exhausted=1"
+    "the 0%-remaining session window must be flagged is_exhausted=1",
   );
   assert.equal(
     (weeklyRow as any).isExhausted ?? (weeklyRow as any).is_exhausted,
     0,
-    "the 50%-remaining weekly window must NOT be flagged is_exhausted (sibling window is exhausted, but this one isn't)"
+    "the 50%-remaining weekly window must NOT be flagged is_exhausted (sibling window is exhausted, but this one isn't)",
   );
 });

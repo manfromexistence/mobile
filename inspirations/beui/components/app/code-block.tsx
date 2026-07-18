@@ -37,15 +37,9 @@ const LANG_LABELS: Record<string, string> = {
   bash: "Shell",
 };
 
-export async function CodeBlock({
-  code,
-  lang = "tsx",
-  filename,
-  className,
-}: Props) {
+export async function CodeBlock({ code, lang = "tsx", filename, className }: Props) {
   const shikiLang = LANG_MAP[lang.toLowerCase()] ?? lang;
-  const langLabel =
-    LANG_LABELS[shikiLang] ?? LANG_LABELS[lang] ?? lang.toUpperCase();
+  const langLabel = LANG_LABELS[shikiLang] ?? LANG_LABELS[lang] ?? lang.toUpperCase();
 
   const html = await codeToHtml(code, {
     lang: shikiLang,

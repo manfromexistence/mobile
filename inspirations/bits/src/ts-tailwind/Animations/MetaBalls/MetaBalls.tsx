@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Renderer, Program, Mesh, Triangle, Transform, Vec3, Camera } from 'ogl';
+import React, { useEffect, useRef } from "react";
+import { Renderer, Program, Mesh, Triangle, Transform, Vec3, Camera } from "ogl";
 
 type MetaBallsProps = {
   color?: string;
@@ -15,7 +15,7 @@ type MetaBallsProps = {
 };
 
 function parseHexColor(hex: string): [number, number, number] {
-  const c = hex.replace('#', '');
+  const c = hex.replace("#", "");
   const r = parseInt(c.substring(0, 2), 16) / 255;
   const g = parseInt(c.substring(2, 4), 16) / 255;
   const b = parseInt(c.substring(4, 6), 16) / 255;
@@ -115,7 +115,7 @@ type BallParams = {
 };
 
 const MetaBalls: React.FC<MetaBallsProps> = ({
-  color = '#ffffff',
+  color = "#ffffff",
   speed = 0.3,
   enableMouseInteraction = true,
   hoverSmoothness = 0.05,
@@ -123,8 +123,8 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
   ballCount = 15,
   clumpFactor = 1,
   cursorBallSize = 3,
-  cursorBallColor = '#ffffff',
-  enableTransparency = false
+  cursorBallColor = "#ffffff",
+  enableTransparency = false,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -136,7 +136,7 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
     const renderer = new Renderer({
       dpr,
       alpha: true,
-      premultipliedAlpha: false
+      premultipliedAlpha: false,
     });
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, enableTransparency ? 0 : 1);
@@ -148,7 +148,7 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
       top: 1,
       bottom: -1,
       near: 0.1,
-      far: 10
+      far: 10,
     });
     camera.position.z = 1;
 
@@ -175,8 +175,8 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
         iCursorBallSize: { value: cursorBallSize },
         iMetaBalls: { value: metaBallsUniform },
         iClumpFactor: { value: clumpFactor },
-        enableTransparency: { value: enableTransparency }
-      }
+        enableTransparency: { value: enableTransparency },
+      },
     });
 
     const mesh = new Mesh(gl, { geometry, program });
@@ -212,7 +212,7 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
       gl.canvas.style.height = `${height}px`;
       program.uniforms.iResolution.value.set(gl.canvas.width, gl.canvas.height, 0);
     }
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
     resize();
 
     function onPointerMove(e: PointerEvent) {
@@ -231,9 +231,9 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
       if (!enableMouseInteraction) return;
       pointerInside = false;
     }
-    container.addEventListener('pointermove', onPointerMove);
-    container.addEventListener('pointerenter', onPointerEnter);
-    container.addEventListener('pointerleave', onPointerLeave);
+    container.addEventListener("pointermove", onPointerMove);
+    container.addEventListener("pointerenter", onPointerEnter);
+    container.addEventListener("pointerleave", onPointerLeave);
 
     const startTime = performance.now();
     let animationFrameId: number;
@@ -275,12 +275,12 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', resize);
-      container.removeEventListener('pointermove', onPointerMove);
-      container.removeEventListener('pointerenter', onPointerEnter);
-      container.removeEventListener('pointerleave', onPointerLeave);
+      window.removeEventListener("resize", resize);
+      container.removeEventListener("pointermove", onPointerMove);
+      container.removeEventListener("pointerenter", onPointerEnter);
+      container.removeEventListener("pointerleave", onPointerLeave);
       container.removeChild(gl.canvas);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, [
     color,
@@ -292,7 +292,7 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
     ballCount,
     clumpFactor,
     cursorBallSize,
-    enableTransparency
+    enableTransparency,
   ]);
 
   return <div ref={containerRef} className="w-full h-full relative" />;

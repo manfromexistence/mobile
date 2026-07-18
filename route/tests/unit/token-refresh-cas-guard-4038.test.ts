@@ -28,7 +28,7 @@ function withMockedRefresh<T>(newRefreshToken: string, fn: () => Promise<T>): Pr
         refresh_token: newRefreshToken,
         expires_in: 3600,
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     )) as never;
   return fn().finally(() => {
     globalThis.fetch = realFetch;
@@ -54,9 +54,9 @@ test("#4038 CAS guard SKIPS the persist when a concurrent writer rotated the ref
           { refreshToken: "R0", connectionId: "conn-cas-skip" },
           silentLog,
           null,
-          onPersist
-        )
-    )
+          onPersist,
+        ),
+    ),
   );
 
   assert.equal(persisted, false, "persist MUST be skipped when the row was rotated concurrently");
@@ -82,9 +82,9 @@ test("#4038 CAS guard PERSISTS when the row is unchanged (no concurrent rotation
           { refreshToken: "R0", connectionId: "conn-cas-pass" },
           silentLog,
           null,
-          onPersist
-        )
-    )
+          onPersist,
+        ),
+    ),
   );
 
   assert.equal(persisted, true, "persist MUST run when the row still holds the presented token");
@@ -105,8 +105,8 @@ test("#4038 no CAS guard ⇒ persist always runs (opt-in; zero behavior change)"
       { refreshToken: "R0", connectionId: "conn-no-guard" },
       silentLog,
       null,
-      onPersist
-    )
+      onPersist,
+    ),
   );
 
   assert.equal(persisted, true, "without a guard the persist always runs (unchanged behavior)");

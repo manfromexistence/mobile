@@ -6,8 +6,9 @@ import assert from "node:assert/strict";
 
 const { PerplexityWebExecutor } = await import("../../open-sse/executors/perplexity-web.ts");
 const { getExecutor, hasSpecializedExecutor } = await import("../../open-sse/executors/index.ts");
-const { __setTlsFetchOverrideForTesting, TlsClientUnavailableError } =
-  await import("../../open-sse/services/perplexityTlsClient.ts");
+const { __setTlsFetchOverrideForTesting, TlsClientUnavailableError } = await import(
+  "../../open-sse/services/perplexityTlsClient.ts"
+);
 
 // #2459: the executor now routes through tlsFetchPerplexity (Firefox TLS) instead of
 // global fetch. Install one persistent bridge so the tests below can keep stubbing
@@ -598,7 +599,7 @@ test("Message parsing: system + user + assistant history", async () => {
           status: "COMPLETED",
         },
       ]),
-      { status: 200, headers: { "Content-Type": "text/event-stream" } }
+      { status: 200, headers: { "Content-Type": "text/event-stream" } },
     );
   };
 
@@ -649,7 +650,7 @@ test("Message parsing: developer role treated as system", async () => {
           status: "COMPLETED",
         },
       ]),
-      { status: 200, headers: { "Content-Type": "text/event-stream" } }
+      { status: 200, headers: { "Content-Type": "text/event-stream" } },
     );
   };
 
@@ -696,7 +697,7 @@ test("Auth: cookie-based auth sends Cookie header", async () => {
           status: "COMPLETED",
         },
       ]),
-      { status: 200, headers: { "Content-Type": "text/event-stream" } }
+      { status: 200, headers: { "Content-Type": "text/event-stream" } },
     );
   };
 
@@ -713,11 +714,11 @@ test("Auth: cookie-based auth sends Cookie header", async () => {
 
     assert.equal(
       capturedHeaders["Cookie"],
-      "__Secure-next-auth.session-token=my-session-token-value"
+      "__Secure-next-auth.session-token=my-session-token-value",
     );
     assert.ok(
       !capturedHeaders["Authorization"],
-      "Should not have Authorization header for cookie auth"
+      "Should not have Authorization header for cookie auth",
     );
   } finally {
     globalThis.fetch = original;
@@ -741,7 +742,7 @@ test("Auth: JWT auth sends Authorization Bearer header", async () => {
           status: "COMPLETED",
         },
       ]),
-      { status: 200, headers: { "Content-Type": "text/event-stream" } }
+      { status: 200, headers: { "Content-Type": "text/event-stream" } },
     );
   };
 
@@ -782,7 +783,7 @@ test("Model mapping: pplx-gpt sends current GPT-5.5 internal preference", async 
           status: "COMPLETED",
         },
       ]),
-      { status: 200, headers: { "Content-Type": "text/event-stream" } }
+      { status: 200, headers: { "Content-Type": "text/event-stream" } },
     );
   };
 
@@ -821,7 +822,7 @@ test("Model mapping: thinking mode uses thinking variant", async () => {
           status: "COMPLETED",
         },
       ]),
-      { status: 200, headers: { "Content-Type": "text/event-stream" } }
+      { status: 200, headers: { "Content-Type": "text/event-stream" } },
     );
   };
 
@@ -877,7 +878,7 @@ test("Provider registry: every advertised perplexity-web model has an explicit i
   assert.deepEqual(
     missing.map((model) => model.id),
     [],
-    "all advertised Perplexity Web models should map to an explicit model_preference"
+    "all advertised Perplexity Web models should map to an explicit model_preference",
   );
 });
 
@@ -923,7 +924,7 @@ test("Request: posts to correct Perplexity SSE endpoint", async () => {
           status: "COMPLETED",
         },
       ]),
-      { status: 200, headers: { "Content-Type": "text/event-stream" } }
+      { status: 200, headers: { "Content-Type": "text/event-stream" } },
     );
   };
 
@@ -942,7 +943,7 @@ test("Request: posts to correct Perplexity SSE endpoint", async () => {
     assert.equal(capturedHeaders["Origin"], "https://www.perplexity.ai");
     assert.equal(
       capturedHeaders["x-perplexity-request-endpoint"],
-      "https://www.perplexity.ai/rest/sse/perplexity_ask"
+      "https://www.perplexity.ai/rest/sse/perplexity_ask",
     );
     assert.equal(capturedHeaders["x-perplexity-request-reason"], "ask-query-state-provider");
     assert.ok(capturedHeaders["x-request-id"], "x-request-id header should be set");

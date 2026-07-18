@@ -190,7 +190,7 @@ function installFetchStub() {
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
@@ -290,7 +290,7 @@ test("processManager writes config, starts a process, stops it gracefully and re
     const result = await processManager.startProcess(
       "/tmp/cli-proxy-api",
       8401,
-      path.join(TEST_CONFIG_DIR, "custom")
+      path.join(TEST_CONFIG_DIR, "custom"),
     );
 
     assert.deepEqual(result, { pid: 5100, port: 8401 });
@@ -317,7 +317,7 @@ test("processManager writes config, starts a process, stops it gracefully and re
 
     assert.deepEqual(
       killStub.calls.filter((call) => call.signal !== 0),
-      [{ pid: 5100, signal: "SIGTERM" }]
+      [{ pid: 5100, signal: "SIGTERM" }],
     );
 
     const info = await processManager.getProcessInfo(process.pid);
@@ -348,7 +348,7 @@ test("versionManager start, health, restart and stop flow updates monitoring and
         healthy: started.health.healthy,
         modelCount: started.health.modelCount,
       },
-      { pid: 6200, port: 8511, healthy: true, modelCount: 2 }
+      { pid: 6200, port: 8511, healthy: true, modelCount: 2 },
     );
     assert.equal(healthMonitor.isMonitoring("cliproxyapi"), true);
 
@@ -400,7 +400,7 @@ test("versionManager checks releases, persists pinning and rolls back to a previ
     await versionManager.pinVersion("cliproxyapi", "1.9.0");
     assert.equal(
       (await versionManagerDb.getVersionManagerTool("cliproxyapi")).pinnedVersion,
-      "1.9.0"
+      "1.9.0",
     );
 
     await versionManager.unpinVersion("cliproxyapi");
@@ -420,7 +420,7 @@ test("versionManager checks releases, persists pinning and rolls back to a previ
     assert.equal(rolledBack, "1.0.0");
     assert.equal(
       (await versionManagerDb.getVersionManagerTool("cliproxyapi")).installedVersion,
-      "1.0.0"
+      "1.0.0",
     );
     assert.ok(spawnStub.calls.length >= 1);
     assert.ok(fetchStub.calls.some((call) => call.url.includes("/releases/latest")));

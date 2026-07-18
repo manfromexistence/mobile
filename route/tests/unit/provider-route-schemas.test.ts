@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { createProviderSchema, providersBatchTestSchema } =
-  await import("../../src/shared/validation/schemas.ts");
+const { createProviderSchema, providersBatchTestSchema } = await import(
+  "../../src/shared/validation/schemas.ts"
+);
 const { providerAllowsOptionalApiKey } = await import("../../src/shared/constants/providers.ts");
 
 test("Pollinations is treated as a keyless-capable provider", () => {

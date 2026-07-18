@@ -52,20 +52,14 @@ export function PropsTable({ props }: PropsTableProps) {
         <tbody>
           {props.map((prop) => (
             <tr key={prop.name} className="border-b border-border/40">
-              <td className="px-3 py-2 text-foreground font-mono text-[12px]">
-                {prop.name}
-              </td>
-              <td className="px-3 py-2 text-muted-foreground font-mono text-[12px]">
-                {prop.type}
-              </td>
+              <td className="px-3 py-2 text-foreground font-mono text-[12px]">{prop.name}</td>
+              <td className="px-3 py-2 text-muted-foreground font-mono text-[12px]">{prop.type}</td>
               {showDefault && (
                 <td className="px-3 py-2 text-muted-foreground font-mono text-[12px]">
                   {prop.default ?? "—"}
                 </td>
               )}
-              <td className="px-3 py-2 text-muted-foreground">
-                {prop.description}
-              </td>
+              <td className="px-3 py-2 text-muted-foreground">{prop.description}</td>
             </tr>
           ))}
         </tbody>

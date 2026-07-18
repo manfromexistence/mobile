@@ -50,7 +50,10 @@ test("stopMitm removes DNS entries before killing the MITM server process (#1809
     return true;
   };
 
-  manager.__setServerProcessForTest(fakeProc as unknown as import("child_process").ChildProcess, 4242);
+  manager.__setServerProcessForTest(
+    fakeProc as unknown as import("child_process").ChildProcess,
+    4242,
+  );
 
   const removeDNSEntry = async () => {
     events.push("removeDNSEntry");
@@ -67,9 +70,7 @@ test("stopMitm removes DNS entries before killing the MITM server process (#1809
   });
 
   const firstKillIndex = events.findIndex((e) => e.startsWith("kill:"));
-  const firstDnsIndex = events.findIndex(
-    (e) => e === "removeDNSEntry" || e === "removeDNSEntries"
-  );
+  const firstDnsIndex = events.findIndex((e) => e === "removeDNSEntry" || e === "removeDNSEntries");
 
   assert.ok(firstKillIndex !== -1, "server process kill was never invoked");
   assert.ok(firstDnsIndex !== -1, "DNS removal was never invoked");
@@ -77,6 +78,6 @@ test("stopMitm removes DNS entries before killing the MITM server process (#1809
     firstDnsIndex < firstKillIndex,
     `DNS entries must be removed BEFORE the MITM server process is killed ` +
       `(got order: ${JSON.stringify(events)}) — otherwise a client whose DNS still ` +
-      `points at 127.0.0.1 hits a dead listener and gets ECONNREFUSED (#1809)`
+      `points at 127.0.0.1 hits a dead listener and gets ECONNREFUSED (#1809)`,
   );
 });

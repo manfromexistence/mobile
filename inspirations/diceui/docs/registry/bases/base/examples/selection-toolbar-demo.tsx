@@ -117,16 +117,14 @@ export default function SelectionToolbarDemo() {
       >
         <h2 className="font-semibold text-2xl">Medium-Style Text Selection</h2>
         <p className="text-muted-foreground leading-relaxed">
-          Select any text in this area to see the floating toolbar appear. The
-          toolbar automatically positions itself above the selection and
-          includes common formatting options like bold, italic, and link, as
-          well as utility actions like copy and share.
+          Select any text in this area to see the floating toolbar appear. The toolbar automatically
+          positions itself above the selection and includes common formatting options like bold,
+          italic, and link, as well as utility actions like copy and share.
         </p>
         <p className="text-muted-foreground leading-relaxed">
-          Try selecting text across multiple lines or near the edges of the
-          viewport. The menu will automatically adjust its position to stay
-          visible and accessible. This creates a seamless editing experience
-          similar to popular writing platforms.
+          Try selecting text across multiple lines or near the edges of the viewport. The menu will
+          automatically adjust its position to stay visible and accessible. This creates a seamless
+          editing experience similar to popular writing platforms.
         </p>
 
         <SelectionToolbar container={containerRef}>

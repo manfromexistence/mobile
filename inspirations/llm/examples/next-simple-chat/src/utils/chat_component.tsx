@@ -3,9 +3,7 @@ import { MLCEngine } from "@mlc-ai/web-llm";
 import ChatUI from "~/utils/chat_ui";
 
 const ChatComponent = () => {
-  const [messages, setMessages] = useState<{ kind: string; text: string }[]>(
-    [],
-  );
+  const [messages, setMessages] = useState<{ kind: string; text: string }[]>([]);
   const [prompt, setPrompt] = useState("");
   const [runtimeStats, setRuntimeStats] = useState("");
   const [chat_ui] = useState(new ChatUI(new MLCEngine()));

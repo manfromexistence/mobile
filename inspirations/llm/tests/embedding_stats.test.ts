@@ -1,8 +1,5 @@
 import { EmbeddingPipeline } from "../src/embedding";
-import {
-  EmbeddingExceedContextWindowSizeError,
-  EmbeddingInputEmptyError,
-} from "../src/error";
+import { EmbeddingExceedContextWindowSizeError, EmbeddingInputEmptyError } from "../src/error";
 import { jest, test, expect } from "@jest/globals";
 
 type EmbeddingLike = EmbeddingPipeline & Record<string, any>;
@@ -31,17 +28,13 @@ test("sync and asyncLoadWebGPUPipelines delegate to tvm/device", async () => {
   await pipeline.sync();
   expect(pipeline["device"].sync).toHaveBeenCalled();
   await pipeline.asyncLoadWebGPUPipelines();
-  expect(pipeline["tvm"].asyncLoadWebGPUPipelines).toHaveBeenCalledWith(
-    internalModule,
-  );
+  expect(pipeline["tvm"].asyncLoadWebGPUPipelines).toHaveBeenCalledWith(internalModule);
 });
 
 function createEmbeddingPipelineBase(): EmbeddingLike {
   const pipeline = Object.create(EmbeddingPipeline.prototype) as EmbeddingLike;
   pipeline["tokenizer"] = {
-    encode: jest.fn(
-      (input: string) => new Int32Array(Math.max(1, input.length)),
-    ),
+    encode: jest.fn((input: string) => new Int32Array(Math.max(1, input.length))),
     decode: jest.fn(),
     dispose: jest.fn(),
     getVocabSize: jest.fn(() => 1),
@@ -87,9 +80,7 @@ function createNDArray() {
 
 test("embedStep throws when input is empty", async () => {
   const pipeline = createEmbeddingPipelineBase();
-  await expect(pipeline.embedStep("")).rejects.toThrow(
-    EmbeddingInputEmptyError,
-  );
+  await expect(pipeline.embedStep("")).rejects.toThrow(EmbeddingInputEmptyError);
 });
 
 test("embedStep validates context window size", async () => {

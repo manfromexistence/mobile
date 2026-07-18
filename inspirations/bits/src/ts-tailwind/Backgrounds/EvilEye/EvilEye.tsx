@@ -1,5 +1,5 @@
-import { Renderer, Program, Mesh, Triangle, Texture } from 'ogl';
-import { useEffect, useRef } from 'react';
+import { Renderer, Program, Mesh, Triangle, Texture } from "ogl";
+import { useEffect, useRef } from "react";
 
 interface EvilEyeProps {
   eyeColor?: string;
@@ -15,11 +15,11 @@ interface EvilEyeProps {
 }
 
 function hexToVec3(hex: string): [number, number, number] {
-  const h = hex.replace('#', '');
+  const h = hex.replace("#", "");
   return [
     parseInt(h.slice(0, 2), 16) / 255,
     parseInt(h.slice(2, 4), 16) / 255,
-    parseInt(h.slice(4, 6), 16) / 255
+    parseInt(h.slice(4, 6), 16) / 255,
   ];
 }
 
@@ -167,7 +167,7 @@ void main() {
 `;
 
 export default function EvilEye({
-  eyeColor = '#FF6F37',
+  eyeColor = "#FF6F37",
   intensity = 1.5,
   pupilSize = 0.6,
   irisWidth = 0.25,
@@ -176,7 +176,7 @@ export default function EvilEye({
   noiseScale = 1.0,
   pupilFollow = 1.0,
   flameSpeed = 1.0,
-  backgroundColor = '#000000'
+  backgroundColor = "#000000",
 }: EvilEyeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -213,18 +213,22 @@ export default function EvilEye({
       mouse.ty = 0;
     }
 
-    container.addEventListener('mousemove', onMouseMove);
-    container.addEventListener('mouseleave', onMouseLeave);
+    container.addEventListener("mousemove", onMouseMove);
+    container.addEventListener("mouseleave", onMouseLeave);
 
     let program: Program;
 
     function resize() {
       renderer.setSize(container.offsetWidth, container.offsetHeight);
       if (program) {
-        program.uniforms.uResolution.value = [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height];
+        program.uniforms.uResolution.value = [
+          gl.canvas.width,
+          gl.canvas.height,
+          gl.canvas.width / gl.canvas.height,
+        ];
       }
     }
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
     resize();
 
     const geometry = new Triangle(gl);
@@ -233,7 +237,9 @@ export default function EvilEye({
       fragment: fragmentShader,
       uniforms: {
         uTime: { value: 0 },
-        uResolution: { value: [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height] },
+        uResolution: {
+          value: [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height],
+        },
         uNoiseTexture: { value: noiseTexture },
         uPupilSize: { value: pupilSize },
         uIrisWidth: { value: irisWidth },
@@ -245,8 +251,8 @@ export default function EvilEye({
         uPupilFollow: { value: pupilFollow },
         uFlameSpeed: { value: flameSpeed },
         uEyeColor: { value: hexToVec3(eyeColor) },
-        uBgColor: { value: hexToVec3(backgroundColor) }
-      }
+        uBgColor: { value: hexToVec3(backgroundColor) },
+      },
     });
 
     const mesh = new Mesh(gl, { geometry, program });
@@ -266,13 +272,24 @@ export default function EvilEye({
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', resize);
-      container.removeEventListener('mousemove', onMouseMove);
-      container.removeEventListener('mouseleave', onMouseLeave);
+      window.removeEventListener("resize", resize);
+      container.removeEventListener("mousemove", onMouseMove);
+      container.removeEventListener("mouseleave", onMouseLeave);
       container.removeChild(gl.canvas);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
-  }, [eyeColor, intensity, pupilSize, irisWidth, glowIntensity, scale, noiseScale, pupilFollow, flameSpeed, backgroundColor]);
+  }, [
+    eyeColor,
+    intensity,
+    pupilSize,
+    irisWidth,
+    glowIntensity,
+    scale,
+    noiseScale,
+    pupilFollow,
+    flameSpeed,
+    backgroundColor,
+  ]);
 
   return <div ref={containerRef} className="w-full h-full" />;
 }

@@ -1,8 +1,8 @@
-import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip"
-import { Button } from "@/components/ui/button"
+import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
+import { Button } from "@/components/ui/button";
 
 function MyTooltipTrigger(props: TooltipPrimitive.Trigger.Props) {
-  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
+  return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
 }
 
 export function Test() {
@@ -16,5 +16,5 @@ export function Test() {
     >
       trigger
     </MyTooltipTrigger>
-  )
+  );
 }

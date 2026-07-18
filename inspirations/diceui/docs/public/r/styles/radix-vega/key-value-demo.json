@@ -1,9 +1,7 @@
 {
   "name": "key-value-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "key-value"
-  ],
+  "registryDependencies": ["key-value"],
   "files": [
     {
       "path": "examples/key-value-demo.tsx",

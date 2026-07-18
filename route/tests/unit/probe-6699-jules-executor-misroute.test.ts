@@ -35,6 +35,6 @@ test("#6699: a chat-completion request routed to provider 'jules' must not silen
       assert.equal(err.status, 400);
       return true;
     },
-    "provider 'jules' must raise a clear error instead of silently inheriting OpenAI's base URL/config"
+    "provider 'jules' must raise a clear error instead of silently inheriting OpenAI's base URL/config",
   );
 });

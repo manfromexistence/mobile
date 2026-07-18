@@ -1,29 +1,22 @@
-import { ArrowRightIcon } from "lucide-react"
-import Link from "next/link"
-import { Button } from "@/components/base/ui/button"
-import { SPONSORSHIP_URL, UTM_PARAMS } from "@/config/site"
-import { PlusIcon } from "@/features/portfolio/components/animated-icons/plus-icon"
-import { SponsorItem } from "@/features/sponsor/components/sponsor-item"
-import { SPONSORS } from "@/features/sponsor/data"
-import type { SponsorTier } from "@/features/sponsor/types"
-import { cn } from "@/lib/utils"
-import { addQueryParams } from "@/lib/utils/url"
+import { ArrowRightIcon } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/base/ui/button";
+import { SPONSORSHIP_URL, UTM_PARAMS } from "@/config/site";
+import { PlusIcon } from "@/features/portfolio/components/animated-icons/plus-icon";
+import { SponsorItem } from "@/features/sponsor/components/sponsor-item";
+import { SPONSORS } from "@/features/sponsor/data";
+import type { SponsorTier } from "@/features/sponsor/types";
+import { cn } from "@/lib/utils";
+import { addQueryParams } from "@/lib/utils/url";
 
-import { Panel, PanelDescription, PanelHeader, PanelTitle } from "./panel"
-import { PanelTitleCopy } from "./panel-title-copy"
+import { Panel, PanelDescription, PanelHeader, PanelTitle } from "./panel";
+import { PanelTitleCopy } from "./panel-title-copy";
 
-const FEATURED_TIERS = new Set<SponsorTier>([
-  "osp",
-  "platinum",
-  "gold",
-  "silver",
-])
+const FEATURED_TIERS = new Set<SponsorTier>(["osp", "platinum", "gold", "silver"]);
 
-const FEATURED_SPONSORS = SPONSORS.filter((sponsor) =>
-  FEATURED_TIERS.has(sponsor.tier)
-)
+const FEATURED_SPONSORS = SPONSORS.filter((sponsor) => FEATURED_TIERS.has(sponsor.tier));
 
-const ID = "sponsors"
+const ID = "sponsors";
 
 export function Sponsors() {
   return (
@@ -87,7 +80,7 @@ export function Sponsors() {
         </Button>
       </div>
     </Panel>
-  )
+  );
 }
 
 function ListItem({ className, ...props }: React.ComponentProps<"li">) {
@@ -96,9 +89,9 @@ function ListItem({ className, ...props }: React.ComponentProps<"li">) {
       className={cn(
         "max-sm:screen-line-top max-sm:screen-line-bottom",
         "sm:nth-[2n+1]:screen-line-top sm:nth-[2n+1]:screen-line-bottom",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }

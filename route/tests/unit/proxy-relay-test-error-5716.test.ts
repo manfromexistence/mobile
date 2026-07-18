@@ -27,7 +27,7 @@ test("#5716 a non-200 relay response fails WITH a diagnostic error", () => {
   assert.equal(r.success, false);
   assert.ok(
     typeof r.error === "string" && r.error.includes("502"),
-    `non-200 relay test must surface the HTTP status; got error=${JSON.stringify(r.error)}`
+    `non-200 relay test must surface the HTTP status; got error=${JSON.stringify(r.error)}`,
   );
 });
 
@@ -41,6 +41,6 @@ test("#5716 a 401 with missing relay auth hints at the auth/encryption-key cause
   assert.equal(r.success, false);
   assert.ok(
     typeof r.error === "string" && /auth/i.test(r.error),
-    `401 with no relay auth should hint at the auth token; got error=${JSON.stringify(r.error)}`
+    `401 with no relay auth should hint at the auth token; got error=${JSON.stringify(r.error)}`,
   );
 });

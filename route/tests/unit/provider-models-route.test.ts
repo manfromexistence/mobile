@@ -47,7 +47,7 @@ async function seedConnection(provider, overrides = {}) {
 async function callRoute(connectionId, search = "") {
   return providerModelsRoute.GET(
     new Request(`http://localhost/api/providers/${connectionId}/models${search}`),
-    { params: { id: connectionId } }
+    { params: { id: connectionId } },
   );
 }
 
@@ -78,7 +78,7 @@ test("provider models route returns a static local catalog for non-LLM search/ag
     const ids = (body.models || []).map((m) => m.id);
     assert.ok(
       ids.includes(expectId),
-      `${provider} should list "${expectId}"; got: ${ids.join(", ")}`
+      `${provider} should list "${expectId}"; got: ${ids.join(", ")}`,
     );
   }
 });
@@ -382,7 +382,7 @@ test("provider models route strips /v1 when it precedes /chat/completions (#5899
   assert.equal(seenUrls[0], "https://api.airforce/v1/models");
   assert.ok(
     !seenUrls.some((u) => u.includes("/v1/v1/")),
-    `no endpoint should contain a doubled /v1: ${JSON.stringify(seenUrls)}`
+    `no endpoint should contain a doubled /v1: ${JSON.stringify(seenUrls)}`,
   );
 });
 
@@ -424,7 +424,7 @@ test("provider models route continues probing past a REDIRECT_BLOCKED endpoint (
   assert.equal(body.source, "api");
   assert.ok(
     seenUrls.length >= 2,
-    `expected the loop to continue past REDIRECT_BLOCKED: ${JSON.stringify(seenUrls)}`
+    `expected the loop to continue past REDIRECT_BLOCKED: ${JSON.stringify(seenUrls)}`,
   );
 });
 
@@ -441,7 +441,7 @@ test("provider models route returns static catalog entries for providers with ha
   assert.equal(body.models.length, providerRegistry.REGISTRY["bailian-coding-plan"].models?.length);
   assert.deepEqual(
     body.models.map((model) => model.id),
-    providerRegistry.REGISTRY["bailian-coding-plan"].models?.map((model) => model.id)
+    providerRegistry.REGISTRY["bailian-coding-plan"].models?.map((model) => model.id),
   );
 });
 
@@ -462,7 +462,7 @@ test("provider models route returns AWS Polly speech engines from the audio regi
   assert.equal(body.source, "local_catalog");
   assert.deepEqual(
     body.models.map((model) => model.id),
-    ["standard", "neural", "long-form", "generative"]
+    ["standard", "neural", "long-form", "generative"],
   );
 });
 
@@ -605,16 +605,16 @@ test("provider models route returns the local catalog for embedding and rerank p
       (model) =>
         model.id === "jina-embeddings-v5-text-small" &&
         model.apiFormat === "embeddings" &&
-        model.supportedEndpoints?.includes("embeddings")
-    )
+        model.supportedEndpoints?.includes("embeddings"),
+    ),
   );
   assert.ok(
     jinaBody.models.some(
       (model) =>
         model.id === "jina-reranker-v3" &&
         model.apiFormat === "rerank" &&
-        model.supportedEndpoints?.includes("rerank")
-    )
+        model.supportedEndpoints?.includes("rerank"),
+    ),
   );
   assert.ok(jinaBody.models.some((model) => model.id === "jina-reranker-m0"));
 });
@@ -687,7 +687,7 @@ test("provider models route returns the updated local catalog for GitHub Copilot
   assert.ok(body.models.some((model) => model.id === "claude-opus-4.7"));
   assert.equal(
     body.models.some((model) => model.id === "gpt-5.1"),
-    false
+    false,
   );
 });
 
@@ -708,7 +708,7 @@ test("provider models route returns the expanded local catalog for Kiro", async 
   assert.ok(
     kiroIds.has("claude-sonnet-5") &&
       kiroIds.has("claude-sonnet-4.5") &&
-      kiroIds.has("claude-haiku-4.5")
+      kiroIds.has("claude-haiku-4.5"),
   );
   assert.equal(kiroIds.has("claude-opus-4.7") || kiroIds.has("claude-sonnet-4.6"), false); // fabricated ids removed
 });
@@ -769,7 +769,7 @@ test("provider models route caches discovered opencode-go models per connection"
   const firstBody = (await firstResponse.json()) as any;
   const cachedModels = await modelsDb.getSyncedAvailableModelsForConnection(
     "opencode-go",
-    connection.id
+    connection.id,
   );
 
   assert.equal(firstResponse.status, 200);
@@ -832,7 +832,7 @@ test("provider models route clears cached discovery when a refresh returns no re
   const body = (await response.json()) as any;
   const cachedModels = await modelsDb.getSyncedAvailableModelsForConnection(
     "opencode-go",
-    connection.id
+    connection.id,
   );
 
   assert.equal(response.status, 200);
@@ -899,13 +899,13 @@ test("provider models route uses synced models as the authoritative local catalo
   // Synced models become the catalog…
   assert.ok(
     body.models.some((model) => model.id === "synced-only-model"),
-    "synced model should be present in the local catalog"
+    "synced model should be present in the local catalog",
   );
   // …and the static catalog entries are no longer surfaced for this provider.
   assert.equal(
     body.models.some((model) => model.id === "glm-5"),
     false,
-    "static catalog should be superseded by the synced list"
+    "static catalog should be superseded by the synced list",
   );
 });
 
@@ -951,7 +951,7 @@ test("provider models route retries Antigravity discovery endpoints before retur
   // hit — `:models` URLs are never reached. Assert on the actual discovery
   // sequence the route follows.
   const discoveryUrls = seenUrls.filter(
-    (url) => url.includes("/v1internal:fetchAvailableModels") || url.includes("/v1internal:models")
+    (url) => url.includes("/v1internal:fetchAvailableModels") || url.includes("/v1internal:models"),
   );
 
   assert.equal(response.status, 200);
@@ -1022,7 +1022,7 @@ test("provider models route filters hidden models from the static Claude catalog
   assert.ok(body.models.some((model) => model.id === "claude-opus-4-7"));
   assert.equal(
     body.models.some((model) => model.id === "claude-sonnet-4-6"),
-    false
+    false,
   );
   assert.ok(body.models.some((model) => model.id === "claude-opus-4-6"));
 });
@@ -1172,7 +1172,7 @@ test("provider models route stops pagination when the upstream repeats the next 
   assert.equal(response.status, 200);
   assert.deepEqual(
     body.models.map((model) => model.id),
-    ["gemini-page-1", "gemini-page-2"]
+    ["gemini-page-1", "gemini-page-2"],
   );
   assert.equal(calls, 2);
 });
@@ -1357,7 +1357,7 @@ test("provider models route discovers Azure OpenAI deployments from the resource
   globalThis.fetch = async (url, init = {}) => {
     assert.equal(
       String(url),
-      "https://my-resource.openai.azure.com/openai/deployments?api-version=2024-12-01-preview"
+      "https://my-resource.openai.azure.com/openai/deployments?api-version=2024-12-01-preview",
     );
     assert.equal(init.method, "GET");
     assert.equal(init.headers["api-key"], "azure-openai-key");
@@ -1522,7 +1522,7 @@ test("provider models route discovers OCI OpenAI-compatible models and forwards 
   globalThis.fetch = async (url, init = {}) => {
     assert.equal(
       String(url),
-      "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/openai/v1/models"
+      "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com/openai/v1/models",
     );
     assert.equal(init.method, "GET");
     assert.equal(init.headers.Authorization, "Bearer oci-key");
@@ -1617,7 +1617,7 @@ test("provider models route always returns the Reka preset catalog", async () =>
   assert.equal(body.source, "local_catalog");
   assert.deepEqual(
     body.models.map((model) => model.id),
-    ["reka-flash-3", "reka-flash", "reka-edge-2603"]
+    ["reka-flash-3", "reka-flash", "reka-edge-2603"],
   );
 });
 
@@ -1640,7 +1640,7 @@ test("provider models route returns Reka local catalog without an API key", asyn
   assert.equal(body.source, "local_catalog");
   assert.deepEqual(
     body.models.map((model) => model.id),
-    ["reka-flash-3", "reka-flash", "reka-edge-2603"]
+    ["reka-flash-3", "reka-flash", "reka-edge-2603"],
   );
 });
 

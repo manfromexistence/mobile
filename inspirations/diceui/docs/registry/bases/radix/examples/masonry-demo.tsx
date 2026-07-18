@@ -17,8 +17,7 @@ const items = [
   {
     id: "3",
     title: "Pizza Guy",
-    description:
-      "The Pizza Guy is a trick where you flip the board like a pizza.",
+    description: "The Pizza Guy is a trick where you flip the board like a pizza.",
   },
   {
     id: "4",
@@ -35,27 +34,18 @@ const items = [
   {
     id: "6",
     title: "FS 540",
-    description:
-      "The FS 540 is a trick where you spin frontside 540 degrees in the air.",
+    description: "The FS 540 is a trick where you spin frontside 540 degrees in the air.",
   },
 ];
 
 export default function MasonryDemo() {
   return (
-    <Masonry
-      columnCount={3}
-      gap={12}
-      fallback={<Skeleton className="h-72 w-full" />}
-    >
+    <Masonry columnCount={3} gap={12} fallback={<Skeleton className="h-72 w-full" />}>
       {items.map((item) => (
         <MasonryItem key={item.id} asChild>
           <div className="flex flex-col gap-1 rounded-md border bg-card p-4 text-card-foreground shadow-xs">
-            <div className="font-medium text-sm leading-tight sm:text-base">
-              {item.title}
-            </div>
-            <span className="text-muted-foreground text-sm">
-              {item.description}
-            </span>
+            <div className="font-medium text-sm leading-tight sm:text-base">{item.title}</div>
+            <span className="text-muted-foreground text-sm">{item.description}</span>
           </div>
         </MasonryItem>
       ))}

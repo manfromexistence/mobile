@@ -23,7 +23,7 @@ const {
 test("loadTransparentAddon returns null on non-Linux (IP_TRANSPARENT is Linux-only)", () => {
   const addon = loadTransparentAddon(
     () => ({ createTransparentListener: () => 3 }),
-    () => "darwin"
+    () => "darwin",
   );
   assert.equal(addon, null);
 });
@@ -33,7 +33,7 @@ test("loadTransparentAddon returns null when the prebuilt addon is absent (requi
     () => {
       throw new Error("Cannot find module");
     },
-    () => "linux"
+    () => "linux",
   );
   assert.equal(addon, null);
 });
@@ -46,7 +46,7 @@ test("loadTransparentAddon returns the addon when present and well-shaped", () =
   };
   const addon = loadTransparentAddon(
     () => fake,
-    () => "linux"
+    () => "linux",
   );
   assert.equal(addon, fake);
   assert.equal(addon?.createTransparentListener("0.0.0.0", 1), 42);
@@ -55,7 +55,7 @@ test("loadTransparentAddon returns the addon when present and well-shaped", () =
 test("loadTransparentAddon rejects a module missing createTransparentListener", () => {
   const addon = loadTransparentAddon(
     () => ({ setSocketMark: () => {}, connectMarked: () => 7 }),
-    () => "linux"
+    () => "linux",
   );
   assert.equal(addon, null);
 });
@@ -63,7 +63,7 @@ test("loadTransparentAddon rejects a module missing createTransparentListener", 
 test("loadTransparentAddon rejects a module missing setSocketMark (anti-loop primitive)", () => {
   const addon = loadTransparentAddon(
     () => ({ createTransparentListener: () => 1, connectMarked: () => 7 }),
-    () => "linux"
+    () => "linux",
   );
   assert.equal(addon, null);
 });
@@ -71,7 +71,7 @@ test("loadTransparentAddon rejects a module missing setSocketMark (anti-loop pri
 test("loadTransparentAddon rejects a module missing connectMarked (forward anti-loop)", () => {
   const addon = loadTransparentAddon(
     () => ({ createTransparentListener: () => 1, setSocketMark: () => {} }),
-    () => "linux"
+    () => "linux",
   );
   assert.equal(addon, null);
 });
@@ -87,12 +87,12 @@ test("loadTransparentAddon also tries the cwd-relative standalone path", () => {
       throw new Error("not here");
     },
     () => "linux",
-    () => "/app"
+    () => "/app",
   );
   assert.equal(addon, null);
   assert.ok(
     tried.some((p) => p === "/app/src/mitm/tproxy/native/build/Release/transparent.node"),
-    `expected a cwd-absolute candidate, got: ${tried.join(", ")}`
+    `expected a cwd-absolute candidate, got: ${tried.join(", ")}`,
   );
 });
 
@@ -108,7 +108,7 @@ test("loadTransparentAddon loads the addon from the cwd-relative standalone path
       throw new Error("not here");
     },
     () => "linux",
-    () => "/app"
+    () => "/app",
   );
   assert.equal(addon, fake);
 });

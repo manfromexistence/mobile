@@ -1,52 +1,54 @@
-export const getLanguage = key => {
+export const getLanguage = (key) => {
   const languages = {
-    code: 'jsx',
-    usage: 'jsx',
-    tailwind: 'jsx',
-    presets: 'jsx',
-    utility: 'jsx',
-    installation: 'bash',
-    css: 'css'
+    code: "jsx",
+    usage: "jsx",
+    tailwind: "jsx",
+    presets: "jsx",
+    utility: "jsx",
+    installation: "bash",
+    css: "css",
   };
 
   return languages[key];
 };
 
-const formatNumber = num => {
+const formatNumber = (num) => {
   if (num < 1000) return num.toString();
 
   const rounded = Math.ceil(num / 100) * 100;
-  return new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 }).format(rounded);
+  return new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(
+    rounded,
+  );
 };
 
 export const getStarsCount = async () => {
   try {
-    const response = await fetch('https://api.github.com/repos/DavidHDev/react-bits');
+    const response = await fetch("https://api.github.com/repos/DavidHDev/react-bits");
     const data = await response.json();
 
-    if (typeof data.stargazers_count !== 'number') {
+    if (typeof data.stargazers_count !== "number") {
       return null;
     }
 
     return String(formatNumber(data.stargazers_count)).toUpperCase();
   } catch (error) {
-    console.error('Error fetching stargazers count:', error);
+    console.error("Error fetching stargazers count:", error);
     return null;
   }
 };
 
-export const decodeLabel = label =>
+export const decodeLabel = (label) =>
   label
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 
 export const forceChakraDarkTheme = () => {
-  localStorage.setItem('chakra-ui-color-mode', 'dark');
-  console.info('Successfully set dark color mode.');
+  localStorage.setItem("chakra-ui-color-mode", "dark");
+  console.info("Successfully set dark color mode.");
 };
 
 export const randomHex = () =>
   `#${Math.floor(Math.random() * 0xffffff)
     .toString(16)
-    .padStart(6, '0')}`;
+    .padStart(6, "0")}`;

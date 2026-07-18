@@ -15,8 +15,9 @@ vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key,
 }));
 
-const { default: AddApiKeyModal } =
-  await import("../../../src/app/(dashboard)/dashboard/providers/[id]/components/modals/AddApiKeyModal");
+const { default: AddApiKeyModal } = await import(
+  "../../../src/app/(dashboard)/dashboard/providers/[id]/components/modals/AddApiKeyModal"
+);
 
 const TLS_EACCES_ERROR =
   "TLS impersonation client failed to start: EACCES: permission denied, mkdir " +
@@ -32,7 +33,12 @@ function render(props: Record<string, unknown>) {
   const root = createRoot(el);
   act(() => {
     root.render(
-      <AddApiKeyModal isOpen onSave={async () => undefined} onClose={() => {}} {...(props as any)} />
+      <AddApiKeyModal
+        isOpen
+        onSave={async () => undefined}
+        onClose={() => {}}
+        {...(props as any)}
+      />,
     );
   });
   containers.push({ root, el });
@@ -68,8 +74,11 @@ beforeEach(() => {
           json: () => Promise.resolve({ valid: false, error: TLS_EACCES_ERROR }),
         } as Response);
       }
-      return Promise.resolve({ ok: true, json: () => Promise.resolve({ valid: true }) } as Response);
-    })
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ valid: true }),
+      } as Response);
+    }),
   );
 });
 
@@ -92,8 +101,7 @@ describe("AddApiKeyModal — surfaces the detailed validation error (#5088)", ()
     // The validate ("check") button is the first button that follows the
     // credential input in DOM order (it sits right next to it).
     const checkBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) =>
-        (apiKeyInput.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0
+      (b) => (apiKeyInput.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0,
     )!;
     expect(checkBtn).toBeTruthy();
     act(() => {

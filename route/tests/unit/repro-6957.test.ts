@@ -72,7 +72,7 @@ test("#6957 native Mistral provider with 2 connections: synced models produce a 
     await modelsDb.replaceSyncedAvailableModelsForConnection(
       "mistral",
       conn.id,
-      MISTRAL_FAMILY_SLICE.map((m) => ({ id: m.id, name: m.name, source: "imported" }))
+      MISTRAL_FAMILY_SLICE.map((m) => ({ id: m.id, name: m.name, source: "imported" })),
     );
   }
 
@@ -102,7 +102,7 @@ test("#6957 native Mistral provider with 2 connections: synced models produce a 
     codestralBase.name,
     "RED: 'codestral-latest' must render a distinguishable label from its base 'codestral-2508' " +
       "model — today both literally render 'codestral-2508 · imported', which is exactly the " +
-      "visually-duplicated rows + invisible '-latest' alias reported in #6957"
+      "visually-duplicated rows + invisible '-latest' alias reported in #6957",
   );
 
   const mistralLargeLatest = models.find((m) => m.id === "mistral-large-latest")!;
@@ -111,7 +111,7 @@ test("#6957 native Mistral provider with 2 connections: synced models produce a 
     mistralLargeLatest.name,
     mistralLargeBase.name,
     "RED: 'mistral-large-latest' must render a distinguishable label from its base " +
-      "'mistral-large-2512' model"
+      "'mistral-large-2512' model",
   );
 
   // Provider-wide: no two distinct model ids should ever render the same option text.
@@ -125,6 +125,6 @@ test("#6957 native Mistral provider with 2 connections: synced models produce a 
   assert.equal(
     collidingNames.length,
     0,
-    `RED: distinct model ids must not share an identical display name (collisions: ${JSON.stringify(collidingNames)})`
+    `RED: distinct model ids must not share an identical display name (collisions: ${JSON.stringify(collidingNames)})`,
   );
 });

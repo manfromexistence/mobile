@@ -1,11 +1,11 @@
-import code from '@content/TextAnimations/FallingText/FallingText.jsx?raw';
-import css from '@content/TextAnimations/FallingText/FallingText.css?raw';
-import tailwind from '@tailwind/TextAnimations/FallingText/FallingText.jsx?raw';
-import tsCode from '@ts-default/TextAnimations/FallingText/FallingText.tsx?raw';
-import tsTailwind from '@ts-tailwind/TextAnimations/FallingText/FallingText.tsx?raw';
+import code from "@content/TextAnimations/FallingText/FallingText.jsx?raw";
+import css from "@content/TextAnimations/FallingText/FallingText.css?raw";
+import tailwind from "@tailwind/TextAnimations/FallingText/FallingText.jsx?raw";
+import tsCode from "@ts-default/TextAnimations/FallingText/FallingText.tsx?raw";
+import tsTailwind from "@ts-tailwind/TextAnimations/FallingText/FallingText.tsx?raw";
 
 export const fallingText = {
-  dependencies: 'matter-js',
+  dependencies: "matter-js",
   usage: `import FallingText from './FallingText';
   
 <FallingText
@@ -23,5 +23,5 @@ export const fallingText = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

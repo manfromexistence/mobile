@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Archive,
@@ -10,58 +10,50 @@ import {
   Plus,
   Search,
   Snowflake,
-} from "lucide-react"
-import { motion } from "motion/react"
-import { Button } from "@/components/ui/button"
+} from "lucide-react";
+import { motion } from "motion/react";
+import { Button } from "@/components/ui/button";
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu"
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { cn } from "@/lib/utils"
-import { ArchivedChatsList } from "./archived-chats"
-import type { Tab, TabFolder, Workspace } from "./types"
-import { WorkspaceIcon } from "./workspace-icon"
+} from "@/components/ui/context-menu";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+import { ArchivedChatsList } from "./archived-chats";
+import type { Tab, TabFolder, Workspace } from "./types";
+import { WorkspaceIcon } from "./workspace-icon";
 
 interface SidebarCollapsedProps {
-  workspaces: Workspace[]
-  activeWorkspace: string
-  visibleWorkspaces: Workspace[]
-  canScrollLeft: boolean
-  canScrollRight: boolean
-  archivesOpen: boolean
-  plusMenuOpen: boolean
-  onSetActiveWorkspace: (id: string) => void
-  onSetarchivesOpen: (open: boolean) => void
-  onSetPlusMenuOpen: (open: boolean) => void
-  onStartScrolling: (direction: "left" | "right") => void
-  onStopScrolling: () => void
-  onCreateWorkspace: () => void
-  onOpenWorkspaceDialog: () => void
-  onCreateFolder: () => void
-  onAddNewTab: () => void
-  folders?: TabFolder[]
-  activeWorkspaceTabs?: Tab[]
-  activeTab?: string
-  onSetActiveTab?: (id: string) => void
-  onSetCommandOpen?: (open: boolean) => void
-  onSetSettingsOpen?: (open: boolean) => void
-  onRenameWorkspace?: () => void
-  onEditWorkspaceIcon?: () => void
-  onUnloadSpace?: () => void
-  onDeleteSpace?: () => void
+  workspaces: Workspace[];
+  activeWorkspace: string;
+  visibleWorkspaces: Workspace[];
+  canScrollLeft: boolean;
+  canScrollRight: boolean;
+  archivesOpen: boolean;
+  plusMenuOpen: boolean;
+  onSetActiveWorkspace: (id: string) => void;
+  onSetarchivesOpen: (open: boolean) => void;
+  onSetPlusMenuOpen: (open: boolean) => void;
+  onStartScrolling: (direction: "left" | "right") => void;
+  onStopScrolling: () => void;
+  onCreateWorkspace: () => void;
+  onOpenWorkspaceDialog: () => void;
+  onCreateFolder: () => void;
+  onAddNewTab: () => void;
+  folders?: TabFolder[];
+  activeWorkspaceTabs?: Tab[];
+  activeTab?: string;
+  onSetActiveTab?: (id: string) => void;
+  onSetCommandOpen?: (open: boolean) => void;
+  onSetSettingsOpen?: (open: boolean) => void;
+  onRenameWorkspace?: () => void;
+  onEditWorkspaceIcon?: () => void;
+  onUnloadSpace?: () => void;
+  onDeleteSpace?: () => void;
 }
 
 export function SidebarCollapsed({
@@ -92,8 +84,7 @@ export function SidebarCollapsed({
   onUnloadSpace,
   onDeleteSpace,
 }: SidebarCollapsedProps) {
-  const _activeWorkspaceObj =
-    workspaces.find((w) => w.id === activeWorkspace) || workspaces[0]
+  const _activeWorkspaceObj = workspaces.find((w) => w.id === activeWorkspace) || workspaces[0];
 
   return (
     <motion.div className="flex flex-1 flex-col items-center py-2 h-full">
@@ -129,10 +120,7 @@ export function SidebarCollapsed({
                   <Folder className="h-4 w-4 shrink-0" />
                 </Button>
               </HoverCardTrigger>
-              <HoverCardContent
-                side="right"
-                className="w-48 border-border bg-card p-2"
-              >
+              <HoverCardContent side="right" className="w-48 border-border bg-card p-2">
                 <div className="flex flex-col gap-1">
                   <span className="text-sm font-medium mb-1 border-b border-border pb-1">
                     {folder.name}
@@ -162,17 +150,14 @@ export function SidebarCollapsed({
                   size="icon"
                   className={cn(
                     "h-8 w-8",
-                    activeTab === tab.id ? "bg-accent" : "text-muted-foreground"
+                    activeTab === tab.id ? "bg-accent" : "text-muted-foreground",
                   )}
                   onClick={() => onSetActiveTab?.(tab.id)}
                 >
                   <MessageSquare className="h-4 w-4 shrink-0" />
                 </Button>
               </HoverCardTrigger>
-              <HoverCardContent
-                side="right"
-                className="w-auto border-border bg-card p-2"
-              >
+              <HoverCardContent side="right" className="w-auto border-border bg-card p-2">
                 <span className="text-sm font-medium">{tab.title}</span>
               </HoverCardContent>
             </HoverCard>
@@ -217,7 +202,7 @@ export function SidebarCollapsed({
                   onClick={() => onSetActiveWorkspace(workspace.id)}
                   className={cn(
                     "group flex h-6 w-6 shrink-0 items-center justify-center rounded-md",
-                    activeWorkspace === workspace.id && "scale-110"
+                    activeWorkspace === workspace.id && "scale-110",
                   )}
                   title={workspace.name}
                   aria-label={`Switch to ${workspace.name} workspace`}
@@ -266,9 +251,7 @@ export function SidebarCollapsed({
                 </ContextMenuItem>
                 <div className="border-border my-1 border-t" />
                 <ContextMenuItem className="text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                  <div className="mr-2 h-4 w-4 flex items-center justify-center shrink-0">
-                    ✓
-                  </div>
+                  <div className="mr-2 h-4 w-4 flex items-center justify-center shrink-0">✓</div>
                   <span className="max-w-[75%] truncate">{workspace.name}</span>
                 </ContextMenuItem>
                 {workspaces
@@ -340,17 +323,14 @@ export function SidebarCollapsed({
                     size="icon"
                     className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8"
                     onClick={(e) => {
-                      e.stopPropagation()
-                      onSetarchivesOpen(true)
+                      e.stopPropagation();
+                      onSetarchivesOpen(true);
                     }}
                   >
                     <Archive className="h-4 w-4" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent
-                  side="right"
-                  className="border-border bg-card w-80 p-4"
-                >
+                <PopoverContent side="right" className="border-border bg-card w-80 p-4">
                   <ArchivedChatsList onClose={() => onSetarchivesOpen(false)} />
                 </PopoverContent>
               </Popover>
@@ -367,19 +347,16 @@ export function SidebarCollapsed({
               className="text-accent-foreground focus:bg-accent focus:text-accent-foreground"
               onClick={() => {
                 try {
-                  const raw = localStorage.getItem("dx-conversations")
+                  const raw = localStorage.getItem("dx-conversations");
                   if (raw) {
                     const convs = (JSON.parse(raw) as any[]).map((c: any) => ({
                       ...c,
                       archived: false,
-                    }))
-                    localStorage.setItem(
-                      "dx-conversations",
-                      JSON.stringify(convs)
-                    )
+                    }));
+                    localStorage.setItem("dx-conversations", JSON.stringify(convs));
                   }
                 } catch {}
-                onSetarchivesOpen(false)
+                onSetarchivesOpen(false);
               }}
             >
               Clear Archive
@@ -415,8 +392,8 @@ export function SidebarCollapsed({
               size="icon"
               className="text-muted-foreground hover:bg-accent hover:text-accent-foreground h-8 w-8 rounded-none border-r border-border/50"
               onClick={(e) => {
-                e.stopPropagation()
-                onCreateWorkspace()
+                e.stopPropagation();
+                onCreateWorkspace();
               }}
               title="Create Space"
             >
@@ -488,5 +465,5 @@ export function SidebarCollapsed({
         </motion.div>
       </div>
     </motion.div>
-  )
+  );
 }

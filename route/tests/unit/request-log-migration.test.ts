@@ -19,13 +19,13 @@ function seedLegacyLayout() {
   fs.mkdirSync(path.join(LEGACY_LOGS_DIR, "session-a"), { recursive: true });
   fs.writeFileSync(
     path.join(LEGACY_LOGS_DIR, "session-a", "1_req_client.json"),
-    JSON.stringify({ ok: true }, null, 2)
+    JSON.stringify({ ok: true }, null, 2),
   );
 
   fs.mkdirSync(path.join(LEGACY_CALL_LOGS_DIR, "2026-03-30"), { recursive: true });
   fs.writeFileSync(
     path.join(LEGACY_CALL_LOGS_DIR, "2026-03-30", "123000_model_200.json"),
-    JSON.stringify({ ok: true }, null, 2)
+    JSON.stringify({ ok: true }, null, 2),
   );
 
   fs.writeFileSync(LEGACY_SUMMARY_FILE, "legacy summary\n");

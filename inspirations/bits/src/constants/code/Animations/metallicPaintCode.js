@@ -1,8 +1,8 @@
-import code from '@content/Animations/MetallicPaint/MetallicPaint.jsx?raw';
-import css from '@content/Animations/MetallicPaint/MetallicPaint.css?raw';
-import tailwind from '@tailwind/Animations/MetallicPaint/MetallicPaint.jsx?raw';
-import tsCode from '@ts-default/Animations/MetallicPaint/MetallicPaint.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/MetallicPaint/MetallicPaint.tsx?raw';
+import code from "@content/Animations/MetallicPaint/MetallicPaint.jsx?raw";
+import css from "@content/Animations/MetallicPaint/MetallicPaint.css?raw";
+import tailwind from "@tailwind/Animations/MetallicPaint/MetallicPaint.jsx?raw";
+import tsCode from "@ts-default/Animations/MetallicPaint/MetallicPaint.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/MetallicPaint/MetallicPaint.tsx?raw";
 
 export const metallicPaint = {
   usage: `// Effect inspired by Paper's Liquid Metal effect
@@ -51,5 +51,5 @@ export default function Component() {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

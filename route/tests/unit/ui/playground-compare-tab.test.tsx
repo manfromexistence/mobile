@@ -21,7 +21,9 @@ if (typeof crypto === "undefined" || !crypto.randomUUID) {
     configurable: true,
   });
 } else {
-  vi.spyOn(crypto, "randomUUID").mockImplementation(() => `test-uuid-${++_uuidCounter}` as `${string}-${string}-${string}-${string}-${string}`);
+  vi.spyOn(crypto, "randomUUID").mockImplementation(
+    () => `test-uuid-${++_uuidCounter}` as `${string}-${string}-${string}-${string}-${string}`,
+  );
 }
 
 // Mock AbortController to track abort calls — use real AbortController but spy on abort()
@@ -94,7 +96,9 @@ function renderCompareTab(config = BASE_CONFIG): HTMLDivElement {
 
 function setInputValue(el: HTMLInputElement | HTMLTextAreaElement, value: string) {
   const nativeSetter = Object.getOwnPropertyDescriptor(
-    el instanceof HTMLTextAreaElement ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype,
+    el instanceof HTMLTextAreaElement
+      ? window.HTMLTextAreaElement.prototype
+      : window.HTMLInputElement.prototype,
     "value",
   )?.set;
   nativeSetter?.call(el, value);
@@ -159,7 +163,9 @@ describe("CompareTab", () => {
     // Add 3 more columns (already have 1)
     for (let i = 0; i < 3; i++) {
       act(() => setInputValue(input, `model-${i}`));
-      await act(async () => { addBtn.click(); });
+      await act(async () => {
+        addBtn.click();
+      });
     }
 
     // Now at 4/4
@@ -178,23 +184,26 @@ describe("CompareTab", () => {
 
     // Add a second column
     act(() => setInputValue(input, "to-remove"));
-    await act(async () => { addBtn.click(); });
+    await act(async () => {
+      addBtn.click();
+    });
     expect(el.textContent).toContain("2/4 columns");
 
     // Remove the second column
-    const removeBtn = el.querySelector("[aria-label='Remove column for to-remove']") as HTMLButtonElement;
+    const removeBtn = el.querySelector(
+      "[aria-label='Remove column for to-remove']",
+    ) as HTMLButtonElement;
     expect(removeBtn).not.toBeNull();
-    await act(async () => { removeBtn.click(); });
+    await act(async () => {
+      removeBtn.click();
+    });
 
     expect(el.textContent).toContain("1/4 columns");
     expect(el.textContent).not.toContain("to-remove");
   });
 
   it("runs all streams in parallel when Run all is clicked", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(() => Promise.resolve(buildSseResponse("Hello"))) as typeof fetch,
-    );
+    vi.stubGlobal("fetch", vi.fn(() => Promise.resolve(buildSseResponse("Hello"))) as typeof fetch);
 
     const el = renderCompareTab();
 
@@ -202,14 +211,18 @@ describe("CompareTab", () => {
     const input = el.querySelector("[aria-label='Model name for new column']") as HTMLInputElement;
     const addBtn = el.querySelector("[aria-label='Add model column']") as HTMLButtonElement;
     act(() => setInputValue(input, "model-2"));
-    await act(async () => { addBtn.click(); });
+    await act(async () => {
+      addBtn.click();
+    });
 
     // Run all is disabled until a prompt is entered
     const promptTextarea = el.querySelector("[aria-label='User prompt']") as HTMLTextAreaElement;
     act(() => setInputValue(promptTextarea, "Compare this"));
 
     const runBtn = el.querySelector("[aria-label='Run all columns']") as HTMLButtonElement;
-    await act(async () => { runBtn.click(); });
+    await act(async () => {
+      runBtn.click();
+    });
 
     // fetch should have been called twice (once per column)
     expect(vi.mocked(fetch)).toHaveBeenCalledTimes(2);
@@ -217,10 +230,7 @@ describe("CompareTab", () => {
 
   it("shows Cancel all when streams are running", async () => {
     // Make fetch hang until aborted
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(() => new Promise<Response>(() => {})) as typeof fetch,
-    );
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})) as typeof fetch);
 
     const el = renderCompareTab();
 
@@ -230,7 +240,9 @@ describe("CompareTab", () => {
 
     const runBtn = el.querySelector("[aria-label='Run all columns']") as HTMLButtonElement;
 
-    act(() => { runBtn.click(); });
+    act(() => {
+      runBtn.click();
+    });
 
     // Need to flush promises to get to streaming state
     await act(async () => {
@@ -242,10 +254,7 @@ describe("CompareTab", () => {
   });
 
   it("cancel all calls abort on all controllers", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(() => new Promise<Response>(() => {})) as typeof fetch,
-    );
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})) as typeof fetch);
 
     const el = renderCompareTab();
 
@@ -253,16 +262,26 @@ describe("CompareTab", () => {
     const input = el.querySelector("[aria-label='Model name for new column']") as HTMLInputElement;
     const addBtn = el.querySelector("[aria-label='Add model column']") as HTMLButtonElement;
     act(() => setInputValue(input, "model-2"));
-    await act(async () => { addBtn.click(); });
+    await act(async () => {
+      addBtn.click();
+    });
 
     const runBtn = el.querySelector("[aria-label='Run all columns']") as HTMLButtonElement;
-    act(() => { runBtn.click(); });
+    act(() => {
+      runBtn.click();
+    });
 
-    await act(async () => { await Promise.resolve(); });
+    await act(async () => {
+      await Promise.resolve();
+    });
 
-    const cancelBtn = el.querySelector("[aria-label='Cancel all streams']") as HTMLButtonElement | null;
+    const cancelBtn = el.querySelector(
+      "[aria-label='Cancel all streams']",
+    ) as HTMLButtonElement | null;
     if (cancelBtn) {
-      act(() => { cancelBtn.click(); });
+      act(() => {
+        cancelBtn.click();
+      });
       // AbortController.abort should have been called
       expect(abortCallTracker.calls).toBeGreaterThan(0);
     }

@@ -1,7 +1,7 @@
-import { BlockDisplay } from "@/components/block-display"
+import { BlockDisplay } from "@/components/block-display";
 
-export const dynamic = "force-static"
-export const revalidate = false
+export const dynamic = "force-static";
+export const revalidate = false;
 
 const FEATURED_BLOCKS = [
   "realtime-transcriber-01",
@@ -14,7 +14,7 @@ const FEATURED_BLOCKS = [
   "music-player-02",
   "voice-chat-02",
   "voice-chat-03",
-]
+];
 
 export default async function BlocksPage() {
   return (
@@ -23,5 +23,5 @@ export default async function BlocksPage() {
         <BlockDisplay name={name} key={name} />
       ))}
     </div>
-  )
+  );
 }

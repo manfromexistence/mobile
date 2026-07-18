@@ -38,7 +38,13 @@ describe("Timing i18n (R4 fix #3)", () => {
         `TimingTab must not render hardcoded "${lit}" — use t() instead`,
       );
     }
-    for (const key of ["timingTimestamp", "timingMethod", "timingStatus", "timingRequestSize", "timingResponseSize"]) {
+    for (const key of [
+      "timingTimestamp",
+      "timingMethod",
+      "timingStatus",
+      "timingRequestSize",
+      "timingResponseSize",
+    ]) {
       assert.ok(tabSrc.includes(`t("${key}")`), `TimingTab must call t("${key}")`);
     }
   });

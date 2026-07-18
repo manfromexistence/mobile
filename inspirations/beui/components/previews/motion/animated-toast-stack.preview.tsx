@@ -43,13 +43,7 @@ const EXAMPLES: Array<ToastInput & { label: string }> = [
 
 export function AnimatedToastStackPreview() {
   const [position, setPosition] = useState<ToastPosition>("bottom-right");
-  const {
-    toasts,
-    showToast,
-    updateToast,
-    dismissToast,
-    clearToasts,
-  } = useAnimatedToastStack({
+  const { toasts, showToast, updateToast, dismissToast, clearToasts } = useAnimatedToastStack({
     defaultDuration: 3600,
     limit: 5,
   });

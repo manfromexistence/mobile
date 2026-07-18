@@ -42,7 +42,7 @@ test("streaming path: buildStreamingResponseHeaders strips x-middleware-* and pr
   for (const [name] of MIDDLEWARE_HEADERS) {
     assert.ok(
       !lowerKeys.includes(name.toLowerCase()),
-      `expected ${name} to be stripped, got: ${lowerKeys.join(", ")}`
+      `expected ${name} to be stripped, got: ${lowerKeys.join(", ")}`,
     );
   }
   // Normal upstream header preserved.

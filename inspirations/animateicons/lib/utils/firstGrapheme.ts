@@ -13,17 +13,17 @@
  */
 
 export const firstGrapheme = (input: string): string => {
-	const trimmed = input.trim();
-	if (!trimmed) return "?";
+  const trimmed = input.trim();
+  if (!trimmed) return "?";
 
-	if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
-		const seg = new Intl.Segmenter(undefined, { granularity: "grapheme" });
-		const { value } = seg.segment(trimmed)[Symbol.iterator]().next();
-		return (value?.segment ?? "?").toLocaleUpperCase();
-	}
+  if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
+    const seg = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+    const { value } = seg.segment(trimmed)[Symbol.iterator]().next();
+    return (value?.segment ?? "?").toLocaleUpperCase();
+  }
 
-	// Fallback: first Unicode code point (handles surrogate pairs, not combining marks).
-	const codePoint = trimmed.codePointAt(0);
-	if (codePoint == null) return "?";
-	return String.fromCodePoint(codePoint).toLocaleUpperCase();
+  // Fallback: first Unicode code point (handles surrogate pairs, not combining marks).
+  const codePoint = trimmed.codePointAt(0);
+  if (codePoint == null) return "?";
+  return String.fromCodePoint(codePoint).toLocaleUpperCase();
 };

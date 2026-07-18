@@ -3,14 +3,7 @@ import {
   ServiceWorkerMLCEngine,
   ServiceWorkerMLCEngineHandler,
 } from "../src/extension_service_worker";
-import {
-  jest,
-  test,
-  expect,
-  describe,
-  beforeEach,
-  afterEach,
-} from "@jest/globals";
+import { jest, test, expect, describe, beforeEach, afterEach } from "@jest/globals";
 
 jest.mock("@mlc-ai/web-runtime", () => ({
   detectGPUDevice: jest.fn(async () => ({
@@ -55,9 +48,7 @@ function createPort(): MockPort {
 
 function createHandler() {
   const handler = new ServiceWorkerMLCEngineHandler(createPort());
-  (handler as any).handleTask = jest.fn(async (_uuid: string, task: any) =>
-    task(),
-  );
+  (handler as any).handleTask = jest.fn(async (_uuid: string, task: any) => task());
   (handler as any).engine = {
     reload: reloadMock,
     getInitProgressCallback: jest.fn(() => initCallback),

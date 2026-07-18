@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
 import {
   Card,
   CardContent,
@@ -8,15 +8,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/registry/elevenlabs-ui/ui/card"
-import { Checkbox } from "@/registry/elevenlabs-ui/ui/checkbox"
-import { Input } from "@/registry/elevenlabs-ui/ui/input"
-import { Label } from "@/registry/elevenlabs-ui/ui/label"
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "@/registry/elevenlabs-ui/ui/radio-group"
-import { Textarea } from "@/registry/elevenlabs-ui/ui/textarea"
+} from "@/registry/elevenlabs-ui/ui/card";
+import { Checkbox } from "@/registry/elevenlabs-ui/ui/checkbox";
+import { Input } from "@/registry/elevenlabs-ui/ui/input";
+import { Label } from "@/registry/elevenlabs-ui/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/registry/elevenlabs-ui/ui/radio-group";
+import { Textarea } from "@/registry/elevenlabs-ui/ui/textarea";
 
 const plans = [
   {
@@ -31,7 +28,7 @@ const plans = [
     description: "More features and storage.",
     price: "$20",
   },
-] as const
+] as const;
 
 export function CardsForms() {
   return (
@@ -39,8 +36,7 @@ export function CardsForms() {
       <CardHeader>
         <CardTitle className="text-lg">Upgrade your subscription</CardTitle>
         <CardDescription className="text-balance">
-          You are currently on the free plan. Upgrade to the pro plan to get
-          access to all features.
+          You are currently on the free plan. Upgrade to the pro plan to get access to all features.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -72,10 +68,7 @@ export function CardsForms() {
             <p className="text-muted-foreground text-sm">
               Select the plan that best fits your needs.
             </p>
-            <RadioGroup
-              defaultValue="starter"
-              className="grid gap-3 md:grid-cols-2"
-            >
+            <RadioGroup defaultValue="starter" className="grid gap-3 md:grid-cols-2">
               {plans.map((plan) => (
                 <Label
                   className="has-[[data-state=checked]]:border-ring has-[[data-state=checked]]:bg-input/20 flex items-start gap-3 rounded-lg border p-3"
@@ -123,5 +116,5 @@ export function CardsForms() {
         <Button size="sm">Upgrade Plan</Button>
       </CardFooter>
     </Card>
-  )
+  );
 }

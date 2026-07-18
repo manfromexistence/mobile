@@ -56,7 +56,7 @@ function makeConfig() {
 
 function renderPane(
   configState: ReturnType<typeof makeConfig>,
-  setConfigState: (s: ReturnType<typeof makeConfig>) => void
+  setConfigState: (s: ReturnType<typeof makeConfig>) => void,
 ): HTMLDivElement {
   const el = document.createElement("div");
   document.body.appendChild(el);
@@ -66,7 +66,7 @@ function renderPane(
       <StudioConfigPane
         configState={configState}
         setConfigState={setConfigState as (s: typeof configState) => void}
-      />
+      />,
     );
   });
   containers.push({ root, el });
@@ -76,7 +76,7 @@ function renderPane(
 function setInputValue(input: HTMLInputElement, value: string) {
   const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
     window.HTMLInputElement.prototype,
-    "value"
+    "value",
   )?.set;
   nativeInputValueSetter?.call(input, value);
   input.dispatchEvent(new Event("input", { bubbles: true }));
@@ -84,8 +84,9 @@ function setInputValue(input: HTMLInputElement, value: string) {
 
 describe("StudioConfigPane model search (#4086)", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean })
-      .IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {
@@ -101,7 +102,7 @@ describe("StudioConfigPane model search (#4086)", () => {
     const config = makeConfig();
     const el = renderPane(config, vi.fn());
     const searchInput = el.querySelector(
-      "input[type='text'][placeholder='search']"
+      "input[type='text'][placeholder='search']",
     ) as HTMLInputElement | null;
     expect(searchInput).toBeTruthy();
   });
@@ -110,7 +111,7 @@ describe("StudioConfigPane model search (#4086)", () => {
     const config = makeConfig();
     const el = renderPane(config, vi.fn());
     const modelSelect = Array.from(el.querySelectorAll<HTMLSelectElement>("select")).find((s) =>
-      Array.from(s.options).some((o) => o.value === "openai/gpt-4o")
+      Array.from(s.options).some((o) => o.value === "openai/gpt-4o"),
     );
     expect(modelSelect).toBeTruthy();
     expect(modelSelect?.options.length).toBe(AVAILABLE_MODELS.length);
@@ -121,7 +122,7 @@ describe("StudioConfigPane model search (#4086)", () => {
     const el = renderPane(config, vi.fn());
 
     const searchInput = el.querySelector(
-      "input[type='text'][placeholder='search']"
+      "input[type='text'][placeholder='search']",
     ) as HTMLInputElement;
     expect(searchInput).toBeTruthy();
 
@@ -130,7 +131,7 @@ describe("StudioConfigPane model search (#4086)", () => {
     });
 
     const modelSelect = Array.from(el.querySelectorAll<HTMLSelectElement>("select")).find((s) =>
-      Array.from(s.options).some((o) => o.value === "anthropic/claude-3")
+      Array.from(s.options).some((o) => o.value === "anthropic/claude-3"),
     );
     expect(modelSelect).toBeTruthy();
     // The non-matching "openrouter/mistral-large" model is filtered out. The currently
@@ -146,7 +147,7 @@ describe("StudioConfigPane model search (#4086)", () => {
     const el = renderPane(config, vi.fn());
 
     const searchInput = el.querySelector(
-      "input[type='text'][placeholder='search']"
+      "input[type='text'][placeholder='search']",
     ) as HTMLInputElement;
 
     act(() => {
@@ -154,7 +155,7 @@ describe("StudioConfigPane model search (#4086)", () => {
     });
 
     const modelSelect = Array.from(el.querySelectorAll<HTMLSelectElement>("select")).find((s) =>
-      Array.from(s.options).some((o) => o.value === "anthropic/claude-3")
+      Array.from(s.options).some((o) => o.value === "anthropic/claude-3"),
     );
     const values = Array.from(modelSelect?.options ?? []).map((o) => o.value);
     expect(values).toContain("openai/gpt-4o");

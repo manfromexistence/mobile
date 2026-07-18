@@ -32,7 +32,10 @@ export async function readOptionalSourceFile(rel: string) {
   }
 }
 
-export async function resolveSourceImport(spec: string, fromFile?: string): Promise<SourceFile | null> {
+export async function resolveSourceImport(
+  spec: string,
+  fromFile?: string,
+): Promise<SourceFile | null> {
   if (!spec.startsWith("@/") && !spec.startsWith(".")) return null;
 
   const rel = spec.startsWith("@/")

@@ -107,8 +107,11 @@ test("6951: RED->GREEN — schema threaded end-to-end strips the default-valued 
   const state = { toolSchemas: new Map([["Agent", AGENT_SCHEMA]]) };
 
   openaiResponsesToOpenAIResponse(
-    { type: "response.output_item.added", item: { type: "function_call", call_id: "call_1", name: "Agent" } },
-    state
+    {
+      type: "response.output_item.added",
+      item: { type: "function_call", call_id: "call_1", name: "Agent" },
+    },
+    state,
   );
   const done = openaiResponsesToOpenAIResponse(
     {
@@ -128,7 +131,7 @@ test("6951: RED->GREEN — schema threaded end-to-end strips the default-valued 
         }),
       },
     },
-    state
+    state,
   );
 
   const args = JSON.parse(done.choices[0].delta.tool_calls[0].function.arguments);

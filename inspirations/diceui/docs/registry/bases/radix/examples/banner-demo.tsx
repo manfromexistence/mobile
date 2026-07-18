@@ -25,8 +25,7 @@ export default function BannerDemo() {
         <BannerContent>
           <BannerTitle>New update available</BannerTitle>
           <BannerDescription>
-            A new version of the app is available. Update now to get the latest
-            features.
+            A new version of the app is available. Update now to get the latest features.
           </BannerDescription>
         </BannerContent>
         <BannerActions>

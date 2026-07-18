@@ -1,21 +1,15 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-import { ElasticSlider } from "@/registry/transformed/components/elastic-slider"
+import { ElasticSlider } from "@/registry/transformed/components/elastic-slider";
 
 export default function ElasticSliderDemo() {
-  const [opacity, setOpacity] = useState(0.5)
+  const [opacity, setOpacity] = useState(0.5);
 
   return (
     <div className="flex w-50 flex-col gap-4">
-      <ElasticSlider
-        label="Opacity"
-        min={0}
-        max={1}
-        value={opacity}
-        onValueChange={setOpacity}
-      />
+      <ElasticSlider label="Opacity" min={0} max={1} value={opacity} onValueChange={setOpacity} />
 
       <ElasticSlider
         label="Blur"
@@ -26,13 +20,7 @@ export default function ElasticSliderDemo() {
         formatValue={(v) => `${v}px`}
       />
 
-      <ElasticSlider
-        label="Saturation"
-        min={0}
-        max={10}
-        step={0.1}
-        defaultValue={8}
-      />
+      <ElasticSlider label="Saturation" min={0} max={10} step={0.1} defaultValue={8} />
     </div>
-  )
+  );
 }

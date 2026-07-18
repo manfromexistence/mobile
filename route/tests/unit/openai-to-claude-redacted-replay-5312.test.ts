@@ -53,7 +53,7 @@ test("#5945: reasoning_content on a plain-text assistant turn (no tool_use, thin
       ],
       // no body.thinking / body.reasoning_effort — thinking is NOT enabled for this request.
     },
-    false
+    false,
   );
 
   const assistant = result.messages.find((m) => m.role === "assistant");
@@ -64,12 +64,12 @@ test("#5945: reasoning_content on a plain-text assistant turn (no tool_use, thin
   assert.equal(
     assistant.content.find((b) => b && (b.type === "thinking" || b.type === "redacted_thinking")),
     undefined,
-    "must NOT fabricate a thinking/redacted_thinking block the client never sent"
+    "must NOT fabricate a thinking/redacted_thinking block the client never sent",
   );
   assert.deepEqual(
     assistant.content.map((b) => b.type),
     ["text"],
-    "assistant content should contain only the real text block"
+    "assistant content should contain only the real text block",
   );
 });
 
@@ -93,7 +93,7 @@ test("#5945: reasoning_content + tool_use, but thinking NOT enabled on the outbo
       ],
       // no body.thinking / body.reasoning_effort — thinking is NOT enabled.
     },
-    false
+    false,
   );
 
   const assistant = result.messages.find((m) => m.role === "assistant");
@@ -101,11 +101,11 @@ test("#5945: reasoning_content + tool_use, but thinking NOT enabled on the outbo
   assert.equal(
     assistant.content.find((b) => b && (b.type === "thinking" || b.type === "redacted_thinking")),
     undefined,
-    "must NOT inject a precursor thinking block when the request itself has thinking disabled"
+    "must NOT inject a precursor thinking block when the request itself has thinking disabled",
   );
   assert.ok(
     assistant.content.some((b) => b.type === "tool_use"),
-    "tool_use block must still be present"
+    "tool_use block must still be present",
   );
 });
 
@@ -129,7 +129,7 @@ test("#5312: reasoning_content + tool_use + thinking ENABLED still gets a signat
         },
       ],
     },
-    false
+    false,
   );
 
   const assistant = result.messages.find((m) => m.role === "assistant");
@@ -137,7 +137,7 @@ test("#5312: reasoning_content + tool_use + thinking ENABLED still gets a signat
 
   // No block may carry the fabricated default signature on a `thinking`-typed block.
   const fake = assistant.content.find(
-    (b) => b && b.type === "thinking" && b.signature === DEFAULT_THINKING_CLAUDE_SIGNATURE
+    (b) => b && b.type === "thinking" && b.signature === DEFAULT_THINKING_CLAUDE_SIGNATURE,
   );
   assert.equal(fake, undefined, "must NOT emit a `thinking` block with the fabricated signature");
 
@@ -148,11 +148,11 @@ test("#5312: reasoning_content + tool_use + thinking ENABLED still gets a signat
   assert.equal(
     assistant.content[0].signature,
     undefined,
-    "redacted_thinking must not carry a signature"
+    "redacted_thinking must not carry a signature",
   );
   assert.ok(
     assistant.content.some((b) => b.type === "tool_use"),
-    "tool_use block must still be present"
+    "tool_use block must still be present",
   );
 });
 
@@ -172,7 +172,7 @@ test("#5312 RC-D: a REAL thinking signature is preserved verbatim", () => {
         },
       ],
     },
-    false
+    false,
   );
 
   const assistant = result.messages.find((m) => m.role === "assistant");
@@ -183,6 +183,6 @@ test("#5312 RC-D: a REAL thinking signature is preserved verbatim", () => {
   assert.notEqual(
     thinking.signature,
     DEFAULT_THINKING_CLAUDE_SIGNATURE,
-    "real signature must never be overwritten with the default"
+    "real signature must never be overwritten with the default",
   );
 });

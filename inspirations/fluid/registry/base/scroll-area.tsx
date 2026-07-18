@@ -33,20 +33,8 @@ interface ScrollAreaProps extends ComponentPropsWithoutRef<"div"> {
   orientation?: Orientation;
 }
 
-const ScrollArea = forwardRef<
-  ComponentRef<typeof ScrollAreaPrimitive.Root>,
-  ScrollAreaProps
->(
-  (
-    {
-      className,
-      children,
-      viewportClassName,
-      orientation = "vertical",
-      ...props
-    },
-    ref
-  ) => {
+const ScrollArea = forwardRef<ComponentRef<typeof ScrollAreaPrimitive.Root>, ScrollAreaProps>(
+  ({ className, children, viewportClassName, orientation = "vertical", ...props }, ref) => {
     const isTouch = useTouchPrimary();
 
     return (
@@ -67,7 +55,7 @@ const ScrollArea = forwardRef<
                 orientation === "vertical" && "overflow-y-auto",
                 orientation === "horizontal" && "overflow-x-auto",
                 orientation === "both" && "overflow-auto",
-                viewportClassName
+                viewportClassName,
               )}
               tabIndex={0}
             >
@@ -87,9 +75,7 @@ const ScrollArea = forwardRef<
             >
               {/* Content gives Base UI an intrinsic size to measure
                   horizontal overflow against. */}
-              <ScrollAreaPrimitive.Content>
-                {children}
-              </ScrollAreaPrimitive.Content>
+              <ScrollAreaPrimitive.Content>{children}</ScrollAreaPrimitive.Content>
             </ScrollAreaPrimitive.Viewport>
             {orientation !== "horizontal" && <ScrollBar orientation="vertical" />}
             {orientation !== "vertical" && <ScrollBar orientation="horizontal" />}
@@ -98,7 +84,7 @@ const ScrollArea = forwardRef<
         )}
       </ScrollAreaContext.Provider>
     );
-  }
+  },
 );
 
 ScrollArea.displayName = "ScrollArea";
@@ -136,7 +122,7 @@ const ScrollBar = forwardRef<
         "data-[hovering]:delay-0 data-[scrolling]:delay-0",
         orientation === "vertical" && "top-0 right-0 h-full w-2.5",
         orientation === "horizontal" && "bottom-0 left-0 h-2.5 w-full flex-col",
-        className
+        className,
       )}
       {...props}
     >
@@ -149,7 +135,7 @@ const ScrollBar = forwardRef<
           orientation === "vertical" &&
             "mx-auto my-1 w-1 h-[var(--scroll-area-thumb-height)] group-hover/scrollbar:w-1.5",
           orientation === "horizontal" &&
-            "my-auto mx-1 h-1 w-[var(--scroll-area-thumb-width)] group-hover/scrollbar:h-1.5"
+            "my-auto mx-1 h-1 w-[var(--scroll-area-thumb-width)] group-hover/scrollbar:h-1.5",
         )}
       />
     </ScrollAreaPrimitive.Scrollbar>

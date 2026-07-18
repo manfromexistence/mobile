@@ -45,7 +45,7 @@ describe("BypassListEditor", { timeout: 30000 }, () => {
         React.createElement(BypassListEditor, {
           patterns: [],
           onSave: vi.fn(),
-        })
+        }),
       );
     });
 
@@ -65,7 +65,7 @@ describe("BypassListEditor", { timeout: 30000 }, () => {
         React.createElement(BypassListEditor, {
           patterns: ["*.internal.corp", "sso.example.com"],
           onSave: vi.fn(),
-        })
+        }),
       );
     });
 
@@ -88,12 +88,12 @@ describe("BypassListEditor", { timeout: 30000 }, () => {
         React.createElement(BypassListEditor, {
           patterns: ["existing.com"],
           onSave,
-        })
+        }),
       );
     });
 
     const saveBtn = Array.from(container.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("saveBypassList")
+      b.textContent?.includes("saveBypassList"),
     );
     expect(saveBtn).not.toBeNull();
 
@@ -116,12 +116,12 @@ describe("BypassListEditor", { timeout: 30000 }, () => {
         React.createElement(BypassListEditor, {
           patterns: [],
           onSave: vi.fn(),
-        })
+        }),
       );
     });
 
     const saveBtn = Array.from(container.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("saveBypassList")
+      b.textContent?.includes("saveBypassList"),
     );
     expect(saveBtn).not.toBeNull();
   }, 30000);

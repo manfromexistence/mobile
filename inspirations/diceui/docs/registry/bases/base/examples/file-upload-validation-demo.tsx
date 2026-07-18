@@ -64,18 +64,11 @@ export default function FileUploadValidationDemo() {
             <Upload className="size-6 text-muted-foreground" />
           </div>
           <p className="font-medium text-sm">Drag & drop files here</p>
-          <p className="text-muted-foreground text-xs">
-            Or click to browse (max 2 files)
-          </p>
+          <p className="text-muted-foreground text-xs">Or click to browse (max 2 files)</p>
         </div>
         <FileUploadTrigger
           render={(props) => (
-            <Button
-              variant="outline"
-              size="sm"
-              className="mt-2 w-fit"
-              {...props}
-            >
+            <Button variant="outline" size="sm" className="mt-2 w-fit" {...props}>
               Browse files
             </Button>
           )}
@@ -88,12 +81,7 @@ export default function FileUploadValidationDemo() {
             <FileUploadItemMetadata />
             <FileUploadItemDelete
               render={(props) => (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-7"
-                  {...props}
-                >
+                <Button variant="ghost" size="icon" className="size-7" {...props}>
                   <X />
                 </Button>
               )}

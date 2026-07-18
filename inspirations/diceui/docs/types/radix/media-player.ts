@@ -1,19 +1,8 @@
 import type { Slider } from "radix-ui";
 import type { Button } from "@/registry/bases/radix/ui/button";
-import type {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from "@/registry/bases/radix/ui/dropdown-menu";
-import type {
-  Tooltip,
-  TooltipContent,
-} from "@/registry/bases/radix/ui/tooltip";
-import type {
-  ButtonProps,
-  CompositionProps,
-  EmptyCompProps,
-  EmptyProps,
-} from "@/types";
+import type { DropdownMenu, DropdownMenuTrigger } from "@/registry/bases/radix/ui/dropdown-menu";
+import type { Tooltip, TooltipContent } from "@/registry/bases/radix/ui/tooltip";
+import type { ButtonProps, CompositionProps, EmptyCompProps, EmptyProps } from "@/types";
 
 interface MediaPlayerDropdownMenuProps
   extends Omit<React.ComponentProps<typeof DropdownMenu>, "dir">,
@@ -217,25 +206,15 @@ export interface MediaPlayerProps extends EmptyProps<"div">, CompositionProps {
   withoutTooltip?: boolean;
 }
 
-export interface MediaPlayerVideoProps
-  extends EmptyProps<"video">,
-    CompositionProps {}
+export interface MediaPlayerVideoProps extends EmptyProps<"video">, CompositionProps {}
 
-export interface MediaPlayerAudioProps
-  extends EmptyProps<"audio">,
-    CompositionProps {}
+export interface MediaPlayerAudioProps extends EmptyProps<"audio">, CompositionProps {}
 
-export interface MediaPlayerControlsProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface MediaPlayerControlsProps extends EmptyProps<"div">, CompositionProps {}
 
-export interface MediaPlayerControlsOverlayProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface MediaPlayerControlsOverlayProps extends EmptyProps<"div">, CompositionProps {}
 
-export interface MediaPlayerLoadingProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface MediaPlayerLoadingProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The delay in milliseconds before showing the loading indicator.
    *
@@ -248,9 +227,7 @@ export interface MediaPlayerLoadingProps
   delay?: number;
 }
 
-export interface MediaPlayerErrorProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface MediaPlayerErrorProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The media error object. If not provided, will use the error from media state.
    *
@@ -309,9 +286,7 @@ export interface MediaPlayerErrorProps
   onReload?: () => void;
 }
 
-export interface MediaPlayerVolumeIndicatorProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface MediaPlayerVolumeIndicatorProps extends EmptyProps<"div">, CompositionProps {}
 
 export interface MediaPlayerPlayProps
   extends EmptyCompProps<ButtonProps, "button">,
@@ -460,9 +435,7 @@ export interface MediaPlayerSeekProps
    *
    * @default 10
    */
-  tooltipCollisionPadding?:
-    | number
-    | Partial<Record<"top" | "right" | "bottom" | "left", number>>;
+  tooltipCollisionPadding?: number | Partial<Record<"top" | "right" | "bottom" | "left", number>>;
 }
 
 export interface MediaPlayerVolumeProps
@@ -480,9 +453,7 @@ export interface MediaPlayerVolumeProps
   expandable?: boolean;
 }
 
-export interface MediaPlayerTimeProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface MediaPlayerTimeProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The format variant for displaying time.
    * - `progress`: Shows "currentTime / duration" (e.g., "1:23 / 5:00").
@@ -565,9 +536,7 @@ export interface MediaPlayerPiPProps
    *
    * @default PictureInPictureIcon when not in PiP, PictureInPicture2Icon when in PiP
    */
-  children?:
-    | React.ReactNode
-    | ((isPictureInPicture: boolean) => React.ReactNode);
+  children?: React.ReactNode | ((isPictureInPicture: boolean) => React.ReactNode);
 }
 
 export interface MediaPlayerFullscreenProps

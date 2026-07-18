@@ -61,14 +61,18 @@ test("5h bucket: reaches 100% → saturated; after resets_at passes → auto-eli
   const windowKey = "5h";
 
   recordUsage(connectionId, windowKey, 100, FUTURE_ISO, NOW);
-  assert.equal(isBucketSaturated(connectionId, windowKey, NOW), true, "should be saturated at 100%");
+  assert.equal(
+    isBucketSaturated(connectionId, windowKey, NOW),
+    true,
+    "should be saturated at 100%",
+  );
 
   // Advance the clock past resets_at — lazy reset fires on the next read.
   const afterReset = NOW + ONE_HOUR_MS + 1;
   assert.equal(
     isBucketSaturated(connectionId, windowKey, afterReset),
     false,
-    "should be eligible again once resets_at has passed"
+    "should be eligible again once resets_at has passed",
   );
 });
 
@@ -97,7 +101,11 @@ test("7d bucket: reaches 100% → saturated", () => {
 test("concurrent windows: saturating 5h does NOT saturate 7d", () => {
   recordUsage("conn-two-windows", "5h", 100, FUTURE_ISO, NOW);
   assert.equal(isBucketSaturated("conn-two-windows", "5h", NOW), true, "5h should be saturated");
-  assert.equal(isBucketSaturated("conn-two-windows", "7d", NOW), false, "7d should NOT be saturated");
+  assert.equal(
+    isBucketSaturated("conn-two-windows", "7d", NOW),
+    false,
+    "7d should NOT be saturated",
+  );
 });
 
 test("concurrent windows: saturating 7d does NOT saturate 5h", () => {
@@ -114,14 +122,18 @@ test("per-model buckets are independent: 7d:opus saturated does NOT saturate 7d:
   assert.equal(
     isBucketSaturated("conn-models", "7d:sonnet", NOW),
     false,
-    "sonnet should NOT be saturated"
+    "sonnet should NOT be saturated",
   );
 });
 
 test("per-model: 7d:sonnet saturated does NOT affect the base 7d bucket", () => {
   recordUsage("conn-pm-base", "7d:sonnet", 100, FUTURE_ISO, NOW);
   assert.equal(isBucketSaturated("conn-pm-base", "7d:sonnet", NOW), true);
-  assert.equal(isBucketSaturated("conn-pm-base", "7d", NOW), false, "base 7d should be independent");
+  assert.equal(
+    isBucketSaturated("conn-pm-base", "7d", NOW),
+    false,
+    "base 7d should be independent",
+  );
 });
 
 test("per-model: lazy reset works for 7d:designer", () => {
@@ -180,7 +192,7 @@ test("updateAccountBuckets: an unsaturated update clears a previously saturated 
   assert.equal(
     isBucketSaturated("conn-unsaturate", "5h", NOW),
     false,
-    "should be cleared when the latest reading is below threshold"
+    "should be cleared when the latest reading is below threshold",
   );
 });
 
@@ -217,6 +229,6 @@ test("recordUsage: null resetAt → saturated with unknown reset (lazy reset can
   assert.equal(
     isBucketSaturated("conn-null-reset", "5h", NOW + 24 * ONE_HOUR_MS),
     true,
-    "stays saturated until a fresh non-saturated reading clears it"
+    "stays saturated until a fresh non-saturated reading clears it",
   );
 });

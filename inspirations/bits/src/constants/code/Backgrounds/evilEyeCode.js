@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/EvilEye/EvilEye.jsx?raw';
-import css from '@content/Backgrounds/EvilEye/EvilEye.css?raw';
-import tailwind from '@tailwind/Backgrounds/EvilEye/EvilEye.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/EvilEye/EvilEye.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/EvilEye/EvilEye.tsx?raw';
+import code from "@content/Backgrounds/EvilEye/EvilEye.jsx?raw";
+import css from "@content/Backgrounds/EvilEye/EvilEye.css?raw";
+import tailwind from "@tailwind/Backgrounds/EvilEye/EvilEye.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/EvilEye/EvilEye.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/EvilEye/EvilEye.tsx?raw";
 
 export const evilEye = {
   dependencies: `ogl`,
@@ -24,5 +24,5 @@ export const evilEye = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

@@ -12,9 +12,7 @@ function Demo({ children, className, ...props }: React.ComponentProps<"div">) {
       {...props}
     >
       {Array.isArray(children) ? (
-        children.map((child, index) => (
-          <DemoItem key={child.key ?? index}>{child}</DemoItem>
-        ))
+        children.map((child, index) => <DemoItem key={child.key ?? index}>{child}</DemoItem>)
       ) : (
         <DemoItem>{children}</DemoItem>
       )}
@@ -35,17 +33,9 @@ function DemoItem({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-function DemoItemGroup({
-  children,
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+function DemoItemGroup({ children, className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-slot="demo-item-group"
-      className={cn("flex flex-col gap-4", className)}
-      {...props}
-    >
+    <div data-slot="demo-item-group" className={cn("flex flex-col gap-4", className)} {...props}>
       {children}
     </div>
   );

@@ -28,7 +28,10 @@ const LIVE_FREE_MODELS_MISSING_FROM_CATALOG = [
 test("issue #6998: oc registry does not advertise delisted free-tier models", () => {
   const ids = modelIds();
   for (const delisted of DELISTED_FREE_MODELS) {
-    assert.ok(!ids.includes(delisted), `oc registry still advertises delisted upstream model "${delisted}"`);
+    assert.ok(
+      !ids.includes(delisted),
+      `oc registry still advertises delisted upstream model "${delisted}"`,
+    );
   }
 });
 

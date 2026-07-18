@@ -1,8 +1,8 @@
-import code from '@content/TextAnimations/VariableProximity/VariableProximity.jsx?raw';
-import css from '@content/TextAnimations/VariableProximity/VariableProximity.css?raw';
-import tailwind from '@tailwind/TextAnimations/VariableProximity/VariableProximity.jsx?raw';
-import tsCode from '@ts-default/TextAnimations/VariableProximity/VariableProximity.tsx?raw';
-import tsTailwind from '@ts-tailwind/TextAnimations/VariableProximity/VariableProximity.tsx?raw';
+import code from "@content/TextAnimations/VariableProximity/VariableProximity.jsx?raw";
+import css from "@content/TextAnimations/VariableProximity/VariableProximity.css?raw";
+import tailwind from "@tailwind/TextAnimations/VariableProximity/VariableProximity.jsx?raw";
+import tsCode from "@ts-default/TextAnimations/VariableProximity/VariableProximity.tsx?raw";
+import tsTailwind from "@ts-tailwind/TextAnimations/VariableProximity/VariableProximity.tsx?raw";
 
 export const variableProximity = {
   dependencies: `motion`,
@@ -29,5 +29,5 @@ style={{position: 'relative'}}
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

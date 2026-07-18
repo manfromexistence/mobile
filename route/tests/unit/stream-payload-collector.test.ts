@@ -110,7 +110,9 @@ test("buildStreamSummaryFromEvents merges tool_call deltas when every chunk carr
       ],
     }),
     toolCallEvent({
-      tool_calls: [{ index: 0, id: "call_a", type: "function", function: { arguments: '{"x":1}' } }],
+      tool_calls: [
+        { index: 0, id: "call_a", type: "function", function: { arguments: '{"x":1}' } },
+      ],
     }),
     toolCallEvent({}, "tool_calls"),
   ];
@@ -118,7 +120,7 @@ test("buildStreamSummaryFromEvents merges tool_call deltas when every chunk carr
   const summary = collector.buildStreamSummaryFromEvents(
     events,
     "openai",
-    "deepseek-v4-flash-free"
+    "deepseek-v4-flash-free",
   ) as ToolCallSummary;
   const toolCalls = summary.choices[0].message.tool_calls;
 
@@ -165,14 +167,14 @@ test("buildStreamSummaryFromEvents merges a continuation delta that carries only
   const summary = collector.buildStreamSummaryFromEvents(
     events,
     "openai",
-    "deepseek-v4-flash-free"
+    "deepseek-v4-flash-free",
   ) as ToolCallSummary;
   const toolCalls = summary.choices[0].message.tool_calls;
 
   assert.equal(
     toolCalls.length,
     1,
-    `expected 1 tool_call, got ${toolCalls.length}: ${JSON.stringify(toolCalls)}`
+    `expected 1 tool_call, got ${toolCalls.length}: ${JSON.stringify(toolCalls)}`,
   );
   assert.equal(toolCalls[0].function.name, "Bash");
   assert.equal(toolCalls[0].function.arguments, '{"command": "date"}');
@@ -205,7 +207,7 @@ test("buildStreamSummaryFromEvents keeps two genuinely different interleaved too
   const summary = collector.buildStreamSummaryFromEvents(
     events,
     "openai",
-    "deepseek-v4-flash-free"
+    "deepseek-v4-flash-free",
   ) as ToolCallSummary;
   const toolCalls = summary.choices[0].message.tool_calls;
 

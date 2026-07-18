@@ -4,11 +4,15 @@ import { getProviderDisplayLabel } from "../../src/shared/utils/providerDisplayL
 
 test("returns matched node name for openai-compatible UUID id", () => {
   const providerNodes = [
-    { id: "openai-compatible-chat-02669115-2545-4896-b003-cb4dac09d441", prefix: undefined, name: "My Custom OAI" },
+    {
+      id: "openai-compatible-chat-02669115-2545-4896-b003-cb4dac09d441",
+      prefix: undefined,
+      name: "My Custom OAI",
+    },
   ];
   const result = getProviderDisplayLabel(
     "openai-compatible-chat-02669115-2545-4896-b003-cb4dac09d441",
-    providerNodes
+    providerNodes,
   );
   assert.equal(result, "My Custom OAI");
 });
@@ -24,14 +28,14 @@ test("returns matched node name when matched by prefix", () => {
 test("returns OAI-COMPAT fallback for openai-compatible UUID when no matching node", () => {
   const result = getProviderDisplayLabel(
     "openai-compatible-chat-02669115-2545-4896-b003-cb4dac09d441",
-    []
+    [],
   );
   assert.equal(result, "OAI-COMPAT");
 });
 
 test("returns OAI-COMPAT fallback for openai-compatible UUID when providerNodes is undefined", () => {
   const result = getProviderDisplayLabel(
-    "openai-compatible-chat-02669115-2545-4896-b003-cb4dac09d441"
+    "openai-compatible-chat-02669115-2545-4896-b003-cb4dac09d441",
   );
   assert.equal(result, "OAI-COMPAT");
 });
@@ -44,7 +48,7 @@ test("returns OAI: prefix label for openai-compatible short name (no UUID)", () 
 test("returns ANT-COMPAT fallback for anthropic-compatible UUID when no matching node", () => {
   const result = getProviderDisplayLabel(
     "anthropic-compatible-chat-02669115-2545-4896-b003-cb4dac09d441",
-    []
+    [],
   );
   assert.equal(result, "ANT-COMPAT");
 });
@@ -75,7 +79,7 @@ test("matched node name wins over fallback for anthropic-compatible UUID", () =>
   ];
   const result = getProviderDisplayLabel(
     "anthropic-compatible-chat-02669115-2545-4896-b003-cb4dac09d441",
-    providerNodes
+    providerNodes,
   );
   assert.equal(result, "My Custom ANT");
 });

@@ -85,7 +85,7 @@ describe("useProviderBreakerHealth", () => {
         okResponse({
           providerHealth: { openai: { state: "closed" } },
           connectionHealth: {},
-        })
+        }),
       );
       await first.promise;
     });

@@ -105,19 +105,19 @@ test("settings schemas accept global Codex fast tier setting", () => {
   assert.deepEqual(extendedSharedParsed.codexServiceTier, extendedPayload.codexServiceTier);
   assert.equal(
     settingsRouteSchema.safeParse({ codexServiceTier: { enabled: "yes" } }).success,
-    false
+    false,
   );
   assert.equal(
     sharedSettingsSchema.safeParse({ codexServiceTier: { enabled: "yes" } }).success,
-    false
+    false,
   );
   assert.equal(
     settingsRouteSchema.safeParse({ codexServiceTier: { enabled: true, tier: "turbo" } }).success,
-    false
+    false,
   );
   assert.equal(
     sharedSettingsSchema.safeParse({ codexServiceTier: { enabled: true, tier: "turbo" } }).success,
-    false
+    false,
   );
 });
 

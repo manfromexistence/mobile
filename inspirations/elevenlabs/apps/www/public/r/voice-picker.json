@@ -1,9 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "voice-picker",
-  "dependencies": [
-    "@elevenlabs/elevenlabs-js"
-  ],
+  "dependencies": ["@elevenlabs/elevenlabs-js"],
   "registryDependencies": [
     "button",
     "badge",

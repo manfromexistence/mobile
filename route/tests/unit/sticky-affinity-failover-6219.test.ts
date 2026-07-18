@@ -49,7 +49,7 @@ test("evicts the sticky pin when the pinned connection fails over (#6219)", () =
   assert.equal(
     affinityDb.getSessionAccountAffinity(SESSION, PROVIDER, TTL)?.connectionId,
     CONN_A,
-    "precondition: session pinned to the (soon-exhausted) connection A"
+    "precondition: session pinned to the (soon-exhausted) connection A",
   );
 
   const evicted = affinityDb.evictSessionAccountAffinityForConnection(SESSION, PROVIDER, CONN_A);
@@ -58,7 +58,7 @@ test("evicts the sticky pin when the pinned connection fails over (#6219)", () =
   assert.equal(
     affinityDb.getSessionAccountAffinity(SESSION, PROVIDER, TTL),
     null,
-    "after failover the sticky pin to the exhausted connection must be gone (re-pins next request)"
+    "after failover the sticky pin to the exhausted connection must be gone (re-pins next request)",
   );
 });
 
@@ -71,7 +71,7 @@ test("does NOT evict a pin that points at a different (healthy) connection (#621
   assert.equal(
     affinityDb.getSessionAccountAffinity(SESSION, PROVIDER, TTL)?.connectionId,
     CONN_B,
-    "a healthy pin to B must survive a failover on the unrelated connection A"
+    "a healthy pin to B must survive a failover on the unrelated connection A",
   );
 });
 
@@ -92,6 +92,6 @@ test("chat.ts generic account-failover path wires in the sticky eviction (#6219)
   assert.match(
     src,
     /evictSessionAccountAffinityForConnection\(/,
-    "chat.ts must call evictSessionAccountAffinityForConnection on the failover path"
+    "chat.ts must call evictSessionAccountAffinityForConnection on the failover path",
   );
 });

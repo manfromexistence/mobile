@@ -45,10 +45,14 @@ test("opencode-go + claude-format model (minimax-m3) → redacted_thinking with 
     bodyWithToolUseNeedingThinking() as any,
     "opencode-go",
     false,
-    "minimax-m3"
+    "minimax-m3",
   );
   const content = (result as any).messages[1].content;
-  assert.equal(content[0].type, "redacted_thinking", "claude-targetFormat model needs redacted_thinking");
+  assert.equal(
+    content[0].type,
+    "redacted_thinking",
+    "claude-targetFormat model needs redacted_thinking",
+  );
   assert.equal(content[0].data, DEFAULT_THINKING_CLAUDE_SIGNATURE);
   assert.equal(content[0].thinking, undefined);
 });
@@ -58,7 +62,7 @@ test("opencode-go + OpenAI-format model (glm-5.1) → plain thinking (no redacti
     bodyWithToolUseNeedingThinking() as any,
     "opencode-go",
     false,
-    "glm-5.1"
+    "glm-5.1",
   );
   const content = (result as any).messages[1].content;
   assert.equal(content[0].type, "thinking", "OpenAI-targetFormat model must stay plain thinking");

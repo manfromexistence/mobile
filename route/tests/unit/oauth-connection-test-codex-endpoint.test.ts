@@ -42,7 +42,7 @@ test("codex test probes the real /responses endpoint and treats 400 as 'auth ok'
       new Response(JSON.stringify({ error: { message: "Bad request" } }), {
         status: 400,
         headers: { "content-type": "application/json" },
-      })
+      }),
   );
   globalThis.fetch = fn;
   t.after(() => {
@@ -57,7 +57,7 @@ test("codex test probes the real /responses endpoint and treats 400 as 'auth ok'
       refreshToken: "fake-refresh",
       expiresAt: futureExpiresAt(),
     },
-    5000
+    5000,
   );
 
   assert.equal(result.valid, true, "400 from the real endpoint must be treated as auth ok");
@@ -76,7 +76,7 @@ test("codex test reports invalid when the endpoint returns 401 (port PR#347)", a
       new Response(JSON.stringify({ error: { message: "Unauthorized" } }), {
         status: 401,
         headers: { "content-type": "application/json" },
-      })
+      }),
   );
   globalThis.fetch = fn;
   t.after(() => {
@@ -93,11 +93,15 @@ test("codex test reports invalid when the endpoint returns 401 (port PR#347)", a
       refreshToken: "fake-refresh",
       expiresAt: futureExpiresAt(),
     },
-    5000
+    5000,
   );
 
   assert.equal(result.valid, false, "401 from the real endpoint must be reported as invalid");
-  assert.equal(calls.length, 1, "must NOT burn the refresh_token from a connection test (codex is a rotating provider — openai/codex#9648)");
+  assert.equal(
+    calls.length,
+    1,
+    "must NOT burn the refresh_token from a connection test (codex is a rotating provider — openai/codex#9648)",
+  );
 });
 
 test("codex test reports invalid when the endpoint returns 403 (port PR#347)", async (t) => {
@@ -107,7 +111,7 @@ test("codex test reports invalid when the endpoint returns 403 (port PR#347)", a
       new Response("Forbidden", {
         status: 403,
         headers: { "content-type": "text/plain" },
-      })
+      }),
   );
   globalThis.fetch = fn;
   t.after(() => {
@@ -122,7 +126,7 @@ test("codex test reports invalid when the endpoint returns 403 (port PR#347)", a
       refreshToken: "fake-refresh",
       expiresAt: futureExpiresAt(),
     },
-    5000
+    5000,
   );
 
   assert.equal(result.valid, false);

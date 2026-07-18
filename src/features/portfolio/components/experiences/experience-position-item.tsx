@@ -1,26 +1,26 @@
-import { differenceInMonths, parse } from "date-fns"
-import { BriefcaseBusinessIcon, InfinityIcon } from "lucide-react"
+import { differenceInMonths, parse } from "date-fns";
+import { BriefcaseBusinessIcon, InfinityIcon } from "lucide-react";
 import {
   Collapsible,
   CollapsibleChevronsUpDownIcon,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/base/collapsible-animated"
-import { Markdown } from "@/components/markdown"
-import { Separator } from "@/components/ui/separator"
-import { Tag } from "@/components/ui/tag"
-import { Prose } from "@/components/ui/typography"
-import type { ExperiencePosition } from "@/features/portfolio/types/experiences"
-import { cn } from "@/lib/utils"
+} from "@/components/base/collapsible-animated";
+import { Markdown } from "@/components/markdown";
+import { Separator } from "@/components/ui/separator";
+import { Tag } from "@/components/ui/tag";
+import { Prose } from "@/components/ui/typography";
+import type { ExperiencePosition } from "@/features/portfolio/types/experiences";
+import { cn } from "@/lib/utils";
 
 export function ExperiencePositionItem({
   position,
 }: {
-  position: ExperiencePosition
+  position: ExperiencePosition;
 }) {
-  const { start, end } = position.employmentPeriod
-  const isOngoing = !end
-  const duration = formatDuration(start, end)
+  const { start, end } = position.employmentPeriod;
+  const isOngoing = !end;
+  const duration = formatDuration(start, end);
 
   return (
     <Collapsible
@@ -37,7 +37,7 @@ export function ExperiencePositionItem({
           "group block w-full text-left",
           "relative before:absolute before:-top-1 before:-right-1 before:-bottom-1.5 before:left-7 before:-z-1 before:rounded-lg before:transition-[background-color] before:ease-out hover:before:bg-accent-muted",
           "outline-none focus-visible:before:inset-ring-2 focus-visible:before:inset-ring-ring/50",
-          "data-disabled:before:content-none"
+          "data-disabled:before:content-none",
         )}
       >
         <div className="relative z-1 mb-1 flex items-start gap-3 text-base">
@@ -46,7 +46,7 @@ export function ExperiencePositionItem({
               "flex size-6 shrink-0 items-center justify-center rounded-md",
               "bg-muted text-muted-foreground",
               "border border-muted-foreground/15 ring-1 ring-line ring-offset-1 ring-offset-background",
-              "[&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+              "[&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
             )}
           >
             {position.icon ?? <BriefcaseBusinessIcon />}
@@ -123,50 +123,46 @@ export function ExperiencePositionItem({
         </ul>
       )}
     </Collapsible>
-  )
+  );
 }
 
 function formatDuration(start: string, end?: string): string {
-  const startHasMonth = start.includes(".")
-  const endHasMonth = end ? end.includes(".") : true
+  const startHasMonth = start.includes(".");
+  const endHasMonth = end ? end.includes(".") : true;
 
   // Both year-only: granularity is years, no month arithmetic needed.
   if (!startHasMonth && end && !endHasMonth) {
-    const years = parseInt(end, 10) - parseInt(start, 10)
+    const years = parseInt(end, 10) - parseInt(start, 10);
     if (years <= 0) {
-      return ""
+      return "";
     }
-    return `${years}y`
+    return `${years}y`;
   }
 
-  const startDate = parsePeriodDate(start, "first")
-  const endDate = end ? parsePeriodDate(end, "last") : new Date()
+  const startDate = parsePeriodDate(start, "first");
+  const endDate = end ? parsePeriodDate(end, "last") : new Date();
 
   // +1 to count both the start and end months inclusively.
-  const totalMonths = differenceInMonths(endDate, startDate) + 1
+  const totalMonths = differenceInMonths(endDate, startDate) + 1;
   if (totalMonths <= 0) {
-    return ""
+    return "";
   }
 
   if (totalMonths < 12) {
-    return `${totalMonths}m`
+    return `${totalMonths}m`;
   }
 
-  const years = Math.floor(totalMonths / 12)
-  const months = totalMonths % 12
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
   if (months === 0) {
-    return `${years}y`
+    return `${years}y`;
   }
-  return `${years}y ${months}m`
+  return `${years}y ${months}m`;
 }
 
 function parsePeriodDate(str: string, fallbackMonth: "first" | "last"): Date {
   if (str.includes(".")) {
-    return parse(str, "MM.yyyy", new Date())
+    return parse(str, "MM.yyyy", new Date());
   }
-  return parse(
-    `${fallbackMonth === "last" ? "12" : "01"}.${str}`,
-    "MM.yyyy",
-    new Date()
-  )
+  return parse(`${fallbackMonth === "last" ? "12" : "01"}.${str}`, "MM.yyyy", new Date());
 }

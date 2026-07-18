@@ -76,7 +76,7 @@ test("#4202 ZenMux import fetches the live /api/v1/models catalog (incl. the fre
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as ModelsBody;
@@ -86,13 +86,16 @@ test("#4202 ZenMux import fetches the live /api/v1/models catalog (incl. the fre
     const ids = body.models.map((m) => m.id);
     assert.ok(
       ids.includes("z-ai/glm-5.2-free"),
-      `live free models missing from catalog: ${ids.join(",")}`
+      `live free models missing from catalog: ${ids.join(",")}`,
     );
-    assert.ok(ids.includes("moonshotai/kimi-k2.7-code-free"), `live free models missing: ${ids.join(",")}`);
+    assert.ok(
+      ids.includes("moonshotai/kimi-k2.7-code-free"),
+      `live free models missing: ${ids.join(",")}`,
+    );
     // The stale hardcoded registry entry must not be what we serve.
     assert.ok(
       !ids.includes("mistralai/mistral-large-2512"),
-      "served the stale hardcoded registry catalog instead of the live list"
+      "served the stale hardcoded registry catalog instead of the live list",
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -114,7 +117,7 @@ test("#4202 ZenMux import falls back to the local catalog when the live fetch fa
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as ModelsBody;

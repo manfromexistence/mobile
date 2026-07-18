@@ -31,8 +31,8 @@ test("Responses -> Chat promotes reasoning.effort for non-Copilot clients", () =
       "gpt-test",
       { input: "hello", reasoning: { effort: "high" } },
       true,
-      {} // no _copilotClient marker
-    )
+      {}, // no _copilotClient marker
+    ),
   );
   assert.equal(out.reasoning_effort, "high");
   assert.equal(out.reasoning, undefined);
@@ -40,7 +40,7 @@ test("Responses -> Chat promotes reasoning.effort for non-Copilot clients", () =
 
 test("Responses -> Chat preserves reasoning.effort via the helper wrapper", () => {
   const out = asRecord(
-    convertResponsesApiFormat({ input: "hello", reasoning: { effort: "medium" } })
+    convertResponsesApiFormat({ input: "hello", reasoning: { effort: "medium" } }),
   );
   assert.equal(out.reasoning_effort, "medium");
   assert.equal(out.reasoning, undefined);
@@ -52,8 +52,8 @@ test("Responses -> Chat does not overwrite an explicit reasoning_effort", () => 
       "gpt-test",
       { input: "hello", reasoning_effort: "low", reasoning: { effort: "high" } },
       true,
-      {}
-    )
+      {},
+    ),
   );
   // Explicit Chat-level field wins over the Responses nesting.
   assert.equal(out.reasoning_effort, "low");
@@ -65,8 +65,8 @@ test("Chat -> Responses already wraps reasoning_effort into reasoning.effort", (
       "gpt-test",
       { messages: [{ role: "user", content: "hi" }], reasoning_effort: "high" },
       true,
-      {}
-    )
+      {},
+    ),
   );
   assert.deepEqual(out.reasoning, { effort: "high", summary: "auto" });
 });

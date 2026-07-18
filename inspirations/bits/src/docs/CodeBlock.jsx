@@ -1,7 +1,7 @@
-import { useCallback, useState } from 'react';
-import { TbCopy, TbCheck } from 'react-icons/tb';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { twilight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useCallback, useState } from "react";
+import { TbCopy, TbCheck } from "react-icons/tb";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { twilight } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const COPY_RESET_MS = 2000;
 
@@ -25,8 +25,8 @@ const CodeBlock = ({ children, language = null, showLineNumbers = false }) => {
         <button
           className="docs-copy-button"
           onClick={handleCopy}
-          title={copied ? 'Copied!' : 'Copy to clipboard'}
-          aria-label={copied ? 'Code copied to clipboard' : 'Copy code to clipboard'}
+          title={copied ? "Copied!" : "Copy to clipboard"}
+          aria-label={copied ? "Code copied to clipboard" : "Copy code to clipboard"}
         >
           {copied ? <TbCheck /> : <TbCopy />}
         </button>

@@ -26,7 +26,7 @@ describe("parseAndValidateWebhookUrl — private target opt-in (#3269)", () => {
     delete process.env[FLAG];
     assert.throws(
       () => parseAndValidateWebhookUrl("http://192.168.0.10/hook"),
-      OutboundUrlGuardError
+      OutboundUrlGuardError,
     );
   });
 
@@ -45,7 +45,7 @@ describe("parseAndValidateWebhookUrl — private target opt-in (#3269)", () => {
     try {
       assert.throws(
         () => parseAndValidateWebhookUrl("http://user:pass@192.168.0.10/hook"),
-        OutboundUrlGuardError
+        OutboundUrlGuardError,
       );
     } finally {
       delete process.env[FLAG];

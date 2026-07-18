@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { TOCMinimap } from "@/components/toc-minimap"
-import { useMediaQuery } from "@/hooks/use-media-query"
+import { TOCMinimap } from "@/components/toc-minimap";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 export function TOC() {
-  const isDesktop = useMediaQuery("(min-width: 64rem)") // xl breakpoint
+  const isDesktop = useMediaQuery("(min-width: 64rem)"); // xl breakpoint
 
   if (!isDesktop) {
-    return null
+    return null;
   }
 
   return (
@@ -32,7 +32,7 @@ export function TOC() {
         }}
       />
     </div>
-  )
+  );
 }
 
-export default TOC
+export default TOC;

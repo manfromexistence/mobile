@@ -15,73 +15,59 @@
  *   - Esc - handled by the modal itself
  */
 
-import {
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import CommandSearch from "./CommandSearch";
 
 type Ctx = {
-	isOpen: boolean;
-	open: () => void;
-	close: () => void;
+  isOpen: boolean;
+  open: () => void;
+  close: () => void;
 };
 
 const CommandSearchContext = createContext<Ctx | null>(null);
 
 const isEditableTarget = (el: EventTarget | null): boolean => {
-	if (!(el instanceof HTMLElement)) return false;
-	const tag = el.tagName;
-	return (
-		tag === "INPUT" ||
-		tag === "TEXTAREA" ||
-		tag === "SELECT" ||
-		el.isContentEditable
-	);
+  if (!(el instanceof HTMLElement)) return false;
+  const tag = el.tagName;
+  return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || el.isContentEditable;
 };
 
 export const CommandSearchProvider: React.FC<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }> = ({ children }) => {
-	const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-	const open = useCallback(() => setIsOpen(true), []);
-	const close = useCallback(() => setIsOpen(false), []);
+  const open = useCallback(() => setIsOpen(true), []);
+  const close = useCallback(() => setIsOpen(false), []);
 
-	useEffect(() => {
-		const onKey = (e: KeyboardEvent) => {
-			// Cmd+K / Ctrl+K - toggle from anywhere
-			if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-				e.preventDefault();
-				setIsOpen((prev) => !prev);
-				return;
-			}
-			// "/" - open only when not typing into another input
-			if (e.key === "/" && !isEditableTarget(e.target) && !isOpen) {
-				e.preventDefault();
-				setIsOpen(true);
-			}
-		};
-		window.addEventListener("keydown", onKey);
-		return () => window.removeEventListener("keydown", onKey);
-	}, [isOpen]);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      // Cmd+K / Ctrl+K - toggle from anywhere
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsOpen((prev) => !prev);
+        return;
+      }
+      // "/" - open only when not typing into another input
+      if (e.key === "/" && !isEditableTarget(e.target) && !isOpen) {
+        e.preventDefault();
+        setIsOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isOpen]);
 
-	return (
-		<CommandSearchContext.Provider value={{ isOpen, open, close }}>
-			{children}
-			<CommandSearch isOpen={isOpen} onClose={close} />
-		</CommandSearchContext.Provider>
-	);
+  return (
+    <CommandSearchContext.Provider value={{ isOpen, open, close }}>
+      {children}
+      <CommandSearch isOpen={isOpen} onClose={close} />
+    </CommandSearchContext.Provider>
+  );
 };
 
 export const useCommandSearch = (): Ctx => {
-	const ctx = useContext(CommandSearchContext);
-	if (!ctx)
-		throw new Error(
-			"useCommandSearch must be used inside CommandSearchProvider",
-		);
-	return ctx;
+  const ctx = useContext(CommandSearchContext);
+  if (!ctx) throw new Error("useCommandSearch must be used inside CommandSearchProvider");
+  return ctx;
 };

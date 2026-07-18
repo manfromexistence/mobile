@@ -1,13 +1,8 @@
 {
   "name": "stat-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "stat",
-    "dropdown-menu"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["stat", "dropdown-menu"],
   "files": [
     {
       "path": "examples/stat-demo.tsx",

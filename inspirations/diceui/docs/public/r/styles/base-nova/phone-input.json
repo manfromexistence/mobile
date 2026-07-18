@@ -29,8 +29,5 @@
     "@diceui/use-isomorphic-layout-effect",
     "@diceui/use-lazy-ref"
   ],
-  "dependencies": [
-    "@base-ui/react",
-    "cmdk"
-  ]
+  "dependencies": ["@base-ui/react", "cmdk"]
 }

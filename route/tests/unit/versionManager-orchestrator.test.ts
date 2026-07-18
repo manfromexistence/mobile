@@ -11,7 +11,7 @@ describe("versionManager orchestrator (index.ts)", () => {
   it("should load module and export expected functions", async () => {
     const loadPromise = import("../../src/lib/versionManager/index.ts");
     const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Module load timeout")), 5000)
+      setTimeout(() => reject(new Error("Module load timeout")), 5000),
     );
     mod = await Promise.race([loadPromise, timeoutPromise]);
     assert.ok(mod);

@@ -1,11 +1,11 @@
-import Link from "next/link"
-import { ArrowRightIcon } from "lucide-react"
+import Link from "next/link";
+import { ArrowRightIcon } from "lucide-react";
 
 import {
   Announcement as AnnouncementBase,
   AnnouncementTag,
   AnnouncementTitle,
-} from "@/components/kibo-ui/announcement"
+} from "@/components/kibo-ui/announcement";
 
 export function Announcement() {
   return (
@@ -17,5 +17,5 @@ export function Announcement() {
         </AnnouncementTitle>
       </Link>
     </AnnouncementBase>
-  )
+  );
 }

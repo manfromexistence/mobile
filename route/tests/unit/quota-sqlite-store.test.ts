@@ -145,7 +145,7 @@ test("sqliteQuotaStore: bucket rotation applies decay from prev bucket", async (
   const tolerance = expectedEffective * 0.01 + 1;
   assert.ok(
     Math.abs(effective - expectedEffective) < tolerance,
-    `Expected ≈${expectedEffective.toFixed(2)}, got ${effective.toFixed(2)}`
+    `Expected ≈${expectedEffective.toFixed(2)}, got ${effective.toFixed(2)}`,
   );
 });
 
@@ -169,7 +169,7 @@ test("sqliteQuotaStore: 50 concurrent consumes → exact sum (mutex guards)", as
   // Allow ±0.1% for floating point
   assert.ok(
     Math.abs(effective - expected) < expected * 0.001 + 0.1,
-    `Expected ≈${expected}, got ${effective}`
+    `Expected ≈${expected}, got ${effective}`,
   );
 });
 
@@ -209,7 +209,7 @@ test("sqliteQuotaStore: poolUsageWithDimensions returns correct shape", async ()
   // consumedTotal should be close to 300 + 200 = 500
   assert.ok(
     dimSnap.consumedTotal > 490,
-    `consumedTotal should be close to 500, got ${dimSnap.consumedTotal}`
+    `consumedTotal should be close to 500, got ${dimSnap.consumedTotal}`,
   );
   assert.equal(dimSnap.perKey.length, 2);
 

@@ -1,6 +1,14 @@
-import { forwardRef, useMemo, useRef, useEffect, MutableRefObject, RefObject, HTMLAttributes } from 'react';
-import { motion } from 'motion/react';
-import './VariableProximity.css';
+import {
+  forwardRef,
+  useMemo,
+  useRef,
+  useEffect,
+  MutableRefObject,
+  RefObject,
+  HTMLAttributes,
+} from "react";
+import { motion } from "motion/react";
+import "./VariableProximity.css";
 
 type Callback = () => void;
 
@@ -35,11 +43,11 @@ function useMousePositionRef(containerRef: RefObject<HTMLElement>) {
       updatePosition(touch.clientX, touch.clientY);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("touchmove", handleTouchMove);
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchmove", handleTouchMove);
     };
   }, [containerRef]);
 
@@ -52,7 +60,7 @@ interface VariableProximityProps extends HTMLAttributes<HTMLSpanElement> {
   toFontVariationSettings: string;
   containerRef: RefObject<HTMLElement>;
   radius?: number;
-  falloff?: 'linear' | 'exponential' | 'gaussian';
+  falloff?: "linear" | "exponential" | "gaussian";
   className?: string;
   onClick?: () => void;
   style?: React.CSSProperties;
@@ -65,8 +73,8 @@ const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>((p
     toFontVariationSettings,
     containerRef,
     radius = 50,
-    falloff = 'linear',
-    className = '',
+    falloff = "linear",
+    className = "",
     onClick,
     style,
     ...restProps
@@ -81,12 +89,12 @@ const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>((p
     const parseSettings = (settingsStr: string) =>
       new Map(
         settingsStr
-          .split(',')
-          .map(s => s.trim())
-          .map(s => {
-            const [name, value] = s.split(' ');
-            return [name.replace(/['"]/g, ''), parseFloat(value)];
-          })
+          .split(",")
+          .map((s) => s.trim())
+          .map((s) => {
+            const [name, value] = s.split(" ");
+            return [name.replace(/['"]/g, ""), parseFloat(value)];
+          }),
       );
 
     const fromSettings = parseSettings(fromFontVariationSettings);
@@ -95,7 +103,7 @@ const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>((p
     return Array.from(fromSettings.entries()).map(([axis, fromValue]) => ({
       axis,
       fromValue,
-      toValue: toSettings.get(axis) ?? fromValue
+      toValue: toSettings.get(axis) ?? fromValue,
     }));
   }, [fromFontVariationSettings, toFontVariationSettings]);
 
@@ -105,11 +113,11 @@ const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>((p
   const calculateFalloff = (distance: number) => {
     const norm = Math.min(Math.max(1 - distance / radius, 0), 1);
     switch (falloff) {
-      case 'exponential':
+      case "exponential":
         return norm ** 2;
-      case 'gaussian':
+      case "gaussian":
         return Math.exp(-((distance / (radius / 2)) ** 2) / 2);
-      case 'linear':
+      case "linear":
       default:
         return norm;
     }
@@ -135,7 +143,7 @@ const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>((p
         mousePositionRef.current.x,
         mousePositionRef.current.y,
         letterCenterX,
-        letterCenterY
+        letterCenterY,
       );
 
       if (distance >= radius) {
@@ -149,14 +157,14 @@ const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>((p
           const interpolatedValue = fromValue + (toValue - fromValue) * falloffValue;
           return `'${axis}' ${interpolatedValue}`;
         })
-        .join(', ');
+        .join(", ");
 
       interpolatedSettingsRef.current[index] = newSettings;
       letterRef.style.fontVariationSettings = newSettings;
     });
   });
 
-  const words = label.split(' ');
+  const words = label.split(" ");
   let letterIndex = 0;
 
   return (
@@ -164,22 +172,22 @@ const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>((p
       ref={ref}
       className={`${className} variable-proximity`}
       onClick={onClick}
-      style={{ display: 'inline', ...style }}
+      style={{ display: "inline", ...style }}
       {...restProps}
     >
       {words.map((word, wordIndex) => (
-        <span key={wordIndex} style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>
-          {word.split('').map(letter => {
+        <span key={wordIndex} style={{ display: "inline-block", whiteSpace: "nowrap" }}>
+          {word.split("").map((letter) => {
             const currentLetterIndex = letterIndex++;
             return (
               <motion.span
                 key={currentLetterIndex}
-                ref={el => {
+                ref={(el) => {
                   letterRefs.current[currentLetterIndex] = el;
                 }}
                 style={{
-                  display: 'inline-block',
-                  fontVariationSettings: interpolatedSettingsRef.current[currentLetterIndex]
+                  display: "inline-block",
+                  fontVariationSettings: interpolatedSettingsRef.current[currentLetterIndex],
                 }}
                 aria-hidden="true"
               >
@@ -187,7 +195,7 @@ const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>((p
               </motion.span>
             );
           })}
-          {wordIndex < words.length - 1 && <span style={{ display: 'inline-block' }}>&nbsp;</span>}
+          {wordIndex < words.length - 1 && <span style={{ display: "inline-block" }}>&nbsp;</span>}
         </span>
       ))}
       <span className="sr-only">{label}</span>
@@ -195,5 +203,5 @@ const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>((p
   );
 });
 
-VariableProximity.displayName = 'VariableProximity';
+VariableProximity.displayName = "VariableProximity";
 export default VariableProximity;

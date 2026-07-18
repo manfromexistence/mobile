@@ -67,7 +67,7 @@ test("partitionZedCredentials drops duplicate provider-token pairs from alias sc
   assert.equal(result.importable.length, 2);
   assert.deepEqual(
     result.importable.map((entry: ImportableCredential) => `${entry.provider}:${entry.token}`),
-    ["openai:sk-openai", "anthropic:sk-anthropic"]
+    ["openai:sk-openai", "anthropic:sk-anthropic"],
   );
   assert.equal(result.skipped.length, 0);
   assert.equal(result.duplicatesDropped, 1);

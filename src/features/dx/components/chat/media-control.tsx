@@ -2,10 +2,7 @@
 
 import { CalendarClock, Eye, GitBranch, Pin } from "lucide-react";
 import { useState } from "react";
-import {
-  type OverflowActionItem,
-  OverflowActions,
-} from "@/components/motion/overflow-actions";
+import { type OverflowActionItem, OverflowActions } from "@/components/motion/overflow-actions";
 
 const primaryActions: OverflowActionItem[] = [
   {

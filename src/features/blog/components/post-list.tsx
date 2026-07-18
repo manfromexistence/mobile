@@ -1,7 +1,7 @@
-import type { Doc } from "@/features/doc/types/document"
-import { cn } from "@/lib/utils"
+import type { Doc } from "@/features/doc/types/document";
+import { cn } from "@/lib/utils";
 
-import { PostItem } from "./post-item"
+import { PostItem } from "./post-item";
 
 export function PostList({ posts }: { posts: Doc[] }) {
   return (
@@ -17,13 +17,10 @@ export function PostList({ posts }: { posts: Doc[] }) {
             key={post.slug}
             className={cn(
               "max-sm:screen-line-top max-sm:screen-line-bottom",
-              "sm:nth-[2n+1]:screen-line-top sm:nth-[2n+1]:screen-line-bottom"
+              "sm:nth-[2n+1]:screen-line-top sm:nth-[2n+1]:screen-line-bottom",
             )}
           >
-            <PostItem
-              post={post}
-              imageLoading={index <= 3 ? "eager" : "lazy"}
-            />
+            <PostItem post={post} imageLoading={index <= 3 ? "eager" : "lazy"} />
           </li>
         ))}
 
@@ -34,5 +31,5 @@ export function PostList({ posts }: { posts: Doc[] }) {
         )}
       </ul>
     </div>
-  )
+  );
 }

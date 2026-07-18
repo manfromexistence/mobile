@@ -7,8 +7,7 @@ const firstComponentUrl =
   source
     .getPages()
     .filter((page) => page.url.startsWith("/docs/components/radix/"))
-    .sort((a, b) => a.url.localeCompare(b.url))[0]?.url ??
-  "/docs/components/radix/action-bar";
+    .sort((a, b) => a.url.localeCompare(b.url))[0]?.url ?? "/docs/components/radix/action-bar";
 
 export default function IndexPage() {
   return (
@@ -34,11 +33,7 @@ export default function IndexPage() {
             <Link href={firstComponentUrl}>View Components</Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link
-              target="_blank"
-              rel="noreferrer"
-              href={siteConfig.links.github}
-            >
+            <Link target="_blank" rel="noreferrer" href={siteConfig.links.github}>
               GitHub
             </Link>
           </Button>

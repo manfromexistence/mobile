@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import type { ReactNode } from "react"
-import { cn } from "@/lib/utils"
+import { motion } from "framer-motion";
+import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
-const SPAN_COUNT = 25
+const SPAN_COUNT = 25;
 
 // Pre-generate rainbow gradient for optimized animation
 function generateRainbowGradient(count: number): string {
   const stops = Array.from({ length: count + 1 }, (_, i) => {
-    const hue = (i / count) * 360
-    return `hsl(${hue}, 80%, 60%)`
-  })
-  return `linear-gradient(90deg, ${stops.join(", ")})`
+    const hue = (i / count) * 360;
+    return `hsl(${hue}, 80%, 60%)`;
+  });
+  return `linear-gradient(90deg, ${stops.join(", ")})`;
 }
 
-const RAINBOW_GRADIENT = generateRainbowGradient(SPAN_COUNT)
+const RAINBOW_GRADIENT = generateRainbowGradient(SPAN_COUNT);
 
 interface HelloGlowProps {
-  className?: string
-  children?: ReactNode
+  className?: string;
+  children?: ReactNode;
 }
 
 export function HelloGlow({ className, children }: HelloGlowProps) {
@@ -88,5 +88,5 @@ export function HelloGlow({ className, children }: HelloGlowProps) {
         <div className="hello-glow-content">{children}</div>
       </motion.div>
     </>
-  )
+  );
 }

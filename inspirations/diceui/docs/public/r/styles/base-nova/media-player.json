@@ -18,8 +18,5 @@
     "@diceui/compose-refs",
     "@diceui/use-lazy-ref"
   ],
-  "dependencies": [
-    "@base-ui/react",
-    "media-chrome"
-  ]
+  "dependencies": ["@base-ui/react", "media-chrome"]
 }

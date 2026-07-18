@@ -85,30 +85,30 @@ test("extractApiKey parses bearer headers and isValidApiKey validates persisted 
     auth.extractApiKey(
       new Request("http://localhost/v1/chat/completions", {
         headers: { Authorization: "Basic abc123" },
-      })
+      }),
     ),
-    null
+    null,
   );
   // Security follow-up (#3300): query-string token fallbacks were removed — a
   // credential in `?token=` must NOT be extracted (it leaks into logs/Referer).
   assert.equal(
     auth.extractApiKey(new Request(`http://localhost/v1/chat/completions?token=${created.key}`)),
-    null
+    null,
   );
   // The path-scoped `/vscode/<token>/…` form (VS Code integration) still works.
   assert.equal(
     auth.extractApiKey(
-      new Request(`http://localhost/api/v1/vscode/${created.key}/chat/completions`)
+      new Request(`http://localhost/api/v1/vscode/${created.key}/chat/completions`),
     ),
-    created.key
+    created.key,
   );
   // …but never when the caller opts out of URL extraction (management auth path).
   assert.equal(
     auth.extractApiKey(
       new Request(`http://localhost/api/v1/vscode/${created.key}/chat/completions`),
-      { allowUrl: false }
+      { allowUrl: false },
     ),
-    null
+    null,
   );
   assert.equal(await auth.isValidApiKey(created.key), true);
   assert.equal(await auth.isValidApiKey("sk-missing"), false);
@@ -147,7 +147,7 @@ test("codex session account affinity is opt-in and honors TTL", async () => {
   assert.equal(typeof withoutAffinityB.connectionId, "string");
   assert.equal(
     affinityDb.getSessionAccountAffinity("session-without-affinity", "codex", 60_000),
-    null
+    null,
   );
 
   await settingsDb.updateSettings({ codexSessionAffinityTtlMs: 60_000 });
@@ -162,7 +162,7 @@ test("codex session account affinity is opt-in and honors TTL", async () => {
   assert.equal(withAffinityB.connectionId, withAffinityA.connectionId);
   assert.equal(
     affinityDb.getSessionAccountAffinity("session-with-affinity", "codex", 60_000)?.connectionId,
-    withAffinityA.connectionId
+    withAffinityA.connectionId,
   );
 });
 
@@ -175,11 +175,11 @@ test("session account affinity expires when TTL has passed", async () => {
   assert.equal(
     affinityDb.getSessionAccountAffinity("expiring-session", "codex", 1000, now + 500)
       ?.connectionId,
-    "conn-a"
+    "conn-a",
   );
   assert.equal(
     affinityDb.getSessionAccountAffinity("expiring-session", "codex", 1000, now + 1001),
-    null
+    null,
   );
 });
 
@@ -273,7 +273,7 @@ test("getProviderCredentialsWithQuotaPreflight persists exhausted accounts until
     "openai",
     null,
     null,
-    "glm-5.2"
+    "glm-5.2",
   );
 
   assert.equal((selected as any).connectionId, healthy.id);
@@ -293,13 +293,13 @@ test("getProviderCredentialsWithQuotaPreflight persists exhausted accounts until
     "openai",
     null,
     null,
-    "glm-5.2"
+    "glm-5.2",
   );
   assert.equal((selectedAgain as any).connectionId, healthy.id);
   assert.deepEqual(
     preflightCalls,
     [healthy.id],
-    "persisted lockout must skip the exhausted account on later selections"
+    "persisted lockout must skip the exhausted account on later selections",
   );
 });
 
@@ -348,7 +348,7 @@ test("getProviderCredentialsWithQuotaPreflight skips the upstream fetcher when n
   quotaPreflight.registerQuotaFetcher("openai", async () => {
     fetcherCalls++;
     throw new Error(
-      "quota fetcher must not run when no per-window overrides or provider defaults are set"
+      "quota fetcher must not run when no per-window overrides or provider defaults are set",
     );
   });
 
@@ -387,7 +387,7 @@ test("getProviderCredentialsWithQuotaPreflight invokes the fetcher when the glob
   assert.equal(
     fetcherCalls,
     1,
-    "fetcher should run when global default is stricter than the factory no-op level"
+    "fetcher should run when global default is stricter than the factory no-op level",
   );
 
   // Reset settings so subsequent tests see factory defaults.
@@ -417,13 +417,13 @@ test("getProviderCredentialsWithQuotaPreflight invokes the fetcher when an overr
   assert.deepEqual(
     (updated as any)?.quotaWindowThresholds,
     { primary: 50 },
-    "override must be persisted on the connection row"
+    "override must be persisted on the connection row",
   );
   const refetched = await providersDb.getProviderConnectionById(conn.id);
   assert.deepEqual(
     (refetched as any)?.quotaWindowThresholds,
     { primary: 50 },
-    "override must round-trip through getProviderConnectionById"
+    "override must round-trip through getProviderConnectionById",
   );
 
   const quotaPreflight = await import("../../open-sse/services/quotaPreflight.ts");
@@ -449,9 +449,7 @@ test("getProviderCredentialsWithQuotaPreflight: explicit quotaPreflightEnabled:f
   });
   // Give the connection per-window overrides (simulates a user-configured
   // threshold) — this is the field that previously caused the gate to keep going.
-  await (
-    await import("../../src/lib/db/providers.ts")
-  ).updateProviderConnection(conn.id, {
+  await (await import("../../src/lib/db/providers.ts")).updateProviderConnection(conn.id, {
     quotaWindowThresholds: { primary: 50 },
   });
 
@@ -479,12 +477,12 @@ test("getProviderCredentialsWithQuotaPreflight: explicit quotaPreflightEnabled:f
   assert.equal(
     fetcherCalls,
     0,
-    "fetcher must NOT run when connection explicitly opts out with quotaPreflightEnabled: false"
+    "fetcher must NOT run when connection explicitly opts out with quotaPreflightEnabled: false",
   );
   assert.equal(
     (selected as any).connectionId,
     conn.id,
-    "opted-out connection must be returned directly without being blocked by preflight"
+    "opted-out connection must be returned directly without being blocked by preflight",
   );
 
   // Cleanup: reset settings so subsequent tests see factory defaults.
@@ -714,7 +712,7 @@ test("getProviderCredentials intersects forcedConnectionId with allowedConnectio
     null,
     {
       forcedConnectionId: (blockedConn as any).id,
-    }
+    },
   );
 
   assert.equal(selected, null);
@@ -810,7 +808,7 @@ test("getProviderCredentials reports allRateLimited when every account is model-
     429,
     "too many requests",
     "gemini",
-    "gemini-2.5-pro"
+    "gemini-2.5-pro",
   );
 
   const blocked = await auth.getProviderCredentials("gemini", null, null, "gemini-2.5-pro");
@@ -1148,7 +1146,7 @@ test("markAccountUnavailable uses configured cooldowns for local 404 model locko
     404,
     "model not found",
     "openai",
-    "local-model"
+    "local-model",
   );
   const updated = await providersDb.getProviderConnectionById(connection.id);
 
@@ -1172,7 +1170,7 @@ test("markAccountUnavailable applies a model-only lockout for Gemini 429 respons
     429,
     "too many requests",
     "gemini",
-    "gemini-2.5-pro"
+    "gemini-2.5-pro",
   );
   await flushWrites();
   const updated = await providersDb.getProviderConnectionById(connection.id);
@@ -1195,7 +1193,7 @@ test("markAccountUnavailable applies a model-only lockout for compatible provide
     429,
     "The upstream compatible service exhausted its capacity",
     "openai-compatible-custom-node",
-    "custom-model-a"
+    "custom-model-a",
   );
   await flushWrites();
   const updated = await providersDb.getProviderConnectionById(connection.id);
@@ -1222,7 +1220,7 @@ test("markAccountUnavailable: ollama-cloud per-model subscription 403 locks the 
     403,
     "this model requires a subscription, upgrade for access: https://ollama.com/upgrade",
     "ollama-cloud",
-    "deepseek-v4-pro"
+    "deepseek-v4-pro",
   );
   await flushWrites();
   const updated = await providersDb.getProviderConnectionById(connection.id);
@@ -1254,7 +1252,7 @@ test("markAccountUnavailable: a whole-key 403 still deactivates the ollama-cloud
     403,
     "account has been deactivated",
     "ollama-cloud",
-    "deepseek-v4-pro"
+    "deepseek-v4-pro",
   );
   await flushWrites();
   const updated = await providersDb.getProviderConnectionById(connection.id);
@@ -1262,7 +1260,7 @@ test("markAccountUnavailable: a whole-key 403 still deactivates the ollama-cloud
   assert.equal(fallback.isModelLocked("ollama-cloud", connection.id, "deepseek-v4-pro"), false);
   assert.ok(
     ["banned", "expired", "credits_exhausted"].includes(updated.testStatus),
-    `expected a terminal connection status, got ${updated.testStatus}`
+    `expected a terminal connection status, got ${updated.testStatus}`,
   );
 });
 
@@ -1281,7 +1279,7 @@ test("markAccountUnavailable: repeated ollama-cloud subscription 403s never esca
       403,
       "this model requires a subscription, upgrade for access",
       "ollama-cloud",
-      "deepseek-v4-pro"
+      "deepseek-v4-pro",
     );
     await flushWrites();
   }
@@ -1315,7 +1313,7 @@ test("markAccountUnavailable honors configured api-key rate-limit cooldowns", as
     429,
     "too many requests",
     "openai",
-    "gpt-4o-mini"
+    "gpt-4o-mini",
   );
 
   assert.equal(result.shouldFallback, true);
@@ -1342,7 +1340,7 @@ test("Codex quota policy keeps normal and Spark windows separate", async () => {
     "codex",
     null,
     null,
-    "gpt-5.3-codex-spark"
+    "gpt-5.3-codex-spark",
   );
 
   assert.equal(normalSelected.connectionId, normalConnection.id);
@@ -1365,7 +1363,7 @@ test("markAccountUnavailable stores Codex scope-specific cooldowns without a glo
     429,
     "quota reached",
     "codex",
-    "codex-spark-mini"
+    "codex-spark-mini",
   );
   const updated = await providersDb.getProviderConnectionById(connection.id);
   const selected = await auth.getProviderCredentials("codex", null, null, "codex-spark-mini");
@@ -1390,7 +1388,7 @@ test("markAccountUnavailable returns without fallback on bad requests", async ()
     400,
     "schema mismatch",
     "openai",
-    "gpt-4o"
+    "gpt-4o",
   );
   const updated = await providersDb.getProviderConnectionById(connection.id);
 
@@ -1451,7 +1449,7 @@ test("markAccountUnavailable reuses an existing Codex scope cooldown", async () 
     429,
     "quota reached",
     "codex",
-    "codex-spark-mini"
+    "codex-spark-mini",
   );
   const updated = await providersDb.getProviderConnectionById(connection.id);
 
@@ -1474,7 +1472,7 @@ test("markAccountUnavailable uses a connection-wide cooldown for non-local 404 e
     404,
     "model not found",
     "openai",
-    "gpt-missing"
+    "gpt-missing",
   );
   const updated = await providersDb.getProviderConnectionById(connection.id);
 
@@ -1495,7 +1493,7 @@ test("markAccountUnavailable auto-disables permanently banned accounts when the 
     401,
     "Verify your account to continue",
     "openai",
-    "gpt-4o"
+    "gpt-4o",
   );
   const updated = await providersDb.getProviderConnectionById(connection.id);
 
@@ -1515,7 +1513,7 @@ test("markAccountUnavailable leaves permanently banned accounts active when auto
     401,
     "Verify your account to continue",
     "openai",
-    "gpt-4o"
+    "gpt-4o",
   );
   const updated = await providersDb.getProviderConnectionById(connection.id);
 
@@ -1559,7 +1557,7 @@ test("markAccountUnavailable swallows auto-disable persistence errors", async ()
       401,
       "Verify your account to continue",
       "openai",
-      "gpt-4o"
+      "gpt-4o",
     );
     const updated = await providersDb.getProviderConnectionById(connection.id);
 

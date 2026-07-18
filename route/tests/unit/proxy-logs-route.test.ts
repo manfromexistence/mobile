@@ -42,7 +42,7 @@ test("GET /api/usage/proxy-logs returns filtered proxy logs", async () => {
   });
 
   const response = await proxyLogsRoute.GET(
-    new Request("http://localhost/api/usage/proxy-logs?provider=openai&status=success")
+    new Request("http://localhost/api/usage/proxy-logs?provider=openai&status=success"),
   );
   const body = await response.json();
 
@@ -63,7 +63,7 @@ test("DELETE /api/usage/proxy-logs clears proxy logs", async () => {
   const deleteResponse = await proxyLogsRoute.DELETE();
   const deleteBody = await deleteResponse.json();
   const listResponse = await proxyLogsRoute.GET(
-    new Request("http://localhost/api/usage/proxy-logs")
+    new Request("http://localhost/api/usage/proxy-logs"),
   );
   const listBody = await listResponse.json();
 

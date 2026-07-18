@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiToAntigravityResponse } =
-  await import("../../open-sse/translator/response/openai-to-antigravity.ts");
+const { openaiToAntigravityResponse } = await import(
+  "../../open-sse/translator/response/openai-to-antigravity.ts"
+);
 
 test("OpenAI -> Antigravity: reasoning and text become Gemini-style parts", () => {
   const result = openaiToAntigravityResponse(
@@ -20,7 +21,7 @@ test("OpenAI -> Antigravity: reasoning and text become Gemini-style parts", () =
         },
       ],
     },
-    {}
+    {},
   );
 
   assert.equal(result.response.responseId, "chatcmpl-1");
@@ -54,7 +55,7 @@ test("OpenAI -> Antigravity: tool call arguments accumulate and emit once on fin
         },
       ],
     },
-    state
+    state,
   );
   const final = openaiToAntigravityResponse(
     {
@@ -83,7 +84,7 @@ test("OpenAI -> Antigravity: tool call arguments accumulate and emit once on fin
         completion_tokens_details: { reasoning_tokens: 1 },
       },
     },
-    state
+    state,
   );
 
   assert.equal(first, null);
@@ -110,7 +111,7 @@ test("OpenAI -> Antigravity: usage-only chunks are remembered for the final resp
       model: "gpt-4.1",
       usage: { prompt_tokens: 2, completion_tokens: 3, total_tokens: 5 },
     },
-    state
+    state,
   );
   const final = openaiToAntigravityResponse(
     {
@@ -118,7 +119,7 @@ test("OpenAI -> Antigravity: usage-only chunks are remembered for the final resp
       model: "gpt-4.1",
       choices: [{ index: 0, delta: {}, finish_reason: "length" }],
     },
-    state
+    state,
   );
 
   assert.equal(usageOnly, null);
@@ -138,7 +139,7 @@ test("OpenAI -> Antigravity: content_filter maps to SAFETY", () => {
       model: "gpt-4.1",
       choices: [{ index: 0, delta: {}, finish_reason: "content_filter" }],
     },
-    {}
+    {},
   );
 
   assert.equal(result.response.candidates[0].finishReason, "SAFETY");

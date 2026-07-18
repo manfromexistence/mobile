@@ -46,6 +46,6 @@ test("src/ never imports the open-sse workspace via the @/ alias (use @omniroute
   assert.deepEqual(
     offenders,
     [],
-    `@/open-sse/* resolves to the non-existent src/open-sse/* and throws "Cannot find module" at runtime. Use @omniroute/open-sse/* instead. Offenders:\n${offenders.join("\n")}`
+    `@/open-sse/* resolves to the non-existent src/open-sse/* and throws "Cannot find module" at runtime. Use @omniroute/open-sse/* instead. Offenders:\n${offenders.join("\n")}`,
   );
 });

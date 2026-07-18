@@ -24,7 +24,7 @@ test("MAX_ENTRY_BYTES is 10000", async () => {
   const fs = await import("node:fs");
   const src = fs.readFileSync(
     new URL("../../open-sse/services/reasoningCache.ts", import.meta.url),
-    "utf8"
+    "utf8",
   );
   const match = src.match(/const\s+MAX_ENTRY_BYTES\s*=\s*(\d+)/);
   assert.ok(match, "should find MAX_ENTRY_BYTES declaration");

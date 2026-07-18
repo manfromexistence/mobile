@@ -1,8 +1,8 @@
-import code from '@content/Components/DecayCard/DecayCard.jsx?raw';
-import css from '@content/Components/DecayCard/DecayCard.css?raw';
-import tailwind from '@tailwind/Components/DecayCard/DecayCard.jsx?raw';
-import tsCode from '@ts-default/Components/DecayCard/DecayCard.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/DecayCard/DecayCard.tsx?raw';
+import code from "@content/Components/DecayCard/DecayCard.jsx?raw";
+import css from "@content/Components/DecayCard/DecayCard.css?raw";
+import tailwind from "@tailwind/Components/DecayCard/DecayCard.jsx?raw";
+import tsCode from "@ts-default/Components/DecayCard/DecayCard.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/DecayCard/DecayCard.tsx?raw";
 
 export const decayCard = {
   dependencies: `gsap`,
@@ -15,5 +15,5 @@ export const decayCard = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

@@ -19,10 +19,7 @@ function GesturesPreview({
   const drag = mode === "off" ? false : mode === "free" ? true : (mode as "x" | "y");
 
   return (
-    <div
-      ref={ref}
-      className="relative flex min-h-[200px] w-full items-center justify-center"
-    >
+    <div ref={ref} className="relative flex min-h-[200px] w-full items-center justify-center">
       <motion.div
         key={replayKey}
         drag={drag}
@@ -106,11 +103,7 @@ export const gesturesItem: PlaygroundItem = {
   toCode: (v) => {
     const mode = str(v, "drag", "x");
     const dragAttr =
-      mode === "off"
-        ? ""
-        : mode === "free"
-          ? "\n      drag"
-          : `\n      drag="${mode}"`;
+      mode === "off" ? "" : mode === "free" ? "\n      drag" : `\n      drag="${mode}"`;
     return `import { motion } from "motion/react";
 
 export function Demo() {

@@ -56,8 +56,7 @@ interface SelectContentContextValue {
   checkedIndex?: number;
 }
 
-const SelectContentContext =
-  createContext<SelectContentContextValue | null>(null);
+const SelectContentContext = createContext<SelectContentContextValue | null>(null);
 
 // ---------------------------------------------------------------------------
 // Select (root)
@@ -80,18 +79,14 @@ interface SelectProps {
  * render while open). Non-string labels fall back to the raw value, matching
  * the previous labelMap behaviour.
  */
-function collectSelectItems(
-  node: ReactNode,
-  out: { value: string; label: ReactNode }[] = []
-) {
+function collectSelectItems(node: ReactNode, out: { value: string; label: ReactNode }[] = []) {
   Children.forEach(node, (child) => {
     if (!isValidElement(child)) return;
     const props = child.props as { value?: unknown; children?: ReactNode };
     if (typeof props.value === "string") {
       out.push({
         value: props.value,
-        label:
-          typeof props.children === "string" ? props.children : props.value,
+        label: typeof props.children === "string" ? props.children : props.value,
       });
     } else if (props.children) {
       collectSelectItems(props.children, out);
@@ -122,13 +117,10 @@ function Select({
       if (value === undefined) setInternalValue(v);
       onValueChange?.(v);
     },
-    [value, onValueChange]
+    [value, onValueChange],
   );
 
-  const ctx = useMemo(
-    () => ({ value: currentValue, open, actionsRef }),
-    [currentValue, open]
-  );
+  const ctx = useMemo(() => ({ value: currentValue, open, actionsRef }), [currentValue, open]);
 
   return (
     <SelectContext.Provider value={ctx}>
@@ -170,16 +162,14 @@ const triggerVariants = cva(
   {
     variants: {
       variant: {
-        bordered:
-          "border border-border bg-transparent text-foreground hover:bg-hover",
-        borderless:
-          "border border-transparent bg-transparent text-foreground hover:bg-hover",
+        bordered: "border border-border bg-transparent text-foreground hover:bg-hover",
+        borderless: "border border-transparent bg-transparent text-foreground hover:bg-hover",
       },
     },
     defaultVariants: {
       variant: "bordered",
     },
-  }
+  },
 );
 
 interface SelectTriggerProps
@@ -191,10 +181,7 @@ interface SelectTriggerProps
 }
 
 const SelectTrigger = forwardRef<HTMLButtonElement, SelectTriggerProps>(
-  (
-    { className, variant, icon: Icon, placeholder = "Select…", error, ...props },
-    ref
-  ) => {
+  ({ className, variant, icon: Icon, placeholder = "Select…", error, ...props }, ref) => {
     const shape = useShape();
 
     return (
@@ -206,7 +193,7 @@ const SelectTrigger = forwardRef<HTMLButtonElement, SelectTriggerProps>(
             triggerVariants({ variant }),
             shape.input,
             error && "border-destructive/50 hover:border-destructive/50",
-            className
+            className,
           )}
           {...props}
         >
@@ -238,12 +225,10 @@ const SelectTrigger = forwardRef<HTMLButtonElement, SelectTriggerProps>(
             <path d="M6 9l6 6 6-6" />
           </svg>
         </SelectPrimitive.Trigger>
-        {error && (
-          <span className="text-[12px] text-destructive pl-3">{error}</span>
-        )}
+        {error && <span className="text-[12px] text-destructive pl-3">{error}</span>}
       </div>
     );
-  }
+  },
 );
 
 SelectTrigger.displayName = "SelectTrigger";
@@ -274,9 +259,7 @@ const SelectContent = forwardRef<HTMLDivElement, SelectContentProps>(
     } = useProximityHover(containerRef);
 
     const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
-    const [checkedIndex, setCheckedIndex] = useState<number | undefined>(
-      undefined
-    );
+    const [checkedIndex, setCheckedIndex] = useState<number | undefined>(undefined);
 
     // Release Base UI's deferred unmount once the exit tween has played.
     // onAnimationComplete on the motion.div is the primary signal; this
@@ -300,11 +283,9 @@ const SelectContent = forwardRef<HTMLDivElement, SelectContentProps>(
           const container = containerRef.current;
           if (container) {
             const items = Array.from(
-              container.querySelectorAll("[data-proximity-index]")
+              container.querySelectorAll("[data-proximity-index]"),
             ) as HTMLElement[];
-            const idx = items.findIndex(
-              (el) => el.getAttribute("data-value") === value
-            );
+            const idx = items.findIndex((el) => el.getAttribute("data-value") === value);
             setCheckedIndex(idx !== -1 ? idx : undefined);
           }
         });
@@ -318,12 +299,11 @@ const SelectContent = forwardRef<HTMLDivElement, SelectContentProps>(
     const activeRect = activeIndex !== null ? itemRects[activeIndex] : null;
     const checkedRect = checkedIndex != null ? itemRects[checkedIndex] : null;
     const focusRect = focusedIndex !== null ? itemRects[focusedIndex] : null;
-    const isHoveringOther =
-      activeIndex !== null && activeIndex !== checkedIndex;
+    const isHoveringOther = activeIndex !== null && activeIndex !== checkedIndex;
 
     const contentCtx = useMemo(
       () => ({ registerItem, activeIndex, checkedIndex }),
-      [registerItem, activeIndex, checkedIndex]
+      [registerItem, activeIndex, checkedIndex],
     );
 
     return (
@@ -337,11 +317,7 @@ const SelectContent = forwardRef<HTMLDivElement, SelectContentProps>(
         >
           <motion.div
             initial={{ opacity: 0, y: -4, scaleY: 0.96 }}
-            animate={
-              open
-                ? { opacity: 1, y: 0, scaleY: 1 }
-                : { opacity: 0, y: -4, scaleY: 0.96 }
-            }
+            animate={open ? { opacity: 1, y: 0, scaleY: 1 } : { opacity: 0, y: -4, scaleY: 0.96 }}
             transition={open ? spring.fast : spring.fast.exit}
             style={{ transformOrigin: "top center" }}
             // Base UI defers unmount while actionsRef is set; release it once
@@ -357,14 +333,11 @@ const SelectContent = forwardRef<HTMLDivElement, SelectContentProps>(
                     offset={2}
                     shadowLevel={3}
                     ref={(node: HTMLDivElement | null) => {
-                      (
-                        containerRef as React.MutableRefObject<HTMLDivElement | null>
-                      ).current = node;
+                      (containerRef as React.MutableRefObject<HTMLDivElement | null>).current =
+                        node;
                       if (typeof ref === "function") ref(node);
                       else if (ref)
-                        (
-                          ref as React.MutableRefObject<HTMLDivElement | null>
-                        ).current = node;
+                        (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
                     }}
                   />
                 }
@@ -382,15 +355,12 @@ const SelectContent = forwardRef<HTMLDivElement, SelectContentProps>(
                     const idx = Number(indexAttr);
                     setActiveIndex(idx);
                     setFocusedIndex(
-                      (e.target as HTMLElement).matches(":focus-visible")
-                        ? idx
-                        : null
+                      (e.target as HTMLElement).matches(":focus-visible") ? idx : null,
                     );
                   }
                 }}
                 onBlur={(e) => {
-                  if (containerRef.current?.contains(e.relatedTarget as Node))
-                    return;
+                  if (containerRef.current?.contains(e.relatedTarget as Node)) return;
                   setFocusedIndex(null);
                   setActiveIndex(null);
                 }}
@@ -398,7 +368,7 @@ const SelectContent = forwardRef<HTMLDivElement, SelectContentProps>(
                   // min-w tracks the trigger via the Positioner's --anchor-width
                   // var, matching the pre-migration minWidth: triggerRect.width.
                   `relative flex flex-col gap-0.5 min-w-[var(--anchor-width)] max-h-[min(300px,var(--available-height))] overflow-y-auto ${shape.container} p-1 select-none outline-none`,
-                  className
+                  className,
                 )}
               >
                 {/* Selected background */}
@@ -480,7 +450,7 @@ const SelectContent = forwardRef<HTMLDivElement, SelectContentProps>(
         </SelectPrimitive.Positioner>
       </SelectPrimitive.Portal>
     );
-  }
+  },
 );
 
 SelectContent.displayName = "SelectContent";
@@ -497,18 +467,7 @@ interface SelectItemProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
-  (
-    {
-      className,
-      children,
-      icon: Icon,
-      value,
-      index,
-      disabled = false,
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, children, icon: Icon, value, index, disabled = false, ...props }, ref) => {
     const selectCtx = useSelectContext();
     const contentCtx = useContext(SelectContentContext);
     const internalRef = useRef<HTMLDivElement>(null);
@@ -537,24 +496,18 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         render={
           <div
             ref={(node: HTMLDivElement | null) => {
-              (
-                internalRef as React.MutableRefObject<HTMLDivElement | null>
-              ).current = node;
+              (internalRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
               if (typeof ref === "function") ref(node);
-              else if (ref)
-                (ref as React.MutableRefObject<HTMLDivElement | null>).current =
-                  node;
+              else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
             }}
             data-proximity-index={index}
             data-value={value}
             className={cn(
               `relative z-10 flex items-center gap-2 ${shape.item} px-2 py-2 text-[13px] cursor-pointer outline-none select-none`,
               "transition-[color] duration-80",
-              isActive || isChecked
-                ? "text-foreground"
-                : "text-muted-foreground",
+              isActive || isChecked ? "text-foreground" : "text-muted-foreground",
               disabled && "opacity-50 pointer-events-none",
-              className
+              className,
             )}
             {...props}
           />
@@ -568,9 +521,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
           />
         )}
 
-        <SelectPrimitive.ItemText
-          render={<span className="flex-1 min-w-0 truncate" />}
-        >
+        <SelectPrimitive.ItemText render={<span className="flex-1 min-w-0 truncate" />}>
           {children}
         </SelectPrimitive.ItemText>
 
@@ -608,7 +559,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
         </AnimatePresence>
       </SelectPrimitive.Item>
     );
-  }
+  },
 );
 
 SelectItem.displayName = "SelectItem";
@@ -617,11 +568,7 @@ SelectItem.displayName = "SelectItem";
 // SelectGroup + SelectLabel + SelectSeparator
 // ---------------------------------------------------------------------------
 
-function SelectGroup({
-  children,
-  className,
-  ...props
-}: HTMLAttributes<HTMLDivElement>) {
+function SelectGroup({ children, className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div role="group" className={className} {...props}>
       {children}
@@ -635,28 +582,24 @@ const SelectLabel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(
-        "px-2 py-1.5 text-[11px] text-muted-foreground",
-        className
-      )}
+      className={cn("px-2 py-1.5 text-[11px] text-muted-foreground", className)}
       {...props}
     />
-  )
+  ),
 );
 
 SelectLabel.displayName = "SelectLabel";
 
-const SelectSeparator = forwardRef<
-  HTMLDivElement,
-  HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    role="separator"
-    className={cn("my-1 -mx-1 h-px bg-border/60", className)}
-    {...props}
-  />
-));
+const SelectSeparator = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      role="separator"
+      className={cn("my-1 -mx-1 h-px bg-border/60", className)}
+      {...props}
+    />
+  ),
+);
 
 SelectSeparator.displayName = "SelectSeparator";
 

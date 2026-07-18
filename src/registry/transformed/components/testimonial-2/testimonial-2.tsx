@@ -1,17 +1,17 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 export type Testimonial2Props = {
   /** Full display name of the person giving the testimonial. */
-  authorName: string
+  authorName: string;
   /** Short tagline, title, or description of the person. */
-  authorTagline: string
+  authorTagline: string;
   /** Link to the person's profile, website, or social media page. */
-  url: string
+  url: string;
   /** The testimonial text content or recommendation message. */
-  quote: string
+  quote: string;
   /** Additional CSS classes to apply to the testimonial container. */
-  className?: string
-}
+  className?: string;
+};
 
 export function Testimonial2({
   className,
@@ -23,10 +23,7 @@ export function Testimonial2({
   return (
     <figure className={cn("relative flex flex-col gap-6 pl-3", className)}>
       <blockquote className="relative block w-full font-serif text-xl text-foreground md:w-lg md:text-2xl">
-        <span
-          className="absolute -left-3 text-muted-foreground select-none"
-          aria-hidden="true"
-        >
+        <span className="absolute -left-3 text-muted-foreground select-none" aria-hidden="true">
           “
         </span>
         <p className="inline text-pretty">{quote}</p>
@@ -55,5 +52,5 @@ export function Testimonial2({
         </div>
       </figcaption>
     </figure>
-  )
+  );
 }

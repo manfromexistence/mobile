@@ -1,10 +1,7 @@
 {
   "name": "mention-custom-trigger-demo",
   "type": "registry:example",
-  "dependencies": [
-    "@diceui/mention",
-    "lucide-react"
-  ],
+  "dependencies": ["@diceui/mention", "lucide-react"],
   "files": [
     {
       "path": "examples/mention-custom-trigger-demo.tsx",

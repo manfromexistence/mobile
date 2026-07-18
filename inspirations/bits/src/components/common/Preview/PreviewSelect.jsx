@@ -1,8 +1,8 @@
-import { useRef, useState, useEffect, useMemo } from 'react';
-import { createPortal } from 'react-dom';
-import '../../../css/preview-slider.css';
+import { useRef, useState, useEffect, useMemo } from "react";
+import { createPortal } from "react-dom";
+import "../../../css/preview-slider.css";
 
-const PreviewSelect = ({ title = '', options = [], value = '', isDisabled = false, onChange }) => {
+const PreviewSelect = ({ title = "", options = [], value = "", isDisabled = false, onChange }) => {
   const [open, setOpen] = useState(false);
   const [rect, setRect] = useState(null);
   const wrapRef = useRef(null);
@@ -14,18 +14,18 @@ const PreviewSelect = ({ title = '', options = [], value = '', isDisabled = fals
         map[opt.value] = opt.label;
         return map;
       }, {}),
-    [options]
+    [options],
   );
 
   useEffect(() => {
     if (!open) return;
-    const onClick = e => {
+    const onClick = (e) => {
       const inTrigger = wrapRef.current && wrapRef.current.contains(e.target);
       const inDropdown = dropdownRef.current && dropdownRef.current.contains(e.target);
       if (!inTrigger && !inDropdown) setOpen(false);
     };
-    document.addEventListener('pointerdown', onClick);
-    return () => document.removeEventListener('pointerdown', onClick);
+    document.addEventListener("pointerdown", onClick);
+    return () => document.removeEventListener("pointerdown", onClick);
   }, [open]);
 
   // Keep the portaled dropdown anchored to the trigger so it never gets clipped
@@ -37,16 +37,16 @@ const PreviewSelect = ({ title = '', options = [], value = '', isDisabled = fals
       setRect(wrapRef.current.getBoundingClientRect());
     };
     updatePosition();
-    window.addEventListener('scroll', updatePosition, true);
-    window.addEventListener('resize', updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
+    window.addEventListener("resize", updatePosition);
     return () => {
-      window.removeEventListener('scroll', updatePosition, true);
-      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
+      window.removeEventListener("resize", updatePosition);
     };
   }, [open]);
 
   return (
-    <div className="scrubber" ref={wrapRef} style={{ position: 'relative' }}>
+    <div className="scrubber" ref={wrapRef} style={{ position: "relative" }}>
       <button
         type="button"
         className="scrubber-track scrubber-track--select"
@@ -54,13 +54,13 @@ const PreviewSelect = ({ title = '', options = [], value = '', isDisabled = fals
         aria-disabled={isDisabled}
         data-disabled={isDisabled}
         tabIndex={isDisabled ? -1 : 0}
-        onClick={() => !isDisabled && setOpen(o => !o)}
+        onClick={() => !isDisabled && setOpen((o) => !o)}
       >
         <span className="scrubber-label">{title}</span>
         <span className="scrubber-select-right">
           <span className="scrubber-value">{labelMap[value] || value}</span>
           <svg
-            className={`scrubber-caret${open ? ' scrubber-caret--open' : ''}`}
+            className={`scrubber-caret${open ? " scrubber-caret--open" : ""}`}
             width="14"
             height="14"
             viewBox="0 0 16 16"
@@ -84,19 +84,19 @@ const PreviewSelect = ({ title = '', options = [], value = '', isDisabled = fals
             ref={dropdownRef}
             className="scrubber-dropdown"
             style={{
-              position: 'fixed',
+              position: "fixed",
               top: rect.bottom + 4,
               left: rect.left,
-              right: 'auto',
+              right: "auto",
               width: rect.width,
-              zIndex: 9999
+              zIndex: 9999,
             }}
           >
-            {options.map(opt => (
+            {options.map((opt) => (
               <button
                 key={opt.value}
                 type="button"
-                className={`scrubber-dropdown-item${opt.value === value ? ' scrubber-dropdown-item--active' : ''}`}
+                className={`scrubber-dropdown-item${opt.value === value ? " scrubber-dropdown-item--active" : ""}`}
                 onClick={() => {
                   onChange?.(opt.value);
                   setOpen(false);
@@ -106,7 +106,7 @@ const PreviewSelect = ({ title = '', options = [], value = '', isDisabled = fals
               </button>
             ))}
           </div>,
-          document.body
+          document.body,
         )}
     </div>
   );

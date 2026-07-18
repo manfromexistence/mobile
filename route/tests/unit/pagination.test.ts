@@ -1,8 +1,9 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-const { parsePaginationParams, buildPaginatedResponse } =
-  await import("../../src/shared/types/pagination.ts");
+const { parsePaginationParams, buildPaginatedResponse } = await import(
+  "../../src/shared/types/pagination.ts"
+);
 
 // ---------------------------------------------------------------------------
 // parsePaginationParams

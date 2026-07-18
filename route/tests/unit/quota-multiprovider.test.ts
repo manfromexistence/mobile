@@ -55,8 +55,9 @@ const providersDb = await import("../../src/lib/db/providers.ts");
 const combosDb = await import("../../src/lib/db/combos.ts");
 const { resolveQuotaKeyScope } = await import("../../src/lib/quota/quotaKey.ts");
 const { syncQuotaCombos } = await import("../../src/lib/quota/quotaCombos.ts");
-const { isQuotaModelName, parseQuotaModelName, quotaModelName } =
-  await import("../../src/lib/quota/quotaModelNaming.ts");
+const { isQuotaModelName, parseQuotaModelName, quotaModelName } = await import(
+  "../../src/lib/quota/quotaModelNaming.ts"
+);
 const { PROVIDER_MODELS } = await import("../../open-sse/config/providerModels.ts");
 
 // Trigger migration once at module load so the schema is ready for the first
@@ -86,7 +87,7 @@ function resetStorage() {
   }
   // Re-seed the default quota group removed by the cascading delete on quota_pools.
   db.prepare(
-    "INSERT OR IGNORE INTO quota_groups (id, name) VALUES ('group-demo', 'GroupDemo')"
+    "INSERT OR IGNORE INTO quota_groups (id, name) VALUES ('group-demo', 'GroupDemo')",
   ).run();
 }
 
@@ -284,7 +285,7 @@ test("D2.3: enforceQuotaShare — input connectionId matching a non-primary memb
   // Must be a valid EnforceDecision shape.
   assert.ok(
     resultB.kind === "allow" || resultB.kind === "block",
-    `enforceQuotaShare must return allow or block; got: ${resultB.kind}`
+    `enforceQuotaShare must return allow or block; got: ${resultB.kind}`,
   );
 
   // No throw — contract satisfied.
@@ -331,7 +332,7 @@ test("D2.4: enforceQuotaShare — input connectionId matching the PRIMARY member
 
   assert.ok(
     resultA.kind === "allow" || resultA.kind === "block",
-    `enforceQuotaShare must return allow or block; got: ${resultA.kind}`
+    `enforceQuotaShare must return allow or block; got: ${resultA.kind}`,
   );
 });
 
@@ -392,14 +393,14 @@ test("D2.5: syncQuotaCombos — 2-connection same-provider pool creates one comb
     assert.equal(
       combo.models.length,
       2,
-      `combo ${expectedName} should have 2 steps (both connections), got ${combo.models.length}`
+      `combo ${expectedName} should have 2 steps (both connections), got ${combo.models.length}`,
     );
 
     // Task 4: strategy must be quota-share.
     assert.equal(
       combo.strategy,
       "quota-share",
-      `combo ${expectedName} strategy should be "quota-share", got "${combo.strategy}"`
+      `combo ${expectedName} strategy should be "quota-share", got "${combo.strategy}"`,
     );
 
     // Both connIds must appear across steps.
@@ -417,7 +418,7 @@ test("D2.5: syncQuotaCombos — 2-connection same-provider pool creates one comb
   assert.equal(
     quotaCombos.length,
     modelsA.length,
-    `expected ${modelsA.length} combo(s) for ${PROVIDER_A}`
+    `expected ${modelsA.length} combo(s) for ${PROVIDER_A}`,
   );
 });
 
@@ -464,7 +465,7 @@ test("D2.6: syncQuotaCombos — after removing connB from same-provider pool, re
   const before = await listQuotaCombos();
   assert.ok(before.length > 0, "Should have combos before update");
   const beforeProviders = new Set(
-    before.map((c) => parseQuotaModelName(c.name)?.provider).filter(Boolean)
+    before.map((c) => parseQuotaModelName(c.name)?.provider).filter(Boolean),
   );
   assert.ok(beforeProviders.has(PROVIDER_A), `Should have ${PROVIDER_A} combos before update`);
   // Task 4: initial combos must have 2 steps.
@@ -472,7 +473,7 @@ test("D2.6: syncQuotaCombos — after removing connB from same-provider pool, re
     assert.equal(
       combo.models.length,
       2,
-      `before removal, combo "${combo.name}" should have 2 steps`
+      `before removal, combo "${combo.name}" should have 2 steps`,
     );
   }
 
@@ -493,11 +494,11 @@ test("D2.6: syncQuotaCombos — after removing connB from same-provider pool, re
   // connA's combos must still be present (same names).
   // Combos are named with the GROUP name ("GroupDemo", from group-demo), not pool name.
   const afterProviders = new Set(
-    after.map((c) => parseQuotaModelName(c.name)?.provider).filter(Boolean)
+    after.map((c) => parseQuotaModelName(c.name)?.provider).filter(Boolean),
   );
   assert.ok(
     afterProviders.has(PROVIDER_A),
-    `${PROVIDER_A} combos should survive after connB removal`
+    `${PROVIDER_A} combos should survive after connB removal`,
   );
   for (const modelId of modelsA) {
     const expectedName = quotaModelName("GroupDemo", PROVIDER_A, modelId);
@@ -509,7 +510,7 @@ test("D2.6: syncQuotaCombos — after removing connB from same-provider pool, re
   assert.equal(
     after.length,
     modelsA.length,
-    `After removing connB, ${modelsA.length} combo(s) for ${PROVIDER_A} should remain`
+    `After removing connB, ${modelsA.length} combo(s) for ${PROVIDER_A} should remain`,
   );
 
   // Task 4: after re-sync, each combo must have been collapsed to 1 step (connA only).
@@ -517,13 +518,13 @@ test("D2.6: syncQuotaCombos — after removing connB from same-provider pool, re
     assert.equal(
       combo.models.length,
       1,
-      `after connB removal, combo "${combo.name}" should collapse to 1 step, got ${combo.models.length}`
+      `after connB removal, combo "${combo.name}" should collapse to 1 step, got ${combo.models.length}`,
     );
     const step = combo.models[0] as Record<string, unknown>;
     assert.equal(
       step.connectionId,
       idA,
-      `remaining step in combo "${combo.name}" should be pinned to connA (${idA})`
+      `remaining step in combo "${combo.name}" should be pinned to connA (${idA})`,
     );
   }
 });

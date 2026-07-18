@@ -100,13 +100,13 @@ describe("NotificationStore", () => {
       assert.equal(
         useNotificationStore.getState().notifications.length,
         1,
-        "should have 1 notification"
+        "should have 1 notification",
       );
       useNotificationStore.getState().removeNotification(id);
       assert.equal(
         useNotificationStore.getState().notifications.length,
         0,
-        "should have 0 notifications after removal"
+        "should have 0 notifications after removal",
       );
     });
 
@@ -115,7 +115,7 @@ describe("NotificationStore", () => {
       assert.equal(
         useNotificationStore.getState().notifications.length,
         0,
-        "should still have 0 notifications"
+        "should still have 0 notifications",
       );
     });
   });
@@ -128,13 +128,13 @@ describe("NotificationStore", () => {
       assert.equal(
         useNotificationStore.getState().notifications.length,
         3,
-        "should have 3 notifications"
+        "should have 3 notifications",
       );
       useNotificationStore.getState().clearAll();
       assert.equal(
         useNotificationStore.getState().notifications.length,
         0,
-        "should have 0 after clearAll"
+        "should have 0 after clearAll",
       );
     });
   });

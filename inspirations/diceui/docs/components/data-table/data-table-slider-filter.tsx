@@ -7,11 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/registry/bases/radix/ui/button";
 import { Input } from "@/registry/bases/radix/ui/input";
 import { Label } from "@/registry/bases/radix/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/registry/bases/radix/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/registry/bases/radix/ui/popover";
 import { Separator } from "@/registry/bases/radix/ui/separator";
 import { Slider } from "@/registry/bases/radix/ui/slider";
 
@@ -35,10 +31,7 @@ function parseValuesAsNumbers(value: unknown): RangeValue | undefined {
   if (
     Array.isArray(value) &&
     value.length === 2 &&
-    value.every(
-      (v) =>
-        (typeof v === "string" || typeof v === "number") && !Number.isNaN(v),
-    )
+    value.every((v) => (typeof v === "string" || typeof v === "number") && !Number.isNaN(v))
   ) {
     return [Number(value[0]), Number(value[1])];
   }
@@ -51,10 +44,7 @@ interface DataTableSliderFilterProps<TData> {
   title?: string;
 }
 
-export function DataTableSliderFilter<TData>({
-  column,
-  title,
-}: DataTableSliderFilterProps<TData>) {
+export function DataTableSliderFilter<TData>({ column, title }: DataTableSliderFilterProps<TData>) {
   const id = React.useId();
 
   const columnFilterValue = parseValuesAsNumbers(column.getFilterValue());
@@ -72,10 +62,7 @@ export function DataTableSliderFilter<TData>({
       const values = column.getFacetedMinMaxValues();
       if (values && Array.isArray(values) && values.length === 2) {
         const [facetMinValue, facetMaxValue] = values;
-        if (
-          typeof facetMinValue === "number" &&
-          typeof facetMaxValue === "number"
-        ) {
+        if (typeof facetMinValue === "number" && typeof facetMaxValue === "number") {
           minValue = facetMinValue;
           maxValue = facetMaxValue;
         }
@@ -143,11 +130,7 @@ export function DataTableSliderFilter<TData>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="border-dashed font-normal"
-        >
+        <Button variant="outline" size="sm" className="border-dashed font-normal">
           {columnFilterValue ? (
             <div
               role="button"
@@ -168,8 +151,7 @@ export function DataTableSliderFilter<TData>({
                 orientation="vertical"
                 className="mx-0.5 data-[orientation=vertical]:h-4"
               />
-              {formatValue(columnFilterValue[0])} -{" "}
-              {formatValue(columnFilterValue[1])}
+              {formatValue(columnFilterValue[0])} - {formatValue(columnFilterValue[1])}
               {unit ? ` ${unit}` : ""}
             </>
           ) : null}
@@ -242,12 +224,7 @@ export function DataTableSliderFilter<TData>({
             onValueChange={onSliderValueChange}
           />
         </div>
-        <Button
-          aria-label={`Clear ${title} filter`}
-          variant="outline"
-          size="sm"
-          onClick={onReset}
-        >
+        <Button aria-label={`Clear ${title} filter`} variant="outline" size="sm" onClick={onReset}>
           Clear
         </Button>
       </PopoverContent>

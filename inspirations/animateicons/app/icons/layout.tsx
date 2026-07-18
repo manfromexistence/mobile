@@ -9,7 +9,7 @@ import { PackageManagerProvider } from "./_contexts/PackageManagerContext";
 import { PlaygroundProvider } from "./_contexts/PlaygroundContext";
 
 type Props = {
-	children: React.ReactNode;
+  children: React.ReactNode;
 };
 
 /**
@@ -18,12 +18,12 @@ type Props = {
  * then category / search / package-manager / playground stack inward.
  */
 const PROVIDERS = [
-	SidebarProvider,
-	CategoryContextProvider,
-	IconSearchProvider,
-	PackageManagerProvider,
-	DistributionProvider,
-	PlaygroundProvider,
+  SidebarProvider,
+  CategoryContextProvider,
+  IconSearchProvider,
+  PackageManagerProvider,
+  DistributionProvider,
+  PlaygroundProvider,
 ];
 
 /**
@@ -38,16 +38,16 @@ const PROVIDERS = [
  * and the dynamic, search-aware contents hydrate on the client.
  */
 const Layout: React.FC<Props> = ({ children }) => {
-	return (
-		<Suspense fallback={null}>
-			<ComposedProviders providers={PROVIDERS}>
-				<div className="flex min-h-dvh w-full">
-					<AppSidebar />
-					{children}
-				</div>
-			</ComposedProviders>
-		</Suspense>
-	);
+  return (
+    <Suspense fallback={null}>
+      <ComposedProviders providers={PROVIDERS}>
+        <div className="flex min-h-dvh w-full">
+          <AppSidebar />
+          {children}
+        </div>
+      </ComposedProviders>
+    </Suspense>
+  );
 };
 
 export default Layout;

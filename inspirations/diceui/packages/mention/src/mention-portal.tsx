@@ -3,21 +3,13 @@ import * as React from "react";
 
 const PORTAL_NAME = "MentionPortal";
 
-interface MentionPortalProps
-  extends Pick<PortalProps, "container" | "children"> {}
+interface MentionPortalProps extends Pick<PortalProps, "container" | "children"> {}
 
 const MentionPortal = React.forwardRef<HTMLDivElement, MentionPortalProps>(
   (props, forwardedRef) => {
     const { container, ...portalProps } = props;
 
-    return (
-      <PortalPrimitive
-        container={container}
-        {...portalProps}
-        ref={forwardedRef}
-        asChild
-      />
-    );
+    return <PortalPrimitive container={container} {...portalProps} ref={forwardedRef} asChild />;
   },
 );
 

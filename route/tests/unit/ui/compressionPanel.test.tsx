@@ -2,10 +2,7 @@
 import React, { act } from "react";
 import { createRoot } from "react-dom/client";
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import {
-  ENGINE_IDS,
-  engineMeta,
-} from "../../../open-sse/services/compression/engineCatalog.ts";
+import { ENGINE_IDS, engineMeta } from "../../../open-sse/services/compression/engineCatalog.ts";
 
 // i18n does not resolve to a real locale in vitest/jsdom, so mock next-intl to echo
 // the key. This test therefore asserts ONLY on i18n-independent strings: catalog
@@ -114,7 +111,7 @@ function setupFetchMock(): { puts: CapturedPut[] } {
       }
 
       return json({}, 404);
-    }
+    },
   );
 
   return { puts };
@@ -156,7 +153,7 @@ describe("CompressionPanel", () => {
     await flush();
 
     const select = container.querySelector(
-      `[data-testid="engine-row-rtk"] select`
+      `[data-testid="engine-row-rtk"] select`,
     ) as HTMLSelectElement | null;
     expect(select).toBeTruthy();
     expect(select?.value).toBe("standard");
@@ -177,7 +174,7 @@ describe("CompressionPanel", () => {
     // The data-testid hook wraps the Toggle; its inner <button role="switch"> is the
     // clickable element.
     const toggle = container.querySelector(
-      `[data-testid="engine-toggle-caveman"] button`
+      `[data-testid="engine-toggle-caveman"] button`,
     ) as HTMLButtonElement | null;
     expect(toggle, "caveman toggle must exist").toBeTruthy();
 
@@ -187,7 +184,7 @@ describe("CompressionPanel", () => {
     await flush();
 
     const settingsPuts = puts.filter(
-      (p) => p.url.includes("/api/settings/compression") && !p.url.includes("mcp-accessibility")
+      (p) => p.url.includes("/api/settings/compression") && !p.url.includes("mcp-accessibility"),
     );
     expect(settingsPuts.length).toBeGreaterThan(0);
     const lastEngines = settingsPuts

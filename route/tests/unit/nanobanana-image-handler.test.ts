@@ -14,7 +14,7 @@ import { handleImageGeneration } from "../../open-sse/handlers/imageGeneration.t
 const originalDnsLookup = dns.promises.lookup;
 (dns.promises as { lookup: unknown }).lookup = (async (
   _hostname: string,
-  options?: { all?: boolean }
+  options?: { all?: boolean },
 ) => {
   const record = { address: "203.0.113.1", family: 4 };
   return options && options.all ? [record] : record;
@@ -38,7 +38,7 @@ test("handleImageGeneration(nanobanana): async submit+poll returns URL payload",
 
       return new Response(
         JSON.stringify({ code: 200, msg: "success", data: { taskId: "task-handler-1" } }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -50,7 +50,7 @@ test("handleImageGeneration(nanobanana): async submit+poll returns URL payload",
           {
             status: 200,
             headers: { "content-type": "application/json" },
-          }
+          },
         );
       }
 
@@ -63,7 +63,7 @@ test("handleImageGeneration(nanobanana): async submit+poll returns URL payload",
             response: { resultImageUrl: "https://cdn.example.com/handler-result.jpg" },
           },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -99,7 +99,7 @@ test("handleImageGeneration(nanobanana): response_format=b64_json converts URL t
     if (u.includes("/generate")) {
       return new Response(
         JSON.stringify({ code: 200, msg: "success", data: { taskId: "task-handler-2" } }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -113,7 +113,7 @@ test("handleImageGeneration(nanobanana): response_format=b64_json converts URL t
             response: { resultImageUrl: "https://cdn.example.com/handler-result-2.jpg" },
           },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 

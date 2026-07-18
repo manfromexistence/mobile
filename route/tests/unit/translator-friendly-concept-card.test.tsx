@@ -17,7 +17,11 @@ vi.mock("@/shared/components", () => ({
   }: {
     children: React.ReactNode;
     className?: string;
-  }) => <div data-testid="card" className={className}>{children}</div>,
+  }) => (
+    <div data-testid="card" className={className}>
+      {children}
+    </div>
+  ),
 }));
 
 vi.mock("@/shared/components/Tooltip", () => ({

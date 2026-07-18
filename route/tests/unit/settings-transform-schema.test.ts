@@ -85,7 +85,7 @@ test("settings schema keeps obfuscate_words limited to systemTransforms", () => 
         },
       },
     }).success,
-    true
+    true,
   );
 
   assert.equal(
@@ -95,6 +95,6 @@ test("settings schema keeps obfuscate_words limited to systemTransforms", () => 
         pipeline: [obfuscateWords],
       },
     }).success,
-    false
+    false,
   );
 });

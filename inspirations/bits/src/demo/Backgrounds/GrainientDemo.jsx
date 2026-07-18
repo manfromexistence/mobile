@@ -1,28 +1,28 @@
-import { useMemo } from 'react';
-import { Box, Flex } from '@chakra-ui/react';
+import { useMemo } from "react";
+import { Box, Flex } from "@chakra-ui/react";
 
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import Customize from '../../components/common/Preview/Customize';
-import CodeExample from '../../components/code/CodeExample';
-import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '../../components/code/Dependencies';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
-import BackgroundContent from '../../components/common/Preview/BackgroundContent';
-import OpenInStudioButton from '../../components/common/Preview/OpenInStudioButton';
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import Customize from "../../components/common/Preview/Customize";
+import CodeExample from "../../components/code/CodeExample";
+import PropTable from "../../components/common/Preview/PropTable";
+import Dependencies from "../../components/code/Dependencies";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
+import BackgroundContent from "../../components/common/Preview/BackgroundContent";
+import OpenInStudioButton from "../../components/common/Preview/OpenInStudioButton";
 
-import useForceRerender from '../../hooks/useForceRerender';
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import useForceRerender from "../../hooks/useForceRerender";
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
-import Grainient from '@/content/Backgrounds/Grainient/Grainient';
-import { grainient } from '../../constants/code/Backgrounds/grainientCode';
+import Grainient from "@/content/Backgrounds/Grainient/Grainient";
+import { grainient } from "../../constants/code/Backgrounds/grainientCode";
 
 const DEFAULT_PROPS = {
-  color1: '#FF9FFC',
-  color2: '#5227FF',
-  color3: '#B497CF',
+  color1: "#FF9FFC",
+  color2: "#5227FF",
+  color3: "#B497CF",
   timeSpeed: 0.25,
   colorBalance: 0.0,
   warpStrength: 1.0,
@@ -41,7 +41,7 @@ const DEFAULT_PROPS = {
   saturation: 1.0,
   centerX: 0.0,
   centerY: 0.0,
-  zoom: 0.9
+  zoom: 0.9,
 };
 
 const GrainientDemo = () => {
@@ -68,156 +68,161 @@ const GrainientDemo = () => {
     saturation,
     centerX,
     centerY,
-    zoom
+    zoom,
   } = props;
   const [key, forceRerender] = useForceRerender();
 
   const propData = useMemo(
     () => [
       {
-        name: 'color1',
-        type: 'string',
+        name: "color1",
+        type: "string",
         default: "'#FF9FFC'",
-        description: 'Primary light color used in the gradient blend.'
+        description: "Primary light color used in the gradient blend.",
       },
       {
-        name: 'color2',
-        type: 'string',
+        name: "color2",
+        type: "string",
         default: "'#5227FF'",
-        description: 'Secondary accent color used in the gradient blend.'
+        description: "Secondary accent color used in the gradient blend.",
       },
       {
-        name: 'color3',
-        type: 'string',
+        name: "color3",
+        type: "string",
         default: "'#B497CF'",
-        description: 'Deep base color used in the gradient blend.'
+        description: "Deep base color used in the gradient blend.",
       },
       {
-        name: 'timeSpeed',
-        type: 'number',
-        default: '0.25',
-        description: 'Animation speed multiplier for the gradient motion.'
+        name: "timeSpeed",
+        type: "number",
+        default: "0.25",
+        description: "Animation speed multiplier for the gradient motion.",
       },
       {
-        name: 'colorBalance',
-        type: 'number',
-        default: '0.0',
-        description: 'Shifts the palette balance toward dark or lighter tones.'
+        name: "colorBalance",
+        type: "number",
+        default: "0.0",
+        description: "Shifts the palette balance toward dark or lighter tones.",
       },
       {
-        name: 'warpStrength',
-        type: 'number',
-        default: '1.0',
-        description: 'Strength of the wave warp distortion (0 = none).'
+        name: "warpStrength",
+        type: "number",
+        default: "1.0",
+        description: "Strength of the wave warp distortion (0 = none).",
       },
       {
-        name: 'warpFrequency',
-        type: 'number',
-        default: '5.0',
-        description: 'Frequency of the wave warp.'
+        name: "warpFrequency",
+        type: "number",
+        default: "5.0",
+        description: "Frequency of the wave warp.",
       },
       {
-        name: 'warpSpeed',
-        type: 'number',
-        default: '2.0',
-        description: 'Speed multiplier for the warp animation.'
+        name: "warpSpeed",
+        type: "number",
+        default: "2.0",
+        description: "Speed multiplier for the warp animation.",
       },
       {
-        name: 'warpAmplitude',
-        type: 'number',
-        default: '50.0',
-        description: 'Base amplitude for the warp distortion.'
+        name: "warpAmplitude",
+        type: "number",
+        default: "50.0",
+        description: "Base amplitude for the warp distortion.",
       },
       {
-        name: 'blendAngle',
-        type: 'number',
-        default: '0.0',
-        description: 'Rotation angle for the color blend axis (degrees).'
+        name: "blendAngle",
+        type: "number",
+        default: "0.0",
+        description: "Rotation angle for the color blend axis (degrees).",
       },
       {
-        name: 'blendSoftness',
-        type: 'number',
-        default: '0.05',
-        description: 'Softens the blend edges between color layers.'
+        name: "blendSoftness",
+        type: "number",
+        default: "0.05",
+        description: "Softens the blend edges between color layers.",
       },
       {
-        name: 'rotationAmount',
-        type: 'number',
-        default: '500.0',
-        description: 'Rotation amount driven by noise.'
+        name: "rotationAmount",
+        type: "number",
+        default: "500.0",
+        description: "Rotation amount driven by noise.",
       },
       {
-        name: 'noiseScale',
-        type: 'number',
-        default: '2.0',
-        description: 'Scales the noise frequency that drives rotation.'
+        name: "noiseScale",
+        type: "number",
+        default: "2.0",
+        description: "Scales the noise frequency that drives rotation.",
       },
       {
-        name: 'grainAmount',
-        type: 'number',
-        default: '0.1',
-        description: 'Amount of film grain applied to the gradient.'
+        name: "grainAmount",
+        type: "number",
+        default: "0.1",
+        description: "Amount of film grain applied to the gradient.",
       },
       {
-        name: 'grainScale',
-        type: 'number',
-        default: '2.0',
-        description: 'Scale of the grain pattern.'
+        name: "grainScale",
+        type: "number",
+        default: "2.0",
+        description: "Scale of the grain pattern.",
       },
       {
-        name: 'grainAnimated',
-        type: 'boolean',
-        default: 'false',
-        description: 'Animate grain over time.'
+        name: "grainAnimated",
+        type: "boolean",
+        default: "false",
+        description: "Animate grain over time.",
       },
       {
-        name: 'contrast',
-        type: 'number',
-        default: '1.5',
-        description: 'Overall contrast applied to the final color.'
+        name: "contrast",
+        type: "number",
+        default: "1.5",
+        description: "Overall contrast applied to the final color.",
       },
       {
-        name: 'gamma',
-        type: 'number',
-        default: '1.0',
-        description: 'Gamma correction for the final color.'
+        name: "gamma",
+        type: "number",
+        default: "1.0",
+        description: "Gamma correction for the final color.",
       },
       {
-        name: 'saturation',
-        type: 'number',
-        default: '1.0',
-        description: 'Saturation amount for the final color.'
+        name: "saturation",
+        type: "number",
+        default: "1.0",
+        description: "Saturation amount for the final color.",
       },
       {
-        name: 'centerX',
-        type: 'number',
-        default: '0.0',
-        description: 'Horizontal offset of the gradient center.'
+        name: "centerX",
+        type: "number",
+        default: "0.0",
+        description: "Horizontal offset of the gradient center.",
       },
       {
-        name: 'centerY',
-        type: 'number',
-        default: '0.0',
-        description: 'Vertical offset of the gradient center.'
+        name: "centerY",
+        type: "number",
+        default: "0.0",
+        description: "Vertical offset of the gradient center.",
       },
       {
-        name: 'zoom',
-        type: 'number',
-        default: '0.9',
-        description: 'Zoom level for the gradient field.'
+        name: "zoom",
+        type: "number",
+        default: "0.9",
+        description: "Zoom level for the gradient field.",
       },
       {
-        name: 'className',
-        type: 'string',
+        name: "className",
+        type: "string",
         default: "''",
-        description: 'Additional CSS classes applied to the container.'
-      }
+        description: "Additional CSS classes applied to the container.",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box position="relative" className="demo-container" h={500} p={0} overflow="hidden">
@@ -246,7 +251,10 @@ const GrainientDemo = () => {
               centerY={centerY}
               zoom={zoom}
             />
-            <BackgroundContent pillText="New Background" headline="Grainy gradient colors with soft motion." />
+            <BackgroundContent
+              pillText="New Background"
+              headline="Grainy gradient colors with soft motion."
+            />
           </Box>
 
           <Flex justify="flex-end" mt={2} mb={-2}>
@@ -274,12 +282,12 @@ const GrainientDemo = () => {
                 saturation,
                 centerX,
                 centerY,
-                zoom
+                zoom,
               }}
               defaultProps={{
-                color1: '#FF9FFC',
-                color2: '#5227FF',
-                color3: '#B497CF',
+                color1: "#FF9FFC",
+                color2: "#5227FF",
+                color3: "#B497CF",
                 timeSpeed: 0.25,
                 colorBalance: 0.0,
                 warpStrength: 1.0,
@@ -298,15 +306,27 @@ const GrainientDemo = () => {
                 saturation: 1.0,
                 centerX: 0.0,
                 centerY: 0.0,
-                zoom: 0.9
+                zoom: 0.9,
               }}
             />
           </Flex>
 
           <Customize forceRerender={forceRerender}>
-            <PreviewColorPickerCustom title="Color 1" color={color1} onChange={val => updateProp('color1', val)} />
-            <PreviewColorPickerCustom title="Color 2" color={color2} onChange={val => updateProp('color2', val)} />
-            <PreviewColorPickerCustom title="Color 3" color={color3} onChange={val => updateProp('color3', val)} />
+            <PreviewColorPickerCustom
+              title="Color 1"
+              color={color1}
+              onChange={(val) => updateProp("color1", val)}
+            />
+            <PreviewColorPickerCustom
+              title="Color 2"
+              color={color2}
+              onChange={(val) => updateProp("color2", val)}
+            />
+            <PreviewColorPickerCustom
+              title="Color 3"
+              color={color3}
+              onChange={(val) => updateProp("color3", val)}
+            />
 
             <PreviewSlider
               title="Time Speed"
@@ -314,7 +334,7 @@ const GrainientDemo = () => {
               max={5}
               step={0.05}
               value={timeSpeed}
-              onChange={val => updateProp('timeSpeed', val)}
+              onChange={(val) => updateProp("timeSpeed", val)}
             />
 
             <PreviewSlider
@@ -323,7 +343,7 @@ const GrainientDemo = () => {
               max={1}
               step={0.01}
               value={colorBalance}
-              onChange={val => updateProp('colorBalance', val)}
+              onChange={(val) => updateProp("colorBalance", val)}
             />
 
             <PreviewSlider
@@ -332,7 +352,7 @@ const GrainientDemo = () => {
               max={4}
               step={0.05}
               value={warpStrength}
-              onChange={val => updateProp('warpStrength', val)}
+              onChange={(val) => updateProp("warpStrength", val)}
             />
 
             <PreviewSlider
@@ -341,7 +361,7 @@ const GrainientDemo = () => {
               max={12}
               step={0.1}
               value={warpFrequency}
-              onChange={val => updateProp('warpFrequency', val)}
+              onChange={(val) => updateProp("warpFrequency", val)}
             />
 
             <PreviewSlider
@@ -350,7 +370,7 @@ const GrainientDemo = () => {
               max={6}
               step={0.1}
               value={warpSpeed}
-              onChange={val => updateProp('warpSpeed', val)}
+              onChange={(val) => updateProp("warpSpeed", val)}
             />
 
             <PreviewSlider
@@ -359,7 +379,7 @@ const GrainientDemo = () => {
               max={80}
               step={1}
               value={warpAmplitude}
-              onChange={val => updateProp('warpAmplitude', val)}
+              onChange={(val) => updateProp("warpAmplitude", val)}
             />
 
             <PreviewSlider
@@ -368,7 +388,7 @@ const GrainientDemo = () => {
               max={180}
               step={1}
               value={blendAngle}
-              onChange={val => updateProp('blendAngle', val)}
+              onChange={(val) => updateProp("blendAngle", val)}
             />
 
             <PreviewSlider
@@ -377,7 +397,7 @@ const GrainientDemo = () => {
               max={1}
               step={0.01}
               value={blendSoftness}
-              onChange={val => updateProp('blendSoftness', val)}
+              onChange={(val) => updateProp("blendSoftness", val)}
             />
 
             <PreviewSlider
@@ -386,7 +406,7 @@ const GrainientDemo = () => {
               max={1440}
               step={10}
               value={rotationAmount}
-              onChange={val => updateProp('rotationAmount', val)}
+              onChange={(val) => updateProp("rotationAmount", val)}
             />
 
             <PreviewSlider
@@ -395,7 +415,7 @@ const GrainientDemo = () => {
               max={4}
               step={0.05}
               value={noiseScale}
-              onChange={val => updateProp('noiseScale', val)}
+              onChange={(val) => updateProp("noiseScale", val)}
             />
 
             <PreviewSlider
@@ -404,7 +424,7 @@ const GrainientDemo = () => {
               max={0.4}
               step={0.01}
               value={grainAmount}
-              onChange={val => updateProp('grainAmount', val)}
+              onChange={(val) => updateProp("grainAmount", val)}
             />
 
             <PreviewSlider
@@ -413,13 +433,13 @@ const GrainientDemo = () => {
               max={8}
               step={0.1}
               value={grainScale}
-              onChange={val => updateProp('grainScale', val)}
+              onChange={(val) => updateProp("grainScale", val)}
             />
 
             <PreviewSwitch
               title="Grain Animated"
               isChecked={grainAnimated}
-              onChange={val => updateProp('grainAnimated', val)}
+              onChange={(val) => updateProp("grainAnimated", val)}
             />
 
             <PreviewSlider
@@ -428,7 +448,7 @@ const GrainientDemo = () => {
               max={2.5}
               step={0.05}
               value={contrast}
-              onChange={val => updateProp('contrast', val)}
+              onChange={(val) => updateProp("contrast", val)}
             />
 
             <PreviewSlider
@@ -437,7 +457,7 @@ const GrainientDemo = () => {
               max={2.5}
               step={0.05}
               value={gamma}
-              onChange={val => updateProp('gamma', val)}
+              onChange={(val) => updateProp("gamma", val)}
             />
 
             <PreviewSlider
@@ -446,7 +466,7 @@ const GrainientDemo = () => {
               max={2.5}
               step={0.05}
               value={saturation}
-              onChange={val => updateProp('saturation', val)}
+              onChange={(val) => updateProp("saturation", val)}
             />
 
             <PreviewSlider
@@ -455,7 +475,7 @@ const GrainientDemo = () => {
               max={1}
               step={0.01}
               value={centerX}
-              onChange={val => updateProp('centerX', val)}
+              onChange={(val) => updateProp("centerX", val)}
             />
 
             <PreviewSlider
@@ -464,7 +484,7 @@ const GrainientDemo = () => {
               max={1}
               step={0.01}
               value={centerY}
-              onChange={val => updateProp('centerY', val)}
+              onChange={(val) => updateProp("centerY", val)}
             />
 
             <PreviewSlider
@@ -473,12 +493,12 @@ const GrainientDemo = () => {
               max={3}
               step={0.05}
               value={zoom}
-              onChange={val => updateProp('zoom', val)}
+              onChange={(val) => updateProp("zoom", val)}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['ogl']} />
+          <Dependencies dependencyList={["ogl"]} />
         </PreviewTab>
 
         <CodeTab>

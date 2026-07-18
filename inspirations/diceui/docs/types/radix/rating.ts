@@ -1,9 +1,4 @@
-import type {
-  CompositionProps,
-  Direction,
-  EmptyProps,
-  Orientation,
-} from "@/types";
+import type { CompositionProps, Direction, EmptyProps, Orientation } from "@/types";
 
 export interface RatingProps extends EmptyProps<"div">, CompositionProps {
   /**
@@ -125,9 +120,7 @@ export interface RatingProps extends EmptyProps<"div">, CompositionProps {
   name?: string;
 }
 
-export interface RatingItemProps
-  extends EmptyProps<"button">,
-    CompositionProps {
+export interface RatingItemProps extends EmptyProps<"button">, CompositionProps {
   /**
    * The index of this rating item.
    * If not provided, it will be auto-calculated based on position.
@@ -150,7 +143,5 @@ export interface RatingItemProps
    * )}
    * ```
    */
-  children?:
-    | React.ReactNode
-    | ((dataState: "full" | "partial" | "empty") => React.ReactNode);
+  children?: React.ReactNode | ((dataState: "full" | "partial" | "empty") => React.ReactNode);
 }

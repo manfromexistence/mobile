@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useTheme } from "next-themes"
-import { useRef } from "react"
-import { ChanhDaiMark } from "@/components/chanhdai-mark"
-import { Magnet } from "@/components/vendor/react-bits/magnet"
-import { cn } from "@/lib/utils"
-import { DotGridSpotlight } from "@/registry/transformed/components/dot-grid-spotlight"
+import { useTheme } from "next-themes";
+import { useRef } from "react";
+import { ChanhDaiMark } from "@/components/chanhdai-mark";
+import { Magnet } from "@/components/vendor/react-bits/magnet";
+import { cn } from "@/lib/utils";
+import { DotGridSpotlight } from "@/registry/transformed/components/dot-grid-spotlight";
 
 const DOT_COLOR = {
   light: {
@@ -16,14 +16,14 @@ const DOT_COLOR = {
     default: "rgba(255, 255, 255, 0.05)",
     active: "rgba(255, 255, 255, 0.1)",
   },
-}
+};
 
 /** @deprecated */
 export function ProfileCover() {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const { resolvedTheme } = useTheme()
-  const theme = resolvedTheme === "dark" ? "dark" : "light"
+  const { resolvedTheme } = useTheme();
+  const theme = resolvedTheme === "dark" ? "dark" : "light";
 
   return (
     <div
@@ -31,7 +31,7 @@ export function ProfileCover() {
       className={cn(
         "relative flex aspect-2.5/1 items-center justify-center border-x border-line select-none sm:aspect-3.5/1",
         "screen-line-top screen-line-bottom before:-top-px after:-bottom-px",
-        "bg-black/0.75 dark:bg-white/1"
+        "bg-black/0.75 dark:bg-white/1",
       )}
     >
       <DotGridSpotlight
@@ -39,16 +39,12 @@ export function ProfileCover() {
         activeDotColor={DOT_COLOR[theme]?.active}
       />
 
-      <Magnet
-        containerRef={containerRef}
-        magnetStrength={6}
-        wrapperClassName="pointer-events-none"
-      >
+      <Magnet containerRef={containerRef} magnetStrength={6} wrapperClassName="pointer-events-none">
         <ChanhDaiMark
           id="js-cover-mark"
           className="h-12 w-24 min-[25rem]:h-14 min-[25rem]:w-28 sm:h-16 sm:w-32"
         />
       </Magnet>
     </div>
-  )
+  );
 }

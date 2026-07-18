@@ -51,7 +51,7 @@ test("detectUnsupportedParam extracts param name from NIM-style errors", () => {
   assert.equal(detectUnsupportedParam("Unsupported parameter(s): thinking"), "thinking");
   assert.equal(
     detectUnsupportedParam("Unsupported parameter: reasoning_budget"),
-    "reasoning_budget"
+    "reasoning_budget",
   );
   assert.equal(detectUnsupportedParam("Unsupported parameter 'max_tokens'"), "max_tokens");
 });

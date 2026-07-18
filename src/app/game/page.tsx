@@ -1,11 +1,11 @@
-import "@/features/portfolio/components/daikanoid/daikanoid.css"
+import "@/features/portfolio/components/daikanoid/daikanoid.css";
 
-import type { Metadata } from "next"
-import { Suspense } from "react"
+import type { Metadata } from "next";
+import { Suspense } from "react";
 
-import { X_HANDLE } from "@/config/site"
+import { X_HANDLE } from "@/config/site";
 
-import { Game } from "./game"
+import { Game } from "./game";
 
 export const metadata: Metadata = {
   title: "Daikanoid",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     creator: X_HANDLE,
     images: ["https://assets.chanhdai.com/images/blog/daikanoid.webp"],
   },
-}
+};
 
 export default function GamePage() {
   return (
@@ -45,5 +45,5 @@ export default function GamePage() {
         </Suspense>
       </section>
     </div>
-  )
+  );
 }

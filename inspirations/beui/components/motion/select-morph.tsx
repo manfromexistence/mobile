@@ -90,9 +90,7 @@ export function MorphSelect({
   const [internal, setInternal] = useState(defaultValue);
   // ref-counted: items render twice (hidden registrar + open panel), so a
   // label is only dropped once every copy with that value has unmounted.
-  const [labels, setLabels] = useState<
-    Map<string, { label: string; count: number }>
-  >(new Map());
+  const [labels, setLabels] = useState<Map<string, { label: string; count: number }>>(new Map());
   const [placeholder, setPlaceholder] = useState("Select");
 
   const controlled = value !== undefined;
@@ -129,8 +127,7 @@ export function MorphSelect({
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     const onPointer = (e: PointerEvent) => {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node))
-        setOpen(false);
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
     };
     window.addEventListener("keydown", onKey);
     window.addEventListener("pointerdown", onPointer);
@@ -157,18 +154,7 @@ export function MorphSelect({
       listId: `${baseId}-list`,
       disabled,
     }),
-    [
-      current,
-      open,
-      select,
-      register,
-      unregister,
-      labels,
-      placeholder,
-      reduce,
-      baseId,
-      disabled,
-    ],
+    [current, open, select, register, unregister, labels, placeholder, reduce, baseId, disabled],
   );
 
   return (
@@ -185,10 +171,7 @@ export interface MorphSelectValueProps {
   className?: string;
 }
 
-export function MorphSelectValue({
-  placeholder,
-  className,
-}: MorphSelectValueProps) {
+export function MorphSelectValue({ placeholder, className }: MorphSelectValueProps) {
   const ctx = useMorphContext("MorphSelectValue");
   // surface the placeholder so the morph header (rendered by content) matches
   useEffect(() => {
@@ -196,9 +179,7 @@ export function MorphSelectValue({
   }, [placeholder, ctx.setPlaceholder]);
   const label = ctx.labelFor(ctx.value);
   return (
-    <span
-      className={cn(label ? "text-foreground" : "text-muted-foreground", className)}
-    >
+    <span className={cn(label ? "text-foreground" : "text-muted-foreground", className)}>
       {label ?? placeholder ?? "Select"}
     </span>
   );
@@ -209,19 +190,13 @@ export interface MorphSelectTriggerProps {
   children: ReactNode;
 }
 
-export function MorphSelectTrigger({
-  className,
-  children,
-}: MorphSelectTriggerProps) {
+export function MorphSelectTrigger({ className, children }: MorphSelectTriggerProps) {
   const ctx = useMorphContext("MorphSelectTrigger");
   return (
     <>
       {/* invisible sizer reserves the closed height (the morph surface is
           absolute, so this keeps surrounding layout from shifting) */}
-      <div
-        aria-hidden
-        className={cn(ROW, "invisible rounded-xl border border-border")}
-      >
+      <div aria-hidden className={cn(ROW, "invisible rounded-xl border border-border")}>
         {children}
         <ChevronDown className="h-4 w-4" />
       </div>
@@ -266,10 +241,7 @@ export interface MorphSelectContentProps {
   children: ReactNode;
 }
 
-export function MorphSelectContent({
-  className,
-  children,
-}: MorphSelectContentProps) {
+export function MorphSelectContent({ className, children }: MorphSelectContentProps) {
   const ctx = useMorphContext("MorphSelectContent");
   const label = ctx.labelFor(ctx.value);
   return (

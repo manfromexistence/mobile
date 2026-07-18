@@ -63,11 +63,12 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
         role === "radiogroup" ||
         role === "listbox" ||
         role === "menu"
-      ) return;
+      )
+        return;
 
       // Also skip if focus is inside a component that uses arrow keys
       const closest = (e.target as HTMLElement).closest(
-        "[role=slider],[role=tablist],[role=radiogroup],[role=listbox],[role=menu],[role=menubar]"
+        "[role=slider],[role=tablist],[role=radiogroup],[role=listbox],[role=menu],[role=menubar]",
       );
       if (closest) return;
 
@@ -87,11 +88,7 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
   }, [router]);
 
   if (isFullscreen) {
-    return (
-      <main className="min-h-screen">
-        {children}
-      </main>
-    );
+    return <main className="min-h-screen">{children}</main>;
   }
 
   return (
@@ -112,11 +109,7 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
       </Button>
 
       {/* Mobile drawer */}
-      <MobileDrawer
-        open={drawerOpen}
-        onClose={handleClose}
-        triggerRef={menuButtonRef}
-      >
+      <MobileDrawer open={drawerOpen} onClose={handleClose} triggerRef={menuButtonRef}>
         <Sidebar mobile />
         <div className="mt-auto pt-4">
           <div className="flex items-center justify-between pl-1 pt-2 pb-2">
@@ -133,9 +126,7 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
       </MobileDrawer>
 
       {/* Main content */}
-      <main className="flex-1 min-w-0">
-        {children}
-      </main>
+      <main className="flex-1 min-w-0">{children}</main>
 
       {/* Desktop right panel */}
       <RightPanel />

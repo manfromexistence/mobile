@@ -72,6 +72,6 @@ test("a hidden (deleted) synced model is not re-added on re-import", async () =>
   assert.ok(synced.includes("model-keep"), "non-deleted model stays");
   assert.ok(
     !synced.includes("model-del"),
-    "deleted (hidden) model must NOT be re-added by the re-import"
+    "deleted (hidden) model must NOT be re-added by the re-import",
   );
 });

@@ -11,27 +11,19 @@ export function normalizeSource(source: string, base: string): string {
     .replaceAll("export default", "export");
 }
 
-function resolveSourcePath(
-  name: string,
-  base: string,
-  fileName?: string,
-): string | null {
+function resolveSourcePath(name: string, base: string, fileName?: string): string | null {
   const cwd = process.cwd();
 
   if (fileName) {
     const candidates = SOURCE_EXTENSIONS.flatMap((ext) =>
-      SOURCE_DIRS.map((dir) =>
-        path.join(cwd, `registry/bases/${base}/${dir}/${fileName}${ext}`),
-      ),
+      SOURCE_DIRS.map((dir) => path.join(cwd, `registry/bases/${base}/${dir}/${fileName}${ext}`)),
     );
     const hit = candidates.find((p) => fs.existsSync(p));
     if (hit) return hit;
   }
 
   const candidates = SOURCE_EXTENSIONS.flatMap((ext) =>
-    SOURCE_DIRS.map((dir) =>
-      path.join(cwd, `registry/bases/${base}/${dir}/${name}${ext}`),
-    ),
+    SOURCE_DIRS.map((dir) => path.join(cwd, `registry/bases/${base}/${dir}/${name}${ext}`)),
   );
   return candidates.find((p) => fs.existsSync(p)) ?? null;
 }

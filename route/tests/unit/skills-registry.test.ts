@@ -96,7 +96,7 @@ test("skillRegistry keeps same name/version isolated per API key", async () => {
   assert.equal(skillRegistry.getSkill("shared-skill", "key-b")?.id, second.id);
   assert.deepEqual(
     skillRegistry.getSkillVersions("shared-skill", "key-a").map((skill) => skill.id),
-    [first.id]
+    [first.id],
   );
 });
 
@@ -124,7 +124,7 @@ test("skillRegistry can reload persisted skills from SQLite", async () => {
   await skillRegistry.loadFromDatabase("key-a");
   assert.deepEqual(
     skillRegistry.list().map((skill) => skill.name),
-    ["file-read"]
+    ["file-read"],
   );
 
   await skillRegistry.loadFromDatabase();
@@ -133,7 +133,7 @@ test("skillRegistry can reload persisted skills from SQLite", async () => {
       .list()
       .map((skill) => skill.name)
       .sort(),
-    ["file-read", "file-write"]
+    ["file-read", "file-write"],
   );
 
   resetRegistryState();
@@ -200,7 +200,7 @@ test("skillRegistry unregisters by version, by name/apiKey and by id", async () 
   assert.equal(await skillRegistry.unregister("translate", undefined, "key-a"), true);
   assert.deepEqual(
     skillRegistry.list().map((skill) => skill.id),
-    [otherKey.id]
+    [otherKey.id],
   );
   assert.equal(await skillRegistry.unregisterById(otherKey.id), true);
   assert.equal(await skillRegistry.unregisterById(exact.id), false);
@@ -217,7 +217,7 @@ test("skillRegistry rejects invalid payloads from schema validation", async () =
       handler: "bad-handler",
       apiKeyId: "key-a",
     }),
-    /Invalid string/
+    /Invalid string/,
   );
 
   await assert.rejects(
@@ -229,7 +229,7 @@ test("skillRegistry rejects invalid payloads from schema validation", async () =
       handler: "bad-handler",
       apiKeyId: "key-a",
     }),
-    /Too small/
+    /Too small/,
   );
 });
 
@@ -392,7 +392,7 @@ test("concurrent loadFromDatabase calls during cache miss only query DB once (no
     assert.equal(
       skillRegistry["lastLoaded"],
       lastLoaded,
-      "cache should still be fresh after concurrent loads settled"
+      "cache should still be fresh after concurrent loads settled",
     );
   } finally {
     Date.now = originalNow;

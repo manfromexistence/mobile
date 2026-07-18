@@ -86,10 +86,7 @@ function minify(worker: string): string {
   return worker.replace(guardSrc, mangledGuard);
 }
 
-async function runWorker(
-  worker: string,
-  kind: "vercel" | "deno"
-): Promise<FakeResponse> {
+async function runWorker(worker: string, kind: "vercel" | "deno"): Promise<FakeResponse> {
   const ctx: Record<string, unknown> = {
     URL,
     Headers: FakeHeaders,
@@ -121,7 +118,7 @@ describe("#6149 relay worker binds SSRF guard to a stable name", () => {
     assert.match(
       worker,
       /const\s+resolveRelayTarget\s*=/,
-      "worker must bind the guard to a literal const name so minification cannot dangle the call"
+      "worker must bind the guard to a literal const name so minification cannot dangle the call",
     );
   });
 
@@ -133,7 +130,11 @@ describe("#6149 relay worker binds SSRF guard to a stable name", () => {
   it("Vercel worker: resolves the guard after minification mangles the source fn name", async () => {
     const worker = minify(__buildRelayFunctionForTest(RELAY_AUTH));
     const res = await runWorker(worker, "vercel");
-    assert.equal(res.status, 200, "handler must reach the upstream fetch, not throw ReferenceError");
+    assert.equal(
+      res.status,
+      200,
+      "handler must reach the upstream fetch, not throw ReferenceError",
+    );
   });
 
   it("Deno worker: resolves the guard after minification mangles the source fn name", async () => {

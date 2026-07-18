@@ -22,11 +22,7 @@ interface UseFormResetParams<T> {
  * A hook to handle form reset events.
  * Can be triggered by onReset callback or by form reset event.
  */
-function useFormReset<T>({
-  form,
-  defaultValue,
-  onReset,
-}: UseFormResetParams<T>) {
+function useFormReset<T>({ form, defaultValue, onReset }: UseFormResetParams<T>) {
   const onResetCallback = useCallbackRef(onReset);
 
   React.useEffect(() => {

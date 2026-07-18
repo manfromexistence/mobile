@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 
 export const Logo = () => {
   const svgRef = useRef(null);
@@ -10,18 +10,20 @@ export const Logo = () => {
     const atomEl = atomRef.current;
     if (!svgEl || !atomEl) return;
 
-    gsap.set(atomEl, { transformOrigin: 'center center' });
+    gsap.set(atomEl, { transformOrigin: "center center" });
 
-    const handleEnter = () => gsap.to(atomEl, { rotation: 20, scale: 0.95, duration: 1, ease: 'elastic.out(1, 0.3)' });
+    const handleEnter = () =>
+      gsap.to(atomEl, { rotation: 20, scale: 0.95, duration: 1, ease: "elastic.out(1, 0.3)" });
 
-    const handleLeave = () => gsap.to(atomEl, { rotation: 0, scale: 1, duration: 1, ease: 'elastic.out(2, 1)' });
+    const handleLeave = () =>
+      gsap.to(atomEl, { rotation: 0, scale: 1, duration: 1, ease: "elastic.out(2, 1)" });
 
-    svgEl.addEventListener('mouseenter', handleEnter);
-    svgEl.addEventListener('mouseleave', handleLeave);
+    svgEl.addEventListener("mouseenter", handleEnter);
+    svgEl.addEventListener("mouseleave", handleLeave);
 
     return () => {
-      svgEl.removeEventListener('mouseenter', handleEnter);
-      svgEl.removeEventListener('mouseleave', handleLeave);
+      svgEl.removeEventListener("mouseenter", handleEnter);
+      svgEl.removeEventListener("mouseleave", handleLeave);
     };
   }, []);
 
@@ -33,7 +35,7 @@ export const Logo = () => {
       viewBox="0 0 115 23"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ cursor: 'pointer' }}
+      style={{ cursor: "pointer" }}
     >
       <path
         ref={atomRef}

@@ -11,8 +11,9 @@ process.env.DATA_DIR = tmpDir;
 process.env.DISABLE_SQLITE_AUTO_BACKUP = "true";
 
 const core = await import("../../../src/lib/db/core.ts");
-const { setFeatureFlagOverride, removeFeatureFlagOverride } =
-  await import("../../../src/lib/db/featureFlags.ts");
+const { setFeatureFlagOverride, removeFeatureFlagOverride } = await import(
+  "../../../src/lib/db/featureFlags.ts"
+);
 const {
   shouldUseFallback,
   isEmergencyFallbackEnvEnabled,

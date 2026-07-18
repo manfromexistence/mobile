@@ -66,13 +66,7 @@ describe("VisuallyHiddenInput", () => {
   function renderVisuallyHiddenInput(
     props: Partial<React.ComponentProps<typeof VisuallyHiddenInput>> = {},
   ) {
-    return render(
-      <VisuallyHiddenInput
-        data-testid="input"
-        control={mockControl}
-        {...props}
-      />,
-    );
+    return render(<VisuallyHiddenInput data-testid="input" control={mockControl} {...props} />);
   }
 
   describe("hidden input", () => {

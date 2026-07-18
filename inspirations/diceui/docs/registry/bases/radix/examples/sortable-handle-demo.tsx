@@ -33,11 +33,7 @@ export default function SortableHandleDemo() {
   ]);
 
   return (
-    <Sortable
-      value={tricks}
-      onValueChange={setTricks}
-      getItemValue={(item) => item.id}
-    >
+    <Sortable value={tricks} onValueChange={setTricks} getItemValue={(item) => item.id}>
       <Table className="rounded-none border">
         <TableHeader>
           <TableRow className="bg-accent/50">
@@ -60,12 +56,8 @@ export default function SortableHandleDemo() {
                     </SortableItemHandle>
                   </TableCell>
                   <TableCell className="font-medium">{trick.title}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {trick.difficulty}
-                  </TableCell>
-                  <TableCell className="text-right text-muted-foreground">
-                    {trick.points}
-                  </TableCell>
+                  <TableCell className="text-muted-foreground">{trick.difficulty}</TableCell>
+                  <TableCell className="text-right text-muted-foreground">{trick.points}</TableCell>
                 </TableRow>
               </SortableItem>
             ))}

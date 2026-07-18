@@ -159,19 +159,19 @@ test("modelSyncScheduler resolves only loopback origins and uses the dashboard p
     assert.equal(scheduler.getModelSyncInternalBaseUrl(), "http://127.0.0.1:22128/omniroute");
     assert.equal(
       scheduler.resolveModelSyncInternalBaseUrl("https://attacker.example/steal"),
-      "http://127.0.0.1:22128/omniroute"
+      "http://127.0.0.1:22128/omniroute",
     );
     assert.equal(
       scheduler.resolveModelSyncInternalBaseUrl("http://127.0.0.1:7777/nested/path"),
-      "http://127.0.0.1:22128/omniroute"
+      "http://127.0.0.1:22128/omniroute",
     );
     assert.equal(
       scheduler.resolveModelSyncInternalBaseUrl("http://0.0.0.0:7777/nested/path"),
-      "http://127.0.0.1:22128/omniroute"
+      "http://127.0.0.1:22128/omniroute",
     );
     assert.equal(
       scheduler.resolveModelSyncInternalBaseUrl("http://user:pass@localhost:7777"),
-      "http://127.0.0.1:22128/omniroute"
+      "http://127.0.0.1:22128/omniroute",
     );
   } finally {
     for (const [key, value] of Object.entries(previous)) {
@@ -234,11 +234,11 @@ test("modelSyncScheduler uses the listener-declared TLS scheme without trusting 
     const scheduler = await loadScheduler("trusted-native-tls");
     assert.equal(
       scheduler.resolveModelSyncInternalBaseUrl("https://attacker.example:7777/steal"),
-      "https://localhost:22128/omniroute"
+      "https://localhost:22128/omniroute",
     );
     assert.equal(
       scheduler.resolveModelSyncInternalBaseUrl("https://127.0.0.1:7777/nested/path"),
-      "https://localhost:22128/omniroute"
+      "https://localhost:22128/omniroute",
     );
   } finally {
     for (const [key, value] of Object.entries(previous)) {
@@ -263,7 +263,7 @@ test("modelSyncScheduler pins HTTPS transport to IPv4 while retaining localhost 
       protocol: "https:",
       port: "22128",
     },
-    () => undefined
+    () => undefined,
   );
 
   assert.equal(forwardedOptions?.hostname, "127.0.0.1");
@@ -274,7 +274,7 @@ test("runtime launchers publish the actual internal listener scheme", () => {
   const runNext = fs.readFileSync(path.join(process.cwd(), "scripts/dev/run-next.mjs"), "utf8");
   const standalone = fs.readFileSync(
     path.join(process.cwd(), "scripts/dev/standalone-server-ws.mjs"),
-    "utf8"
+    "utf8",
   );
 
   assert.match(runNext, /OMNIROUTE_INTERNAL_SCHEME\s*=\s*["']http["']/);
@@ -292,7 +292,7 @@ test("cloud sync bootstrap is wired to server startup, not app layout imports", 
   const layoutSource = fs.readFileSync(path.join(process.cwd(), "src/app/layout.tsx"), "utf8");
   const instrumentationSource = fs.readFileSync(
     path.join(process.cwd(), "src/instrumentation-node.ts"),
-    "utf8"
+    "utf8",
   );
 
   assert.doesNotMatch(layoutSource, /initCloudSync/);
@@ -304,11 +304,11 @@ test("initCloudSync skips auto initialization during build and test processes un
     initCloudSync.shouldSkipCloudSyncInitialization({ NEXT_PHASE: "phase-production-build" }, [
       "node",
     ]),
-    true
+    true,
   );
   assert.equal(
     initCloudSync.shouldSkipCloudSyncInitialization({ NODE_ENV: "test" }, ["node", "--test"]),
-    true
+    true,
   );
   assert.equal(
     initCloudSync.shouldSkipCloudSyncInitialization(
@@ -316,9 +316,9 @@ test("initCloudSync skips auto initialization during build and test processes un
         NODE_ENV: "test",
         OMNIROUTE_ENABLE_RUNTIME_BACKGROUND_TASKS: "1",
       },
-      ["node", "--test"]
+      ["node", "--test"],
     ),
-    false
+    false,
   );
 });
 
@@ -382,7 +382,7 @@ test("modelSyncScheduler starts once, honors env interval and syncs only active 
     assert.equal(fetchCalls[0].options.headers["Content-Type"], "application/json");
     assert.equal(
       fetchCalls[0].options.headers[scheduler.getModelSyncInternalAuthHeaderName()],
-      scheduler.buildModelSyncInternalHeaders()[scheduler.getModelSyncInternalAuthHeaderName()]
+      scheduler.buildModelSyncInternalHeaders()[scheduler.getModelSyncInternalAuthHeaderName()],
     );
 
     const lastRun = await scheduler.getLastModelSyncTime();

@@ -1,7 +1,7 @@
-import code from '@content/TextAnimations/CountUp/CountUp.jsx?raw';
-import tailwind from '@tailwind/TextAnimations/CountUp/CountUp.jsx?raw';
-import tsCode from '@ts-default/TextAnimations/CountUp/CountUp.tsx?raw';
-import tsTailwind from '@ts-tailwind/TextAnimations/CountUp/CountUp.tsx?raw';
+import code from "@content/TextAnimations/CountUp/CountUp.jsx?raw";
+import tailwind from "@tailwind/TextAnimations/CountUp/CountUp.jsx?raw";
+import tsCode from "@ts-default/TextAnimations/CountUp/CountUp.tsx?raw";
+import tsTailwind from "@ts-tailwind/TextAnimations/CountUp/CountUp.tsx?raw";
 
 export const countup = {
   dependencies: `motion`,
@@ -18,5 +18,5 @@ export const countup = {
   code,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

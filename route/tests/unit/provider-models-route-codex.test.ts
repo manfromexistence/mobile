@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 
 const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-provider-model-routes-codex-")
+  path.join(os.tmpdir(), "omniroute-provider-model-routes-codex-"),
 );
 process.env.DATA_DIR = TEST_DATA_DIR;
 
@@ -67,7 +67,7 @@ async function seedCodexConnection(overrides: ProviderOverrides = {}) {
 async function callRoute(connectionId: string, search = "") {
   return providerModelsRoute.GET(
     new Request(`http://localhost/api/providers/${connectionId}/models${search}`),
-    { params: { id: connectionId } }
+    { params: { id: connectionId } },
   );
 }
 
@@ -187,13 +187,13 @@ test("provider models route merges live Codex models with the local catalog then
   assert.ok(modelIds.has("gpt-5.5-low"));
   assert.equal(
     [...modelIds].some((id) => String(id).startsWith("gpt-5.4")),
-    false
+    false,
   );
   assert.ok(syncedIds.has("gpt-5.6-sol"));
   assert.ok(syncedIds.has("gpt-5.5-low"));
   assert.equal(
     [...syncedIds].some((id) => String(id).startsWith("gpt-5.4")),
-    false
+    false,
   );
   // Stale cache-only ids are replaced when a fresh discovery response is persisted.
   assert.equal(modelIds.has("stale-codex-model"), false);
@@ -246,7 +246,7 @@ test("provider models route uses the GitHub Codex catalog when live discovery fa
   assert.ok(modelIds.has("gpt-5.5-low"));
   assert.equal(
     [...modelIds].some((id) => String(id).startsWith("gpt-5.4")),
-    false
+    false,
   );
 });
 
@@ -284,7 +284,7 @@ test("provider models route returns cached Codex models when refresh discovery f
   assert.ok(modelIds.has("gpt-5.6-sol-ultra"));
   assert.equal(
     [...modelIds].some((id) => String(id).startsWith("gpt-5.4")),
-    false
+    false,
   );
   const syncedModels = await modelsDb.getSyncedAvailableModelsForConnection("codex", connection.id);
   const syncedIds = new Set(syncedModels.map((model) => model.id));
@@ -356,7 +356,7 @@ test("provider models route falls back to local Codex catalog when live and GitH
   assert.ok(body.models?.some((model) => model.id === "gpt-5.5"));
   assert.equal(
     body.models?.some((model) => model.id.startsWith("gpt-5.4")),
-    false
+    false,
   );
 });
 
@@ -380,6 +380,6 @@ test("provider models route returns curated GPT-5.6 variants when auto-fetch is 
   assert.ok(modelIds.has("gpt-5.6-luna-max"));
   assert.equal(
     [...modelIds].some((id) => String(id).startsWith("gpt-5.4")),
-    false
+    false,
   );
 });

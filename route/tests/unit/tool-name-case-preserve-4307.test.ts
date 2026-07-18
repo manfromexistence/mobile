@@ -74,7 +74,7 @@ test("#4307 execute() preserves the tool-name cloak map (read->Read reverse) on 
   assert.equal(
     JSON.stringify(upstreamBody).includes("_toolNameMap"),
     false,
-    "_toolNameMap must never appear in the serialized upstream body"
+    "_toolNameMap must never appear in the serialized upstream body",
   );
 
   // The actual regression guard: the returned transformedBody must still carry
@@ -83,17 +83,17 @@ test("#4307 execute() preserves the tool-name cloak map (read->Read reverse) on 
   const map = returned._toolNameMap;
   assert.ok(
     map instanceof Map,
-    "result.transformedBody must carry the non-enumerable _toolNameMap (dropped by the v3.8.27 serialize round-trip without the #4307 fix)"
+    "result.transformedBody must carry the non-enumerable _toolNameMap (dropped by the v3.8.27 serialize round-trip without the #4307 fix)",
   );
   assert.equal(
     (map as Map<string, string>).get("Read"),
     "read",
-    "reverse map must restore the client's original tool-name casing"
+    "reverse map must restore the client's original tool-name casing",
   );
   // The re-attached map must remain non-enumerable (never re-serializes upstream).
   assert.equal(
     Object.keys(returned).includes("_toolNameMap"),
     false,
-    "_toolNameMap must stay non-enumerable on the returned body"
+    "_toolNameMap must stay non-enumerable on the returned body",
   );
 });

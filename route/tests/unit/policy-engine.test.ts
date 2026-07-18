@@ -23,8 +23,9 @@ afterEach(() => {
 
 describe("policyEngine", async () => {
   // Dynamic import to pick up DATA_DIR
-  const { evaluateRequest, evaluateFirstAllowed } =
-    await import("../../src/domain/policyEngine.ts");
+  const { evaluateRequest, evaluateFirstAllowed } = await import(
+    "../../src/domain/policyEngine.ts"
+  );
   const { registerFallback } = await import("../../src/domain/fallbackPolicy.ts");
   const { setBudget, recordCost } = await import("../../src/domain/costRules.ts");
   const { recordFailedAttempt } = await import("../../src/domain/lockoutPolicy.ts");

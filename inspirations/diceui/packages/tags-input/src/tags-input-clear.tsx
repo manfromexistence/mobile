@@ -4,8 +4,7 @@ import { useTagsInput } from "./tags-input-root";
 
 const CLEAR_NAME = "TagsInputClear";
 
-interface TagsInputClearProps
-  extends React.ComponentPropsWithoutRef<typeof Primitive.button> {
+interface TagsInputClearProps extends React.ComponentPropsWithoutRef<typeof Primitive.button> {
   /**
    * Whether the clear button should always be rendered.
    *
@@ -15,30 +14,28 @@ interface TagsInputClearProps
   forceMount?: boolean;
 }
 
-const TagsInputClear = React.forwardRef<HTMLButtonElement, TagsInputClearProps>(
-  (props, ref) => {
-    const { forceMount, ...clearProps } = props;
-    const context = useTagsInput(CLEAR_NAME);
+const TagsInputClear = React.forwardRef<HTMLButtonElement, TagsInputClearProps>((props, ref) => {
+  const { forceMount, ...clearProps } = props;
+  const context = useTagsInput(CLEAR_NAME);
 
-    return (
-      <Presence present={forceMount || context.value.length > 0}>
-        <Primitive.button
-          type="button"
-          aria-disabled={context.disabled}
-          data-state={context.value.length > 0 ? "visible" : "invisible"}
-          data-disabled={context.disabled ? "" : undefined}
-          {...clearProps}
-          ref={ref}
-          onClick={composeEventHandlers(props.onClick, () => {
-            if (context.disabled) return;
-            context.onValueChange([]);
-            context.inputRef.current?.focus();
-          })}
-        />
-      </Presence>
-    );
-  },
-);
+  return (
+    <Presence present={forceMount || context.value.length > 0}>
+      <Primitive.button
+        type="button"
+        aria-disabled={context.disabled}
+        data-state={context.value.length > 0 ? "visible" : "invisible"}
+        data-disabled={context.disabled ? "" : undefined}
+        {...clearProps}
+        ref={ref}
+        onClick={composeEventHandlers(props.onClick, () => {
+          if (context.disabled) return;
+          context.onValueChange([]);
+          context.inputRef.current?.focus();
+        })}
+      />
+    </Presence>
+  );
+});
 
 TagsInputClear.displayName = CLEAR_NAME;
 

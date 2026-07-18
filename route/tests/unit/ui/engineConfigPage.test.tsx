@@ -140,7 +140,7 @@ function setupFetchMock() {
           savingsPct: 63.6,
           diff: [{ type: "removed", text: "duplicated details and verbose wording" }],
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     return new Response(JSON.stringify({}), { status: 404 });
@@ -152,8 +152,9 @@ function setupFetchMock() {
 describe("EngineConfigPage", () => {
   it("renders the engine name after fetching engine list", async () => {
     setupFetchMock();
-    const { EngineConfigPage } =
-      await import("../../../src/shared/components/compression/EngineConfigPage");
+    const { EngineConfigPage } = await import(
+      "../../../src/shared/components/compression/EngineConfigPage"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -170,8 +171,9 @@ describe("EngineConfigPage", () => {
 
   it("does NOT render an engine on/off enable toggle (moved to the panel)", async () => {
     setupFetchMock();
-    const { EngineConfigPage } =
-      await import("../../../src/shared/components/compression/EngineConfigPage");
+    const { EngineConfigPage } = await import(
+      "../../../src/shared/components/compression/EngineConfigPage"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -189,8 +191,9 @@ describe("EngineConfigPage", () => {
 
   it("renders the config form field label from fetched schema (EngineConfigForm mounted)", async () => {
     setupFetchMock();
-    const { EngineConfigPage } =
-      await import("../../../src/shared/components/compression/EngineConfigPage");
+    const { EngineConfigPage } = await import(
+      "../../../src/shared/components/compression/EngineConfigPage"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -207,8 +210,9 @@ describe("EngineConfigPage", () => {
 
   it("keeps detailed config but renders no engine enable checkbox", async () => {
     setupFetchMock();
-    const { EngineConfigPage } =
-      await import("../../../src/shared/components/compression/EngineConfigPage");
+    const { EngineConfigPage } = await import(
+      "../../../src/shared/components/compression/EngineConfigPage"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -228,8 +232,9 @@ describe("EngineConfigPage", () => {
 
   it("renders preview original, compressed text, and diff returned by the API", async () => {
     setupFetchMock();
-    const { EngineConfigPage } =
-      await import("../../../src/shared/components/compression/EngineConfigPage");
+    const { EngineConfigPage } = await import(
+      "../../../src/shared/components/compression/EngineConfigPage"
+    );
     let container!: HTMLElement;
     await act(async () => {
       container = mountInContainer(<EngineConfigPage engineId="headroom" />);
@@ -240,7 +245,7 @@ describe("EngineConfigPage", () => {
     });
 
     const previewButton = Array.from(container.querySelectorAll("button")).find(
-      (button) => button.textContent === "Preview"
+      (button) => button.textContent === "Preview",
     );
     expect(previewButton).toBeTruthy();
 
@@ -250,7 +255,7 @@ describe("EngineConfigPage", () => {
     });
 
     expect(container.textContent).toContain(
-      "The original context contains duplicated details and verbose wording."
+      "The original context contains duplicated details and verbose wording.",
     );
     expect(container.textContent).toContain("Original context, deduplicated.");
     expect(container.textContent).toContain("Diff");
@@ -259,8 +264,9 @@ describe("EngineConfigPage", () => {
 
   it("shows empty-state text when analytics returns runs=0", async () => {
     setupFetchMock();
-    const { EngineConfigPage } =
-      await import("../../../src/shared/components/compression/EngineConfigPage");
+    const { EngineConfigPage } = await import(
+      "../../../src/shared/components/compression/EngineConfigPage"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -280,8 +286,9 @@ describe("EngineConfigPage", () => {
 
   it("points to the Compression Settings panel for enabling the layer", async () => {
     setupFetchMock();
-    const { EngineConfigPage } =
-      await import("../../../src/shared/components/compression/EngineConfigPage");
+    const { EngineConfigPage } = await import(
+      "../../../src/shared/components/compression/EngineConfigPage"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -342,7 +349,7 @@ describe("EngineConfigPage", () => {
               engines: { aggressive: { enabled: true } },
               aggressive: { maxTokensPerMessage: 2048 },
             }),
-            { status: 200, headers: { "Content-Type": "application/json" } }
+            { status: 200, headers: { "Content-Type": "application/json" } },
           );
         }
         if (url.includes("/api/context/combos/default")) {
@@ -362,11 +369,12 @@ describe("EngineConfigPage", () => {
           });
         }
         return new Response(JSON.stringify({}), { status: 404 });
-      }
+      },
     );
 
-    const { EngineConfigPage } =
-      await import("../../../src/shared/components/compression/EngineConfigPage");
+    const { EngineConfigPage } = await import(
+      "../../../src/shared/components/compression/EngineConfigPage"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -378,7 +386,7 @@ describe("EngineConfigPage", () => {
     });
 
     const salvarBtn = Array.from(container.querySelectorAll("button")).find(
-      (b) => b.textContent?.includes("Save") || b.textContent?.includes("Salvar")
+      (b) => b.textContent?.includes("Save") || b.textContent?.includes("Salvar"),
     );
     expect(salvarBtn).toBeTruthy();
     await act(async () => {
@@ -393,7 +401,7 @@ describe("EngineConfigPage", () => {
     // The detailed config persists to the engine's sub-object on settings/compression.
     expect(settingsPuts.length).toBeGreaterThan(0);
     const aggressivePut = settingsPuts.find(
-      (c) => typeof c.body.aggressive === "object" && c.body.aggressive !== null
+      (c) => typeof c.body.aggressive === "object" && c.body.aggressive !== null,
     );
     expect(aggressivePut).toBeDefined();
   });
@@ -401,8 +409,9 @@ describe("EngineConfigPage", () => {
   it("does not crash when all fetch calls fail (fail-soft)", async () => {
     vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("Network error"));
 
-    const { EngineConfigPage } =
-      await import("../../../src/shared/components/compression/EngineConfigPage");
+    const { EngineConfigPage } = await import(
+      "../../../src/shared/components/compression/EngineConfigPage"
+    );
 
     let container!: HTMLElement;
     await act(async () => {

@@ -8,35 +8,34 @@ const ITEM_DELETE_NAME = "TagsInputItemDelete";
 interface TagsInputItemDeleteProps
   extends React.ComponentPropsWithoutRef<typeof Primitive.button> {}
 
-const TagsInputItemDelete = React.forwardRef<
-  HTMLButtonElement,
-  TagsInputItemDeleteProps
->((props, ref) => {
-  const context = useTagsInput(ITEM_DELETE_NAME);
-  const itemContext = useTagsInputItem(ITEM_DELETE_NAME);
-  const disabled = itemContext.disabled || context.disabled;
+const TagsInputItemDelete = React.forwardRef<HTMLButtonElement, TagsInputItemDeleteProps>(
+  (props, ref) => {
+    const context = useTagsInput(ITEM_DELETE_NAME);
+    const itemContext = useTagsInputItem(ITEM_DELETE_NAME);
+    const disabled = itemContext.disabled || context.disabled;
 
-  if (itemContext.isEditing) return null;
+    if (itemContext.isEditing) return null;
 
-  return (
-    <Primitive.button
-      type="button"
-      tabIndex={disabled ? undefined : -1}
-      aria-labelledby={itemContext.textId}
-      aria-controls={itemContext.id}
-      aria-current={itemContext.isHighlighted}
-      data-state={itemContext.isHighlighted ? "active" : "inactive"}
-      data-disabled={disabled ? "" : undefined}
-      {...props}
-      ref={ref}
-      onClick={composeEventHandlers(props.onClick, () => {
-        if (disabled) return;
-        const index = context.value.indexOf(itemContext.value);
-        context.onItemRemove(index);
-      })}
-    />
-  );
-});
+    return (
+      <Primitive.button
+        type="button"
+        tabIndex={disabled ? undefined : -1}
+        aria-labelledby={itemContext.textId}
+        aria-controls={itemContext.id}
+        aria-current={itemContext.isHighlighted}
+        data-state={itemContext.isHighlighted ? "active" : "inactive"}
+        data-disabled={disabled ? "" : undefined}
+        {...props}
+        ref={ref}
+        onClick={composeEventHandlers(props.onClick, () => {
+          if (disabled) return;
+          const index = context.value.indexOf(itemContext.value);
+          context.onItemRemove(index);
+        })}
+      />
+    );
+  },
+);
 
 TagsInputItemDelete.displayName = ITEM_DELETE_NAME;
 

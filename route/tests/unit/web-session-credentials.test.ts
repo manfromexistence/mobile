@@ -2,14 +2,15 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const providers = await import("../../src/shared/constants/providers.ts");
-const webSessionCredentials =
-  await import("../../src/app/(dashboard)/dashboard/providers/[id]/webSessionCredentials.ts");
+const webSessionCredentials = await import(
+  "../../src/app/(dashboard)/dashboard/providers/[id]/webSessionCredentials.ts"
+);
 
 test("web session credential metadata covers every web-cookie provider", () => {
   for (const providerId of Object.keys(providers.WEB_COOKIE_PROVIDERS)) {
     assert.ok(
       webSessionCredentials.getWebSessionCredentialRequirement(providerId),
-      `${providerId} should declare its required web-session credential`
+      `${providerId} should declare its required web-session credential`,
     );
   }
 });
@@ -82,25 +83,25 @@ test("web session credential metadata identifies cookie, token, and no-auth prov
 test("web session credential validator requires provider-specific non-empty values", () => {
   assert.equal(
     webSessionCredentials.hasUsableWebSessionCredential("qwen-web", { token: "qwen-token" }),
-    true
+    true,
   );
   assert.equal(
     webSessionCredentials.hasUsableWebSessionCredential("qwen-web", { token: "   " }),
-    false
+    false,
   );
   assert.equal(
     webSessionCredentials.hasUsableWebSessionCredential("qwen-web", { unrelated: "value" }),
-    false
+    false,
   );
   assert.equal(
     webSessionCredentials.hasUsableWebSessionCredential("chatgpt-web", {
       cookie: "__Secure-next-auth.session-token=session",
     }),
-    true
+    true,
   );
   assert.equal(
     webSessionCredentials.hasUsableWebSessionCredential("chatgpt-web", { unrelated: "value" }),
-    false
+    false,
   );
 });
 

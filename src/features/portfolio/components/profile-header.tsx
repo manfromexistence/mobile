@@ -1,11 +1,11 @@
-import { AvatarLights } from "@/features/portfolio/components/avatar-lights"
-import { USER } from "@/features/portfolio/data/user"
+import { AvatarLights } from "@/features/portfolio/components/avatar-lights";
+import { USER } from "@/features/portfolio/data/user";
 
-import { AvatarLightsToggle } from "./avatar-lights-toggle"
-import { ChanhDaiMarkIsometric } from "./chanhdai-mark-isometric"
-import { FlipSentences } from "./flip-sentences"
-import { PronounceMyName } from "./pronounce-my-name"
-import { VerifiedIcon } from "./verified-icon"
+import { AvatarLightsToggle } from "./avatar-lights-toggle";
+import { ChanhDaiMarkIsometric } from "./chanhdai-mark-isometric";
+import { FlipSentences } from "./flip-sentences";
+import { PronounceMyName } from "./pronounce-my-name";
+import { VerifiedIcon } from "./verified-icon";
 
 export function ProfileHeader() {
   return (
@@ -38,9 +38,7 @@ export function ProfileHeader() {
             <VerifiedIcon className="size-4.5 select-none" aria-hidden />
 
             {USER.namePronunciationUrl && (
-              <PronounceMyName
-                namePronunciationUrl={USER.namePronunciationUrl}
-              />
+              <PronounceMyName namePronunciationUrl={USER.namePronunciationUrl} />
             )}
           </div>
 
@@ -50,5 +48,5 @@ export function ProfileHeader() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -19,9 +19,7 @@ import { test, expect, describe } from "@jest/globals";
 
 describe("Check getTopLogprobs correctness", () => {
   test("Correctness test 1", () => {
-    const logitsOnCPUArray = new Float32Array([
-      0.05, 0.15, 0.3, 0.16, 0.04, 0.2, 0.1,
-    ]);
+    const logitsOnCPUArray = new Float32Array([0.05, 0.15, 0.3, 0.16, 0.04, 0.2, 0.1]);
     const actual = getTopProbs(3, logitsOnCPUArray);
     const expected: Array<[number, number]> = [
       [2, 0.3],
@@ -36,9 +34,7 @@ describe("Check getTopLogprobs correctness", () => {
   });
 
   test("Zero top_logprobs", () => {
-    const logitsOnCPUArray = new Float32Array([
-      0.05, 0.15, 0.3, 0.16, 0.04, 0.2, 0.1,
-    ]);
+    const logitsOnCPUArray = new Float32Array([0.05, 0.15, 0.3, 0.16, 0.04, 0.2, 0.1]);
     const topLogProbs = getTopProbs(0, logitsOnCPUArray);
     expect(topLogProbs).toEqual([]);
   });
@@ -81,13 +77,7 @@ describe("Test getModelIdToUse", () => {
     const requestName = "ChatCompletionRequest";
     expect(() => {
       getModelIdToUse(loadedModelIds, requestModel, requestName);
-    }).toThrow(
-      new SpecifiedModelNotFoundError(
-        loadedModelIds,
-        requestModel,
-        requestName,
-      ),
-    );
+    }).toThrow(new SpecifiedModelNotFoundError(loadedModelIds, requestModel, requestName));
   });
 
   test("No model loaded", () => {
@@ -121,11 +111,7 @@ describe("Test getModelIdToUse", () => {
     const loadedModelIds = ["a"];
     const requestModel = null;
     const requestName = "ChatCompletionRequest";
-    const selectedModelId = getModelIdToUse(
-      loadedModelIds,
-      requestModel,
-      requestName,
-    );
+    const selectedModelId = getModelIdToUse(loadedModelIds, requestModel, requestName);
     expect(selectedModelId).toEqual("a");
   });
 
@@ -133,11 +119,7 @@ describe("Test getModelIdToUse", () => {
     const loadedModelIds = ["a"];
     const requestModel = "a";
     const requestName = "ChatCompletionRequest";
-    const selectedModelId = getModelIdToUse(
-      loadedModelIds,
-      requestModel,
-      requestName,
-    );
+    const selectedModelId = getModelIdToUse(loadedModelIds, requestModel, requestName);
     expect(selectedModelId).toEqual("a");
   });
 
@@ -145,11 +127,7 @@ describe("Test getModelIdToUse", () => {
     const loadedModelIds = ["a", "b", "c"];
     const requestModel = "c";
     const requestName = "ChatCompletionRequest";
-    const selectedModelId = getModelIdToUse(
-      loadedModelIds,
-      requestModel,
-      requestName,
-    );
+    const selectedModelId = getModelIdToUse(loadedModelIds, requestModel, requestName);
     expect(selectedModelId).toEqual("c");
   });
 
@@ -184,14 +162,10 @@ describe("Test getModelIdToUse", () => {
       await engine.chatCompletion({
         messages: [{ role: "user", content: "hi" }],
       });
-    }).rejects.toThrow(
-      new UnclearModelToUseError(loadedModelIds, "ChatCompletionRequest"),
-    );
+    }).rejects.toThrow(new UnclearModelToUseError(loadedModelIds, "ChatCompletionRequest"));
     expect(async () => {
       await engine.getMessage();
-    }).rejects.toThrow(
-      new UnclearModelToUseError(loadedModelIds, "getMessage"),
-    );
+    }).rejects.toThrow(new UnclearModelToUseError(loadedModelIds, "getMessage"));
     expect(async () => {
       await engine.resetChat();
     }).rejects.toThrow(new UnclearModelToUseError(loadedModelIds, "resetChat"));
@@ -211,42 +185,24 @@ describe("Test getModelIdToUse", () => {
         model: requestedModelId,
       });
     }).rejects.toThrow(
-      new SpecifiedModelNotFoundError(
-        loadedModelIds,
-        requestedModelId,
-        "ChatCompletionRequest",
-      ),
+      new SpecifiedModelNotFoundError(loadedModelIds, requestedModelId, "ChatCompletionRequest"),
     );
     expect(async () => {
       await engine.getMessage(requestedModelId);
     }).rejects.toThrow(
-      new SpecifiedModelNotFoundError(
-        loadedModelIds,
-        requestedModelId,
-        "getMessage",
-      ),
+      new SpecifiedModelNotFoundError(loadedModelIds, requestedModelId, "getMessage"),
     );
     expect(async () => {
       await engine.runtimeStatsText(requestedModelId);
     }).rejects.toThrow(
-      new SpecifiedModelNotFoundError(
-        loadedModelIds,
-        requestedModelId,
-        "runtimeStatsText",
-      ),
+      new SpecifiedModelNotFoundError(loadedModelIds, requestedModelId, "runtimeStatsText"),
     );
 
     // resetChat should not throw error because it is allowed to resetChat before pipeline
     // established, as a no-op
     expect(async () => {
       await engine.resetChat(false, requestedModelId);
-    }).not.toThrow(
-      new SpecifiedModelNotFoundError(
-        loadedModelIds,
-        requestedModelId,
-        "resetChat",
-      ),
-    );
+    }).not.toThrow(new SpecifiedModelNotFoundError(loadedModelIds, requestedModelId, "resetChat"));
   });
 });
 
@@ -278,47 +234,26 @@ describe("Test areChatOptionsListEqual", () => {
   });
 
   test("Different size", () => {
-    const options1: ChatOptions[] | undefined = [
-      dummyChatOpts1,
-      dummyChatOpts3,
-    ];
+    const options1: ChatOptions[] | undefined = [dummyChatOpts1, dummyChatOpts3];
     const options2: ChatOptions[] | undefined = [dummyChatOpts2];
     expect(areChatOptionsListEqual(options1, options2)).toEqual(false);
   });
 
   test("Same size, not equal 1", () => {
-    const options1: ChatOptions[] | undefined = [
-      dummyChatOpts1,
-      dummyChatOpts3,
-    ];
-    const options2: ChatOptions[] | undefined = [
-      dummyChatOpts1,
-      dummyChatOpts2,
-    ];
+    const options1: ChatOptions[] | undefined = [dummyChatOpts1, dummyChatOpts3];
+    const options2: ChatOptions[] | undefined = [dummyChatOpts1, dummyChatOpts2];
     expect(areChatOptionsListEqual(options1, options2)).toEqual(false);
   });
 
   test("Same size, not equal 2", () => {
-    const options1: ChatOptions[] | undefined = [
-      dummyChatOpts1,
-      dummyChatOpts3,
-    ];
-    const options2: ChatOptions[] | undefined = [
-      dummyChatOpts1,
-      dummyChatOpts4,
-    ];
+    const options1: ChatOptions[] | undefined = [dummyChatOpts1, dummyChatOpts3];
+    const options2: ChatOptions[] | undefined = [dummyChatOpts1, dummyChatOpts4];
     expect(areChatOptionsListEqual(options1, options2)).toEqual(false);
   });
 
   test("Same size, equal", () => {
-    const options1: ChatOptions[] | undefined = [
-      dummyChatOpts1,
-      dummyChatOpts3,
-    ];
-    const options2: ChatOptions[] | undefined = [
-      dummyChatOpts3,
-      dummyChatOpts1,
-    ];
+    const options1: ChatOptions[] | undefined = [dummyChatOpts1, dummyChatOpts3];
+    const options2: ChatOptions[] | undefined = [dummyChatOpts3, dummyChatOpts1];
     expect(areChatOptionsListEqual(options1, options2)).toEqual(true);
   });
 });
@@ -338,11 +273,7 @@ describe("Test getChunkedPrefillInputData", () => {
       image1, // 1921 size
       rangeArr(0, 10),
     ];
-    const chunks = getChunkedPrefillInputData(
-      inputData,
-      prefillChunkSize,
-      getImageEmbedSize,
-    );
+    const chunks = getChunkedPrefillInputData(inputData, prefillChunkSize, getImageEmbedSize);
     const expectedChunks = [[rangeArr(0, 200)], [image1, rangeArr(0, 10)]];
     const expectedChunkLens = [200, 1931];
     expect(chunks).toEqual([expectedChunks, expectedChunkLens]);
@@ -350,11 +281,7 @@ describe("Test getChunkedPrefillInputData", () => {
 
   test("Single image data", async () => {
     const inputData = [image1];
-    const chunks = getChunkedPrefillInputData(
-      inputData,
-      prefillChunkSize,
-      getImageEmbedSize,
-    );
+    const chunks = getChunkedPrefillInputData(inputData, prefillChunkSize, getImageEmbedSize);
     const expectedChunks = [[image1]];
     const expectedChunkLens = [1921];
     expect(chunks).toEqual([expectedChunks, expectedChunkLens]);
@@ -362,11 +289,7 @@ describe("Test getChunkedPrefillInputData", () => {
 
   test("Two images", async () => {
     const inputData = [image1, image2];
-    const chunks = getChunkedPrefillInputData(
-      inputData,
-      prefillChunkSize,
-      getImageEmbedSize,
-    );
+    const chunks = getChunkedPrefillInputData(inputData, prefillChunkSize, getImageEmbedSize);
     const expectedChunks = [[image1], [image2]];
     const expectedChunkLens = [1921, 1921];
     expect(chunks).toEqual([expectedChunks, expectedChunkLens]);
@@ -374,27 +297,15 @@ describe("Test getChunkedPrefillInputData", () => {
 
   test("Single token array that needs to be chunked", async () => {
     const inputData = [rangeArr(0, 4097)];
-    const chunks = getChunkedPrefillInputData(
-      inputData,
-      prefillChunkSize,
-      getImageEmbedSize,
-    );
-    const expectedChunks = [
-      [rangeArr(0, 2048)],
-      [rangeArr(2048, 4096)],
-      [rangeArr(4096, 4097)],
-    ];
+    const chunks = getChunkedPrefillInputData(inputData, prefillChunkSize, getImageEmbedSize);
+    const expectedChunks = [[rangeArr(0, 2048)], [rangeArr(2048, 4096)], [rangeArr(4096, 4097)]];
     const expectedChunkLens = [2048, 2048, 1];
     expect(chunks).toEqual([expectedChunks, expectedChunkLens]);
   });
 
   test("Single token array that does not need to be chunked", async () => {
     const inputData = [rangeArr(0, 2048)];
-    const chunks = getChunkedPrefillInputData(
-      inputData,
-      prefillChunkSize,
-      getImageEmbedSize,
-    );
+    const chunks = getChunkedPrefillInputData(inputData, prefillChunkSize, getImageEmbedSize);
     const expectedChunks = [[rangeArr(0, 2048)]];
     const expectedChunkLens = [2048];
     expect(chunks).toEqual([expectedChunks, expectedChunkLens]);
@@ -406,11 +317,7 @@ describe("Test getChunkedPrefillInputData", () => {
       rangeArr(0, 2300),
       image2,
     ];
-    const chunks = getChunkedPrefillInputData(
-      inputData,
-      prefillChunkSize,
-      getImageEmbedSize,
-    );
+    const chunks = getChunkedPrefillInputData(inputData, prefillChunkSize, getImageEmbedSize);
     const expectedChunks = [
       [image1, rangeArr(0, 127)], // 127 = 2048 - 1921
       [rangeArr(127, 2175)], // 2175 = 127 + 2048
@@ -426,11 +333,7 @@ describe("Test getChunkedPrefillInputData", () => {
       rangeArr(0, 127),
       image2,
     ];
-    const chunks = getChunkedPrefillInputData(
-      inputData,
-      prefillChunkSize,
-      getImageEmbedSize,
-    );
+    const chunks = getChunkedPrefillInputData(inputData, prefillChunkSize, getImageEmbedSize);
     const expectedChunks = [[image1, rangeArr(0, 127)], [image2]];
     const expectedChunkLens = [2048, 1921];
     expect(chunks).toEqual([expectedChunks, expectedChunkLens]);
@@ -438,9 +341,9 @@ describe("Test getChunkedPrefillInputData", () => {
 
   test("Throws when image embed size exceeds prefill chunk size", () => {
     const inputData = [image1];
-    expect(() =>
-      getChunkedPrefillInputData(inputData, 100, () => 1921),
-    ).toThrow(PrefillChunkSizeSmallerThanImageError);
+    expect(() => getChunkedPrefillInputData(inputData, 100, () => 1921)).toThrow(
+      PrefillChunkSizeSmallerThanImageError,
+    );
   });
 
   test("Dynamic per-image embed sizes", () => {
@@ -452,15 +355,8 @@ describe("Test getChunkedPrefillInputData", () => {
       rangeArr(0, 50),
       image2, // 1500
     ];
-    const chunks = getChunkedPrefillInputData(
-      inputData,
-      prefillChunkSize,
-      getDynamicSize,
-    );
-    const expectedChunks = [
-      [rangeArr(0, 100), image1, rangeArr(0, 50)],
-      [image2],
-    ];
+    const chunks = getChunkedPrefillInputData(inputData, prefillChunkSize, getDynamicSize);
+    const expectedChunks = [[rangeArr(0, 100), image1, rangeArr(0, 50)], [image2]];
     const expectedChunkLens = [650, 1500];
     expect(chunks).toEqual([expectedChunks, expectedChunkLens]);
   });

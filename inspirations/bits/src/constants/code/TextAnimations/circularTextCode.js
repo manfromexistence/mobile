@@ -1,8 +1,8 @@
-import code from '@content/TextAnimations/CircularText/CircularText.jsx?raw';
-import css from '@content/TextAnimations/CircularText/CircularText.css?raw';
-import tailwind from '@tailwind/TextAnimations/CircularText/CircularText.jsx?raw';
-import tsCode from '@ts-default/TextAnimations/CircularText/CircularText.tsx?raw';
-import tsTailwind from '@ts-tailwind/TextAnimations/CircularText/CircularText.tsx?raw';
+import code from "@content/TextAnimations/CircularText/CircularText.jsx?raw";
+import css from "@content/TextAnimations/CircularText/CircularText.css?raw";
+import tailwind from "@tailwind/TextAnimations/CircularText/CircularText.jsx?raw";
+import tsCode from "@ts-default/TextAnimations/CircularText/CircularText.tsx?raw";
+import tsTailwind from "@ts-tailwind/TextAnimations/CircularText/CircularText.tsx?raw";
 
 export const circularText = {
   dependencies: `motion`,
@@ -18,5 +18,5 @@ export const circularText = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

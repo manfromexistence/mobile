@@ -1,31 +1,28 @@
-"use client"
+"use client";
 
-import { Cog, PanelLeft, ShieldAlert, ShieldBan, Trash2 } from "lucide-react"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
-import { BrowserScreen } from "@/features/dx/components/screens/browser-screen"
-import { CodeScreen } from "@/features/dx/components/screens/code-screen"
-import { TerminalScreen } from "@/features/dx/components/screens/terminal-screen"
-import { WelcomeScreen } from "@/features/dx/components/screens/welcome-screen"
+import { Cog, PanelLeft, ShieldAlert, ShieldBan, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { BrowserScreen } from "@/features/dx/components/screens/browser-screen";
+import { CodeScreen } from "@/features/dx/components/screens/code-screen";
+import { TerminalScreen } from "@/features/dx/components/screens/terminal-screen";
+import { WelcomeScreen } from "@/features/dx/components/screens/welcome-screen";
 
 const screenItems = [
   { id: "welcome", label: "Welcome", component: WelcomeScreen },
   // { id: "terminal", label: "Terminal", component: TerminalScreen },
   // { id: "code", label: "Code Editor", component: CodeScreen },
   // { id: "browser", label: "Browser", component: BrowserScreen },
-]
+];
 
 interface SidebarHeaderProps {
-  sidebarExpanded: boolean
-  onToggleSidebar: () => void
+  sidebarExpanded: boolean;
+  onToggleSidebar: () => void;
 }
 
-export function SidebarHeader({
-  sidebarExpanded,
-  onToggleSidebar,
-}: SidebarHeaderProps) {
-  const [cogDialogOpen, setCogDialogOpen] = useState(false)
+export function SidebarHeader({ sidebarExpanded, onToggleSidebar }: SidebarHeaderProps) {
+  const [cogDialogOpen, setCogDialogOpen] = useState(false);
 
   return (
     <div className="grid h-11 shrink-0 grid-cols-2 gap-px">
@@ -110,5 +107,5 @@ export function SidebarHeader({
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

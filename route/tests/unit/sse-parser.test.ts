@@ -180,7 +180,7 @@ test("parseSSEToClaudeResponse preserves signature_delta when it arrives before 
 test("parseSSEToClaudeResponse ignores malformed payloads and returns null when nothing valid remains", () => {
   const parsed = parseSSEToClaudeResponse(
     ["event: content_block_delta", "data: not-json", "", "data: [DONE]"].join("\n"),
-    "fallback-model"
+    "fallback-model",
   );
 
   assert.equal(parsed, null);

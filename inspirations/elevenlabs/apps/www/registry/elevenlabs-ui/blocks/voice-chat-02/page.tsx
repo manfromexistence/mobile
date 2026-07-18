@@ -1,84 +1,83 @@
-"use client"
+"use client";
 
-import { useCallback, useState } from "react"
+import { useCallback, useState } from "react";
 import {
   ConversationProvider,
   useConversationControls,
   useConversationStatus,
-} from "@elevenlabs/react"
-import { AnimatePresence, motion } from "framer-motion"
-import { Loader2Icon, PhoneIcon, PhoneOffIcon } from "lucide-react"
+} from "@elevenlabs/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Loader2Icon, PhoneIcon, PhoneOffIcon } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
-import { Card } from "@/registry/elevenlabs-ui/ui/card"
-import { Orb } from "@/registry/elevenlabs-ui/ui/orb"
-import { ShimmeringText } from "@/registry/elevenlabs-ui/ui/shimmering-text"
+import { cn } from "@/lib/utils";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
+import { Card } from "@/registry/elevenlabs-ui/ui/card";
+import { Orb } from "@/registry/elevenlabs-ui/ui/orb";
+import { ShimmeringText } from "@/registry/elevenlabs-ui/ui/shimmering-text";
 
 const DEFAULT_AGENT = {
   agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID!,
   name: "Customer Support",
   description: "Tap to start voice chat",
-}
+};
 
 export default function Page() {
   return (
     <ConversationProvider>
       <VoiceChat02 />
     </ConversationProvider>
-  )
+  );
 }
 
 export function VoiceChat02() {
-  const { status } = useConversationStatus()
-  const { startSession, endSession, getInputVolume, getOutputVolume } =
-    useConversationControls()
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { status } = useConversationStatus();
+  const { startSession, endSession, getInputVolume, getOutputVolume } = useConversationControls();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const startConversation = useCallback(async () => {
     try {
-      setErrorMessage(null)
-      await navigator.mediaDevices.getUserMedia({ audio: true })
+      setErrorMessage(null);
+      await navigator.mediaDevices.getUserMedia({ audio: true });
       startSession({
         agentId: DEFAULT_AGENT.agentId,
         connectionType: "webrtc",
-      })
+      });
     } catch (error) {
-      console.error("Error starting conversation:", error)
+      console.error("Error starting conversation:", error);
       if (error instanceof DOMException && error.name === "NotAllowedError") {
-        setErrorMessage("Please enable microphone permissions in your browser.")
+        setErrorMessage("Please enable microphone permissions in your browser.");
       }
     }
-  }, [startSession])
+  }, [startSession]);
 
   const handleCall = useCallback(() => {
     if (status === "disconnected" || status === "error") {
-      startConversation()
+      startConversation();
     } else if (status === "connected") {
-      endSession()
+      endSession();
     }
-  }, [status, endSession, startConversation])
+  }, [status, endSession, startConversation]);
 
-  const isCallActive = status === "connected"
-  const isTransitioning = status === "connecting"
+  const isCallActive = status === "connected";
+  const isTransitioning = status === "connecting";
 
   const scaledInputVolume = useCallback(() => {
     try {
-      const rawValue = getInputVolume() ?? 0
-      return Math.min(1.0, Math.pow(rawValue, 0.5) * 2.5)
+      const rawValue = getInputVolume() ?? 0;
+      return Math.min(1.0, Math.pow(rawValue, 0.5) * 2.5);
     } catch {
-      return 0
+      return 0;
     }
-  }, [getInputVolume])
+  }, [getInputVolume]);
 
   const scaledOutputVolume = useCallback(() => {
     try {
-      const rawValue = getOutputVolume() ?? 0
-      return Math.min(1.0, Math.pow(rawValue, 0.5) * 2.5)
+      const rawValue = getOutputVolume() ?? 0;
+      return Math.min(1.0, Math.pow(rawValue, 0.5) * 2.5);
     } catch {
-      return 0
+      return 0;
     }
-  }, [getOutputVolume])
+  }, [getOutputVolume]);
 
   return (
     <Card className="flex h-[400px] w-full flex-col items-center justify-center overflow-hidden p-6">
@@ -131,7 +130,7 @@ export function VoiceChat02() {
                   className={cn(
                     "h-2 w-2 rounded-full transition-all duration-300",
                     status === "connected" && "bg-green-500",
-                    isTransitioning && "bg-primary/60 animate-pulse"
+                    isTransitioning && "bg-primary/60 animate-pulse",
                   )}
                 />
                 <span className="text-sm capitalize">
@@ -189,5 +188,5 @@ export function VoiceChat02() {
         </Button>
       </div>
     </Card>
-  )
+  );
 }

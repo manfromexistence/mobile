@@ -41,7 +41,7 @@ test("#5757: runtime tsx/esm loader transforms modern syntax (esbuild functional
   const line = (res.stdout || "").split("\n").find((l) => l.startsWith("TSX_TRANSFORM_OK"));
   assert.ok(
     line,
-    `missing TSX_TRANSFORM_OK marker.\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`
+    `missing TSX_TRANSFORM_OK marker.\nstdout:\n${res.stdout}\nstderr:\n${res.stderr}`,
   );
 
   const payload = JSON.parse(line!.slice("TSX_TRANSFORM_OK ".length)) as {
@@ -60,10 +60,10 @@ test("#5757: runtime tsx/esm loader transforms modern syntax (esbuild functional
 
 test("#5757: resolved esbuild stays within tsx's declared range (blocks the out-of-range override)", () => {
   const tsxPkg = JSON.parse(
-    readFileSync(join(REPO_ROOT, "node_modules", "tsx", "package.json"), "utf8")
+    readFileSync(join(REPO_ROOT, "node_modules", "tsx", "package.json"), "utf8"),
   ) as { dependencies?: Record<string, string> };
   const esbuildPkg = JSON.parse(
-    readFileSync(join(REPO_ROOT, "node_modules", "esbuild", "package.json"), "utf8")
+    readFileSync(join(REPO_ROOT, "node_modules", "esbuild", "package.json"), "utf8"),
   ) as { version: string };
 
   const declared = tsxPkg.dependencies?.esbuild ?? "";
@@ -75,6 +75,6 @@ test("#5757: resolved esbuild stays within tsx's declared range (blocks the out-
     esbuildPkg.version.startsWith(baseMinor + "."),
     `esbuild ${esbuildPkg.version} is outside tsx's declared range "${declared}". ` +
       `A global esbuild override (such as the esbuild@0.27.4 workaround proposed in #5757) ` +
-      `breaks tsx and fumadocs-mdx (both require esbuild@^0.28) — do not add one.`
+      `breaks tsx and fumadocs-mdx (both require esbuild@^0.28) — do not add one.`,
   );
 });

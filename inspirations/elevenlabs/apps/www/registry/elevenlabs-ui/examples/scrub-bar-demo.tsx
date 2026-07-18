@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
 import {
   ScrubBarContainer,
@@ -8,12 +8,12 @@ import {
   ScrubBarThumb,
   ScrubBarTimeLabel,
   ScrubBarTrack,
-} from "@/registry/elevenlabs-ui/ui/scrub-bar"
+} from "@/registry/elevenlabs-ui/ui/scrub-bar";
 
 const ScrubBarDemo = () => {
-  const [value, setValue] = React.useState(30)
-  const [isScrubbing, setIsScrubbing] = React.useState(false)
-  const duration = 100
+  const [value, setValue] = React.useState(30);
+  const [isScrubbing, setIsScrubbing] = React.useState(false);
+  const duration = 100;
 
   return (
     <div className="flex w-full max-w-sm flex-col items-center gap-4 p-4">
@@ -33,7 +33,7 @@ const ScrubBarDemo = () => {
         <ScrubBarTimeLabel time={duration} className="w-10 text-center" />
       </ScrubBarContainer>
     </div>
-  )
-}
+  );
+};
 
-export default ScrubBarDemo
+export default ScrubBarDemo;

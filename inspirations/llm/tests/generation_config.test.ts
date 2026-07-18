@@ -1,7 +1,4 @@
-import {
-  GenerationConfig,
-  postInitAndCheckGenerationConfigValues,
-} from "../src/config";
+import { GenerationConfig, postInitAndCheckGenerationConfigValues } from "../src/config";
 import { describe, expect, test } from "@jest/globals";
 
 describe("Check generation config illegal values", () => {
@@ -35,9 +32,7 @@ describe("Check generation config illegal values", () => {
         },
       };
       postInitAndCheckGenerationConfigValues(genConfig);
-    }).toThrow(
-      "Make sure logit_bias's keys to be number represented in string.",
-    );
+    }).toThrow("Make sure logit_bias's keys to be number represented in string.");
   });
 
   test("top_logprobs out of range", () => {

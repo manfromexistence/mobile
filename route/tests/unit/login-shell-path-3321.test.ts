@@ -22,14 +22,14 @@ test("login shell path public surface excludes removed cache reset helper", () =
 test("mergeShellPath unions and de-dupes, keeping base entries first", () => {
   assert.equal(
     mergeShellPath("/usr/bin:/bin", "/opt/homebrew/bin:/usr/bin", ":"),
-    "/usr/bin:/bin:/opt/homebrew/bin"
+    "/usr/bin:/bin:/opt/homebrew/bin",
   );
 });
 
 test("mergeShellPath ignores empty/whitespace segments", () => {
   assert.equal(
     mergeShellPath("/usr/bin::", "  :/opt/homebrew/bin", ":"),
-    "/usr/bin:/opt/homebrew/bin"
+    "/usr/bin:/opt/homebrew/bin",
   );
 });
 

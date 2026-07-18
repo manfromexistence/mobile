@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import './TextCursor.css';
+import React, { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import "./TextCursor.css";
 
 interface TextCursorProps {
   text: string;
@@ -23,13 +23,13 @@ interface TrailItem {
 }
 
 const TextCursor: React.FC<TextCursorProps> = ({
-  text = '⚛️',
+  text = "⚛️",
   spacing = 100,
   followMouseDirection = true,
   randomFloat = true,
   exitDuration = 0.5,
   removalInterval = 30,
-  maxPoints = 5
+  maxPoints = 5,
 }) => {
   const [trail, setTrail] = useState<TrailItem[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -42,7 +42,7 @@ const TextCursor: React.FC<TextCursorProps> = ({
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
 
-    setTrail(prev => {
+    setTrail((prev) => {
       const newTrail = [...prev];
 
       const createRandomData = () =>
@@ -50,7 +50,7 @@ const TextCursor: React.FC<TextCursorProps> = ({
           ? {
               randomX: Math.random() * 10 - 5,
               randomY: Math.random() * 10 - 5,
-              randomRotate: Math.random() * 10 - 5
+              randomRotate: Math.random() * 10 - 5,
             }
           : {};
 
@@ -60,7 +60,7 @@ const TextCursor: React.FC<TextCursorProps> = ({
           x: mouseX,
           y: mouseY,
           angle: 0,
-          ...createRandomData()
+          ...createRandomData(),
         });
       } else {
         const last = newTrail[newTrail.length - 1];
@@ -84,7 +84,7 @@ const TextCursor: React.FC<TextCursorProps> = ({
               x: newX,
               y: newY,
               angle: computedAngle,
-              ...createRandomData()
+              ...createRandomData(),
             });
           }
         }
@@ -103,14 +103,14 @@ const TextCursor: React.FC<TextCursorProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    container.addEventListener('mousemove', handleMouseMove);
-    return () => container.removeEventListener('mousemove', handleMouseMove);
+    container.addEventListener("mousemove", handleMouseMove);
+    return () => container.removeEventListener("mousemove", handleMouseMove);
   }, [containerRef.current]);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (Date.now() - lastMoveTimeRef.current > 100) {
-        setTrail(prev => (prev.length > 0 ? prev.slice(1) : prev));
+        setTrail((prev) => (prev.length > 0 ? prev.slice(1) : prev));
       }
     }, removalInterval);
     return () => clearInterval(interval);
@@ -120,7 +120,7 @@ const TextCursor: React.FC<TextCursorProps> = ({
     <div ref={containerRef} className="text-cursor-container">
       <div className="text-cursor-inner">
         <AnimatePresence>
-          {trail.map(item => (
+          {trail.map((item) => (
             <motion.div
               key={item.id}
               initial={{ opacity: 0, scale: 1, rotate: item.angle }}
@@ -129,16 +129,23 @@ const TextCursor: React.FC<TextCursorProps> = ({
                 scale: 1,
                 x: randomFloat ? [0, item.randomX || 0, 0] : 0,
                 y: randomFloat ? [0, item.randomY || 0, 0] : 0,
-                rotate: randomFloat ? [item.angle, item.angle + (item.randomRotate || 0), item.angle] : item.angle
+                rotate: randomFloat
+                  ? [item.angle, item.angle + (item.randomRotate || 0), item.angle]
+                  : item.angle,
               }}
               exit={{ opacity: 0, scale: 0 }}
               transition={{
-                opacity: { duration: exitDuration, ease: 'easeOut' },
+                opacity: { duration: exitDuration, ease: "easeOut" },
                 ...(randomFloat && {
-                  x: { duration: 2, ease: 'easeInOut', repeat: Infinity, repeatType: 'mirror' },
-                  y: { duration: 2, ease: 'easeInOut', repeat: Infinity, repeatType: 'mirror' },
-                  rotate: { duration: 2, ease: 'easeInOut', repeat: Infinity, repeatType: 'mirror' }
-                })
+                  x: { duration: 2, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" },
+                  y: { duration: 2, ease: "easeInOut", repeat: Infinity, repeatType: "mirror" },
+                  rotate: {
+                    duration: 2,
+                    ease: "easeInOut",
+                    repeat: Infinity,
+                    repeatType: "mirror",
+                  },
+                }),
               }}
               className="text-cursor-item"
               style={{ left: item.x, top: item.y }}

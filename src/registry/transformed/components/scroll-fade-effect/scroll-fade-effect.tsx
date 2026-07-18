@@ -1,14 +1,14 @@
-import type { ComponentProps } from "react"
+import type { ComponentProps } from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 export type ScrollFadeEffectProps = ComponentProps<"div"> & {
   /**
    * Scroll direction to apply the fade effect.
    * @defaultValue "vertical"
    * */
-  orientation?: "horizontal" | "vertical"
-}
+  orientation?: "horizontal" | "vertical";
+};
 
 export function ScrollFadeEffect({
   className,
@@ -21,9 +21,9 @@ export function ScrollFadeEffect({
       className={cn(
         "data-[orientation=horizontal]:overflow-x-auto data-vertical:overflow-y-auto",
         "data-[orientation=horizontal]:scroll-fade-effect-x data-vertical:scroll-fade-effect-y",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }

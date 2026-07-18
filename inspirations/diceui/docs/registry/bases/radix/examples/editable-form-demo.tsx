@@ -49,9 +49,7 @@ export default function EditableFormDemo() {
   });
 
   const onSubmit = React.useCallback((input: FormSchema) => {
-    toast.success(
-      <pre className="w-full">{JSON.stringify(input, null, 2)}</pre>,
-    );
+    toast.success(<pre className="w-full">{JSON.stringify(input, null, 2)}</pre>);
   }, []);
 
   return (
@@ -69,10 +67,7 @@ export default function EditableFormDemo() {
                 <Editable
                   defaultValue={field.value}
                   onSubmit={field.onChange}
-                  invalid={
-                    !!form.formState.errors.name &&
-                    !!form.formState.touchedFields.name
-                  }
+                  invalid={!!form.formState.errors.name && !!form.formState.touchedFields.name}
                 >
                   <FormLabel asChild>
                     <EditableLabel>Name</EditableLabel>
@@ -115,10 +110,7 @@ export default function EditableFormDemo() {
                 <Editable
                   defaultValue={field.value}
                   onSubmit={field.onChange}
-                  invalid={
-                    !!form.formState.errors.title &&
-                    !!form.formState.touchedFields.title
-                  }
+                  invalid={!!form.formState.errors.title && !!form.formState.touchedFields.title}
                 >
                   <FormLabel asChild>
                     <EditableLabel>Title</EditableLabel>
@@ -153,12 +145,7 @@ export default function EditableFormDemo() {
           )}
         />
         <div className="flex w-fit gap-2 self-end">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-fit"
-            onClick={() => form.reset()}
-          >
+          <Button type="button" variant="outline" className="w-fit" onClick={() => form.reset()}>
             Reset
           </Button>
           <Button type="submit" className="w-fit">

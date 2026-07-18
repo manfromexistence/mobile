@@ -1,9 +1,7 @@
 {
   "name": "compare-slider-customization-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "compare-slider"
-  ],
+  "registryDependencies": ["compare-slider"],
   "files": [
     {
       "path": "examples/compare-slider-customization-demo.tsx",

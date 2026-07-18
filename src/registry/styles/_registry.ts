@@ -1,4 +1,4 @@
-import type { Registry } from "shadcn/schema"
+import type { Registry } from "shadcn/schema";
 
 export const styles: Registry["items"] = [
   {
@@ -6,8 +6,7 @@ export const styles: Registry["items"] = [
     type: "registry:style",
     cssVars: {
       theme: {
-        "color-line":
-          "color-mix(in oklab, var(--border) 64%, var(--background))",
+        "color-line": "color-mix(in oklab, var(--border) 64%, var(--background))",
       },
     },
     css: {
@@ -305,4 +304,4 @@ export const styles: Registry["items"] = [
       },
     },
   },
-]
+];

@@ -24,7 +24,7 @@ test("#6813: budget_tokens 0 passes through without dropping to default", () => 
   const r = openaiToGeminiRequest(
     "gemini/gemini-2.5-flash",
     base({ thinking: { type: "enabled", budget_tokens: 0 } }),
-    false
+    false,
   ) as GeminiReq;
   assert.equal(r.generationConfig?.thinkingConfig?.thinkingBudget, 0);
   assert.equal(r.generationConfig?.thinkingConfig?.includeThoughts, false);
@@ -34,7 +34,7 @@ test("#6813: budget_tokens 1 passes through", () => {
   const r = openaiToGeminiRequest(
     "gemini/gemini-2.5-flash",
     base({ thinking: { type: "enabled", budget_tokens: 1 } }),
-    false
+    false,
   ) as GeminiReq;
   assert.equal(r.generationConfig?.thinkingConfig?.thinkingBudget, 1);
 });
@@ -49,7 +49,7 @@ test("#6813: reasoning_effort none is the explicit off-switch (budget 0, no thou
   const r = openaiToGeminiRequest(
     "gemini/gemini-2.5-flash",
     base({ reasoning_effort: "none" }),
-    false
+    false,
   ) as GeminiReq;
   assert.equal(r.generationConfig?.thinkingConfig?.thinkingBudget, 0);
   assert.equal(r.generationConfig?.thinkingConfig?.includeThoughts, false);
@@ -59,7 +59,7 @@ test("reasoning_effort low maps to thinkingBudget 1024", () => {
   const r = openaiToGeminiRequest(
     "gemini/gemini-2.5-flash",
     base({ reasoning_effort: "low" }),
-    false
+    false,
   ) as GeminiReq;
   assert.equal(r.generationConfig?.thinkingConfig?.thinkingBudget, 1024);
 });
@@ -68,7 +68,7 @@ test("reasoning_effort medium falls back to the model default budget (>=1024)", 
   const r = openaiToGeminiRequest(
     "custom-model",
     { ...base({ reasoning_effort: "medium" }), model: "custom-model" },
-    false
+    false,
   ) as GeminiReq;
   assert.ok((r.generationConfig?.thinkingConfig?.thinkingBudget ?? 0) >= 1024);
 });
@@ -77,7 +77,7 @@ test("reasoning_effort high maps to the flash cap 24576", () => {
   const r = openaiToGeminiRequest(
     "gemini/gemini-2.5-flash",
     base({ reasoning_effort: "high" }),
-    false
+    false,
   ) as GeminiReq;
   assert.equal(r.generationConfig?.thinkingConfig?.thinkingBudget, 24576);
 });

@@ -23,15 +23,8 @@ interface DivProps extends React.ComponentProps<"div"> {
 
 interface PathProps extends React.ComponentProps<"path"> {}
 
-function getGaugeState(
-  value: number | undefined | null,
-  maxValue: number,
-): GaugeState {
-  return value == null
-    ? "indeterminate"
-    : value === maxValue
-      ? "complete"
-      : "loading";
+function getGaugeState(value: number | undefined | null, maxValue: number): GaugeState {
+  return value == null ? "indeterminate" : value === maxValue ? "complete" : "loading";
 }
 
 function getIsValidNumber(value: unknown): value is number {
@@ -42,11 +35,7 @@ function getIsValidMaxNumber(max: unknown): max is number {
   return getIsValidNumber(max) && max > 0;
 }
 
-function getIsValidValueNumber(
-  value: unknown,
-  min: number,
-  max: number,
-): value is number {
+function getIsValidValueNumber(value: unknown, min: number, max: number): value is number {
   return getIsValidNumber(value) && value <= max && value >= min;
 }
 
@@ -55,10 +44,7 @@ function getDefaultValueText(value: number, min: number, max: number): string {
   return Math.round(percentage).toString();
 }
 
-function getInvalidValueError(
-  propValue: string,
-  componentName: string,
-): string {
+function getInvalidValueError(propValue: string, componentName: string): string {
   return `Invalid prop \`value\` of value \`${propValue}\` supplied to \`${componentName}\`. The \`value\` prop must be a number between \`min\` and \`max\` (inclusive), or \`null\`/\`undefined\` for indeterminate state. The value will be clamped to the valid range.`;
 }
 
@@ -83,13 +69,7 @@ function polarToCartesian(
   };
 }
 
-function describeArc(
-  x: number,
-  y: number,
-  radius: number,
-  startAngle: number,
-  endAngle: number,
-) {
+function describeArc(x: number, y: number, radius: number, startAngle: number, endAngle: number) {
   const angleDiff = endAngle - startAngle;
 
   // For full circles (360 degrees), draw as two semi-circles
@@ -123,19 +103,7 @@ function describeArc(
   const end = polarToCartesian(x, y, radius, endAngle);
   const largeArcFlag = angleDiff <= 180 ? "0" : "1";
 
-  return [
-    "M",
-    start.x,
-    start.y,
-    "A",
-    radius,
-    radius,
-    0,
-    largeArcFlag,
-    1,
-    end.x,
-    end.y,
-  ].join(" ");
+  return ["M", start.x, start.y, "A", radius, radius, 0, largeArcFlag, 1, end.x, end.y].join(" ");
 }
 
 interface GaugeContextValue {
@@ -162,9 +130,7 @@ const GaugeContext = React.createContext<GaugeContextValue | null>(null);
 function useGaugeContext(consumerName: string) {
   const context = React.useContext(GaugeContext);
   if (!context) {
-    throw new Error(
-      `\`${consumerName}\` must be used within \`${GAUGE_NAME}\``,
-    );
+    throw new Error(`\`${consumerName}\` must be used within \`${GAUGE_NAME}\``);
   }
   return context;
 }
@@ -225,9 +191,7 @@ function Gauge(props: GaugeProps) {
         ? min
         : null;
 
-  const valueText = getIsValidNumber(value)
-    ? getValueText(value, min, max)
-    : undefined;
+  const valueText = getIsValidNumber(value) ? getValueText(value, min, max) : undefined;
   const state = getGaugeState(value, max);
   const radius = Math.max(0, (size - thickness) / 2);
   const center = size / 2;
@@ -261,13 +225,9 @@ function Gauge(props: GaugeProps) {
     const normEnd = getNormalizedAngle(endAngle);
 
     const includesTop =
-      normStart > normEnd
-        ? normStart <= 270 || normEnd >= 270
-        : normStart <= 270 && normEnd >= 270;
+      normStart > normEnd ? normStart <= 270 || normEnd >= 270 : normStart <= 270 && normEnd >= 270;
     const includesBottom =
-      normStart > normEnd
-        ? normStart <= 90 || normEnd >= 90
-        : normStart <= 90 && normEnd >= 90;
+      normStart > normEnd ? normStart <= 90 || normEnd >= 90 : normStart <= 90 && normEnd >= 90;
 
     if (includesTop) minY = Math.min(minY, center - radius);
     if (includesBottom) maxY = Math.max(maxY, center + radius);
@@ -335,10 +295,7 @@ function Gauge(props: GaugeProps) {
         data-min={min}
         data-percentage={percentage}
         {...rootProps}
-        className={cn(
-          "relative inline-flex w-fit flex-col items-center justify-center",
-          className,
-        )}
+        className={cn("relative inline-flex w-fit flex-col items-center justify-center", className)}
       />
     </GaugeContext.Provider>
   );
@@ -347,8 +304,7 @@ function Gauge(props: GaugeProps) {
 function GaugeIndicator(props: React.ComponentProps<"svg">) {
   const { className, ...indicatorProps } = props;
 
-  const { size, state, value, max, min, percentage } =
-    useGaugeContext(INDICATOR_NAME);
+  const { size, state, value, max, min, percentage } = useGaugeContext(INDICATOR_NAME);
 
   return (
     <svg
@@ -371,8 +327,7 @@ function GaugeIndicator(props: React.ComponentProps<"svg">) {
 function GaugeTrack(props: PathProps) {
   const { className, ...trackProps } = props;
 
-  const { center, radius, startAngle, endAngle, thickness, state } =
-    useGaugeContext(TRACK_NAME);
+  const { center, radius, startAngle, endAngle, thickness, state } = useGaugeContext(TRACK_NAME);
 
   const pathData = describeArc(center, center, radius, startAngle, endAngle);
 
@@ -433,10 +388,7 @@ function GaugeRange(props: PathProps) {
       strokeDashoffset={strokeDashoffset}
       vectorEffect="non-scaling-stroke"
       {...rangeProps}
-      className={cn(
-        "text-primary transition-[stroke-dashoffset] duration-700 ease-out",
-        className,
-      )}
+      className={cn("text-primary transition-[stroke-dashoffset] duration-700 ease-out", className)}
     />
   );
 }
@@ -444,8 +396,7 @@ function GaugeRange(props: PathProps) {
 function GaugeValueText(props: DivProps) {
   const { asChild, className, children, style, ...valueTextProps } = props;
 
-  const { valueTextId, state, arcCenterY, valueText } =
-    useGaugeContext(VALUE_TEXT_NAME);
+  const { valueTextId, state, arcCenterY, valueText } = useGaugeContext(VALUE_TEXT_NAME);
 
   const ValueTextPrimitive = asChild ? SlotPrimitive.Slot : "div";
 
@@ -480,10 +431,7 @@ function GaugeLabel(props: DivProps) {
       id={labelId}
       data-state={state}
       {...labelProps}
-      className={cn(
-        "mt-2 font-medium text-muted-foreground text-sm",
-        className,
-      )}
+      className={cn("mt-2 font-medium text-muted-foreground text-sm", className)}
     />
   );
 }

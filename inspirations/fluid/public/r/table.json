@@ -3,9 +3,7 @@
   "name": "table",
   "title": "Table",
   "description": "Animated table with proximity-based row hover highlighting and fluid border transitions. Includes TableHeader, TableBody, TableRow, TableHead, and TableCell sub-components.",
-  "dependencies": [
-    "framer-motion"
-  ],
+  "dependencies": ["framer-motion"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

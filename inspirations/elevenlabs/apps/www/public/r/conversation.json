@@ -1,12 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "conversation",
-  "dependencies": [
-    "use-stick-to-bottom"
-  ],
-  "registryDependencies": [
-    "button"
-  ],
+  "dependencies": ["use-stick-to-bottom"],
+  "registryDependencies": ["button"],
   "files": [
     {
       "path": "components/ui/conversation.tsx",

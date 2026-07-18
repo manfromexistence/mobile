@@ -32,7 +32,7 @@ test("T40: OpenCode config path resolves per-platform", () => {
   const linuxWithXdg = resolveOpencodeConfigPath(
     "linux",
     { XDG_CONFIG_HOME: "/tmp/xdg-config-home" },
-    "/home/dev"
+    "/home/dev",
   );
   assert.equal(linuxWithXdg, path.join("/tmp/xdg-config-home", "opencode", "opencode.json"));
 
@@ -44,7 +44,7 @@ test("T40: OpenCode config path resolves per-platform", () => {
   const windowsPath = resolveOpencodeConfigPath(
     "win32",
     { APPDATA: "C:\\Users\\dev\\AppData\\Roaming" },
-    "C:\\Users\\dev"
+    "C:\\Users\\dev",
   );
   assert.equal(windowsPath, path.join("C:\\Users\\dev", ".config", "opencode", "opencode.json"));
 
@@ -52,7 +52,7 @@ test("T40: OpenCode config path resolves per-platform", () => {
   const windowsXdg = resolveOpencodeConfigPath(
     "win32",
     { XDG_CONFIG_HOME: "D:\\xdg" },
-    "C:\\Users\\dev"
+    "C:\\Users\\dev",
   );
   assert.equal(windowsXdg, path.join("D:\\xdg", "opencode", "opencode.json"));
 });
@@ -73,7 +73,7 @@ test("T40: OpenCode config generator includes endpoint and selected API key", ()
       baseUrl: "http://localhost:20128/v1",
       apiKey: "sk_test_opencode",
       model: "claude-sonnet-4-5-thinking",
-    }
+    },
   );
   assert.ok(mergedConfig.provider.custom);
   assert.equal(mergedConfig.provider.omniroute.options.baseURL, "http://localhost:20128/v1");
@@ -102,11 +102,11 @@ test("T40: OpenCode config document uses current provider schema", () => {
   ]);
   assert.equal(
     configDocument.provider.omniroute.models["cc/claude-sonnet-4-20250514"].name,
-    "Claude Sonnet 4.5"
+    "Claude Sonnet 4.5",
   );
   assert.equal(
     configDocument.provider.omniroute.models["gg/gemini-2.5-pro"].name,
-    "Gemini 2.5 Pro"
+    "Gemini 2.5 Pro",
   );
   assert.equal(configDocument.providers, undefined);
 });
@@ -148,7 +148,7 @@ test("T40: OpenCode merge preserves unrelated config and updates only provider.o
       apiKey: "sk_test_opencode",
       models: ["cx/gpt-5.6-sol"],
       modelLabels: { "cx/gpt-5.6-sol": "GPT-5.6 Sol" },
-    }
+    },
   );
 
   assert.deepEqual(mergedConfig.provider.custom, { name: "Custom Provider" });
@@ -170,11 +170,11 @@ test("T40: OpenCode tool card references theme-aware brand assets", () => {
 test("T40: OpenCode light/dark provider assets are valid SVG files", async () => {
   const light = await fs.readFile(
     path.join(process.cwd(), "public/providers/opencode-light.svg"),
-    "utf-8"
+    "utf-8",
   );
   const dark = await fs.readFile(
     path.join(process.cwd(), "public/providers/opencode-dark.svg"),
-    "utf-8"
+    "utf-8",
   );
 
   assert.match(light, /^<svg[\s>]/);
@@ -191,6 +191,6 @@ test("T40: Windsurf was removed from CLI_TOOLS in plan 14 D17 (MITM backlog plan
   assert.equal(
     (CLI_TOOLS as Record<string, unknown>)["windsurf"],
     undefined,
-    "windsurf must be removed from CLI_TOOLS per plan 14 D17"
+    "windsurf must be removed from CLI_TOOLS per plan 14 D17",
   );
 });

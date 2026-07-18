@@ -14,11 +14,11 @@ import { novitaProvider } from "../../open-sse/config/providers/registry/novita/
 test("#5430 FriendliAI targets the serverless OpenAI-compatible endpoint, not dedicated", () => {
   assert.ok(
     friendliaiProvider.baseUrl.includes("/serverless/v1/"),
-    `baseUrl must use the serverless path, got: ${friendliaiProvider.baseUrl}`
+    `baseUrl must use the serverless path, got: ${friendliaiProvider.baseUrl}`,
   );
   assert.ok(
     !friendliaiProvider.baseUrl.includes("/dedicated/"),
-    "baseUrl must not use the dedicated path (403s serverless keys)"
+    "baseUrl must not use the dedicated path (403s serverless keys)",
   );
   assert.equal(friendliaiProvider.modelsUrl, "https://api.friendli.ai/serverless/v1/models");
 });
@@ -29,10 +29,10 @@ test("#5455 Novita targets the /openai/v1 endpoint with a valid model id", () =>
   // The `ai-ai/` org does not exist — Novita uses `meta-llama/…`.
   assert.ok(
     novitaProvider.models.every((m) => !m.id.startsWith("ai-ai/")),
-    "Novita model ids must not use the non-existent ai-ai/ org"
+    "Novita model ids must not use the non-existent ai-ai/ org",
   );
   assert.ok(
     novitaProvider.models.some((m) => m.id === "meta-llama/llama-3.1-8b-instruct"),
-    "Novita must list the valid meta-llama/llama-3.1-8b-instruct id"
+    "Novita must list the valid meta-llama/llama-3.1-8b-instruct id",
   );
 });

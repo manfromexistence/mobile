@@ -50,7 +50,7 @@ test("#5332 deepinfra response adapter → Cohere results sorted desc, honors to
   const out = transformResponseFromProvider(
     cfg,
     { scores: [0.1, 0.9, 0.5] },
-    { documents: ["a", "b", "c"], top_n: 2, return_documents: true }
+    { documents: ["a", "b", "c"], top_n: 2, return_documents: true },
   );
   assert.equal(out.results.length, 2);
   assert.equal(out.results[0].index, 1); // 0.9 highest
@@ -64,7 +64,7 @@ test("#5332 deepinfra response omits document text when return_documents=false",
   const out = transformResponseFromProvider(
     cfg,
     { scores: [0.3, 0.7] },
-    { documents: ["a", "b"], return_documents: false }
+    { documents: ["a", "b"], return_documents: false },
   );
   assert.equal(out.results[0].document, undefined);
   assert.equal(out.results[0].index, 1);

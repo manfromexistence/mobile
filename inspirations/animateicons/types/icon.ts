@@ -12,6 +12,6 @@
  * Importable via `@/types/icon`.
  */
 export type IconHandle = {
-	startAnimation: () => void;
-	stopAnimation: () => void;
+  startAnimation: () => void;
+  stopAnimation: () => void;
 };

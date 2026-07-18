@@ -411,13 +411,13 @@ test("providers route accepts managed local, audio, web-cookie and search provid
       await makeManagementSessionRequest("http://localhost/api/providers", {
         method: "POST",
         body: entry.body,
-      })
+      }),
     );
 
     assert.equal(
       response.status,
       201,
-      `${entry.provider} should be accepted by POST /api/providers`
+      `${entry.provider} should be accepted by POST /api/providers`,
     );
     const payload = (await response.json()) as any;
     assert.equal(payload.connection.provider, entry.provider);
@@ -433,7 +433,7 @@ test("providers route rejects upstream proxy tools as direct provider connection
         apiKey: "cpa-key",
         name: "CLIProxyAPI",
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 400);
@@ -446,7 +446,7 @@ test("DELETE /api/providers batch deletes connections", async () => {
       await makeManagementSessionRequest("http://localhost/api/providers", {
         method: "POST",
         body: { provider, name, apiKey },
-      })
+      }),
     );
 
   const r1 = await createReq("synthetic", "Conn 1", "key-1");
@@ -460,7 +460,7 @@ test("DELETE /api/providers batch deletes connections", async () => {
     await makeManagementSessionRequest("http://localhost/api/providers", {
       method: "DELETE",
       body: { ids: [id1, id3] },
-    })
+    }),
   );
 
   assert.equal(deleteRes.status, 200);
@@ -468,7 +468,7 @@ test("DELETE /api/providers batch deletes connections", async () => {
   assert.equal(deletePayload.deleted, 2);
 
   const listRes = await providersRoute.GET(
-    await makeManagementSessionRequest("http://localhost/api/providers")
+    await makeManagementSessionRequest("http://localhost/api/providers"),
   );
   const listPayload = (await listRes.json()) as any;
   const remainingIds = listPayload.connections.map((c) => c.id);
@@ -482,7 +482,7 @@ test("DELETE /api/providers rejects empty ids array", async () => {
     await makeManagementSessionRequest("http://localhost/api/providers", {
       method: "DELETE",
       body: { ids: [] },
-    })
+    }),
   );
   assert.equal(res.status, 400);
 });
@@ -492,7 +492,7 @@ test("DELETE /api/providers rejects ids over 100 limit", async () => {
     await makeManagementSessionRequest("http://localhost/api/providers", {
       method: "DELETE",
       body: { ids: Array.from({ length: 101 }, (_, i) => `id-${i}`) },
-    })
+    }),
   );
   assert.equal(res.status, 400);
   const payload = (await res.json()) as any;
@@ -504,7 +504,7 @@ test("DELETE /api/providers rejects non-array ids", async () => {
     await makeManagementSessionRequest("http://localhost/api/providers", {
       method: "DELETE",
       body: { ids: "not-an-array" },
-    })
+    }),
   );
   assert.equal(res.status, 400);
 });

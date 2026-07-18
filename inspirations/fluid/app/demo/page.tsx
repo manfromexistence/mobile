@@ -58,14 +58,16 @@ function DemoPageInner() {
 
   const componentMap = new Map(componentList.map((c) => [c.slug, c]));
 
-  const slides = slideOrder.map((slug) => {
-    if (slug === "__settings__") {
-      return { slug: SETTINGS_SLUG, name: "Make them yours", type: "settings" as const };
-    }
-    const c = componentMap.get(slug);
-    if (!c || !previewMap[c.slug]) return null;
-    return { slug: c.slug, name: c.name, isNew: c.isNew, type: "component" as const };
-  }).filter((s): s is NonNullable<typeof s> => s != null);
+  const slides = slideOrder
+    .map((slug) => {
+      if (slug === "__settings__") {
+        return { slug: SETTINGS_SLUG, name: "Make them yours", type: "settings" as const };
+      }
+      const c = componentMap.get(slug);
+      if (!c || !previewMap[c.slug]) return null;
+      return { slug: c.slug, name: c.name, isNew: c.isNew, type: "component" as const };
+    })
+    .filter((s): s is NonNullable<typeof s> => s != null);
 
   const paramSlug = searchParams.get("c");
   const paramIndex = slides.findIndex((s) => s.slug === paramSlug);
@@ -84,7 +86,7 @@ function DemoPageInner() {
       const slug = slides[index].slug;
       router.replace(`/demo?c=${slug}`, { scroll: false });
     },
-    [slides, router]
+    [slides, router],
   );
 
   useLayoutEffect(() => {
@@ -122,10 +124,11 @@ function DemoPageInner() {
         role === "radiogroup" ||
         role === "listbox" ||
         role === "menu"
-      ) return;
+      )
+        return;
 
       const closest = (e.target as HTMLElement).closest(
-        "[role=slider],[role=tablist],[role=radiogroup],[role=listbox],[role=menu],[role=menubar]"
+        "[role=slider],[role=tablist],[role=radiogroup],[role=listbox],[role=menu],[role=menubar]",
       );
       if (closest) return;
 
@@ -163,15 +166,29 @@ function DemoPageInner() {
             </p>
             <div className="flex items-center gap-2 mt-2">
               <Link href="/docs">
-                <Button variant="primary" size="sm">Learn more</Button>
+                <Button variant="primary" size="sm">
+                  Learn more
+                </Button>
               </Link>
               <Link href="/compare">
-                <Button variant="tertiary" size="sm">Compare</Button>
+                <Button variant="tertiary" size="sm">
+                  Compare
+                </Button>
               </Link>
             </div>
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            <Tooltip content={prevSlide ? <span>{prevSlide.name} &ensp;<kbd className="font-mono opacity-50">&larr;</kbd></span> : "No previous"}>
+            <Tooltip
+              content={
+                prevSlide ? (
+                  <span>
+                    {prevSlide.name} &ensp;<kbd className="font-mono opacity-50">&larr;</kbd>
+                  </span>
+                ) : (
+                  "No previous"
+                )
+              }
+            >
               <Button
                 variant="ghost"
                 size="icon"
@@ -182,7 +199,17 @@ function DemoPageInner() {
                 <ArrowRight className="rotate-180" />
               </Button>
             </Tooltip>
-            <Tooltip content={nextSlide ? <span>{nextSlide.name} &ensp;<kbd className="font-mono opacity-50">&rarr;</kbd></span> : "No next"}>
+            <Tooltip
+              content={
+                nextSlide ? (
+                  <span>
+                    {nextSlide.name} &ensp;<kbd className="font-mono opacity-50">&rarr;</kbd>
+                  </span>
+                ) : (
+                  "No next"
+                )
+              }
+            >
               <Button
                 variant="ghost"
                 size="icon"
@@ -203,10 +230,14 @@ function DemoPageInner() {
           aspectRatio: `${BASE_WIDTH} / ${BASE_HEIGHT}`,
         }}
       >
-        {current && (
-          current.type === "settings" ? (
+        {current &&
+          (current.type === "settings" ? (
             <BentoCard key={current.slug} slug="" name={current.name} style={{ height: "100%" }}>
-              <div ref={setScaleEl} className="w-full max-w-[420px] mx-auto flex justify-center relative" style={{ transform: `scale(${scale})`, transformOrigin: "center" }}>
+              <div
+                ref={setScaleEl}
+                className="w-full max-w-[420px] mx-auto flex justify-center relative"
+                style={{ transform: `scale(${scale})`, transformOrigin: "center" }}
+              >
                 <TooltipPortalContainer value={scaleEl}>
                   <ColorPickerPortalContainer value={scaleEl}>
                     <SettingsContent tooltipSide="right" />
@@ -222,7 +253,11 @@ function DemoPageInner() {
               isNew={"isNew" in current ? current.isNew : undefined}
               style={{ height: "100%" }}
             >
-              <div ref={setScaleEl} className="w-full max-w-[420px] mx-auto flex justify-center relative" style={{ transform: `scale(${scale})`, transformOrigin: "center" }}>
+              <div
+                ref={setScaleEl}
+                className="w-full max-w-[420px] mx-auto flex justify-center relative"
+                style={{ transform: `scale(${scale})`, transformOrigin: "center" }}
+              >
                 <TooltipPortalContainer value={scaleEl}>
                   <ColorPickerPortalContainer value={scaleEl}>
                     <SlidePreview slug={current.slug} />
@@ -230,8 +265,7 @@ function DemoPageInner() {
                 </TooltipPortalContainer>
               </div>
             </BentoCard>
-          )
-        )}
+          ))}
       </div>
 
       {/* Progress indicator */}

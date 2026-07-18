@@ -40,21 +40,15 @@ export default function TourDemo() {
       <div className="grid grid-cols-3 gap-4">
         <div id="feature-1" className="rounded-lg border p-4 text-center">
           <h3 className="font-semibold">Analytics</h3>
-          <p className="text-muted-foreground text-sm">
-            Track your performance metrics
-          </p>
+          <p className="text-muted-foreground text-sm">Track your performance metrics</p>
         </div>
         <div id="feature-2" className="rounded-lg border p-4 text-center">
           <h3 className="font-semibold">Projects</h3>
-          <p className="text-muted-foreground text-sm">
-            Manage your active projects
-          </p>
+          <p className="text-muted-foreground text-sm">Manage your active projects</p>
         </div>
         <div id="feature-3" className="rounded-lg border p-4 text-center">
           <h3 className="font-semibold">Team</h3>
-          <p className="text-muted-foreground text-sm">
-            Collaborate with teammates
-          </p>
+          <p className="text-muted-foreground text-sm">Collaborate with teammates</p>
         </div>
       </div>
       <Tour
@@ -79,8 +73,7 @@ export default function TourDemo() {
             <TourHeader>
               <TourTitle>Welcome!</TourTitle>
               <TourDescription>
-                Let's walk through the main features of your dashboard in just a
-                few steps.
+                Let's walk through the main features of your dashboard in just a few steps.
               </TourDescription>
             </TourHeader>
             <TourClose />
@@ -90,8 +83,8 @@ export default function TourDemo() {
             <TourHeader>
               <TourTitle>Analytics Dashboard</TourTitle>
               <TourDescription>
-                View real-time insights, track KPIs, and monitor your team's
-                progress with interactive charts.
+                View real-time insights, track KPIs, and monitor your team's progress with
+                interactive charts.
               </TourDescription>
             </TourHeader>
             <TourClose />
@@ -101,8 +94,8 @@ export default function TourDemo() {
             <TourHeader>
               <TourTitle>Project Management</TourTitle>
               <TourDescription>
-                Create, organize, and track projects with powerful tools for
-                task management and deadlines.
+                Create, organize, and track projects with powerful tools for task management and
+                deadlines.
               </TourDescription>
             </TourHeader>
             <TourClose />
@@ -112,8 +105,8 @@ export default function TourDemo() {
             <TourHeader>
               <TourTitle>Team Collaboration</TourTitle>
               <TourDescription>
-                Invite members, assign roles, and collaborate seamlessly. This
-                step is required to continue.
+                Invite members, assign roles, and collaborate seamlessly. This step is required to
+                continue.
               </TourDescription>
             </TourHeader>
             <TourClose />

@@ -1,19 +1,8 @@
 "use client";
 
-import {
-  AnimatePresence,
-  motion,
-  useReducedMotion,
-  type Variants,
-} from "motion/react";
+import { AnimatePresence, motion, useReducedMotion, type Variants } from "motion/react";
 import { Check, Loader2, X } from "lucide-react";
-import {
-  forwardRef,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { forwardRef, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { EASE_OUT, SPRING_SWAP } from "@/lib/ease";
 import { Button, type ButtonProps } from "./base";
 
@@ -112,11 +101,7 @@ function TextSlot({
       transition={reduce ? { duration: 0 } : SPRING_SWAP}
       className="relative inline-block overflow-hidden whitespace-nowrap align-bottom"
     >
-      <span
-        ref={measureRef}
-        aria-hidden
-        className="invisible inline-block whitespace-nowrap"
-      >
+      <span ref={measureRef} aria-hidden className="invisible inline-block whitespace-nowrap">
         {children}
       </span>
 
@@ -164,63 +149,68 @@ function TextSlot({
   );
 }
 
-export const StatefulButton = forwardRef<HTMLButtonElement, StatefulButtonProps>(function StatefulButton(
-  {
-    state = "idle",
-    children,
-    loadingText = "Loading",
-    successText = "Done",
-    errorText = "Try again",
-    icon,
-    disabled,
-    ...rest
-  },
-  ref,
-) {
-  const isBusy = state === "loading";
-  const stateText =
-    state === "loading"
-      ? loadingText
-      : state === "success"
-        ? successText
-        : state === "error"
-        ? errorText
-        : children;
-  const textKey =
-    typeof stateText === "string" ? `${state}-${stateText}` : state;
+export const StatefulButton = forwardRef<HTMLButtonElement, StatefulButtonProps>(
+  function StatefulButton(
+    {
+      state = "idle",
+      children,
+      loadingText = "Loading",
+      successText = "Done",
+      errorText = "Try again",
+      icon,
+      disabled,
+      ...rest
+    },
+    ref,
+  ) {
+    const isBusy = state === "loading";
+    const stateText =
+      state === "loading"
+        ? loadingText
+        : state === "success"
+          ? successText
+          : state === "error"
+            ? errorText
+            : children;
+    const textKey = typeof stateText === "string" ? `${state}-${stateText}` : state;
 
-  return (
-    <Button ref={ref} disabled={disabled || isBusy} aria-busy={isBusy} whileHover={undefined} {...rest}>
-      <span
-        aria-live="polite"
-        className="relative inline-flex items-center justify-center overflow-hidden"
+    return (
+      <Button
+        ref={ref}
+        disabled={disabled || isBusy}
+        aria-busy={isBusy}
+        whileHover={undefined}
+        {...rest}
       >
-        <AnimatePresence initial={false}>
-          {state === "loading" ? (
-            <IconSlot keyId="loading-icon">
-              <Loader2 className="h-4 w-4 animate-spin" />
-            </IconSlot>
-          ) : null}
-          {state === "success" ? (
-            <IconSlot keyId="success-icon">
-              <Check className="h-4 w-4" />
-            </IconSlot>
-          ) : null}
-          {state === "error" ? (
-            <IconSlot keyId="error-icon">
-              <X className="h-4 w-4" />
-            </IconSlot>
-          ) : null}
-        </AnimatePresence>
+        <span
+          aria-live="polite"
+          className="relative inline-flex items-center justify-center overflow-hidden"
+        >
+          <AnimatePresence initial={false}>
+            {state === "loading" ? (
+              <IconSlot keyId="loading-icon">
+                <Loader2 className="h-4 w-4 animate-spin" />
+              </IconSlot>
+            ) : null}
+            {state === "success" ? (
+              <IconSlot keyId="success-icon">
+                <Check className="h-4 w-4" />
+              </IconSlot>
+            ) : null}
+            {state === "error" ? (
+              <IconSlot keyId="error-icon">
+                <X className="h-4 w-4" />
+              </IconSlot>
+            ) : null}
+          </AnimatePresence>
 
-        <TextSlot value={textKey}>{stateText}</TextSlot>
+          <TextSlot value={textKey}>{stateText}</TextSlot>
 
-        <AnimatePresence initial={false}>
-          {state === "idle" && icon ? (
-            <IconSlot keyId="idle-icon">{icon}</IconSlot>
-          ) : null}
-        </AnimatePresence>
-      </span>
-    </Button>
-  );
-});
+          <AnimatePresence initial={false}>
+            {state === "idle" && icon ? <IconSlot keyId="idle-icon">{icon}</IconSlot> : null}
+          </AnimatePresence>
+        </span>
+      </Button>
+    );
+  },
+);

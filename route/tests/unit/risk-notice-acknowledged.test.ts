@@ -65,7 +65,7 @@ test("acknowledge() persists and returns acknowledged: true on re-read", () => {
 test("different providerId returns correct isolated state", () => {
   globalThis.localStorage.setItem(
     RISK_ACKNOWLEDGED_STORAGE_KEY,
-    JSON.stringify({ claude: true, codex: true })
+    JSON.stringify({ claude: true, codex: true }),
   );
 
   assert.equal(isRiskAcknowledged("claude"), true);

@@ -1,9 +1,7 @@
 {
   "name": "hitbox",
   "type": "registry:component",
-  "dependencies": [
-    "radix-ui"
-  ],
+  "dependencies": ["radix-ui"],
   "files": [
     {
       "path": "components/hitbox.tsx",

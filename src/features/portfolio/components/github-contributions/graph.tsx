@@ -1,15 +1,11 @@
-"use client"
+"use client";
 
-import { format } from "date-fns"
-import { LoaderIcon } from "lucide-react"
-import { use } from "react"
+import { format } from "date-fns";
+import { LoaderIcon } from "lucide-react";
+import { use } from "react";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import type { Activity } from "@/registry/components/contribution-graph"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import type { Activity } from "@/registry/components/contribution-graph";
 import {
   ContributionGraph,
   ContributionGraphBlock,
@@ -17,14 +13,14 @@ import {
   ContributionGraphFooter,
   ContributionGraphLegend,
   ContributionGraphTotalCount,
-} from "@/registry/components/contribution-graph"
+} from "@/registry/components/contribution-graph";
 
 export function GitHubContributionGraph({
   contributions,
 }: {
-  contributions: Promise<Activity[]>
+  contributions: Promise<Activity[]>;
 }) {
-  const data = use(contributions)
+  const data = use(contributions);
 
   return (
     <ContributionGraph
@@ -55,8 +51,8 @@ export function GitHubContributionGraph({
             />
             <TooltipContent className="font-sans">
               <p>
-                {activity.count} contribution{activity.count > 1 ? "s" : null}{" "}
-                on {format(new Date(activity.date), "dd.MM.yyyy")}
+                {activity.count} contribution{activity.count > 1 ? "s" : null} on{" "}
+                {format(new Date(activity.date), "dd.MM.yyyy")}
               </p>
             </TooltipContent>
           </Tooltip>
@@ -67,8 +63,7 @@ export function GitHubContributionGraph({
         <ContributionGraphTotalCount>
           {({ totalCount }) => (
             <div className="text-muted-foreground">
-              {totalCount.toLocaleString("en")} contributions in the past 365
-              days.
+              {totalCount.toLocaleString("en")} contributions in the past 365 days.
             </div>
           )}
         </ContributionGraphTotalCount>
@@ -76,7 +71,7 @@ export function GitHubContributionGraph({
         <ContributionGraphLegend aria-hidden />
       </ContributionGraphFooter>
     </ContributionGraph>
-  )
+  );
 }
 
 export function GitHubContributionFallback() {
@@ -84,5 +79,5 @@ export function GitHubContributionFallback() {
     <div className="flex h-45 w-full items-center justify-center">
       <LoaderIcon className="animate-spin text-muted-foreground" />
     </div>
-  )
+  );
 }

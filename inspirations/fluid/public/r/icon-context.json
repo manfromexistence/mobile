@@ -3,12 +3,8 @@
   "name": "icon-context",
   "title": "Icon Context",
   "description": "React context provider for runtime icon library switching with Lucide fallback.",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "https://www.fluidfunctionalism.com/r/icon-map.json"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["https://www.fluidfunctionalism.com/r/icon-map.json"],
   "files": [
     {
       "path": "registry/default/lib/icon-context.tsx",

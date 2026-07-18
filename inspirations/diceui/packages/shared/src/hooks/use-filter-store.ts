@@ -10,10 +10,7 @@ interface FilterStore {
 }
 
 interface UseFilterStoreOptions<TElement extends HTMLElement, TData = {}> {
-  itemMap: Map<
-    React.RefObject<TElement | null>,
-    CollectionItem<TElement, TData>
-  >;
+  itemMap: Map<React.RefObject<TElement | null>, CollectionItem<TElement, TData>>;
   groupMap?: Map<string, Set<React.RefObject<TElement | null>>> | null;
   onFilter?: (options: string[], term: string) => string[];
   exactMatch?: boolean;
@@ -21,10 +18,7 @@ interface UseFilterStoreOptions<TElement extends HTMLElement, TData = {}> {
   onCallback?: (itemCount: number) => void;
 }
 
-function useFilterStore<
-  TElement extends HTMLElement,
-  TData extends { value: string },
->({
+function useFilterStore<TElement extends HTMLElement, TData extends { value: string }>({
   itemMap,
   groupMap,
   onFilter,
@@ -91,9 +85,7 @@ function useFilterStore<
       }
 
       // Sort by score in descending order and add to filterStore
-      const sortedScores = Array.from(scores.entries()).sort(
-        ([, a], [, b]) => b - a,
-      );
+      const sortedScores = Array.from(scores.entries()).sort(([, a], [, b]) => b - a);
 
       for (const [id, score] of sortedScores) {
         filterStore.items.set(id, score);
@@ -136,14 +128,7 @@ function useFilterStore<
     }
 
     onCallback?.(itemCount);
-  }, [
-    manualFiltering,
-    filterStore,
-    itemMap,
-    groupMap,
-    getItemScore,
-    onCallback,
-  ]);
+  }, [manualFiltering, filterStore, itemMap, groupMap, getItemScore, onCallback]);
 
   const getIsItemVisible = React.useCallback(
     (value: string) => {
@@ -156,10 +141,7 @@ function useFilterStore<
 
   const getIsListEmpty = React.useCallback(
     (manual = false) => {
-      return (
-        manual ||
-        (filterStore.itemCount === 0 && filterStore.search.trim() !== "")
-      );
+      return manual || (filterStore.itemCount === 0 && filterStore.search.trim() !== "");
     },
     [filterStore],
   );

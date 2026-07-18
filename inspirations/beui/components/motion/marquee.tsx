@@ -29,8 +29,12 @@ export function Marquee({
       className={cn(
         "group relative flex overflow-hidden",
         vertical ? "flex-col" : "flex-row",
-        fade && !vertical && "[mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]",
-        fade && vertical && "[mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)]",
+        fade &&
+          !vertical &&
+          "[mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]",
+        fade &&
+          vertical &&
+          "[mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)]",
         className,
       )}
       style={{ "--gap": gap } as React.CSSProperties}

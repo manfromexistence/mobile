@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useRef } from 'react';
-import * as THREE from 'three';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import React, { useEffect, useMemo, useRef } from "react";
+import * as THREE from "three";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 type GhostCursorProps = {
   className?: string;
@@ -18,7 +18,7 @@ type GhostCursorProps = {
 
   brightness?: number;
   color?: string;
-  mixBlendMode?: React.CSSProperties['mixBlendMode'];
+  mixBlendMode?: React.CSSProperties["mixBlendMode"];
   edgeIntensity?: number;
 
   maxDevicePixelRatio?: number;
@@ -39,8 +39,8 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
   bloomThreshold = 0.025,
 
   brightness = 1,
-  color = '#B497CF',
-  mixBlendMode = 'screen',
+  color = "#B497CF",
+  mixBlendMode = "screen",
   edgeIntensity = 0,
 
   maxDevicePixelRatio = 0.5,
@@ -48,7 +48,7 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
 
   fadeDelayMs,
   fadeDurationMs,
-  zIndex = 10
+  zIndex = 10,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -66,14 +66,17 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
   const currentMouseRef = useRef(new THREE.Vector2(0.5, 0.5));
   const velocityRef = useRef(new THREE.Vector2(0, 0));
   const fadeOpacityRef = useRef(1.0);
-  const lastMoveTimeRef = useRef(typeof performance !== 'undefined' ? performance.now() : Date.now());
+  const lastMoveTimeRef = useRef(
+    typeof performance !== "undefined" ? performance.now() : Date.now(),
+  );
   const pointerActiveRef = useRef(false);
   const runningRef = useRef(false);
   const hasValidSizeRef = useRef(false);
 
   const isTouch = useMemo(
-    () => typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0),
-    []
+    () =>
+      typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0),
+    [],
   );
 
   const pixelBudget = targetPixels ?? (isTouch ? 0.9e6 : 1.3e6);
@@ -177,7 +180,7 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
       uniforms: {
         tDiffuse: { value: null },
         iTime: { value: 0 },
-        intensity: { value: grainIntensity }
+        intensity: { value: grainIntensity },
       },
       vertexShader: `
         varying vec2 vUv;
@@ -200,7 +203,7 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
           color.rgb += n * intensity * color.rgb;
           gl_FragColor = color;
         }
-      `
+      `,
     };
   }, [grainIntensity]);
 
@@ -224,9 +227,9 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
             vec3 straight = c.rgb / a;
             gl_FragColor = vec4(clamp(straight, 0.0, 1.0), c.a);
           }
-        `
+        `,
       }),
-    []
+    [],
   );
 
   function calculateScale(el: HTMLElement) {
@@ -244,8 +247,8 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
     let active = true;
 
     const prevParentPos = parent.style.position;
-    if (!prevParentPos || prevParentPos === 'static') {
-      parent.style.position = 'relative';
+    if (!prevParentPos || prevParentPos === "static") {
+      parent.style.position = "relative";
     }
 
     const renderer = new THREE.WebGLRenderer({
@@ -253,24 +256,24 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
       alpha: true,
       depth: false,
       stencil: false,
-      powerPreference: isTouch ? 'low-power' : 'high-performance',
+      powerPreference: isTouch ? "low-power" : "high-performance",
       premultipliedAlpha: false,
-      preserveDrawingBuffer: false
+      preserveDrawingBuffer: false,
     });
     renderer.setClearColor(0x000000, 0);
     rendererRef.current = renderer;
 
-    renderer.domElement.style.pointerEvents = 'none';
+    renderer.domElement.style.pointerEvents = "none";
     if (mixBlendMode) {
       renderer.domElement.style.mixBlendMode = String(mixBlendMode);
     } else {
-      renderer.domElement.style.removeProperty('mix-blend-mode');
+      renderer.domElement.style.removeProperty("mix-blend-mode");
     }
 
-    renderer.domElement.style.display = 'block';
-    renderer.domElement.style.width = '100%';
-    renderer.domElement.style.height = '100%';
-    renderer.domElement.style.background = 'transparent';
+    renderer.domElement.style.display = "block";
+    renderer.domElement.style.width = "100%";
+    renderer.domElement.style.height = "100%";
+    renderer.domElement.style.background = "transparent";
 
     host.appendChild(renderer.domElement);
 
@@ -291,18 +294,18 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
         iTime: { value: 0 },
         iResolution: { value: new THREE.Vector3(1, 1, 1) },
         iMouse: { value: new THREE.Vector2(0.5, 0.5) },
-        iPrevMouse: { value: trailBufRef.current.map(v => v.clone()) },
+        iPrevMouse: { value: trailBufRef.current.map((v) => v.clone()) },
         iOpacity: { value: 1.0 },
         iScale: { value: 1.0 },
         iBaseColor: { value: new THREE.Vector3(baseColor.r, baseColor.g, baseColor.b) },
         iBrightness: { value: brightness },
-        iEdgeIntensity: { value: edgeIntensity }
+        iEdgeIntensity: { value: edgeIntensity },
       },
       vertexShader: baseVertexShader,
       fragmentShader,
       transparent: true,
       depthTest: false,
-      depthWrite: false
+      depthWrite: false,
     });
     materialRef.current = material;
 
@@ -315,7 +318,12 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
     const renderPass = new RenderPass(scene, camera);
     composer.addPass(renderPass);
 
-    const bloomPass = new UnrealBloomPass(new THREE.Vector2(1, 1), bloomStrength, bloomRadius, bloomThreshold);
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(1, 1),
+      bloomStrength,
+      bloomRadius,
+      bloomThreshold,
+    );
     bloomPassRef.current = bloomPass;
     composer.addPass(bloomPass);
 
@@ -338,11 +346,14 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
       }
 
       const currentDPR = Math.min(
-        typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
-        maxDevicePixelRatio
+        typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1,
+        maxDevicePixelRatio,
       );
       const need = cssW * cssH * currentDPR * currentDPR;
-      const scale = need <= pixelBudget ? 1 : Math.max(0.5, Math.min(1, Math.sqrt(pixelBudget / Math.max(1, need))));
+      const scale =
+        need <= pixelBudget
+          ? 1
+          : Math.max(0.5, Math.min(1, Math.sqrt(pixelBudget / Math.max(1, need))));
       const pixelRatio = currentDPR * scale;
 
       renderer.setPixelRatio(pixelRatio);
@@ -366,7 +377,7 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
     ro.observe(parent);
     ro.observe(host);
 
-    const start = typeof performance !== 'undefined' ? performance.now() : Date.now();
+    const start = typeof performance !== "undefined" ? performance.now() : Date.now();
     const animate = () => {
       if (!active) return;
 
@@ -384,7 +395,7 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
       if (pointerActiveRef.current) {
         velocityRef.current.set(
           currentMouseRef.current.x - mat.uniforms.iMouse.value.x,
-          currentMouseRef.current.y - mat.uniforms.iMouse.value.y
+          currentMouseRef.current.y - mat.uniforms.iMouse.value.y,
         );
         mat.uniforms.iMouse.value.copy(currentMouseRef.current);
         fadeOpacityRef.current = 1.0;
@@ -453,9 +464,9 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
       ensureLoop();
     };
 
-    parent.addEventListener('pointermove', onPointerMove, { passive: true });
-    parent.addEventListener('pointerenter', onPointerEnter, { passive: true });
-    parent.addEventListener('pointerleave', onPointerLeave, { passive: true });
+    parent.addEventListener("pointermove", onPointerMove, { passive: true });
+    parent.addEventListener("pointerenter", onPointerEnter, { passive: true });
+    parent.addEventListener("pointerleave", onPointerLeave, { passive: true });
 
     ensureLoop();
 
@@ -467,9 +478,9 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
       runningRef.current = false;
       rafRef.current = null;
 
-      parent.removeEventListener('pointermove', onPointerMove);
-      parent.removeEventListener('pointerenter', onPointerEnter);
-      parent.removeEventListener('pointerleave', onPointerLeave);
+      parent.removeEventListener("pointermove", onPointerMove);
+      parent.removeEventListener("pointerenter", onPointerEnter);
+      parent.removeEventListener("pointerleave", onPointerLeave);
       resizeObsRef.current?.disconnect();
 
       scene.clear();
@@ -485,7 +496,7 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
       if (renderer.domElement && renderer.domElement.parentElement) {
         renderer.domElement.parentElement.removeChild(renderer.domElement);
       }
-      if (!prevParentPos || prevParentPos === 'static') {
+      if (!prevParentPos || prevParentPos === "static") {
         parent.style.position = prevParentPos;
       }
     };
@@ -503,7 +514,7 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
     color,
     brightness,
     mixBlendMode,
-    edgeIntensity
+    edgeIntensity,
   ]);
 
   useEffect(() => {
@@ -537,14 +548,18 @@ const GhostCursor: React.FC<GhostCursorProps> = ({
     if (mixBlendMode) {
       el.style.mixBlendMode = String(mixBlendMode);
     } else {
-      el.style.removeProperty('mix-blend-mode');
+      el.style.removeProperty("mix-blend-mode");
     }
   }, [mixBlendMode]);
 
   const mergedStyle = useMemo<React.CSSProperties>(() => ({ zIndex, ...style }), [zIndex, style]);
 
   return (
-    <div ref={containerRef} className={`pointer-events-none absolute inset-0 ${className ?? ''}`} style={mergedStyle} />
+    <div
+      ref={containerRef}
+      className={`pointer-events-none absolute inset-0 ${className ?? ""}`}
+      style={mergedStyle}
+    />
   );
 };
 

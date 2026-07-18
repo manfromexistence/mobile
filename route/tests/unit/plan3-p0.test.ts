@@ -145,7 +145,7 @@ test("CodexExecutor forces stream=true for upstream compatibility", () => {
     "gpt-5.1-codex",
     { model: "gpt-5.1-codex", input: [], stream: false },
     false,
-    {}
+    {},
   );
   assert.equal(transformed.stream, true);
 });
@@ -165,7 +165,7 @@ test("Claude native messages can be round-tripped through OpenAI into Claude OAu
     null,
     "claude",
     null,
-    normalizeOptions
+    normalizeOptions,
   );
   const translated = translateRequest(
     FORMATS.OPENAI,
@@ -176,7 +176,7 @@ test("Claude native messages can be round-tripped through OpenAI into Claude OAu
     null,
     "claude",
     null,
-    normalizeOptions
+    normalizeOptions,
   );
 
   assert.deepEqual(translated.messages, [
@@ -194,7 +194,7 @@ test("CodexExecutor maps fast service tier to priority", () => {
     "gpt-5.1-codex",
     { model: "gpt-5.1-codex", input: [], service_tier: "fast" },
     true,
-    {}
+    {},
   );
   assert.equal(transformed.service_tier, "priority");
 });
@@ -206,7 +206,7 @@ test("shouldUseNativeCodexPassthrough only enables responses-native Codex reques
       sourceFormat: FORMATS.OPENAI_RESPONSES,
       endpointPath: "/v1/responses",
     }),
-    true
+    true,
   );
 
   assert.equal(
@@ -215,7 +215,7 @@ test("shouldUseNativeCodexPassthrough only enables responses-native Codex reques
       sourceFormat: FORMATS.OPENAI,
       endpointPath: "/v1/responses",
     }),
-    false
+    false,
   );
 
   assert.equal(
@@ -224,7 +224,7 @@ test("shouldUseNativeCodexPassthrough only enables responses-native Codex reques
       sourceFormat: FORMATS.OPENAI_RESPONSES,
       endpointPath: "/v1/responses",
     }),
-    false
+    false,
   );
 
   assert.equal(
@@ -233,7 +233,7 @@ test("shouldUseNativeCodexPassthrough only enables responses-native Codex reques
       sourceFormat: FORMATS.OPENAI_RESPONSES,
       endpointPath: "/v1/responses/compact",
     }),
-    true
+    true,
   );
 
   assert.equal(
@@ -242,7 +242,7 @@ test("shouldUseNativeCodexPassthrough only enables responses-native Codex reques
       sourceFormat: FORMATS.OPENAI_RESPONSES,
       endpointPath: "/v1/responses/items/history",
     }),
-    true
+    true,
   );
 
   assert.equal(
@@ -251,7 +251,7 @@ test("shouldUseNativeCodexPassthrough only enables responses-native Codex reques
       sourceFormat: FORMATS.OPENAI_RESPONSES,
       endpointPath: "/v1/chat/completions",
     }),
-    false
+    false,
   );
 });
 
@@ -265,7 +265,7 @@ test("CodexExecutor can apply per-connection fast service tier defaults", () => 
       providerSpecificData: {
         requestDefaults: { serviceTier: "priority" },
       },
-    }
+    },
   );
   assert.equal(transformed.service_tier, "priority");
 });
@@ -283,7 +283,7 @@ test("CodexExecutor does not request SSE accept header for compact requests", ()
       accessToken: "test-token",
       requestEndpointPath: "/v1/responses/compact",
     },
-    false
+    false,
   );
   assert.equal(headers.Accept, "application/json");
 });
@@ -304,7 +304,7 @@ test("CodexExecutor preserves native responses payloads for Codex passthrough", 
       stream: false,
     },
     false,
-    {}
+    {},
   );
 
   assert.equal(transformed.stream, true);
@@ -328,7 +328,7 @@ test("CodexExecutor gives model reasoning suffix precedence over client defaults
       reasoning_effort: "low",
     },
     true,
-    {}
+    {},
   );
 
   assert.equal(transformed.model, "gpt-5.5");
@@ -350,7 +350,7 @@ test("CodexExecutor strips streaming fields for compact passthrough", () => {
     false,
     {
       requestEndpointPath: "/v1/responses/compact",
-    }
+    },
   );
 
   assert.equal("stream" in transformed, false);
@@ -400,7 +400,7 @@ test("translateNonStreamingResponse converts Responses API payload to OpenAI cha
   const translated = translateNonStreamingResponse(
     responseBody,
     FORMATS.OPENAI_RESPONSES,
-    FORMATS.OPENAI
+    FORMATS.OPENAI,
   );
 
   assert.equal((translated as any).object, "chat.completion");
@@ -408,7 +408,7 @@ test("translateNonStreamingResponse converts Responses API payload to OpenAI cha
   (assert as any).equal((translated as any).choices[0].message.role, "assistant");
   (assert as any).equal(
     (translated as any).choices[0].message.content,
-    "Hello from responses API."
+    "Hello from responses API.",
   );
   assert.equal((translated as any).choices[0].finish_reason, "tool_calls");
   assert.equal(((translated as any).choices[0].message.tool_calls as any).length, 1);
@@ -462,7 +462,7 @@ test("detectFormatFromEndpoint uses chat completions endpoint for OpenAI chat pr
       max_output_tokens: 16,
       stream: false,
     },
-    "/v1/chat/completions"
+    "/v1/chat/completions",
   );
   assert.equal(format, FORMATS.OPENAI);
 });
@@ -475,7 +475,7 @@ test("detectFormatFromEndpoint forces Claude for /v1/messages", () => {
       max_tokens: 16,
       stream: false,
     },
-    "/v1/messages"
+    "/v1/messages",
   );
   assert.equal(format, FORMATS.CLAUDE);
 });
@@ -490,7 +490,7 @@ test("translateRequest normalizes openai-responses input string into list payloa
       input: "hello from responses",
       stream: false,
     },
-    false
+    false,
   );
 
   assert.ok(Array.isArray(translated.input));
@@ -512,7 +512,7 @@ test("translateRequest preserves service_tier when converting openai to openai-r
       service_tier: "fast",
       stream: false,
     },
-    false
+    false,
   );
 
   assert.equal(translated.service_tier, "fast");

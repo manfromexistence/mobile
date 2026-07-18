@@ -86,7 +86,7 @@ function renderCard(
   tool: CliCatalogEntry,
   batchStatus: ToolBatchStatus | null,
   detailHref: string,
-  hasActiveProviders: boolean
+  hasActiveProviders: boolean,
 ): HTMLElement {
   const container = document.createElement("div");
   document.body.appendChild(container);
@@ -100,7 +100,7 @@ function renderCard(
         batchStatus={batchStatus}
         detailHref={detailHref}
         hasActiveProviders={hasActiveProviders}
-      />
+      />,
     );
   });
   return container;

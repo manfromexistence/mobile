@@ -14,8 +14,9 @@ const providersDb = await import("../../src/lib/db/providers.ts");
 const providerNodesRoute = await import("../../src/app/api/provider-nodes/route.ts");
 const providerNodesIdRoute = await import("../../src/app/api/provider-nodes/[id]/route.ts");
 const { OPENAI_COMPATIBLE_PREFIX } = await import("../../src/shared/constants/providers.ts");
-const { createProviderNodeSchema, updateProviderNodeSchema } =
-  await import("../../src/shared/validation/schemas.ts");
+const { createProviderNodeSchema, updateProviderNodeSchema } = await import(
+  "../../src/shared/validation/schemas.ts"
+);
 
 async function resetStorage() {
   core.resetDbInstance();
@@ -120,7 +121,7 @@ test("provider nodes route creates an OpenAI-compatible node with iconUrl", asyn
       apiType: "chat",
       baseUrl: "https://custom.example.com/v1",
       iconUrl: "https://cdn.example.com/icons/custom.png",
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -136,7 +137,7 @@ test("provider nodes route creates nodes without iconUrl (null)", async () => {
       prefix: "no-icon",
       apiType: "chat",
       baseUrl: "https://noicon.example.com/v1",
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -151,7 +152,7 @@ test("provider nodes route update modifies iconUrl", async () => {
       prefix: "original-icon",
       apiType: "chat",
       baseUrl: "https://original.example.com/v1",
-    })
+    }),
   );
   const created = (await createResponse.json()) as any;
   const nodeId = created.node.id;
@@ -165,7 +166,7 @@ test("provider nodes route update modifies iconUrl", async () => {
       baseUrl: "https://updated.example.com/v1",
       iconUrl: "https://cdn.example.com/icons/updated.png",
     }),
-    { params: Promise.resolve({ id: nodeId }) }
+    { params: Promise.resolve({ id: nodeId }) },
   );
   const updated = (await updateResponse.json()) as any;
 
@@ -181,7 +182,7 @@ test("provider nodes route update can clear iconUrl by passing an empty string",
       apiType: "chat",
       baseUrl: "https://withicon.example.com/v1",
       iconUrl: "https://cdn.example.com/icons/keep.png",
-    })
+    }),
   );
   const created = (await createResponse.json()) as any;
   const nodeId = created.node.id;
@@ -195,7 +196,7 @@ test("provider nodes route update can clear iconUrl by passing an empty string",
       baseUrl: "https://noclear.example.com/v1",
       iconUrl: "",
     }),
-    { params: Promise.resolve({ id: nodeId }) }
+    { params: Promise.resolve({ id: nodeId }) },
   );
   const updated = (await updateResponse.json()) as any;
 

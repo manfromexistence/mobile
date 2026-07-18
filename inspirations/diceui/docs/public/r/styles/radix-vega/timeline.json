@@ -1,13 +1,8 @@
 {
   "name": "timeline",
   "type": "registry:ui",
-  "dependencies": [
-    "radix-ui"
-  ],
-  "registryDependencies": [
-    "@diceui/use-isomorphic-layout-effect",
-    "@diceui/use-lazy-ref"
-  ],
+  "dependencies": ["radix-ui"],
+  "registryDependencies": ["@diceui/use-isomorphic-layout-effect", "@diceui/use-lazy-ref"],
   "files": [
     {
       "path": "ui/timeline.tsx",

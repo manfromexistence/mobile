@@ -1,31 +1,27 @@
-"use client"
+"use client";
 
-import { motion, useAnimation } from "motion/react"
-import { useImperativeHandle } from "react"
+import { motion, useAnimation } from "motion/react";
+import { useImperativeHandle } from "react";
 
 export type ChevronDownIconHandle = {
-  startAnimation: () => void
-  stopAnimation: () => void
-}
+  startAnimation: () => void;
+  stopAnimation: () => void;
+};
 
 export type ChevronDownIconProps = React.ComponentPropsWithoutRef<"svg"> & {
-  ref?: React.Ref<ChevronDownIconHandle>
-  duration?: number
-}
+  ref?: React.Ref<ChevronDownIconHandle>;
+  duration?: number;
+};
 
-export function ChevronDownIcon({
-  ref,
-  duration = 0.3,
-  ...props
-}: ChevronDownIconProps) {
-  const controls = useAnimation()
+export function ChevronDownIcon({ ref, duration = 0.3, ...props }: ChevronDownIconProps) {
+  const controls = useAnimation();
 
   useImperativeHandle(ref, () => {
     return {
       startAnimation: () => controls.start("animate"),
       stopAnimation: () => controls.start("normal"),
-    }
-  })
+    };
+  });
 
   return (
     <svg
@@ -58,5 +54,5 @@ export function ChevronDownIcon({
         }}
       />
     </svg>
-  )
+  );
 }

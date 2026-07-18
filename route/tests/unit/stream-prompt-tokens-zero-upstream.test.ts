@@ -84,23 +84,23 @@ test("createSSEStream passthrough estimates input tokens when upstream reports p
       onComplete(payload) {
         onCompletePayload = payload;
       },
-    }
+    },
   );
 
   // The fix should estimate input tokens from the request body instead of showing 0
   assert.equal(
     onCompletePayload.responseBody.usage.completion_tokens,
     10,
-    "completion tokens should be unchanged"
+    "completion tokens should be unchanged",
   );
   assert.ok(
     onCompletePayload.responseBody.usage.prompt_tokens > 0,
-    `prompt_tokens should be estimated (> 0), got ${onCompletePayload.responseBody.usage.prompt_tokens}`
+    `prompt_tokens should be estimated (> 0), got ${onCompletePayload.responseBody.usage.prompt_tokens}`,
   );
   assert.equal(
     onCompletePayload.responseBody.usage.total_tokens,
     onCompletePayload.responseBody.usage.prompt_tokens + 10,
-    "total_tokens should equal prompt_tokens + completion_tokens"
+    "total_tokens should equal prompt_tokens + completion_tokens",
   );
 });
 

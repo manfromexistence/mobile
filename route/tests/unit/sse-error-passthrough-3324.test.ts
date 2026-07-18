@@ -4,8 +4,9 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-const { parseSSEToOpenAIResponse, extractSSEErrorMessage } =
-  await import("../../open-sse/handlers/sseParser.ts");
+const { parseSSEToOpenAIResponse, extractSSEErrorMessage } = await import(
+  "../../open-sse/handlers/sseParser.ts"
+);
 
 const GENERIC = "Invalid SSE response for non-streaming request";
 
@@ -24,7 +25,7 @@ test("extractSSEErrorMessage surfaces the error message from an error-only SSE c
   assert.ok(surfaced, "expected a surfaced error message, got null");
   assert.ok(
     surfaced.includes("Devin CLI not found on PATH"),
-    `expected surfaced message to contain the real Devin error, got: ${surfaced}`
+    `expected surfaced message to contain the real Devin error, got: ${surfaced}`,
   );
   assert.notEqual(surfaced, GENERIC);
 });
@@ -91,17 +92,17 @@ test("extractSSEErrorMessage sanitizes stack-trace-like error messages (no `at /
   assert.ok(!surfaced.includes("at /"), `surfaced message leaked a stack frame path: ${surfaced}`);
   assert.ok(
     !/\/[^\s]+\.ts/.test(surfaced),
-    `surfaced message leaked an absolute source path: ${surfaced}`
+    `surfaced message leaked an absolute source path: ${surfaced}`,
   );
 
   // A bare absolute source path on a single line is redacted to <path>.
   const bareSurfaced = extractSSEErrorMessage(
-    [`data: ${JSON.stringify({ error: { message: bareInline } })}`, "", "data: [DONE]"].join("\n")
+    [`data: ${JSON.stringify({ error: { message: bareInline } })}`, "", "data: [DONE]"].join("\n"),
   );
   assert.ok(bareSurfaced);
   assert.ok(
     bareSurfaced.includes("<path>"),
-    `expected the bare absolute path to be redacted, got: ${bareSurfaced}`
+    `expected the bare absolute path to be redacted, got: ${bareSurfaced}`,
   );
   assert.ok(!/\/[^\s]+\.ts/.test(bareSurfaced), `bare-path message leaked: ${bareSurfaced}`);
 });
@@ -122,7 +123,7 @@ test("parseSSEToOpenAIResponse still parses a normal valid SSE (no regression)",
 
 test("parseSSEToOpenAIResponse still returns null for an error-only SSE (boundary owns the error path)", () => {
   const rawSSE = ['data: {"error":{"message":"Devin CLI not found on PATH"}}', "data: [DONE]"].join(
-    "\n"
+    "\n",
   );
 
   // The valid-SSE parser intentionally returns null here (no `choices`); the
@@ -138,14 +139,14 @@ test("PART 1: windsurf authHint references the `Windsurf: Provide Auth Token` co
   // src/shared/constants/providers/oauth.ts.
   const providers = readFileSync(
     path.join(here, "../../src/shared/constants/providers/oauth.ts"),
-    "utf8"
+    "utf8",
   );
 
   // The windsurf authHint must lead with the IDE command-palette flow.
   assert.match(
     providers,
     /Windsurf: Provide Auth Token/,
-    "providers.ts windsurf authHint should reference the `Windsurf: Provide Auth Token` command"
+    "providers.ts windsurf authHint should reference the `Windsurf: Provide Auth Token` command",
   );
 });
 
@@ -153,12 +154,12 @@ test("PART 1: oauth route 410 errors reference the IDE command-palette flow", ()
   const here = path.dirname(fileURLToPath(import.meta.url));
   const route = readFileSync(
     path.join(here, "../../src/app/api/oauth/[provider]/[action]/route.ts"),
-    "utf8"
+    "utf8",
   );
 
   assert.match(
     route,
     /Windsurf: Provide Auth Token/,
-    "oauth route should direct users to the `Windsurf: Provide Auth Token` command"
+    "oauth route should direct users to the `Windsurf: Provide Auth Token` command",
   );
 });

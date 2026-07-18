@@ -13,7 +13,7 @@ async function readJson(response: Response) {
 
 test("readServiceInstallVersion defaults empty requests to latest", async () => {
   const result = await readServiceInstallVersion(
-    new Request("http://localhost/api/services/example/install", { method: "POST" })
+    new Request("http://localhost/api/services/example/install", { method: "POST" }),
   );
 
   assert.deepEqual(result, { ok: true, version: "latest" });
@@ -25,7 +25,7 @@ test("readServiceInstallVersion returns the requested version", async () => {
       method: "POST",
       body: JSON.stringify({ version: "1.2.3" }),
       headers: { "Content-Type": "application/json" },
-    })
+    }),
   );
 
   assert.deepEqual(result, { ok: true, version: "1.2.3" });
@@ -37,7 +37,7 @@ test("readServiceInstallVersion rejects malformed versions (#5495 SERVICE_VERSIO
       method: "POST",
       body: JSON.stringify({ version: "../../malicious" }),
       headers: { "Content-Type": "application/json" },
-    })
+    }),
   );
 
   assert.equal(result.ok, false);
@@ -56,7 +56,7 @@ test("handleServiceInstall never reaches the installer for a malformed version (
     async (version) => {
       calls.push(version);
       return { installedVersion: version, installPath: "/tmp/service", durationMs: 1 };
-    }
+    },
   );
 
   assert.deepEqual(calls, []);
@@ -69,7 +69,7 @@ test("readServiceInstallVersion preserves invalid JSON error shape", async () =>
       method: "POST",
       body: "not-json",
       headers: { "Content-Type": "application/json" },
-    })
+    }),
   );
 
   assert.equal(result.ok, false);
@@ -94,7 +94,7 @@ test("handleServiceInstall wraps successful installer results", async () => {
         installPath: "/tmp/service",
         durationMs: 42,
       };
-    }
+    },
   );
 
   assert.deepEqual(calls, ["2.0.0"]);
@@ -112,7 +112,7 @@ test("handleServiceInstall maps InstallError to its friendly message and status"
     new Request("http://localhost/api/services/example/install", { method: "POST" }),
     async () => {
       throw new InstallError("raw command failed", "Friendly install failure", 503);
-    }
+    },
   );
 
   assert.equal(response.status, 503);

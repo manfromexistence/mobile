@@ -1,10 +1,6 @@
-import { AccordionLoFi } from "@/components/lo-fi/accordion"
-import { AlertLoFi } from "@/components/lo-fi/alert"
-import {
-  Component,
-  ComponentContent,
-  ComponentName,
-} from "@/components/lo-fi/component"
+import { AccordionLoFi } from "@/components/lo-fi/accordion";
+import { AlertLoFi } from "@/components/lo-fi/alert";
+import { Component, ComponentContent, ComponentName } from "@/components/lo-fi/component";
 
 export function LoFi() {
   return (
@@ -22,5 +18,5 @@ export function LoFi() {
         <ComponentName>Alert</ComponentName>
       </Component>
     </div>
-  )
+  );
 }

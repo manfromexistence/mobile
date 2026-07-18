@@ -1,11 +1,7 @@
-"use client"
+"use client";
 
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable"
-import { MiddleTruncation } from "@/registry/transformed/components/middle-truncation"
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { MiddleTruncation } from "@/registry/transformed/components/middle-truncation";
 
 export default function MiddleTruncationDemo() {
   return (
@@ -49,19 +45,17 @@ export default function MiddleTruncationDemo() {
 
       <ResizablePanel minSize="0%" defaultSize="0%" />
     </ResizablePanelGroup>
-  )
+  );
 }
 
 function ExampleCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-6 rounded-xl border bg-card p-6 text-sm">
-      {children}
-    </div>
-  )
+    <div className="flex flex-col gap-6 rounded-xl border bg-card p-6 text-sm">{children}</div>
+  );
 }
 
 function ExampleItem({ children }: { children: React.ReactNode }) {
-  return <div className="flex w-full flex-col gap-1.5">{children}</div>
+  return <div className="flex w-full flex-col gap-1.5">{children}</div>;
 }
 
 function ExampleLabel({ children }: { children: React.ReactNode }) {
@@ -69,5 +63,5 @@ function ExampleLabel({ children }: { children: React.ReactNode }) {
     <div className="truncate font-mono text-xs whitespace-nowrap text-muted-foreground">
       {children}
     </div>
-  )
+  );
 }

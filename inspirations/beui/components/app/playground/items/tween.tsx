@@ -36,10 +36,26 @@ const SLICES = Array.from({ length: 9 }, (_, i) => (i + 1) / 10);
 
 // Named curves and what they feel like, matched to the current handles.
 const NAMED: { curve: number[]; title: string; text: string }[] = [
-  { curve: [0, 0, 1, 1], title: "linear", text: "Constant speed the whole way. Mechanical, no acceleration." },
-  { curve: [0.42, 0, 1, 1], title: "easeIn", text: "Starts slow, speeds up into the end. Good for things leaving." },
-  { curve: [0, 0, 0.58, 1], title: "easeOut", text: "Starts fast, slows into the end. Good for things arriving." },
-  { curve: [0.42, 0, 0.58, 1], title: "easeInOut", text: "Slow start and finish, fast through the middle. Smooth and natural." },
+  {
+    curve: [0, 0, 1, 1],
+    title: "linear",
+    text: "Constant speed the whole way. Mechanical, no acceleration.",
+  },
+  {
+    curve: [0.42, 0, 1, 1],
+    title: "easeIn",
+    text: "Starts slow, speeds up into the end. Good for things leaving.",
+  },
+  {
+    curve: [0, 0, 0.58, 1],
+    title: "easeOut",
+    text: "Starts fast, slows into the end. Good for things arriving.",
+  },
+  {
+    curve: [0.42, 0, 0.58, 1],
+    title: "easeInOut",
+    text: "Slow start and finish, fast through the middle. Smooth and natural.",
+  },
 ];
 
 const matchCaption = (c: number[]) => {
@@ -68,9 +84,7 @@ function TweenPreview({
       strobe={reduce ? undefined : SLICES.map(ease)}
       caption={matchCaption(curve)}
       transition={
-        reduce
-          ? { duration: 0 }
-          : { duration: num(values, "duration", 0.6), ease: curve }
+        reduce ? { duration: 0 } : { duration: num(values, "duration", 0.6), ease: curve }
       }
     />
   );

@@ -51,11 +51,7 @@ export function BalanceDelta({
                 : "bg-red-500/15 text-red-600 dark:text-red-400",
             )}
           >
-            {up ? (
-              <TrendingUp className="h-3.5 w-3.5" />
-            ) : (
-              <TrendingDown className="h-3.5 w-3.5" />
-            )}
+            {up ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
             {up ? "+" : "-"}$
             {Math.abs(delta.amount).toLocaleString(undefined, {
               minimumFractionDigits: 2,

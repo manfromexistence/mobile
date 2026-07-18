@@ -83,6 +83,6 @@ test("v1beta models route excludes providers without an active connection (#2483
   assert.ok(!names.some((n) => n.startsWith("models/kie/")), "unconfigured kie must be excluded");
   assert.ok(
     names.some((n) => n.startsWith("models/anthropic/")),
-    "configured anthropic must be present"
+    "configured anthropic must be present",
   );
 });

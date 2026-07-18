@@ -179,7 +179,7 @@ test("execute: POSTs to completion URL with Cookie containing convex-session-id 
     assert.ok(sentHeaders["Cookie"]?.length > 0, "Should send Cookie header");
     assert.ok(
       sentHeaders["Cookie"]?.includes("convex-session-id="),
-      "Cookie header should contain convex-session-id"
+      "Cookie header should contain convex-session-id",
     );
   } finally {
     mock.restore();
@@ -262,7 +262,7 @@ test("execute: upstream 401 → returns 401 with session expired message", async
       body.error?.message?.toLowerCase().includes("session") ||
         body.error?.message?.toLowerCase().includes("expired") ||
         body.error?.message?.toLowerCase().includes("unauthorized"),
-      "Should mention session/expired/unauthorized"
+      "Should mention session/expired/unauthorized",
     );
   } finally {
     globalThis.fetch = original;

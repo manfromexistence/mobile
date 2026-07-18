@@ -60,7 +60,7 @@ async function seedConnection(provider: string, overrides: SeedOverrides = {}) {
 async function callRoute(connectionId: string, search = "") {
   return providerModelsRoute.GET(
     new Request(`http://localhost/api/providers/${connectionId}/models${search}`),
-    { params: { id: connectionId } }
+    { params: { id: connectionId } },
   );
 }
 
@@ -116,6 +116,6 @@ test("per-connection models route can exclude response-only custom models for sy
   assert.equal(
     (body.models || []).some((model) => model.id === "my-org/custom-model-sync"),
     false,
-    "internal model-sync discovery must not reclassify response-only custom rows"
+    "internal model-sync discovery must not reclassify response-only custom rows",
   );
 });

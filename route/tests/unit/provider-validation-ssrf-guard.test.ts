@@ -28,9 +28,13 @@ for (const url of METADATA_TARGETS) {
         const msg = String((err as Error)?.message ?? err);
         // Must be a guard rejection, not a network timeout/connect error — i.e.
         // the request was refused before any socket was opened.
-        assert.match(msg, /guard|metadata|blocked|not allowed|URL/i, `expected guard block, got: ${msg}`);
+        assert.match(
+          msg,
+          /guard|metadata|blocked|not allowed|URL/i,
+          `expected guard block, got: ${msg}`,
+        );
         return true;
-      }
+      },
     );
   });
 }
@@ -46,9 +50,9 @@ test("SSRF: a normal public provider host is NOT blocked by the guard", async ()
       assert.doesNotMatch(
         msg,
         /url_guard_blocked|guard blocked|metadata/i,
-        `public host must pass the guard, got a guard block: ${msg}`
+        `public host must pass the guard, got a guard block: ${msg}`,
       );
       return true;
-    }
+    },
   );
 });

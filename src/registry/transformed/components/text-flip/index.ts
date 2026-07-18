@@ -1,1 +1,1 @@
-export * from "./text-flip"
+export * from "./text-flip";

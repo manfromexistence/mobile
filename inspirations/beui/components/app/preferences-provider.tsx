@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { type ColorTheme, themesStylesheet } from "@/lib/themes";
 
 export type { ColorTheme };
@@ -26,8 +20,7 @@ const PreferencesCtx = createContext<Preferences | null>(null);
 
 export function usePreferences() {
   const ctx = useContext(PreferencesCtx);
-  if (!ctx)
-    throw new Error("usePreferences must be used inside <PreferencesProvider>");
+  if (!ctx) throw new Error("usePreferences must be used inside <PreferencesProvider>");
   return ctx;
 }
 

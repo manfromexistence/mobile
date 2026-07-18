@@ -107,14 +107,14 @@ async function withMockedNow<TResult>(now: number, fn: () => Promise<TResult>) {
 async function withPatchedProperties<TResult>(
   target: object,
   patch: Record<string, unknown>,
-  fn: () => Promise<TResult>
+  fn: () => Promise<TResult>,
 ) {
   const previous = new Map<string, unknown>();
   const targetRecord = target as Record<string, unknown>;
   for (const [key, value] of Object.entries(patch)) {
     previous.set(
       key,
-      Object.prototype.hasOwnProperty.call(targetRecord, key) ? targetRecord[key] : undefined
+      Object.prototype.hasOwnProperty.call(targetRecord, key) ? targetRecord[key] : undefined,
     );
     targetRecord[key] = value;
   }
@@ -138,7 +138,7 @@ async function withFastRetryTimers<TResult>(fn: () => Promise<TResult>) {
   const fastSetTimeout: FastSetTimeout = Object.assign(
     ((callback: TimerHandler, delay = 0, ...args: unknown[]) =>
       originalSetTimeout(callback, delay === 30_000 ? delay : 0, ...args)) as typeof setTimeout,
-    { __promisify__: originalSetTimeout.__promisify__ }
+    { __promisify__: originalSetTimeout.__promisify__ },
   );
   globalThis.setTimeout = fastSetTimeout;
   try {
@@ -158,7 +158,7 @@ test("refreshAccessToken returns null when no provider refresh endpoint exists",
   assert.equal(result, null);
   assert.equal(
     log.entries.some((entry) => entry.level === "warn"),
-    true
+    true,
   );
 });
 
@@ -173,7 +173,7 @@ test("refreshAccessToken returns null when refresh token is missing", async () =
     async () => {
       const result = await refreshAccessToken("custom-oauth-task-207", null, {}, log);
       assert.equal(result, null);
-    }
+    },
   );
 });
 
@@ -208,15 +208,15 @@ test("refreshAccessToken posts form data and returns rotated tokens", async () =
             refreshToken: "new-refresh",
             expiresIn: 3600,
           });
-        }
+        },
       );
-    }
+    },
   );
 
   assert.equal(calls[0].url, "https://auth.example.com/token");
   assert.equal(
     bodyToString(calls[0].options.body),
-    "grant_type=refresh_token&refresh_token=refresh-123&client_id=client-id&client_secret=client-secret"
+    "grant_type=refresh_token&refresh_token=refresh-123&client_id=client-id&client_secret=client-secret",
   );
 });
 
@@ -237,11 +237,11 @@ test("refreshAccessToken returns null on upstream refresh failure", async () => 
           assert.equal(result, null);
           assert.equal(
             log.entries.some((entry) => entry.level === "error"),
-            true
+            true,
           );
-        }
+        },
       );
-    }
+    },
   );
 });
 
@@ -266,7 +266,7 @@ test("refreshClineToken handles nested payloads and computes expiresIn", async (
         assert.equal(result?.accessToken, "cline-access");
         assert.equal(result?.refreshToken, "cline-refresh");
         assert.equal(result?.expiresIn, 95);
-      }
+      },
     );
   });
 
@@ -298,7 +298,7 @@ test("refreshKimiCodingToken adds provider-specific headers and fields", async (
       const result = await refreshKimiCodingToken(
         "kimi-refresh",
         { deviceId: "test-stable-device" },
-        log
+        log,
       );
       assert.deepEqual(result, {
         accessToken: "kimi-access",
@@ -307,7 +307,7 @@ test("refreshKimiCodingToken adds provider-specific headers and fields", async (
         tokenType: "Bearer",
         scope: "coding offline_access",
       });
-    }
+    },
   );
 
   assert.equal(calls[0].url, PROVIDERS["kimi-coding"].refreshUrl);
@@ -319,7 +319,7 @@ test("refreshKimiCodingToken adds provider-specific headers and fields", async (
   assert.ok(
     calls[0].options.headers["X-Msh-Device-Id"] &&
       !calls[0].options.headers["X-Msh-Device-Id"].startsWith("kimi-refresh-"),
-    "X-Msh-Device-Id must be stable (not ephemeral kimi-refresh-<timestamp>)"
+    "X-Msh-Device-Id must be stable (not ephemeral kimi-refresh-<timestamp>)",
   );
   // When providerSpecificData.deviceId is provided, it should be used directly
   assert.equal(calls[0].options.headers["X-Msh-Device-Id"], "test-stable-device");
@@ -346,7 +346,7 @@ test("refreshClaudeOAuthToken posts the anthropic oauth refresh contract", async
         refreshToken: "claude-refresh-next",
         expiresIn: 1800,
       });
-    }
+    },
   );
 
   assert.equal(calls[0].url, OAUTH_ENDPOINTS.anthropic.token);
@@ -375,13 +375,13 @@ test("refreshGoogleToken exchanges refresh tokens against the shared google endp
         refreshToken: "google-refresh-next",
         expiresIn: 3600,
       });
-    }
+    },
   );
 
   assert.equal(calls[0].url, OAUTH_ENDPOINTS.google.token);
   assert.equal(
     bodyToString(calls[0].options.body),
-    "grant_type=refresh_token&refresh_token=google-refresh&client_id=gid&client_secret=gsecret"
+    "grant_type=refresh_token&refresh_token=google-refresh&client_id=gid&client_secret=gsecret",
   );
 });
 
@@ -406,7 +406,7 @@ test("refreshQwenToken maps resource_url into providerSpecificData", async () =>
           resourceUrl: "https://chat.qwen.ai/workspace/resource",
         },
       });
-    }
+    },
   );
 });
 
@@ -419,7 +419,7 @@ test("refreshQwenToken surfaces invalid_request as unrecoverable", async () => {
       const result = await refreshQwenToken("qwen-refresh", log);
       // Normalized to unrecoverable_refresh_error sentinel (Fix 4)
       assert.deepEqual(result, { error: "unrecoverable_refresh_error", code: "invalid_request" });
-    }
+    },
   );
 });
 
@@ -434,7 +434,7 @@ test("refreshCodexToken recognizes refresh_token_reused responses", async () => 
         error: "unrecoverable_refresh_error",
         code: "refresh_token_reused",
       });
-    }
+    },
   );
 });
 
@@ -456,16 +456,16 @@ test("refreshCodexToken treats any 401 from the token endpoint as unrecoverable"
             type: "invalid_request_error",
           },
         }),
-        401
+        401,
       ),
     async () => {
       const result = await refreshCodexToken("codex-refresh", log);
       assert.equal(
         result?.error,
         "unrecoverable_refresh_error",
-        "401 from OpenAI token endpoint must surface re-auth instead of returning null (which triggers retry)"
+        "401 from OpenAI token endpoint must surface re-auth instead of returning null (which triggers retry)",
       );
-    }
+    },
   );
 });
 
@@ -491,7 +491,7 @@ test("refreshKiroToken uses the AWS OIDC flow when client credentials are presen
           clientSecret: "aws-secret",
           region: "eu-west-1",
         },
-        log
+        log,
       );
 
       assert.deepEqual(result, {
@@ -499,7 +499,7 @@ test("refreshKiroToken uses the AWS OIDC flow when client credentials are presen
         refreshToken: "kiro-aws-refresh-next",
         expiresIn: 900,
       });
-    }
+    },
   );
 
   assert.equal(calls[0].url, "https://oidc.eu-west-1.amazonaws.com/token");
@@ -532,7 +532,7 @@ test("refreshKiroToken uses stored region for AWS OIDC refresh without authMetho
           clientSecret: "aws-secret",
           region: "ap-southeast-1",
         },
-        log
+        log,
       );
 
       assert.deepEqual(result, {
@@ -540,7 +540,7 @@ test("refreshKiroToken uses stored region for AWS OIDC refresh without authMetho
         refreshToken: "kiro-aws-refresh-next",
         expiresIn: 900,
       });
-    }
+    },
   );
 
   assert.equal(calls[0].url, "https://oidc.ap-southeast-1.amazonaws.com/token");
@@ -572,7 +572,7 @@ test("refreshKiroToken falls back to the social-auth refresh endpoint", async ()
         refreshToken: "kiro-social-refresh-next",
         expiresIn: 1200,
       });
-    }
+    },
   );
 
   assert.equal(calls[0].url, PROVIDERS.kiro.tokenUrl);
@@ -606,7 +606,7 @@ test("refreshKiroToken uses AWS OIDC path for social-auth token when clientId is
           clientSecret: "isolated-client-secret",
           region: "us-east-1",
         },
-        log
+        log,
       );
 
       assert.deepEqual(result, {
@@ -614,18 +614,18 @@ test("refreshKiroToken uses AWS OIDC path for social-auth token when clientId is
         refreshToken: "kiro-isolated-refresh-next",
         expiresIn: 900,
       });
-    }
+    },
   );
 
   // Must call the AWS OIDC endpoint — not the shared social-auth tokenUrl
   assert.ok(
     calls[0].url.includes("oidc.us-east-1.amazonaws.com/token"),
-    `expected AWS OIDC endpoint but got ${calls[0].url}`
+    `expected AWS OIDC endpoint but got ${calls[0].url}`,
   );
   assert.notEqual(
     calls[0].url,
     PROVIDERS.kiro.tokenUrl,
-    "should not call the shared social-auth endpoint when clientId is set"
+    "should not call the shared social-auth endpoint when clientId is set",
   );
   assert.deepEqual(JSON.parse(calls[0].options.body), {
     clientId: "isolated-client-id",
@@ -661,17 +661,17 @@ test("refreshKiroToken uses social-auth path for imported token even with client
           clientSecret: "isolated-client-secret",
           region: "us-east-1",
         },
-        log
+        log,
       );
       assert.equal(result.accessToken, "kiro-imported-access");
-    }
+    },
   );
 
   // Must call the shared social-auth tokenUrl — NOT the AWS OIDC endpoint.
   assert.equal(
     calls[0].url,
     PROVIDERS.kiro.tokenUrl,
-    `expected social-auth endpoint but got ${calls[0].url}`
+    `expected social-auth endpoint but got ${calls[0].url}`,
   );
   assert.ok(!calls[0].url.includes("oidc."), "imported token must not use AWS OIDC");
 });
@@ -709,11 +709,11 @@ test("refreshQoderToken uses basic auth once qoder oauth settings are configured
                 refreshToken: "qoder-refresh-next",
                 expiresIn: 2400,
               });
-            }
+            },
           );
-        }
+        },
       );
-    }
+    },
   );
 
   assert.equal(calls[0].url, "https://qoder.example.com/oauth/token");
@@ -746,12 +746,15 @@ test("refreshGitHubToken sends the real public github client_id and no client_se
         refreshToken: "github-refresh-next",
         expiresIn: 3600,
       });
-    }
+    },
   );
 
   const body = bodyToString(calls[0].options.body);
   assert.equal(calls[0].url, OAUTH_ENDPOINTS.github.token);
-  assert.ok(PROVIDERS.github.clientId, "PROVIDERS.github.clientId must be populated from the public cred");
+  assert.ok(
+    PROVIDERS.github.clientId,
+    "PROVIDERS.github.clientId must be populated from the public cred",
+  );
   assert.match(body, /client_id=Iv1\./, "the real public github client_id must be sent on refresh");
   assert.ok(!body.includes("client_secret="), "no client_secret for the public github client");
 });
@@ -774,7 +777,7 @@ test("refreshCopilotToken returns the short-lived copilot token", async () => {
         token: "copilot-session-token",
         expiresAt: "2026-01-01T00:00:00.000Z",
       });
-    }
+    },
   );
 
   assert.equal(calls[0].url, "https://api.github.com/copilot_internal/v2/token");
@@ -794,7 +797,7 @@ test("supportsTokenRefresh, isUnrecoverableRefreshError and formatProviderCreden
       assert.equal(supportsTokenRefresh("amazon-q"), true);
       assert.equal(supportsTokenRefresh("custom-oauth-task-207"), true);
       assert.equal(supportsTokenRefresh("missing-provider"), false);
-    }
+    },
   );
 
   assert.equal(isUnrecoverableRefreshError({ error: "refresh_token_reused" }), true);
@@ -810,13 +813,13 @@ test("supportsTokenRefresh, isUnrecoverableRefreshError and formatProviderCreden
         projectId: "project-1",
         refreshToken: "ignored",
       },
-      log
+      log,
     ),
     {
       apiKey: "gemini-key",
       accessToken: "gemini-access",
       projectId: "project-1",
-    }
+    },
   );
 
   assert.deepEqual(
@@ -826,12 +829,12 @@ test("supportsTokenRefresh, isUnrecoverableRefreshError and formatProviderCreden
         accessToken: "google-access",
         refreshToken: "google-refresh",
       },
-      log
+      log,
     ),
     {
       accessToken: "google-access",
       refreshToken: "google-refresh",
-    }
+    },
   );
 
   assert.equal(formatProviderCredentials("missing-provider", {}, log), null);
@@ -865,9 +868,9 @@ test("getAccessToken deduplicates concurrent refreshes for the same provider and
           assert.equal(fetchCount, 1);
           assert.strictEqual(first, second);
           assert.equal(first.accessToken, "shared-access");
-        }
+        },
       );
-    }
+    },
   );
 });
 
@@ -895,26 +898,26 @@ test("getAccessToken cleans the in-flight cache after resolve and separates diff
           const first = await getAccessToken(
             "custom-oauth-task-207",
             { refreshToken: "refresh-a" },
-            log
+            log,
           );
           const second = await getAccessToken(
             "custom-oauth-task-207",
             { refreshToken: "refresh-a" },
-            log
+            log,
           );
           const third = await getAccessToken(
             "custom-oauth-task-207",
             { refreshToken: "refresh-b" },
-            log
+            log,
           );
 
           assert.equal(fetchCount, 3);
           assert.equal(first.accessToken, "access-refresh-a");
           assert.equal(second.accessToken, "access-refresh-a");
           assert.equal(third.accessToken, "access-refresh-b");
-        }
+        },
       );
-    }
+    },
   );
 });
 
@@ -965,7 +968,7 @@ test("getAllAccessTokens refreshes only active connections with providers", asyn
                 },
               ],
             },
-            log
+            log,
           );
 
           assert.equal(fetchCount, 1);
@@ -976,9 +979,9 @@ test("getAllAccessTokens refreshes only active connections with providers", asyn
               expiresIn: 900,
             },
           });
-        }
+        },
       );
-    }
+    },
   );
 });
 
@@ -998,7 +1001,7 @@ test("refreshWithRetry retries to success and clears prior circuit-breaker state
       },
       3,
       log,
-      provider
+      provider,
     );
 
     assert.deepEqual(result, { accessToken: "recovered" });
@@ -1027,7 +1030,7 @@ test("refreshWithRetry trips the circuit breaker after repeated failures and blo
     },
     1,
     log,
-    provider
+    provider,
   );
 
   assert.equal(blockedResult, null);
@@ -1093,9 +1096,9 @@ test("getAccessToken per-connection mutex: 5 concurrent callers fire exactly one
           // All results are the same object reference (shared promise)
           assert.strictEqual(results[0], results[1]);
           assert.strictEqual(results[1], results[4]);
-        }
+        },
       );
-    }
+    },
   );
 });
 
@@ -1122,20 +1125,20 @@ test("getAccessToken per-connection mutex: logs concurrent refresh with waiter c
           const concurrentLogs = log.entries.filter(
             (e) =>
               e.level === "info" &&
-              e.message === "Concurrent refresh detected — sharing in-flight refresh"
+              e.message === "Concurrent refresh detected — sharing in-flight refresh",
           );
           assert.ok(concurrentLogs.length >= 1, "logged at least one concurrent refresh event");
           assert.ok(
             concurrentLogs.some((e) => e.meta?.connectionId === "conn-log-test"),
-            "log includes connectionId"
+            "log includes connectionId",
           );
           assert.ok(
             concurrentLogs.some((e) => typeof e.meta?.waiters === "number" && e.meta.waiters >= 1),
-            "log includes waiter count"
+            "log includes waiter count",
           );
-        }
+        },
       );
-    }
+    },
   );
 });
 
@@ -1167,11 +1170,11 @@ test("getAccessToken per-connection mutex: failed refresh propagates null to all
           assert.equal(
             getConnectionRefreshMutexStatus()["conn-fail-test"],
             undefined,
-            "mutex entry removed after failure"
+            "mutex entry removed after failure",
           );
-        }
+        },
       );
-    }
+    },
   );
 });
 
@@ -1199,24 +1202,24 @@ test("getAccessToken per-connection mutex: different connections run independent
               getAccessToken(
                 "custom-oauth-conn-mutex",
                 { connectionId: "conn-A", refreshToken: "rt-a" },
-                log
+                log,
               ),
               getAccessToken(
                 "custom-oauth-conn-mutex",
                 { connectionId: "conn-A", refreshToken: "rt-a" },
-                log
+                log,
               ),
             ]),
             Promise.all([
               getAccessToken(
                 "custom-oauth-conn-mutex",
                 { connectionId: "conn-B", refreshToken: "rt-b" },
-                log
+                log,
               ),
               getAccessToken(
                 "custom-oauth-conn-mutex",
                 { connectionId: "conn-B", refreshToken: "rt-b" },
-                log
+                log,
               ),
             ]),
           ]);
@@ -1225,9 +1228,9 @@ test("getAccessToken per-connection mutex: different connections run independent
           assert.strictEqual(groupA[0], groupA[1], "conn-A callers share same result");
           assert.strictEqual(groupB[0], groupB[1], "conn-B callers share same result");
           assert.notStrictEqual(groupA[0], groupB[0], "conn-A and conn-B got different results");
-        }
+        },
       );
-    }
+    },
   );
 });
 
@@ -1264,9 +1267,9 @@ test("getAccessToken per-connection mutex: mutex cleared after success, next cal
           assert.equal(upstreamCallCount, 2, "each sequential call fires upstream once");
           assert.equal(first?.accessToken, "access-1");
           assert.equal(second?.accessToken, "access-2");
-        }
+        },
       );
-    }
+    },
   );
 });
 
@@ -1284,7 +1287,7 @@ test("refreshWithRetry bails immediately on unrecoverable error without retrying
     },
     3,
     log,
-    provider
+    provider,
   );
 
   assert.equal(callCount, 1, "should only call refreshFn once (no retries)");
@@ -1292,7 +1295,7 @@ test("refreshWithRetry bails immediately on unrecoverable error without retrying
   const warnMessages = log.entries.filter((e) => e.level === "warn").map((e) => e.message);
   assert.ok(
     warnMessages.some((m) => String(m).includes("Unrecoverable")),
-    "should log an unrecoverable warning"
+    "should log an unrecoverable warning",
   );
 });
 
@@ -1308,7 +1311,7 @@ test("refreshWithRetry bails immediately on invalid_grant error without retrying
     },
     3,
     log,
-    provider
+    provider,
   );
 
   assert.equal(callCount, 1, "should only call refreshFn once (no retries)");
@@ -1331,7 +1334,7 @@ test("refreshClaudeOAuthToken returns error object for invalid_grant (expired re
       assert.equal((result as any).error, "unrecoverable_refresh_error");
       assert.equal((result as any).code, "invalid_grant");
       assert.ok(isUnrecoverableRefreshError(result), "should be detected as unrecoverable");
-    }
+    },
   );
 });
 
@@ -1347,6 +1350,6 @@ test("refreshClaudeOAuthToken returns null for transient server errors (not unre
     async () => {
       const result = await refreshClaudeOAuthToken("some-token", log);
       assert.equal(result, null, "transient server errors should return null (retryable)");
-    }
+    },
   );
 });

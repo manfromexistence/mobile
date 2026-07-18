@@ -1,15 +1,10 @@
-import {
-  Listbox,
-  ListboxItem,
-  ListboxItemIndicator,
-} from "@/registry/bases/radix/ui/listbox";
+import { Listbox, ListboxItem, ListboxItemIndicator } from "@/registry/bases/radix/ui/listbox";
 
 const tricks = [
   { label: "Kickflip", description: "Flip the board 360° along its long axis" },
   {
     label: "Heelflip",
-    description:
-      "Flip the board 360° along its long axis in the opposite direction of a kickflip",
+    description: "Flip the board 360° along its long axis in the opposite direction of a kickflip",
   },
   {
     label: "360 Varial McTwist",
@@ -28,9 +23,7 @@ export default function ListboxDemo() {
         <ListboxItem key={trick.label} value={trick.label}>
           <div className="flex flex-col">
             <div className="font-medium">{trick.label}</div>
-            <div className="text-muted-foreground text-sm">
-              {trick.description}
-            </div>
+            <div className="text-muted-foreground text-sm">{trick.description}</div>
           </div>
           <ListboxItemIndicator />
         </ListboxItem>

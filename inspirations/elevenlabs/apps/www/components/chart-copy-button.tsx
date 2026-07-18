@@ -1,16 +1,12 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { CheckIcon, ClipboardIcon } from "lucide-react"
+import * as React from "react";
+import { CheckIcon, ClipboardIcon } from "lucide-react";
 
-import { Event, trackEvent } from "@/lib/events"
-import { cn } from "@/lib/utils"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/registry/elevenlabs-ui/ui/tooltip"
+import { Event, trackEvent } from "@/lib/events";
+import { cn } from "@/lib/utils";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/registry/elevenlabs-ui/ui/tooltip";
 
 export function ChartCopyButton({
   event,
@@ -19,17 +15,17 @@ export function ChartCopyButton({
   className,
   ...props
 }: {
-  event: Event["name"]
-  name: string
-  code: string
+  event: Event["name"];
+  name: string;
+  code: string;
 } & React.ComponentProps<typeof Button>) {
-  const [hasCopied, setHasCopied] = React.useState(false)
+  const [hasCopied, setHasCopied] = React.useState(false);
 
   React.useEffect(() => {
     setTimeout(() => {
-      setHasCopied(false)
-    }, 2000)
-  }, [hasCopied])
+      setHasCopied(false);
+    }, 2000);
+  }, [hasCopied]);
 
   return (
     <Tooltip>
@@ -37,19 +33,16 @@ export function ChartCopyButton({
         <Button
           size="icon"
           variant="ghost"
-          className={cn(
-            "[&_svg]-h-3.5 h-7 w-7 rounded-[6px] [&_svg]:w-3.5",
-            className
-          )}
+          className={cn("[&_svg]-h-3.5 h-7 w-7 rounded-[6px] [&_svg]:w-3.5", className)}
           onClick={() => {
-            navigator.clipboard.writeText(code)
+            navigator.clipboard.writeText(code);
             trackEvent({
               name: event,
               properties: {
                 name,
               },
-            })
-            setHasCopied(true)
+            });
+            setHasCopied(true);
           }}
           {...props}
         >
@@ -59,5 +52,5 @@ export function ChartCopyButton({
       </TooltipTrigger>
       <TooltipContent className="bg-black text-white">Copy code</TooltipContent>
     </Tooltip>
-  )
+  );
 }

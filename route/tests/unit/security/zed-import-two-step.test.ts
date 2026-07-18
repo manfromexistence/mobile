@@ -19,18 +19,15 @@ test("isConfirmedAccount rejects null / wrong-typed entries", () => {
   assert.equal(isConfirmedAccount({ service: "zed-openai" }), false);
   assert.equal(
     isConfirmedAccount({ service: "zed-openai", account: "default", fingerprint: "" }),
-    false
+    false,
   );
-  assert.equal(
-    isConfirmedAccount({ service: 123, account: "default", fingerprint: "abc" }),
-    false
-  );
+  assert.equal(isConfirmedAccount({ service: 123, account: "default", fingerprint: "abc" }), false);
 });
 
 test("isConfirmedAccount accepts a fully-formed entry", () => {
   assert.equal(
     isConfirmedAccount({ service: "zed-openai", account: "default", fingerprint: "abc123" }),
-    true
+    true,
   );
 });
 
@@ -41,7 +38,7 @@ test("parseConfirmedAccounts returns null for missing / malformed bodies", () =>
   assert.equal(
     parseConfirmedAccounts({ confirmedAccounts: [{ service: 1 }] }),
     null,
-    "an array with a malformed entry should fail validation"
+    "an array with a malformed entry should fail validation",
   );
 });
 
@@ -79,10 +76,7 @@ test("filterCredentialsByConfirmation only returns credentials matching the fing
 
   const result = filterCredentialsByConfirmation(credentials, confirmed);
   assert.equal(result.length, 2);
-  assert.deepEqual(
-    result.map((c) => c.provider).sort(),
-    ["anthropic", "openai"]
-  );
+  assert.deepEqual(result.map((c) => c.provider).sort(), ["anthropic", "openai"]);
 });
 
 test("filterCredentialsByConfirmation rejects entries with mismatched fingerprint (token rotation)", () => {
@@ -102,6 +96,6 @@ test("filterCredentialsByConfirmation rejects entries with mismatched fingerprin
   assert.equal(
     result.length,
     0,
-    "fingerprint mismatch (token rotated since discover) must skip the credential"
+    "fingerprint mismatch (token rotated since discover) must skip the credential",
   );
 });

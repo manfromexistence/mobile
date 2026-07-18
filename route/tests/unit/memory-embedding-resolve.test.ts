@@ -28,7 +28,7 @@ describe("resolveEmbeddingSource", () => {
     // The reason must indicate the lack of any source — not just be non-empty.
     assert.ok(
       res.reason.toLowerCase().includes("no embedding source"),
-      `expected reason to mention "no embedding source", got: ${res.reason}`
+      `expected reason to mention "no embedding source", got: ${res.reason}`,
     );
   });
 
@@ -37,7 +37,7 @@ describe("resolveEmbeddingSource", () => {
       makeSettings({
         embeddingSource: "auto",
         embeddingProviderModel: "openai/text-embedding-3-small",
-      })
+      }),
     );
     assert.strictEqual(res.source, "remote");
     assert.strictEqual(res.model, "openai/text-embedding-3-small");
@@ -49,7 +49,7 @@ describe("resolveEmbeddingSource", () => {
         embeddingSource: "auto",
         embeddingProviderModel: null,
         staticEnabled: true,
-      })
+      }),
     );
     assert.strictEqual(res.source, "static");
     assert.ok(res.model !== null);
@@ -62,7 +62,7 @@ describe("resolveEmbeddingSource", () => {
         embeddingProviderModel: null,
         staticEnabled: false,
         transformersEnabled: true,
-      })
+      }),
     );
     assert.strictEqual(res.source, "transformers");
   });
@@ -72,13 +72,13 @@ describe("resolveEmbeddingSource", () => {
       makeSettings({
         embeddingSource: "remote",
         embeddingProviderModel: null,
-      })
+      }),
     );
     assert.strictEqual(res.source, null);
     // The reason must reference the missing key, not just be non-empty.
     assert.ok(
       res.reason.includes("no_key") || res.reason.includes("configured"),
-      `expected reason to mention "no_key" or "configured", got: ${res.reason}`
+      `expected reason to mention "no_key" or "configured", got: ${res.reason}`,
     );
   });
 
@@ -87,7 +87,7 @@ describe("resolveEmbeddingSource", () => {
       makeSettings({
         embeddingSource: "remote",
         embeddingProviderModel: "openai/text-embedding-3-small",
-      })
+      }),
     );
     assert.strictEqual(res.source, "remote");
     assert.strictEqual(res.model, "openai/text-embedding-3-small");
@@ -98,7 +98,7 @@ describe("resolveEmbeddingSource", () => {
       makeSettings({
         embeddingSource: "static",
         staticEnabled: true,
-      })
+      }),
     );
     assert.strictEqual(res.source, "static");
   });
@@ -108,7 +108,7 @@ describe("resolveEmbeddingSource", () => {
       makeSettings({
         embeddingSource: "static",
         staticEnabled: false,
-      })
+      }),
     );
     assert.strictEqual(res.source, null);
   });
@@ -118,7 +118,7 @@ describe("resolveEmbeddingSource", () => {
       makeSettings({
         embeddingSource: "transformers",
         transformersEnabled: true,
-      })
+      }),
     );
     assert.strictEqual(res.source, "transformers");
   });
@@ -128,7 +128,7 @@ describe("resolveEmbeddingSource", () => {
       makeSettings({
         embeddingSource: "transformers",
         transformersEnabled: false,
-      })
+      }),
     );
     assert.strictEqual(res.source, null);
   });
@@ -148,11 +148,11 @@ describe("resolveEmbeddingSource", () => {
       makeSettings({
         embeddingSource: "static",
         staticEnabled: true,
-      })
+      }),
     );
     assert.ok(
       res.signature.includes("static"),
-      `signature should contain 'static': ${res.signature}`
+      `signature should contain 'static': ${res.signature}`,
     );
     assert.ok(res.signature.includes(":"), "signature should contain colons");
   });

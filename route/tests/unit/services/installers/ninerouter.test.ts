@@ -56,7 +56,7 @@ const core = await import("../../../../src/lib/db/core.ts");
 const db = core.getDbInstance();
 db.prepare(
   `INSERT OR IGNORE INTO version_manager (tool, status, port, auto_start, auto_update, provider_expose)
-   VALUES ('9router', 'not_installed', 20130, 0, 1, 1)`
+   VALUES ('9router', 'not_installed', 20130, 0, 1, 1)`,
 ).run();
 
 const {
@@ -122,7 +122,7 @@ test("uninstall removes node_modules and marks not_installed in DB", async () =>
   // package.json host file should remain (preserves metadata)
   assert.ok(
     fs.existsSync(path.join(NINEROUTER_INSTALL_DIR, "package.json")),
-    "host package.json should be kept after uninstall"
+    "host package.json should be kept after uninstall",
   );
 });
 

@@ -27,8 +27,9 @@ const poolsDb = await import("../../src/lib/db/quotaPools.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 const combosDb = await import("../../src/lib/db/combos.ts");
 const { syncQuotaCombos } = await import("../../src/lib/quota/quotaCombos.ts");
-const { isQuotaModelName, quotaModelName } =
-  await import("../../src/lib/quota/quotaModelNaming.ts");
+const { isQuotaModelName, quotaModelName } = await import(
+  "../../src/lib/quota/quotaModelNaming.ts"
+);
 const { PROVIDER_MODELS } = await import("../../open-sse/config/providerModels.ts");
 
 // Trigger migration once at module load so the schema is ready for the first
@@ -58,7 +59,7 @@ function resetStorage() {
   }
   // Re-seed the default quota group removed by the cascading delete on quota_pools.
   db.prepare(
-    "INSERT OR IGNORE INTO quota_groups (id, name) VALUES ('group-demo', 'GroupDemo')"
+    "INSERT OR IGNORE INTO quota_groups (id, name) VALUES ('group-demo', 'GroupDemo')",
   ).run();
 }
 
@@ -148,7 +149,7 @@ test("B1: syncQuotaCombos — 2-connection same-provider pool produces ONE combo
   assert.equal(
     quotaCombos.length,
     modelsForProvider.length,
-    `expected exactly ${modelsForProvider.length} combo(s), one per model`
+    `expected exactly ${modelsForProvider.length} combo(s), one per model`,
   );
 
   // For each model, assert: one combo, 2 steps, quota-share, both connIds present.
@@ -161,7 +162,7 @@ test("B1: syncQuotaCombos — 2-connection same-provider pool produces ONE combo
     assert.equal(
       matchingCombos.length,
       1,
-      `expected exactly 1 combo named "${comboName}", got ${matchingCombos.length}`
+      `expected exactly 1 combo named "${comboName}", got ${matchingCombos.length}`,
     );
 
     const combo = matchingCombos[0];
@@ -170,25 +171,25 @@ test("B1: syncQuotaCombos — 2-connection same-provider pool produces ONE combo
     assert.equal(
       combo.strategy,
       "quota-share",
-      `combo "${comboName}" strategy should be "quota-share", got "${combo.strategy}"`
+      `combo "${comboName}" strategy should be "quota-share", got "${combo.strategy}"`,
     );
 
     // Must have exactly 2 steps (one per connection).
     assert.equal(
       combo.models.length,
       2,
-      `combo "${comboName}" should have 2 steps (one per connection), got ${combo.models.length}`
+      `combo "${comboName}" should have 2 steps (one per connection), got ${combo.models.length}`,
     );
 
     // Both connection IDs must appear in the steps.
     const stepConnIds = (combo.models as Array<Record<string, unknown>>).map((s) => s.connectionId);
     assert.ok(
       stepConnIds.includes(idA),
-      `combo "${comboName}" steps should include connA (${idA}), got: ${JSON.stringify(stepConnIds)}`
+      `combo "${comboName}" steps should include connA (${idA}), got: ${JSON.stringify(stepConnIds)}`,
     );
     assert.ok(
       stepConnIds.includes(idB),
-      `combo "${comboName}" steps should include connB (${idB}), got: ${JSON.stringify(stepConnIds)}`
+      `combo "${comboName}" steps should include connB (${idB}), got: ${JSON.stringify(stepConnIds)}`,
     );
 
     // Every step must reference the correct provider and model.
@@ -196,7 +197,7 @@ test("B1: syncQuotaCombos — 2-connection same-provider pool produces ONE combo
       assert.equal(step.providerId, PROVIDER, `step.providerId should be "${PROVIDER}"`);
       assert.ok(
         typeof step.model === "string" && step.model.includes(modelId),
-        `step.model "${step.model}" should include model id "${modelId}"`
+        `step.model "${step.model}" should include model id "${modelId}"`,
       );
     }
   }
@@ -229,7 +230,7 @@ test("B2: syncQuotaCombos — single-connection pool still produces 1-step combo
     assert.equal(
       combo.models.length,
       1,
-      `single-connection pool combo "${combo.name}" should have exactly 1 step`
+      `single-connection pool combo "${combo.name}" should have exactly 1 step`,
     );
     const step = combo.models[0] as Record<string, unknown>;
     assert.equal(step.connectionId, connId, "step.connectionId should be the single connection");
@@ -273,7 +274,7 @@ test("B3: syncQuotaCombos — idempotent on 2-connection pool (no duplicates aft
   assert.equal(
     afterSecond.length,
     afterFirst.length,
-    "second sync should not create duplicate combos"
+    "second sync should not create duplicate combos",
   );
 
   // Every combo from first run still has exactly 2 steps.
@@ -281,12 +282,12 @@ test("B3: syncQuotaCombos — idempotent on 2-connection pool (no duplicates aft
     assert.equal(
       combo.models.length,
       2,
-      `after 2nd sync, combo "${combo.name}" should still have 2 steps, got ${combo.models.length}`
+      `after 2nd sync, combo "${combo.name}" should still have 2 steps, got ${combo.models.length}`,
     );
     assert.equal(
       combo.strategy,
       "quota-share",
-      `combo "${combo.name}" strategy must remain "quota-share"`
+      `combo "${combo.name}" strategy must remain "quota-share"`,
     );
   }
 });
@@ -387,12 +388,12 @@ test("B5: after syncQuotaCombos on 2-connection pool, getComboByName returns the
   assert.equal(
     (found.models as unknown[]).length,
     2,
-    `combo "${comboName}" models.length should be 2, got ${(found.models as unknown[]).length}`
+    `combo "${comboName}" models.length should be 2, got ${(found.models as unknown[]).length}`,
   );
   assert.equal(
     found.strategy,
     "quota-share",
-    `combo "${comboName}" strategy should be "quota-share"`
+    `combo "${comboName}" strategy should be "quota-share"`,
   );
 
   // Verify no second combo by scanning all combos for the same name.
@@ -401,6 +402,6 @@ test("B5: after syncQuotaCombos on 2-connection pool, getComboByName returns the
   assert.equal(
     withSameName.length,
     1,
-    `there should be exactly 1 combo named "${comboName}", found ${withSameName.length}`
+    `there should be exactly 1 combo named "${comboName}", found ${withSameName.length}`,
   );
 });

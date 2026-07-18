@@ -38,20 +38,12 @@ export function BentoGrid({ components }: BentoGridProps) {
     .filter((c): c is ComponentEntry => c != null);
 
   return (
-    <div
-      className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 bento-grid"
-    >
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 bento-grid">
       {ordered.map((c) => {
         const Preview = previewMap[c.slug];
         if (!Preview) return null;
         return (
-          <BentoCard
-            key={c.slug}
-            slug={c.slug}
-            name={c.name}
-            isNew={c.isNew}
-            gridSize={c.gridSize}
-          >
+          <BentoCard key={c.slug} slug={c.slug} name={c.name} isNew={c.isNew} gridSize={c.gridSize}>
             <Preview />
           </BentoCard>
         );

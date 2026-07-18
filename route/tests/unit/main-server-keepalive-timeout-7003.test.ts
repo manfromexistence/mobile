@@ -29,7 +29,7 @@ describe("#7003 getMainServerTimeoutConfig", () => {
     assert.ok(config.keepAliveTimeoutMs > 5_000, "must exceed Node's unconfigured default");
     assert.ok(
       config.headersTimeoutMs > config.keepAliveTimeoutMs,
-      "headersTimeout must stay above keepAliveTimeout per Node's own requirement"
+      "headersTimeout must stay above keepAliveTimeout per Node's own requirement",
     );
   });
 
@@ -112,7 +112,7 @@ function startEchoServer(configure: (server: http.Server) => void): Promise<http
 
 async function withServer(
   configure: (server: http.Server) => void,
-  run: (port: number) => Promise<void>
+  run: (port: number) => Promise<void>,
 ): Promise<void> {
   const server = await startEchoServer(configure);
   try {
@@ -158,12 +158,12 @@ describe("#7003 keep-alive socket reuse across an idle gap", () => {
           assert.equal(
             second,
             "",
-            "reusing the idle-torn-down socket must get exactly 0 bytes back (the reported bug)"
+            "reusing the idle-torn-down socket must get exactly 0 bytes back (the reported bug)",
           );
           socket.destroy();
-        }
+        },
       );
-    }
+    },
   );
 
   it(
@@ -192,11 +192,11 @@ describe("#7003 keep-alive socket reuse across an idle gap", () => {
           assert.match(
             second,
             /200/,
-            "the reused connection must still get a valid response after the fix"
+            "the reused connection must still get a valid response after the fix",
           );
           socket.destroy();
-        }
+        },
       );
-    }
+    },
   );
 });

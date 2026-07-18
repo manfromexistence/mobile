@@ -19,7 +19,7 @@ describe("decayModelFailureCount — /2 on success", () => {
       429,
       120_000,
       null,
-      { exactCooldownMs: 60_000 }
+      { exactCooldownMs: 60_000 },
     );
     // Manually bump failureCount to 4 by calling it 3 more times
     for (let i = 0; i < 3; i++) {
@@ -31,7 +31,7 @@ describe("decayModelFailureCount — /2 on success", () => {
         429,
         120_000,
         null,
-        { exactCooldownMs: 60_000 }
+        { exactCooldownMs: 60_000 },
       );
     }
 
@@ -50,7 +50,7 @@ describe("decayModelFailureCount — /2 on success", () => {
       429,
       120_000,
       null,
-      { exactCooldownMs: 60_000 }
+      { exactCooldownMs: 60_000 },
     );
 
     const result = accountFallback.decayModelFailureCount("openai", "conn-1", "gpt-4");
@@ -88,7 +88,7 @@ describe("decayModelFailureCount — /2 on success", () => {
         429,
         120_000,
         null,
-        { exactCooldownMs: 60_000 }
+        { exactCooldownMs: 60_000 },
       );
     }
     // Should be failureCount=3

@@ -5,7 +5,7 @@ import path from "node:path";
 import test from "node:test";
 
 const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-model-sync-custom-preservation-")
+  path.join(os.tmpdir(), "omniroute-model-sync-custom-preservation-"),
 );
 process.env.DATA_DIR = TEST_DATA_DIR;
 process.env.API_KEY_SECRET ||= `test-model-sync-custom-${Date.now()}`;
@@ -40,7 +40,7 @@ test("model sync preserves response-only custom models during discovery", async 
     "responses",
     ["responses"],
     "openai-responses",
-    { inputTokenLimit: 123456, outputTokenLimit: 6543 }
+    { inputTokenLimit: 123456, outputTokenLimit: 6543 },
   );
   const before = await modelsDb.getCustomModels("codex");
 
@@ -64,15 +64,15 @@ test("model sync preserves response-only custom models during discovery", async 
       method: "POST",
       headers: scheduler.buildModelSyncInternalHeaders(),
     }),
-    { params: { id: connection.id } }
+    { params: { id: connection.id } },
   );
 
   assert.equal(response.status, 200);
   assert.deepEqual(await modelsDb.getCustomModels("codex"), before);
   assert.deepEqual(
     (await modelsDb.getSyncedAvailableModelsForConnection("codex", connection.id)).map(
-      (model) => model.id
+      (model) => model.id,
     ),
-    ["future-codex-experimental"]
+    ["future-codex-experimental"],
   );
 });

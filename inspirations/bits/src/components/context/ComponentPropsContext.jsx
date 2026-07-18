@@ -1,4 +1,4 @@
-import { createContext, useMemo } from 'react';
+import { createContext, useMemo } from "react";
 
 /**
  * Context for sharing component demo props between PreviewTab and CodeTab.
@@ -11,7 +11,7 @@ const ComponentPropsContext = createContext({
   hasChanges: false,
   resetProps: () => {},
   demoOnlyProps: [],
-  computedProps: {}
+  computedProps: {},
 });
 
 /**
@@ -36,7 +36,7 @@ export function ComponentPropsProvider({
   resetProps,
   hasChanges,
   demoOnlyProps = [],
-  computedProps = {}
+  computedProps = {},
 }) {
   const value = useMemo(
     () => ({
@@ -45,9 +45,9 @@ export function ComponentPropsProvider({
       hasChanges,
       resetProps,
       demoOnlyProps,
-      computedProps
+      computedProps,
     }),
-    [props, defaultProps, hasChanges, resetProps, demoOnlyProps, computedProps]
+    [props, defaultProps, hasChanges, resetProps, demoOnlyProps, computedProps],
   );
 
   return <ComponentPropsContext.Provider value={value}>{children}</ComponentPropsContext.Provider>;

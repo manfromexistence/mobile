@@ -11,7 +11,7 @@ export {
   getResolutionsForVideoModel,
   getV2VModelById,
   getVideoModelById,
-} from "./models"
+} from "./models";
 export {
   generateAudio,
   generateI2I,
@@ -24,4 +24,4 @@ export {
   processV2V,
   runMotionGraphics,
   uploadFile,
-} from "./muapi"
+} from "./muapi";

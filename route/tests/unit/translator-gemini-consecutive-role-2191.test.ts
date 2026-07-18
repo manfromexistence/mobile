@@ -22,7 +22,7 @@ function assertNoConsecutiveSameRole(contents: GeminiContent[], label: string) {
       contents[i].role,
       contents[i - 1].role,
       `${label}: contents[${i - 1}] and contents[${i}] both have role "${contents[i].role}" ` +
-        `(Gemini rejects consecutive same-role messages)`
+        `(Gemini rejects consecutive same-role messages)`,
     );
   }
 }
@@ -72,7 +72,7 @@ test("OpenAI -> Gemini does not emit a tool-result(user) turn adjacent to a user
   // Roles must strictly alternate: user, model, user (toolResp + "Now read a.ts" merged).
   assert.deepEqual(
     result.contents.map((c) => c.role),
-    ["user", "model", "user"]
+    ["user", "model", "user"],
   );
 });
 
@@ -89,7 +89,7 @@ test("OpenAI -> Gemini keeps a normally alternating conversation unchanged", () 
   assertNoConsecutiveSameRole(result.contents, "alternating");
   assert.deepEqual(
     result.contents.map((c) => c.role),
-    ["user", "model", "user"]
+    ["user", "model", "user"],
   );
 });
 
@@ -107,11 +107,11 @@ test("mergeConsecutiveSameRoleContents merges adjacent same-role entries without
   // Merged output: one user block carrying both parts, then the model block.
   assert.deepEqual(
     merged.map((c) => c.role),
-    ["user", "model"]
+    ["user", "model"],
   );
   assert.deepEqual(
     merged[0].parts.map((p) => p.text),
-    ["Hello", "Additional context"]
+    ["Hello", "Additional context"],
   );
 
   // The caller's input objects and their parts arrays must be untouched.

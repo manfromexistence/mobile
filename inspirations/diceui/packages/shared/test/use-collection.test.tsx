@@ -45,9 +45,7 @@ describe("useCollection", () => {
   });
 
   it("should register and unregister items", () => {
-    const { result } = renderHook(() =>
-      useCollection<HTMLDivElement, ItemData>(),
-    );
+    const { result } = renderHook(() => useCollection<HTMLDivElement, ItemData>());
 
     const item1Ref = React.createRef<HTMLDivElement>();
     const item1Data = {
@@ -66,9 +64,7 @@ describe("useCollection", () => {
   });
 
   it("should sort items based on DOM position", () => {
-    const { result } = renderHook(() =>
-      useCollection<HTMLDivElement, ItemData>(),
-    );
+    const { result } = renderHook(() => useCollection<HTMLDivElement, ItemData>());
 
     // Create a container for our collection
     render(
@@ -115,18 +111,12 @@ describe("useCollection", () => {
 
     const items = result.current.getItems();
     expect(items).toHaveLength(3);
-    expect(items.map((item) => item.value)).toEqual([
-      "value-1",
-      "value-2",
-      "value-3",
-    ]);
+    expect(items.map((item) => item.value)).toEqual(["value-1", "value-2", "value-3"]);
     expect(items.map((item) => item.disabled)).toEqual([false, false, true]);
   });
 
   it("should handle null refs gracefully", () => {
-    const { result } = renderHook(() =>
-      useCollection<HTMLDivElement, ItemData>(),
-    );
+    const { result } = renderHook(() => useCollection<HTMLDivElement, ItemData>());
 
     // Create a container for our collection
     render(<div ref={result.current.collectionRef} />);
@@ -146,9 +136,7 @@ describe("useCollection", () => {
   });
 
   it("should return empty array when collection ref is null", () => {
-    const { result } = renderHook(() =>
-      useCollection<HTMLDivElement, ItemData>(),
-    );
+    const { result } = renderHook(() => useCollection<HTMLDivElement, ItemData>());
 
     const itemRef = React.createRef<HTMLDivElement>();
     result.current.onItemRegister({
@@ -162,9 +150,7 @@ describe("useCollection", () => {
   });
 
   it("should maintain disabled state of items", () => {
-    const { result } = renderHook(() =>
-      useCollection<HTMLDivElement, ItemData>(),
-    );
+    const { result } = renderHook(() => useCollection<HTMLDivElement, ItemData>());
 
     render(
       <div ref={result.current.collectionRef}>

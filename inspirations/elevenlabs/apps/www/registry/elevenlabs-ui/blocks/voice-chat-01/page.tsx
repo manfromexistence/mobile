@@ -1,74 +1,63 @@
-"use client"
+"use client";
 
-import { useCallback, useEffect, useRef, useState } from "react"
-import type { ComponentProps } from "react"
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { ComponentProps } from "react";
 import {
   ConversationProvider,
   useConversation,
   useConversationControls,
   useConversationStatus,
-} from "@elevenlabs/react"
-import {
-  AudioLinesIcon,
-  CheckIcon,
-  CopyIcon,
-  PhoneOffIcon,
-  SendIcon,
-} from "lucide-react"
+} from "@elevenlabs/react";
+import { AudioLinesIcon, CheckIcon, CopyIcon, PhoneOffIcon, SendIcon } from "lucide-react";
 
-import { cn } from "@/registry/elevenlabs-ui/lib/utils"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/registry/elevenlabs-ui/ui/card"
+import { cn } from "@/registry/elevenlabs-ui/lib/utils";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from "@/registry/elevenlabs-ui/ui/card";
 import {
   Conversation,
   ConversationContent,
   ConversationEmptyState,
   ConversationScrollButton,
-} from "@/registry/elevenlabs-ui/ui/conversation"
-import { Input } from "@/registry/elevenlabs-ui/ui/input"
-import { Message, MessageContent } from "@/registry/elevenlabs-ui/ui/message"
-import { Orb } from "@/registry/elevenlabs-ui/ui/orb"
-import { Response } from "@/registry/elevenlabs-ui/ui/response"
-import { ShimmeringText } from "@/registry/elevenlabs-ui/ui/shimmering-text"
+} from "@/registry/elevenlabs-ui/ui/conversation";
+import { Input } from "@/registry/elevenlabs-ui/ui/input";
+import { Message, MessageContent } from "@/registry/elevenlabs-ui/ui/message";
+import { Orb } from "@/registry/elevenlabs-ui/ui/orb";
+import { Response } from "@/registry/elevenlabs-ui/ui/response";
+import { ShimmeringText } from "@/registry/elevenlabs-ui/ui/shimmering-text";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/registry/elevenlabs-ui/ui/tooltip"
+} from "@/registry/elevenlabs-ui/ui/tooltip";
 
-type SystemMessageType = "initial" | "connecting" | "connected" | "error"
+type SystemMessageType = "initial" | "connecting" | "connected" | "error";
 
 interface ChatMessage {
-  role: "user" | "assistant"
-  content: string
-  timestamp?: Date
-  type?: SystemMessageType
+  role: "user" | "assistant";
+  content: string;
+  timestamp?: Date;
+  type?: SystemMessageType;
 }
 
 const DEFAULT_AGENT = {
   agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID!,
   name: "Customer Support",
   description: "AI Voice Assistant",
-}
+};
 
-type ChatActionsProps = ComponentProps<"div">
+type ChatActionsProps = ComponentProps<"div">;
 
 const ChatActions = ({ className, children, ...props }: ChatActionsProps) => (
   <div className={cn("flex items-center gap-1", className)} {...props}>
     {children}
   </div>
-)
+);
 
 type ChatActionProps = ComponentProps<typeof Button> & {
-  tooltip?: string
-  label?: string
-}
+  tooltip?: string;
+  label?: string;
+};
 
 const ChatAction = ({
   tooltip,
@@ -81,10 +70,7 @@ const ChatAction = ({
 }: ChatActionProps) => {
   const button = (
     <Button
-      className={cn(
-        "text-muted-foreground hover:text-foreground relative size-9 p-1.5",
-        className
-      )}
+      className={cn("text-muted-foreground hover:text-foreground relative size-9 p-1.5", className)}
       size={size}
       type="button"
       variant={variant}
@@ -93,7 +79,7 @@ const ChatAction = ({
       {children}
       <span className="sr-only">{label || tooltip}</span>
     </Button>
-  )
+  );
 
   if (tooltip) {
     return (
@@ -105,46 +91,41 @@ const ChatAction = ({
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-    )
+    );
   }
 
-  return button
-}
+  return button;
+};
 
 export default function Page() {
   return (
     <ConversationProvider>
       <VoiceChat01 />
     </ConversationProvider>
-  )
+  );
 }
 
 export function VoiceChat01() {
-  const { status } = useConversationStatus()
-  const {
-    startSession,
-    endSession,
-    sendUserMessage,
-    getInputVolume,
-    getOutputVolume,
-  } = useConversationControls()
-  const [messages, setMessages] = useState<ChatMessage[]>([])
-  const [textInput, setTextInput] = useState("")
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const mediaStreamRef = useRef<MediaStream | null>(null)
-  const isTextOnlyModeRef = useRef<boolean>(true)
+  const { status } = useConversationStatus();
+  const { startSession, endSession, sendUserMessage, getInputVolume, getOutputVolume } =
+    useConversationControls();
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [textInput, setTextInput] = useState("");
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const isTextOnlyModeRef = useRef<boolean>(true);
 
   // Keep useConversation for callbacks that need access to local state
   useConversation({
     onConnect: () => {
       if (!isTextOnlyModeRef.current) {
-        setMessages([])
+        setMessages([]);
       }
     },
     onDisconnect: () => {
       if (!isTextOnlyModeRef.current) {
-        setMessages([])
+        setMessages([]);
       }
     },
     onMessage: (message) => {
@@ -152,45 +133,42 @@ export function VoiceChat01() {
         const newMessage: ChatMessage = {
           role: message.source === "user" ? "user" : "assistant",
           content: message.message,
-        }
-        setMessages((prev) => [...prev, newMessage])
+        };
+        setMessages((prev) => [...prev, newMessage]);
       }
     },
     onError: (error) => {
-      console.error("Error:", error)
+      console.error("Error:", error);
     },
-  })
+  });
 
   const getMicStream = useCallback(async () => {
-    if (mediaStreamRef.current) return mediaStreamRef.current
+    if (mediaStreamRef.current) return mediaStreamRef.current;
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      mediaStreamRef.current = stream
-      setErrorMessage(null)
-      return stream
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStreamRef.current = stream;
+      setErrorMessage(null);
+      return stream;
     } catch (error) {
       if (error instanceof DOMException && error.name === "NotAllowedError") {
-        setErrorMessage("Please enable microphone permissions in your browser.")
+        setErrorMessage("Please enable microphone permissions in your browser.");
       }
-      throw error
+      throw error;
     }
-  }, [])
+  }, []);
 
   const startConversation = useCallback(
-    async (
-      textOnly: boolean = true,
-      skipConnectingMessage: boolean = false
-    ) => {
+    async (textOnly: boolean = true, skipConnectingMessage: boolean = false) => {
       try {
-        isTextOnlyModeRef.current = textOnly
+        isTextOnlyModeRef.current = textOnly;
 
         if (!skipConnectingMessage) {
-          setMessages([])
+          setMessages([]);
         }
 
         if (!textOnly) {
-          await getMicStream()
+          await getMicStream();
         }
 
         startSession({
@@ -204,115 +182,108 @@ export function VoiceChat01() {
               firstMessage: textOnly ? "" : undefined,
             },
           },
-        })
+        });
       } catch (error) {
-        console.error(error)
-        setMessages([])
+        console.error(error);
+        setMessages([]);
       }
     },
-    [startSession, getMicStream]
-  )
+    [startSession, getMicStream],
+  );
 
   const handleCall = useCallback(async () => {
     if (status === "disconnected" || status === "error") {
       try {
-        await startConversation(false)
+        await startConversation(false);
       } catch {
         // getMicStream error already handled
       }
     } else if (status === "connected") {
-      endSession()
+      endSession();
 
       if (mediaStreamRef.current) {
-        mediaStreamRef.current.getTracks().forEach((t) => t.stop())
-        mediaStreamRef.current = null
+        mediaStreamRef.current.getTracks().forEach((t) => t.stop());
+        mediaStreamRef.current = null;
       }
     }
-  }, [status, endSession, startConversation])
+  }, [status, endSession, startConversation]);
 
-  const handleTextInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setTextInput(e.target.value)
-    },
-    []
-  )
+  const handleTextInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setTextInput(e.target.value);
+  }, []);
 
   const handleSendText = useCallback(async () => {
-    if (!textInput.trim()) return
+    if (!textInput.trim()) return;
 
-    const messageToSend = textInput
+    const messageToSend = textInput;
 
     if (status === "disconnected" || status === "error") {
       const userMessage: ChatMessage = {
         role: "user",
         content: messageToSend,
-      }
-      setTextInput("")
+      };
+      setTextInput("");
 
       try {
-        await startConversation(true, true)
-        setMessages([userMessage])
-        sendUserMessage(messageToSend)
+        await startConversation(true, true);
+        setMessages([userMessage]);
+        sendUserMessage(messageToSend);
       } catch (error) {
-        console.error("Failed to start conversation:", error)
+        console.error("Failed to start conversation:", error);
       }
     } else if (status === "connected") {
       const newMessage: ChatMessage = {
         role: "user",
         content: messageToSend,
-      }
-      setMessages((prev) => [...prev, newMessage])
-      setTextInput("")
+      };
+      setMessages((prev) => [...prev, newMessage]);
+      setTextInput("");
 
-      sendUserMessage(messageToSend)
+      sendUserMessage(messageToSend);
     }
-  }, [textInput, status, startConversation, sendUserMessage])
+  }, [textInput, status, startConversation, sendUserMessage]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault()
-        handleSendText()
+        e.preventDefault();
+        handleSendText();
       }
     },
-    [handleSendText]
-  )
+    [handleSendText],
+  );
 
   useEffect(() => {
     return () => {
       if (mediaStreamRef.current) {
-        mediaStreamRef.current.getTracks().forEach((t) => t.stop())
+        mediaStreamRef.current.getTracks().forEach((t) => t.stop());
       }
-    }
-  }, [])
+    };
+  }, []);
 
-  const isCallActive = status === "connected"
-  const isTransitioning = status === "connecting"
+  const isCallActive = status === "connected";
+  const isTransitioning = status === "connecting";
 
   const scaledInputVolume = useCallback(() => {
     try {
-      const rawValue = getInputVolume() ?? 0
-      return Math.min(1.0, Math.pow(rawValue, 0.5) * 2.5)
+      const rawValue = getInputVolume() ?? 0;
+      return Math.min(1.0, Math.pow(rawValue, 0.5) * 2.5);
     } catch {
-      return 0
+      return 0;
     }
-  }, [getInputVolume])
+  }, [getInputVolume]);
 
   const scaledOutputVolume = useCallback(() => {
     try {
-      const rawValue = getOutputVolume() ?? 0
-      return Math.min(1.0, Math.pow(rawValue, 0.5) * 2.5)
+      const rawValue = getOutputVolume() ?? 0;
+      return Math.min(1.0, Math.pow(rawValue, 0.5) * 2.5);
     } catch {
-      return 0
+      return 0;
     }
-  }, [getOutputVolume])
+  }, [getOutputVolume]);
 
   return (
-    <Card
-      className={cn(
-        "mx-auto flex h-[380px] w-full flex-col gap-0 overflow-hidden"
-      )}
-    >
+    <Card className={cn("mx-auto flex h-[380px] w-full flex-col gap-0 overflow-hidden")}>
       <CardHeader className="flex shrink-0 flex-row items-center justify-between pb-4">
         <div className="flex items-center gap-4">
           <div className="ring-border relative size-10 overflow-hidden rounded-full ring-1">
@@ -324,16 +295,12 @@ export function VoiceChat01() {
             />
           </div>
           <div className="flex flex-col gap-0.5">
-            <p className="text-sm leading-none font-medium">
-              {DEFAULT_AGENT.name}
-            </p>
+            <p className="text-sm leading-none font-medium">{DEFAULT_AGENT.name}</p>
             <div className="flex items-center gap-2">
               {errorMessage ? (
                 <p className="text-destructive text-xs">{errorMessage}</p>
               ) : status === "disconnected" || status === "error" ? (
-                <p className="text-muted-foreground text-xs">
-                  Tap to start voice chat
-                </p>
+                <p className="text-muted-foreground text-xs">Tap to start voice chat</p>
               ) : status === "connected" ? (
                 <p className="text-xs text-green-600">Connected</p>
               ) : isTransitioning ? (
@@ -345,9 +312,8 @@ export function VoiceChat01() {
         <div
           className={cn(
             "flex h-2 w-2 rounded-full transition-all duration-300",
-            status === "connected" &&
-              "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]",
-            isTransitioning && "animate-pulse bg-white/40"
+            status === "connected" && "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]",
+            isTransitioning && "animate-pulse bg-white/40",
           )}
         />
       </CardHeader>
@@ -389,9 +355,7 @@ export function VoiceChat01() {
                           <Orb
                             className="h-full w-full"
                             agentState={
-                              isCallActive && index === messages.length - 1
-                                ? "talking"
-                                : null
+                              isCallActive && index === messages.length - 1 ? "talking" : null
                             }
                           />
                         </div>
@@ -403,9 +367,9 @@ export function VoiceChat01() {
                           size="sm"
                           tooltip={copiedIndex === index ? "Copied!" : "Copy"}
                           onClick={() => {
-                            navigator.clipboard.writeText(message.content)
-                            setCopiedIndex(index)
-                            setTimeout(() => setCopiedIndex(null), 2000)
+                            navigator.clipboard.writeText(message.content);
+                            setCopiedIndex(index);
+                            setTimeout(() => setCopiedIndex(null), 2000);
                           }}
                         >
                           {copiedIndex === index ? (
@@ -417,7 +381,7 @@ export function VoiceChat01() {
                       </ChatActions>
                     )}
                   </div>
-                )
+                );
               })
             )}
           </ConversationContent>
@@ -473,5 +437,5 @@ export function VoiceChat01() {
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

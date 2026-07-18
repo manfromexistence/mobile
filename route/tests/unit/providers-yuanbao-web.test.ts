@@ -112,7 +112,7 @@ test("streaming request translates think/text events into OpenAI chunks", async 
         'data: {"type":"text","msg":" world"}\n',
         'data: {"stopReason":"stop"}\n',
       ]),
-      { status: 200, headers: { "Content-Type": "text/event-stream" } }
+      { status: 200, headers: { "Content-Type": "text/event-stream" } },
     );
   }) as typeof fetch;
 
@@ -155,7 +155,7 @@ test("non-streaming request collects content and reasoning", async () => {
         'data: {"type":"text","msg":"Answer"}\n',
         'data: {"stopReason":"stop"}\n',
       ]),
-      { status: 200, headers: { "Content-Type": "text/event-stream" } }
+      { status: 200, headers: { "Content-Type": "text/event-stream" } },
     );
   }) as typeof fetch;
 

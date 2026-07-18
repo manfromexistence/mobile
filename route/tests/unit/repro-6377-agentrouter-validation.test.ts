@@ -76,6 +76,6 @@ test("agentrouter key validation must not false-negative behind the CC-wire-imag
     result.valid,
     true,
     `expected the valid key to validate, got: ${JSON.stringify(result)} — ` +
-      `requests made: ${JSON.stringify(calls.map((c) => ({ url: c.url, ua: c.headers["user-agent"] })))}`
+      `requests made: ${JSON.stringify(calls.map((c) => ({ url: c.url, ua: c.headers["user-agent"] })))}`,
   );
 });

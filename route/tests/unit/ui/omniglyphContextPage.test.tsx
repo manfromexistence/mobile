@@ -76,7 +76,7 @@ function setupFetchMock(): { puts: CapturedPut[] } {
         return json(initialConfig);
       }
       return json({}, 404);
-    }
+    },
   );
   return { puts };
 }
@@ -124,7 +124,9 @@ describe("OmniglyphContextPage", () => {
     });
     await flush();
 
-    const toggle = container.querySelector('[data-testid="omniglyph-enable-toggle"] button') as HTMLButtonElement | null;
+    const toggle = container.querySelector(
+      '[data-testid="omniglyph-enable-toggle"] button',
+    ) as HTMLButtonElement | null;
     expect(toggle, "enable toggle button must exist").toBeTruthy();
     await act(async () => {
       toggle!.click();

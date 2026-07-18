@@ -1,30 +1,30 @@
-import { useMemo } from 'react';
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { useMemo } from "react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
 
-import CodeExample from '../../components/code/CodeExample';
-import useForceRerender from '../../hooks/useForceRerender';
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
-import PropTable from '../../components/common/Preview/PropTable';
+import CodeExample from "../../components/code/CodeExample";
+import useForceRerender from "../../hooks/useForceRerender";
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
+import PropTable from "../../components/common/Preview/PropTable";
 
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
-import Customize from '../../components/common/Preview/Customize';
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
+import Customize from "../../components/common/Preview/Customize";
 
-import OpenInStudioButton from '../../components/common/Preview/OpenInStudioButton';
+import OpenInStudioButton from "../../components/common/Preview/OpenInStudioButton";
 
-import { clickSpark } from '../../constants/code/Animations/clickSparkCode';
-import ClickSpark from '../../content/Animations/ClickSpark/ClickSpark';
+import { clickSpark } from "../../constants/code/Animations/clickSparkCode";
+import ClickSpark from "../../content/Animations/ClickSpark/ClickSpark";
 
 const DEFAULT_PROPS = {
-  sparkColor: '#ffffff',
+  sparkColor: "#ffffff",
   sparkSize: 10,
   sparkRadius: 15,
   sparkCount: 8,
   duration: 400,
-  extraScale: 1.0
+  extraScale: 1.0,
 };
 
 const ClickSparkDemo = () => {
@@ -36,59 +36,64 @@ const ClickSparkDemo = () => {
   const propData = useMemo(
     () => [
       {
-        name: 'sparkColor',
-        type: 'string',
+        name: "sparkColor",
+        type: "string",
         default: "'#f00'",
-        description: 'Color of each spark line.'
+        description: "Color of each spark line.",
       },
       {
-        name: 'sparkSize',
-        type: 'number',
+        name: "sparkSize",
+        type: "number",
         default: 30,
-        description: 'Initial length of each spark line.'
+        description: "Initial length of each spark line.",
       },
       {
-        name: 'sparkRadius',
-        type: 'number',
+        name: "sparkRadius",
+        type: "number",
         default: 30,
-        description: 'How far sparks travel from the click center.'
+        description: "How far sparks travel from the click center.",
       },
       {
-        name: 'sparkCount',
-        type: 'number',
+        name: "sparkCount",
+        type: "number",
         default: 8,
-        description: 'Number of spark lines that appear on each click.'
+        description: "Number of spark lines that appear on each click.",
       },
       {
-        name: 'duration',
-        type: 'number',
+        name: "duration",
+        type: "number",
         default: 660,
-        description: 'Animation duration in milliseconds.'
+        description: "Animation duration in milliseconds.",
       },
       {
-        name: 'easing',
-        type: 'string',
+        name: "easing",
+        type: "string",
         default: "'ease-out'",
-        description: 'Easing function used for the spark animation.'
+        description: "Easing function used for the spark animation.",
       },
       {
-        name: 'extraScale',
-        type: 'number',
+        name: "extraScale",
+        type: "number",
         default: 1.0,
-        description: 'Additional multiplier for spark distance.'
+        description: "Additional multiplier for spark distance.",
       },
       {
-        name: 'children',
-        type: 'React.ReactNode',
-        default: '',
-        description: 'React children to render.'
-      }
+        name: "children",
+        type: "React.ReactNode",
+        default: "",
+        description: "React children to render.",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box position="relative" className="demo-container" h={400} p={0} overflow="hidden">
@@ -117,13 +122,27 @@ const ClickSparkDemo = () => {
           <Flex justify="flex-end" mt={2} mb={-2}>
             <OpenInStudioButton
               backgroundId="click-spark"
-              currentProps={{ sparkColor, sparkSize, sparkRadius, sparkCount, duration, extraScale }}
+              currentProps={{
+                sparkColor,
+                sparkSize,
+                sparkRadius,
+                sparkCount,
+                duration,
+                extraScale,
+              }}
               defaultProps={DEFAULT_PROPS}
             />
           </Flex>
 
           <Customize>
-            <PreviewColorPickerCustom title="Spark Color" color={sparkColor} onChange={val => { updateProp('sparkColor', val); forceRerender(); }} />
+            <PreviewColorPickerCustom
+              title="Spark Color"
+              color={sparkColor}
+              onChange={(val) => {
+                updateProp("sparkColor", val);
+                forceRerender();
+              }}
+            />
 
             <PreviewSlider
               title="Spark Size"
@@ -131,8 +150,8 @@ const ClickSparkDemo = () => {
               max={60}
               step={1}
               value={sparkSize}
-              onChange={val => {
-                updateProp('sparkSize', val);
+              onChange={(val) => {
+                updateProp("sparkSize", val);
                 forceRerender();
               }}
             />
@@ -143,8 +162,8 @@ const ClickSparkDemo = () => {
               max={200}
               step={5}
               value={sparkRadius}
-              onChange={val => {
-                updateProp('sparkRadius', val);
+              onChange={(val) => {
+                updateProp("sparkRadius", val);
                 forceRerender();
               }}
             />
@@ -155,8 +174,8 @@ const ClickSparkDemo = () => {
               max={20}
               step={1}
               value={sparkCount}
-              onChange={val => {
-                updateProp('sparkCount', val);
+              onChange={(val) => {
+                updateProp("sparkCount", val);
                 forceRerender();
               }}
             />
@@ -168,8 +187,8 @@ const ClickSparkDemo = () => {
               step={100}
               value={duration}
               valueUnit="ms"
-              onChange={val => {
-                updateProp('duration', val);
+              onChange={(val) => {
+                updateProp("duration", val);
                 forceRerender();
               }}
             />
@@ -180,8 +199,8 @@ const ClickSparkDemo = () => {
               max={2}
               step={0.1}
               value={extraScale}
-              onChange={val => {
-                updateProp('extraScale', val);
+              onChange={(val) => {
+                updateProp("extraScale", val);
                 forceRerender();
               }}
             />

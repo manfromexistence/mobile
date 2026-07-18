@@ -22,7 +22,7 @@ import ts from "typescript";
 
 const COMPONENT_PATH = path.resolve(
   import.meta.dirname,
-  "../../src/app/(dashboard)/dashboard/usage/components/ProviderLimits/QuotaCardGrid.tsx"
+  "../../src/app/(dashboard)/dashboard/usage/components/ProviderLimits/QuotaCardGrid.tsx",
 );
 
 function extractDivClassNames(sourcePath: string): string[] {
@@ -32,7 +32,7 @@ function extractDivClassNames(sourcePath: string): string[] {
     sourceText,
     ts.ScriptTarget.Latest,
     true,
-    ts.ScriptKind.TSX
+    ts.ScriptKind.TSX,
   );
   const classNames: string[] = [];
 
@@ -73,7 +73,7 @@ test("QuotaCardGrid (#7072) — per-group card grid keeps a single-column mobile
   assert.equal(
     unprefixedGridCols,
     "grid-cols-1",
-    `expected unprefixed grid-cols-1 (mobile fallback), got className="${cardGridClassName}"`
+    `expected unprefixed grid-cols-1 (mobile fallback), got className="${cardGridClassName}"`,
   );
   assert.match(cardGridClassName!, /\bsm:grid-cols-2\b/, "expected sm:grid-cols-2 to be preserved");
 });

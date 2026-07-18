@@ -44,8 +44,7 @@ export default function TimePickerControlledDemo() {
         </Button>
       </div>
       <div className="text-muted-foreground text-sm">
-        Selected time:{" "}
-        <span className="font-mono font-semibold">{value || "None"}</span>
+        Selected time: <span className="font-mono font-semibold">{value || "None"}</span>
       </div>
     </div>
   );

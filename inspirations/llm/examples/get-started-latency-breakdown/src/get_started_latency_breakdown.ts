@@ -16,9 +16,7 @@ type LatencyBreakdown = {
   totalTime: number[];
   grammarBitmaskTime: number[];
 };
-function computeStats(
-  latency_breakdown: LatencyBreakdown,
-): Record<string, any> {
+function computeStats(latency_breakdown: LatencyBreakdown): Record<string, any> {
   function _computeStats(arr: number[]) {
     if (!arr.length) return undefined;
     const sorted = [...arr].sort((a, b) => a - b);
@@ -99,14 +97,12 @@ async function main() {
       repetition_penalty: 1.1,
     });
 
-    const logitProcessorTime =
-      reply0.usage?.extra.latencyBreakdown?.logitProcessorTime;
+    const logitProcessorTime = reply0.usage?.extra.latencyBreakdown?.logitProcessorTime;
     const logitBiasTime = reply0.usage?.extra.latencyBreakdown?.logitBiasTime;
     const penaltyTime = reply0.usage?.extra.latencyBreakdown?.penaltyTime;
     const sampleTime = reply0.usage?.extra.latencyBreakdown?.sampleTime;
     const totalTime = reply0.usage?.extra.latencyBreakdown?.totalTime;
-    const grammarBitmaskTime =
-      reply0.usage?.extra.latencyBreakdown?.grammarBitmaskTime;
+    const grammarBitmaskTime = reply0.usage?.extra.latencyBreakdown?.grammarBitmaskTime;
 
     latencyBreakdown.logitProcessorTime.push(...(logitProcessorTime || []));
     latencyBreakdown.logitBiasTime.push(...(logitBiasTime || []));
@@ -121,8 +117,7 @@ async function main() {
     completionTokens.push(reply0.usage?.completion_tokens || 0);
   }
 
-  const latencyStats: { [key: string]: number } =
-    computeStats(latencyBreakdown);
+  const latencyStats: { [key: string]: number } = computeStats(latencyBreakdown);
   console.log("Latency stats: ", latencyStats);
   console.log("Decode tokens per second: ", decodeTokensPerS);
   console.log("Completion tokens: ", completionTokens);

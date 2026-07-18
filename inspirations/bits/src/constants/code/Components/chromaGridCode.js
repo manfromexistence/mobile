@@ -1,8 +1,8 @@
-import code from '@content/Components/ChromaGrid/ChromaGrid.jsx?raw';
-import css from '@content/Components/ChromaGrid/ChromaGrid.css?raw';
-import tailwind from '@tailwind/Components/ChromaGrid/ChromaGrid.jsx?raw';
-import tsCode from '@ts-default/Components/ChromaGrid/ChromaGrid.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/ChromaGrid/ChromaGrid.tsx?raw';
+import code from "@content/Components/ChromaGrid/ChromaGrid.jsx?raw";
+import css from "@content/Components/ChromaGrid/ChromaGrid.css?raw";
+import tailwind from "@tailwind/Components/ChromaGrid/ChromaGrid.jsx?raw";
+import tsCode from "@ts-default/Components/ChromaGrid/ChromaGrid.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/ChromaGrid/ChromaGrid.tsx?raw";
 
 export const chromaGrid = {
   dependencies: `gsap`,
@@ -42,5 +42,5 @@ const items = [
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

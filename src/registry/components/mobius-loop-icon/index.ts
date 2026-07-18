@@ -1,1 +1,1 @@
-export * from "./mobius-loop-icon"
+export * from "./mobius-loop-icon";

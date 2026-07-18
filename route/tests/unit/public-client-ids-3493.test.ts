@@ -21,7 +21,7 @@ test("#3493 embedded public client_ids decode to their original literals", () =>
     assert.equal(
       resolvePublicCred(key as never),
       expected,
-      `${key} must decode to its public client_id (OAuth flow unchanged)`
+      `${key} must decode to its public client_id (OAuth flow unchanged)`,
     );
   }
 });
@@ -32,7 +32,7 @@ test("#3493 env override takes priority over the embedded default", () => {
   try {
     assert.equal(
       resolvePublicCred("claude_id" as never, "CLAUDE_OAUTH_CLIENT_ID"),
-      "custom-override-id"
+      "custom-override-id",
     );
   } finally {
     if (prev === undefined) delete process.env.CLAUDE_OAUTH_CLIENT_ID;

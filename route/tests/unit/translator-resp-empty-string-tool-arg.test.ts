@@ -10,8 +10,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiToClaudeResponse } =
-  await import("../../open-sse/translator/response/openai-to-claude.ts");
+const { openaiToClaudeResponse } = await import(
+  "../../open-sse/translator/response/openai-to-claude.ts"
+);
 
 function createState() {
   return {
@@ -56,7 +57,7 @@ test("#4951: single-chunk tool args with empty-string field — partial_json mus
         },
       ],
     },
-    state
+    state,
   );
 
   // Chunk 2: full args delivered in one chunk (deepseek single-chunk pattern)
@@ -83,14 +84,14 @@ test("#4951: single-chunk tool args with empty-string field — partial_json mus
         },
       ],
     },
-    state
+    state,
   );
 
   const events = flatten([chunk1, chunk2]);
 
   // Find the content_block_delta events that carry input_json_delta
   const jsonDeltas = events.filter(
-    (e) => e?.type === "content_block_delta" && e.delta?.type === "input_json_delta"
+    (e) => e?.type === "content_block_delta" && e.delta?.type === "input_json_delta",
   );
 
   // There must be at least one delta with actual JSON content
@@ -110,12 +111,12 @@ test("#4951: single-chunk tool args with empty-string field — partial_json mus
   // The file_path field with value "" must survive — this is the regression guard
   assert.ok(
     Object.prototype.hasOwnProperty.call(parsed, "file_path"),
-    `"file_path" field was stripped from tool args — regression of #4951. assembled=${assembled}`
+    `"file_path" field was stripped from tool args — regression of #4951. assembled=${assembled}`,
   );
   assert.equal(
     parsed.file_path,
     "",
-    `"file_path" value was corrupted; expected "" got ${JSON.stringify(parsed.file_path)}`
+    `"file_path" value was corrupted; expected "" got ${JSON.stringify(parsed.file_path)}`,
   );
   assert.equal(parsed.content, "hello world", "content field must be preserved");
 });
@@ -146,12 +147,12 @@ test("#4951: trailing-empty-string field (comma before) also survives", () => {
         },
       ],
     },
-    state
+    state,
   );
 
   const events = flatten([chunk1]);
   const jsonDeltas = events.filter(
-    (e) => e?.type === "content_block_delta" && e.delta?.type === "input_json_delta"
+    (e) => e?.type === "content_block_delta" && e.delta?.type === "input_json_delta",
   );
 
   assert.ok(jsonDeltas.length > 0, "expected at least one input_json_delta event");
@@ -166,7 +167,7 @@ test("#4951: trailing-empty-string field (comma before) also survives", () => {
 
   assert.ok(
     Object.prototype.hasOwnProperty.call(parsed, "extra_filter"),
-    `"extra_filter" field was stripped — comma-prefix pattern regression of #4951. assembled=${assembled}`
+    `"extra_filter" field was stripped — comma-prefix pattern regression of #4951. assembled=${assembled}`,
   );
   assert.equal(parsed.extra_filter, "");
   assert.equal(parsed.query, "search term");
@@ -211,12 +212,12 @@ test("#1852 preserved: purely-empty streaming chunks with noise placeholders are
         },
       ],
     },
-    state
+    state,
   );
 
   const events = flatten([chunk1]);
   const jsonDeltas = events.filter(
-    (e) => e?.type === "content_block_delta" && e.delta?.type === "input_json_delta"
+    (e) => e?.type === "content_block_delta" && e.delta?.type === "input_json_delta",
   );
 
   // With the fix, the placeholder is emitted as-is (not stripped).

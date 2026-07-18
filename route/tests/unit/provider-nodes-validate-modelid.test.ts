@@ -52,7 +52,7 @@ function validate(body: Record<string, unknown>) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
-    })
+    }),
   );
 }
 

@@ -1,10 +1,4 @@
-import {
-  ArrowDown,
-  ArrowUp,
-  DollarSign,
-  MoreHorizontal,
-  ShoppingCart,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, DollarSign, MoreHorizontal, ShoppingCart } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,

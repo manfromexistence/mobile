@@ -6,11 +6,7 @@ import { type Config, useConfig } from "@/hooks/use-config";
 import { cn } from "@/lib/utils";
 import type { Tabs } from "@/registry/bases/radix/ui/tabs";
 
-export function CodeTabs({
-  children,
-  className,
-  ...props
-}: React.ComponentProps<typeof Tabs>) {
+export function CodeTabs({ children, className, ...props }: React.ComponentProps<typeof Tabs>) {
   const [config, setConfig] = useConfig();
 
   return (
@@ -23,10 +19,7 @@ export function CodeTabs({
           installationType: value as Config["installationType"],
         })
       }
-      className={cn(
-        "not-prose relative mt-6 w-full *:data-[slot=tabs-list]:gap-6",
-        className,
-      )}
+      className={cn("not-prose relative mt-6 w-full *:data-[slot=tabs-list]:gap-6", className)}
       {...props}
     >
       {children}

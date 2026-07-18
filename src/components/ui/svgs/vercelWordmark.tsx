@@ -1,4 +1,4 @@
-import type { SVGProps } from "react"
+import type { SVGProps } from "react";
 
 const VercelWordmark = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} aria-label="Vercel logotype" viewBox="0 0 262 52">
@@ -7,6 +7,6 @@ const VercelWordmark = (props: SVGProps<SVGSVGElement>) => (
       fill="black"
     />
   </svg>
-)
+);
 
-export { VercelWordmark }
+export { VercelWordmark };

@@ -20,7 +20,7 @@ import Database from "better-sqlite3";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const MIGRATION_107 = fs.readFileSync(
   path.join(__dirname, "../../src/lib/db/migrations/107_quota_combos_quota_share_strategy.sql"),
-  "utf-8"
+  "utf-8",
 );
 
 interface TestDb {
@@ -41,7 +41,7 @@ function makeDb(): TestDb {
        data TEXT NOT NULL,
        created_at TEXT NOT NULL,
        updated_at TEXT NOT NULL
-     );`
+     );`,
   );
   return db;
 }
@@ -54,7 +54,7 @@ function insertCombo(db: TestDb, id: string, name: string, strategy: string): vo
     isHidden: name.startsWith("qtSd/"),
   });
   db.prepare(
-    "INSERT INTO combos (id, name, data, created_at, updated_at) VALUES (?, ?, ?, '2026-01-01T00:00:00Z', '2026-01-01T00:00:00Z')"
+    "INSERT INTO combos (id, name, data, created_at, updated_at) VALUES (?, ?, ?, '2026-01-01T00:00:00Z', '2026-01-01T00:00:00Z')",
   ).run(id, name, data);
 }
 
@@ -94,7 +94,7 @@ test("107 preserves the other JSON fields (only strategy changes)", () => {
   assert.deepEqual(
     data.models,
     [{ kind: "model", model: "p/m", weight: 100 }],
-    "models array must be preserved"
+    "models array must be preserved",
   );
   db.close();
 });
@@ -119,7 +119,7 @@ test("107 never touches user-authored (non-qtSd/) combos", () => {
   assert.equal(
     strategyOf(db, "my-coding-combo"),
     "fill-first",
-    "a user's fill-first combo must be preserved"
+    "a user's fill-first combo must be preserved",
   );
   assert.equal(strategyOf(db, "team/fast"), "fill-first");
   db.close();

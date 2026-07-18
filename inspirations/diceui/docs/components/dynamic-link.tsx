@@ -21,10 +21,7 @@ export function DynamicLink({
     <Button
       variant={variant}
       size={size}
-      className={cn(
-        "h-7 text-xs [&_svg:not([class*='size-'])]:size-3",
-        className,
-      )}
+      className={cn("h-7 text-xs [&_svg:not([class*='size-'])]:size-3", className)}
       asChild
     >
       <Link href={href} target={isExternal ? "_blank" : "_self"} {...props}>

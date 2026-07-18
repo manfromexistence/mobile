@@ -1,9 +1,7 @@
 {
   "name": "scroller-navigation-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "scroller"
-  ],
+  "registryDependencies": ["scroller"],
   "files": [
     {
       "path": "examples/scroller-navigation-demo.tsx",

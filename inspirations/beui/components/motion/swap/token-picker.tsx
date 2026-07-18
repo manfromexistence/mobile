@@ -36,9 +36,7 @@ export function TokenPicker({
   useEffect(() => {
     if (!open) return;
     setQ("");
-    requestAnimationFrame(() =>
-      inputRef.current?.focus({ preventScroll: true }),
-    );
+    requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
   }, [open]);
 
   useEffect(() => {
@@ -50,14 +48,8 @@ export function TokenPicker({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
-  const popular = useMemo(
-    () => tokens.filter((t) => t.popular).slice(0, 6),
-    [tokens],
-  );
-  const chainById = useMemo(
-    () => new Map(chains.map((chain) => [chain.id, chain])),
-    [chains],
-  );
+  const popular = useMemo(() => tokens.filter((t) => t.popular).slice(0, 6), [tokens]);
+  const chainById = useMemo(() => new Map(chains.map((chain) => [chain.id, chain])), [chains]);
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -92,9 +84,7 @@ export function TokenPicker({
             initial={reduce ? { opacity: 0 } : { opacity: 0, y: "100%" }}
             animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: "100%" }}
-            transition={
-              reduce ? { duration: 0.18, ease: EASE } : SPRING_PANEL
-            }
+            transition={reduce ? { duration: 0.18, ease: EASE } : SPRING_PANEL}
             className="absolute inset-x-0 bottom-0 z-20 flex max-h-[92%] flex-col rounded-t-3xl border-t border-border bg-card shadow-2xl"
             role="dialog"
             aria-modal="true"
@@ -185,9 +175,7 @@ export function TokenPicker({
                         onClick={() => onPick(t.id)}
                         className={cn(
                           "flex w-full items-center justify-between rounded-xl px-2 py-2 text-left transition-colors active:scale-[0.97]",
-                          active
-                            ? "bg-primary/5"
-                            : "hover:bg-primary/[0.04]",
+                          active ? "bg-primary/5" : "hover:bg-primary/[0.04]",
                         )}
                       >
                         <span className="flex min-w-0 items-center gap-2.5">
@@ -202,8 +190,7 @@ export function TokenPicker({
                           </span>
                         </span>
                         <span className="shrink-0 text-right text-[11px] tabular-nums text-muted-foreground">
-                          {t.address ??
-                            (t.balance ? formatAmount(t.balance) : "")}
+                          {t.address ?? (t.balance ? formatAmount(t.balance) : "")}
                         </span>
                       </button>
                     </li>

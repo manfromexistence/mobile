@@ -26,7 +26,7 @@ const PAGE_CLIENT_PATH = path.join(
   "dashboard",
   "costs",
   "quota-share",
-  "QuotaSharePageClient.tsx"
+  "QuotaSharePageClient.tsx",
 );
 
 const WIZARD_PATH = path.join(
@@ -38,7 +38,7 @@ const WIZARD_PATH = path.join(
   "costs",
   "quota-share",
   "components",
-  "PoolWizard.tsx"
+  "PoolWizard.tsx",
 );
 
 const pageSrc = fs.readFileSync(PAGE_CLIENT_PATH, "utf-8");
@@ -49,7 +49,7 @@ const wizardSrc = fs.readFileSync(WIZARD_PATH, "utf-8");
 test("QuotaSharePageClient: does NOT import EditAllocationsModal", () => {
   assert.ok(
     !pageSrc.includes("EditAllocationsModal"),
-    "EditAllocationsModal must not appear in QuotaSharePageClient (retired Task 6)"
+    "EditAllocationsModal must not appear in QuotaSharePageClient (retired Task 6)",
   );
 });
 
@@ -58,14 +58,14 @@ test("QuotaSharePageClient: does NOT import EditAllocationsModal", () => {
 test("QuotaSharePageClient: passes editing pool as editPool= to PoolWizard", () => {
   assert.ok(
     pageSrc.includes("editPool={editing"),
-    "Expected editPool={editing...} prop on the edit PoolWizard instance"
+    "Expected editPool={editing...} prop on the edit PoolWizard instance",
   );
 });
 
 test("QuotaSharePageClient: opens edit wizard when editing is set (open={!!editing})", () => {
   assert.ok(
     pageSrc.includes("open={!!editing}"),
-    "Expected open={!!editing} on the edit PoolWizard instance"
+    "Expected open={!!editing} on the edit PoolWizard instance",
   );
 });
 
@@ -74,18 +74,18 @@ test("QuotaSharePageClient: opens edit wizard when editing is set (open={!!editi
 test("QuotaSharePageClient: computes editingExclusive from allowedQuotas", () => {
   assert.ok(
     pageSrc.includes("editingExclusive"),
-    "Expected editingExclusive to be defined in QuotaSharePageClient"
+    "Expected editingExclusive to be defined in QuotaSharePageClient",
   );
   assert.ok(
     pageSrc.includes("allowedQuotas"),
-    "Expected allowedQuotas referenced in editingExclusive computation"
+    "Expected allowedQuotas referenced in editingExclusive computation",
   );
 });
 
 test("QuotaSharePageClient: passes editPoolExclusive={editingExclusive} to edit PoolWizard", () => {
   assert.ok(
     pageSrc.includes("editPoolExclusive={editingExclusive}"),
-    "Expected editPoolExclusive={editingExclusive} on the edit PoolWizard instance"
+    "Expected editPoolExclusive={editingExclusive} on the edit PoolWizard instance",
   );
 });
 
@@ -93,14 +93,14 @@ test("QuotaSharePageClient: editingExclusive requires >=1 allocation", () => {
   // The guard `editing.allocations.length > 0` must be present
   assert.ok(
     pageSrc.includes("allocations.length > 0"),
-    "Expected allocations.length > 0 guard in editingExclusive"
+    "Expected allocations.length > 0 guard in editingExclusive",
   );
 });
 
 test("QuotaSharePageClient: editingExclusive checks every allocated key has pool id in allowedQuotas", () => {
   assert.ok(
     pageSrc.includes("aq.includes(editing.id)"),
-    "Expected aq.includes(editing.id) check in editingExclusive"
+    "Expected aq.includes(editing.id) check in editingExclusive",
   );
 });
 
@@ -109,7 +109,7 @@ test("QuotaSharePageClient: editingExclusive checks every allocated key has pool
 test("PoolWizard.tsx: declares editPoolExclusive prop in PoolWizardProps", () => {
   assert.ok(
     wizardSrc.includes("editPoolExclusive?"),
-    "Expected editPoolExclusive? field in PoolWizardProps"
+    "Expected editPoolExclusive? field in PoolWizardProps",
   );
 });
 
@@ -117,16 +117,19 @@ test("PoolWizard.tsx: pre-fill uses editPoolExclusive ?? false (not setExclusive
   // The old hard-coded false must be replaced by the prop
   assert.ok(
     wizardSrc.includes("editPoolExclusive ?? false"),
-    "Expected setExclusive(editPoolExclusive ?? false) in PoolWizard pre-fill"
+    "Expected setExclusive(editPoolExclusive ?? false) in PoolWizard pre-fill",
   );
   // The literal `setExclusive(false)` must NOT appear in the edit-mode pre-fill block
   // (it may still appear in the close-reset block, which is correct)
   const editFillIdx = wizardSrc.indexOf("} else if (editPool)");
   assert.ok(editFillIdx >= 0, "Expected '} else if (editPool)' block in PoolWizard");
   const closingBrace = wizardSrc.indexOf("\n    }", editFillIdx);
-  const editFillBlock = wizardSrc.slice(editFillIdx, closingBrace > 0 ? closingBrace + 6 : editFillIdx + 1200);
+  const editFillBlock = wizardSrc.slice(
+    editFillIdx,
+    closingBrace > 0 ? closingBrace + 6 : editFillIdx + 1200,
+  );
   assert.ok(
     !editFillBlock.includes("setExclusive(false)"),
-    "setExclusive(false) must not appear in the editPool pre-fill block — must use editPoolExclusive"
+    "setExclusive(false) must not appear in the editPool pre-fill block — must use editPoolExclusive",
   );
 });

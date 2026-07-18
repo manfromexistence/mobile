@@ -8,11 +8,7 @@
     "@dnd-kit/utilities",
     "lucide-react"
   ],
-  "registryDependencies": [
-    "button",
-    "sortable",
-    "table"
-  ],
+  "registryDependencies": ["button", "sortable", "table"],
   "files": [
     {
       "path": "examples/sortable-handle-demo.tsx",

@@ -1,7 +1,7 @@
-import { useRef, useEffect } from 'react';
-import { Renderer, Camera, Transform, Program, Mesh, Geometry } from 'ogl';
+import { useRef, useEffect } from "react";
+import { Renderer, Camera, Transform, Program, Mesh, Geometry } from "ogl";
 
-import './PlasmaWave.css';
+import "./PlasmaWave.css";
 
 function hexToRgb(hex) {
   const r = parseInt(hex.slice(1, 3), 16) / 255;
@@ -115,7 +115,7 @@ export default function PlasmaWave(props) {
     dir2 = 1.0,
     bend1 = 1,
     bend2 = 0.5,
-    colors = ['#A855F7', '#06B6D4']
+    colors = ["#A855F7", "#06B6D4"],
   } = props;
 
   const propsRef = useRef(props);
@@ -135,7 +135,7 @@ export default function PlasmaWave(props) {
       stencil: false,
       premultipliedAlpha: false,
       preserveDrawingBuffer: false,
-      powerPreference: 'high-performance'
+      powerPreference: "high-performance",
     });
 
     const gl = renderer.gl;
@@ -146,7 +146,7 @@ export default function PlasmaWave(props) {
     const scene = new Transform();
 
     const geometry = new Geometry(gl, {
-      position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) }
+      position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
     });
 
     const uniformOffset = new Float32Array([xOffset, yOffset]);
@@ -169,8 +169,8 @@ export default function PlasmaWave(props) {
         uBend1: { value: bend1 },
         uBend2: { value: bend2 },
         uColor1: { value: c1 },
-        uColor2: { value: c2 }
-      }
+        uColor2: { value: c2 },
+      },
     });
 
     new Mesh(gl, { geometry, program }).setParent(scene);
@@ -202,7 +202,7 @@ export default function PlasmaWave(props) {
         dir2: d2 = 1.0,
         bend1: b1 = 1,
         bend2: b2 = 0.5,
-        colors: cols = ['#A855F7', '#06B6D4']
+        colors: cols = ["#A855F7", "#06B6D4"],
       } = propsRef.current;
 
       uniformOffset[0] = xOff;
@@ -230,7 +230,7 @@ export default function PlasmaWave(props) {
       if (ctn && gl.canvas.parentNode === ctn) {
         ctn.removeChild(gl.canvas);
       }
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

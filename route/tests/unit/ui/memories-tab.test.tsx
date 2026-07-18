@@ -15,7 +15,11 @@ vi.mock("next-intl", () => ({
 vi.mock("@/shared/components", () => ({
   Card: ({ children }: { children: React.ReactNode }) =>
     React.createElement("div", { className: "card" }, children),
-  Badge: ({ children, variant, title }: { children: React.ReactNode; variant?: string; title?: string }) =>
+  Badge: ({
+    children,
+    variant,
+    title,
+  }: { children: React.ReactNode; variant?: string; title?: string }) =>
     React.createElement("span", { "data-variant": variant, title }, children),
   Button: ({
     children,
@@ -100,25 +104,22 @@ vi.mock("@/shared/components", () => ({
       : null,
 }));
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/memory/components/EditMemoryModal",
-  () => ({
-    default: ({
-      isOpen,
-      onClose,
-    }: {
-      isOpen: boolean;
-      memory: unknown;
-      onClose: () => void;
-      onSaved: () => void;
-    }) =>
-      isOpen
-        ? React.createElement("div", { "data-testid": "edit-memory-modal" }, [
-            React.createElement("button", { key: "close", onClick: onClose }, "close"),
-          ])
-        : null,
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/memory/components/EditMemoryModal", () => ({
+  default: ({
+    isOpen,
+    onClose,
+  }: {
+    isOpen: boolean;
+    memory: unknown;
+    onClose: () => void;
+    onSaved: () => void;
+  }) =>
+    isOpen
+      ? React.createElement("div", { "data-testid": "edit-memory-modal" }, [
+          React.createElement("button", { key: "close", onClick: onClose }, "close"),
+        ])
+      : null,
+}));
 
 const MOCK_MEMORIES = [
   {
@@ -158,8 +159,9 @@ function makeContainer(): HTMLElement {
 
 describe("MemoriesTab", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-      true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
     globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
@@ -258,7 +260,9 @@ describe("MemoriesTab", () => {
     await act(async () => {
       await new Promise((r) => setTimeout(r, 350));
     });
-    const editBtn = container.querySelector("[data-testid='edit-memory-mem-1']") as HTMLButtonElement | null;
+    const editBtn = container.querySelector(
+      "[data-testid='edit-memory-mem-1']",
+    ) as HTMLButtonElement | null;
     expect(editBtn).toBeTruthy();
     await act(async () => {
       editBtn?.click();
@@ -324,7 +328,9 @@ describe("MemoriesTab", () => {
     await act(async () => {
       await new Promise((r) => setTimeout(r, 350));
     });
-    const deleteBtn = container.querySelector("[data-testid='delete-memory-mem-1']") as HTMLButtonElement | null;
+    const deleteBtn = container.querySelector(
+      "[data-testid='delete-memory-mem-1']",
+    ) as HTMLButtonElement | null;
     expect(deleteBtn).toBeTruthy();
     await act(async () => {
       deleteBtn?.click();
@@ -343,7 +349,10 @@ describe("MemoriesTab", () => {
     // DELETE should have been called
     const deleteCalls = (mockFetch as ReturnType<typeof vi.fn>).mock.calls.filter(
       (c: [string, ...unknown[]]) =>
-        typeof c[0] === "string" && c[0].includes("mem-1") && c[1] && (c[1] as { method: string }).method === "DELETE",
+        typeof c[0] === "string" &&
+        c[0].includes("mem-1") &&
+        c[1] &&
+        (c[1] as { method: string }).method === "DELETE",
     );
     expect(deleteCalls.length).toBeGreaterThan(0);
   });

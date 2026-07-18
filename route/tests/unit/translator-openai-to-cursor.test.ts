@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { buildCursorRequest } =
-  await import("../../open-sse/translator/request/openai-to-cursor.ts");
+const { buildCursorRequest } = await import(
+  "../../open-sse/translator/request/openai-to-cursor.ts"
+);
 
 test("OpenAI -> Cursor rewrites system prompts and preserves assistant tool calls", () => {
   const result = buildCursorRequest(
@@ -26,7 +27,7 @@ test("OpenAI -> Cursor rewrites system prompts and preserves assistant tool call
       ],
     },
     false,
-    null
+    null,
   );
 
   assert.deepEqual(result.messages[0], {
@@ -73,7 +74,7 @@ test("OpenAI -> Cursor converts tool_result blocks into sanitized XML user conte
       ],
     },
     false,
-    null
+    null,
   );
 
   assert.equal(result.messages.length, 2);
@@ -100,7 +101,7 @@ test("OpenAI -> Cursor converts assistant tool_use blocks into assistant tool_ca
       ],
     },
     false,
-    null
+    null,
   );
 
   assert.deepEqual(result.messages, [
@@ -137,7 +138,7 @@ test("OpenAI -> Cursor converts tool role messages using remembered tool metadat
       ],
     },
     false,
-    null
+    null,
   );
 
   assert.equal(result.messages[1].role, "user");
@@ -162,7 +163,7 @@ test("OpenAI -> Cursor preserves image_url parts so vision input survives", () =
       ],
     },
     false,
-    null
+    null,
   );
 
   // Content is kept as an OpenAI array: a leading text part + the image parts.
@@ -190,7 +191,7 @@ test("OpenAI -> Cursor accepts shorthand image_url string form", () => {
       ],
     },
     false,
-    null
+    null,
   );
   const content = result.messages[0].content;
   assert.ok(Array.isArray(content));

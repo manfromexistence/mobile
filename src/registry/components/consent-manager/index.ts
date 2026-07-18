@@ -1,1 +1,1 @@
-export * from "./consent-manager"
+export * from "./consent-manager";

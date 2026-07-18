@@ -3,13 +3,8 @@
   "name": "file-thumbnail",
   "title": "File Thumbnail",
   "description": "Read-only square preview of a File. Images render via object-cover; PDFs render their first page via pdfjs; a spinner shows while either resolves. Adapts its corner radius to the global shape setting.",
-  "dependencies": [
-    "pdfjs-dist"
-  ],
-  "registryDependencies": [
-    "utils",
-    "https://www.fluidfunctionalism.com/r/shape-context.json"
-  ],
+  "dependencies": ["pdfjs-dist"],
+  "registryDependencies": ["utils", "https://www.fluidfunctionalism.com/r/shape-context.json"],
   "files": [
     {
       "path": "registry/default/file-thumbnail.tsx",

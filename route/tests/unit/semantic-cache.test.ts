@@ -89,7 +89,7 @@ describe("Semantic Cache", () => {
       assert.notEqual(
         sigKeyA,
         sigKeyB,
-        "different API keys must produce different cache signatures"
+        "different API keys must produce different cache signatures",
       );
     });
 

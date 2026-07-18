@@ -1,9 +1,5 @@
-import { cn } from "@/lib/utils"
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/registry/elevenlabs-ui/ui/alert"
+import { cn } from "@/lib/utils";
+import { Alert, AlertDescription, AlertTitle } from "@/registry/elevenlabs-ui/ui/alert";
 
 export function Callout({
   title,
@@ -16,15 +12,13 @@ export function Callout({
     <Alert
       className={cn(
         "bg-surface text-surface-foreground mt-6 w-auto border-none md:-mx-1",
-        className
+        className,
       )}
       {...props}
     >
       {icon}
       {title && <AlertTitle>{title}</AlertTitle>}
-      <AlertDescription className="text-card-foreground/80">
-        {children}
-      </AlertDescription>
+      <AlertDescription className="text-card-foreground/80">{children}</AlertDescription>
     </Alert>
-  )
+  );
 }

@@ -9,8 +9,9 @@ vi.mock("next-intl", () => ({
     params ? `${key}:${JSON.stringify(params)}` : key,
 }));
 
-const { default: RtkLearnDiscoverCard } =
-  await import("@/app/(dashboard)/dashboard/context/rtk/RtkLearnDiscoverCard");
+const { default: RtkLearnDiscoverCard } = await import(
+  "@/app/(dashboard)/dashboard/context/rtk/RtkLearnDiscoverCard"
+);
 
 const containers: HTMLElement[] = [];
 function mount(ui: React.ReactElement): HTMLElement {
@@ -57,9 +58,9 @@ describe("RtkLearnDiscoverCard", () => {
               sampleCount: 3,
               candidates: [{ pattern: "Resolving deps", hits: 3 }],
             }),
-            { status: 200, headers: { "content-type": "application/json" } }
-          )
-      )
+            { status: 200, headers: { "content-type": "application/json" } },
+          ),
+      ),
     );
     const c = mount(<RtkLearnDiscoverCard />);
     await click(c.querySelector("[data-testid='rtk-discover-button']"));
@@ -77,8 +78,8 @@ describe("RtkLearnDiscoverCard", () => {
             sampleCount: 2,
             filter: { id: "suggested-npm-install", label: "npm install" },
           }),
-          { status: 200, headers: { "content-type": "application/json" } }
-        )
+          { status: 200, headers: { "content-type": "application/json" } },
+        ),
     );
     vi.stubGlobal("fetch", fetchMock);
     const c = mount(<RtkLearnDiscoverCard />);
@@ -86,10 +87,8 @@ describe("RtkLearnDiscoverCard", () => {
     const input = c.querySelector("[data-testid='rtk-learn-command']") as HTMLInputElement;
     await act(async () => {
       // Set value via the native setter so React's onChange fires.
-      const setter = Object.getOwnPropertyDescriptor(
-        window.HTMLInputElement.prototype,
-        "value"
-      )!.set!;
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")!
+        .set!;
       setter.call(input, "npm install");
       input.dispatchEvent(new Event("input", { bubbles: true }));
     });
@@ -103,7 +102,7 @@ describe("RtkLearnDiscoverCard", () => {
   it("shows a fail-soft error when discover fails", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () => new Response("nope", { status: 500 }))
+      vi.fn(async () => new Response("nope", { status: 500 })),
     );
     const c = mount(<RtkLearnDiscoverCard />);
     await click(c.querySelector("[data-testid='rtk-discover-button']"));

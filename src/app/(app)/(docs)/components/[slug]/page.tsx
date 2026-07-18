@@ -1,62 +1,51 @@
-import { getTableOfContents } from "fumadocs-core/content/toc"
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
-import type { Metadata, Route } from "next"
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import type { SoftwareSourceCode, WithContext } from "schema-dts"
-import { MDX } from "@/components/mdx"
-import { TOCInline } from "@/components/toc-inline"
-import { TOCMinimap } from "@/components/toc-minimap"
-import { Button } from "@/components/ui/button"
-import { Kbd } from "@/components/ui/kbd"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { Prose } from "@/components/ui/typography"
-import { JSON_LD_ID } from "@/config/json-ld"
-import { LICENSE, SOURCE_CODE_GITHUB_URL, X_HANDLE } from "@/config/site"
-import { DocKeyboardShortcuts } from "@/features/doc/components/doc-keyboard-shortcuts"
-import {
-  DocContentCol,
-  DocRightCol,
-} from "@/features/doc/components/doc-layout"
-import { LLMCopyButtonWithViewOptions } from "@/features/doc/components/doc-page-actions"
-import { DocShareMenu } from "@/features/doc/components/doc-share-menu"
-import { DocSponsors } from "@/features/doc/components/doc-sponsors"
-import {
-  findNeighbour,
-  getComponentDocs,
-  getDocBySlug,
-} from "@/features/doc/data/documents"
-import type { Doc } from "@/features/doc/types/document"
-import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
-import { absoluteUrl } from "@/lib/utils"
+import { getTableOfContents } from "fumadocs-core/content/toc";
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
+import type { Metadata, Route } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import type { SoftwareSourceCode, WithContext } from "schema-dts";
+import { MDX } from "@/components/mdx";
+import { TOCInline } from "@/components/toc-inline";
+import { TOCMinimap } from "@/components/toc-minimap";
+import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Prose } from "@/components/ui/typography";
+import { JSON_LD_ID } from "@/config/json-ld";
+import { LICENSE, SOURCE_CODE_GITHUB_URL, X_HANDLE } from "@/config/site";
+import { DocKeyboardShortcuts } from "@/features/doc/components/doc-keyboard-shortcuts";
+import { DocContentCol, DocRightCol } from "@/features/doc/components/doc-layout";
+import { LLMCopyButtonWithViewOptions } from "@/features/doc/components/doc-page-actions";
+import { DocShareMenu } from "@/features/doc/components/doc-share-menu";
+import { DocSponsors } from "@/features/doc/components/doc-sponsors";
+import { findNeighbour, getComponentDocs, getDocBySlug } from "@/features/doc/data/documents";
+import type { Doc } from "@/features/doc/types/document";
+import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld";
+import { absoluteUrl } from "@/lib/utils";
 
-export const revalidate = false
-export const dynamic = "force-static"
-export const dynamicParams = false
+export const revalidate = false;
+export const dynamic = "force-static";
+export const dynamicParams = false;
 
 export function generateStaticParams() {
-  const docs = getComponentDocs()
-  return docs.map((doc) => ({ slug: doc.slug }))
+  const docs = getComponentDocs();
+  return docs.map((doc) => ({ slug: doc.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps<"/components/[slug]">): Promise<Metadata> {
-  const slug = (await params).slug
-  const doc = getDocBySlug(slug)
+  const slug = (await params).slug;
+  const doc = getDocBySlug(slug);
 
   if (doc?.metadata.category !== "components") {
-    return notFound()
+    return notFound();
   }
 
-  const { title, description, image, createdAt, updatedAt } = doc.metadata
+  const { title, description, image, createdAt, updatedAt } = doc.metadata;
 
-  const postUrl = `/components/${doc.slug}`
-  const ogImage = image || "/og/default.png"
+  const postUrl = `/components/${doc.slug}`;
+  const ogImage = image || "/og/default.png";
 
   return {
     title,
@@ -82,12 +71,10 @@ export async function generateMetadata({
       creator: X_HANDLE,
       images: [ogImage],
     },
-  }
+  };
 }
 
-function getSoftwareSourceCodeJsonLd(
-  doc: Doc
-): WithContext<SoftwareSourceCode> {
+function getSoftwareSourceCodeJsonLd(doc: Doc): WithContext<SoftwareSourceCode> {
   return {
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
@@ -111,33 +98,31 @@ function getSoftwareSourceCodeJsonLd(
       name: "Components",
       url: absoluteUrl("/components"),
     },
-  }
+  };
 }
 
-export default async function Page({
-  params,
-}: PageProps<"/components/[slug]">) {
-  const slug = (await params).slug
-  const doc = getDocBySlug(slug)
+export default async function Page({ params }: PageProps<"/components/[slug]">) {
+  const slug = (await params).slug;
+  const doc = getDocBySlug(slug);
 
   if (!doc) {
-    notFound()
+    notFound();
   }
 
   if (doc.metadata.category !== "components") {
-    notFound()
+    notFound();
   }
 
-  const toc = getTableOfContents(doc.content)
+  const toc = getTableOfContents(doc.content);
 
   const allDocs = getComponentDocs()
     .slice()
     .sort((a, b) =>
       a.metadata.title.localeCompare(b.metadata.title, "en", {
         sensitivity: "base",
-      })
-    )
-  const { previous, next } = findNeighbour(allDocs, slug)
+      }),
+    );
+  const { previous, next } = findNeighbour(allDocs, slug);
 
   return (
     <>
@@ -184,15 +169,9 @@ export default async function Page({
           </Button>
 
           <div className="flex items-center gap-2">
-            <LLMCopyButtonWithViewOptions
-              markdownUrl={`/components/${doc.slug}.mdx`}
-              isComponent
-            />
+            <LLMCopyButtonWithViewOptions markdownUrl={`/components/${doc.slug}.mdx`} isComponent />
 
-            <DocShareMenu
-              title={doc.metadata.title}
-              url={`/components/${doc.slug}`}
-            />
+            <DocShareMenu title={doc.metadata.title} url={`/components/${doc.slug}`} />
 
             {previous && (
               <Tooltip>
@@ -204,10 +183,7 @@ export default async function Page({
                       size="icon-sm"
                       asChild
                     >
-                      <Link
-                        href={`/components/${previous.slug}`}
-                        aria-label="Previous Component"
-                      >
+                      <Link href={`/components/${previous.slug}`} aria-label="Previous Component">
                         <ArrowLeftIcon />
                       </Link>
                     </Button>
@@ -234,10 +210,7 @@ export default async function Page({
                       size="icon-sm"
                       asChild
                     >
-                      <Link
-                        href={`/components/${next.slug}`}
-                        aria-label="Next component"
-                      >
+                      <Link href={`/components/${next.slug}`} aria-label="Next component">
                         <ArrowRightIcon />
                       </Link>
                     </Button>
@@ -294,5 +267,5 @@ export default async function Page({
         </div>
       </DocRightCol>
     </>
-  )
+  );
 }

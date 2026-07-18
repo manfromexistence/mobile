@@ -32,6 +32,6 @@ test("memory i18n: memoryEnabled + engine.vectorStoreInstallHint present in en +
   assert.ok(en.memory?.memoryEnabled && pt.memory?.memoryEnabled, "memoryEnabled in both locales");
   assert.ok(
     en.memory?.engine?.vectorStoreInstallHint && pt.memory?.engine?.vectorStoreInstallHint,
-    "vectorStoreInstallHint in both locales"
+    "vectorStoreInstallHint in both locales",
   );
 });

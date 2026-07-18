@@ -26,9 +26,7 @@ export default function ActionBarDemo() {
     { id: crypto.randomUUID(), name: "Product Roadmap" },
     { id: crypto.randomUUID(), name: "Team Standup Notes" },
   ]);
-  const [selectedTaskIds, setSelectedTaskIds] = React.useState<Set<string>>(
-    new Set(),
-  );
+  const [selectedTaskIds, setSelectedTaskIds] = React.useState<Set<string>>(new Set());
 
   const open = selectedTaskIds.size > 0;
 
@@ -81,9 +79,7 @@ export default function ActionBarDemo() {
           >
             <Checkbox
               checked={selectedTaskIds.has(task.id)}
-              onCheckedChange={(checked) =>
-                onItemSelect(task.id, checked === true)
-              }
+              onCheckedChange={(checked) => onItemSelect(task.id, checked === true)}
             />
             <span className="truncate font-medium text-sm">{task.name}</span>
           </Label>

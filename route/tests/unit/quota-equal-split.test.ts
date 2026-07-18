@@ -47,18 +47,14 @@ function makeDim(limit = BUDGET) {
 /** Replicate the effectiveWeight computation from enforce.ts (after fix) */
 function computeEffectiveWeight(
   allocationWeight: number,
-  poolAllocations: Array<{ weight: number }>
+  poolAllocations: Array<{ weight: number }>,
 ): number {
   const poolTotalWeight = poolAllocations.reduce(
     (s, a) => s + (Number.isFinite(a.weight) ? a.weight : 0),
-    0
+    0,
   );
   const allocCount = poolAllocations.length;
-  return poolTotalWeight > 0
-    ? allocationWeight
-    : allocCount > 0
-      ? 100 / allocCount
-      : 0;
+  return poolTotalWeight > 0 ? allocationWeight : allocCount > 0 ? 100 / allocCount : 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -67,10 +63,7 @@ function computeEffectiveWeight(
 
 test("equal-split: 2 allocs both weight=0, consumed < budget/2 → ALLOWED", () => {
   // Pool: 2 keys, both weight=0 → effectiveWeight = 50 each
-  const poolAllocations = [
-    { weight: 0 },
-    { weight: 0 },
-  ];
+  const poolAllocations = [{ weight: 0 }, { weight: 0 }];
   const effectiveWeight = computeEffectiveWeight(0, poolAllocations); // 50
   assert.equal(effectiveWeight, 50, "effectiveWeight should be 50 for 2 zero-weight allocs");
 
@@ -87,7 +80,7 @@ test("equal-split: 2 allocs both weight=0, consumed < budget/2 → ALLOWED", () 
   assert.equal(
     decision.kind,
     "allow",
-    `consumed (${consumed}) < fairShare (${fairShareAmount}) with effectiveWeight=50 → ALLOW`
+    `consumed (${consumed}) < fairShare (${fairShareAmount}) with effectiveWeight=50 → ALLOW`,
   );
 });
 
@@ -111,7 +104,7 @@ test("equal-split: 2 allocs both weight=0, consumed >= budget/2 → BLOCKED (har
   assert.equal(
     decision.kind,
     "block",
-    `consumed (${consumed}) >= fairShare (${fairShareAmount}) with effectiveWeight=50 → BLOCK`
+    `consumed (${consumed}) >= fairShare (${fairShareAmount}) with effectiveWeight=50 → BLOCK`,
   );
   assert.equal(decision.reason, "fair-share");
 });
@@ -137,7 +130,7 @@ test("equal-split: without fix, weight=0 gives fairShare=0 → everything BLOCKS
   assert.equal(
     decision.kind,
     "block",
-    "weight=0 → fairShare=0 → even consumed=1 is blocked (the bug we fix)"
+    "weight=0 → fairShare=0 → even consumed=1 is blocked (the bug we fix)",
   );
 });
 
@@ -150,7 +143,7 @@ test("equal-split: 3 allocs all weight=0 → effectiveWeight = 100/3 ≈ 33.33",
   const effectiveWeight = computeEffectiveWeight(0, poolAllocations);
   assert.ok(
     Math.abs(effectiveWeight - 100 / 3) < 0.001,
-    `effectiveWeight should be ~33.33, got ${effectiveWeight}`
+    `effectiveWeight should be ~33.33, got ${effectiveWeight}`,
   );
 });
 
@@ -200,7 +193,7 @@ test("equal-split: mixed weights (50, 0) → total=50>0, original weights preser
   assert.equal(
     effectiveWeightForZeroKey,
     0,
-    "When total weight > 0, individual 0-weight key keeps weight=0"
+    "When total weight > 0, individual 0-weight key keeps weight=0",
   );
 });
 
@@ -221,6 +214,6 @@ test("equal-split: enforceQuotaShare fail-open path → allow (B16 semantics int
   assert.equal(
     result.kind,
     "allow",
-    "No DB → fail-open → allow; B16 semantics preserved after equal-split change"
+    "No DB → fail-open → allow; B16 semantics preserved after equal-split change",
   );
 });

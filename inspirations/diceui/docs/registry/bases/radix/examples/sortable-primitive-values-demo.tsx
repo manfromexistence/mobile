@@ -24,9 +24,7 @@ export default function SortablePrimitiveValuesDemo() {
         {tricks.map((trick) => (
           <SortableItem key={trick} value={trick} asChild asHandle>
             <div className="flex size-full flex-col items-center justify-center rounded-md border border-zinc-200 bg-zinc-100 p-8 text-center shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
-              <div className="font-medium text-sm leading-tight sm:text-base">
-                {trick}
-              </div>
+              <div className="font-medium text-sm leading-tight sm:text-base">{trick}</div>
             </div>
           </SortableItem>
         ))}

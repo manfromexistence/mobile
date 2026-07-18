@@ -131,9 +131,7 @@ export interface TourProps extends RenderProps {
    * }}
    * ```
    */
-  onInteractOutside?: (
-    event: CustomEvent<{ originalEvent: PointerEvent | FocusEvent }>,
-  ) => void;
+  onInteractOutside?: (event: CustomEvent<{ originalEvent: PointerEvent | FocusEvent }>) => void;
 
   /**
    * Event handler called when auto-focusing on opening the tour.
@@ -331,9 +329,7 @@ export interface TourStepProps extends RenderProps {
    *
    * @default 0
    */
-  collisionPadding?:
-    | number
-    | Partial<Record<"top" | "right" | "bottom" | "left", number>>;
+  collisionPadding?: number | Partial<Record<"top" | "right" | "bottom" | "left", number>>;
 
   /**
    * The minimum padding between the arrow and the edges of the popover.

@@ -1,13 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "transcript-viewer",
-  "devDependencies": [
-    "@elevenlabs/elevenlabs-js"
-  ],
-  "registryDependencies": [
-    "button",
-    "https://ui.elevenlabs.io/r/scrub-bar.json"
-  ],
+  "devDependencies": ["@elevenlabs/elevenlabs-js"],
+  "registryDependencies": ["button", "https://ui.elevenlabs.io/r/scrub-bar.json"],
   "files": [
     {
       "path": "components/ui/transcript-viewer.tsx",

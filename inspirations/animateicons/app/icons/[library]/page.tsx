@@ -10,54 +10,54 @@ import Navbar from "../_components/navbar/Navbar";
 import { buildLibraryJsonLd, buildLibraryMetadata, isLibrary } from "./_seo";
 
 const ICON_COUNTS = {
-	lucide: LUCIDE_ICON_LIST.length,
-	huge: HUGE_ICON_LIST.length,
+  lucide: LUCIDE_ICON_LIST.length,
+  huge: HUGE_ICON_LIST.length,
 } as const;
 
 export function generateStaticParams() {
-	return [{ library: "lucide" }, { library: "huge" }];
+  return [{ library: "lucide" }, { library: "huge" }];
 }
 
 export async function generateMetadata({
-	params,
+  params,
 }: {
-	params: Promise<{ library: string }>;
+  params: Promise<{ library: string }>;
 }): Promise<Metadata> {
-	const { library } = await params;
-	if (!isLibrary(library)) return {};
-	return buildLibraryMetadata(library);
+  const { library } = await params;
+  if (!isLibrary(library)) return {};
+  return buildLibraryMetadata(library);
 }
 
 type Props = {
-	params: Promise<{ library: string }>;
+  params: Promise<{ library: string }>;
 };
 
 const Page: React.FC<Props> = async ({ params }) => {
-	const { library } = await params;
-	if (!isLibrary(library)) {
-		notFound();
-	}
+  const { library } = await params;
+  if (!isLibrary(library)) {
+    notFound();
+  }
 
-	// After the guard, TS narrows `library` to "lucide" | "huge".
-	const jsonLd = buildLibraryJsonLd(library, ICON_COUNTS[library]);
-	const displayName = library === "lucide" ? "Lucide" : "Huge";
+  // After the guard, TS narrows `library` to "lucide" | "huge".
+  const jsonLd = buildLibraryJsonLd(library, ICON_COUNTS[library]);
+  const displayName = library === "lucide" ? "Lucide" : "Huge";
 
-	return (
-		<div className="flex w-full flex-col">
-			<JsonLd data={jsonLd} />
+  return (
+    <div className="flex w-full flex-col">
+      <JsonLd data={jsonLd} />
 
-			<AnnouncementBanner />
-			<Navbar />
-			<main className="min-h-[calc(100dvh-3.75rem)] px-4 py-3 lg:px-6">
-				<div className="mx-auto h-full w-full max-w-384">
-					<h1 className="sr-only">{displayName} Animated Icons for React</h1>
+      <AnnouncementBanner />
+      <Navbar />
+      <main className="min-h-[calc(100dvh-3.75rem)] px-4 py-3 lg:px-6">
+        <div className="mx-auto h-full w-full max-w-384">
+          <h1 className="sr-only">{displayName} Animated Icons for React</h1>
 
-					<IconListClient />
-				</div>
-			</main>
-			<ReducedMotionNotice />
-		</div>
-	);
+          <IconListClient />
+        </div>
+      </main>
+      <ReducedMotionNotice />
+    </div>
+  );
 };
 
 export default Page;

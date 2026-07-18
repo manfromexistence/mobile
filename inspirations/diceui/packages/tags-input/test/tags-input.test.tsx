@@ -80,10 +80,7 @@ describe("TagsInput", () => {
 
     // Test value update
     rerender(
-      <TagsInput.Root
-        value={["initial", "new tag"]}
-        onValueChange={onValueChange}
-      >
+      <TagsInput.Root value={["initial", "new tag"]} onValueChange={onValueChange}>
         {({ value }) => (
           <>
             {value.map((tag) => (
@@ -235,10 +232,7 @@ describe("TagsInput", () => {
 
     // Verify onValueChange was called with both tags
     // The component appends the edited tag rather than replacing
-    expect(onValueChange).toHaveBeenLastCalledWith([
-      "initial tag",
-      "edited tag",
-    ]);
+    expect(onValueChange).toHaveBeenLastCalledWith(["initial tag", "edited tag"]);
 
     // Verify we're back in normal mode (no edit input)
     expect(screen.queryByDisplayValue("edited tag")).not.toBeInTheDocument();
@@ -277,9 +271,7 @@ describe("TagsInput", () => {
 
   test("handles custom validation", async () => {
     const user = userEvent.setup();
-    const onValidate = vi
-      .fn()
-      .mockImplementation((value) => value.length <= 10);
+    const onValidate = vi.fn().mockImplementation((value) => value.length <= 10);
     const onInvalid = vi.fn();
 
     renderTagsInput({ onValidate, onInvalid });
@@ -290,9 +282,7 @@ describe("TagsInput", () => {
     await user.type(input, "this is a very long tag{Enter}");
     expect(onValidate).toHaveBeenCalledWith("this is a very long tag");
     expect(onInvalid).toHaveBeenCalledWith("this is a very long tag");
-    expect(
-      screen.queryByText("this is a very long tag"),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText("this is a very long tag")).not.toBeInTheDocument();
 
     // Add valid tag
     await user.clear(input);
@@ -303,9 +293,7 @@ describe("TagsInput", () => {
 
   test("supports custom display value function", async () => {
     const user = userEvent.setup();
-    const displayValue = vi
-      .fn()
-      .mockImplementation((value: string) => `#${value}`);
+    const displayValue = vi.fn().mockImplementation((value: string) => `#${value}`);
 
     render(
       <TagsInput.Root displayValue={displayValue} defaultValue={["tag1"]}>
@@ -341,29 +329,17 @@ describe("TagsInput", () => {
 
     await user.tab(); // Focus input
     await user.keyboard("{ArrowLeft}"); // Move to last tag
-    expect(screen.getByText("tag3").closest("div")).toHaveAttribute(
-      "data-state",
-      "active",
-    );
+    expect(screen.getByText("tag3").closest("div")).toHaveAttribute("data-state", "active");
 
     await user.keyboard("{ArrowLeft}"); // Move to second tag
-    expect(screen.getByText("tag2").closest("div")).toHaveAttribute(
-      "data-state",
-      "active",
-    );
+    expect(screen.getByText("tag2").closest("div")).toHaveAttribute("data-state", "active");
 
     await user.keyboard("{ArrowLeft}"); // Move to first tag
-    expect(screen.getByText("tag1").closest("div")).toHaveAttribute(
-      "data-state",
-      "active",
-    );
+    expect(screen.getByText("tag1").closest("div")).toHaveAttribute("data-state", "active");
 
     // Test loop from first to last
     await user.keyboard("{ArrowLeft}");
-    expect(screen.getByText("tag3").closest("div")).toHaveAttribute(
-      "data-state",
-      "active",
-    );
+    expect(screen.getByText("tag3").closest("div")).toHaveAttribute("data-state", "active");
   });
 
   test("handles clear button functionality", async () => {
@@ -371,10 +347,7 @@ describe("TagsInput", () => {
     const onValueChange = vi.fn();
 
     render(
-      <TagsInput.Root
-        defaultValue={["tag1", "tag2"]}
-        onValueChange={onValueChange}
-      >
+      <TagsInput.Root defaultValue={["tag1", "tag2"]} onValueChange={onValueChange}>
         {({ value }) => (
           <>
             {value.map((tag) => (
@@ -413,12 +386,7 @@ describe("TagsInput", () => {
 
       return (
         <form onSubmit={handleSubmit}>
-          <TagsInput.Root
-            name="tags"
-            required
-            value={value}
-            onValueChange={setValue}
-          >
+          <TagsInput.Root name="tags" required value={value} onValueChange={setValue}>
             {({ value }) => (
               <>
                 {value.map((tag) => (
@@ -553,11 +521,7 @@ describe("TagsInput", () => {
                 <TagsInput.ItemDelete aria-label={`Remove ${tag}`} />
               </TagsInput.Item>
             ))}
-            <TagsInput.Input
-              id="tags"
-              placeholder={placeholder}
-              aria-describedby="tagsHint"
-            />
+            <TagsInput.Input id="tags" placeholder={placeholder} aria-describedby="tagsHint" />
             <div id="tagsHint">Press Enter to add a new tag</div>
           </>
         )}
@@ -576,10 +540,7 @@ describe("TagsInput", () => {
     // Test keyboard navigation
     await user.tab(); // Focus input
     await user.keyboard("{ArrowLeft}"); // Move to last tag
-    expect(screen.getByText("tag2").closest("div")).toHaveAttribute(
-      "data-state",
-      "active",
-    );
+    expect(screen.getByText("tag2").closest("div")).toHaveAttribute("data-state", "active");
 
     // Test focus management after deletion
     await user.keyboard("{Delete}");

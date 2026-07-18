@@ -17,9 +17,7 @@
       "default": "./dist/index.js"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "type-check": "tsc --project tsconfig.json"
   },

@@ -8,8 +8,7 @@ import { cn } from "@/lib/utils";
 import { fontWeights } from "@/lib/font-weight";
 import { useShape } from "@/lib/shape-context";
 
-interface NavItemProps
-  extends Omit<HTMLAttributes<HTMLAnchorElement>, "href"> {
+interface NavItemProps extends Omit<HTMLAttributes<HTMLAnchorElement>, "href"> {
   label: string;
   href: string;
   index: number;
@@ -22,10 +21,12 @@ interface NavItemProps
 }
 
 const NavItem = forwardRef<HTMLAnchorElement, NavItemProps>(
-  ({ label, href, index, icon: Icon, isNew, isUpdated, dotColorClass, className, ...props }, ref) => {
+  (
+    { label, href, index, icon: Icon, isNew, isUpdated, dotColorClass, className, ...props },
+    ref,
+  ) => {
     const internalRef = useRef<HTMLAnchorElement>(null);
-    const { registerItem, registerSlug, activeIndex, activeSlug, activeRouteIndex } =
-      useNavMenu();
+    const { registerItem, registerSlug, activeIndex, activeSlug, activeRouteIndex } = useNavMenu();
 
     useEffect(() => {
       registerItem(index, internalRef.current);
@@ -49,14 +50,9 @@ const NavItem = forwardRef<HTMLAnchorElement, NavItemProps>(
     return (
       <Link
         ref={(node) => {
-          (
-            internalRef as React.MutableRefObject<HTMLAnchorElement | null>
-          ).current = node;
+          (internalRef as React.MutableRefObject<HTMLAnchorElement | null>).current = node;
           if (typeof ref === "function") ref(node);
-          else if (ref)
-            (
-              ref as React.MutableRefObject<HTMLAnchorElement | null>
-            ).current = node;
+          else if (ref) (ref as React.MutableRefObject<HTMLAnchorElement | null>).current = node;
         }}
         href={href}
         data-nav-index={index}
@@ -64,7 +60,7 @@ const NavItem = forwardRef<HTMLAnchorElement, NavItemProps>(
         aria-current={isActiveRoute ? "page" : undefined}
         className={cn(
           `relative z-10 flex items-center ${shape.item} px-3 py-1.5 cursor-pointer outline-none`,
-          className
+          className,
         )}
         {...props}
       >
@@ -74,7 +70,7 @@ const NavItem = forwardRef<HTMLAnchorElement, NavItemProps>(
             strokeWidth={isActiveRoute || isActive ? 2 : 1.5}
             className={cn(
               "shrink-0 mr-2 transition-[color,stroke-width] duration-80",
-              isActiveRoute || isActive ? "text-foreground" : "text-muted-foreground"
+              isActiveRoute || isActive ? "text-foreground" : "text-muted-foreground",
             )}
           />
         )}
@@ -89,14 +85,10 @@ const NavItem = forwardRef<HTMLAnchorElement, NavItemProps>(
           <span
             className={cn(
               "col-start-1 row-start-1 transition-[color,font-variation-settings] duration-80",
-              isActiveRoute || isActive
-                ? "text-foreground"
-                : "text-muted-foreground"
+              isActiveRoute || isActive ? "text-foreground" : "text-muted-foreground",
             )}
             style={{
-              fontVariationSettings: isActiveRoute
-                ? fontWeights.semibold
-                : fontWeights.normal,
+              fontVariationSettings: isActiveRoute ? fontWeights.semibold : fontWeights.normal,
             }}
           >
             {label}
@@ -106,7 +98,7 @@ const NavItem = forwardRef<HTMLAnchorElement, NavItemProps>(
               <span
                 className={cn(
                   "inline-block ml-2 size-1.5 rounded-full align-middle",
-                  dotColorClass ?? "bg-blue-500"
+                  dotColorClass ?? "bg-blue-500",
                 )}
               />
             ) : null}
@@ -114,7 +106,7 @@ const NavItem = forwardRef<HTMLAnchorElement, NavItemProps>(
         </span>
       </Link>
     );
-  }
+  },
 );
 
 NavItem.displayName = "NavItem";

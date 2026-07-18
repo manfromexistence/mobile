@@ -72,13 +72,13 @@ test("decode rejects a blob missing an access_token", () => {
 test("decode rejects tampered base64 (not valid JSON)", () => {
   assert.throws(
     () => decodeCredentialBlob(`${CREDENTIAL_BLOB_PREFIX}not-valid-base64-json!!!`),
-    /invalid|parse|format/i
+    /invalid|parse|format/i,
   );
 });
 
 test("encode requires a provider", () => {
   assert.throws(
     () => encodeCredentialBlob({ tokens: { access_token: "x" } } as never),
-    /provider/i
+    /provider/i,
   );
 });

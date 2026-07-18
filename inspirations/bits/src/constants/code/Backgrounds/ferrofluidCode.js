@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/Ferrofluid/Ferrofluid.jsx?raw';
-import css from '@content/Backgrounds/Ferrofluid/Ferrofluid.css?raw';
-import tailwind from '@tailwind/Backgrounds/Ferrofluid/Ferrofluid.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/Ferrofluid/Ferrofluid.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/Ferrofluid/Ferrofluid.tsx?raw';
+import code from "@content/Backgrounds/Ferrofluid/Ferrofluid.jsx?raw";
+import css from "@content/Backgrounds/Ferrofluid/Ferrofluid.css?raw";
+import tailwind from "@tailwind/Backgrounds/Ferrofluid/Ferrofluid.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/Ferrofluid/Ferrofluid.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/Ferrofluid/Ferrofluid.tsx?raw";
 
 export const ferrofluid = {
   dependencies: `ogl`,
@@ -30,5 +30,5 @@ export const ferrofluid = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

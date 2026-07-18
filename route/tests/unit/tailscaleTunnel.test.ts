@@ -60,7 +60,7 @@ if [[ "$args" == *"up --accept-routes"* ]]; then
 fi
 exit 1
 `,
-    "utf8"
+    "utf8",
   );
   await fs.chmod(fakePath, 0o755);
   return fakePath;
@@ -114,15 +114,15 @@ test.after(async () => {
 test("extractTailscaleAuthUrl and extractTailscaleEnableUrl parse login URLs", () => {
   assert.equal(
     tailscaleTunnel.extractTailscaleAuthUrl(
-      "To authenticate, visit https://login.tailscale.com/a/demo-token in your browser."
+      "To authenticate, visit https://login.tailscale.com/a/demo-token in your browser.",
     ),
-    "https://login.tailscale.com/a/demo-token"
+    "https://login.tailscale.com/a/demo-token",
   );
   assert.equal(
     tailscaleTunnel.extractTailscaleEnableUrl(
-      "Funnel is not enabled yet. Open https://login.tailscale.com/f/funnel-demo to continue."
+      "Funnel is not enabled yet. Open https://login.tailscale.com/f/funnel-demo to continue.",
     ),
-    "https://login.tailscale.com/f/funnel-demo"
+    "https://login.tailscale.com/f/funnel-demo",
   );
 });
 
@@ -131,7 +131,7 @@ test("getTailscaleUrlFromStatusPayload normalizes DNS names into HTTPS URLs", ()
     tailscaleTunnel.getTailscaleUrlFromStatusPayload({
       Self: { DNSName: "omniroute-demo.tail123.ts.net." },
     }),
-    "https://omniroute-demo.tail123.ts.net"
+    "https://omniroute-demo.tail123.ts.net",
   );
 });
 

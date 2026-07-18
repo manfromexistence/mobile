@@ -42,7 +42,7 @@ test("#4683 parseQoderJobTokenResponse extracts jt-* across response shapes", ()
   // expires_in is reported in seconds -> milliseconds.
   assert.equal(
     parseQoderJobTokenResponse({ job_token: "jt-3", expires_in: 86400 })?.expiresInMs,
-    86400 * 1000
+    86400 * 1000,
   );
   // No jt-* anywhere -> null.
   assert.equal(parseQoderJobTokenResponse({ token: "pt-nope" }), null);
@@ -97,7 +97,7 @@ test("#4683 resolveQoderJobToken coalesces concurrent pt-* exchanges", async () 
   };
 
   const resolves = Array.from({ length: 8 }, () =>
-    resolveQoderJobToken("pt-concurrent", { fetchImpl, now: 1_000 })
+    resolveQoderJobToken("pt-concurrent", { fetchImpl, now: 1_000 }),
   );
   await exchangeStarted;
   releaseExchange?.();
@@ -192,7 +192,7 @@ test("validateQoderCliPat validates via qodercli and makes no Cosy/jobToken HTTP
     assert.equal(
       urls.some((u) => u.includes("/jobToken/exchange") || u.includes("agent_chat_generation")),
       false,
-      "validation must not call the dead Cosy/jobToken HTTP endpoints"
+      "validation must not call the dead Cosy/jobToken HTTP endpoints",
     );
   } finally {
     globalThis.fetch = originalFetch;

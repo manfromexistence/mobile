@@ -5,10 +5,12 @@ import assert from "node:assert/strict";
 // This guards the corrected (verified-live) URLs so the dead paths cannot
 // silently return.
 const { SEARCH_PROVIDERS } = await import("../../src/shared/constants/providers/search.ts");
-const { APIKEY_PROVIDERS_INFERENCE } =
-  await import("../../src/shared/constants/providers/apikey/inference-hosts.ts");
-const { APIKEY_PROVIDERS_REGIONAL } =
-  await import("../../src/shared/constants/providers/apikey/regional.ts");
+const { APIKEY_PROVIDERS_INFERENCE } = await import(
+  "../../src/shared/constants/providers/apikey/inference-hosts.ts"
+);
+const { APIKEY_PROVIDERS_REGIONAL } = await import(
+  "../../src/shared/constants/providers/apikey/regional.ts"
+);
 
 const websites = () =>
   [
@@ -50,7 +52,7 @@ test("#5665 DashScope/Alibaba setup links use the console, not the bare API host
     for (const p of Object.values(regional)) {
       assert.ok(
         !(typeof p.website === "string" && p.website.includes(dead)),
-        `regional provider link still points at the bare API host: ${p.website}`
+        `regional provider link still points at the bare API host: ${p.website}`,
       );
     }
   }

@@ -1,15 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "speech-input",
-  "dependencies": [
-    "motion",
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "button",
-    "skeleton",
-    "https://ui.elevenlabs.io/r/use-scribe.json"
-  ],
+  "dependencies": ["motion", "lucide-react"],
+  "registryDependencies": ["button", "skeleton", "https://ui.elevenlabs.io/r/use-scribe.json"],
   "files": [
     {
       "path": "components/ui/speech-input.tsx",

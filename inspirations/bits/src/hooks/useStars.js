@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { useSingleEffect } from 'react-haiku';
-import { getStarsCount } from '../utils/utils';
+import { useState } from "react";
+import { useSingleEffect } from "react-haiku";
+import { getStarsCount } from "../utils/utils";
 
-const CACHE_KEY = 'github_stars_cache';
+const CACHE_KEY = "github_stars_cache";
 const CACHE_DURATION = 24 * 60 * 60 * 1000;
 const DEFAULT_STARS = 33200;
 
@@ -18,7 +18,7 @@ export const useStars = () => {
           const { count, timestamp } = JSON.parse(cachedData);
           const now = Date.now();
 
-          if (now - timestamp < CACHE_DURATION && count && count !== 'NAN') {
+          if (now - timestamp < CACHE_DURATION && count && count !== "NAN") {
             setStars(count);
             return;
           }
@@ -27,24 +27,24 @@ export const useStars = () => {
         const count = await getStarsCount();
 
         // Only update if we got a valid count
-        if (count && count !== 'NAN') {
+        if (count && count !== "NAN") {
           localStorage.setItem(
             CACHE_KEY,
             JSON.stringify({
               count,
-              timestamp: Date.now()
-            })
+              timestamp: Date.now(),
+            }),
           );
 
           setStars(count);
         }
       } catch (error) {
-        console.error('Error fetching stars:', error);
+        console.error("Error fetching stars:", error);
 
         const cachedData = localStorage.getItem(CACHE_KEY);
         if (cachedData) {
           const { count } = JSON.parse(cachedData);
-          if (count && count !== 'NAN') {
+          if (count && count !== "NAN") {
             setStars(count);
           } else {
             setStars(DEFAULT_STARS);

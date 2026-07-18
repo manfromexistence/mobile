@@ -46,7 +46,7 @@ test("settings route password update requires the current INITIAL_PASSWORD after
         currentPassword: "bootstrap-secret",
         newPassword: "rotated-secret",
       },
-    })
+    }),
   );
   const settings = await settingsDb.getSettings();
 
@@ -54,14 +54,14 @@ test("settings route password update requires the current INITIAL_PASSWORD after
   assert.equal(managementPassword.isBcryptHash(settings.password), true);
   assert.equal(
     await managementPassword.verifyManagementPassword("rotated-secret", (settings as any).password),
-    true
+    true,
   );
   assert.equal(
     await managementPassword.verifyManagementPassword(
       "bootstrap-secret" as any,
-      (settings as any).password
+      (settings as any).password,
     ),
-    false
+    false,
   );
 });
 
@@ -75,7 +75,7 @@ test("settings route password update rejects the wrong current password after mi
         currentPassword: "wrong-secret",
         newPassword: "rotated-secret",
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 401);

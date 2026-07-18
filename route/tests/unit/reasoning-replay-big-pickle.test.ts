@@ -47,7 +47,7 @@ for (const providerId of ["opencode", "opencode-zen"]) {
     assert.strictEqual(
       model.interleavedField,
       "reasoning_content",
-      `${providerId}/big-pickle must declare interleavedField:"reasoning_content" to trigger replay`
+      `${providerId}/big-pickle must declare interleavedField:"reasoning_content" to trigger replay`,
     );
   });
 
@@ -56,7 +56,7 @@ for (const providerId of ["opencode", "opencode-zen"]) {
     assert.strictEqual(
       caps.interleavedField,
       "reasoning_content",
-      `getResolvedModelCapabilities must surface the registry interleavedField for ${providerId}/big-pickle`
+      `getResolvedModelCapabilities must surface the registry interleavedField for ${providerId}/big-pickle`,
     );
   });
 
@@ -73,7 +73,7 @@ for (const providerId of ["opencode", "opencode-zen"]) {
     assert.strictEqual(
       isReasoner,
       true,
-      `${providerId}/big-pickle must require reasoning replay (matching deepseek-v4-flash-free behavior)`
+      `${providerId}/big-pickle must require reasoning replay (matching deepseek-v4-flash-free behavior)`,
     );
   });
 }

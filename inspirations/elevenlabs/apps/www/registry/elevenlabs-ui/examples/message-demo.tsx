@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
-import { Message, MessageContent } from "@/registry/elevenlabs-ui/ui/message"
-import { Orb } from "@/registry/elevenlabs-ui/ui/orb"
-import { Response } from "@/registry/elevenlabs-ui/ui/response"
+import { Message, MessageContent } from "@/registry/elevenlabs-ui/ui/message";
+import { Orb } from "@/registry/elevenlabs-ui/ui/orb";
+import { Response } from "@/registry/elevenlabs-ui/ui/response";
 
 const assistantMessageTokens = [
   "To",
@@ -82,36 +82,36 @@ const assistantMessageTokens = [
   " to",
   " use",
   ".",
-]
+];
 
 const Example = () => {
-  const [content, setContent] = useState("\u200B")
-  const [isStreaming, setIsStreaming] = useState(false)
+  const [content, setContent] = useState("\u200B");
+  const [isStreaming, setIsStreaming] = useState(false);
 
   useEffect(() => {
-    let currentContent = ""
-    let index = 0
+    let currentContent = "";
+    let index = 0;
 
     const startTimeout = setTimeout(() => {
-      setIsStreaming(true)
-    }, 500)
+      setIsStreaming(true);
+    }, 500);
 
     const interval = setInterval(() => {
       if (index < assistantMessageTokens.length) {
-        currentContent += assistantMessageTokens[index]
-        setContent(currentContent)
-        index++
+        currentContent += assistantMessageTokens[index];
+        setContent(currentContent);
+        index++;
       } else {
-        clearInterval(interval)
-        setIsStreaming(false)
+        clearInterval(interval);
+        setIsStreaming(false);
       }
-    }, 100)
+    }, 100);
 
     return () => {
-      clearInterval(interval)
-      clearTimeout(startTimeout)
-    }
-  }, [])
+      clearInterval(interval);
+      clearTimeout(startTimeout);
+    };
+  }, []);
 
   return (
     <>
@@ -139,17 +139,14 @@ const Example = () => {
                 <Response>{content}</Response>
               </MessageContent>
               <div className="ring-border size-8 overflow-hidden rounded-full ring-1">
-                <Orb
-                  className="h-full w-full"
-                  agentState={isStreaming ? "talking" : null}
-                />
+                <Orb className="h-full w-full" agentState={isStreaming ? "talking" : null} />
               </div>
             </Message>
           </div>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Example
+export default Example;

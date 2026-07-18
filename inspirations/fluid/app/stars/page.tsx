@@ -34,11 +34,7 @@ function buildSwitchField(text: string): Cell[] {
   const GAP = 0.32;
   ctx.font = "700 100px Inter, sans-serif";
   const k = (ctx.measureText(text).width || 1) / 100; // number width per font px
-  const fontSize = Math.min(
-    (STAGE_W - 110) / (LOGO + GAP + k),
-    (STAGE_H - 44) / LOGO,
-    440
-  );
+  const fontSize = Math.min((STAGE_W - 110) / (LOGO + GAP + k), (STAGE_H - 44) / LOGO, 440);
   ctx.font = `700 ${fontSize}px Inter, sans-serif`;
   const numW = ctx.measureText(text).width;
   const logoSize = fontSize * LOGO;
@@ -159,14 +155,15 @@ export default function StarsPage() {
   // Stable per-index toggles so manual hover/click stays cheap and memo-friendly.
   const toggles = useMemo(
     () =>
-      pts.map((_, i) => () =>
-        setStates((s) => {
-          const next = s.slice();
-          next[i] = !next[i];
-          return next;
-        })
+      pts.map(
+        (_, i) => () =>
+          setStates((s) => {
+            const next = s.slice();
+            next[i] = !next[i];
+            return next;
+          }),
       ),
-    [pts]
+    [pts],
   );
 
   // Footer button: cascade every switch ON one-by-one (10ms apart); click again
@@ -178,7 +175,7 @@ export default function StarsPage() {
     () => () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     },
-    []
+    [],
   );
 
   const runCascade = () => {
@@ -198,8 +195,7 @@ export default function StarsPage() {
     if (turnOn) {
       for (const i of glyph) if (!states[i]) work.push(i);
     } else {
-      for (let k = glyph.length - 1; k >= 0; k--)
-        if (states[glyph[k]]) work.push(glyph[k]);
+      for (let k = glyph.length - 1; k >= 0; k--) if (states[glyph[k]]) work.push(glyph[k]);
     }
 
     const start = performance.now();
@@ -223,11 +219,7 @@ export default function StarsPage() {
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center gap-10 overflow-hidden bg-background px-4 py-16 text-foreground">
-      <div
-        ref={wrapRef}
-        className="w-full max-w-[1000px]"
-        style={{ height: STAGE_H * scale }}
-      >
+      <div ref={wrapRef} className="w-full max-w-[1000px]" style={{ height: STAGE_H * scale }}>
         <div
           className="relative"
           style={{

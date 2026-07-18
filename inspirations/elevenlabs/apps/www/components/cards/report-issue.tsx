@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
 import {
   Card,
   CardContent,
@@ -10,39 +10,33 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/registry/elevenlabs-ui/ui/card"
-import { Input } from "@/registry/elevenlabs-ui/ui/input"
-import { Label } from "@/registry/elevenlabs-ui/ui/label"
+} from "@/registry/elevenlabs-ui/ui/card";
+import { Input } from "@/registry/elevenlabs-ui/ui/input";
+import { Label } from "@/registry/elevenlabs-ui/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/registry/elevenlabs-ui/ui/select"
-import { Textarea } from "@/registry/elevenlabs-ui/ui/textarea"
+} from "@/registry/elevenlabs-ui/ui/select";
+import { Textarea } from "@/registry/elevenlabs-ui/ui/textarea";
 
 export function CardsReportIssue() {
-  const id = React.useId()
+  const id = React.useId();
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Report an issue</CardTitle>
-        <CardDescription>
-          What area are you having problems with?
-        </CardDescription>
+        <CardDescription>What area are you having problems with?</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-3">
             <Label htmlFor={`area-${id}`}>Area</Label>
             <Select defaultValue="billing">
-              <SelectTrigger
-                id={`area-${id}`}
-                aria-label="Area"
-                className="w-full"
-              >
+              <SelectTrigger id={`area-${id}`} aria-label="Area" className="w-full">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
               <SelectContent>
@@ -93,5 +87,5 @@ export function CardsReportIssue() {
         <Button size="sm">Submit</Button>
       </CardFooter>
     </Card>
-  )
+  );
 }

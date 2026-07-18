@@ -13,8 +13,9 @@
 import { test, after } from "node:test";
 import assert from "node:assert/strict";
 
-const { POST } =
-  await import("../../src/app/api/v1/providers/[provider]/chat/completions/route.ts");
+const { POST } = await import(
+  "../../src/app/api/v1/providers/[provider]/chat/completions/route.ts"
+);
 
 // Importing the route transitively opens the SQLite handle (handleChat's graph).
 // Release it so Node's native test runner does not hang on open handles.
@@ -44,14 +45,14 @@ test("#5907 a loosely-valid body (no messages) is no longer rejected by the remo
   // return the *specific* cross-provider error — proving the schema is gone.
   const res = await POST(
     makeRequest(JSON.stringify({ model: "anthropic/claude-3-5-sonnet" })),
-    params("openai")
+    params("openai"),
   );
   assert.equal(res.status, 400);
   const body = await res.json();
   assert.match(
     body.error.message,
     /does not belong to provider/i,
-    "expected the model-prefix check to run — a schema validation 400 would mean the strict schema is still applied"
+    "expected the model-prefix check to run — a schema validation 400 would mean the strict schema is still applied",
   );
 });
 

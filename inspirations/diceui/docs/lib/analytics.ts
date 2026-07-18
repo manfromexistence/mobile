@@ -18,8 +18,7 @@ type Event = z.infer<typeof eventSchema>;
 function trackEvent(input: Event) {
   const parsedInput = eventSchema.safeParse(input);
 
-  if (!parsedInput.success || !(typeof window !== "undefined" && window.stonks))
-    return;
+  if (!parsedInput.success || !(typeof window !== "undefined" && window.stonks)) return;
 
   window.stonks.event(parsedInput.data.name, parsedInput.data.properties);
 }

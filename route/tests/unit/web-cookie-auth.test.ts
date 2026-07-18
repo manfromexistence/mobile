@@ -21,13 +21,13 @@ test("normalizeSessionCookieHeader returns input as-is when it already has '='",
   assert.equal(
     normalizeSessionCookieHeader(
       "__Secure-authjs.session-token=abc",
-      "__Secure-authjs.session-token"
+      "__Secure-authjs.session-token",
     ),
-    "__Secure-authjs.session-token=abc"
+    "__Secure-authjs.session-token=abc",
   );
   assert.equal(
     normalizeSessionCookieHeader("bare-value", "__Secure-authjs.session-token"),
-    "__Secure-authjs.session-token=bare-value"
+    "__Secure-authjs.session-token=bare-value",
   );
 });
 

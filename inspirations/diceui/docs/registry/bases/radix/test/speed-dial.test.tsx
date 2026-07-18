@@ -83,9 +83,7 @@ describe("SpeedDial", () => {
       const user = userEvent.setup();
       const onOpenChange = vi.fn();
 
-      const { rerender } = render(
-        <SpeedDialTest open={false} onOpenChange={onOpenChange} />,
-      );
+      const { rerender } = render(<SpeedDialTest open={false} onOpenChange={onOpenChange} />);
 
       const trigger = screen.getByTestId("trigger");
       await user.click(trigger);
@@ -257,11 +255,7 @@ describe("SpeedDial", () => {
             </SpeedDialTrigger>
             <SpeedDialContent data-testid="content">
               <SpeedDialItem>
-                <SpeedDialAction
-                  data-testid="action"
-                  disabled
-                  onSelect={onSelect}
-                >
+                <SpeedDialAction data-testid="action" disabled onSelect={onSelect}>
                   <span>Home</span>
                 </SpeedDialAction>
                 <SpeedDialLabel>Home</SpeedDialLabel>
@@ -283,12 +277,7 @@ describe("SpeedDial", () => {
   });
 
   describe("Side Variations", () => {
-    it.each([
-      "top",
-      "bottom",
-      "left",
-      "right",
-    ] as const)("renders with side=%s", (side) => {
+    it.each(["top", "bottom", "left", "right"] as const)("renders with side=%s", (side) => {
       render(<SpeedDialTest open side={side} />);
 
       const content = screen.getByTestId("content");

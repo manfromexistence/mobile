@@ -30,10 +30,10 @@ async function main() {
 
   // 1. This triggers downloading and caching the model with either Cache or IndexedDB Cache
   const selectedModel = "Llama-3.2-1B-Instruct-q4f16_1-MLC";
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    { initProgressCallback: initProgressCallback, appConfig: appConfig },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+    appConfig: appConfig,
+  });
 
   const request: webllm.ChatCompletionRequest = {
     stream: false,
@@ -74,9 +74,7 @@ async function main() {
   modelCached = await webllm.hasModelInCache(selectedModel, appConfig);
   console.log("After deletion, hasModelInCache: ", modelCached);
   if (modelCached) {
-    throw Error(
-      "Expect hasModelInCache() to be false, but got: " + modelCached,
-    );
+    throw Error("Expect hasModelInCache() to be false, but got: " + modelCached);
   }
 
   // 5. If we reload, we should expect the model to start downloading again

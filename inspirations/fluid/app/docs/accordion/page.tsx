@@ -79,17 +79,45 @@ const multipleCode = `import { AccordionGroup, AccordionItem, AccordionTrigger, 
 </AccordionGroup>`;
 
 const rootProps: PropDef[] = [
-  { name: "type", type: '"single" | "multiple"', default: '"single"', description: "Whether one or multiple items can be expanded." },
-  { name: "collapsible", type: "boolean", default: "true", description: "Allow collapsing all items when type is single." },
-  { name: "defaultValue", type: "string | string[]", description: "Initially expanded item value(s)." },
+  {
+    name: "type",
+    type: '"single" | "multiple"',
+    default: '"single"',
+    description: "Whether one or multiple items can be expanded.",
+  },
+  {
+    name: "collapsible",
+    type: "boolean",
+    default: "true",
+    description: "Allow collapsing all items when type is single.",
+  },
+  {
+    name: "defaultValue",
+    type: "string | string[]",
+    description: "Initially expanded item value(s).",
+  },
   { name: "value", type: "string | string[]", description: "Controlled expanded value(s)." },
-  { name: "onValueChange", type: "(value) => void", description: "Callback when expanded state changes." },
+  {
+    name: "onValueChange",
+    type: "(value) => void",
+    description: "Callback when expanded state changes.",
+  },
 ];
 
 const itemProps: PropDef[] = [
   { name: "value", type: "string", description: "Unique identifier for this item." },
-  { name: "index", type: "number", description: "Position index for proximity hover. Required inside AccordionGroup, omit for standalone." },
-  { name: "disabled", type: "boolean", default: "false", description: "Whether this item is disabled." },
+  {
+    name: "index",
+    type: "number",
+    description:
+      "Position index for proximity hover. Required inside AccordionGroup, omit for standalone.",
+  },
+  {
+    name: "disabled",
+    type: "boolean",
+    default: "false",
+    description: "Whether this item is disabled.",
+  },
 ];
 
 const triggerProps: PropDef[] = [
@@ -108,7 +136,9 @@ export default function AccordionDoc() {
       description="Collapsible sections with animated expand/collapse and proximity hover in grouped mode."
     >
       <DocSection title="Standalone">
-        <p className="text-[13px] text-muted-foreground">A single collapsible item with its own hover state.</p>
+        <p className="text-[13px] text-muted-foreground">
+          A single collapsible item with its own hover state.
+        </p>
         <ComponentPreview code={standaloneCode}>
           <div className="min-h-[120px] flex items-center">
             <Accordion type="single" collapsible defaultValue="item-1">
@@ -124,37 +154,37 @@ export default function AccordionDoc() {
       </DocSection>
 
       <DocSection title="Single Expand">
-        <p className="text-[13px] text-muted-foreground">Multiple items with proximity hover — only one can be expanded at a time.</p>
+        <p className="text-[13px] text-muted-foreground">
+          Multiple items with proximity hover — only one can be expanded at a time.
+        </p>
         <ComponentPreview code={groupedCode}>
           <AccordionGroup type="single" collapsible defaultValue="item-1">
             <AccordionItem value="item-1" index={0}>
               <AccordionTrigger>Getting Started</AccordionTrigger>
               <AccordionContent>
-                Install the component and import it into your project. The
-                accordion supports both single and multiple expand modes.
+                Install the component and import it into your project. The accordion supports both
+                single and multiple expand modes.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2" index={1}>
               <AccordionTrigger>Styling</AccordionTrigger>
               <AccordionContent>
-                The component integrates with the shape system for pill or
-                rounded border-radius variants. All animations use spring
-                physics.
+                The component integrates with the shape system for pill or rounded border-radius
+                variants. All animations use spring physics.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3" index={2}>
               <AccordionTrigger>Accessibility</AccordionTrigger>
               <AccordionContent>
-                Built on Radix UI or Base UI Accordion (your pick) with
-                WAI-ARIA attributes, keyboard navigation, and focus
-                management.
+                Built on Radix UI or Base UI Accordion (your pick) with WAI-ARIA attributes,
+                keyboard navigation, and focus management.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-4" index={3}>
               <AccordionTrigger>Animation</AccordionTrigger>
               <AccordionContent>
-                Smooth height transitions and spring-animated chevron rotation.
-                The proximity hover background tracks your cursor.
+                Smooth height transitions and spring-animated chevron rotation. The proximity hover
+                background tracks your cursor.
               </AccordionContent>
             </AccordionItem>
           </AccordionGroup>
@@ -162,14 +192,14 @@ export default function AccordionDoc() {
       </DocSection>
 
       <DocSection title="Multi Expand">
-        <p className="text-[13px] text-muted-foreground">Multiple items with proximity hover — several can be expanded at once.</p>
+        <p className="text-[13px] text-muted-foreground">
+          Multiple items with proximity hover — several can be expanded at once.
+        </p>
         <ComponentPreview code={multipleCode}>
           <AccordionGroup type="multiple" defaultValue={["item-1", "item-3"]}>
             <AccordionItem value="item-1" index={0}>
               <AccordionTrigger>First Section</AccordionTrigger>
-              <AccordionContent>
-                Multiple items can be expanded at the same time.
-              </AccordionContent>
+              <AccordionContent>Multiple items can be expanded at the same time.</AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2" index={1}>
               <AccordionTrigger>Second Section</AccordionTrigger>

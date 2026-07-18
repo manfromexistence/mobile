@@ -100,9 +100,7 @@ export default function StepperFormDemo() {
   );
 
   const onSubmit = React.useCallback((input: FormSchema) => {
-    toast.success(
-      <pre className="w-full">{JSON.stringify(input, null, 2)}</pre>,
-    );
+    toast.success(<pre className="w-full">{JSON.stringify(input, null, 2)}</pre>);
   }, []);
 
   return (
@@ -182,9 +180,7 @@ export default function StepperFormDemo() {
                       {...field}
                     />
                   </FormControl>
-                  <FormDescription>
-                    Write a brief description about yourself.
-                  </FormDescription>
+                  <FormDescription>Write a brief description about yourself.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -214,9 +210,7 @@ export default function StepperFormDemo() {
                     <FormControl>
                       <Input placeholder="https://example.com" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      Optional: Your personal or company website.
-                    </FormDescription>
+                    <FormDescription>Optional: Your personal or company website.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -237,9 +231,7 @@ export default function StepperFormDemo() {
             {stepIndex === steps.length - 1 ? (
               <Button type="submit">Complete</Button>
             ) : (
-              <StepperNext
-                render={(props) => <Button {...props}>Next</Button>}
-              />
+              <StepperNext render={(props) => <Button {...props}>Next</Button>} />
             )}
           </div>
         </Stepper>

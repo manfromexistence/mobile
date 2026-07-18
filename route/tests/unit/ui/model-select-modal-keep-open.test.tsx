@@ -34,7 +34,7 @@ async function renderModal(props: Partial<React.ComponentProps<typeof ModelSelec
         showCombos={false}
         activeProviders={[]}
         {...props}
-      />
+      />,
     );
   });
 
@@ -59,7 +59,7 @@ beforeEach(() => {
         return { ok: true, json: async () => ({ combos: [] }) };
       }
       return { ok: true, json: async () => ({}) };
-    })
+    }),
   );
 });
 
@@ -75,7 +75,7 @@ describe("ModelSelectModal keepOpenOnSelect", () => {
   it("does not render the Done button by default (auto-close behaviour preserved)", async () => {
     const container = await renderModal();
     const doneButton = Array.from(container.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "done"
+      (b) => b.textContent?.trim() === "done",
     );
     expect(doneButton).toBeUndefined();
   });
@@ -83,7 +83,7 @@ describe("ModelSelectModal keepOpenOnSelect", () => {
   it("renders the Done button when keepOpenOnSelect is true", async () => {
     const container = await renderModal({ keepOpenOnSelect: true });
     const doneButton = Array.from(container.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "done"
+      (b) => b.textContent?.trim() === "done",
     );
     expect(doneButton).toBeDefined();
   });
@@ -94,7 +94,7 @@ describe("ModelSelectModal keepOpenOnSelect", () => {
     const container = await renderModal({ keepOpenOnSelect: true, onClose, onSelect });
 
     const doneButton = Array.from(container.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "done"
+      (b) => b.textContent?.trim() === "done",
     );
     expect(doneButton).toBeDefined();
 
@@ -111,7 +111,7 @@ describe("ModelSelectModal keepOpenOnSelect", () => {
     // keepOpenOnSelect must defer to it to avoid two competing Done buttons.
     const container = await renderModal({ keepOpenOnSelect: true, multiSelect: true });
     const doneButtons = Array.from(container.querySelectorAll("button")).filter(
-      (b) => b.textContent?.trim() === "done"
+      (b) => b.textContent?.trim() === "done",
     );
     // Exactly one Done button — the one inside the multiSelect footer, not a duplicate.
     expect(doneButtons.length).toBe(1);

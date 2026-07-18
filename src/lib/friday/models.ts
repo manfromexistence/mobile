@@ -34,7 +34,7 @@ export const ZEN_MODELS: ZenModel[] = [
     tiers: {
       low: { label: "Low", pricePer1M: 0, contextWindow: 32_000 },
       medium: { label: "Medium", pricePer1M: 0.15, contextWindow: 64_000 },
-      high: { label: "High", pricePer1M: 0.50, contextWindow: 128_000 },
+      high: { label: "High", pricePer1M: 0.5, contextWindow: 128_000 },
     },
     maxTier: "high",
   },
@@ -46,7 +46,7 @@ export const ZEN_MODELS: ZenModel[] = [
     badge: "Free",
     tiers: {
       low: { label: "Low", pricePer1M: 0, contextWindow: 16_000 },
-      medium: { label: "Medium", pricePer1M: 0.10, contextWindow: 32_000 },
+      medium: { label: "Medium", pricePer1M: 0.1, contextWindow: 32_000 },
       high: { label: "High", pricePer1M: 0.35, contextWindow: 64_000 },
     },
     maxTier: "high",
@@ -60,7 +60,7 @@ export const ZEN_MODELS: ZenModel[] = [
     tiers: {
       low: { label: "Low", pricePer1M: 0, contextWindow: 32_000 },
       medium: { label: "Medium", pricePer1M: 0.12, contextWindow: 64_000 },
-      high: { label: "High", pricePer1M: 0.40, contextWindow: 128_000 },
+      high: { label: "High", pricePer1M: 0.4, contextWindow: 128_000 },
     },
     maxTier: "high",
   },
@@ -72,8 +72,8 @@ export const ZEN_MODELS: ZenModel[] = [
     badge: "Free",
     tiers: {
       low: { label: "Low", pricePer1M: 0, contextWindow: 64_000 },
-      medium: { label: "Medium", pricePer1M: 0.20, contextWindow: 128_000 },
-      high: { label: "High", pricePer1M: 0.80, contextWindow: 190_000 },
+      medium: { label: "Medium", pricePer1M: 0.2, contextWindow: 128_000 },
+      high: { label: "High", pricePer1M: 0.8, contextWindow: 190_000 },
     },
     maxTier: "high",
   },
@@ -99,7 +99,7 @@ export const ZEN_MODELS: ZenModel[] = [
     tiers: {
       low: { label: "Low", pricePer1M: 0, contextWindow: 64_000 },
       medium: { label: "Medium", pricePer1M: 0.25, contextWindow: 128_000 },
-      high: { label: "High", pricePer1M: 1.00, contextWindow: 256_000 },
+      high: { label: "High", pricePer1M: 1.0, contextWindow: 256_000 },
     },
     maxTier: "high",
   },

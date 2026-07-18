@@ -18,7 +18,7 @@ const { createLogger } = loggerModule;
 /** Poll the (worker-thread-written) log file until the predicate holds or timeout. */
 async function readLogWhen(
   predicate: (contents: string) => boolean,
-  timeoutMs = 4000
+  timeoutMs = 4000,
 ): Promise<string> {
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
@@ -42,7 +42,7 @@ test("logger redacts a Bearer secret in a free-form message and an error stack (
     (c) =>
       c.includes("[REDACTED]") &&
       !c.includes("sk-superSecretKey") &&
-      !c.includes("sk-anotherSecret")
+      !c.includes("sk-anotherSecret"),
   );
 
   assert.match(contents, /\[REDACTED\]/, "redaction marker must appear in the log output");

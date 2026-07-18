@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from "react";
 
 const vertexShader = `#version 300 es
 precision highp float;
@@ -164,10 +164,10 @@ function processImage(img) {
     height = Math.round(height * scale);
   }
 
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   ctx.drawImage(img, 0, 0, width, height);
 
   const imageData = ctx.getImageData(0, 0, width, height);
@@ -263,8 +263,8 @@ export default function MetallicPaint({
   contrast = 0.5,
   angle = 0,
   fresnel = 1,
-  lightColor = '#ffffff',
-  darkColor = '#000000',
+  lightColor = "#ffffff",
+  darkColor = "#000000",
   patternSharpness = 1,
   waveAmplitude = 1,
   noiseScale = 0.5,
@@ -272,7 +272,7 @@ export default function MetallicPaint({
   mouseAnimation = false,
   distortion = 1,
   contour = 0.2,
-  tintColor = '#feb3ff'
+  tintColor = "#feb3ff",
 }) {
   const canvasRef = useRef(null);
   const glRef = useRef(null);
@@ -301,7 +301,7 @@ export default function MetallicPaint({
     const canvas = canvasRef.current;
     if (!canvas) return false;
 
-    const gl = canvas.getContext('webgl2', { antialias: true, alpha: true });
+    const gl = canvas.getContext("webgl2", { antialias: true, alpha: true });
     if (!gl) return false;
 
     const compile = (src, type) => {
@@ -341,7 +341,7 @@ export default function MetallicPaint({
     gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW);
 
     gl.useProgram(prog);
-    const pos = gl.getAttribLocation(prog, 'a_position');
+    const pos = gl.getAttribLocation(prog, "a_position");
     gl.enableVertexAttribArray(pos);
     gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
 
@@ -352,7 +352,7 @@ export default function MetallicPaint({
     return true;
   }, []);
 
-  const uploadTexture = useCallback(imgData => {
+  const uploadTexture = useCallback((imgData) => {
     const gl = glRef.current;
     const uniforms = uniformsRef.current;
     if (!gl || !imgData) return;
@@ -366,7 +366,17 @@ export default function MetallicPaint({
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, imgData.width, imgData.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, imgData.data);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      imgData.width,
+      imgData.height,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      imgData.data,
+    );
     gl.uniform1i(uniforms.u_tex, 0);
 
     const ratio = imgData.width / imgData.height;
@@ -402,7 +412,7 @@ export default function MetallicPaint({
 
     setTextureReady(false);
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    img.crossOrigin = "anonymous";
     img.onload = () => {
       const imgData = processImage(img);
       uploadTexture(imgData);
@@ -457,7 +467,7 @@ export default function MetallicPaint({
     chromaticSpread,
     distortion,
     contour,
-    tintColor
+    tintColor,
   ]);
 
   useEffect(() => {
@@ -468,15 +478,15 @@ export default function MetallicPaint({
     const canvas = canvasRef.current;
     const mouse = mouseRef.current;
 
-    const handleMouseMove = e => {
+    const handleMouseMove = (e) => {
       const rect = canvas.getBoundingClientRect();
       mouse.targetX = (e.clientX - rect.left) / rect.width;
       mouse.targetY = (e.clientY - rect.top) / rect.height;
     };
 
-    canvas.addEventListener('mousemove', handleMouseMove);
+    canvas.addEventListener("mousemove", handleMouseMove);
 
-    const render = time => {
+    const render = (time) => {
       const delta = time - lastTimeRef.current;
       lastTimeRef.current = time;
 
@@ -498,7 +508,7 @@ export default function MetallicPaint({
 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      canvas.removeEventListener('mousemove', handleMouseMove);
+      canvas.removeEventListener("mousemove", handleMouseMove);
     };
   }, [ready, textureReady]);
 

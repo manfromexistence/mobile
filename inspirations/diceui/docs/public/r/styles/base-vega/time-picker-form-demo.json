@@ -1,16 +1,8 @@
 {
   "name": "time-picker-form-demo",
   "type": "registry:example",
-  "dependencies": [
-    "zod",
-    "react-hook-form",
-    "@hookform/resolvers"
-  ],
-  "registryDependencies": [
-    "time-picker",
-    "button",
-    "form"
-  ],
+  "dependencies": ["zod", "react-hook-form", "@hookform/resolvers"],
+  "registryDependencies": ["time-picker", "button", "form"],
   "files": [
     {
       "path": "examples/time-picker-form-demo.tsx",

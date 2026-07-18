@@ -13,10 +13,7 @@ export const source = loader({
           if (!file) return node;
 
           const fileData = this.storage.read(file);
-          const preview =
-            fileData?.data &&
-            "preview" in fileData.data &&
-            fileData.data.preview;
+          const preview = fileData?.data && "preview" in fileData.data && fileData.data.preview;
 
           if (preview) {
             node.name = (

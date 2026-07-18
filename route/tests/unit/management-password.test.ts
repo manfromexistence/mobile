@@ -83,9 +83,9 @@ test("ensurePersistentManagementPasswordHash migrates INITIAL_PASSWORD into a pe
   assert.equal(
     await managementPassword.verifyManagementPassword(
       "bootstrap-secret",
-      (settings as any).password
+      (settings as any).password,
     ),
-    true
+    true,
   );
   assert.equal(settings.requireLogin, true);
   assert.equal(settings.setupComplete, true);
@@ -110,9 +110,9 @@ test("ensurePersistentManagementPasswordHash migrates legacy plaintext settings 
   assert.equal(
     await managementPassword.verifyManagementPassword(
       "legacy-password" as any,
-      (settings as any).password
+      (settings as any).password,
     ),
-    true
+    true,
   );
 });
 
@@ -137,9 +137,9 @@ test("reset-password CLI updates storage.sqlite key_value settings", async (t) =
   assert.equal(
     await managementPassword.verifyManagementPassword(
       "replacement-secret",
-      (settings as any).password
+      (settings as any).password,
     ),
-    true
+    true,
   );
   assert.equal(settings.requireLogin, true);
   assert.equal(settings.setupComplete, true);

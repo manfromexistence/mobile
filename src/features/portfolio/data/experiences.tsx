@@ -3,9 +3,9 @@ import {
   CodeXmlIcon,
   DraftingCompassIcon,
   LightbulbIcon,
-} from "lucide-react"
+} from "lucide-react";
 
-import type { Experience } from "@/features/portfolio/types/experiences"
+import type { Experience } from "@/features/portfolio/types/experiences";
 
 export const EXPERIENCES: Experience[] = [
   {
@@ -267,4 +267,4 @@ In-house Project: [ZaDark](https://zadark.com)
       },
     ],
   },
-]
+];

@@ -35,10 +35,7 @@ const formSchema = z.object({
   username: z
     .string()
     .min(3, "Username must be at least 3 characters")
-    .regex(
-      /^[a-zA-Z0-9_]+$/,
-      "Username can only contain letters, numbers, and underscores",
-    ),
+    .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores"),
   email: z.email("Please enter a valid email address"),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
@@ -82,10 +79,7 @@ export default function StepperValidationDemo() {
     },
   });
 
-  const stepIndex = React.useMemo(
-    () => steps.findIndex((s) => s.value === step),
-    [step],
-  );
+  const stepIndex = React.useMemo(() => steps.findIndex((s) => s.value === step), [step]);
 
   const onValidate: NonNullable<StepperProps["onValidate"]> = React.useCallback(
     async (_value, direction) => {
@@ -108,9 +102,7 @@ export default function StepperValidationDemo() {
   );
 
   const onSubmit = React.useCallback((input: FormSchema) => {
-    toast.success(
-      <pre className="w-full">{JSON.stringify(input, null, 2)}</pre>,
-    );
+    toast.success(<pre className="w-full">{JSON.stringify(input, null, 2)}</pre>);
   }, []);
 
   return (
@@ -218,9 +210,7 @@ export default function StepperValidationDemo() {
           >
             <div className="flex flex-col gap-1 rounded-md border p-2">
               <span className="font-medium text-sm">Username</span>
-              <p className="text-sm">
-                {form.watch("username") ?? "Not provided"}
-              </p>
+              <p className="text-sm">{form.watch("username") ?? "Not provided"}</p>
             </div>
             <div className="flex flex-col gap-1 rounded-md border p-2">
               <span className="font-medium text-sm">Email</span>
@@ -228,15 +218,11 @@ export default function StepperValidationDemo() {
             </div>
             <div className="flex flex-col gap-1 rounded-md border p-2">
               <span className="font-medium text-sm">First Name</span>
-              <p className="text-sm">
-                {form.watch("firstName") ?? "Not provided"}
-              </p>
+              <p className="text-sm">{form.watch("firstName") ?? "Not provided"}</p>
             </div>
             <div className="flex flex-col gap-1 rounded-md border p-2">
               <span className="font-medium text-sm">Last Name</span>
-              <p className="text-sm">
-                {form.watch("lastName") ?? "Not provided"}
-              </p>
+              <p className="text-sm">{form.watch("lastName") ?? "Not provided"}</p>
             </div>
             <div className="flex flex-col gap-1 rounded-md border p-2">
               <span className="font-medium text-sm">Bio</span>

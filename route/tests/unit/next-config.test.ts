@@ -25,7 +25,7 @@ test("next config exposes standalone build settings and canonical rewrites", asy
   const rewrites = await nextConfig.rewrites();
   const headers = await nextConfig.headers();
   const securityHeaders = Object.fromEntries(
-    headers[0].headers.map(({ key, value }) => [key, value])
+    headers[0].headers.map(({ key, value }) => [key, value]),
   );
 
   assert.equal(nextConfig.distDir, ".next-task607");
@@ -43,7 +43,7 @@ test("next config exposes standalone build settings and canonical rewrites", asy
   for (const pkg of ["ws", "bufferutil", "utf-8-validate"]) {
     assert.ok(
       nextConfig.serverExternalPackages.includes(pkg),
-      `expected serverExternalPackages to externalize "${pkg}" (#6062)`
+      `expected serverExternalPackages to externalize "${pkg}" (#6062)`,
     );
   }
   assert.equal(headers[0].source, "/:path*");
@@ -86,7 +86,7 @@ test("next config declares Turbopack aliases, runtime assets and server external
   assert.equal(nextConfig.outputFileTracingRoot, process.cwd());
   assert.ok(tracingIncludes.includes("./src/lib/db/migrations/**/*"));
   assert.ok(
-    tracingIncludes.includes("./open-sse/services/compression/engines/rtk/filters/**/*.json")
+    tracingIncludes.includes("./open-sse/services/compression/engines/rtk/filters/**/*.json"),
   );
   assert.ok(tracingIncludes.includes("./open-sse/services/compression/rules/**/*.json"));
   // sql.js WASM must ship in the standalone bundle: sqljsAdapter resolves it from
@@ -94,7 +94,7 @@ test("next config declares Turbopack aliases, runtime assets and server external
   // Next traces sql-wasm.js without auto-including the runtime .wasm asset.
   assert.ok(
     tracingIncludes.includes("./node_modules/sql.js/dist/sql-wasm.wasm"),
-    "sql-wasm.wasm must be trace-included so the sql.js fallback works in standalone builds"
+    "sql-wasm.wasm must be trace-included so the sql.js fallback works in standalone builds",
   );
   assert.ok(tracingExcludes.includes("./_tasks/**/*"));
   assert.ok(tracingExcludes.includes("./tests/**/*"));
@@ -126,10 +126,7 @@ test("Turbopack aliases @/mitm/manager to the stub ONLY when OMNIROUTE_MITM_STUB
 
     process.env.OMNIROUTE_MITM_STUB = "1";
     const { default: docker } = await loadNextConfig("mitm-docker");
-    assert.equal(
-      docker.turbopack.resolveAlias["@/mitm/manager"],
-      "./src/mitm/manager.stub.ts"
-    );
+    assert.equal(docker.turbopack.resolveAlias["@/mitm/manager"], "./src/mitm/manager.stub.ts");
   } finally {
     if (original === undefined) delete process.env.OMNIROUTE_MITM_STUB;
     else process.env.OMNIROUTE_MITM_STUB = original;
@@ -186,19 +183,23 @@ test("manager.stub.ts exports every name statically imported from @/mitm/manager
 
   const stubSrc = fs.readFileSync(
     path.join(process.cwd(), "src", "mitm", "manager.stub.ts"),
-    "utf-8"
+    "utf-8",
   );
   // Collect stub exports from both declaration forms and named re-export blocks so the
   // guard doesn't false-positive if the stub later uses `export class` / `export { … }`.
   const stubExports = new Set<string>();
   for (const m of stubSrc.matchAll(
-    /export\s+(?:const|let|var|class|function|async\s+function)\s+([A-Za-z0-9_]+)/g
+    /export\s+(?:const|let|var|class|function|async\s+function)\s+([A-Za-z0-9_]+)/g,
   )) {
     stubExports.add(m[1]);
   }
   for (const m of stubSrc.matchAll(/export\s*\{([^}]*)\}/g)) {
     for (const part of m[1].split(",")) {
-      const exported = part.trim().split(/\s+as\s+/).pop()?.trim(); // `x as y` exports y
+      const exported = part
+        .trim()
+        .split(/\s+as\s+/)
+        .pop()
+        ?.trim(); // `x as y` exports y
       if (exported) stubExports.add(exported);
     }
   }
@@ -207,7 +208,7 @@ test("manager.stub.ts exports every name statically imported from @/mitm/manager
   assert.deepEqual(
     missing,
     [],
-    `manager.stub.ts is missing exports statically imported by routes: ${missing.join(", ")}`
+    `manager.stub.ts is missing exports statically imported by routes: ${missing.join(", ")}`,
   );
 });
 
@@ -247,14 +248,14 @@ test("next-intl webpack hook preserves caller config and filters known extractor
         resource: "/repo/node_modules/next-intl/dist/esm/production/extractor/format/index.js",
       },
     }),
-    true
+    true,
   );
   assert.equal(
     config.ignoreWarnings[0]({
       message:
         "Parsing of /repo/node_modules/next-intl/dist/esm/production/extractor/format/index.js for build dependencies failed at 'import(t)'.",
     }),
-    false
+    false,
   );
   assert.equal(
     config.ignoreWarnings[0]({
@@ -263,11 +264,11 @@ test("next-intl webpack hook preserves caller config and filters known extractor
         resource: "/repo/node_modules/next-intl/dist/esm/production/extractor/format/index.js",
       },
     }),
-    true
+    true,
   );
   assert.equal(
     config.ignoreWarnings[0]({ message: "Critical dependency: request is expression" }),
-    false
+    false,
   );
 });
 
@@ -303,11 +304,11 @@ test("turbopack.ignoreIssue suppresses the compression module over-bundling warn
 
   assert.ok(Array.isArray(rules), "expected turbopack.ignoreIssue to be an array");
   const compressionRule = rules.find((rule) =>
-    String(rule.path).includes("open-sse/services/compression")
+    String(rule.path).includes("open-sse/services/compression"),
   );
   assert.ok(
     compressionRule,
-    "expected an ignoreIssue rule targeting open-sse/services/compression/**"
+    "expected an ignoreIssue rule targeting open-sse/services/compression/**",
   );
   assert.match(String(compressionRule.description), /Overly broad patterns/);
 });
@@ -323,7 +324,7 @@ test("optimizePackageImports excludes the internal @omniroute/open-sse workspace
   assert.ok(Array.isArray(list), "optimizePackageImports should be an array");
   assert.ok(
     !list.includes("@omniroute/open-sse"),
-    "do NOT add the internal @omniroute/open-sse workspace to optimizePackageImports — it OOMs the production build"
+    "do NOT add the internal @omniroute/open-sse workspace to optimizePackageImports — it OOMs the production build",
   );
   // The intended external barrel libs must remain optimized.
   for (const lib of ["lucide-react", "date-fns", "next-intl"]) {

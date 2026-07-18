@@ -154,11 +154,11 @@ test("ADAPTIVE: Opus 4.7 budget capped within Anthropic-allowed range", () => {
   assert.equal(result.thinking.type, "enabled");
   assert.ok(
     result.thinking.budget_tokens <= 128000,
-    `budget ${result.thinking.budget_tokens} must be ≤ Anthropic limit 128000`
+    `budget ${result.thinking.budget_tokens} must be ≤ Anthropic limit 128000`,
   );
   assert.ok(
     result.thinking.budget_tokens >= 1024,
-    `budget ${result.thinking.budget_tokens} must be ≥ Anthropic minimum 1024`
+    `budget ${result.thinking.budget_tokens} must be ≥ Anthropic minimum 1024`,
   );
   setThinkingBudgetConfig(DEFAULT_THINKING_CONFIG);
 });
@@ -283,7 +283,7 @@ test("ensureThinkingConfig: auto-injects for -thinking suffix model", () => {
   // valid auto-inject outcomes.
   assert.ok(
     result.thinking.budget_tokens > 0,
-    "budget_tokens should be positive after auto-inject"
+    "budget_tokens should be positive after auto-inject",
   );
 });
 
@@ -335,7 +335,7 @@ test("applyThinkingBudget: -thinking model without config + PASSTHROUGH = auto-i
   assert.equal(result.thinking.type, "enabled");
   assert.ok(
     result.thinking.budget_tokens > 0,
-    "budget_tokens should be positive after auto-inject"
+    "budget_tokens should be positive after auto-inject",
   );
   setThinkingBudgetConfig(DEFAULT_THINKING_CONFIG);
 });

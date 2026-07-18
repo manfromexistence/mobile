@@ -15,7 +15,7 @@ test("Fix A: getAccessToken accepts an onPersist parameter", async () => {
   assert.match(
     src,
     /export async function getAccessToken\([\s\S]{0,500}onPersist\?:\s*(?:RefreshPersistFn|\(result:\s*\w+\)\s*=>\s*Promise<void>)/,
-    "getAccessToken must declare onPersist as the 5th parameter"
+    "getAccessToken must declare onPersist as the 5th parameter",
   );
 });
 
@@ -27,7 +27,7 @@ test("Fix A: getAccessToken invokes onPersist INSIDE the per-connection mutex cl
   assert.match(
     closureBody,
     /effectiveOnPersist/,
-    "The mutex closure body must reference effectiveOnPersist so the persist runs before the mutex releases"
+    "The mutex closure body must reference effectiveOnPersist so the persist runs before the mutex releases",
   );
 });
 
@@ -43,7 +43,7 @@ test("Fix A: chatCore.ts wraps executor.refreshCredentials with runWithOnPersist
   assert.match(
     src,
     /runWithOnPersist\([\s\S]{0,200}executor\.refreshCredentials/,
-    "chatCore.ts reactive 401 path must wrap refreshCredentials with runWithOnPersist"
+    "chatCore.ts reactive 401 path must wrap refreshCredentials with runWithOnPersist",
   );
 });
 
@@ -52,7 +52,7 @@ test("Fix A: base.ts proactive refresh also wraps refreshCredentials with runWit
   assert.match(
     src,
     /runWithOnPersist\([\s\S]{0,200}this\.refreshCredentials/,
-    "base.ts proactive needsRefresh branch must wrap refreshCredentials with runWithOnPersist"
+    "base.ts proactive needsRefresh branch must wrap refreshCredentials with runWithOnPersist",
   );
 });
 
@@ -64,12 +64,12 @@ test("Fix B: refreshOAuthToken in test/route.ts includes connectionId in credent
   assert.match(
     fnSlice,
     /connectionId:\s*connection\.id/,
-    "refreshOAuthToken credentials must include connectionId so Layer 1 (per-connection mutex) is used instead of Layer 2 (token-hash dedup)"
+    "refreshOAuthToken credentials must include connectionId so Layer 1 (per-connection mutex) is used instead of Layer 2 (token-hash dedup)",
   );
   assert.match(
     fnSlice,
     /onPersist|async\s*\(refreshed\)\s*=>/,
-    "refreshOAuthToken must pass an onPersist callback so the DB write is atomic with the network refresh"
+    "refreshOAuthToken must pass an onPersist callback so the DB write is atomic with the network refresh",
   );
 });
 
@@ -78,12 +78,12 @@ test("Fix C reverted: codexAuthImport does NOT refresh tokens on import (avoids 
   assert.doesNotMatch(
     src,
     /refreshConnectionTokensOnImport\(/,
-    "Fix C was reverted because auth.json files exported from Codex CLI are often partially rotated; refreshing with a stale refresh_token caused upstream to invalidate the entire token family"
+    "Fix C was reverted because auth.json files exported from Codex CLI are often partially rotated; refreshing with a stale refresh_token caused upstream to invalidate the entire token family",
   );
   assert.doesNotMatch(
     src,
     /import\s*\{[^}]*getAccessToken[^}]*\}\s*from\s*"@omniroute\/open-sse\/services\/tokenRefresh/,
-    "codexAuthImport should not import getAccessToken (refresh-on-import was reverted)"
+    "codexAuthImport should not import getAccessToken (refresh-on-import was reverted)",
   );
 });
 
@@ -105,12 +105,12 @@ test("Fix D: staleness fallback returns absolute expiresAt, not raw expiresIn", 
   assert.match(
     slice,
     /expiresAt:\s*dbConnection\.expiresAt/,
-    "Staleness fallback must return absolute expiresAt"
+    "Staleness fallback must return absolute expiresAt",
   );
   assert.doesNotMatch(
     slice,
     /expiresIn:\s*dbConnection\.expiresIn(?!\s*\/\/)/,
-    "Staleness fallback must NOT return raw expiresIn (causes downstream lifetime extension)"
+    "Staleness fallback must NOT return raw expiresIn (causes downstream lifetime extension)",
   );
 });
 
@@ -120,7 +120,7 @@ test("Fix D: src/sse wrapper prefers expiresAt over expiresIn when recomputing",
   assert.match(
     src,
     /expiresAt:\s*newCredentials\.expiresAt\s*\?\s*newCredentials\.expiresAt/,
-    "checkAndRefreshToken must prefer the absolute expiresAt before falling back to expiresIn arithmetic"
+    "checkAndRefreshToken must prefer the absolute expiresAt before falling back to expiresIn arithmetic",
   );
 });
 
@@ -128,11 +128,11 @@ test("Fix E: chatCore.ts moves credentials mutation INSIDE the mutex closure via
   const src = await read("open-sse/handlers/chatCore.ts");
   // The persistFn closure must do BOTH the Object.assign AND the user callback
   const persistFnMatch = src.match(
-    /const\s+persistFn\s*=[\s\S]{0,800}Object\.assign\(credentials,[\s\S]{0,300}onCredentialsRefreshed/
+    /const\s+persistFn\s*=[\s\S]{0,800}Object\.assign\(credentials,[\s\S]{0,300}onCredentialsRefreshed/,
   );
   assert.ok(
     persistFnMatch,
-    "chatCore.ts must build persistFn that both Object.assigns credentials and calls onCredentialsRefreshed, so both happen INSIDE the mutex"
+    "chatCore.ts must build persistFn that both Object.assigns credentials and calls onCredentialsRefreshed, so both happen INSIDE the mutex",
   );
 });
 
@@ -145,7 +145,7 @@ test("Fix F removed: no over-eager skip that would bypass legitimate refreshes",
   assert.doesNotMatch(
     src,
     /credentials\.accessToken\s*===\s*dbConnection\.accessToken[\s\S]{0,300}Skipping OAuth refresh/,
-    "Fix F was removed because it caused legitimate refreshes to be skipped"
+    "Fix F was removed because it caused legitimate refreshes to be skipped",
   );
 });
 
@@ -160,7 +160,7 @@ test("Mutex consolidation: src/sse wrapper no longer holds its own connectionRef
     assert.match(
       src,
       /deprecated|legacy|shim|redundant|kept for back-compat/i,
-      "If src/sse keeps its own connectionRefreshMutex Map, the file must document it as deprecated/legacy"
+      "If src/sse keeps its own connectionRefreshMutex Map, the file must document it as deprecated/legacy",
     );
   }
 });

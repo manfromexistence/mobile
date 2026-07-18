@@ -82,7 +82,7 @@ test("createSSEStream passthrough coerces numeric tool_call id to string", async
       onComplete(payload) {
         onCompletePayload = payload;
       },
-    }
+    },
   );
 
   const lines = text
@@ -130,7 +130,7 @@ test("createSSEStream passthrough preserves numeric top-level id as string", asy
       provider: "openai",
       model: "gpt-4.1-mini",
       body: { messages: [{ role: "user", content: "hello" }] },
-    }
+    },
   );
 
   const lines = text
@@ -211,7 +211,7 @@ test("createSSEStream responses passthrough coerces numeric ids to strings", asy
       provider: "openai",
       model: "gpt-4.1-mini",
       body: { input: "hello" },
-    }
+    },
   );
 
   const payloads = text
@@ -232,7 +232,9 @@ test("createSSEStream responses passthrough coerces numeric ids to strings", asy
   assert.equal(typeof added.item.call_id, "string");
   assert.equal(added.item.call_id, "654");
 
-  const delta = payloads.find((payload) => payload.type === "response.function_call_arguments.delta");
+  const delta = payloads.find(
+    (payload) => payload.type === "response.function_call_arguments.delta",
+  );
   assert.equal(typeof delta.response_id, "string");
   assert.equal(delta.response_id, "987");
   assert.equal(typeof delta.item_id, "string");
@@ -264,7 +266,7 @@ test("createSSEStream responses passthrough does not normalize unrelated top-lev
       provider: "openai",
       model: "gpt-4.1-mini",
       body: { input: "hello" },
-    }
+    },
   );
 
   const payloads = text
@@ -306,7 +308,7 @@ test("createSSEStream passthrough normalizes numeric id in final chunk without t
       provider: "openai",
       model: "gpt-4.1-mini",
       body: { messages: [{ role: "user", content: "hello" }] },
-    }
+    },
   );
 
   const lines = text
@@ -355,7 +357,7 @@ test("createSSEStream responses passthrough normalizes numeric ids in final chun
       provider: "openai",
       model: "gpt-4.1-mini",
       body: { input: "hello" },
-    }
+    },
   );
 
   const payloads = text
@@ -421,7 +423,7 @@ test("createSSEStream passthrough coerces tool_call id 0 without index", async (
       onComplete(payload) {
         onCompletePayload = payload;
       },
-    }
+    },
   );
 
   const lines = text
@@ -485,7 +487,7 @@ test("createSSEStream Claude passthrough does not normalize numeric ids", async 
       provider: "anthropic",
       model: "claude-3-5-sonnet-20241022",
       body: { messages: [{ role: "user", content: "hello" }] },
-    }
+    },
   );
 
   const payloads = text

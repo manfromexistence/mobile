@@ -24,9 +24,7 @@ type BadgeOverflowProps<T = string> = React.ComponentProps<"div"> &
     renderOverflow?: (count: number) => React.ReactNode;
   };
 
-function BadgeOverflow<T = string>(
-  props: BadgeOverflowProps<T>,
-): React.ReactNode {
+function BadgeOverflow<T = string>(props: BadgeOverflowProps<T>): React.ReactNode {
   const {
     items,
     getBadgeLabel: getBadgeLabelProp,
@@ -43,9 +41,7 @@ function BadgeOverflow<T = string>(
   const getBadgeLabel = React.useCallback(
     (item: T): string => {
       if (typeof item === "object" && !getBadgeLabelProp) {
-        throw new Error(
-          "`getBadgeLabel` is required when using array of objects",
-        );
+        throw new Error("`getBadgeLabel` is required when using array of objects");
       }
       return getBadgeLabelProp ? getBadgeLabelProp(item) : (item as string);
     },
@@ -53,19 +49,14 @@ function BadgeOverflow<T = string>(
   );
 
   const rootRef = React.useRef<HTMLDivElement | null>(null);
-  const composedRef = useComposedRefs(
-    ref,
-    rootRef,
-  ) as React.Ref<HTMLDivElement>;
+  const composedRef = useComposedRefs(ref, rootRef) as React.Ref<HTMLDivElement>;
   const measureRef = React.useRef<HTMLDivElement | null>(null);
   const [containerWidth, setContainerWidth] = React.useState(0);
   const [badgeGap, setBadgeGap] = React.useState(4);
   const [badgeHeight, setBadgeHeight] = React.useState(20);
   const [overflowBadgeWidth, setOverflowBadgeWidth] = React.useState(40);
   const [isMeasured, setIsMeasured] = React.useState(false);
-  const [badgeWidths, setBadgeWidths] = React.useState<Map<string, number>>(
-    new Map(),
-  );
+  const [badgeWidths, setBadgeWidths] = React.useState<Map<string, number>>(new Map());
 
   React.useLayoutEffect(() => {
     if (!rootRef.current || !measureRef.current) return;
@@ -100,9 +91,7 @@ function BadgeOverflow<T = string>(
         setBadgeHeight(firstBadge.offsetHeight || 20);
       }
 
-      const overflowChild = measureChildren[items.length] as
-        | HTMLElement
-        | undefined;
+      const overflowChild = measureChildren[items.length] as HTMLElement | undefined;
 
       if (overflowChild) {
         setOverflowBadgeWidth(overflowChild.offsetWidth || 40);
@@ -175,24 +164,14 @@ function BadgeOverflow<T = string>(
       visibleItems: visible,
       hiddenCount: Math.max(0, items.length - visible.length),
     };
-  }, [
-    items,
-    getBadgeLabel,
-    containerWidth,
-    lineCount,
-    badgeGap,
-    overflowBadgeWidth,
-    badgeWidths,
-  ]);
+  }, [items, getBadgeLabel, containerWidth, lineCount, badgeGap, overflowBadgeWidth, badgeWidths]);
 
   const renderContent = (isMeasuredState: boolean) => {
     if (isMeasuredState) {
       return (
         <>
           {visibleItems.map((item, index) => (
-            <React.Fragment key={index}>
-              {renderBadge(item, getBadgeLabel(item))}
-            </React.Fragment>
+            <React.Fragment key={index}>{renderBadge(item, getBadgeLabel(item))}</React.Fragment>
           ))}
           {hiddenCount > 0 &&
             (renderOverflow ? (
@@ -206,14 +185,9 @@ function BadgeOverflow<T = string>(
       );
     } else {
       return items
-        .slice(
-          0,
-          Math.min(items.length, lineCount * 3 - (lineCount > 1 ? 1 : 0)),
-        )
+        .slice(0, Math.min(items.length, lineCount * 3 - (lineCount > 1 ? 1 : 0)))
         .map((item, index) => (
-          <React.Fragment key={index}>
-            {renderBadge(item, getBadgeLabel(item))}
-          </React.Fragment>
+          <React.Fragment key={index}>{renderBadge(item, getBadgeLabel(item))}</React.Fragment>
         ));
     }
   };
@@ -247,9 +221,7 @@ function BadgeOverflow<T = string>(
         style={{ gap: badgeGap }}
       >
         {items.map((item, index) => (
-          <React.Fragment key={index}>
-            {renderBadge(item, getBadgeLabel(item))}
-          </React.Fragment>
+          <React.Fragment key={index}>{renderBadge(item, getBadgeLabel(item))}</React.Fragment>
         ))}
         {renderOverflow ? (
           renderOverflow(99)

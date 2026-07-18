@@ -1,21 +1,16 @@
-"use client"
+"use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import { cn } from "@/lib/utils"
-import { getIconForScreen } from "./dock-icons"
-import type { Screen } from "./types"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+import { getIconForScreen } from "./dock-icons";
+import type { Screen } from "./types";
 
 interface ScreenGridDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  screens: Screen[]
-  activeScreenId: string
-  onSelectScreen: (screenId: string) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  screens: Screen[];
+  activeScreenId: string;
+  onSelectScreen: (screenId: string) => void;
 }
 
 export function ScreenGridDialog({
@@ -33,27 +28,27 @@ export function ScreenGridDialog({
         </DialogHeader>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
           {screens.map((screen) => {
-            const Icon = getIconForScreen(screen)
-            const isActive = screen.id === activeScreenId
+            const Icon = getIconForScreen(screen);
+            const isActive = screen.id === activeScreenId;
             return (
               <button
                 key={screen.id}
                 type="button"
                 onClick={() => {
-                  onSelectScreen(screen.id)
-                  onOpenChange(false)
+                  onSelectScreen(screen.id);
+                  onOpenChange(false);
                 }}
                 className={cn(
                   "flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-colors hover:bg-accent/50",
                   isActive
                     ? "border-primary bg-primary/10"
-                    : "border-border bg-muted/30 hover:border-primary/50"
+                    : "border-border bg-muted/30 hover:border-primary/50",
                 )}
               >
                 <div
                   className={cn(
                     "flex h-12 w-12 items-center justify-center rounded-md",
-                    isActive ? "bg-primary text-primary-foreground" : "bg-muted"
+                    isActive ? "bg-primary text-primary-foreground" : "bg-muted",
                   )}
                 >
                   <Icon className="h-6 w-6" />
@@ -62,10 +57,10 @@ export function ScreenGridDialog({
                   {screen.title}
                 </span>
               </button>
-            )
+            );
           })}
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

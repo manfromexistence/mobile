@@ -41,7 +41,7 @@ test("validateWebRuntimeEnv rejects invalid boolean and port flags", () => {
     buildEnv({
       AUTH_COOKIE_SECURE: "1",
       API_PORT: "70000",
-    })
+    }),
   );
 
   assert.equal(result.valid, false);
@@ -53,7 +53,7 @@ test("validateWebRuntimeEnv rejects malformed public URLs", () => {
   const result = validateWebRuntimeEnv(
     buildEnv({
       NEXT_PUBLIC_CLOUD_URL: "cloud.example",
-    })
+    }),
   );
 
   assert.equal(result.valid, false);
@@ -71,7 +71,7 @@ test("getWebRuntimeEnv throws sanitized messages without leaking secret values",
       assert.match(error.message, /API_KEY_SECRET/);
       assert.doesNotMatch(error.message, /short-secret/);
       return true;
-    }
+    },
   );
 });
 

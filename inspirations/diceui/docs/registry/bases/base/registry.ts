@@ -11,13 +11,5 @@ import { ui } from "./ui/_registry";
 export const registry: Registry = {
   name: "diceui/base",
   homepage: "https://diceui.com",
-  items: [
-    ...ui,
-    ...examples,
-    ...lib,
-    ...components,
-    ...blocks,
-    ...hooks,
-    ...internal,
-  ],
+  items: [...ui, ...examples, ...lib, ...components, ...blocks, ...hooks, ...internal],
 };

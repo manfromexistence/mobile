@@ -25,7 +25,7 @@ describe("home topology hidden networking (#4596)", () => {
     // it to fail fast instead of letting the real global fetch hit the network.
     vi.stubGlobal(
       "fetch",
-      vi.fn(() => Promise.reject(new Error("network unavailable in test")))
+      vi.fn(() => Promise.reject(new Error("network unavailable in test"))),
     );
     vi.stubGlobal(
       "WebSocket",
@@ -43,7 +43,7 @@ describe("home topology hidden networking (#4596)", () => {
 
         send() {}
         close() {}
-      }
+      },
     );
     container = document.createElement("div");
     document.body.appendChild(container);

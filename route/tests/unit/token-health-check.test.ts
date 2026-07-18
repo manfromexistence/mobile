@@ -151,7 +151,7 @@ test("extractResolvedProxyConfig unwraps proxy resolution metadata", () => {
       levelId: "conn-123",
       source: "registry",
     }),
-    proxy
+    proxy,
   );
   assert.deepEqual(tokenHealthCheck.extractResolvedProxyConfig(proxy), proxy);
   assert.equal(
@@ -159,7 +159,7 @@ test("extractResolvedProxyConfig unwraps proxy resolution metadata", () => {
       proxy: null,
       level: "direct",
     }),
-    null
+    null,
   );
   assert.equal(tokenHealthCheck.extractResolvedProxyConfig(null), null);
 });
@@ -172,7 +172,7 @@ test("buildRefreshFailureUpdate keeps active connections routable after refresh 
       testStatus: "active",
       expiredRetryCount: 2,
     },
-    now
+    now,
   );
 
   assert.equal(update.testStatus, "active");
@@ -193,7 +193,7 @@ test("buildRefreshFailureUpdate preserves expired retry tracking", () => {
       testStatus: "expired",
       expiredRetryCount: 2,
     },
-    now
+    now,
   );
 
   assert.equal(update.testStatus, "expired");
@@ -227,7 +227,7 @@ test("checkConnection uses the resolved proxy payload when refreshing tokens", a
             access_token: "new-access-token",
             refresh_token: "new-refresh-token",
             expires_in: 3600,
-          })
+          }),
         );
       });
     },
@@ -273,10 +273,10 @@ test("checkConnection uses the resolved proxy payload when refreshing tokens", a
             assert.ok(updated?.tokenExpiresAt);
             assert.ok(updated?.expiresAt);
             assert.equal(updated?.expiresAt, updated?.tokenExpiresAt);
-          }
+          },
         );
       });
-    }
+    },
   );
 });
 
@@ -301,7 +301,7 @@ test("checkConnection uses the latest stored refresh token instead of a stale sw
             access_token: "snapshot-access-next",
             refresh_token: "snapshot-refresh-next",
             expires_in: 3600,
-          })
+          }),
         );
       });
     },
@@ -337,9 +337,9 @@ test("checkConnection uses the latest stored refresh token instead of a stale sw
           assert.match(refreshRequests[0], /refresh_token=snapshot-refresh-current/);
           assert.equal(updated?.refreshToken, "snapshot-refresh-next");
           assert.equal(updated?.accessToken, "snapshot-access-next");
-        }
+        },
       );
-    }
+    },
   );
 });
 
@@ -358,7 +358,7 @@ test("checkConnection skips interval refresh when token expiry is known and stil
           access_token: "should-not-refresh",
           refresh_token: "should-not-refresh",
           expires_in: 3600,
-        })
+        }),
       );
     },
     async (tokenServer) => {
@@ -393,9 +393,9 @@ test("checkConnection skips interval refresh when token expiry is known and stil
           assert.equal(updated?.accessToken, "known-expiry-access");
           assert.equal(updated?.refreshToken, "known-expiry-refresh");
           assert.equal(updated?.lastHealthCheckAt, staleCheckTime);
-        }
+        },
       );
-    }
+    },
   );
 });
 
@@ -421,7 +421,7 @@ test("checkConnection skips providers listed in OMNIROUTE_HEALTHCHECK_SKIP_PROVI
             access_token: "should-not-be-fetched",
             refresh_token: "should-not-be-fetched",
             expires_in: 3600,
-          })
+          }),
         );
       });
     },
@@ -452,7 +452,7 @@ test("checkConnection skips providers listed in OMNIROUTE_HEALTHCHECK_SKIP_PROVI
           assert.equal(
             refreshRequests.length,
             0,
-            "listed provider must NOT trigger a proactive refresh"
+            "listed provider must NOT trigger a proactive refresh",
           );
 
           // Control: with the provider no longer listed, the same due connection
@@ -461,9 +461,9 @@ test("checkConnection skips providers listed in OMNIROUTE_HEALTHCHECK_SKIP_PROVI
           const stillStale = await providersDb.getProviderConnectionById((connection as any).id);
           await tokenHealthCheck.checkConnection(stillStale);
           assert.equal(refreshRequests.length, 1, "non-listed provider must refresh");
-        }
+        },
       );
-    }
+    },
   );
 
   if (prevSkip === undefined) delete process.env.OMNIROUTE_HEALTHCHECK_SKIP_PROVIDERS;
@@ -519,11 +519,11 @@ test("checkConnection preserves refresh_token for non-rotating providers on unre
           assert.equal(
             updated?.refreshToken,
             "rt-preserve-3679",
-            "non-rotating provider must keep its refresh_token for recovery"
+            "non-rotating provider must keep its refresh_token for recovery",
           );
-        }
+        },
       );
-    }
+    },
   );
 });
 
@@ -575,12 +575,12 @@ for (const providerId of ["antigravity"]) {
           assert.equal(
             updated?.refreshToken,
             "rt-keep-3850",
-            `${providerId} (non-rotating) must keep its refresh_token for recovery`
+            `${providerId} (non-rotating) must keep its refresh_token for recovery`,
           );
         } finally {
           OAUTH_ENDPOINTS.google.token = originalGoogleTokenUrl;
         }
-      }
+      },
     );
   });
 }

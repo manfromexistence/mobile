@@ -35,11 +35,19 @@ test("qwen-web validation is VALID when /api/v1/auths/ returns a top-level user 
   globalThis.fetch = (async (url: any) => {
     probedUrl = String(url);
     return jsonResponse(
-      JSON.stringify({ id: "u-1234567", email: "tester@example.com", name: "tester", role: "user" })
+      JSON.stringify({
+        id: "u-1234567",
+        email: "tester@example.com",
+        name: "tester",
+        role: "user",
+      }),
     );
   }) as typeof fetch;
 
-  const result = await validateProviderApiKey({ provider: "qwen-web", apiKey: "qwen-token-abc123" });
+  const result = await validateProviderApiKey({
+    provider: "qwen-web",
+    apiKey: "qwen-token-abc123",
+  });
   assert.strictEqual(result.valid, true);
   assert.equal(probedUrl, "https://chat.qwen.ai/api/v1/auths/");
 });
@@ -47,7 +55,10 @@ test("qwen-web validation is VALID when /api/v1/auths/ returns a top-level user 
 test("qwen-web validation rejects a 200 response with no user object (was false-positive)", async () => {
   globalThis.fetch = (async () => jsonResponse(JSON.stringify({}))) as typeof fetch;
 
-  const result = await validateProviderApiKey({ provider: "qwen-web", apiKey: "qwen-token-abc123" });
+  const result = await validateProviderApiKey({
+    provider: "qwen-web",
+    apiKey: "qwen-token-abc123",
+  });
   assert.strictEqual(result.valid, false);
   assert.match(result.error, /invalid or expired/i);
 });
@@ -55,19 +66,28 @@ test("qwen-web validation rejects a 200 response with no user object (was false-
 test("qwen-web validation still accepts legacy nested shapes for robustness", async () => {
   globalThis.fetch = (async () =>
     jsonResponse(JSON.stringify({ user: { id: "u-2" } }))) as typeof fetch;
-  const result = await validateProviderApiKey({ provider: "qwen-web", apiKey: "qwen-token-abc123" });
+  const result = await validateProviderApiKey({
+    provider: "qwen-web",
+    apiKey: "qwen-token-abc123",
+  });
   assert.strictEqual(result.valid, true);
 
   globalThis.fetch = (async () =>
     jsonResponse(JSON.stringify({ data: { user: { id: "u-3" } } }))) as typeof fetch;
-  const result2 = await validateProviderApiKey({ provider: "qwen-web", apiKey: "qwen-token-abc123" });
+  const result2 = await validateProviderApiKey({
+    provider: "qwen-web",
+    apiKey: "qwen-token-abc123",
+  });
   assert.strictEqual(result2.valid, true);
 });
 
 test("qwen-web validation rejects a 200 body that is not valid JSON", async () => {
   globalThis.fetch = (async () => jsonResponse("<<not json>>")) as typeof fetch;
 
-  const result = await validateProviderApiKey({ provider: "qwen-web", apiKey: "qwen-token-abc123" });
+  const result = await validateProviderApiKey({
+    provider: "qwen-web",
+    apiKey: "qwen-token-abc123",
+  });
   assert.strictEqual(result.valid, false);
   assert.match(result.error, /invalid JSON/i);
 });

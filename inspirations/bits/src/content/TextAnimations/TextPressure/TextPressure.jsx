@@ -1,6 +1,6 @@
 // Component ported from https://codepen.io/JuanFuentes/full/rgXKGQ
 
-import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 
 const dist = (a, b) => {
   const dx = b.x - a.x;
@@ -24,9 +24,9 @@ const debounce = (func, delay) => {
 };
 
 const TextPressure = ({
-  text = 'Compressa',
-  fontFamily = 'Roboto Flex',
-  fontUrl = 'https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap',
+  text = "Compressa",
+  fontFamily = "Roboto Flex",
+  fontUrl = "https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap",
 
   width = true,
   weight = true,
@@ -37,11 +37,11 @@ const TextPressure = ({
   stroke = false,
   scale = false,
 
-  textColor = '#FFFFFF',
-  strokeColor = '#FF0000',
-  className = '',
+  textColor = "#FFFFFF",
+  strokeColor = "#FF0000",
+  className = "",
 
-  minFontSize = 24
+  minFontSize = 24,
 }) => {
   const containerRef = useRef(null);
   const titleRef = useRef(null);
@@ -54,21 +54,21 @@ const TextPressure = ({
   const [scaleY, setScaleY] = useState(1);
   const [lineHeight, setLineHeight] = useState(1);
 
-  const chars = text.split('');
+  const chars = text.split("");
 
   useEffect(() => {
-    const handleMouseMove = e => {
+    const handleMouseMove = (e) => {
       cursorRef.current.x = e.clientX;
       cursorRef.current.y = e.clientY;
     };
-    const handleTouchMove = e => {
+    const handleTouchMove = (e) => {
       const t = e.touches[0];
       cursorRef.current.x = t.clientX;
       cursorRef.current.y = t.clientY;
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("touchmove", handleTouchMove, { passive: true });
 
     if (containerRef.current) {
       const { left, top, width, height } = containerRef.current.getBoundingClientRect();
@@ -79,8 +79,8 @@ const TextPressure = ({
     }
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchmove", handleTouchMove);
     };
   }, []);
 
@@ -111,8 +111,8 @@ const TextPressure = ({
   useEffect(() => {
     const debouncedSetSize = debounce(setSize, 100);
     debouncedSetSize();
-    window.addEventListener('resize', debouncedSetSize);
-    return () => window.removeEventListener('resize', debouncedSetSize);
+    window.addEventListener("resize", debouncedSetSize);
+    return () => window.removeEventListener("resize", debouncedSetSize);
   }, [setSize]);
 
   useEffect(() => {
@@ -125,13 +125,13 @@ const TextPressure = ({
         const titleRect = titleRef.current.getBoundingClientRect();
         const maxDist = titleRect.width / 2;
 
-        spansRef.current.forEach(span => {
+        spansRef.current.forEach((span) => {
           if (!span) return;
 
           const rect = span.getBoundingClientRect();
           const charCenter = {
             x: rect.x + rect.width / 2,
-            y: rect.y + rect.height / 2
+            y: rect.y + rect.height / 2,
           };
 
           const d = dist(mouseRef.current, charCenter);
@@ -191,16 +191,18 @@ const TextPressure = ({
     );
   }, [fontFamily, fontUrl, textColor, strokeColor]);
 
-  const dynamicClassName = [className, flex ? 'flex' : '', stroke ? 'stroke' : ''].filter(Boolean).join(' ');
+  const dynamicClassName = [className, flex ? "flex" : "", stroke ? "stroke" : ""]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div
       ref={containerRef}
       style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        background: 'transparent'
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        background: "transparent",
       }}
     >
       {styleElement}
@@ -209,27 +211,27 @@ const TextPressure = ({
         className={`text-pressure-title ${dynamicClassName}`}
         style={{
           fontFamily,
-          textTransform: 'uppercase',
+          textTransform: "uppercase",
           fontSize: fontSize,
           lineHeight,
           transform: `scale(1, ${scaleY})`,
-          transformOrigin: 'center top',
+          transformOrigin: "center top",
           margin: 0,
-          textAlign: 'center',
-          userSelect: 'none',
-          whiteSpace: 'nowrap',
+          textAlign: "center",
+          userSelect: "none",
+          whiteSpace: "nowrap",
           fontWeight: 100,
-          width: '100%'
+          width: "100%",
         }}
       >
         {chars.map((char, i) => (
           <span
             key={i}
-            ref={el => (spansRef.current[i] = el)}
+            ref={(el) => (spansRef.current[i] = el)}
             data-char={char}
             style={{
-              display: 'inline-block',
-              color: stroke ? undefined : textColor
+              display: "inline-block",
+              color: stroke ? undefined : textColor,
             }}
           >
             {char}

@@ -19,8 +19,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiToClaudeRequest } =
-  await import("../../open-sse/translator/request/openai-to-claude.ts");
+const { openaiToClaudeRequest } = await import(
+  "../../open-sse/translator/request/openai-to-claude.ts"
+);
 
 test('#6953: thinking block with signature:"" is stripped, not fabricated', () => {
   const result = openaiToClaudeRequest(
@@ -42,7 +43,7 @@ test('#6953: thinking block with signature:"" is stripped, not fabricated', () =
         { role: "user", content: "ok go ahead" },
       ],
     },
-    false
+    false,
   );
 
   const assistant = result.messages.find((m) => m.role === "assistant");
@@ -54,7 +55,7 @@ test('#6953: thinking block with signature:"" is stripped, not fabricated', () =
   assert.equal(
     thinkingBlocks.length,
     0,
-    "thinking block with empty signature must be stripped, not fabricated"
+    "thinking block with empty signature must be stripped, not fabricated",
   );
 
   // Text blocks must survive
@@ -79,7 +80,7 @@ test("#6953: thinking block with valid signature is preserved verbatim", () => {
         { role: "user", content: "ok" },
       ],
     },
-    false
+    false,
   );
 
   const assistant = result.messages.find((m) => m.role === "assistant");
@@ -109,7 +110,7 @@ test("#6953: thinking block with undefined signature (Claude-format) is preserve
         { role: "user", content: "ok" },
       ],
     },
-    false
+    false,
   );
 
   const assistant = result.messages.find((m) => m.role === "assistant");
@@ -119,7 +120,7 @@ test("#6953: thinking block with undefined signature (Claude-format) is preserve
   assert.equal(
     thinkingBlocks.length,
     1,
-    "thinking block with undefined signature must be preserved"
+    "thinking block with undefined signature must be preserved",
   );
   assert.equal(thinkingBlocks[0].thinking, "I already have this", "thinking content must match");
   assert.ok(thinkingBlocks[0].signature, "fallback signature must be applied");
@@ -141,7 +142,7 @@ test("#6953: redacted_thinking with empty data is stripped", () => {
         { role: "user", content: "ok" },
       ],
     },
-    false
+    false,
   );
 
   const assistant = result.messages.find((m) => m.role === "assistant");
@@ -180,7 +181,7 @@ test("#6953: combo scenario — codex-sourced thinking block does not block Anth
         { role: "user", content: "looks good, now add tests" },
       ],
     },
-    false
+    false,
   );
 
   const assistant = result.messages.find((m) => m.role === "assistant");
@@ -188,12 +189,12 @@ test("#6953: combo scenario — codex-sourced thinking block does not block Anth
 
   // No thinking block with empty-string signature should survive
   const badThinking = assistant.content.find(
-    (b) => b && b.type === "thinking" && b.signature === ""
+    (b) => b && b.type === "thinking" && b.signature === "",
   );
   assert.equal(
     badThinking,
     undefined,
-    "no thinking block with empty-string signature should survive"
+    "no thinking block with empty-string signature should survive",
   );
 
   // Tool use must survive

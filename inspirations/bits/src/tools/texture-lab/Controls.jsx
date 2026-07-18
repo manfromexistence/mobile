@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Icon, Input } from '@chakra-ui/react';
+import { Box, Flex, Text, Icon, Input } from "@chakra-ui/react";
 import {
   Upload,
   Link,
@@ -47,14 +47,14 @@ import {
   SunDim,
   Lightbulb,
   Palette as PaletteIcon,
-  Dices
-} from 'lucide-react';
-import { useState, useCallback, useRef, memo } from 'react';
-import { toaster } from '../../components/setup/toaster';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSelect from '../../components/common/Preview/PreviewSelect';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
+  Dices,
+} from "lucide-react";
+import { useState, useCallback, useRef, memo } from "react";
+import { toaster } from "../../components/setup/toaster";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSelect from "../../components/common/Preview/PreviewSelect";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
 import {
   EFFECT_TYPES,
   BLEND_MODES,
@@ -64,21 +64,29 @@ import {
   OVERLAY_TEXTURES,
   PRESETS,
   EXPORT_SCALES,
-  createEffect
-} from './types';
+  createEffect,
+} from "./types";
 
 const SectionHeader = ({ children, collapsible, isOpen, onToggle }) => (
   <Flex
     align="center"
     justify="space-between"
-    cursor={collapsible ? 'pointer' : 'default'}
+    cursor={collapsible ? "pointer" : "default"}
     onClick={collapsible ? onToggle : undefined}
     mb={3}
   >
-    <Text fontSize="11px" color="var(--text-muted)" fontWeight={600} textTransform="uppercase" letterSpacing="0.5px">
+    <Text
+      fontSize="11px"
+      color="var(--text-muted)"
+      fontWeight={600}
+      textTransform="uppercase"
+      letterSpacing="0.5px"
+    >
       {children}
     </Text>
-    {collapsible && <Icon as={isOpen ? ChevronUp : ChevronDown} boxSize={4} color="var(--text-muted)" />}
+    {collapsible && (
+      <Icon as={isOpen ? ChevronUp : ChevronDown} boxSize={4} color="var(--text-muted)" />
+    )}
   </Flex>
 );
 
@@ -112,40 +120,40 @@ const EFFECT_ICONS = {
   [EFFECT_TYPES.TILT_SHIFT]: SunDim,
   [EFFECT_TYPES.EXPOSURE]: Lightbulb,
   [EFFECT_TYPES.VIBRANCE]: PaletteIcon,
-  [EFFECT_TYPES.DOT_DITHER]: CircleDot
+  [EFFECT_TYPES.DOT_DITHER]: CircleDot,
 };
 
 const EFFECT_NAMES = {
-  [EFFECT_TYPES.NOISE]: 'Grain',
-  [EFFECT_TYPES.DITHER]: 'Dithering',
-  [EFFECT_TYPES.HALFTONE]: 'Halftone',
-  [EFFECT_TYPES.ASCII]: 'ASCII',
-  [EFFECT_TYPES.OVERLAY]: 'Texture Overlay',
-  [EFFECT_TYPES.CHROMATIC]: 'Chr. Aberration',
-  [EFFECT_TYPES.VIGNETTE]: 'Vignette',
-  [EFFECT_TYPES.SCANLINES]: 'Scan Lines',
-  [EFFECT_TYPES.PIXELATE]: 'Pixelate',
-  [EFFECT_TYPES.BLUR]: 'Blur',
-  [EFFECT_TYPES.DISTORTION]: 'Distortion',
-  [EFFECT_TYPES.POSTERIZE]: 'Posterize',
-  [EFFECT_TYPES.EDGE]: 'Edge Detection',
-  [EFFECT_TYPES.GRAIN]: 'Film Grain',
-  [EFFECT_TYPES.COLOR_GRADE]: 'Color Grading',
-  [EFFECT_TYPES.GLITCH]: 'Glitch Split',
-  [EFFECT_TYPES.CRT]: 'CRT Monitor',
-  [EFFECT_TYPES.DUOTONE]: 'Duotone',
-  [EFFECT_TYPES.KUWAHARA]: 'Oil Paint',
-  [EFFECT_TYPES.BARREL]: 'Barrel Distortion',
-  [EFFECT_TYPES.RIPPLE]: 'Ripple',
-  [EFFECT_TYPES.DISPLACEMENT]: 'Displacement',
-  [EFFECT_TYPES.LIGHT_LEAK]: 'Light Leak',
-  [EFFECT_TYPES.BLOOM]: 'Bloom',
-  [EFFECT_TYPES.RADIAL_BLUR]: 'Zoom Blur',
-  [EFFECT_TYPES.MOSAIC]: 'Stained Glass',
-  [EFFECT_TYPES.TILT_SHIFT]: 'Tilt Shift',
-  [EFFECT_TYPES.EXPOSURE]: 'Exposure',
-  [EFFECT_TYPES.VIBRANCE]: 'Vibrance',
-  [EFFECT_TYPES.DOT_DITHER]: 'Dot Dither'
+  [EFFECT_TYPES.NOISE]: "Grain",
+  [EFFECT_TYPES.DITHER]: "Dithering",
+  [EFFECT_TYPES.HALFTONE]: "Halftone",
+  [EFFECT_TYPES.ASCII]: "ASCII",
+  [EFFECT_TYPES.OVERLAY]: "Texture Overlay",
+  [EFFECT_TYPES.CHROMATIC]: "Chr. Aberration",
+  [EFFECT_TYPES.VIGNETTE]: "Vignette",
+  [EFFECT_TYPES.SCANLINES]: "Scan Lines",
+  [EFFECT_TYPES.PIXELATE]: "Pixelate",
+  [EFFECT_TYPES.BLUR]: "Blur",
+  [EFFECT_TYPES.DISTORTION]: "Distortion",
+  [EFFECT_TYPES.POSTERIZE]: "Posterize",
+  [EFFECT_TYPES.EDGE]: "Edge Detection",
+  [EFFECT_TYPES.GRAIN]: "Film Grain",
+  [EFFECT_TYPES.COLOR_GRADE]: "Color Grading",
+  [EFFECT_TYPES.GLITCH]: "Glitch Split",
+  [EFFECT_TYPES.CRT]: "CRT Monitor",
+  [EFFECT_TYPES.DUOTONE]: "Duotone",
+  [EFFECT_TYPES.KUWAHARA]: "Oil Paint",
+  [EFFECT_TYPES.BARREL]: "Barrel Distortion",
+  [EFFECT_TYPES.RIPPLE]: "Ripple",
+  [EFFECT_TYPES.DISPLACEMENT]: "Displacement",
+  [EFFECT_TYPES.LIGHT_LEAK]: "Light Leak",
+  [EFFECT_TYPES.BLOOM]: "Bloom",
+  [EFFECT_TYPES.RADIAL_BLUR]: "Zoom Blur",
+  [EFFECT_TYPES.MOSAIC]: "Stained Glass",
+  [EFFECT_TYPES.TILT_SHIFT]: "Tilt Shift",
+  [EFFECT_TYPES.EXPOSURE]: "Exposure",
+  [EFFECT_TYPES.VIBRANCE]: "Vibrance",
+  [EFFECT_TYPES.DOT_DITHER]: "Dot Dither",
 };
 
 const ToggleButton = ({ icon: IconComponent, label, onClick, flex, disabled, title, ...rest }) => (
@@ -160,11 +168,11 @@ const ToggleButton = ({ icon: IconComponent, label, onClick, flex, disabled, tit
     bg="var(--bg-elevated)"
     border="1px solid var(--border-primary)"
     borderRadius="var(--radius-sm)"
-    cursor={disabled ? 'not-allowed' : 'pointer'}
+    cursor={disabled ? "not-allowed" : "pointer"}
     opacity={disabled ? 0.5 : 1}
     onClick={disabled ? undefined : onClick}
     transition="all 0.15s"
-    _hover={disabled ? {} : { bg: 'rgba(168, 85, 247, 0.1)', borderColor: 'var(--color-primary)' }}
+    _hover={disabled ? {} : { bg: "rgba(168, 85, 247, 0.1)", borderColor: "var(--color-primary)" }}
     flex={flex}
     title={title}
     {...rest}
@@ -183,7 +191,7 @@ const NoiseParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Intensity"
       value={params.intensity}
-      onChange={v => onChange({ ...params, intensity: v })}
+      onChange={(v) => onChange({ ...params, intensity: v })}
       min={0}
       max={1}
       step={0.01}
@@ -191,7 +199,7 @@ const NoiseParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Scale"
       value={params.scale}
-      onChange={v => onChange({ ...params, scale: v })}
+      onChange={(v) => onChange({ ...params, scale: v })}
       min={0.5}
       max={4}
       step={0.1}
@@ -199,17 +207,17 @@ const NoiseParams = ({ params, onChange }) => (
     <PreviewSwitch
       title="Monochrome"
       isChecked={params.monochrome}
-      onChange={v => onChange({ ...params, monochrome: v })}
+      onChange={(v) => onChange({ ...params, monochrome: v })}
     />
     <PreviewSelect
       title="Blend Mode"
       value={params.blendMode}
-      onChange={v => onChange({ ...params, blendMode: v })}
+      onChange={(v) => onChange({ ...params, blendMode: v })}
       options={[
-        { value: BLEND_MODES.OVERLAY, label: 'Overlay' },
-        { value: BLEND_MODES.SOFT_LIGHT, label: 'Soft Light' },
-        { value: BLEND_MODES.MULTIPLY, label: 'Multiply' },
-        { value: BLEND_MODES.SCREEN, label: 'Screen' }
+        { value: BLEND_MODES.OVERLAY, label: "Overlay" },
+        { value: BLEND_MODES.SOFT_LIGHT, label: "Soft Light" },
+        { value: BLEND_MODES.MULTIPLY, label: "Multiply" },
+        { value: BLEND_MODES.SCREEN, label: "Screen" },
       ]}
     />
   </>
@@ -220,17 +228,17 @@ const DitherParams = ({ params, onChange }) => (
     <PreviewSelect
       title="Method"
       value={params.method}
-      onChange={v => onChange({ ...params, method: v })}
+      onChange={(v) => onChange({ ...params, method: v })}
       options={[
-        { value: DITHER_METHODS.BAYER_2X2, label: 'Bayer 2×2' },
-        { value: DITHER_METHODS.BAYER_4X4, label: 'Bayer 4×4' },
-        { value: DITHER_METHODS.BAYER_8X8, label: 'Bayer 8×8' }
+        { value: DITHER_METHODS.BAYER_2X2, label: "Bayer 2×2" },
+        { value: DITHER_METHODS.BAYER_4X4, label: "Bayer 4×4" },
+        { value: DITHER_METHODS.BAYER_8X8, label: "Bayer 8×8" },
       ]}
     />
     <PreviewSlider
       title="Color Levels"
       value={params.levels}
-      onChange={v => onChange({ ...params, levels: v })}
+      onChange={(v) => onChange({ ...params, levels: v })}
       min={2}
       max={16}
       step={1}
@@ -238,7 +246,7 @@ const DitherParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Threshold"
       value={params.threshold}
-      onChange={v => onChange({ ...params, threshold: v })}
+      onChange={(v) => onChange({ ...params, threshold: v })}
       min={0}
       max={2}
       step={0.05}
@@ -246,7 +254,7 @@ const DitherParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Pattern Scale"
       value={params.scale || 1}
-      onChange={v => onChange({ ...params, scale: v })}
+      onChange={(v) => onChange({ ...params, scale: v })}
       min={0.5}
       max={4}
       step={0.1}
@@ -260,7 +268,7 @@ const HalftoneParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Grid Size"
       value={params.gridSize}
-      onChange={v => onChange({ ...params, gridSize: v })}
+      onChange={(v) => onChange({ ...params, gridSize: v })}
       min={3}
       max={40}
       step={1}
@@ -269,7 +277,7 @@ const HalftoneParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Dot Scale"
       value={params.dotScale}
-      onChange={v => onChange({ ...params, dotScale: v })}
+      onChange={(v) => onChange({ ...params, dotScale: v })}
       min={0.2}
       max={2.0}
       step={0.05}
@@ -277,7 +285,7 @@ const HalftoneParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Angle"
       value={params.angle}
-      onChange={v => onChange({ ...params, angle: v })}
+      onChange={(v) => onChange({ ...params, angle: v })}
       min={0}
       max={90}
       step={1}
@@ -286,21 +294,21 @@ const HalftoneParams = ({ params, onChange }) => (
     <PreviewSelect
       title="Shape"
       value={params.shape}
-      onChange={v => onChange({ ...params, shape: v })}
+      onChange={(v) => onChange({ ...params, shape: v })}
       options={[
-        { value: HALFTONE_SHAPES.CIRCLE, label: 'Circle' },
-        { value: HALFTONE_SHAPES.SQUARE, label: 'Square' },
-        { value: HALFTONE_SHAPES.DIAMOND, label: 'Diamond' },
-        { value: HALFTONE_SHAPES.ELLIPSE, label: 'Ellipse' },
-        { value: HALFTONE_SHAPES.LINE, label: 'Line' },
-        { value: HALFTONE_SHAPES.CROSS, label: 'Cross' },
-        { value: HALFTONE_SHAPES.RING, label: 'Ring' }
+        { value: HALFTONE_SHAPES.CIRCLE, label: "Circle" },
+        { value: HALFTONE_SHAPES.SQUARE, label: "Square" },
+        { value: HALFTONE_SHAPES.DIAMOND, label: "Diamond" },
+        { value: HALFTONE_SHAPES.ELLIPSE, label: "Ellipse" },
+        { value: HALFTONE_SHAPES.LINE, label: "Line" },
+        { value: HALFTONE_SHAPES.CROSS, label: "Cross" },
+        { value: HALFTONE_SHAPES.RING, label: "Ring" },
       ]}
     />
     <PreviewSlider
       title="Softness"
       value={params.softness}
-      onChange={v => onChange({ ...params, softness: v })}
+      onChange={(v) => onChange({ ...params, softness: v })}
       min={0}
       max={1}
       step={0.05}
@@ -308,7 +316,7 @@ const HalftoneParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Contrast"
       value={params.contrast}
-      onChange={v => onChange({ ...params, contrast: v })}
+      onChange={(v) => onChange({ ...params, contrast: v })}
       min={-1}
       max={1}
       step={0.05}
@@ -316,33 +324,37 @@ const HalftoneParams = ({ params, onChange }) => (
     <PreviewSelect
       title="Color Mode"
       value={params.colorMode}
-      onChange={v => onChange({ ...params, colorMode: v })}
+      onChange={(v) => onChange({ ...params, colorMode: v })}
       options={[
-        { value: 'original', label: 'Original Colors' },
-        { value: 'monochrome', label: 'Monochrome' },
-        { value: 'duotone', label: 'Duotone' },
-        { value: 'cmyk', label: 'CMYK' }
+        { value: "original", label: "Original Colors" },
+        { value: "monochrome", label: "Monochrome" },
+        { value: "duotone", label: "Duotone" },
+        { value: "cmyk", label: "CMYK" },
       ]}
     />
-    {(params.colorMode === 'monochrome' || params.colorMode === 'duotone') && (
+    {(params.colorMode === "monochrome" || params.colorMode === "duotone") && (
       <>
         <PreviewColorPickerCustom
           title="Dot Color"
           color={params.dotColor}
-          onChange={v => onChange({ ...params, dotColor: v })}
+          onChange={(v) => onChange({ ...params, dotColor: v })}
         />
         <PreviewColorPickerCustom
           title="Background"
           color={params.backgroundColor}
-          onChange={v => onChange({ ...params, backgroundColor: v })}
+          onChange={(v) => onChange({ ...params, backgroundColor: v })}
         />
       </>
     )}
-    <PreviewSwitch title="Invert" isChecked={params.invert} onChange={v => onChange({ ...params, invert: v })} />
+    <PreviewSwitch
+      title="Invert"
+      isChecked={params.invert}
+      onChange={(v) => onChange({ ...params, invert: v })}
+    />
     <PreviewSlider
       title="Mix Original"
       value={params.mixOriginal}
-      onChange={v => onChange({ ...params, mixOriginal: v })}
+      onChange={(v) => onChange({ ...params, mixOriginal: v })}
       min={0}
       max={1}
       step={0.05}
@@ -355,18 +367,18 @@ const ASCIIParams = ({ params, onChange }) => (
     <PreviewSelect
       title="Character Set"
       value={params.charset}
-      onChange={v => onChange({ ...params, charset: v })}
+      onChange={(v) => onChange({ ...params, charset: v })}
       options={[
-        { value: ASCII_PRESETS.STANDARD, label: 'Standard' },
-        { value: ASCII_PRESETS.BLOCKS, label: 'Block Elements' },
-        { value: ASCII_PRESETS.SIMPLE, label: 'Simple' },
-        { value: ASCII_PRESETS.DETAILED, label: 'Detailed' }
+        { value: ASCII_PRESETS.STANDARD, label: "Standard" },
+        { value: ASCII_PRESETS.BLOCKS, label: "Block Elements" },
+        { value: ASCII_PRESETS.SIMPLE, label: "Simple" },
+        { value: ASCII_PRESETS.DETAILED, label: "Detailed" },
       ]}
     />
     <PreviewSlider
       title="Cell Size"
       value={params.cellSize}
-      onChange={v => onChange({ ...params, cellSize: v })}
+      onChange={(v) => onChange({ ...params, cellSize: v })}
       min={4}
       max={20}
       step={1}
@@ -375,7 +387,7 @@ const ASCIIParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Brightness"
       value={params.brightness ?? 1.0}
-      onChange={v => onChange({ ...params, brightness: v })}
+      onChange={(v) => onChange({ ...params, brightness: v })}
       min={0.5}
       max={2.0}
       step={0.05}
@@ -383,7 +395,7 @@ const ASCIIParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Contrast"
       value={params.contrast ?? 1.0}
-      onChange={v => onChange({ ...params, contrast: v })}
+      onChange={(v) => onChange({ ...params, contrast: v })}
       min={0.5}
       max={2.0}
       step={0.05}
@@ -391,7 +403,7 @@ const ASCIIParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Gamma"
       value={params.gamma ?? 1.0}
-      onChange={v => onChange({ ...params, gamma: v })}
+      onChange={(v) => onChange({ ...params, gamma: v })}
       min={0.2}
       max={3.0}
       step={0.05}
@@ -399,28 +411,32 @@ const ASCIIParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Character Brightness"
       value={params.charBrightness ?? 1.0}
-      onChange={v => onChange({ ...params, charBrightness: v })}
+      onChange={(v) => onChange({ ...params, charBrightness: v })}
       min={0.5}
       max={3.0}
       step={0.1}
     />
-    <PreviewSwitch title="Color Output" isChecked={params.color} onChange={v => onChange({ ...params, color: v })} />
+    <PreviewSwitch
+      title="Color Output"
+      isChecked={params.color}
+      onChange={(v) => onChange({ ...params, color: v })}
+    />
     {!params.color && (
       <PreviewColorPickerCustom
         title="Character Color"
-        color={params.charColor || '#ffffff'}
-        onChange={v => onChange({ ...params, charColor: v })}
+        color={params.charColor || "#ffffff"}
+        onChange={(v) => onChange({ ...params, charColor: v })}
       />
     )}
     <PreviewColorPickerCustom
       title="Background Color"
-      color={params.backgroundColor || '#000000'}
-      onChange={v => onChange({ ...params, backgroundColor: v })}
+      color={params.backgroundColor || "#000000"}
+      onChange={(v) => onChange({ ...params, backgroundColor: v })}
     />
     <PreviewSlider
       title="Background Blend"
       value={params.backgroundBlend ?? 1.0}
-      onChange={v => onChange({ ...params, backgroundBlend: v })}
+      onChange={(v) => onChange({ ...params, backgroundBlend: v })}
       min={0}
       max={1}
       step={0.05}
@@ -428,7 +444,7 @@ const ASCIIParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Cell Gap"
       value={params.cellGap ?? 0.0}
-      onChange={v => onChange({ ...params, cellGap: v })}
+      onChange={(v) => onChange({ ...params, cellGap: v })}
       min={0}
       max={0.5}
       step={0.01}
@@ -436,7 +452,7 @@ const ASCIIParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Edge Enhance"
       value={params.edgeEnhance ?? 0.0}
-      onChange={v => onChange({ ...params, edgeEnhance: v })}
+      onChange={(v) => onChange({ ...params, edgeEnhance: v })}
       min={0}
       max={1}
       step={0.05}
@@ -444,7 +460,7 @@ const ASCIIParams = ({ params, onChange }) => (
     <PreviewSwitch
       title="Invert Brightness"
       isChecked={params.invert || false}
-      onChange={v => onChange({ ...params, invert: v })}
+      onChange={(v) => onChange({ ...params, invert: v })}
     />
   </>
 );
@@ -453,18 +469,18 @@ const OverlayParams = ({ params, onChange }) => {
   const fileInputRef = useRef(null);
 
   const handleCustomTextureUpload = useCallback(
-    e => {
+    (e) => {
       const file = e.target.files?.[0];
       if (file) {
-        if (params.customTextureUrl && params.customTextureUrl.startsWith('blob:')) {
+        if (params.customTextureUrl && params.customTextureUrl.startsWith("blob:")) {
           URL.revokeObjectURL(params.customTextureUrl);
         }
         const url = URL.createObjectURL(file);
         onChange({ ...params, texture: OVERLAY_TEXTURES.CUSTOM, customTextureUrl: url });
       }
-      e.target.value = '';
+      e.target.value = "";
     },
-    [params, onChange]
+    [params, onChange],
   );
 
   return (
@@ -472,13 +488,13 @@ const OverlayParams = ({ params, onChange }) => {
       <PreviewSelect
         title="Texture"
         value={params.texture}
-        onChange={v => onChange({ ...params, texture: v })}
+        onChange={(v) => onChange({ ...params, texture: v })}
         options={[
-          { value: OVERLAY_TEXTURES.PAPER, label: 'Paper' },
-          { value: OVERLAY_TEXTURES.FILM_GRAIN, label: 'Film Grain' },
-          { value: OVERLAY_TEXTURES.CANVAS, label: 'Canvas' },
-          { value: OVERLAY_TEXTURES.DUST, label: 'Dust & Scratches' },
-          { value: OVERLAY_TEXTURES.CUSTOM, label: 'Custom Upload' }
+          { value: OVERLAY_TEXTURES.PAPER, label: "Paper" },
+          { value: OVERLAY_TEXTURES.FILM_GRAIN, label: "Film Grain" },
+          { value: OVERLAY_TEXTURES.CANVAS, label: "Canvas" },
+          { value: OVERLAY_TEXTURES.DUST, label: "Dust & Scratches" },
+          { value: OVERLAY_TEXTURES.CUSTOM, label: "Custom Upload" },
         ]}
       />
 
@@ -489,7 +505,7 @@ const OverlayParams = ({ params, onChange }) => {
             ref={fileInputRef}
             onChange={handleCustomTextureUpload}
             accept="image/png,image/jpeg,image/webp"
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
           <Flex
             as="button"
@@ -499,13 +515,13 @@ const OverlayParams = ({ params, onChange }) => {
             justify="center"
             gap={2}
             p={3}
-            bg={params.customTextureUrl ? 'transparent' : 'var(--bg-elevated)'}
+            bg={params.customTextureUrl ? "transparent" : "var(--bg-elevated)"}
             border="1px dashed var(--color-primary)"
             borderRadius="var(--radius-sm)"
             cursor="pointer"
             onClick={() => fileInputRef.current?.click()}
             transition="all 0.15s"
-            _hover={{ bg: 'rgba(168, 85, 247, 0.1)' }}
+            _hover={{ bg: "rgba(168, 85, 247, 0.1)" }}
             position="relative"
             overflow="hidden"
             minH="60px"
@@ -542,7 +558,7 @@ const OverlayParams = ({ params, onChange }) => {
       <PreviewSlider
         title="Intensity"
         value={params.intensity}
-        onChange={v => onChange({ ...params, intensity: v })}
+        onChange={(v) => onChange({ ...params, intensity: v })}
         min={0}
         max={1}
         step={0.01}
@@ -550,7 +566,7 @@ const OverlayParams = ({ params, onChange }) => {
       <PreviewSlider
         title="Scale"
         value={params.scale}
-        onChange={v => onChange({ ...params, scale: v })}
+        onChange={(v) => onChange({ ...params, scale: v })}
         min={0.25}
         max={4}
         step={0.05}
@@ -558,7 +574,7 @@ const OverlayParams = ({ params, onChange }) => {
       <PreviewSlider
         title="Rotation"
         value={params.rotation}
-        onChange={v => onChange({ ...params, rotation: v })}
+        onChange={(v) => onChange({ ...params, rotation: v })}
         min={0}
         max={360}
         step={1}
@@ -567,12 +583,12 @@ const OverlayParams = ({ params, onChange }) => {
       <PreviewSelect
         title="Blend Mode"
         value={params.blendMode}
-        onChange={v => onChange({ ...params, blendMode: v })}
+        onChange={(v) => onChange({ ...params, blendMode: v })}
         options={[
-          { value: BLEND_MODES.OVERLAY, label: 'Overlay' },
-          { value: BLEND_MODES.SOFT_LIGHT, label: 'Soft Light' },
-          { value: BLEND_MODES.MULTIPLY, label: 'Multiply' },
-          { value: BLEND_MODES.SCREEN, label: 'Screen' }
+          { value: BLEND_MODES.OVERLAY, label: "Overlay" },
+          { value: BLEND_MODES.SOFT_LIGHT, label: "Soft Light" },
+          { value: BLEND_MODES.MULTIPLY, label: "Multiply" },
+          { value: BLEND_MODES.SCREEN, label: "Screen" },
         ]}
       />
     </>
@@ -584,7 +600,7 @@ const ChromaticParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Intensity"
       value={params.intensity}
-      onChange={v => onChange({ ...params, intensity: v })}
+      onChange={(v) => onChange({ ...params, intensity: v })}
       min={0}
       max={0.05}
       step={0.001}
@@ -592,13 +608,17 @@ const ChromaticParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Angle"
       value={params.angle}
-      onChange={v => onChange({ ...params, angle: v })}
+      onChange={(v) => onChange({ ...params, angle: v })}
       min={0}
       max={360}
       step={1}
       valueUnit="°"
     />
-    <PreviewSwitch title="Radial" isChecked={params.radial} onChange={v => onChange({ ...params, radial: v })} />
+    <PreviewSwitch
+      title="Radial"
+      isChecked={params.radial}
+      onChange={(v) => onChange({ ...params, radial: v })}
+    />
   </>
 );
 
@@ -607,7 +627,7 @@ const VignetteParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Intensity"
       value={params.intensity}
-      onChange={v => onChange({ ...params, intensity: v })}
+      onChange={(v) => onChange({ ...params, intensity: v })}
       min={0}
       max={1}
       step={0.01}
@@ -615,7 +635,7 @@ const VignetteParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Size"
       value={params.size}
-      onChange={v => onChange({ ...params, size: v })}
+      onChange={(v) => onChange({ ...params, size: v })}
       min={0.1}
       max={1}
       step={0.01}
@@ -623,12 +643,16 @@ const VignetteParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Softness"
       value={params.softness}
-      onChange={v => onChange({ ...params, softness: v })}
+      onChange={(v) => onChange({ ...params, softness: v })}
       min={0}
       max={1}
       step={0.01}
     />
-    <PreviewColorPickerCustom title="Color" color={params.color} onChange={v => onChange({ ...params, color: v })} />
+    <PreviewColorPickerCustom
+      title="Color"
+      color={params.color}
+      onChange={(v) => onChange({ ...params, color: v })}
+    />
   </>
 );
 
@@ -637,7 +661,7 @@ const ScanlinesParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Spacing"
       value={params.spacing}
-      onChange={v => onChange({ ...params, spacing: v })}
+      onChange={(v) => onChange({ ...params, spacing: v })}
       min={2}
       max={20}
       step={1}
@@ -646,7 +670,7 @@ const ScanlinesParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Thickness"
       value={params.thickness}
-      onChange={v => onChange({ ...params, thickness: v })}
+      onChange={(v) => onChange({ ...params, thickness: v })}
       min={1}
       max={10}
       step={0.5}
@@ -655,7 +679,7 @@ const ScanlinesParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Opacity"
       value={params.opacity}
-      onChange={v => onChange({ ...params, opacity: v })}
+      onChange={(v) => onChange({ ...params, opacity: v })}
       min={0}
       max={1}
       step={0.01}
@@ -663,7 +687,7 @@ const ScanlinesParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Offset"
       value={params.offset}
-      onChange={v => onChange({ ...params, offset: v })}
+      onChange={(v) => onChange({ ...params, offset: v })}
       min={0}
       max={20}
       step={0.5}
@@ -672,7 +696,7 @@ const ScanlinesParams = ({ params, onChange }) => (
     <PreviewSwitch
       title="Horizontal"
       isChecked={params.horizontal}
-      onChange={v => onChange({ ...params, horizontal: v })}
+      onChange={(v) => onChange({ ...params, horizontal: v })}
     />
   </>
 );
@@ -682,7 +706,7 @@ const PixelateParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Pixel Size"
       value={params.size}
-      onChange={v => onChange({ ...params, size: v })}
+      onChange={(v) => onChange({ ...params, size: v })}
       min={2}
       max={64}
       step={1}
@@ -691,7 +715,7 @@ const PixelateParams = ({ params, onChange }) => (
     <PreviewSwitch
       title="Maintain Aspect"
       isChecked={params.maintainAspect}
-      onChange={v => onChange({ ...params, maintainAspect: v })}
+      onChange={(v) => onChange({ ...params, maintainAspect: v })}
     />
   </>
 );
@@ -701,26 +725,26 @@ const BlurParams = ({ params, onChange }) => (
     <PreviewSelect
       title="Type"
       value={params.type}
-      onChange={v => onChange({ ...params, type: v })}
+      onChange={(v) => onChange({ ...params, type: v })}
       options={[
-        { value: 'gaussian', label: 'Gaussian' },
-        { value: 'radial', label: 'Radial' },
-        { value: 'motion', label: 'Motion' }
+        { value: "gaussian", label: "Gaussian" },
+        { value: "radial", label: "Radial" },
+        { value: "motion", label: "Motion" },
       ]}
     />
     <PreviewSlider
       title="Radius"
       value={params.radius}
-      onChange={v => onChange({ ...params, radius: v })}
+      onChange={(v) => onChange({ ...params, radius: v })}
       min={0}
       max={7}
       step={0.1}
     />
-    {params.type === 'motion' && (
+    {params.type === "motion" && (
       <PreviewSlider
         title="Angle"
         value={params.angle}
-        onChange={v => onChange({ ...params, angle: v })}
+        onChange={(v) => onChange({ ...params, angle: v })}
         min={0}
         max={360}
         step={1}
@@ -735,17 +759,17 @@ const DistortionParams = ({ params, onChange }) => (
     <PreviewSelect
       title="Type"
       value={params.type}
-      onChange={v => onChange({ ...params, type: v })}
+      onChange={(v) => onChange({ ...params, type: v })}
       options={[
-        { value: 'wave', label: 'Wave' },
-        { value: 'swirl', label: 'Swirl' },
-        { value: 'bulge', label: 'Bulge' }
+        { value: "wave", label: "Wave" },
+        { value: "swirl", label: "Swirl" },
+        { value: "bulge", label: "Bulge" },
       ]}
     />
     <PreviewSlider
       title="Amplitude"
       value={params.amplitude}
-      onChange={v => onChange({ ...params, amplitude: v })}
+      onChange={(v) => onChange({ ...params, amplitude: v })}
       min={0}
       max={50}
       step={1}
@@ -753,17 +777,17 @@ const DistortionParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Frequency"
       value={params.frequency}
-      onChange={v => onChange({ ...params, frequency: v })}
+      onChange={(v) => onChange({ ...params, frequency: v })}
       min={1}
       max={20}
       step={0.5}
     />
-    {(params.type === 'swirl' || params.type === 'bulge') && (
+    {(params.type === "swirl" || params.type === "bulge") && (
       <>
         <PreviewSlider
           title="Center X"
           value={params.centerX}
-          onChange={v => onChange({ ...params, centerX: v })}
+          onChange={(v) => onChange({ ...params, centerX: v })}
           min={0}
           max={1}
           step={0.01}
@@ -771,7 +795,7 @@ const DistortionParams = ({ params, onChange }) => (
         <PreviewSlider
           title="Center Y"
           value={params.centerY}
-          onChange={v => onChange({ ...params, centerY: v })}
+          onChange={(v) => onChange({ ...params, centerY: v })}
           min={0}
           max={1}
           step={0.01}
@@ -786,7 +810,7 @@ const PosterizeParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Levels"
       value={params.levels}
-      onChange={v => onChange({ ...params, levels: v })}
+      onChange={(v) => onChange({ ...params, levels: v })}
       min={2}
       max={16}
       step={1}
@@ -794,7 +818,7 @@ const PosterizeParams = ({ params, onChange }) => (
     <PreviewSwitch
       title="Preserve Hue"
       isChecked={params.preserveHue}
-      onChange={v => onChange({ ...params, preserveHue: v })}
+      onChange={(v) => onChange({ ...params, preserveHue: v })}
     />
   </>
 );
@@ -804,7 +828,7 @@ const EdgeParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Strength"
       value={params.strength}
-      onChange={v => onChange({ ...params, strength: v })}
+      onChange={(v) => onChange({ ...params, strength: v })}
       min={0}
       max={3}
       step={0.1}
@@ -812,13 +836,21 @@ const EdgeParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Threshold"
       value={params.threshold}
-      onChange={v => onChange({ ...params, threshold: v })}
+      onChange={(v) => onChange({ ...params, threshold: v })}
       min={0}
       max={0.5}
       step={0.01}
     />
-    <PreviewSwitch title="Invert" isChecked={params.invert} onChange={v => onChange({ ...params, invert: v })} />
-    <PreviewSwitch title="Colorize" isChecked={params.colorize} onChange={v => onChange({ ...params, colorize: v })} />
+    <PreviewSwitch
+      title="Invert"
+      isChecked={params.invert}
+      onChange={(v) => onChange({ ...params, invert: v })}
+    />
+    <PreviewSwitch
+      title="Colorize"
+      isChecked={params.colorize}
+      onChange={(v) => onChange({ ...params, colorize: v })}
+    />
   </>
 );
 
@@ -827,7 +859,7 @@ const GrainParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Intensity"
       value={params.intensity}
-      onChange={v => onChange({ ...params, intensity: v })}
+      onChange={(v) => onChange({ ...params, intensity: v })}
       min={0}
       max={0.5}
       step={0.01}
@@ -835,7 +867,7 @@ const GrainParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Size"
       value={params.size}
-      onChange={v => onChange({ ...params, size: v })}
+      onChange={(v) => onChange({ ...params, size: v })}
       min={0.5}
       max={5}
       step={0.1}
@@ -843,12 +875,16 @@ const GrainParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Luminance Response"
       value={params.luminanceResponse}
-      onChange={v => onChange({ ...params, luminanceResponse: v })}
+      onChange={(v) => onChange({ ...params, luminanceResponse: v })}
       min={0}
       max={1}
       step={0.01}
     />
-    <PreviewSwitch title="Colored" isChecked={params.colored} onChange={v => onChange({ ...params, colored: v })} />
+    <PreviewSwitch
+      title="Colored"
+      isChecked={params.colored}
+      onChange={(v) => onChange({ ...params, colored: v })}
+    />
   </>
 );
 
@@ -857,7 +893,7 @@ const ColorGradeParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Brightness"
       value={params.brightness}
-      onChange={v => onChange({ ...params, brightness: v })}
+      onChange={(v) => onChange({ ...params, brightness: v })}
       min={-0.5}
       max={0.5}
       step={0.01}
@@ -865,7 +901,7 @@ const ColorGradeParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Contrast"
       value={params.contrast}
-      onChange={v => onChange({ ...params, contrast: v })}
+      onChange={(v) => onChange({ ...params, contrast: v })}
       min={-0.5}
       max={0.5}
       step={0.01}
@@ -873,7 +909,7 @@ const ColorGradeParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Saturation"
       value={params.saturation}
-      onChange={v => onChange({ ...params, saturation: v })}
+      onChange={(v) => onChange({ ...params, saturation: v })}
       min={-1}
       max={1}
       step={0.01}
@@ -881,7 +917,7 @@ const ColorGradeParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Temperature"
       value={params.temperature}
-      onChange={v => onChange({ ...params, temperature: v })}
+      onChange={(v) => onChange({ ...params, temperature: v })}
       min={-1}
       max={1}
       step={0.01}
@@ -889,7 +925,7 @@ const ColorGradeParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Tint"
       value={params.tint}
-      onChange={v => onChange({ ...params, tint: v })}
+      onChange={(v) => onChange({ ...params, tint: v })}
       min={-1}
       max={1}
       step={0.01}
@@ -897,12 +933,12 @@ const ColorGradeParams = ({ params, onChange }) => (
     <PreviewColorPickerCustom
       title="Shadows"
       color={params.shadows}
-      onChange={v => onChange({ ...params, shadows: v })}
+      onChange={(v) => onChange({ ...params, shadows: v })}
     />
     <PreviewSlider
       title="Shadow Influence"
       value={params.shadowInfluence}
-      onChange={v => onChange({ ...params, shadowInfluence: v })}
+      onChange={(v) => onChange({ ...params, shadowInfluence: v })}
       min={0}
       max={1}
       step={0.01}
@@ -910,12 +946,12 @@ const ColorGradeParams = ({ params, onChange }) => (
     <PreviewColorPickerCustom
       title="Highlights"
       color={params.highlights}
-      onChange={v => onChange({ ...params, highlights: v })}
+      onChange={(v) => onChange({ ...params, highlights: v })}
     />
     <PreviewSlider
       title="Highlight Influence"
       value={params.highlightInfluence}
-      onChange={v => onChange({ ...params, highlightInfluence: v })}
+      onChange={(v) => onChange({ ...params, highlightInfluence: v })}
       min={0}
       max={1}
       step={0.01}
@@ -928,7 +964,7 @@ const GlitchParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Intensity"
       value={params.intensity}
-      onChange={v => onChange({ ...params, intensity: v })}
+      onChange={(v) => onChange({ ...params, intensity: v })}
       min={0}
       max={1}
       step={0.01}
@@ -936,7 +972,7 @@ const GlitchParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Slice Count"
       value={params.sliceCount}
-      onChange={v => onChange({ ...params, sliceCount: v })}
+      onChange={(v) => onChange({ ...params, sliceCount: v })}
       min={2}
       max={50}
       step={1}
@@ -944,7 +980,7 @@ const GlitchParams = ({ params, onChange }) => (
     <PreviewSlider
       title="RGB Shift"
       value={params.rgbShift}
-      onChange={v => onChange({ ...params, rgbShift: v })}
+      onChange={(v) => onChange({ ...params, rgbShift: v })}
       min={0}
       max={0.1}
       step={0.001}
@@ -952,7 +988,7 @@ const GlitchParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Angle"
       value={params.angle}
-      onChange={v => onChange({ ...params, angle: v })}
+      onChange={(v) => onChange({ ...params, angle: v })}
       min={0}
       max={360}
       step={1}
@@ -961,7 +997,7 @@ const GlitchParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Block Size"
       value={params.blockSize}
-      onChange={v => onChange({ ...params, blockSize: v })}
+      onChange={(v) => onChange({ ...params, blockSize: v })}
       min={0.02}
       max={0.3}
       step={0.01}
@@ -969,7 +1005,7 @@ const GlitchParams = ({ params, onChange }) => (
     <PreviewSwitch
       title="Color Shift"
       isChecked={params.colorShift}
-      onChange={v => onChange({ ...params, colorShift: v })}
+      onChange={(v) => onChange({ ...params, colorShift: v })}
     />
   </>
 );
@@ -979,7 +1015,7 @@ const CRTParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Curvature"
       value={params.curvature}
-      onChange={v => onChange({ ...params, curvature: v })}
+      onChange={(v) => onChange({ ...params, curvature: v })}
       min={0}
       max={1}
       step={0.01}
@@ -987,7 +1023,7 @@ const CRTParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Scanline Intensity"
       value={params.scanlineIntensity}
-      onChange={v => onChange({ ...params, scanlineIntensity: v })}
+      onChange={(v) => onChange({ ...params, scanlineIntensity: v })}
       min={0}
       max={1}
       step={0.01}
@@ -995,7 +1031,7 @@ const CRTParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Scanline Count"
       value={params.scanlineCount}
-      onChange={v => onChange({ ...params, scanlineCount: v })}
+      onChange={(v) => onChange({ ...params, scanlineCount: v })}
       min={100}
       max={800}
       step={10}
@@ -1003,7 +1039,7 @@ const CRTParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Vignette"
       value={params.vignetteIntensity}
-      onChange={v => onChange({ ...params, vignetteIntensity: v })}
+      onChange={(v) => onChange({ ...params, vignetteIntensity: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1011,7 +1047,7 @@ const CRTParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Brightness"
       value={params.brightness}
-      onChange={v => onChange({ ...params, brightness: v })}
+      onChange={(v) => onChange({ ...params, brightness: v })}
       min={0.5}
       max={1.5}
       step={0.01}
@@ -1019,7 +1055,7 @@ const CRTParams = ({ params, onChange }) => (
     <PreviewSlider
       title="RGB Offset"
       value={params.rgbOffset}
-      onChange={v => onChange({ ...params, rgbOffset: v })}
+      onChange={(v) => onChange({ ...params, rgbOffset: v })}
       min={0}
       max={0.01}
       step={0.0005}
@@ -1027,7 +1063,7 @@ const CRTParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Flicker"
       value={params.flickerIntensity}
-      onChange={v => onChange({ ...params, flickerIntensity: v })}
+      onChange={(v) => onChange({ ...params, flickerIntensity: v })}
       min={0}
       max={0.2}
       step={0.01}
@@ -1035,7 +1071,7 @@ const CRTParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Static Noise"
       value={params.staticNoise}
-      onChange={v => onChange({ ...params, staticNoise: v })}
+      onChange={(v) => onChange({ ...params, staticNoise: v })}
       min={0}
       max={0.2}
       step={0.01}
@@ -1048,17 +1084,17 @@ const DuotoneParams = ({ params, onChange }) => (
     <PreviewColorPickerCustom
       title="Shadow Color"
       color={params.shadowColor}
-      onChange={v => onChange({ ...params, shadowColor: v })}
+      onChange={(v) => onChange({ ...params, shadowColor: v })}
     />
     <PreviewColorPickerCustom
       title="Highlight Color"
       color={params.highlightColor}
-      onChange={v => onChange({ ...params, highlightColor: v })}
+      onChange={(v) => onChange({ ...params, highlightColor: v })}
     />
     <PreviewSlider
       title="Contrast"
       value={params.contrast}
-      onChange={v => onChange({ ...params, contrast: v })}
+      onChange={(v) => onChange({ ...params, contrast: v })}
       min={0.5}
       max={2}
       step={0.05}
@@ -1066,7 +1102,7 @@ const DuotoneParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Intensity"
       value={params.intensity}
-      onChange={v => onChange({ ...params, intensity: v })}
+      onChange={(v) => onChange({ ...params, intensity: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1079,7 +1115,7 @@ const KuwaharaParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Radius"
       value={params.radius}
-      onChange={v => onChange({ ...params, radius: v })}
+      onChange={(v) => onChange({ ...params, radius: v })}
       min={1}
       max={5}
       step={1}
@@ -1088,7 +1124,7 @@ const KuwaharaParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Sharpness"
       value={params.sharpness}
-      onChange={v => onChange({ ...params, sharpness: v })}
+      onChange={(v) => onChange({ ...params, sharpness: v })}
       min={0}
       max={1}
       step={0.05}
@@ -1101,7 +1137,7 @@ const BarrelParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Amount"
       value={params.amount}
-      onChange={v => onChange({ ...params, amount: v })}
+      onChange={(v) => onChange({ ...params, amount: v })}
       min={-1}
       max={1}
       step={0.01}
@@ -1109,7 +1145,7 @@ const BarrelParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Center X"
       value={params.centerX}
-      onChange={v => onChange({ ...params, centerX: v })}
+      onChange={(v) => onChange({ ...params, centerX: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1117,7 +1153,7 @@ const BarrelParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Center Y"
       value={params.centerY}
-      onChange={v => onChange({ ...params, centerY: v })}
+      onChange={(v) => onChange({ ...params, centerY: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1125,7 +1161,7 @@ const BarrelParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Zoom"
       value={params.zoom}
-      onChange={v => onChange({ ...params, zoom: v })}
+      onChange={(v) => onChange({ ...params, zoom: v })}
       min={0.5}
       max={2}
       step={0.01}
@@ -1138,7 +1174,7 @@ const RippleParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Amplitude"
       value={params.amplitude}
-      onChange={v => onChange({ ...params, amplitude: v })}
+      onChange={(v) => onChange({ ...params, amplitude: v })}
       min={0}
       max={0.1}
       step={0.001}
@@ -1146,7 +1182,7 @@ const RippleParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Wavelength"
       value={params.wavelength}
-      onChange={v => onChange({ ...params, wavelength: v })}
+      onChange={(v) => onChange({ ...params, wavelength: v })}
       min={10}
       max={200}
       step={5}
@@ -1154,7 +1190,7 @@ const RippleParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Speed"
       value={params.speed}
-      onChange={v => onChange({ ...params, speed: v })}
+      onChange={(v) => onChange({ ...params, speed: v })}
       min={0}
       max={5}
       step={0.1}
@@ -1162,7 +1198,7 @@ const RippleParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Center X"
       value={params.centerX}
-      onChange={v => onChange({ ...params, centerX: v })}
+      onChange={(v) => onChange({ ...params, centerX: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1170,7 +1206,7 @@ const RippleParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Center Y"
       value={params.centerY}
-      onChange={v => onChange({ ...params, centerY: v })}
+      onChange={(v) => onChange({ ...params, centerY: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1178,7 +1214,7 @@ const RippleParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Damping"
       value={params.damping}
-      onChange={v => onChange({ ...params, damping: v })}
+      onChange={(v) => onChange({ ...params, damping: v })}
       min={0}
       max={2}
       step={0.05}
@@ -1190,18 +1226,18 @@ const DisplacementParams = ({ params, onChange }) => {
   const fileInputRef = useRef(null);
 
   const handleMapUpload = useCallback(
-    e => {
+    (e) => {
       const file = e.target.files?.[0];
       if (file) {
-        if (params.customMapUrl && params.customMapUrl.startsWith('blob:')) {
+        if (params.customMapUrl && params.customMapUrl.startsWith("blob:")) {
           URL.revokeObjectURL(params.customMapUrl);
         }
         const url = URL.createObjectURL(file);
         onChange({ ...params, customMapUrl: url });
       }
-      e.target.value = '';
+      e.target.value = "";
     },
-    [params, onChange]
+    [params, onChange],
   );
 
   return (
@@ -1209,7 +1245,7 @@ const DisplacementParams = ({ params, onChange }) => {
       <PreviewSlider
         title="Scale X"
         value={params.scaleX}
-        onChange={v => onChange({ ...params, scaleX: v })}
+        onChange={(v) => onChange({ ...params, scaleX: v })}
         min={0}
         max={0.2}
         step={0.005}
@@ -1217,7 +1253,7 @@ const DisplacementParams = ({ params, onChange }) => {
       <PreviewSlider
         title="Scale Y"
         value={params.scaleY}
-        onChange={v => onChange({ ...params, scaleY: v })}
+        onChange={(v) => onChange({ ...params, scaleY: v })}
         min={0}
         max={0.2}
         step={0.005}
@@ -1225,14 +1261,14 @@ const DisplacementParams = ({ params, onChange }) => {
       <PreviewSwitch
         title="Use Red/Green Channels"
         isChecked={params.useRedGreen}
-        onChange={v => onChange({ ...params, useRedGreen: v })}
+        onChange={(v) => onChange({ ...params, useRedGreen: v })}
       />
       <input
         type="file"
         ref={fileInputRef}
         onChange={handleMapUpload}
         accept="image/png,image/jpeg,image/webp"
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
       />
       <Flex
         as="button"
@@ -1242,13 +1278,13 @@ const DisplacementParams = ({ params, onChange }) => {
         justify="center"
         gap={2}
         p={3}
-        bg={params.customMapUrl ? 'transparent' : 'var(--bg-elevated)'}
+        bg={params.customMapUrl ? "transparent" : "var(--bg-elevated)"}
         border="1px dashed var(--color-primary)"
         borderRadius="var(--radius-sm)"
         cursor="pointer"
         onClick={() => fileInputRef.current?.click()}
         transition="all 0.15s"
-        _hover={{ bg: 'rgba(168, 85, 247, 0.1)' }}
+        _hover={{ bg: "rgba(168, 85, 247, 0.1)" }}
         position="relative"
         overflow="hidden"
         minH="60px"
@@ -1268,7 +1304,7 @@ const DisplacementParams = ({ params, onChange }) => {
           />
         ) : null}
         <Text fontSize="11px" color="var(--text-muted)" zIndex={1}>
-          {params.customMapUrl ? 'Click to change' : 'Upload Displacement Map'}
+          {params.customMapUrl ? "Click to change" : "Upload Displacement Map"}
         </Text>
         <Text fontSize="10px" color="var(--text-dimmed)" zIndex={1}>
           (Leave empty for procedural noise)
@@ -1283,17 +1319,17 @@ const LightLeakParams = ({ params, onChange }) => (
     <PreviewColorPickerCustom
       title="Color 1"
       color={params.color1}
-      onChange={v => onChange({ ...params, color1: v })}
+      onChange={(v) => onChange({ ...params, color1: v })}
     />
     <PreviewColorPickerCustom
       title="Color 2"
       color={params.color2}
-      onChange={v => onChange({ ...params, color2: v })}
+      onChange={(v) => onChange({ ...params, color2: v })}
     />
     <PreviewSlider
       title="Position"
       value={params.position}
-      onChange={v => onChange({ ...params, position: v })}
+      onChange={(v) => onChange({ ...params, position: v })}
       min={-1}
       max={2}
       step={0.01}
@@ -1301,7 +1337,7 @@ const LightLeakParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Angle"
       value={params.angle}
-      onChange={v => onChange({ ...params, angle: v })}
+      onChange={(v) => onChange({ ...params, angle: v })}
       min={0}
       max={360}
       step={1}
@@ -1310,7 +1346,7 @@ const LightLeakParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Size"
       value={params.size}
-      onChange={v => onChange({ ...params, size: v })}
+      onChange={(v) => onChange({ ...params, size: v })}
       min={0.1}
       max={2}
       step={0.05}
@@ -1318,7 +1354,7 @@ const LightLeakParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Intensity"
       value={params.intensity}
-      onChange={v => onChange({ ...params, intensity: v })}
+      onChange={(v) => onChange({ ...params, intensity: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1326,7 +1362,7 @@ const LightLeakParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Softness"
       value={params.softness}
-      onChange={v => onChange({ ...params, softness: v })}
+      onChange={(v) => onChange({ ...params, softness: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1334,12 +1370,12 @@ const LightLeakParams = ({ params, onChange }) => (
     <PreviewSelect
       title="Blend Mode"
       value={params.blendMode}
-      onChange={v => onChange({ ...params, blendMode: v })}
+      onChange={(v) => onChange({ ...params, blendMode: v })}
       options={[
-        { value: BLEND_MODES.SCREEN, label: 'Screen' },
-        { value: BLEND_MODES.OVERLAY, label: 'Overlay' },
-        { value: BLEND_MODES.SOFT_LIGHT, label: 'Soft Light' },
-        { value: BLEND_MODES.MULTIPLY, label: 'Multiply' }
+        { value: BLEND_MODES.SCREEN, label: "Screen" },
+        { value: BLEND_MODES.OVERLAY, label: "Overlay" },
+        { value: BLEND_MODES.SOFT_LIGHT, label: "Soft Light" },
+        { value: BLEND_MODES.MULTIPLY, label: "Multiply" },
       ]}
     />
   </>
@@ -1350,7 +1386,7 @@ const BloomParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Radius"
       value={params.radius}
-      onChange={v => onChange({ ...params, radius: v })}
+      onChange={(v) => onChange({ ...params, radius: v })}
       min={1}
       max={6}
       step={1}
@@ -1359,7 +1395,7 @@ const BloomParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Intensity"
       value={params.intensity}
-      onChange={v => onChange({ ...params, intensity: v })}
+      onChange={(v) => onChange({ ...params, intensity: v })}
       min={0}
       max={3}
       step={0.05}
@@ -1367,7 +1403,7 @@ const BloomParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Threshold"
       value={params.threshold}
-      onChange={v => onChange({ ...params, threshold: v })}
+      onChange={(v) => onChange({ ...params, threshold: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1375,7 +1411,7 @@ const BloomParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Soft Threshold"
       value={params.softThreshold}
-      onChange={v => onChange({ ...params, softThreshold: v })}
+      onChange={(v) => onChange({ ...params, softThreshold: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1383,12 +1419,12 @@ const BloomParams = ({ params, onChange }) => (
     <PreviewSelect
       title="Blend Mode"
       value={params.blendMode}
-      onChange={v => onChange({ ...params, blendMode: v })}
+      onChange={(v) => onChange({ ...params, blendMode: v })}
       options={[
-        { value: BLEND_MODES.SCREEN, label: 'Screen' },
-        { value: BLEND_MODES.OVERLAY, label: 'Overlay' },
-        { value: BLEND_MODES.SOFT_LIGHT, label: 'Soft Light' },
-        { value: BLEND_MODES.MULTIPLY, label: 'Multiply' }
+        { value: BLEND_MODES.SCREEN, label: "Screen" },
+        { value: BLEND_MODES.OVERLAY, label: "Overlay" },
+        { value: BLEND_MODES.SOFT_LIGHT, label: "Soft Light" },
+        { value: BLEND_MODES.MULTIPLY, label: "Multiply" },
       ]}
     />
   </>
@@ -1399,7 +1435,7 @@ const RadialBlurParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Intensity"
       value={params.intensity}
-      onChange={v => onChange({ ...params, intensity: v })}
+      onChange={(v) => onChange({ ...params, intensity: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1407,7 +1443,7 @@ const RadialBlurParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Center X"
       value={params.centerX}
-      onChange={v => onChange({ ...params, centerX: v })}
+      onChange={(v) => onChange({ ...params, centerX: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1415,7 +1451,7 @@ const RadialBlurParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Center Y"
       value={params.centerY}
-      onChange={v => onChange({ ...params, centerY: v })}
+      onChange={(v) => onChange({ ...params, centerY: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1423,12 +1459,16 @@ const RadialBlurParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Samples"
       value={params.samples}
-      onChange={v => onChange({ ...params, samples: v })}
+      onChange={(v) => onChange({ ...params, samples: v })}
       min={8}
       max={64}
       step={1}
     />
-    <PreviewSwitch title="Zoom Blur" isChecked={params.zoom} onChange={v => onChange({ ...params, zoom: v })} />
+    <PreviewSwitch
+      title="Zoom Blur"
+      isChecked={params.zoom}
+      onChange={(v) => onChange({ ...params, zoom: v })}
+    />
   </>
 );
 
@@ -1437,7 +1477,7 @@ const MosaicParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Cell Size"
       value={params.cellSize}
-      onChange={v => onChange({ ...params, cellSize: v })}
+      onChange={(v) => onChange({ ...params, cellSize: v })}
       min={5}
       max={100}
       step={1}
@@ -1446,7 +1486,7 @@ const MosaicParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Irregularity"
       value={params.irregularity}
-      onChange={v => onChange({ ...params, irregularity: v })}
+      onChange={(v) => onChange({ ...params, irregularity: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1454,7 +1494,7 @@ const MosaicParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Edge Thickness"
       value={params.edgeThickness}
-      onChange={v => onChange({ ...params, edgeThickness: v })}
+      onChange={(v) => onChange({ ...params, edgeThickness: v })}
       min={0}
       max={0.1}
       step={0.005}
@@ -1462,12 +1502,12 @@ const MosaicParams = ({ params, onChange }) => (
     <PreviewColorPickerCustom
       title="Edge Color"
       color={params.edgeColor}
-      onChange={v => onChange({ ...params, edgeColor: v })}
+      onChange={(v) => onChange({ ...params, edgeColor: v })}
     />
     <PreviewSlider
       title="Color Variation"
       value={params.colorVariation}
-      onChange={v => onChange({ ...params, colorVariation: v })}
+      onChange={(v) => onChange({ ...params, colorVariation: v })}
       min={0}
       max={0.5}
       step={0.01}
@@ -1480,7 +1520,7 @@ const TiltShiftParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Focus Position"
       value={params.focusPosition}
-      onChange={v => onChange({ ...params, focusPosition: v })}
+      onChange={(v) => onChange({ ...params, focusPosition: v })}
       min={0}
       max={1}
       step={0.01}
@@ -1488,7 +1528,7 @@ const TiltShiftParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Focus Width"
       value={params.focusWidth}
-      onChange={v => onChange({ ...params, focusWidth: v })}
+      onChange={(v) => onChange({ ...params, focusWidth: v })}
       min={0.05}
       max={0.5}
       step={0.01}
@@ -1496,7 +1536,7 @@ const TiltShiftParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Blur Radius"
       value={params.blurRadius}
-      onChange={v => onChange({ ...params, blurRadius: v })}
+      onChange={(v) => onChange({ ...params, blurRadius: v })}
       min={1}
       max={8}
       step={1}
@@ -1505,7 +1545,7 @@ const TiltShiftParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Angle"
       value={params.angle}
-      onChange={v => onChange({ ...params, angle: v })}
+      onChange={(v) => onChange({ ...params, angle: v })}
       min={-90}
       max={90}
       step={1}
@@ -1514,7 +1554,7 @@ const TiltShiftParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Gradient Smooth"
       value={params.gradientSmooth}
-      onChange={v => onChange({ ...params, gradientSmooth: v })}
+      onChange={(v) => onChange({ ...params, gradientSmooth: v })}
       min={0.05}
       max={0.5}
       step={0.01}
@@ -1527,7 +1567,7 @@ const ExposureParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Exposure"
       value={params.exposure}
-      onChange={v => onChange({ ...params, exposure: v })}
+      onChange={(v) => onChange({ ...params, exposure: v })}
       min={-3}
       max={3}
       step={0.05}
@@ -1536,7 +1576,7 @@ const ExposureParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Highlights"
       value={params.highlights}
-      onChange={v => onChange({ ...params, highlights: v })}
+      onChange={(v) => onChange({ ...params, highlights: v })}
       min={-1}
       max={1}
       step={0.01}
@@ -1544,7 +1584,7 @@ const ExposureParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Shadows"
       value={params.shadows}
-      onChange={v => onChange({ ...params, shadows: v })}
+      onChange={(v) => onChange({ ...params, shadows: v })}
       min={-1}
       max={1}
       step={0.01}
@@ -1552,7 +1592,7 @@ const ExposureParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Blacks"
       value={params.blacks}
-      onChange={v => onChange({ ...params, blacks: v })}
+      onChange={(v) => onChange({ ...params, blacks: v })}
       min={-1}
       max={1}
       step={0.01}
@@ -1560,7 +1600,7 @@ const ExposureParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Whites"
       value={params.whites}
-      onChange={v => onChange({ ...params, whites: v })}
+      onChange={(v) => onChange({ ...params, whites: v })}
       min={-1}
       max={1}
       step={0.01}
@@ -1573,7 +1613,7 @@ const VibranceParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Vibrance"
       value={params.vibrance}
-      onChange={v => onChange({ ...params, vibrance: v })}
+      onChange={(v) => onChange({ ...params, vibrance: v })}
       min={-1}
       max={1}
       step={0.01}
@@ -1581,7 +1621,7 @@ const VibranceParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Saturation"
       value={params.saturation}
-      onChange={v => onChange({ ...params, saturation: v })}
+      onChange={(v) => onChange({ ...params, saturation: v })}
       min={-1}
       max={1}
       step={0.01}
@@ -1594,7 +1634,7 @@ const DotDitherParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Dot Size"
       value={params.scale}
-      onChange={v => onChange({ ...params, scale: v })}
+      onChange={(v) => onChange({ ...params, scale: v })}
       min={1}
       max={8}
       step={1}
@@ -1603,12 +1643,16 @@ const DotDitherParams = ({ params, onChange }) => (
     <PreviewSlider
       title="Threshold"
       value={params.threshold}
-      onChange={v => onChange({ ...params, threshold: v })}
+      onChange={(v) => onChange({ ...params, threshold: v })}
       min={0.1}
       max={0.9}
       step={0.05}
     />
-    <PreviewSwitch title="Invert" isChecked={params.invert} onChange={v => onChange({ ...params, invert: v })} />
+    <PreviewSwitch
+      title="Invert"
+      isChecked={params.invert}
+      onChange={(v) => onChange({ ...params, invert: v })}
+    />
   </>
 );
 
@@ -1642,7 +1686,7 @@ const PARAMS_COMPONENTS = {
   [EFFECT_TYPES.TILT_SHIFT]: TiltShiftParams,
   [EFFECT_TYPES.EXPOSURE]: ExposureParams,
   [EFFECT_TYPES.VIBRANCE]: VibranceParams,
-  [EFFECT_TYPES.DOT_DITHER]: DotDitherParams
+  [EFFECT_TYPES.DOT_DITHER]: DotDitherParams,
 };
 
 const EffectCard = memo(
@@ -1657,7 +1701,7 @@ const EffectCard = memo(
     onDragEnd,
     onDragOver,
     isExpanded,
-    onExpandToggle
+    onExpandToggle,
   }) => {
     const EffectIcon = EFFECT_ICONS[effect.type];
     const ParamsComponent = PARAMS_COMPONENTS[effect.type];
@@ -1665,12 +1709,12 @@ const EffectCard = memo(
     return (
       <Box
         bg="var(--bg-elevated)"
-        border={isDragging ? '1px solid var(--color-primary)' : '1px solid var(--border-primary)'}
+        border={isDragging ? "1px solid var(--color-primary)" : "1px solid var(--border-primary)"}
         borderRadius="var(--radius-sm)"
         overflow="hidden"
         opacity={isDragging ? 0.5 : 1}
         transition="all 0.2s ease"
-        transform={isDragging ? 'scale(0.95)' : 'scale(1)'}
+        transform={isDragging ? "scale(0.95)" : "scale(1)"}
         onDragOver={onDragOver}
       >
         <Flex
@@ -1679,7 +1723,7 @@ const EffectCard = memo(
           p={3}
           cursor="pointer"
           onClick={onExpandToggle}
-          _hover={{ bg: 'rgba(168, 85, 247, 0.05)' }}
+          _hover={{ bg: "rgba(168, 85, 247, 0.05)" }}
         >
           <Flex align="center" gap={1}>
             <Flex
@@ -1691,15 +1735,23 @@ const EffectCard = memo(
               draggable
               onDragStart={onDragStart}
               onDragEnd={onDragEnd}
-              onClick={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
               opacity={0.4}
               _hover={{ opacity: 1 }}
-              _active={{ cursor: 'grabbing' }}
+              _active={{ cursor: "grabbing" }}
             >
               <Icon as={GripVertical} boxSize={3} color="var(--text-muted)" />
             </Flex>
-            <Icon as={EffectIcon} boxSize={3} color={effect.enabled ? 'var(--color-primary)' : 'var(--text-muted)'} />
-            <Text fontSize="12px" color={effect.enabled ? 'var(--text-primary)' : 'var(--text-muted)'} fontWeight={500}>
+            <Icon
+              as={EffectIcon}
+              boxSize={3}
+              color={effect.enabled ? "var(--color-primary)" : "var(--text-muted)"}
+            />
+            <Text
+              fontSize="12px"
+              color={effect.enabled ? "var(--text-primary)" : "var(--text-muted)"}
+              fontWeight={500}
+            >
               {EFFECT_NAMES[effect.type]}
             </Text>
           </Flex>
@@ -1712,12 +1764,12 @@ const EffectCard = memo(
               h={6}
               borderRadius="4px"
               cursor="pointer"
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 onToggle(effect.id);
               }}
-              _hover={{ bg: 'rgba(255,255,255,0.1)' }}
-              title={effect.enabled ? 'Disable effect' : 'Enable effect'}
+              _hover={{ bg: "rgba(255,255,255,0.1)" }}
+              title={effect.enabled ? "Disable effect" : "Enable effect"}
             >
               <Icon as={effect.enabled ? Eye : EyeOff} boxSize={3.5} color="var(--text-muted)" />
             </Flex>
@@ -1729,11 +1781,11 @@ const EffectCard = memo(
               h={6}
               borderRadius="4px"
               cursor="pointer"
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 onDuplicate(effect);
               }}
-              _hover={{ bg: 'rgba(255,255,255,0.1)' }}
+              _hover={{ bg: "rgba(255,255,255,0.1)" }}
               title="Duplicate effect"
             >
               <Icon as={Copy} boxSize={3.5} color="var(--text-muted)" />
@@ -1746,11 +1798,11 @@ const EffectCard = memo(
               h={6}
               borderRadius="4px"
               cursor="pointer"
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 onDelete(effect.id);
               }}
-              _hover={{ bg: 'rgba(255,100,100,0.1)' }}
+              _hover={{ bg: "rgba(255,100,100,0.1)" }}
               title="Delete effect"
             >
               <Icon as={Trash2} boxSize={3.5} color="var(--text-muted)" />
@@ -1763,44 +1815,51 @@ const EffectCard = memo(
               h={6}
               borderRadius="4px"
               cursor="pointer"
-              onClick={e => {
+              onClick={(e) => {
                 e.stopPropagation();
                 onExpandToggle();
               }}
-              _hover={{ bg: 'rgba(255,255,255,0.1)' }}
-              title={isExpanded ? 'Collapse' : 'Expand'}
+              _hover={{ bg: "rgba(255,255,255,0.1)" }}
+              title={isExpanded ? "Collapse" : "Expand"}
             >
-              <Icon as={isExpanded ? ChevronUp : ChevronDown} boxSize={4} color="var(--text-muted)" />
+              <Icon
+                as={isExpanded ? ChevronUp : ChevronDown}
+                boxSize={4}
+                color="var(--text-muted)"
+              />
             </Flex>
           </Flex>
         </Flex>
 
         {isExpanded && ParamsComponent && (
           <Flex direction="column" gap={2} p={3} borderTop="1px solid var(--border-primary)">
-            <ParamsComponent params={effect.params} onChange={params => onUpdate(effect.id, { params })} />
+            <ParamsComponent
+              params={effect.params}
+              onChange={(params) => onUpdate(effect.id, { params })}
+            />
           </Flex>
         )}
       </Box>
     );
-  }
+  },
 );
 
-EffectCard.displayName = 'EffectCard';
+EffectCard.displayName = "EffectCard";
 
 const EFFECT_CATEGORIES = {
   texture: {
-    label: 'Texture',
+    label: "Texture",
     effects: [
       EFFECT_TYPES.NOISE,
       EFFECT_TYPES.GRAIN,
       EFFECT_TYPES.DITHER,
       EFFECT_TYPES.HALFTONE,
       EFFECT_TYPES.DOT_DITHER,
-      EFFECT_TYPES.SCANLINES
-    ]
+      EFFECT_TYPES.SCANLINES,
+    ],
   },
   stylize: {
-    label: 'Stylize',
+    label: "Stylize",
     effects: [
       EFFECT_TYPES.ASCII,
       EFFECT_TYPES.PIXELATE,
@@ -1810,11 +1869,11 @@ const EFFECT_CATEGORIES = {
       EFFECT_TYPES.GLITCH,
       EFFECT_TYPES.CRT,
       EFFECT_TYPES.DUOTONE,
-      EFFECT_TYPES.MOSAIC
-    ]
+      EFFECT_TYPES.MOSAIC,
+    ],
   },
   color: {
-    label: 'Color & Light',
+    label: "Color & Light",
     effects: [
       EFFECT_TYPES.COLOR_GRADE,
       EFFECT_TYPES.EXPOSURE,
@@ -1822,11 +1881,11 @@ const EFFECT_CATEGORIES = {
       EFFECT_TYPES.CHROMATIC,
       EFFECT_TYPES.VIGNETTE,
       EFFECT_TYPES.LIGHT_LEAK,
-      EFFECT_TYPES.BLOOM
-    ]
+      EFFECT_TYPES.BLOOM,
+    ],
   },
   distort: {
-    label: 'Distort',
+    label: "Distort",
     effects: [
       EFFECT_TYPES.BLUR,
       EFFECT_TYPES.RADIAL_BLUR,
@@ -1834,13 +1893,13 @@ const EFFECT_CATEGORIES = {
       EFFECT_TYPES.DISTORTION,
       EFFECT_TYPES.BARREL,
       EFFECT_TYPES.RIPPLE,
-      EFFECT_TYPES.DISPLACEMENT
-    ]
+      EFFECT_TYPES.DISPLACEMENT,
+    ],
   },
   overlay: {
-    label: 'Overlay',
-    effects: [EFFECT_TYPES.OVERLAY]
-  }
+    label: "Overlay",
+    effects: [EFFECT_TYPES.OVERLAY],
+  },
 };
 
 const AddEffectPanel = ({ onAddEffect }) => {
@@ -1863,7 +1922,7 @@ const AddEffectPanel = ({ onAddEffect }) => {
         p={3}
         cursor="pointer"
         onClick={() => setIsOpen(!isOpen)}
-        _hover={{ bg: 'rgba(168, 85, 247, 0.1)' }}
+        _hover={{ bg: "rgba(168, 85, 247, 0.1)" }}
         transition="all 0.15s"
       >
         <Flex align="center" gap={2}>
@@ -1893,12 +1952,12 @@ const AddEffectPanel = ({ onAddEffect }) => {
                 gap={1.5}
                 flexWrap="wrap"
                 css={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: '6px'
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, 1fr)",
+                  gap: "6px",
                 }}
               >
-                {category.effects.map(type => (
+                {category.effects.map((type) => (
                   <Flex
                     key={type}
                     as="button"
@@ -1916,10 +1975,20 @@ const AddEffectPanel = ({ onAddEffect }) => {
                       setIsOpen(false);
                     }}
                     transition="all 0.15s"
-                    _hover={{ borderColor: 'var(--color-primary)', bg: 'rgba(168, 85, 247, 0.08)' }}
+                    _hover={{ borderColor: "var(--color-primary)", bg: "rgba(168, 85, 247, 0.08)" }}
                   >
-                    <Icon as={EFFECT_ICONS[type]} boxSize={3.5} color="var(--text-muted)" flexShrink={0} />
-                    <Text fontSize="11px" color="var(--text-primary)" whiteSpace="nowrap" fontWeight={450}>
+                    <Icon
+                      as={EFFECT_ICONS[type]}
+                      boxSize={3.5}
+                      color="var(--text-muted)"
+                      flexShrink={0}
+                    />
+                    <Text
+                      fontSize="11px"
+                      color="var(--text-primary)"
+                      whiteSpace="nowrap"
+                      fontWeight={450}
+                    >
                       {EFFECT_NAMES[type]}
                     </Text>
                   </Flex>
@@ -1953,7 +2022,7 @@ const PresetsPanel = ({ onLoadPreset }) => {
         p={3}
         cursor="pointer"
         onClick={() => setIsOpen(!isOpen)}
-        _hover={{ bg: 'rgba(168, 85, 247, 0.1)' }}
+        _hover={{ bg: "rgba(168, 85, 247, 0.1)" }}
         transition="all 0.15s"
       >
         <Flex align="center" gap={2}>
@@ -1970,9 +2039,9 @@ const PresetsPanel = ({ onLoadPreset }) => {
           p={3}
           borderTop="1px solid var(--border-primary)"
           css={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '6px'
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: "6px",
           }}
         >
           {Object.entries(PRESETS).map(([key, preset]) => (
@@ -1990,10 +2059,15 @@ const PresetsPanel = ({ onLoadPreset }) => {
               cursor="pointer"
               onClick={() => onLoadPreset(key)}
               transition="all 0.15s"
-              _hover={{ borderColor: 'var(--color-primary)', bg: 'rgba(168, 85, 247, 0.08)' }}
+              _hover={{ borderColor: "var(--color-primary)", bg: "rgba(168, 85, 247, 0.08)" }}
             >
               <Icon as={Wand2} boxSize={3.5} color="var(--text-muted)" flexShrink={0} />
-              <Text fontSize="11px" color="var(--text-primary)" whiteSpace="nowrap" fontWeight={450}>
+              <Text
+                fontSize="11px"
+                color="var(--text-primary)"
+                whiteSpace="nowrap"
+                fontWeight={450}
+              >
                 {preset.name}
               </Text>
             </Flex>
@@ -2013,10 +2087,10 @@ const ExportSettingsPanel = ({
   onExportFormatChange,
   onExportQualityChange,
   onExportScaleChange,
-  onPreviewQualityChange
+  onPreviewQualityChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const isVideo = mediaType === 'video';
+  const isVideo = mediaType === "video";
 
   return (
     <Box
@@ -2034,7 +2108,7 @@ const ExportSettingsPanel = ({
         p={3}
         cursor="pointer"
         onClick={() => setIsOpen(!isOpen)}
-        _hover={{ bg: 'rgba(168, 85, 247, 0.1)' }}
+        _hover={{ bg: "rgba(168, 85, 247, 0.1)" }}
         transition="all 0.15s"
       >
         <Flex align="center" gap={2}>
@@ -2059,12 +2133,12 @@ const ExportSettingsPanel = ({
                 value={exportFormat}
                 onChange={onExportFormatChange}
                 options={[
-                  { value: 'png', label: 'PNG (lossless)' },
-                  { value: 'jpg', label: 'JPG (smaller file)' }
+                  { value: "png", label: "PNG (lossless)" },
+                  { value: "jpg", label: "JPG (smaller file)" },
                 ]}
               />
 
-              {exportFormat === 'jpg' && (
+              {exportFormat === "jpg" && (
                 <PreviewSlider
                   title="Quality"
                   value={exportQuality}
@@ -2078,10 +2152,10 @@ const ExportSettingsPanel = ({
               <PreviewSelect
                 title="Scale"
                 value={exportScale.toString()}
-                onChange={v => onExportScaleChange(parseInt(v))}
-                options={EXPORT_SCALES.map(s => ({
+                onChange={(v) => onExportScaleChange(parseInt(v))}
+                options={EXPORT_SCALES.map((s) => ({
                   value: s.toString(),
-                  label: `${s}× ${s === 1 ? '(original)' : ''}`
+                  label: `${s}× ${s === 1 ? "(original)" : ""}`,
                 }))}
               />
             </>
@@ -2092,8 +2166,8 @@ const ExportSettingsPanel = ({
             value={previewQuality}
             onChange={onPreviewQualityChange}
             options={[
-              { value: 'draft', label: 'Draft (fast)' },
-              { value: 'high', label: 'High (accurate)' }
+              { value: "draft", label: "Draft (fast)" },
+              { value: "high", label: "High (accurate)" },
             ]}
           />
         </Flex>
@@ -2104,16 +2178,16 @@ const ExportSettingsPanel = ({
 
 // Shared per-effect parameter randomizer used by both "Randomize effects" and
 // "Randomize parameters". Keys and ranges must match each effect's real params.
-const randomizeParamsForType = type => {
+const randomizeParamsForType = (type) => {
   const rand = (min, max) => Math.random() * (max - min) + min;
   const randInt = (min, max) => Math.floor(rand(min, max + 1));
   const randBool = () => Math.random() > 0.5;
-  const randChoice = arr => arr[Math.floor(Math.random() * arr.length)];
+  const randChoice = (arr) => arr[Math.floor(Math.random() * arr.length)];
   const randColor = () =>
-    '#' +
+    "#" +
     Math.floor(Math.random() * 16777215)
       .toString(16)
-      .padStart(6, '0');
+      .padStart(6, "0");
 
   switch (type) {
     case EFFECT_TYPES.NOISE:
@@ -2121,56 +2195,56 @@ const randomizeParamsForType = type => {
         intensity: rand(0.05, 0.2),
         scale: rand(0.8, 1.5),
         monochrome: randBool(),
-        blendMode: randChoice(['overlay', 'soft-light'])
+        blendMode: randChoice(["overlay", "soft-light"]),
       };
     case EFFECT_TYPES.DITHER:
       return {
-        method: randChoice(['bayer2x2', 'bayer4x4', 'bayer8x8']),
+        method: randChoice(["bayer2x2", "bayer4x4", "bayer8x8"]),
         levels: randInt(3, 6),
         threshold: rand(0.4, 0.6),
-        scale: rand(0.8, 1.5)
+        scale: rand(0.8, 1.5),
       };
     case EFFECT_TYPES.HALFTONE:
       return {
         gridSize: randInt(4, 12),
         dotScale: rand(0.7, 1.2),
         angle: randInt(0, 90),
-        shape: randChoice(['circle', 'square', 'diamond']),
+        shape: randChoice(["circle", "square", "diamond"]),
         softness: rand(0.3, 0.6),
         contrast: rand(-0.1, 0.2),
         invert: false,
-        colorMode: randChoice(['original', 'monochrome']),
-        dotColor: '#000000',
-        backgroundColor: '#ffffff',
-        mixOriginal: rand(0.1, 0.3)
+        colorMode: randChoice(["original", "monochrome"]),
+        dotColor: "#000000",
+        backgroundColor: "#ffffff",
+        mixOriginal: rand(0.1, 0.3),
       };
     case EFFECT_TYPES.DOT_DITHER:
       return {
         scale: randInt(1, 3),
         threshold: rand(0.4, 0.6),
-        invert: false
+        invert: false,
       };
     case EFFECT_TYPES.ASCII:
       return {
-        charset: randChoice([' .:-=+*#%@', ' .-+*#']),
+        charset: randChoice([" .:-=+*#%@", " .-+*#"]),
         cellSize: randInt(4, 8),
-        colorMode: 'original',
+        colorMode: "original",
         invert: false,
         contrast: rand(1.1, 1.4),
-        brightness: rand(1.1, 1.3)
+        brightness: rand(1.1, 1.3),
       };
     case EFFECT_TYPES.CHROMATIC:
       return {
         intensity: rand(0.002, 0.008),
         angle: randInt(0, 360),
-        radial: randBool()
+        radial: randBool(),
       };
     case EFFECT_TYPES.VIGNETTE:
       return {
         intensity: rand(0.2, 0.5),
         size: rand(0.4, 0.6),
         softness: rand(0.4, 0.7),
-        color: '#000000'
+        color: "#000000",
       };
     case EFFECT_TYPES.SCANLINES:
       return {
@@ -2178,45 +2252,45 @@ const randomizeParamsForType = type => {
         thickness: randInt(1, 2),
         opacity: rand(0.1, 0.3),
         horizontal: randBool(),
-        offset: randInt(0, 5)
+        offset: randInt(0, 5),
       };
     case EFFECT_TYPES.PIXELATE:
       return {
         size: randInt(2, 8),
-        maintainAspect: true
+        maintainAspect: true,
       };
     case EFFECT_TYPES.BLUR:
       return {
         radius: rand(0.5, 2),
-        type: 'gaussian',
-        angle: 0
+        type: "gaussian",
+        angle: 0,
       };
     case EFFECT_TYPES.DISTORTION:
       return {
-        type: randChoice(['wave', 'bulge']),
+        type: randChoice(["wave", "bulge"]),
         amplitude: rand(3, 10),
         frequency: rand(3, 8),
         centerX: 0.5,
-        centerY: 0.5
+        centerY: 0.5,
       };
     case EFFECT_TYPES.POSTERIZE:
       return {
         levels: randInt(4, 8),
-        preserveHue: true
+        preserveHue: true,
       };
     case EFFECT_TYPES.EDGE:
       return {
         strength: rand(0.5, 1.2),
         threshold: rand(0.1, 0.25),
         invert: false,
-        colorize: true
+        colorize: true,
       };
     case EFFECT_TYPES.GRAIN:
       return {
         intensity: rand(0.05, 0.15),
         size: rand(1, 2),
         luminanceResponse: rand(0.3, 0.6),
-        colored: false
+        colored: false,
       };
     case EFFECT_TYPES.COLOR_GRADE:
       return {
@@ -2226,7 +2300,7 @@ const randomizeParamsForType = type => {
         temperature: rand(-0.15, 0.15),
         tint: rand(-0.1, 0.1),
         shadowInfluence: rand(0, 0.15),
-        highlightInfluence: rand(0, 0.15)
+        highlightInfluence: rand(0, 0.15),
       };
     case EFFECT_TYPES.GLITCH:
       return {
@@ -2236,7 +2310,7 @@ const randomizeParamsForType = type => {
         angle: randInt(0, 15),
         seed: randInt(0, 1000),
         blockSize: rand(0.03, 0.1),
-        colorShift: randBool()
+        colorShift: randBool(),
       };
     case EFFECT_TYPES.CRT:
       return {
@@ -2247,36 +2321,36 @@ const randomizeParamsForType = type => {
         brightness: rand(1.0, 1.15),
         rgbOffset: rand(0.001, 0.003),
         flickerIntensity: rand(0.01, 0.03),
-        staticNoise: rand(0.01, 0.05)
+        staticNoise: rand(0.01, 0.05),
       };
     case EFFECT_TYPES.DUOTONE: {
       const duotonePairs = [
-        { shadow: '#1a1a2e', highlight: '#eeeeff' },
-        { shadow: '#2d132c', highlight: '#ffeef4' },
-        { shadow: '#1a2639', highlight: '#f0f4ff' },
-        { shadow: '#2c3e50', highlight: '#ecf0f1' },
-        { shadow: '#1e3d59', highlight: '#f5f0e1' },
-        { shadow: '#3d1a1a', highlight: '#fff5f5' }
+        { shadow: "#1a1a2e", highlight: "#eeeeff" },
+        { shadow: "#2d132c", highlight: "#ffeef4" },
+        { shadow: "#1a2639", highlight: "#f0f4ff" },
+        { shadow: "#2c3e50", highlight: "#ecf0f1" },
+        { shadow: "#1e3d59", highlight: "#f5f0e1" },
+        { shadow: "#3d1a1a", highlight: "#fff5f5" },
       ];
       const pair = randChoice(duotonePairs);
       return {
         shadowColor: pair.shadow,
         highlightColor: pair.highlight,
         contrast: rand(0.95, 1.05),
-        intensity: rand(0.6, 0.8)
+        intensity: rand(0.6, 0.8),
       };
     }
     case EFFECT_TYPES.KUWAHARA:
       return {
         radius: randInt(2, 4),
-        sharpness: rand(0.4, 0.7)
+        sharpness: rand(0.4, 0.7),
       };
     case EFFECT_TYPES.BARREL:
       return {
         amount: rand(0.05, 0.2),
         centerX: 0.5,
         centerY: 0.5,
-        zoom: rand(0.95, 1.05)
+        zoom: rand(0.95, 1.05),
       };
     case EFFECT_TYPES.RIPPLE:
       return {
@@ -2285,7 +2359,7 @@ const randomizeParamsForType = type => {
         speed: rand(0.5, 1.5),
         centerX: 0.5,
         centerY: 0.5,
-        damping: rand(0.3, 0.6)
+        damping: rand(0.3, 0.6),
       };
     case EFFECT_TYPES.LIGHT_LEAK:
       return {
@@ -2296,7 +2370,7 @@ const randomizeParamsForType = type => {
         size: rand(0.4, 0.6),
         intensity: rand(0.2, 0.4),
         softness: rand(0.5, 0.8),
-        blendMode: 'screen'
+        blendMode: "screen",
       };
     case EFFECT_TYPES.BLOOM:
       return {
@@ -2304,7 +2378,7 @@ const randomizeParamsForType = type => {
         intensity: rand(0.3, 0.6),
         threshold: rand(0.5, 0.7),
         softThreshold: rand(0.4, 0.6),
-        blendMode: 'screen'
+        blendMode: "screen",
       };
     case EFFECT_TYPES.RADIAL_BLUR:
       return {
@@ -2312,15 +2386,15 @@ const randomizeParamsForType = type => {
         centerX: 0.5,
         centerY: 0.5,
         samples: randInt(16, 32),
-        zoom: false
+        zoom: false,
       };
     case EFFECT_TYPES.MOSAIC:
       return {
         cellSize: randInt(15, 30),
         irregularity: rand(0.3, 0.6),
         edgeThickness: rand(0.01, 0.03),
-        edgeColor: '#000000',
-        colorVariation: rand(0.05, 0.1)
+        edgeColor: "#000000",
+        colorVariation: rand(0.05, 0.1),
       };
     case EFFECT_TYPES.TILT_SHIFT:
       return {
@@ -2328,7 +2402,7 @@ const randomizeParamsForType = type => {
         focusWidth: rand(0.2, 0.4),
         blurRadius: randInt(4, 8),
         angle: 0,
-        gradientSmooth: rand(0.3, 0.5)
+        gradientSmooth: rand(0.3, 0.5),
       };
     case EFFECT_TYPES.EXPOSURE:
       return {
@@ -2336,12 +2410,12 @@ const randomizeParamsForType = type => {
         highlights: rand(-0.15, 0.15),
         shadows: rand(-0.15, 0.15),
         blacks: rand(-0.1, 0.1),
-        whites: rand(-0.1, 0.1)
+        whites: rand(-0.1, 0.1),
       };
     case EFFECT_TYPES.VIBRANCE:
       return {
         vibrance: rand(-0.15, 0.3),
-        saturation: rand(-0.15, 0.15)
+        saturation: rand(-0.15, 0.15),
       };
     default:
       return {};
@@ -2372,35 +2446,35 @@ export default function Controls({
   onCopyToClipboard,
   onExport,
   onReset,
-  toolSelector
+  toolSelector,
 }) {
   const fileInputRef = useRef(null);
-  const [urlInput, setUrlInput] = useState('');
+  const [urlInput, setUrlInput] = useState("");
   const [isLoadingUrl, setIsLoadingUrl] = useState(false);
 
   const handleFileSelect = useCallback(
-    e => {
+    (e) => {
       const file = e.target.files?.[0];
       if (file) {
-        onMediaLoad(file, 'file');
+        onMediaLoad(file, "file");
       }
-      e.target.value = '';
+      e.target.value = "";
     },
-    [onMediaLoad]
+    [onMediaLoad],
   );
 
   const handleLoadUrl = useCallback(async () => {
     if (!urlInput.trim()) return;
     setIsLoadingUrl(true);
     try {
-      await onMediaLoad(urlInput.trim(), 'url');
-      setUrlInput('');
+      await onMediaLoad(urlInput.trim(), "url");
+      setUrlInput("");
     } catch (err) {
       toaster.create({
-        title: 'Failed to load media',
+        title: "Failed to load media",
         description: err.message,
-        type: 'error',
-        duration: 3000
+        type: "error",
+        duration: 3000,
       });
     }
     setIsLoadingUrl(false);
@@ -2409,53 +2483,53 @@ export default function Controls({
   const [expandedEffectId, setExpandedEffectId] = useState(null);
 
   const handleAddEffect = useCallback(
-    type => {
+    (type) => {
       const effect = createEffect(type);
       onEffectsChange([effect, ...effects]);
       setExpandedEffectId(effect.id);
     },
-    [effects, onEffectsChange]
+    [effects, onEffectsChange],
   );
 
   const handleUpdateEffect = useCallback(
     (id, updates) => {
-      onEffectsChange(effects.map(e => (e.id === id ? { ...e, ...updates } : e)));
+      onEffectsChange(effects.map((e) => (e.id === id ? { ...e, ...updates } : e)));
     },
-    [effects, onEffectsChange]
+    [effects, onEffectsChange],
   );
 
   const handleDeleteEffect = useCallback(
-    id => {
-      onEffectsChange(effects.filter(e => e.id !== id));
+    (id) => {
+      onEffectsChange(effects.filter((e) => e.id !== id));
     },
-    [effects, onEffectsChange]
+    [effects, onEffectsChange],
   );
 
   const handleToggleEffect = useCallback(
-    id => {
-      onEffectsChange(effects.map(e => (e.id === id ? { ...e, enabled: !e.enabled } : e)));
+    (id) => {
+      onEffectsChange(effects.map((e) => (e.id === id ? { ...e, enabled: !e.enabled } : e)));
     },
-    [effects, onEffectsChange]
+    [effects, onEffectsChange],
   );
 
   const handleDuplicateEffect = useCallback(
-    effect => {
+    (effect) => {
       const duplicated = {
         ...effect,
         id: `${effect.type}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        params: { ...effect.params }
+        params: { ...effect.params },
       };
-      const index = effects.findIndex(e => e.id === effect.id);
+      const index = effects.findIndex((e) => e.id === effect.id);
       const newEffects = [...effects];
       newEffects.splice(index + 1, 0, duplicated);
       onEffectsChange(newEffects);
     },
-    [effects, onEffectsChange]
+    [effects, onEffectsChange],
   );
 
   const [draggedId, setDraggedId] = useState(null);
 
-  const handleDragStart = useCallback(id => {
+  const handleDragStart = useCallback((id) => {
     setDraggedId(id);
   }, []);
 
@@ -2468,8 +2542,8 @@ export default function Controls({
       e.preventDefault();
       if (!draggedId || draggedId === targetId) return;
 
-      const dragIndex = effects.findIndex(eff => eff.id === draggedId);
-      const dropIndex = effects.findIndex(eff => eff.id === targetId);
+      const dragIndex = effects.findIndex((eff) => eff.id === draggedId);
+      const dropIndex = effects.findIndex((eff) => eff.id === targetId);
 
       if (dragIndex === -1 || dropIndex === -1 || dragIndex === dropIndex) return;
 
@@ -2479,28 +2553,28 @@ export default function Controls({
 
       onEffectsChange(newEffects);
     },
-    [draggedId, effects, onEffectsChange]
+    [draggedId, effects, onEffectsChange],
   );
 
   const handleLoadPreset = useCallback(
-    presetKey => {
+    (presetKey) => {
       const preset = PRESETS[presetKey];
       if (!preset) return;
 
-      const newEffects = preset.effects.map(e => ({
+      const newEffects = preset.effects.map((e) => ({
         ...createEffect(e.type),
         enabled: e.enabled,
-        params: { ...e.params }
+        params: { ...e.params },
       }));
 
       onEffectsChange(newEffects);
       toaster.create({
         title: `Applied "${preset.name}" preset`,
-        type: 'success',
-        duration: 2000
+        type: "success",
+        duration: 2000,
       });
     },
-    [onEffectsChange]
+    [onEffectsChange],
   );
 
   const handleRandomizeEffects = useCallback(() => {
@@ -2531,7 +2605,7 @@ export default function Controls({
       EFFECT_TYPES.RADIAL_BLUR,
       EFFECT_TYPES.TILT_SHIFT,
       EFFECT_TYPES.EXPOSURE,
-      EFFECT_TYPES.VIBRANCE
+      EFFECT_TYPES.VIBRANCE,
     ];
 
     // Generate 2-8 random effects, weighted towards fewer effects
@@ -2552,11 +2626,11 @@ export default function Controls({
     const shuffled = [...availableTypes].sort(() => Math.random() - 0.5);
     const selectedTypes = shuffled.slice(0, numEffects);
 
-    const randomEffects = selectedTypes.map(type => {
+    const randomEffects = selectedTypes.map((type) => {
       const effect = createEffect(type);
       return {
         ...effect,
-        params: { ...effect.params, ...randomizeParamsForType(type) }
+        params: { ...effect.params, ...randomizeParamsForType(type) },
       };
     });
 
@@ -2564,8 +2638,8 @@ export default function Controls({
     onSeedChange(Math.floor(Math.random() * 100000));
     toaster.create({
       title: `Applied ${numEffects} random effects`,
-      type: 'success',
-      duration: 2000
+      type: "success",
+      duration: 2000,
     });
   }, [onEffectsChange, onSeedChange]);
 
@@ -2573,23 +2647,23 @@ export default function Controls({
   const handleRandomizeParams = useCallback(() => {
     if (effects.length === 0) {
       toaster.create({
-        title: 'No effects to randomize',
-        type: 'info',
-        duration: 2000
+        title: "No effects to randomize",
+        type: "info",
+        duration: 2000,
       });
       return;
     }
 
-    const updatedEffects = effects.map(effect => ({
+    const updatedEffects = effects.map((effect) => ({
       ...effect,
-      params: { ...effect.params, ...randomizeParamsForType(effect.type) }
+      params: { ...effect.params, ...randomizeParamsForType(effect.type) },
     }));
 
     onEffectsChange(updatedEffects);
     toaster.create({
       title: `Randomized ${effects.length} effect parameters`,
-      type: 'success',
-      duration: 2000
+      type: "success",
+      duration: 2000,
     });
   }, [effects, onEffectsChange]);
 
@@ -2597,69 +2671,69 @@ export default function Controls({
 
   const handleExportPreset = useCallback(() => {
     const preset = {
-      name: 'Custom Preset',
+      name: "Custom Preset",
       version: 1,
-      effects: effects.map(e => ({
+      effects: effects.map((e) => ({
         type: e.type,
         enabled: e.enabled,
-        params: e.params
-      }))
+        params: e.params,
+      })),
     };
 
-    const blob = new Blob([JSON.stringify(preset, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(preset, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'texture-lab-preset.json';
+    a.download = "texture-lab-preset.json";
     a.click();
     URL.revokeObjectURL(url);
 
     toaster.create({
-      title: 'Preset saved',
-      type: 'success',
-      duration: 2000
+      title: "Preset saved",
+      type: "success",
+      duration: 2000,
     });
   }, [effects]);
 
   const handleImportPreset = useCallback(
-    e => {
+    (e) => {
       const file = e.target.files?.[0];
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = event => {
+      reader.onload = (event) => {
         try {
           const preset = JSON.parse(event.target.result);
 
           if (!preset.effects || !Array.isArray(preset.effects)) {
-            throw new Error('Invalid preset format');
+            throw new Error("Invalid preset format");
           }
 
-          const newEffects = preset.effects.map(e => ({
+          const newEffects = preset.effects.map((e) => ({
             ...createEffect(e.type),
             enabled: e.enabled !== false,
-            params: { ...createEffect(e.type).params, ...e.params }
+            params: { ...createEffect(e.type).params, ...e.params },
           }));
 
           onEffectsChange(newEffects);
           toaster.create({
-            title: `Loaded "${preset.name || 'Custom'}" preset`,
-            type: 'success',
-            duration: 2000
+            title: `Loaded "${preset.name || "Custom"}" preset`,
+            type: "success",
+            duration: 2000,
           });
         } catch (err) {
           toaster.create({
-            title: 'Failed to load preset',
-            description: 'Invalid preset file format',
-            type: 'error',
-            duration: 3000
+            title: "Failed to load preset",
+            description: "Invalid preset file format",
+            type: "error",
+            duration: 3000,
           });
         }
       };
       reader.readAsText(file);
-      e.target.value = '';
+      e.target.value = "";
     },
-    [onEffectsChange]
+    [onEffectsChange],
   );
 
   return (
@@ -2675,8 +2749,8 @@ export default function Controls({
         overflowY="auto"
         minH={0}
         css={{
-          '&::-webkit-scrollbar': { display: 'none' },
-          scrollbarWidth: 'none'
+          "&::-webkit-scrollbar": { display: "none" },
+          scrollbarWidth: "none",
         }}
       >
         <SectionHeader>Media Source</SectionHeader>
@@ -2686,7 +2760,7 @@ export default function Controls({
             ref={fileInputRef}
             onChange={handleFileSelect}
             accept="image/png,image/jpeg,image/webp,video/mp4,video/webm,video/ogg"
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
           <Flex gap={2}>
             <ToggleButton
@@ -2701,20 +2775,22 @@ export default function Controls({
               label="Sample"
               onClick={() =>
                 onMediaLoad(
-                  'https://images.unsplash.com/photo-1597848212624-a19eb35e2651?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-                  'url'
+                  "https://images.unsplash.com/photo-1597848212624-a19eb35e2651?q=80&w=1335&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "url",
                 )
               }
               flex={1}
               disabled={isExporting}
             />
-            {(image || video) && !isExporting && <ToggleButton icon={X} label="Clear" onClick={onClearMedia} />}
+            {(image || video) && !isExporting && (
+              <ToggleButton icon={X} label="Clear" onClick={onClearMedia} />
+            )}
           </Flex>
           <Flex gap={2}>
             <Input
               placeholder="Paste image or video URL..."
               value={urlInput}
-              onChange={e => setUrlInput(e.target.value)}
+              onChange={(e) => setUrlInput(e.target.value)}
               size="sm"
               bg="var(--bg-elevated)"
               border="1px solid var(--border-primary)"
@@ -2722,9 +2798,9 @@ export default function Controls({
               color="var(--text-primary)"
               fontSize="12px"
               flex={1}
-              _placeholder={{ color: 'var(--color-accent)' }}
-              _focus={{ borderColor: 'var(--color-primary)', boxShadow: 'none' }}
-              onKeyDown={e => e.key === 'Enter' && !isExporting && handleLoadUrl()}
+              _placeholder={{ color: "var(--color-accent)" }}
+              _focus={{ borderColor: "var(--color-primary)", boxShadow: "none" }}
+              onKeyDown={(e) => e.key === "Enter" && !isExporting && handleLoadUrl()}
               disabled={isExporting}
             />
             <ToggleButton
@@ -2735,7 +2811,12 @@ export default function Controls({
           </Flex>
 
           {corsError && (
-            <Box bg="rgba(255,100,100,0.1)" p={2} borderRadius="6px" border="1px solid rgba(255,100,100,0.3)">
+            <Box
+              bg="rgba(255,100,100,0.1)"
+              p={2}
+              borderRadius="6px"
+              border="1px solid rgba(255,100,100,0.3)"
+            >
               <Text fontSize="11px" color="#ff6b6b">
                 ⚠️ CORS blocked. Export/copy disabled. Re-upload the media locally to enable.
               </Text>
@@ -2757,14 +2838,18 @@ export default function Controls({
           </Text>
           <Flex gap={1}>
             <ToggleButton icon={Dices} onClick={handleRandomizeEffects} title="Randomize effects" />
-            <ToggleButton icon={Shuffle} onClick={handleRandomizeParams} title="Randomize parameters" />
+            <ToggleButton
+              icon={Shuffle}
+              onClick={handleRandomizeParams}
+              title="Randomize parameters"
+            />
           </Flex>
         </Flex>
 
         <AddEffectPanel onAddEffect={handleAddEffect} />
 
         <Flex direction="column" gap={2} mb={4}>
-          {effects.map(effect => (
+          {effects.map((effect) => (
             <EffectCard
               key={effect.id}
               effect={effect}
@@ -2775,9 +2860,11 @@ export default function Controls({
               isDragging={draggedId === effect.id}
               onDragStart={() => handleDragStart(effect.id)}
               onDragEnd={handleDragEnd}
-              onDragOver={e => handleDragOver(e, effect.id)}
+              onDragOver={(e) => handleDragOver(e, effect.id)}
               isExpanded={expandedEffectId === effect.id}
-              onExpandToggle={() => setExpandedEffectId(expandedEffectId === effect.id ? null : effect.id)}
+              onExpandToggle={() =>
+                setExpandedEffectId(expandedEffectId === effect.id ? null : effect.id)
+              }
             />
           ))}
 
@@ -2809,11 +2896,13 @@ export default function Controls({
             border="1px solid var(--border-primary)"
             borderRadius="var(--radius-sm)"
             py={2}
-            cursor={effects.length === 0 ? 'not-allowed' : 'pointer'}
+            cursor={effects.length === 0 ? "not-allowed" : "pointer"}
             opacity={effects.length === 0 ? 0.5 : 1}
             onClick={effects.length === 0 ? undefined : handleExportPreset}
             transition="all 0.15s"
-            _hover={{ borderColor: effects.length === 0 ? 'var(--border-primary)' : 'var(--color-primary)' }}
+            _hover={{
+              borderColor: effects.length === 0 ? "var(--border-primary)" : "var(--color-primary)",
+            }}
           >
             <Icon as={FileDown} boxSize={3.5} color="var(--text-muted)" />
             <Text fontSize="12px" color="var(--text-muted)" fontWeight={500}>
@@ -2833,7 +2922,7 @@ export default function Controls({
             cursor="pointer"
             onClick={() => presetInputRef.current?.click()}
             transition="all 0.15s"
-            _hover={{ borderColor: 'var(--color-primary)' }}
+            _hover={{ borderColor: "var(--color-primary)" }}
           >
             <Icon as={FileUp} boxSize={3.5} color="var(--text-muted)" />
             <Text fontSize="12px" color="var(--text-muted)" fontWeight={500}>
@@ -2845,7 +2934,7 @@ export default function Controls({
             ref={presetInputRef}
             onChange={handleImportPreset}
             accept="application/json"
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
         </Flex>
 
@@ -2862,7 +2951,7 @@ export default function Controls({
         />
 
         <Flex gap={2} mb={2} mt={3}>
-          {mediaType !== 'video' && (
+          {mediaType !== "video" && (
             <Flex
               as="button"
               flex={1}
@@ -2873,11 +2962,13 @@ export default function Controls({
               border="1px solid var(--border-primary)"
               borderRadius="var(--radius-sm)"
               py={2}
-              cursor={corsError || !image ? 'not-allowed' : 'pointer'}
+              cursor={corsError || !image ? "not-allowed" : "pointer"}
               opacity={corsError || !image ? 0.5 : 1}
               onClick={corsError || !image ? undefined : onCopyToClipboard}
               transition="all 0.15s"
-              _hover={{ borderColor: corsError || !image ? 'var(--border-primary)' : 'var(--color-primary)' }}
+              _hover={{
+                borderColor: corsError || !image ? "var(--border-primary)" : "var(--color-primary)",
+              }}
             >
               <Icon as={Copy} boxSize={4} color="var(--text-muted)" />
               <Text fontSize="12px" color="var(--text-muted)" fontWeight={500}>
@@ -2895,11 +2986,11 @@ export default function Controls({
             border="1px solid var(--border-primary)"
             borderRadius="var(--radius-sm)"
             py={2}
-            cursor={isExporting ? 'not-allowed' : 'pointer'}
+            cursor={isExporting ? "not-allowed" : "pointer"}
             opacity={isExporting ? 0.5 : 1}
             onClick={isExporting ? undefined : onReset}
             transition="all 0.15s"
-            _hover={{ borderColor: isExporting ? 'var(--border-primary)' : 'var(--color-primary)' }}
+            _hover={{ borderColor: isExporting ? "var(--border-primary)" : "var(--color-primary)" }}
           >
             <Icon as={RotateCcw} boxSize={4} color="var(--text-muted)" />
             <Text fontSize="12px" color="var(--text-muted)" fontWeight={500}>
@@ -2916,11 +3007,13 @@ export default function Controls({
           borderRadius="var(--radius-sm)"
           h="44px"
           w="100%"
-          cursor={corsError || (!image && !video) || isExporting ? 'not-allowed' : 'pointer'}
+          cursor={corsError || (!image && !video) || isExporting ? "not-allowed" : "pointer"}
           opacity={corsError || (!image && !video) ? 0.5 : 1}
           onClick={corsError || (!image && !video) || isExporting ? undefined : onExport}
           transition="all 0.15s"
-          _hover={{ bg: corsError || (!image && !video) || isExporting ? 'var(--color-primary)' : '#b96dfa' }}
+          _hover={{
+            bg: corsError || (!image && !video) || isExporting ? "var(--color-primary)" : "#b96dfa",
+          }}
           overflow="hidden"
           position="relative"
         >
@@ -2929,7 +3022,7 @@ export default function Controls({
             left="0"
             top="0"
             bottom="0"
-            width={isExporting ? `${Math.max(0, Math.min(100, exportProgress))}%` : '0%'}
+            width={isExporting ? `${Math.max(0, Math.min(100, exportProgress))}%` : "0%"}
             bg="rgba(255, 255, 255, 0.2)"
             transition="width 0.15s linear"
             pointerEvents="none"
@@ -2937,7 +3030,7 @@ export default function Controls({
           />
           <Flex
             align="center"
-            justify={isExporting ? 'space-between' : 'center'}
+            justify={isExporting ? "space-between" : "center"}
             w="100%"
             px={4}
             position="relative"
@@ -2949,11 +3042,11 @@ export default function Controls({
                 css={
                   isExporting
                     ? {
-                        animation: 'spin 1s linear infinite',
-                        '@keyframes spin': {
-                          '0%': { transform: 'rotate(0deg)' },
-                          '100%': { transform: 'rotate(360deg)' }
-                        }
+                        animation: "spin 1s linear infinite",
+                        "@keyframes spin": {
+                          "0%": { transform: "rotate(0deg)" },
+                          "100%": { transform: "rotate(360deg)" },
+                        },
                       }
                     : undefined
                 }
@@ -2962,9 +3055,9 @@ export default function Controls({
               </Box>
               <Text fontSize="14px" color="#fff" fontWeight={600}>
                 {isExporting
-                  ? exportStatus || 'Exporting...'
-                  : mediaType === 'video'
-                    ? 'Export Video'
+                  ? exportStatus || "Exporting..."
+                  : mediaType === "video"
+                    ? "Export Video"
                     : `Export ${exportFormat.toUpperCase()}`}
               </Text>
             </Flex>
@@ -2975,7 +3068,7 @@ export default function Controls({
               fontWeight={600}
               fontFamily="mono"
               opacity={isExporting ? 1 : 0}
-              w={isExporting ? 'auto' : 0}
+              w={isExporting ? "auto" : 0}
               overflow="hidden"
               transition="opacity 0.15s"
             >

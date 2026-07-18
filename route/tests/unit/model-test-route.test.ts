@@ -86,7 +86,7 @@ test("model test route requires management auth when login protection is enabled
   const invalidToken = await route.POST(
     makeRequest({
       authorization: "Bearer sk-invalid",
-    })
+    }),
   );
 
   const unauthenticatedBody = (await unauthenticated.json()) as any;
@@ -136,7 +136,7 @@ test("model test route ignores forwarded hosts and works in strict API-key mode"
         "x-forwarded-proto": "https",
       },
       body: { providerId: "openai", modelId: "gpt-4o-2024-11-20" },
-    })
+    }),
   );
   const body = (await response.json()) as any;
 

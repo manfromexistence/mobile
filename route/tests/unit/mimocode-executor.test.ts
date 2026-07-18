@@ -53,7 +53,7 @@ describe("MimocodeExecutor", () => {
     const result = (executor as any).transformRequest(
       "mcode/mimo-auto",
       { model: "mcode/mimo-auto", messages: [{ role: "user", content: "hi" }] },
-      false
+      false,
     );
     assert.strictEqual(result.model, "mimo-auto");
   });
@@ -62,7 +62,7 @@ describe("MimocodeExecutor", () => {
     const result = (executor as any).transformRequest(
       "mimo-auto",
       { model: "mimo-auto", messages: [{ role: "user", content: "hi" }] },
-      false
+      false,
     );
     assert.strictEqual(result.model, "mimo-auto");
   });
@@ -74,14 +74,14 @@ describe("MimocodeExecutor", () => {
     const result = (executor as any).transformRequest(
       "mcode/mimo-auto",
       { model: "mcode/mimo-auto", messages: [{ role: "user", content: "write a haiku" }] },
-      true
+      true,
     );
     assert.ok(Array.isArray(result.messages));
     const first = result.messages[0];
     assert.strictEqual(first.role, "system");
     assert.ok(
       typeof first.content === "string" && first.content.includes(MIMO_SYSTEM_MARKER),
-      "first message must be a system message containing the MiMoCode marker"
+      "first message must be a system message containing the MiMoCode marker",
     );
   });
 
@@ -89,7 +89,7 @@ describe("MimocodeExecutor", () => {
     const result = (executor as any).transformRequest(
       "mcode/mimo-auto",
       { model: "mcode/mimo-auto", messages: [{ role: "user", content: "write a haiku" }] },
-      true
+      true,
     );
     const userMsg = result.messages.find((m: any) => m.role === "user");
     assert.ok(userMsg);
@@ -106,7 +106,7 @@ describe("MimocodeExecutor", () => {
           { role: "user", content: "hi" },
         ],
       },
-      true
+      true,
     );
     const systemContents = result.messages
       .filter((m: any) => m.role === "system")
@@ -126,13 +126,13 @@ describe("MimocodeExecutor", () => {
           { role: "user", content: "hi" },
         ],
       },
-      true
+      true,
     );
     const count = result.messages.filter(
       (m: any) =>
         m.role === "system" &&
         typeof m.content === "string" &&
-        m.content.includes(MIMO_SYSTEM_MARKER)
+        m.content.includes(MIMO_SYSTEM_MARKER),
     ).length;
     assert.strictEqual(count, 1, "marker should not be duplicated");
   });
@@ -141,7 +141,7 @@ describe("MimocodeExecutor", () => {
     const result = (executor as any).transformRequest(
       "mcode/mimo-auto",
       { model: "mcode/mimo-auto", prompt: "legacy" },
-      true
+      true,
     );
     assert.strictEqual((result as any).messages, undefined);
     assert.strictEqual((result as any).model, "mimo-auto");
@@ -320,13 +320,13 @@ describe("mimocode per-account proxy", () => {
     assert.strictEqual(
       map.has("nonexistent-fingerprint"),
       true,
-      "proxyUrlMap stores all valid proxy configs"
+      "proxyUrlMap stores all valid proxy configs",
     );
     assert.strictEqual(map.get("nonexistent-fingerprint"), "socks5://s5.example.com:1080");
     assert.strictEqual(
       map.has(existingFp),
       false,
-      "existing fingerprint without proxy is not in map"
+      "existing fingerprint without proxy is not in map",
     );
   });
 
@@ -513,7 +513,7 @@ describe("mimocode 400 classification (#2101/#4976)", () => {
   function makeJwt(): string {
     const header = Buffer.from(JSON.stringify({ alg: "none" })).toString("base64url");
     const payload = Buffer.from(
-      JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600 })
+      JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 3600 }),
     ).toString("base64url");
     return `${header}.${payload}.sig`;
   }
@@ -546,7 +546,7 @@ describe("mimocode 400 classification (#2101/#4976)", () => {
             JSON.stringify({
               error: { message: "Detected high-frequency non-compliant requests from you." },
             }),
-            { status: 400 }
+            { status: 400 },
           );
         }
         return new Response(JSON.stringify({ id: "ok", choices: [] }), { status: 200 });
@@ -587,7 +587,7 @@ describe("mimocode 400 classification (#2101/#4976)", () => {
         chatCalls++;
         return new Response(
           JSON.stringify({ error: { message: "Invalid field: foo is not a recognized field" } }),
-          { status: 400 }
+          { status: 400 },
         );
       }
       throw new Error(`unexpected fetch: ${urlStr}`);
@@ -614,11 +614,11 @@ describe("mimocode 400 classification (#2101/#4976)", () => {
       assert.notStrictEqual(
         parsed.error.code,
         "NO_ACCOUNTS",
-        "must surface the real upstream 400, not a generic exhaustion error"
+        "must surface the real upstream 400, not a generic exhaustion error",
       );
       assert.ok(
         parsed.error.message.toLowerCase().includes("invalid field"),
-        `expected the real upstream diagnostic in the error message, got: ${parsed.error.message}`
+        `expected the real upstream diagnostic in the error message, got: ${parsed.error.message}`,
       );
     } finally {
       globalThis.fetch = originalFetch;

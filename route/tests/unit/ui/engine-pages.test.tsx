@@ -96,8 +96,9 @@ function setupFetchMock(engines: Array<{ id: string; name: string }>) {
 describe("HeadroomPage", () => {
   it("mounts without throwing and renders the engine name", async () => {
     setupFetchMock([{ id: "headroom", name: "Headroom" }]);
-    const { default: HeadroomPage } =
-      await import("../../../src/app/(dashboard)/dashboard/context/headroom/page");
+    const { default: HeadroomPage } = await import(
+      "../../../src/app/(dashboard)/dashboard/context/headroom/page"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -116,8 +117,9 @@ describe("HeadroomPage", () => {
 describe("SessionDedupPage", () => {
   it("mounts without throwing and renders the engine name", async () => {
     setupFetchMock([{ id: "session-dedup", name: "Session Dedup" }]);
-    const { default: SessionDedupPage } =
-      await import("../../../src/app/(dashboard)/dashboard/context/session-dedup/page");
+    const { default: SessionDedupPage } = await import(
+      "../../../src/app/(dashboard)/dashboard/context/session-dedup/page"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -136,8 +138,9 @@ describe("SessionDedupPage", () => {
 describe("CcrPage", () => {
   it("mounts without throwing and renders the engine name", async () => {
     setupFetchMock([{ id: "ccr", name: "CCR" }]);
-    const { default: CcrPage } =
-      await import("../../../src/app/(dashboard)/dashboard/context/ccr/page");
+    const { default: CcrPage } = await import(
+      "../../../src/app/(dashboard)/dashboard/context/ccr/page"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -156,8 +159,9 @@ describe("CcrPage", () => {
 describe("LlmlinguaPage", () => {
   it("mounts without throwing and renders the engine name", async () => {
     setupFetchMock([{ id: "llmlingua", name: "LLMLingua" }]);
-    const { default: LlmlinguaPage } =
-      await import("../../../src/app/(dashboard)/dashboard/context/llmlingua/page");
+    const { default: LlmlinguaPage } = await import(
+      "../../../src/app/(dashboard)/dashboard/context/llmlingua/page"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -176,8 +180,9 @@ describe("LlmlinguaPage", () => {
 describe("LitePage", () => {
   it("mounts without throwing and renders the engine name", async () => {
     setupFetchMock([{ id: "lite", name: "Lite" }]);
-    const { default: LitePage } =
-      await import("../../../src/app/(dashboard)/dashboard/context/lite/page");
+    const { default: LitePage } = await import(
+      "../../../src/app/(dashboard)/dashboard/context/lite/page"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -196,8 +201,9 @@ describe("LitePage", () => {
 describe("AggressivePage", () => {
   it("mounts without throwing and renders the engine name", async () => {
     setupFetchMock([{ id: "aggressive", name: "Aggressive" }]);
-    const { default: AggressivePage } =
-      await import("../../../src/app/(dashboard)/dashboard/context/aggressive/page");
+    const { default: AggressivePage } = await import(
+      "../../../src/app/(dashboard)/dashboard/context/aggressive/page"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -216,8 +222,9 @@ describe("AggressivePage", () => {
 describe("UltraPage", () => {
   it("mounts without throwing and renders the engine name", async () => {
     setupFetchMock([{ id: "ultra", name: "Ultra" }]);
-    const { default: UltraPage } =
-      await import("../../../src/app/(dashboard)/dashboard/context/ultra/page");
+    const { default: UltraPage } = await import(
+      "../../../src/app/(dashboard)/dashboard/context/ultra/page"
+    );
 
     let container!: HTMLElement;
     await act(async () => {

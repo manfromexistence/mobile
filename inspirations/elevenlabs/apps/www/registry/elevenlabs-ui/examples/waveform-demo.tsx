@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { ScrollingWaveform } from "@/registry/elevenlabs-ui/ui/waveform"
+import { ScrollingWaveform } from "@/registry/elevenlabs-ui/ui/waveform";
 
 export default function WaveformDemo() {
   return (
@@ -20,5 +20,5 @@ export default function WaveformDemo() {
         barColor="gray"
       />
     </div>
-  )
+  );
 }

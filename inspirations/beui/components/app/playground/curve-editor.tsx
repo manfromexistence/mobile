@@ -9,16 +9,14 @@ const CORE = SIZE - PAD * 2;
 const Y_MIN = -0.4;
 const Y_MAX = 1.4;
 
-const clamp = (n: number, lo: number, hi: number) =>
-  Math.min(hi, Math.max(lo, n));
+const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
 
 // domain (0..1 x, Y_MIN..Y_MAX y) -> svg pixels
 const px = (x: number) => PAD + x * CORE;
 const py = (y: number) => PAD + (Y_MAX - y) * (CORE / (Y_MAX - Y_MIN));
 // svg pixels -> domain
 const toX = (p: number) => clamp((p - PAD) / CORE, 0, 1);
-const toY = (p: number) =>
-  clamp(Y_MAX - (p - PAD) / (CORE / (Y_MAX - Y_MIN)), Y_MIN, Y_MAX);
+const toY = (p: number) => clamp(Y_MAX - (p - PAD) / (CORE / (Y_MAX - Y_MIN)), Y_MIN, Y_MAX);
 
 export function CurveEditor({
   value,
@@ -61,11 +59,34 @@ export function CurveEditor({
       aria-label="Easing curve editor"
     >
       {/* baseline 0 and 1 guides */}
-      <line x1={PAD} y1={py(0)} x2={SIZE - PAD} y2={py(0)} className="stroke-border" strokeWidth={1} strokeDasharray="3 3" />
-      <line x1={PAD} y1={py(1)} x2={SIZE - PAD} y2={py(1)} className="stroke-border" strokeWidth={1} strokeDasharray="3 3" />
+      <line
+        x1={PAD}
+        y1={py(0)}
+        x2={SIZE - PAD}
+        y2={py(0)}
+        className="stroke-border"
+        strokeWidth={1}
+        strokeDasharray="3 3"
+      />
+      <line
+        x1={PAD}
+        y1={py(1)}
+        x2={SIZE - PAD}
+        y2={py(1)}
+        className="stroke-border"
+        strokeWidth={1}
+        strokeDasharray="3 3"
+      />
 
       {/* handle leashes */}
-      <line x1={start} y1={startY} x2={c1x} y2={c1y} className="stroke-primary/40" strokeWidth={1.5} />
+      <line
+        x1={start}
+        y1={startY}
+        x2={c1x}
+        y2={c1y}
+        className="stroke-primary/40"
+        strokeWidth={1.5}
+      />
       <line x1={end} y1={endY} x2={c2x} y2={c2y} className="stroke-primary/40" strokeWidth={1.5} />
 
       {/* the curve */}

@@ -1,34 +1,30 @@
-"use client"
+"use client";
 
-import { createContext, type ReactNode, useContext } from "react"
+import { createContext, type ReactNode, useContext } from "react";
 
 interface EyesContextType {
-  play: (name: string) => void
-  current: string | null
+  play: (name: string) => void;
+  current: string | null;
 }
 
-const EyesContext = createContext<EyesContextType | null>(null)
+const EyesContext = createContext<EyesContextType | null>(null);
 
 export function EyesProvider({
   children,
   play,
   current,
 }: {
-  children: ReactNode
-  play: (name: string) => void
-  current: string | null
+  children: ReactNode;
+  play: (name: string) => void;
+  current: string | null;
 }) {
-  return (
-    <EyesContext.Provider value={{ play, current }}>
-      {children}
-    </EyesContext.Provider>
-  )
+  return <EyesContext.Provider value={{ play, current }}>{children}</EyesContext.Provider>;
 }
 
 export function useEyesControl() {
-  const context = useContext(EyesContext)
+  const context = useContext(EyesContext);
   if (!context) {
-    throw new Error("useEyesControl must be used within EyesProvider")
+    throw new Error("useEyesControl must be used within EyesProvider");
   }
-  return context
+  return context;
 }

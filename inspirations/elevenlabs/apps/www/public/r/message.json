@@ -1,12 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "message",
-  "dependencies": [
-    "class-variance-authority"
-  ],
-  "registryDependencies": [
-    "avatar"
-  ],
+  "dependencies": ["class-variance-authority"],
+  "registryDependencies": ["avatar"],
   "files": [
     {
       "path": "components/ui/message.tsx",

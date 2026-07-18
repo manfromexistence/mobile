@@ -3,11 +3,7 @@
   "name": "dialog",
   "title": "Dialog (Base UI)",
   "description": "Animated modal dialog with spring-based scale and opacity transitions. Base UI flavor.",
-  "dependencies": [
-    "framer-motion",
-    "@base-ui/react",
-    "lucide-react"
-  ],
+  "dependencies": ["framer-motion", "@base-ui/react", "lucide-react"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

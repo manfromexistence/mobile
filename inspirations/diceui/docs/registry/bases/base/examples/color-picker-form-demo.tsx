@@ -75,9 +75,7 @@ export default function ColorPickerFormDemo() {
       >
         <div className="flex flex-col gap-1">
           <h3 className="font-semibold text-lg">Theme Colors</h3>
-          <p className="text-muted-foreground text-sm">
-            Configure your application's color scheme
-          </p>
+          <p className="text-muted-foreground text-sm">Configure your application's color scheme</p>
         </div>
         <FormField
           control={form.control}
@@ -86,18 +84,11 @@ export default function ColorPickerFormDemo() {
             <FormItem>
               <FormLabel>Primary Color</FormLabel>
               <FormControl>
-                <ColorPicker
-                  value={field.value}
-                  onValueChange={field.onChange}
-                  defaultFormat="hex"
-                >
+                <ColorPicker value={field.value} onValueChange={field.onChange} defaultFormat="hex">
                   <div className="flex items-center gap-3">
                     <ColorPickerTrigger
                       render={
-                        <Button
-                          variant="outline"
-                          className="flex items-center gap-2 px-3"
-                        >
+                        <Button variant="outline" className="flex items-center gap-2 px-3">
                           <ColorPickerSwatch className="size-4" />
                           {field.value}
                         </Button>
@@ -131,18 +122,11 @@ export default function ColorPickerFormDemo() {
             <FormItem>
               <FormLabel>Secondary Color</FormLabel>
               <FormControl>
-                <ColorPicker
-                  value={field.value}
-                  onValueChange={field.onChange}
-                  defaultFormat="hex"
-                >
+                <ColorPicker value={field.value} onValueChange={field.onChange} defaultFormat="hex">
                   <div className="flex items-center gap-3">
                     <ColorPickerTrigger
                       render={
-                        <Button
-                          variant="outline"
-                          className="flex items-center gap-2 px-3"
-                        >
+                        <Button variant="outline" className="flex items-center gap-2 px-3">
                           <ColorPickerSwatch className="size-4" />
                           {field.value}
                         </Button>
@@ -176,18 +160,11 @@ export default function ColorPickerFormDemo() {
             <FormItem>
               <FormLabel>Accent Color</FormLabel>
               <FormControl>
-                <ColorPicker
-                  value={field.value}
-                  onValueChange={field.onChange}
-                  defaultFormat="hex"
-                >
+                <ColorPicker value={field.value} onValueChange={field.onChange} defaultFormat="hex">
                   <div className="flex items-center gap-3">
                     <ColorPickerTrigger
                       render={
-                        <Button
-                          variant="outline"
-                          className="flex items-center gap-2 px-3"
-                        >
+                        <Button variant="outline" className="flex items-center gap-2 px-3">
                           <ColorPickerSwatch className="size-4" />
                           {field.value}
                         </Button>

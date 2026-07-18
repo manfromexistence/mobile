@@ -124,7 +124,7 @@ test("startTproxyCapture rejects an invalid config and reverts nothing", async (
   };
   await assert.rejects(
     () => startTproxyCapture({ ...CFG, dport: 0 }, { deps: deps as never }),
-    /dport/i
+    /dport/i,
   );
   assert.deepEqual(order, [], "invalid config must not apply any rules");
 });
@@ -141,7 +141,7 @@ test("handleTproxyConnection in decrypt mode hands the socket to terminate (no r
     createUpstreamSocket: () => fakeSocket("", 0),
   };
   handleTproxyConnection(client as never, CFG, deps as never, undefined, (_c, dest) =>
-    terminated.push(dest)
+    terminated.push(dest),
   );
   assert.deepEqual(terminated, [{ ip: "140.82.112.3", port: 443 }]);
   assert.equal(dialed, false, "decrypt path must not raw-dial via connectMarked");
@@ -157,7 +157,7 @@ test("handleTproxyConnection decrypt mode still drops a connection with no desti
     undefined,
     () => {
       terminateCalled = true;
-    }
+    },
   );
   assert.equal(client.destroyed, true);
   assert.equal(terminateCalled, false, "no destination → never reach the engine");
@@ -194,8 +194,8 @@ test("startTproxyCapture decrypt mode installs the CA, wires the engine, stop() 
   };
   let installedPem: string | undefined;
   const certStore = {
-    createSNICallback:
-      () => (_name: string, cb: (e: Error | null, ctx?: unknown) => void) => cb(null, {}),
+    createSNICallback: () => (_name: string, cb: (e: Error | null, ctx?: unknown) => void) =>
+      cb(null, {}),
     getCaCertPem: async () => "CA-CERT-PEM",
   };
   const handle = await startTproxyCapture(CFG, {
@@ -211,7 +211,11 @@ test("startTproxyCapture decrypt mode installs the CA, wires the engine, stop() 
       },
     },
   });
-  assert.equal(installedPem, "CA-CERT-PEM", "the dynamic CA cert PEM is installed in the trust store");
+  assert.equal(
+    installedPem,
+    "CA-CERT-PEM",
+    "the dynamic CA cert PEM is installed in the trust store",
+  );
   assert.deepEqual(order, ["apply", "installCa", "createFd", "listen"]);
   await handle.stop();
   assert.deepEqual(order, [
@@ -259,7 +263,7 @@ test("startTproxyCapture decrypt mode reverts + uninstalls the CA when the liste
           },
         },
       }),
-    /CAP_NET_ADMIN/
+    /CAP_NET_ADMIN/,
   );
   assert.deepEqual(order, ["apply", "installCa", "uninstallCa", "revert"]);
 });

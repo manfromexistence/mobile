@@ -22,17 +22,13 @@ function areObjectsEqual(obj1: any, obj2: any): boolean {
   if (keys1.length !== keys2.length) return false;
 
   for (const key of keys1) {
-    if (!keys2.includes(key) || !areObjectsEqual(obj1[key], obj2[key]))
-      return false;
+    if (!keys2.includes(key) || !areObjectsEqual(obj1[key], obj2[key])) return false;
   }
   return true;
 }
 
 // Function to compare two ModelRecord instances
-export function areModelRecordsEqual(
-  record1: ModelRecord,
-  record2: ModelRecord,
-): boolean {
+export function areModelRecordsEqual(record1: ModelRecord, record2: ModelRecord): boolean {
   // Compare primitive fields
   if (
     record1.model !== record2.model ||
@@ -68,10 +64,7 @@ export function areModelRecordsEqual(
   return true;
 }
 
-export function areAppConfigsEqual(
-  config1?: AppConfig,
-  config2?: AppConfig,
-): boolean {
+export function areAppConfigsEqual(config1?: AppConfig, config2?: AppConfig): boolean {
   if (config1 === undefined || config2 === undefined) {
     return config1 === config2;
   }
@@ -103,18 +96,13 @@ export function areAppConfigsEqual(
   return true;
 }
 
-export function areChatOptionsEqual(
-  options1?: ChatOptions,
-  options2?: ChatOptions,
-): boolean {
+export function areChatOptionsEqual(options1?: ChatOptions, options2?: ChatOptions): boolean {
   if (options1 === undefined || options2 === undefined) {
     return options1 === options2;
   }
   // Compare each property of ChatOptions (which are Partial<ChatConfig>)
-  if (!areArraysEqual(options1.tokenizer_files, options2.tokenizer_files))
-    return false;
-  if (!areObjectsEqual(options1.conv_config, options2.conv_config))
-    return false;
+  if (!areArraysEqual(options1.tokenizer_files, options2.tokenizer_files)) return false;
+  if (!areObjectsEqual(options1.conv_config, options2.conv_config)) return false;
   if (options1.conv_template !== options2.conv_template) return false;
   if (options1.repetition_penalty !== options2.repetition_penalty) return false;
   if (options1.frequency_penalty !== options2.frequency_penalty) return false;

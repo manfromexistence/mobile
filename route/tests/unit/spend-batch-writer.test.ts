@@ -10,8 +10,9 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const core = await import("../../src/lib/db/core.ts");
 const costRules = await import("../../src/domain/costRules.ts");
 const domainState = await import("../../src/lib/db/domainState.ts");
-const { SpendBatchWriter, flushSpendBatchWriter, resetSpendBatchWriterForTests } =
-  await import("../../src/lib/spend/batchWriter.ts");
+const { SpendBatchWriter, flushSpendBatchWriter, resetSpendBatchWriterForTests } = await import(
+  "../../src/lib/spend/batchWriter.ts"
+);
 
 function quietLogger() {
   return {

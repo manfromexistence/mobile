@@ -23,9 +23,7 @@ import { Switch } from "@/registry/bases/base/ui/switch";
 export default function ActionBarPositionDemo() {
   const [open, setOpen] = React.useState(false);
   const [side, setSide] = React.useState<"top" | "bottom">("bottom");
-  const [align, setAlign] = React.useState<"start" | "center" | "end">(
-    "center",
-  );
+  const [align, setAlign] = React.useState<"start" | "center" | "end">("center");
 
   return (
     <div className="flex flex-col gap-4">
@@ -37,10 +35,7 @@ export default function ActionBarPositionDemo() {
         <Label htmlFor="side" className="w-14">
           Side
         </Label>
-        <Select
-          value={side}
-          onValueChange={(value) => setSide(value as "top" | "bottom")}
-        >
+        <Select value={side} onValueChange={(value) => setSide(value as "top" | "bottom")}>
           <SelectTrigger id="side" className="w-28">
             <SelectValue />
           </SelectTrigger>
@@ -56,9 +51,7 @@ export default function ActionBarPositionDemo() {
         </Label>
         <Select
           value={align}
-          onValueChange={(value) =>
-            setAlign(value as "start" | "center" | "end")
-          }
+          onValueChange={(value) => setAlign(value as "start" | "center" | "end")}
         >
           <SelectTrigger id="align" className="w-28">
             <SelectValue />

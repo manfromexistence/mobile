@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  Direction as DirectionPrimitive,
-  Slot as SlotPrimitive,
-} from "radix-ui";
+import { Direction as DirectionPrimitive, Slot as SlotPrimitive } from "radix-ui";
 import * as React from "react";
 import { useComposedRefs } from "@/lib/compose-refs";
 import { cn } from "@/lib/utils";
@@ -55,10 +52,7 @@ function useStoreContext(consumerName: string) {
   return context;
 }
 
-function useStore<T>(
-  selector: (state: StoreState) => T,
-  ogStore?: Store | null,
-): T {
+function useStore<T>(selector: (state: StoreState) => T, ogStore?: Store | null): T {
   const contextStore = React.useContext(StoreContext);
 
   const store = ogStore ?? contextStore;
@@ -67,10 +61,7 @@ function useStore<T>(
     throw new Error(`\`useStore\` must be used within \`${ROOT_NAME}\``);
   }
 
-  const getSnapshot = React.useCallback(
-    () => selector(store.getState()),
-    [store, selector],
-  );
+  const getSnapshot = React.useCallback(() => selector(store.getState()), [store, selector]);
 
   return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
@@ -171,9 +162,7 @@ function Editable(props: EditableProps) {
 
   const previousValueRef = React.useRef(defaultValue);
 
-  const [formTrigger, setFormTrigger] = React.useState<RootElement | null>(
-    null,
-  );
+  const [formTrigger, setFormTrigger] = React.useState<RootElement | null>(null);
   const composedRef = useComposedRefs(ref, (node) => setFormTrigger(node));
   const isFormControl = formTrigger ? !!formTrigger.closest("form") : true;
 
@@ -701,13 +690,7 @@ interface EditableToolbarProps extends React.ComponentProps<"div"> {
 }
 
 function EditableToolbar(props: EditableToolbarProps) {
-  const {
-    asChild,
-    className,
-    orientation = "horizontal",
-    ref,
-    ...toolbarProps
-  } = props;
+  const { asChild, className, orientation = "horizontal", ref, ...toolbarProps } = props;
   const context = useEditableContext(TOOLBAR_NAME);
 
   const ToolbarPrimitive = asChild ? SlotPrimitive.Slot : "div";
@@ -721,11 +704,7 @@ function EditableToolbar(props: EditableToolbarProps) {
       dir={context.dir}
       {...toolbarProps}
       ref={ref}
-      className={cn(
-        "flex items-center gap-2",
-        orientation === "vertical" && "flex-col",
-        className,
-      )}
+      className={cn("flex items-center gap-2", orientation === "vertical" && "flex-col", className)}
     />
   );
 }

@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
-import { AgentState, Orb } from "@/registry/elevenlabs-ui/ui/orb"
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
+import { AgentState, Orb } from "@/registry/elevenlabs-ui/ui/orb";
 
 let ORBS: [string, string][] = [
   ["#CADCFC", "#A0B9D1"],
   ["#F6E7D8", "#E0CFC2"],
   ["#E5E7EB", "#9CA3AF"],
-]
+];
 
 export default function OrbDemo({ small = false }: { small?: boolean }) {
-  const [agent, setAgent] = useState<AgentState>(null)
+  const [agent, setAgent] = useState<AgentState>(null);
 
-  ORBS = small ? [ORBS[0]] : ORBS
+  ORBS = small ? [ORBS[0]] : ORBS;
 
   return (
     <div className="bg-card w-full rounded-lg border p-6">
@@ -34,11 +34,7 @@ export default function OrbDemo({ small = false }: { small?: boolean }) {
             >
               <div className="bg-muted relative h-32 w-32 rounded-full p-1 shadow-[inset_0_2px_8px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_2px_8px_rgba(0,0,0,0.5)]">
                 <div className="bg-background h-full w-full overflow-hidden rounded-full shadow-[inset_0_0_12px_rgba(0,0,0,0.05)] dark:shadow-[inset_0_0_12px_rgba(0,0,0,0.3)]">
-                  <Orb
-                    colors={colors}
-                    seed={(index + 1) * 1000}
-                    agentState={agent}
-                  />
+                  <Orb colors={colors} seed={(index + 1) * 1000} agentState={agent} />
                 </div>
               </div>
             </div>
@@ -73,5 +69,5 @@ export default function OrbDemo({ small = false }: { small?: boolean }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

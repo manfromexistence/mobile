@@ -1,14 +1,14 @@
-import { Volume2Icon } from "lucide-react"
-import type { JSX } from "react"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { Volume2Icon } from "lucide-react";
+import type { JSX } from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   LaravelIcon,
   NextJSIcon,
   NodeJSIcon,
   ReactIcon,
   TailwindCSSIcon,
-} from "@/registry/blocks/hero-01/components/hero-01-icons"
+} from "@/registry/blocks/hero-01/components/hero-01-icons";
 
 export function Hero01() {
   return (
@@ -141,21 +141,9 @@ export function Hero01() {
             </g>
 
             <g>
-              <path
-                d="M260 0.5V80"
-                stroke="currentColor"
-                vectorEffect="non-scaling-stroke"
-              />
-              <path
-                d="M339.5 80.5H210"
-                stroke="currentColor"
-                vectorEffect="non-scaling-stroke"
-              />
-              <path
-                d="M210 210V0.5"
-                stroke="currentColor"
-                vectorEffect="non-scaling-stroke"
-              />
+              <path d="M260 0.5V80" stroke="currentColor" vectorEffect="non-scaling-stroke" />
+              <path d="M339.5 80.5H210" stroke="currentColor" vectorEffect="non-scaling-stroke" />
+              <path d="M210 210V0.5" stroke="currentColor" vectorEffect="non-scaling-stroke" />
             </g>
 
             <g>
@@ -205,17 +193,12 @@ export function Hero01() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function MainContent({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        "flex flex-col justify-center overflow-hidden p-4 lg:p-8",
-        className
-      )}
-    >
+    <div className={cn("flex flex-col justify-center overflow-hidden p-4 lg:p-8", className)}>
       <h1 className="mb-4 font-heading text-[2.5rem]/none font-medium tracking-tight text-foreground sm:mb-6 sm:text-6xl md:text-5xl lg:text-6xl xl:text-7xl">
         Plan. Build. Ship.
       </h1>
@@ -228,10 +211,9 @@ function MainContent({ className }: { className?: string }) {
         >
           <Volume2Icon className="size-[1em]" />
         </button>{" "}
-        provides{" "}
-        <strong className="font-normal text-foreground">professional,</strong>{" "}
-        <strong className="font-normal text-foreground">high-quality</strong>{" "}
-        software design and development services based on your ideas.
+        provides <strong className="font-normal text-foreground">professional,</strong>{" "}
+        <strong className="font-normal text-foreground">high-quality</strong> software design and
+        development services based on your ideas.
       </p>
 
       <div className="mb-6 grid grid-cols-2 items-center gap-4 sm:mb-8 sm:flex">
@@ -256,7 +238,7 @@ function MainContent({ className }: { className?: string }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function TechItem({ icon, title }: { icon: JSX.Element; title: string }) {
@@ -265,5 +247,5 @@ function TechItem({ icon, title }: { icon: JSX.Element; title: string }) {
       {icon}
       <span className="text-sm font-medium whitespace-nowrap">{title}</span>
     </div>
-  )
+  );
 }

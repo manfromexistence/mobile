@@ -1,34 +1,25 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { AnimatePresence, motion } from "motion/react"
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 
-import {
-  BarVisualizer,
-  type AgentState,
-} from "@/registry/elevenlabs-ui/ui/bar-visualizer"
-import { Card, CardContent } from "@/registry/elevenlabs-ui/ui/card"
-import { ShimmeringText } from "@/registry/elevenlabs-ui/ui/shimmering-text"
+import { BarVisualizer, type AgentState } from "@/registry/elevenlabs-ui/ui/bar-visualizer";
+import { Card, CardContent } from "@/registry/elevenlabs-ui/ui/card";
+import { ShimmeringText } from "@/registry/elevenlabs-ui/ui/shimmering-text";
 
-const states: AgentState[] = [
-  "connecting",
-  "initializing",
-  "listening",
-  "thinking",
-  "speaking",
-]
+const states: AgentState[] = ["connecting", "initializing", "listening", "thinking", "speaking"];
 
 export function CardsBarVisualizer() {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const barState = states[currentIndex]
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const barState = states[currentIndex];
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % states.length)
-    }, 2500)
+      setCurrentIndex((prev) => (prev + 1) % states.length);
+    }, 2500);
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
   return (
     <Card className="overflow-hidden p-0">
       <CardContent className="flex flex-col p-1">
@@ -58,5 +49,5 @@ export function CardsBarVisualizer() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

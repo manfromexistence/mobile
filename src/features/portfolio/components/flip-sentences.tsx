@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { useInView, usePageInView } from "motion/react"
-import { useRef } from "react"
+import { useInView, usePageInView } from "motion/react";
+import { useRef } from "react";
 
-import { TextFlip } from "@/registry/components/text-flip"
+import { TextFlip } from "@/registry/components/text-flip";
 
 export function FlipSentences({
   children,
   ...props
 }: Omit<React.ComponentProps<"div">, "children" | "ref"> & {
-  children: string[]
+  children: string[];
 }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const isPageInView = usePageInView()
-  const isInView = useInView(ref)
+  const ref = useRef<HTMLDivElement>(null);
+  const isPageInView = usePageInView();
+  const isInView = useInView(ref);
 
   return (
     <div ref={ref} {...props}>
@@ -25,5 +25,5 @@ export function FlipSentences({
         {children}
       </TextFlip>
     </div>
-  )
+  );
 }

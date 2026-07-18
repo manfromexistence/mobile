@@ -1,21 +1,12 @@
 import * as tvmjs from "@mlc-ai/web-runtime";
-import {
-  AppConfig,
-  ChatConfig,
-  ModelRecord,
-  prebuiltAppConfig,
-  getCacheBackend,
-} from "./config";
+import { AppConfig, ChatConfig, ModelRecord, prebuiltAppConfig, getCacheBackend } from "./config";
 import { cleanModelUrl } from "./support";
 import { ModelNotFoundError, UnsupportedTokenizerFilesError } from "./error";
 import { Tokenizer } from "@mlc-ai/web-tokenizers";
 import { ModelIntegrity, verifyIntegrity } from "./integrity";
 
 type CacheScope = "webllm/model" | "webllm/config" | "webllm/wasm";
-type CacheOptions = Pick<
-  tvmjs.TensorCacheAccessOptions,
-  "cacheType" | "opfsAccessMode"
->;
+type CacheOptions = Pick<tvmjs.TensorCacheAccessOptions, "cacheType" | "opfsAccessMode">;
 
 export function getCacheOptions(appConfig: AppConfig): CacheOptions {
   const options: CacheOptions = {
@@ -57,34 +48,23 @@ async function maybeVerifyTokenizerIntegrity(
 }
 
 function findModelRecord(modelId: string, appConfig?: AppConfig): ModelRecord {
-  const matchedItem = appConfig?.model_list.find(
-    (item) => item.model_id == modelId,
-  );
+  const matchedItem = appConfig?.model_list.find((item) => item.model_id == modelId);
   if (matchedItem !== undefined) {
     return matchedItem;
   }
   throw new ModelNotFoundError(modelId);
 }
 
-export async function hasModelInCache(
-  modelId: string,
-  appConfig?: AppConfig,
-): Promise<boolean> {
+export async function hasModelInCache(modelId: string, appConfig?: AppConfig): Promise<boolean> {
   if (appConfig === undefined) {
     appConfig = prebuiltAppConfig;
   }
   const modelRecord = findModelRecord(modelId, appConfig);
   const modelUrl = cleanModelUrl(modelRecord.model);
-  return tvmjs.hasTensorInCache(
-    modelUrl,
-    getTensorCacheAccessOptions("webllm/model", appConfig),
-  );
+  return tvmjs.hasTensorInCache(modelUrl, getTensorCacheAccessOptions("webllm/model", appConfig));
 }
 
-export async function deleteModelAllInfoInCache(
-  modelId: string,
-  appConfig?: AppConfig,
-) {
+export async function deleteModelAllInfoInCache(modelId: string, appConfig?: AppConfig) {
   // function to delete model all information in cache
   if (appConfig === undefined) {
     appConfig = prebuiltAppConfig;
@@ -97,10 +77,7 @@ export async function deleteModelAllInfoInCache(
   await deleteChatConfigInCache(modelId, appConfig);
 }
 
-export async function deleteModelInCache(
-  modelId: string,
-  appConfig?: AppConfig,
-) {
+export async function deleteModelInCache(modelId: string, appConfig?: AppConfig) {
   // delete the model NDArray In Cache
   if (appConfig === undefined) {
     appConfig = prebuiltAppConfig;
@@ -108,18 +85,12 @@ export async function deleteModelInCache(
   const modelRecord = findModelRecord(modelId, appConfig);
   const modelUrl = cleanModelUrl(modelRecord.model);
   const modelCache = createScopedArtifactCache("webllm/model", appConfig);
-  await tvmjs.deleteTensorCache(
-    modelUrl,
-    getTensorCacheAccessOptions("webllm/model", appConfig),
-  );
+  await tvmjs.deleteTensorCache(modelUrl, getTensorCacheAccessOptions("webllm/model", appConfig));
   await modelCache.deleteInCache(new URL("tokenizer.model", modelUrl).href);
   await modelCache.deleteInCache(new URL("tokenizer.json", modelUrl).href);
 }
 
-export async function deleteChatConfigInCache(
-  modelId: string,
-  appConfig?: AppConfig,
-) {
+export async function deleteChatConfigInCache(modelId: string, appConfig?: AppConfig) {
   // delete the chat configuration in Cache
   if (appConfig === undefined) {
     appConfig = prebuiltAppConfig;
@@ -131,10 +102,7 @@ export async function deleteChatConfigInCache(
   await configCache.deleteInCache(configUrl);
 }
 
-export async function deleteModelWasmInCache(
-  modelId: string,
-  appConfig?: AppConfig,
-) {
+export async function deleteModelWasmInCache(modelId: string, appConfig?: AppConfig) {
   // delete the wasm in Cache
   if (appConfig === undefined) {
     appConfig = prebuiltAppConfig;
@@ -165,12 +133,7 @@ export async function asyncLoadTokenizer(
   if (config.tokenizer_files.includes("tokenizer.json")) {
     const url = new URL("tokenizer.json", baseUrl).href;
     const model = await modelCache.fetchWithCache(url, "arraybuffer");
-    await maybeVerifyTokenizerIntegrity(
-      model,
-      "tokenizer.json",
-      url,
-      integrity,
-    );
+    await maybeVerifyTokenizerIntegrity(model, "tokenizer.json", url, integrity);
     return Tokenizer.fromJSON(model);
   } else if (config.tokenizer_files.includes("tokenizer.model")) {
     logger(
@@ -182,12 +145,7 @@ export async function asyncLoadTokenizer(
     );
     const url = new URL("tokenizer.model", baseUrl).href;
     const model = await modelCache.fetchWithCache(url, "arraybuffer");
-    await maybeVerifyTokenizerIntegrity(
-      model,
-      "tokenizer.model",
-      url,
-      integrity,
-    );
+    await maybeVerifyTokenizerIntegrity(model, "tokenizer.model", url, integrity);
     return Tokenizer.fromSentencePiece(model);
   }
   throw new UnsupportedTokenizerFilesError(config.tokenizer_files);

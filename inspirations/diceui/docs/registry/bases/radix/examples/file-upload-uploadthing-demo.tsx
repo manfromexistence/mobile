@@ -40,9 +40,7 @@ export default function FileUploadUploadThingDemo() {
               <code>
                 {JSON.stringify(
                   res.map((file) =>
-                    file.name.length > 25
-                      ? `${file.name.slice(0, 25)}...`
-                      : file.name,
+                    file.name.length > 25 ? `${file.name.slice(0, 25)}...` : file.name,
                   ),
                   null,
                   2,
@@ -56,16 +54,12 @@ export default function FileUploadUploadThingDemo() {
 
         if (error instanceof UploadThingError) {
           const errorMessage =
-            error.data && "error" in error.data
-              ? error.data.error
-              : "Upload failed";
+            error.data && "error" in error.data ? error.data.error : "Upload failed";
           toast.error(errorMessage);
           return;
         }
 
-        toast.error(
-          error instanceof Error ? error.message : "An unknown error occurred",
-        );
+        toast.error(error instanceof Error ? error.message : "An unknown error occurred");
       } finally {
         setIsUploading(false);
       }

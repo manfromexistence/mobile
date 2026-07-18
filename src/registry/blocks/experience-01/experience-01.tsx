@@ -1,7 +1,7 @@
-import { CodeXmlIcon, LightbulbIcon } from "lucide-react"
+import { CodeXmlIcon, LightbulbIcon } from "lucide-react";
 
-import type { ExperienceItemType } from "@/registry/transformed/components/work-experience"
-import { WorkExperience } from "@/registry/transformed/components/work-experience"
+import type { ExperienceItemType } from "@/registry/transformed/components/work-experience";
+import { WorkExperience } from "@/registry/transformed/components/work-experience";
 
 export function Experience01() {
   return (
@@ -19,7 +19,7 @@ export function Experience01() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 const EXPERIENCE: ExperienceItemType[] = [
@@ -39,13 +39,7 @@ const EXPERIENCE: ExperienceItemType[] = [
         icon: <CodeXmlIcon />,
         description:
           "- Work on the registry and React component library.\n- Design and build Pro application components and blocks, from Figma to production-ready React.",
-        skills: [
-          "TypeScript",
-          "Next.js",
-          "Tailwind CSS",
-          "shadcn/registry",
-          "Figma",
-        ],
+        skills: ["TypeScript", "Next.js", "Tailwind CSS", "shadcn/registry", "Figma"],
         isExpanded: true,
       },
     ],
@@ -97,4 +91,4 @@ const EXPERIENCE: ExperienceItemType[] = [
     ],
     isCurrentEmployer: true,
   },
-]
+];

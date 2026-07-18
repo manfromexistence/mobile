@@ -33,10 +33,10 @@ test("execFileText: error message does NOT contain a doubled 'Command failed:' p
       const msg = err.message;
       assert.ok(
         !msg.includes("Command failed: Command failed:"),
-        `Error message contains doubled prefix: ${JSON.stringify(msg)}`
+        `Error message contains doubled prefix: ${JSON.stringify(msg)}`,
       );
       return true;
-    }
+    },
   );
 });
 
@@ -48,9 +48,9 @@ test("execFileText: error message for a non-zero exit still contains 'Command fa
       // The message should still contain the Node-generated prefix once.
       assert.ok(
         err.message.includes("Command failed:"),
-        `Error message should still contain "Command failed:": ${JSON.stringify(err.message)}`
+        `Error message should still contain "Command failed:": ${JSON.stringify(err.message)}`,
       );
       return true;
-    }
+    },
   );
 });

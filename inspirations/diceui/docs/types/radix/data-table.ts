@@ -2,22 +2,13 @@ import type { Column, Table, TableOptions } from "@tanstack/react-table";
 import type * as React from "react";
 import type { DropdownMenuTrigger } from "@/registry/bases/radix/ui/dropdown-menu";
 import type { EmptyProps } from "@/types";
-import type {
-  ExtendedColumnFilter,
-  Option,
-  QueryKeys,
-} from "@/types/data-table";
+import type { ExtendedColumnFilter, Option, QueryKeys } from "@/types/data-table";
 
 export interface UseDataTableProps<TData>
   extends Required<Pick<TableOptions<TData>, "pageCount">>,
     Pick<
       TableOptions<TData>,
-      | "data"
-      | "columns"
-      | "getRowId"
-      | "defaultColumn"
-      | "initialState"
-      | "state"
+      "data" | "columns" | "getRowId" | "defaultColumn" | "initialState" | "state"
     > {
   /**
    * Custom query keys for URL state management.
@@ -112,8 +103,7 @@ export interface DataTableToolbarProps<TData> extends EmptyProps<"div"> {
   table: Table<TData>;
 }
 
-export interface DataTableAdvancedToolbarProps<TData>
-  extends EmptyProps<"div"> {
+export interface DataTableAdvancedToolbarProps<TData> extends EmptyProps<"div"> {
   /** The table instance. */
   table: Table<TData>;
 }
@@ -205,8 +195,7 @@ export interface DataTableFilterListProps<TData> {
   shallow?: boolean;
 }
 
-export interface DataTableFilterMenuProps<TData>
-  extends DataTableFilterListProps<TData> {}
+export interface DataTableFilterMenuProps<TData> extends DataTableFilterListProps<TData> {}
 
 export interface DataTableSortListProps<TData> {
   /** The table instance. */

@@ -1,8 +1,4 @@
-import {
-  ConsentBanner,
-  ConsentDialog,
-  ConsentManagerProvider,
-} from "@c15t/nextjs"
+import { ConsentBanner, ConsentDialog, ConsentManagerProvider } from "@c15t/nextjs";
 
 export function ConsentManager({ children }: { children: React.ReactNode }) {
   return (
@@ -19,5 +15,5 @@ export function ConsentManager({ children }: { children: React.ReactNode }) {
 
       {children}
     </ConsentManagerProvider>
-  )
+  );
 }

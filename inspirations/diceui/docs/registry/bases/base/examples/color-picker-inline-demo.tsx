@@ -16,12 +16,7 @@ export default function ColorPickerInlineDemo() {
   const [color, setColor] = React.useState("#f59e0b");
 
   return (
-    <ColorPicker
-      value={color}
-      onValueChange={setColor}
-      inline
-      defaultFormat="hex"
-    >
+    <ColorPicker value={color} onValueChange={setColor} inline defaultFormat="hex">
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <ColorPickerSwatch className="size-8" />

@@ -1,35 +1,35 @@
-export const loadImageFromFile = file => {
+export const loadImageFromFile = (file) => {
   return new Promise((resolve, reject) => {
     if (!file.type.match(/^image\/(png|jpeg|webp)$/)) {
-      reject(new Error('Unsupported file type. Please use PNG, JPG, or WebP.'));
+      reject(new Error("Unsupported file type. Please use PNG, JPG, or WebP."));
       return;
     }
 
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = (e) => {
       const img = new Image();
       img.onload = () => resolve({ image: img, url: e.target.result, corsError: false });
-      img.onerror = () => reject(new Error('Failed to load image'));
+      img.onerror = () => reject(new Error("Failed to load image"));
       img.src = e.target.result;
     };
-    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.onerror = () => reject(new Error("Failed to read file"));
     reader.readAsDataURL(file);
   });
 };
 
-export const loadVideoFromFile = file => {
+export const loadVideoFromFile = (file) => {
   return new Promise((resolve, reject) => {
-    if (!file.type.startsWith('video/')) {
-      reject(new Error('Not a video file. Please upload a video.'));
+    if (!file.type.startsWith("video/")) {
+      reject(new Error("Not a video file. Please upload a video."));
       return;
     }
 
     const url = URL.createObjectURL(file);
-    const video = document.createElement('video');
-    video.crossOrigin = 'anonymous';
+    const video = document.createElement("video");
+    video.crossOrigin = "anonymous";
     video.muted = true;
     video.playsInline = true;
-    video.preload = 'auto';
+    video.preload = "auto";
     video.loop = true;
 
     video.onloadedmetadata = () => {
@@ -43,26 +43,26 @@ export const loadVideoFromFile = file => {
         width: video.videoWidth,
         height: video.videoHeight,
         duration: video.duration,
-        corsError: false
+        corsError: false,
       });
     };
 
     video.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(new Error('Failed to load video. Format may not be supported by your browser.'));
+      reject(new Error("Failed to load video. Format may not be supported by your browser."));
     };
 
     video.src = url;
   });
 };
 
-export const loadVideoFromURL = url => {
+export const loadVideoFromURL = (url) => {
   return new Promise((resolve, reject) => {
-    const video = document.createElement('video');
-    video.crossOrigin = 'anonymous';
+    const video = document.createElement("video");
+    video.crossOrigin = "anonymous";
     video.muted = true;
     video.playsInline = true;
-    video.preload = 'auto';
+    video.preload = "auto";
     video.loop = true;
 
     video.onloadedmetadata = () => {
@@ -71,10 +71,10 @@ export const loadVideoFromURL = url => {
 
     video.onseeked = () => {
       try {
-        const testCanvas = document.createElement('canvas');
+        const testCanvas = document.createElement("canvas");
         testCanvas.width = 1;
         testCanvas.height = 1;
-        const ctx = testCanvas.getContext('2d');
+        const ctx = testCanvas.getContext("2d");
         ctx.drawImage(video, 0, 0, 1, 1);
         ctx.getImageData(0, 0, 1, 1);
         resolve({
@@ -83,7 +83,7 @@ export const loadVideoFromURL = url => {
           width: video.videoWidth,
           height: video.videoHeight,
           duration: video.duration,
-          corsError: false
+          corsError: false,
         });
       } catch {
         resolve({
@@ -92,30 +92,30 @@ export const loadVideoFromURL = url => {
           width: video.videoWidth,
           height: video.videoHeight,
           duration: video.duration,
-          corsError: true
+          corsError: true,
         });
       }
     };
 
     video.onerror = () => {
-      reject(new Error('Failed to load video. Check the URL and try again.'));
+      reject(new Error("Failed to load video. Check the URL and try again."));
     };
 
     video.src = url;
   });
 };
 
-export const loadImageFromURL = url => {
+export const loadImageFromURL = (url) => {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    img.crossOrigin = "anonymous";
 
     img.onload = () => {
       try {
-        const canvas = document.createElement('canvas');
+        const canvas = document.createElement("canvas");
         canvas.width = 1;
         canvas.height = 1;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, 1, 1);
         ctx.getImageData(0, 0, 1, 1);
         resolve({ image: img, url, corsError: false });
@@ -125,7 +125,7 @@ export const loadImageFromURL = url => {
     };
 
     img.onerror = () => {
-      reject(new Error('Failed to load image. Check the URL and try again.'));
+      reject(new Error("Failed to load image. Check the URL and try again."));
     };
 
     img.src = url;
@@ -134,67 +134,67 @@ export const loadImageFromURL = url => {
 
 export const SAMPLE_IMAGES = [
   {
-    name: 'Abstract Gradient',
-    url: 'https://images.unsplash.com/photo-1557683316-973673baf926?w=800&q=80'
+    name: "Abstract Gradient",
+    url: "https://images.unsplash.com/photo-1557683316-973673baf926?w=800&q=80",
   },
   {
-    name: 'Portrait',
-    url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=80'
+    name: "Portrait",
+    url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=80",
   },
   {
-    name: 'Landscape',
-    url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80'
-  }
+    name: "Landscape",
+    url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
+  },
 ];
 
 export const isClipboardImageSupported = () => {
-  return navigator.clipboard && typeof ClipboardItem !== 'undefined' && navigator.clipboard.write;
+  return navigator.clipboard && typeof ClipboardItem !== "undefined" && navigator.clipboard.write;
 };
 
-export const copyCanvasToClipboard = async canvas => {
+export const copyCanvasToClipboard = async (canvas) => {
   if (!isClipboardImageSupported()) {
-    throw new Error('Clipboard image copy not supported in this browser');
+    throw new Error("Clipboard image copy not supported in this browser");
   }
 
   return new Promise((resolve, reject) => {
-    canvas.toBlob(async blob => {
+    canvas.toBlob(async (blob) => {
       if (!blob) {
-        reject(new Error('Failed to create image blob'));
+        reject(new Error("Failed to create image blob"));
         return;
       }
 
       try {
-        const item = new ClipboardItem({ 'image/png': blob });
+        const item = new ClipboardItem({ "image/png": blob });
         await navigator.clipboard.write([item]);
         resolve();
       } catch (err) {
         reject(new Error(`Clipboard write failed: ${err.message}`));
       }
-    }, 'image/png');
+    }, "image/png");
   });
 };
 
-export const copyDataURLToClipboard = async canvas => {
-  const dataUrl = canvas.toDataURL('image/png');
+export const copyDataURLToClipboard = async (canvas) => {
+  const dataUrl = canvas.toDataURL("image/png");
   await navigator.clipboard.writeText(dataUrl);
 };
 
 export const exportCanvas = (canvas, options = {}) => {
-  const { format = 'png', quality = 0.92, filename = 'texture-lab-export' } = options;
+  const { format = "png", quality = 0.92, filename = "texture-lab-export" } = options;
 
   return new Promise((resolve, reject) => {
-    const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
-    const extension = format === 'jpg' ? 'jpg' : 'png';
+    const mimeType = format === "jpg" ? "image/jpeg" : "image/png";
+    const extension = format === "jpg" ? "jpg" : "png";
 
     canvas.toBlob(
-      blob => {
+      (blob) => {
         if (!blob) {
-          reject(new Error('Failed to create image blob'));
+          reject(new Error("Failed to create image blob"));
           return;
         }
 
         const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
         link.download = `${filename}.${extension}`;
         document.body.appendChild(link);
@@ -204,7 +204,7 @@ export const exportCanvas = (canvas, options = {}) => {
         resolve();
       },
       mimeType,
-      format === 'jpg' ? quality : undefined
+      format === "jpg" ? quality : undefined,
     );
   });
 };
@@ -213,13 +213,13 @@ export const createScaledCanvas = (sourceCanvas, scale, maxDimension = 8192) => 
   const targetWidth = Math.min(sourceCanvas.width * scale, maxDimension);
   const targetHeight = Math.min(sourceCanvas.height * scale, maxDimension);
 
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = targetWidth;
   canvas.height = targetHeight;
 
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = 'high';
+  ctx.imageSmoothingQuality = "high";
   ctx.drawImage(sourceCanvas, 0, 0, targetWidth, targetHeight);
 
   return canvas;
@@ -227,7 +227,7 @@ export const createScaledCanvas = (sourceCanvas, scale, maxDimension = 8192) => 
 
 export const estimateFileSize = (width, height, format, quality = 0.92) => {
   const pixels = width * height;
-  const bytesPerPixel = format === 'png' ? 3 : 0.5 + quality * 2;
+  const bytesPerPixel = format === "png" ? 3 : 0.5 + quality * 2;
   const bytes = pixels * bytesPerPixel;
 
   if (bytes < 1024) return `${bytes} B`;
@@ -236,20 +236,20 @@ export const estimateFileSize = (width, height, format, quality = 0.92) => {
 };
 
 export const generateProceduralTexture = (type, size = 256) => {
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = size;
   canvas.height = size;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   const imageData = ctx.createImageData(size, size);
   const data = imageData.data;
 
-  const seededRandom = seed => {
+  const seededRandom = (seed) => {
     const x = Math.sin(seed) * 10000;
     return x - Math.floor(x);
   };
 
   switch (type) {
-    case 'paper': {
+    case "paper": {
       for (let i = 0; i < data.length; i += 4) {
         const px = (i / 4) % size;
         const py = Math.floor(i / 4 / size);
@@ -262,7 +262,7 @@ export const generateProceduralTexture = (type, size = 256) => {
       break;
     }
 
-    case 'film-grain': {
+    case "film-grain": {
       for (let i = 0; i < data.length; i += 4) {
         const noise = seededRandom(i);
         const value = Math.round(noise * 255);
@@ -272,7 +272,7 @@ export const generateProceduralTexture = (type, size = 256) => {
       break;
     }
 
-    case 'canvas': {
+    case "canvas": {
       for (let i = 0; i < data.length; i += 4) {
         const px = (i / 4) % size;
         const py = Math.floor(i / 4 / size);
@@ -285,7 +285,7 @@ export const generateProceduralTexture = (type, size = 256) => {
       break;
     }
 
-    case 'dust': {
+    case "dust": {
       for (let i = 0; i < data.length; i += 4) {
         const noise = seededRandom(i);
         if (noise > 0.98) {
@@ -311,7 +311,7 @@ export const generateProceduralTexture = (type, size = 256) => {
 
   ctx.putImageData(imageData, 0, 0);
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const img = new Image();
     img.onload = () => resolve(img);
     img.src = canvas.toDataURL();

@@ -3,11 +3,7 @@
   "name": "tabs",
   "title": "Tabs",
   "description": "Segmented control tabs with sliding active indicator, proximity hover, and spring animations. Built on Radix UI Tabs.",
-  "dependencies": [
-    "framer-motion",
-    "@radix-ui/react-tabs",
-    "lucide-react"
-  ],
+  "dependencies": ["framer-motion", "@radix-ui/react-tabs", "lucide-react"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

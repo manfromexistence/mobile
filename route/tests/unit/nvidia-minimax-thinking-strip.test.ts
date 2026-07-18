@@ -43,7 +43,7 @@ test("stripUnsupportedParams: nvidia + other model KEEPS thinking (regression gu
   assert.deepEqual(
     body.thinking,
     { type: "adaptive" },
-    "unrelated NVIDIA-hosted models must not be affected"
+    "unrelated NVIDIA-hosted models must not be affected",
   );
 });
 
@@ -53,7 +53,7 @@ test("stripUnsupportedParams: non-nvidia provider KEEPS thinking for minimax-m2.
   assert.deepEqual(
     body.thinking,
     { type: "adaptive" },
-    "direct MiniMax API still supports the native thinking field"
+    "direct MiniMax API still supports the native thinking field",
   );
 });
 

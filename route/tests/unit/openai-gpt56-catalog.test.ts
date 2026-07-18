@@ -12,7 +12,7 @@ test("OpenAI API catalog exposes the public GPT-5.6 family and keeps GPT-5.4", (
 
   assert.deepEqual(
     models.slice(0, EXPECTED_MODELS.length).map((model) => model.id),
-    EXPECTED_MODELS
+    EXPECTED_MODELS,
   );
 
   for (const modelId of EXPECTED_MODELS) {
@@ -33,7 +33,7 @@ test("OpenAI API catalog exposes the public GPT-5.6 family and keeps GPT-5.4", (
   for (const retainedModelId of ["gpt-5.4", "gpt-5.4-pro", "gpt-5.4-mini", "gpt-5.4-nano"]) {
     assert.ok(
       models.some((model) => model.id === retainedModelId),
-      `${retainedModelId} must remain`
+      `${retainedModelId} must remain`,
     );
   }
 });

@@ -11,26 +11,15 @@ function Dialog({ ...props }: DialogPrimitive.Root.Props) {
 }
 
 function DialogTrigger({ render, ...props }: DialogPrimitive.Trigger.Props) {
-  return (
-    <DialogPrimitive.Trigger
-      data-slot="dialog-trigger"
-      render={render}
-      {...props}
-    />
-  );
+  return <DialogPrimitive.Trigger data-slot="dialog-trigger" render={render} {...props} />;
 }
 
 function DialogPortal({ ...props }: DialogPrimitive.Portal.Props) {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
 }
 
-function DialogClose({
-  render,
-  nativeButton,
-  ...props
-}: DialogPrimitive.Close.Props) {
-  const usesButton =
-    render && React.isValidElement(render) && render.type === Button;
+function DialogClose({ render, nativeButton, ...props }: DialogPrimitive.Close.Props) {
+  const usesButton = render && React.isValidElement(render) && render.type === Button;
 
   return (
     <DialogPrimitive.Close
@@ -42,10 +31,7 @@ function DialogClose({
   );
 }
 
-function DialogOverlay({
-  className,
-  ...props
-}: DialogPrimitive.Backdrop.Props) {
+function DialogOverlay({ className, ...props }: DialogPrimitive.Backdrop.Props) {
   return (
     <DialogPrimitive.Backdrop
       data-slot="dialog-overlay"
@@ -81,11 +67,7 @@ function DialogContent({
         {showCloseButton && (
           <DialogClose
             render={
-              <Button
-                variant="ghost"
-                className="absolute top-2 right-2"
-                size="icon-sm"
-              >
+              <Button variant="ghost" className="absolute top-2 right-2" size="icon-sm">
                 <XIcon />
                 <span className="sr-only">Close</span>
               </Button>
@@ -99,11 +81,7 @@ function DialogContent({
 
 function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div
-      data-slot="dialog-header"
-      className={cn("flex flex-col gap-2", className)}
-      {...props}
-    />
+    <div data-slot="dialog-header" className={cn("flex flex-col gap-2", className)} {...props} />
   );
 }
 
@@ -125,9 +103,7 @@ function DialogFooter({
       {...props}
     >
       {children}
-      {showCloseButton && (
-        <DialogClose render={<Button variant="outline">Close</Button>} />
-      )}
+      {showCloseButton && <DialogClose render={<Button variant="outline">Close</Button>} />}
     </div>
   );
 }
@@ -142,10 +118,7 @@ function DialogTitle({ className, ...props }: DialogPrimitive.Title.Props) {
   );
 }
 
-function DialogDescription({
-  className,
-  ...props
-}: DialogPrimitive.Description.Props) {
+function DialogDescription({ className, ...props }: DialogPrimitive.Description.Props) {
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"

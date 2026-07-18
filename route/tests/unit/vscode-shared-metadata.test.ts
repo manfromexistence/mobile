@@ -1,31 +1,36 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-const familyFirstModelIds =
-  await import("../../src/app/api/v1/vscode/[token]/familyFirstModelIds.ts");
-const rawFamilyFirstModelIds =
-  await import("../../src/app/api/v1/vscode/raw/[token]/familyFirstModelIds.ts");
-const serviceTierVariants =
-  await import("../../src/app/api/v1/vscode/[token]/serviceTierVariants.ts");
-const rawServiceTierVariants =
-  await import("../../src/app/api/v1/vscode/raw/[token]/serviceTierVariants.ts");
+const familyFirstModelIds = await import(
+  "../../src/app/api/v1/vscode/[token]/familyFirstModelIds.ts"
+);
+const rawFamilyFirstModelIds = await import(
+  "../../src/app/api/v1/vscode/raw/[token]/familyFirstModelIds.ts"
+);
+const serviceTierVariants = await import(
+  "../../src/app/api/v1/vscode/[token]/serviceTierVariants.ts"
+);
+const rawServiceTierVariants = await import(
+  "../../src/app/api/v1/vscode/raw/[token]/serviceTierVariants.ts"
+);
 const reasoningMetadata = await import("../../src/app/api/v1/vscode/[token]/reasoningMetadata.ts");
-const rawReasoningMetadata =
-  await import("../../src/app/api/v1/vscode/raw/[token]/reasoningMetadata.ts");
+const rawReasoningMetadata = await import(
+  "../../src/app/api/v1/vscode/raw/[token]/reasoningMetadata.ts"
+);
 
 test("vscode raw and tokenized family-first helpers share behavior", () => {
   assert.equal(
     familyFirstModelIds.resolveFamilyFirstPublishedModelId(
-      "gpt-5.6-sol__provider_cx__tier_priority"
+      "gpt-5.6-sol__provider_cx__tier_priority",
     ),
-    "cx/gpt-5.6-sol__tier_priority"
+    "cx/gpt-5.6-sol__tier_priority",
   );
   assert.deepEqual(
     rawFamilyFirstModelIds.getFamilyFirstModelCandidates(
       "cx/gpt-5.6-sol__tier_flex",
-      "gpt-5.6-sol"
+      "gpt-5.6-sol",
     ),
-    familyFirstModelIds.getFamilyFirstModelCandidates("cx/gpt-5.6-sol__tier_flex", "gpt-5.6-sol")
+    familyFirstModelIds.getFamilyFirstModelCandidates("cx/gpt-5.6-sol__tier_flex", "gpt-5.6-sol"),
   );
 });
 
@@ -44,7 +49,7 @@ test("vscode raw and tokenized service tier helpers share behavior", () => {
     ]),
     rawServiceTierVariants.expandVscodeServiceTierModels([
       { id: "cx/gpt-5.6-sol", name: "cx/gpt-5.6-sol", owned_by: "codex" },
-    ])
+    ]),
   );
 });
 
@@ -59,11 +64,11 @@ test("vscode raw and tokenized reasoning helpers share behavior", () => {
   assert.deepEqual(supportedValues, rawReasoningMetadata.getReasoningEffortValues(reasoningModel));
   assert.equal(
     reasoningMetadata.inferSelectedReasoningEffort(reasoningModel, supportedValues),
-    "high"
+    "high",
   );
   assert.deepEqual(
     reasoningMetadata.buildReasoningConfigSchema(["none", "high"], "high"),
-    rawReasoningMetadata.buildReasoningConfigSchema(["none", "high"], "high")
+    rawReasoningMetadata.buildReasoningConfigSchema(["none", "high"], "high"),
   );
 });
 
@@ -99,16 +104,16 @@ test("vscode reasoning metadata supports GPT-5.6 Max and Ultra without splitting
   assert.equal(
     reasoningMetadata.inferSelectedReasoningEffort(
       { ...sol, id: "cx/gpt-5.6-sol-ultra" },
-      reasoningMetadata.getReasoningEffortValues(sol)
+      reasoningMetadata.getReasoningEffortValues(sol),
     ),
-    "ultra"
+    "ultra",
   );
   assert.equal(
     reasoningMetadata.getReasoningVariantBaseModelId("cx/gpt-5.6-sol-max"),
-    "cx/gpt-5.6-sol"
+    "cx/gpt-5.6-sol",
   );
   assert.equal(
     reasoningMetadata.getReasoningVariantBaseModelId("cx/gpt-5.1-codex-max"),
-    "cx/gpt-5.1-codex-max"
+    "cx/gpt-5.1-codex-max",
   );
 });

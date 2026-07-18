@@ -1,1 +1,1 @@
-export * from "./twemoji"
+export * from "./twemoji";

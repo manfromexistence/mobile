@@ -32,7 +32,7 @@ test("installCert under the guard skips the OS mutation but keeps input contract
   const pem = path.join(dir, "omniroute-guard-test.pem");
   fs.writeFileSync(
     pem,
-    "-----BEGIN CERTIFICATE-----\nMIIBpDCCAQ2gAwIBAgIUFakeGuardCertXX==\n-----END CERTIFICATE-----\n"
+    "-----BEGIN CERTIFICATE-----\nMIIBpDCCAQ2gAwIBAgIUFakeGuardCertXX==\n-----END CERTIFICATE-----\n",
   );
   try {
     await installCert("", pem);

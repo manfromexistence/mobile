@@ -61,10 +61,7 @@ function ThemeProvider({
     if (theme !== "system") root.classList.add(theme);
     if (animate) {
       if (transitionTimeoutRef.current) clearTimeout(transitionTimeoutRef.current);
-      transitionTimeoutRef.current = setTimeout(
-        () => root.classList.remove("transitioning"),
-        200
-      );
+      transitionTimeoutRef.current = setTimeout(() => root.classList.remove("transitioning"), 200);
     }
   }, [theme]);
 
@@ -74,7 +71,8 @@ function ThemeProvider({
       if (e.key !== "t" && e.key !== "T") return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const tag = (e.target as HTMLElement)?.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || (e.target as HTMLElement)?.isContentEditable) return;
+      if (tag === "INPUT" || tag === "TEXTAREA" || (e.target as HTMLElement)?.isContentEditable)
+        return;
       e.preventDefault();
       // Just advance the state — the [theme] effect above applies the DOM.
       setThemeState((prev) => themeOrder[(themeOrder.indexOf(prev) + 1) % themeOrder.length]);
@@ -85,11 +83,7 @@ function ThemeProvider({
 
   const value = useMemo(() => ({ theme, setTheme }), [theme, setTheme]);
 
-  return (
-    <ThemeContext.Provider value={value}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
 export { ThemeProvider, useThemeContext };

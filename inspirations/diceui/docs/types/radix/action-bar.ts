@@ -82,19 +82,12 @@ export interface ActionBarProps extends EmptyProps<"div">, CompositionProps {
   loop?: boolean;
 }
 
-export interface ActionBarSelectionProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface ActionBarSelectionProps extends EmptyProps<"div">, CompositionProps {}
 
-export interface ActionBarGroupProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface ActionBarGroupProps extends EmptyProps<"div">, CompositionProps {}
 
 export interface ActionBarItemProps
-  extends Omit<
-      React.ComponentProps<typeof Button>,
-      keyof React.ComponentProps<"button">
-    >,
+  extends Omit<React.ComponentProps<typeof Button>, keyof React.ComponentProps<"button">>,
     CompositionProps {
   /**
    * Event handler called when the item is selected.
@@ -110,10 +103,6 @@ export interface ActionBarItemProps
   onSelect?: (event: Event) => void;
 }
 
-export interface ActionBarCloseProps
-  extends EmptyProps<"button">,
-    CompositionProps {}
+export interface ActionBarCloseProps extends EmptyProps<"button">, CompositionProps {}
 
-export interface ActionBarSeparatorProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface ActionBarSeparatorProps extends EmptyProps<"div">, CompositionProps {}

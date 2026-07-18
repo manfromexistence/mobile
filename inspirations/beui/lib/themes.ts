@@ -215,10 +215,7 @@ export function themesStylesheet(): string {
     .filter(([id]) => id !== "default")
     .map(
       ([id, t]) =>
-        `${block(`[data-theme="${id}"]`, t.light)}\n${block(
-          `.dark[data-theme="${id}"]`,
-          t.dark,
-        )}`,
+        `${block(`[data-theme="${id}"]`, t.light)}\n${block(`.dark[data-theme="${id}"]`, t.dark)}`,
     )
     .join("\n\n");
 }

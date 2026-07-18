@@ -1,8 +1,8 @@
-import code from '@content/Animations/OrbitImages/OrbitImages.jsx?raw';
-import css from '@content/Animations/OrbitImages/OrbitImages.css?raw';
-import tailwind from '@tailwind/Animations/OrbitImages/OrbitImages.jsx?raw';
-import tsCode from '@ts-default/Animations/OrbitImages/OrbitImages.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/OrbitImages/OrbitImages.tsx?raw';
+import code from "@content/Animations/OrbitImages/OrbitImages.jsx?raw";
+import css from "@content/Animations/OrbitImages/OrbitImages.css?raw";
+import tailwind from "@tailwind/Animations/OrbitImages/OrbitImages.jsx?raw";
+import tsCode from "@ts-default/Animations/OrbitImages/OrbitImages.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/OrbitImages/OrbitImages.tsx?raw";
 
 export const orbitImages = {
   dependencies: `motion`,
@@ -34,5 +34,5 @@ const images = [
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

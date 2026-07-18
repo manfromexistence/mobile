@@ -8,10 +8,7 @@ const { webSessionCredentialKey, parseProviderSpecificData } = await import(
 );
 
 test("webSessionCredentialKey prefers the cookie field", () => {
-  assert.equal(
-    webSessionCredentialKey({ cookie: "session=ABC", note: "x" }),
-    "session=ABC"
-  );
+  assert.equal(webSessionCredentialKey({ cookie: "session=ABC", note: "x" }), "session=ABC");
 });
 
 test("webSessionCredentialKey falls back to token-kind keys", () => {

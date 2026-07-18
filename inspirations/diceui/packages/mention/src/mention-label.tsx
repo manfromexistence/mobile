@@ -4,8 +4,7 @@ import { useMentionContext } from "./mention-root";
 
 const LABEL_NAME = "MentionLabel";
 
-interface MentionLabelProps
-  extends React.ComponentPropsWithoutRef<typeof Primitive.label> {}
+interface MentionLabelProps extends React.ComponentPropsWithoutRef<typeof Primitive.label> {}
 
 const MentionLabel = React.forwardRef<HTMLLabelElement, MentionLabelProps>(
   (props, forwardedRef) => {

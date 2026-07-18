@@ -22,7 +22,7 @@ test("normalizes JSON strings before log protection and redacts sensitive keys",
       nested: {
         apiKey: "top-secret-key",
       },
-    })
+    }),
   );
 
   assert.deepEqual(protectedPayload, {
@@ -102,10 +102,10 @@ test("builds compact OpenAI stream summary for detailed logs", () => {
   const summary = buildStreamSummaryFromEvents(
     collector.getEvents(),
     FORMATS.OPENAI,
-    "gpt-4.1-mini"
+    "gpt-4.1-mini",
   );
   const compact: any = compactStructuredStreamPayload(
-    collector.build(summary, { includeEvents: false })
+    collector.build(summary, { includeEvents: false }),
   );
 
   assert.equal(compact.object, "chat.completion");
@@ -147,10 +147,10 @@ test("builds compact Claude stream summary for detailed logs", () => {
   const summary = buildStreamSummaryFromEvents(
     collector.getEvents(),
     FORMATS.CLAUDE,
-    "claude-sonnet-4"
+    "claude-sonnet-4",
   );
   const compact: any = compactStructuredStreamPayload(
-    collector.build(summary, { includeEvents: false })
+    collector.build(summary, { includeEvents: false }),
   );
 
   assert.equal(compact.type, "message");
@@ -197,10 +197,10 @@ test("builds compact OpenAI summary with reasoning alias (delta.reasoning)", () 
   const summary = buildStreamSummaryFromEvents(
     collector.getEvents(),
     FORMATS.OPENAI,
-    "moonshotai/kimi-k2.5"
+    "moonshotai/kimi-k2.5",
   );
   const compact: any = compactStructuredStreamPayload(
-    collector.build(summary, { includeEvents: false })
+    collector.build(summary, { includeEvents: false }),
   );
 
   assert.equal(compact.object, "chat.completion");

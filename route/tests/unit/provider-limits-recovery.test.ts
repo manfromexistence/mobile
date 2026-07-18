@@ -67,7 +67,7 @@ function glmQuotaResponse() {
         ],
       },
     }),
-    { status: 200, headers: { "content-type": "application/json" } }
+    { status: 200, headers: { "content-type": "application/json" } },
   );
 }
 
@@ -86,12 +86,9 @@ test("successful GLM quota refresh clears transient rate-limit state", async () 
   const connection = await createGlmConnectionWithTransientCooldown();
   const connectionId = (connection as { id: string }).id;
 
-  await withMockedFetch(
-    (() => glmQuotaResponse()) as typeof fetch,
-    async () => {
-      await providerLimits.fetchAndPersistProviderLimits(connectionId, "manual");
-    }
-  );
+  await withMockedFetch((() => glmQuotaResponse()) as typeof fetch, async () => {
+    await providerLimits.fetchAndPersistProviderLimits(connectionId, "manual");
+  });
 
   const updated = (await providersDb.getProviderConnectionById(connectionId)) as Record<
     string,
@@ -122,12 +119,9 @@ test("successful quota refresh does not clear terminal credits_exhausted status"
   const connection = await createGlmConnectionWithStatus("credits_exhausted");
   const connectionId = (connection as { id: string }).id;
 
-  await withMockedFetch(
-    (() => glmQuotaResponse()) as typeof fetch,
-    async () => {
-      await providerLimits.fetchAndPersistProviderLimits(connectionId, "manual");
-    }
-  );
+  await withMockedFetch((() => glmQuotaResponse()) as typeof fetch, async () => {
+    await providerLimits.fetchAndPersistProviderLimits(connectionId, "manual");
+  });
 
   const updated = (await providersDb.getProviderConnectionById(connectionId)) as Record<
     string,
@@ -141,12 +135,9 @@ test("successful quota refresh does not clear terminal banned status", async () 
   const connection = await createGlmConnectionWithStatus("banned");
   const connectionId = (connection as { id: string }).id;
 
-  await withMockedFetch(
-    (() => glmQuotaResponse()) as typeof fetch,
-    async () => {
-      await providerLimits.fetchAndPersistProviderLimits(connectionId, "manual");
-    }
-  );
+  await withMockedFetch((() => glmQuotaResponse()) as typeof fetch, async () => {
+    await providerLimits.fetchAndPersistProviderLimits(connectionId, "manual");
+  });
 
   const updated = (await providersDb.getProviderConnectionById(connectionId)) as Record<
     string,
@@ -159,12 +150,9 @@ test("successful quota refresh does not clear terminal expired status", async ()
   const connection = await createGlmConnectionWithStatus("expired");
   const connectionId = (connection as { id: string }).id;
 
-  await withMockedFetch(
-    (() => glmQuotaResponse()) as typeof fetch,
-    async () => {
-      await providerLimits.fetchAndPersistProviderLimits(connectionId, "manual");
-    }
-  );
+  await withMockedFetch((() => glmQuotaResponse()) as typeof fetch, async () => {
+    await providerLimits.fetchAndPersistProviderLimits(connectionId, "manual");
+  });
 
   const updated = (await providersDb.getProviderConnectionById(connectionId)) as Record<
     string,
@@ -203,7 +191,7 @@ test("Codex stale quota fallback preserves banked reset credits", async () => {
       assert.deepEqual(result.usage.quotas, {
         session: { used: 10, total: 100, remainingPercentage: 90 },
       });
-    }
+    },
   );
 });
 
@@ -224,9 +212,9 @@ test("error-only quota response does not clear transient state", async () => {
       // errored refresh never clears the connection's cooldown.
       await assert.rejects(
         () => providerLimits.fetchAndPersistProviderLimits(connectionId, "manual"),
-        /429/
+        /429/,
       );
-    }
+    },
   );
 
   const updated = (await providersDb.getProviderConnectionById(connectionId)) as Record<
@@ -299,9 +287,10 @@ test("CAS primitive aborts when state changed concurrently", async () => {
 test("quota recovery path does NOT overwrite a concurrent mark (TOCTOU closed)", async () => {
   const created = await createGlmConnectionWithTransientCooldown();
   const connectionId = (created as { id: string }).id;
-  const snapshotBeforeClear = (await providersDb.getProviderConnectionById(
-    connectionId
-  )) as Record<string, unknown>;
+  const snapshotBeforeClear = (await providersDb.getProviderConnectionById(connectionId)) as Record<
+    string,
+    unknown
+  >;
   const expectedLastErrorAt = (snapshotBeforeClear.lastErrorAt as string) ?? null;
 
   // Mock fetch so that DURING the quota fetch (between read and clear), a
@@ -331,7 +320,7 @@ test("quota recovery path does NOT overwrite a concurrent mark (TOCTOU closed)",
   assert.notEqual(
     after.lastErrorAt,
     expectedLastErrorAt,
-    "fresh lastErrorAt must not be overwritten by recovery clear"
+    "fresh lastErrorAt must not be overwritten by recovery clear",
   );
   assert.equal(after.testStatus, "unavailable", "fresh testStatus must survive");
   assert.equal(after.backoffLevel, 3, "fresh backoff level must survive");

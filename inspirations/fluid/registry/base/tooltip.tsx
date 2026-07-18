@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -65,10 +60,7 @@ function TooltipProvider({
 }: TooltipProviderProps) {
   return (
     <TooltipGroupContext.Provider value={true}>
-      <TooltipPrimitive.Provider
-        delay={delayDuration}
-        timeout={skipDelayDuration}
-      >
+      <TooltipPrimitive.Provider delay={delayDuration} timeout={skipDelayDuration}>
         {children}
       </TooltipPrimitive.Provider>
     </TooltipGroupContext.Provider>
@@ -147,11 +139,7 @@ function Tooltip({
           left undefined, the trigger inherits it from the provider. */}
       <TooltipPrimitive.Trigger render={children} delay={delayDuration} />
       <TooltipPrimitive.Portal container={portalContainer ?? undefined}>
-        <TooltipPrimitive.Positioner
-          side={side}
-          sideOffset={sideOffset}
-          className="z-50"
-        >
+        <TooltipPrimitive.Positioner side={side} sideOffset={sideOffset} className="z-50">
           <TooltipPrimitive.Popup
             render={(props, state) => {
               const exiting = state.transitionStatus === "ending";
@@ -173,18 +161,14 @@ function Tooltip({
                   className={cn(
                     "bg-foreground text-background text-[12px] px-2 py-1",
                     shape.bg,
-                    className
+                    className,
                   )}
                   style={{
                     ...(baseStyle as React.CSSProperties | undefined),
                     fontVariationSettings: fontWeights.medium,
                   }}
                   initial={{ opacity: 0, ...slideOffset }}
-                  animate={
-                    exiting
-                      ? { opacity: 0, ...slideOffset }
-                      : { opacity: 1, x: 0, y: 0 }
-                  }
+                  animate={exiting ? { opacity: 0, ...slideOffset } : { opacity: 1, x: 0, y: 0 }}
                   transition={exiting ? spring.fast.exit : spring.fast}
                 />
               );

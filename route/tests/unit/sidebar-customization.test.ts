@@ -19,7 +19,7 @@ test("applySectionOrder returns original order when order is empty", () => {
   const result = applySectionOrder(sections, []);
   assert.deepEqual(
     result.map((s) => s.id),
-    sections.map((s) => s.id)
+    sections.map((s) => s.id),
   );
 });
 
@@ -30,7 +30,7 @@ test("applySectionOrder reorders sections by provided list", () => {
   const result = applySectionOrder(sections, reversed);
   assert.deepEqual(
     result.map((s) => s.id),
-    reversed
+    reversed,
   );
 });
 
@@ -72,7 +72,7 @@ test("applyItemOrder reorders items by provided list", () => {
   const result = applyItemOrder(children, reversed) as any[];
   assert.deepEqual(
     result.map((c) => c.id),
-    reversed
+    reversed,
   );
 });
 
@@ -123,7 +123,7 @@ test("SIDEBAR_PRESETS non-all presets have at least one hidden item", () => {
 test("settings-sidebar is in HIDEABLE_SIDEBAR_ITEM_IDS", () => {
   assert.ok(
     HIDEABLE_SIDEBAR_ITEM_IDS.includes("settings-sidebar" as any),
-    "settings-sidebar should be hideable"
+    "settings-sidebar should be hideable",
   );
 });
 
@@ -131,11 +131,11 @@ test("settings-sidebar item is present in configuration section", () => {
   const configSection = SIDEBAR_SECTIONS.find((s) => s.id === "configuration");
   assert.ok(configSection, "configuration section should exist");
   const items = configSection.children.flatMap((c) =>
-    "type" in c && c.type === "group" ? c.items : [c as any]
+    "type" in c && c.type === "group" ? c.items : [c as any],
   );
   assert.ok(
     items.some((item) => item.id === "settings-sidebar"),
-    "settings-sidebar should be in configuration section children"
+    "settings-sidebar should be in configuration section children",
   );
 });
 

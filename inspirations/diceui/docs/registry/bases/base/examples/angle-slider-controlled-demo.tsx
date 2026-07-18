@@ -36,9 +36,7 @@ export default function AngleSliderControlledDemo() {
         ease: [0.25, 0.46, 0.45, 0.94],
         onUpdate: (progress: number) => {
           const animatedValue = currentValue + progress;
-          const normalizedValue = Math.round(
-            ((animatedValue % 360) + 360) % 360,
-          );
+          const normalizedValue = Math.round(((animatedValue % 360) + 360) % 360);
           setValue([normalizedValue]);
         },
         onComplete: () => {
@@ -78,14 +76,7 @@ export default function AngleSliderControlledDemo() {
           Randomize
         </Button>
       </div>
-      <AngleSlider
-        value={value}
-        onValueChange={setValue}
-        max={360}
-        min={0}
-        step={1}
-        size={80}
-      >
+      <AngleSlider value={value} onValueChange={setValue} max={360} min={0} step={1} size={80}>
         <AngleSliderTrack>
           <AngleSliderRange />
         </AngleSliderTrack>

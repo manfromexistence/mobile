@@ -12,17 +12,14 @@ const mod = await import("../../scripts/start-ws-server.mjs");
 
 test("#4055: resolvePackageRoot points at the dir above scripts/", () => {
   const scriptUrl = pathToFileURL(
-    "/opt/homebrew/lib/node_modules/omniroute/scripts/start-ws-server.mjs"
+    "/opt/homebrew/lib/node_modules/omniroute/scripts/start-ws-server.mjs",
   ).href;
-  assert.equal(
-    mod.resolvePackageRoot(scriptUrl),
-    "/opt/homebrew/lib/node_modules/omniroute"
-  );
+  assert.equal(mod.resolvePackageRoot(scriptUrl), "/opt/homebrew/lib/node_modules/omniroute");
 });
 
 test("#4055: the bootstrap spawn pins cwd to the package root so tsx + @/ aliases resolve", () => {
   const scriptUrl = pathToFileURL(
-    "/opt/homebrew/lib/node_modules/omniroute/scripts/start-ws-server.mjs"
+    "/opt/homebrew/lib/node_modules/omniroute/scripts/start-ws-server.mjs",
   ).href;
   const spec = mod.buildSidecarSpawn(scriptUrl, { PATH: "/usr/bin" });
 

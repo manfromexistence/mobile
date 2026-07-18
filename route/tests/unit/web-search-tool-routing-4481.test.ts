@@ -36,7 +36,7 @@ test("webSearchRouteModel is registered in the settings Zod schema", () => {
 test("the Routing settings tab exposes a webSearchRouteModel field", () => {
   const tab = readFileSync(
     join(REPO_ROOT, "src/app/(dashboard)/dashboard/settings/components/RoutingTab.tsx"),
-    "utf8"
+    "utf8",
   );
   assert.match(tab, /settings\.webSearchRouteModel/);
   assert.match(tab, /updateSetting\(\{ webSearchRouteModel:/);
@@ -61,7 +61,7 @@ test("detects the plain and preview native web-search tool types", () => {
 test("detects Anthropic's versioned web_search_20250305 (and future dated names)", () => {
   assert.equal(
     hasNativeWebSearchTool({ tools: [{ type: "web_search_20250305", name: "web_search" }] }),
-    true
+    true,
   );
   assert.equal(hasNativeWebSearchTool({ tools: [{ type: "web_search_20251201" }] }), true);
 });
@@ -71,7 +71,7 @@ test("detects a native web-search tool anywhere in a mixed tools array", () => {
     hasNativeWebSearchTool({
       tools: [{ type: "function", function: { name: "x" } }, { type: "web_search_20250305" }],
     }),
-    true
+    true,
   );
 });
 
@@ -80,12 +80,12 @@ test("ignores a custom FUNCTION tool merely named web_search (has a function fie
     hasNativeWebSearchTool({
       tools: [{ type: "function", function: { name: "web_search", parameters: {} } }],
     }),
-    false
+    false,
   );
   // A bare web_search type WITH a function field is also not the native server tool.
   assert.equal(
     hasNativeWebSearchTool({ tools: [{ type: "web_search", function: { name: "x" } }] }),
-    false
+    false,
   );
 });
 
@@ -110,9 +110,13 @@ test("routes to the configured model when a native web-search tool is present", 
 });
 
 test("does NOT route when the request has no native web-search tool", () => {
-  const r = resolveWebSearchRouteOverride("minimax,MiniMax-M3", { tools: [{ type: "function" }] }, {
-    webSearchRouteModel: "openrouter,anthropic/claude-3.5-sonnet",
-  });
+  const r = resolveWebSearchRouteOverride(
+    "minimax,MiniMax-M3",
+    { tools: [{ type: "function" }] },
+    {
+      webSearchRouteModel: "openrouter,anthropic/claude-3.5-sonnet",
+    },
+  );
   assert.deepEqual(r, { wasRouted: false, model: "minimax,MiniMax-M3" });
 });
 
@@ -125,7 +129,7 @@ test("does NOT route when no route model is configured (or it is blank)", () => 
     resolveWebSearchRouteOverride("minimax,MiniMax-M3", bodyWithSearch, {
       webSearchRouteModel: "   ",
     }),
-    { wasRouted: false, model: "minimax,MiniMax-M3" }
+    { wasRouted: false, model: "minimax,MiniMax-M3" },
   );
 });
 

@@ -1,10 +1,10 @@
-import { Box, Flex, Text, Spinner, Icon, useBreakpointValue } from '@chakra-ui/react';
-import React, { Suspense, useMemo, useState, useEffect, useRef, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Settings, ChevronUp, Download, Video } from 'lucide-react';
-import Controls from './Controls';
-import { BACKGROUNDS, getBackgroundById, getDefaultProps } from './backgrounds';
-import { hyperspeedPresets } from '../../content/Backgrounds/Hyperspeed/HyperSpeedPresets';
+import { Box, Flex, Text, Spinner, Icon, useBreakpointValue } from "@chakra-ui/react";
+import React, { Suspense, useMemo, useState, useEffect, useRef, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
+import { Settings, ChevronUp, Download, Video } from "lucide-react";
+import Controls from "./Controls";
+import { BACKGROUNDS, getBackgroundById, getDefaultProps } from "./backgrounds";
+import { hyperspeedPresets } from "../../content/Backgrounds/Hyperspeed/HyperSpeedPresets";
 
 const LoadingFallback = () => (
   <Flex w="100%" h="100%" align="center" justify="center" bg="var(--bg-body)">
@@ -24,7 +24,7 @@ const ErrorFallback = ({ error }) => (
         Failed to load background
       </Text>
       <Text color="var(--text-muted)" fontSize="13px">
-        {error?.message || 'Unknown error'}
+        {error?.message || "Unknown error"}
       </Text>
     </Flex>
   </Flex>
@@ -74,12 +74,12 @@ const BackgroundRenderer = React.memo(({ background, props, renderKey }) => {
 
     setError(null);
     loadComponent()
-      .then(module => {
+      .then((module) => {
         setComponent(() => module.default);
-        setKey(k => k + 1);
+        setKey((k) => k + 1);
       })
-      .catch(err => {
-        console.error('Failed to load background:', err);
+      .catch((err) => {
+        console.error("Failed to load background:", err);
         setError(err);
       });
   }, [backgroundId, loadComponent]);
@@ -94,11 +94,11 @@ const BackgroundRenderer = React.memo(({ background, props, renderKey }) => {
     componentProps = { ...componentProps, ...background.fixedProps };
   }
 
-  if (background.id === 'hyperspeed' && props.preset) {
+  if (background.id === "hyperspeed" && props.preset) {
     const { preset, ...restProps } = componentProps;
     componentProps = {
       ...restProps,
-      effectOptions: hyperspeedPresets[preset] || hyperspeedPresets.one
+      effectOptions: hyperspeedPresets[preset] || hyperspeedPresets.one,
     };
   }
 
@@ -124,7 +124,7 @@ const BackgroundRenderer = React.memo(({ background, props, renderKey }) => {
   );
 });
 
-BackgroundRenderer.displayName = 'BackgroundRenderer';
+BackgroundRenderer.displayName = "BackgroundRenderer";
 
 export default function BackgroundStudio({ toolSelector }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -135,7 +135,7 @@ export default function BackgroundStudio({ toolSelector }) {
   const [renderKey, setRenderKey] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingProgress, setRecordingProgress] = useState(0);
-  const [canvasBg, setCanvasBg] = useState('#120F17');
+  const [canvasBg, setCanvasBg] = useState("#120F17");
   const debounceTimer = useRef(null);
   const previewRef = useRef(null);
   const mediaRecorderRef = useRef(null);
@@ -143,7 +143,7 @@ export default function BackgroundStudio({ toolSelector }) {
   const recordingIntervalRef = useRef(null);
   const recordingTimeoutRef = useRef(null);
 
-  const backgroundId = searchParams.get('bg') || 'silk';
+  const backgroundId = searchParams.get("bg") || "silk";
 
   const background = useMemo(() => {
     return getBackgroundById(backgroundId) || BACKGROUNDS[0];
@@ -155,16 +155,16 @@ export default function BackgroundStudio({ toolSelector }) {
     for (const propDef of background.props) {
       const value = searchParams.get(propDef.name);
       if (value !== null) {
-        if (propDef.type === 'number') {
+        if (propDef.type === "number") {
           parsed[propDef.name] = Number(value);
-        } else if (propDef.type === 'boolean') {
-          parsed[propDef.name] = value === 'true';
-        } else if (propDef.type === 'colorArray') {
-          parsed[propDef.name] = value.split(',').map(c => (c.startsWith('#') ? c : `#${c}`));
-        } else if (propDef.type === 'color') {
-          parsed[propDef.name] = value.startsWith('#') ? value : `#${value}`;
-        } else if (propDef.type === 'rgbArray') {
-          parsed[propDef.name] = value.split(',').map(Number);
+        } else if (propDef.type === "boolean") {
+          parsed[propDef.name] = value === "true";
+        } else if (propDef.type === "colorArray") {
+          parsed[propDef.name] = value.split(",").map((c) => (c.startsWith("#") ? c : `#${c}`));
+        } else if (propDef.type === "color") {
+          parsed[propDef.name] = value.startsWith("#") ? value : `#${value}`;
+        } else if (propDef.type === "rgbArray") {
+          parsed[propDef.name] = value.split(",").map(Number);
         } else {
           parsed[propDef.name] = value;
         }
@@ -190,9 +190,9 @@ export default function BackgroundStudio({ toolSelector }) {
     (name, value) => {
       const defaults = getDefaultProps(background);
 
-      setLocalProps(prev => ({
+      setLocalProps((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
 
       if (debounceTimer.current) {
@@ -203,22 +203,22 @@ export default function BackgroundStudio({ toolSelector }) {
         const newCustomProps = { ...customProps, ...localProps, [name]: value };
 
         const newParams = new URLSearchParams();
-        newParams.set('bg', backgroundId);
+        newParams.set("bg", backgroundId);
 
         const propDefs = background?.props || [];
-        const getPropType = key => propDefs.find(p => p.name === key)?.type;
+        const getPropType = (key) => propDefs.find((p) => p.name === key)?.type;
 
         Object.entries(newCustomProps).forEach(([key, val]) => {
           if (JSON.stringify(val) === JSON.stringify(defaults[key])) {
             return;
           }
           const propType = getPropType(key);
-          if (propType === 'colorArray' && Array.isArray(val)) {
-            newParams.set(key, val.map(c => c.replace(/^#/, '')).join(','));
-          } else if (propType === 'color' && typeof val === 'string') {
-            newParams.set(key, val.replace(/^#/, ''));
+          if (propType === "colorArray" && Array.isArray(val)) {
+            newParams.set(key, val.map((c) => c.replace(/^#/, "")).join(","));
+          } else if (propType === "color" && typeof val === "string") {
+            newParams.set(key, val.replace(/^#/, ""));
           } else if (Array.isArray(val)) {
-            newParams.set(key, val.join(','));
+            newParams.set(key, val.join(","));
           } else {
             newParams.set(key, String(val));
           }
@@ -226,43 +226,43 @@ export default function BackgroundStudio({ toolSelector }) {
 
         setSearchParams(newParams, { replace: true });
 
-        setRenderKey(k => k + 1);
+        setRenderKey((k) => k + 1);
         setLocalProps({});
       }, 300);
     },
-    [background, customProps, localProps, backgroundId, setSearchParams]
+    [background, customProps, localProps, backgroundId, setSearchParams],
   );
 
   const changeBackground = useCallback(
-    id => {
+    (id) => {
       const newParams = new URLSearchParams();
-      newParams.set('bg', id);
+      newParams.set("bg", id);
       setSearchParams(newParams, { replace: true });
       setLocalProps({});
-      setRenderKey(k => k + 1);
+      setRenderKey((k) => k + 1);
     },
-    [setSearchParams]
+    [setSearchParams],
   );
 
   const resetProps = useCallback(() => {
     const newParams = new URLSearchParams();
-    newParams.set('bg', backgroundId);
+    newParams.set("bg", backgroundId);
     setSearchParams(newParams, { replace: true });
     setLocalProps({});
-    setRenderKey(k => k + 1);
+    setRenderKey((k) => k + 1);
   }, [backgroundId, setSearchParams]);
 
   const downloadImage = useCallback(() => {
-    const sourceCanvas = previewRef.current?.querySelector('canvas');
+    const sourceCanvas = previewRef.current?.querySelector("canvas");
     if (!sourceCanvas) {
-      console.warn('No canvas found for screenshot');
+      console.warn("No canvas found for screenshot");
       return;
     }
 
-    const offscreen = document.createElement('canvas');
+    const offscreen = document.createElement("canvas");
     offscreen.width = 1920;
     offscreen.height = 1080;
-    const ctx = offscreen.getContext('2d');
+    const ctx = offscreen.getContext("2d");
 
     requestAnimationFrame(() => {
       ctx.fillStyle = canvasBg;
@@ -287,26 +287,26 @@ export default function BackgroundStudio({ toolSelector }) {
       ctx.drawImage(sourceCanvas, sx, sy, sw, sh, 0, 0, 1920, 1080);
 
       try {
-        const dataUrl = offscreen.toDataURL('image/png');
-        const link = document.createElement('a');
+        const dataUrl = offscreen.toDataURL("image/png");
+        const link = document.createElement("a");
         link.download = `${backgroundId}-${Date.now()}.png`;
         link.href = dataUrl;
         link.click();
       } catch (err) {
-        console.error('Failed to capture screenshot:', err);
+        console.error("Failed to capture screenshot:", err);
       }
     });
   }, [backgroundId, canvasBg]);
 
   const recordVideo = useCallback(() => {
-    const sourceCanvas = previewRef.current?.querySelector('canvas');
+    const sourceCanvas = previewRef.current?.querySelector("canvas");
     if (!sourceCanvas || isRecording) return;
 
     try {
-      const offscreen = document.createElement('canvas');
+      const offscreen = document.createElement("canvas");
       offscreen.width = 1920;
       offscreen.height = 1080;
-      const ctx = offscreen.getContext('2d');
+      const ctx = offscreen.getContext("2d");
 
       const sourceAspect = sourceCanvas.width / sourceCanvas.height;
       const targetAspect = 16 / 9;
@@ -334,31 +334,31 @@ export default function BackgroundStudio({ toolSelector }) {
 
       const stream = offscreen.captureStream(60);
 
-      let mimeType = 'video/webm;codecs=h264';
+      let mimeType = "video/webm;codecs=h264";
       if (!MediaRecorder.isTypeSupported(mimeType)) {
-        mimeType = 'video/webm;codecs=vp9';
+        mimeType = "video/webm;codecs=vp9";
         if (!MediaRecorder.isTypeSupported(mimeType)) {
-          mimeType = 'video/webm';
+          mimeType = "video/webm";
         }
       }
 
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType,
-        videoBitsPerSecond: 20000000
+        videoBitsPerSecond: 20000000,
       });
       mediaRecorderRef.current = mediaRecorder;
       const chunks = [];
 
-      mediaRecorder.ondataavailable = e => {
+      mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0) chunks.push(e.data);
       };
 
       mediaRecorder.onstop = () => {
         cancelAnimationFrame(recordingAnimationRef.current);
         if (chunks.length > 0) {
-          const blob = new Blob(chunks, { type: 'video/webm' });
+          const blob = new Blob(chunks, { type: "video/webm" });
           const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
+          const link = document.createElement("a");
           link.download = `${backgroundId}-${Date.now()}.webm`;
           link.href = url;
           link.click();
@@ -379,13 +379,13 @@ export default function BackgroundStudio({ toolSelector }) {
       }, 100);
 
       recordingTimeoutRef.current = setTimeout(() => {
-        if (mediaRecorder.state === 'recording') {
+        if (mediaRecorder.state === "recording") {
           mediaRecorder.stop();
         }
         clearInterval(recordingIntervalRef.current);
       }, 10000);
     } catch (err) {
-      console.error('Failed to start recording:', err);
+      console.error("Failed to start recording:", err);
       if (recordingAnimationRef.current) cancelAnimationFrame(recordingAnimationRef.current);
       if (recordingIntervalRef.current) clearInterval(recordingIntervalRef.current);
       if (recordingTimeoutRef.current) clearTimeout(recordingTimeoutRef.current);
@@ -400,7 +400,7 @@ export default function BackgroundStudio({ toolSelector }) {
     if (recordingTimeoutRef.current) clearTimeout(recordingTimeoutRef.current);
     if (recordingAnimationRef.current) cancelAnimationFrame(recordingAnimationRef.current);
 
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
       mediaRecorderRef.current.ondataavailable = null;
       mediaRecorderRef.current.onstop = () => {
         setIsRecording(false);
@@ -421,7 +421,7 @@ export default function BackgroundStudio({ toolSelector }) {
       if (recordingAnimationRef.current) cancelAnimationFrame(recordingAnimationRef.current);
       if (recordingIntervalRef.current) clearInterval(recordingIntervalRef.current);
       if (recordingTimeoutRef.current) clearTimeout(recordingTimeoutRef.current);
-      if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
         mediaRecorderRef.current.ondataavailable = null;
         mediaRecorderRef.current.onstop = null;
         try {
@@ -438,7 +438,7 @@ export default function BackgroundStudio({ toolSelector }) {
       h="100%"
       w="100%"
       gap={{ base: 0, lg: 4 }}
-      direction={{ base: 'column', lg: 'row' }}
+      direction={{ base: "column", lg: "row" }}
       position="relative"
       overflow="hidden"
     >
@@ -447,7 +447,7 @@ export default function BackgroundStudio({ toolSelector }) {
         flexShrink={0}
         h="100%"
         overflow="hidden"
-        display={{ base: 'none', lg: 'flex' }}
+        display={{ base: "none", lg: "flex" }}
         flexDirection="column"
       >
         <Controls
@@ -471,11 +471,11 @@ export default function BackgroundStudio({ toolSelector }) {
         width="100%"
         maxWidth="1920px"
         margin="0 auto"
-        borderRadius={{ base: '12px', lg: '16px' }}
+        borderRadius={{ base: "12px", lg: "16px" }}
         overflow="hidden"
         border="1px solid var(--border-primary)"
         bg={canvasBg}
-        minH={{ base: '300px', lg: 'auto' }}
+        minH={{ base: "300px", lg: "auto" }}
       >
         <Suspense fallback={<LoadingFallback />}>
           <BackgroundRenderer background={background} props={props} renderKey={renderKey} />
@@ -496,7 +496,14 @@ export default function BackgroundStudio({ toolSelector }) {
           </Text>
         </Box>
 
-        <Flex position="absolute" zIndex={99} bottom={4} left={4} gap={2} display={{ base: 'none', lg: 'flex' }}>
+        <Flex
+          position="absolute"
+          zIndex={99}
+          bottom={4}
+          left={4}
+          gap={2}
+          display={{ base: "none", lg: "flex" }}
+        >
           <Flex
             as="button"
             align="center"
@@ -508,7 +515,7 @@ export default function BackgroundStudio({ toolSelector }) {
             borderRadius="8px"
             cursor="pointer"
             onClick={downloadImage}
-            _hover={{ bg: 'rgba(39, 30, 55, 0.9)' }}
+            _hover={{ bg: "rgba(39, 30, 55, 0.9)" }}
             transition="background 0.2s"
           >
             <Icon as={Download} boxSize={3.5} color="var(--text-muted)" />
@@ -521,14 +528,14 @@ export default function BackgroundStudio({ toolSelector }) {
             as="button"
             align="center"
             gap={2}
-            bg={isRecording ? 'rgba(255, 59, 48, 0.2)' : 'rgba(13, 7, 22, 0.9)'}
-            border={isRecording ? '1px solid #ff3b30' : '1px solid var(--border-primary)'}
+            bg={isRecording ? "rgba(255, 59, 48, 0.2)" : "rgba(13, 7, 22, 0.9)"}
+            border={isRecording ? "1px solid #ff3b30" : "1px solid var(--border-primary)"}
             px={3}
             py={2}
             borderRadius="8px"
             cursor="pointer"
             onClick={isRecording ? cancelRecording : recordVideo}
-            _hover={!isRecording ? { bg: 'rgba(39, 30, 55, 0.9)' } : {}}
+            _hover={!isRecording ? { bg: "rgba(39, 30, 55, 0.9)" } : {}}
             transition="all 0.2s"
             position="relative"
             overflow="hidden"
@@ -544,21 +551,26 @@ export default function BackgroundStudio({ toolSelector }) {
                 transition="width 0.1s linear"
               />
             )}
-            <Icon as={Video} boxSize={3.5} color={isRecording ? '#ff3b30' : 'var(--text-muted)'} position="relative" />
+            <Icon
+              as={Video}
+              boxSize={3.5}
+              color={isRecording ? "#ff3b30" : "var(--text-muted)"}
+              position="relative"
+            />
             <Text
               fontSize="12px"
-              color={isRecording ? '#ff3b30' : 'var(--text-muted)'}
+              color={isRecording ? "#ff3b30" : "var(--text-muted)"}
               fontWeight={500}
               position="relative"
             >
-              {isRecording ? `${Math.ceil((100 - recordingProgress) / 10)}s` : '10s Video'}
+              {isRecording ? `${Math.ceil((100 - recordingProgress) / 10)}s` : "10s Video"}
             </Text>
           </Flex>
         </Flex>
 
         <Flex
           as="button"
-          display={{ base: 'flex', lg: 'none' }}
+          display={{ base: "flex", lg: "none" }}
           position="absolute"
           bottom={4}
           right={4}
@@ -571,7 +583,7 @@ export default function BackgroundStudio({ toolSelector }) {
           cursor="pointer"
           onClick={() => setMobileControlsOpen(true)}
           boxShadow="0 4px 20px rgba(82, 39, 255, 0.4)"
-          _active={{ transform: 'scale(0.95)' }}
+          _active={{ transform: "scale(0.95)" }}
           transition="transform 0.1s"
         >
           <Icon as={Settings} boxSize={4} color="#fff" />
@@ -591,7 +603,7 @@ export default function BackgroundStudio({ toolSelector }) {
             bottom={0}
             bg="rgba(0, 0, 0, 0.6)"
             opacity={mobileControlsOpen ? 1 : 0}
-            visibility={mobileControlsOpen ? 'visible' : 'hidden'}
+            visibility={mobileControlsOpen ? "visible" : "hidden"}
             transition="all 0.3s"
             zIndex={999}
             onClick={() => setMobileControlsOpen(false)}
@@ -605,7 +617,7 @@ export default function BackgroundStudio({ toolSelector }) {
             bg="var(--bg-card)"
             borderTop="1px solid var(--border-primary)"
             borderTopRadius="24px"
-            transform={mobileControlsOpen ? 'translateY(0)' : 'translateY(100%)'}
+            transform={mobileControlsOpen ? "translateY(0)" : "translateY(100%)"}
             transition="transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
             zIndex={1000}
             maxH="85vh"
@@ -613,11 +625,23 @@ export default function BackgroundStudio({ toolSelector }) {
             display="flex"
             flexDirection="column"
           >
-            <Flex justify="center" pt={3} pb={2} cursor="pointer" onClick={() => setMobileControlsOpen(false)}>
+            <Flex
+              justify="center"
+              pt={3}
+              pb={2}
+              cursor="pointer"
+              onClick={() => setMobileControlsOpen(false)}
+            >
               <Box w="40px" h="4px" bg="var(--border-primary)" borderRadius="2px" />
             </Flex>
 
-            <Flex align="center" justify="space-between" px={4} pb={3} borderBottom="1px solid var(--border-primary)">
+            <Flex
+              align="center"
+              justify="space-between"
+              px={4}
+              pb={3}
+              borderBottom="1px solid var(--border-primary)"
+            >
               <Text fontSize="16px" fontWeight={700} color="var(--text-primary)">
                 Controls
               </Text>
@@ -631,7 +655,7 @@ export default function BackgroundStudio({ toolSelector }) {
                 bg="var(--bg-elevated)"
                 cursor="pointer"
                 onClick={() => setMobileControlsOpen(false)}
-                _hover={{ bg: 'var(--bg-card)' }}
+                _hover={{ bg: "var(--bg-card)" }}
               >
                 <Icon as={ChevronUp} boxSize={5} color="var(--text-muted)" />
               </Flex>

@@ -2,9 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "voice-chat-03",
   "description": "Voice chat 3",
-  "dependencies": [
-    "@elevenlabs/react"
-  ],
+  "dependencies": ["@elevenlabs/react"],
   "registryDependencies": [
     "https://ui.elevenlabs.io/r/conversation-bar.json",
     "https://ui.elevenlabs.io/r/conversation.json",
@@ -28,8 +26,6 @@
     "container": "w-full bg-surface min-h-svh flex px-4 py-12 items-center md:py-20 justify-center min-w-0",
     "mobile": "component"
   },
-  "categories": [
-    "agents"
-  ],
+  "categories": ["agents"],
   "type": "registry:block"
 }

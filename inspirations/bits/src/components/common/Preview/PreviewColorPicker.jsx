@@ -1,6 +1,6 @@
-import '../../../css/preview-slider.css';
+import "../../../css/preview-slider.css";
 
-const PreviewColorPicker = ({ title = '', color = '#ffffff', setColor }) => {
+const PreviewColorPicker = ({ title = "", color = "#ffffff", setColor }) => {
   const handleColorChange = (e) => setColor?.(e.target.value);
   const handleTextChange = (e) => {
     const val = e.target.value;

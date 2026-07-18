@@ -84,7 +84,7 @@ test("v1 models catalog requires auth when the route is protected and login is e
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
 
@@ -115,7 +115,7 @@ test("v1 models catalog accepts bearer API keys and filters the list by allowed 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
     new Request("http://localhost/api/v1/models", {
       headers: { Authorization: `Bearer ${key.key}` },
-    })
+    }),
   );
   const body = (await response.json()) as any;
   const ids = body.data.map((item) => item.id);
@@ -124,7 +124,7 @@ test("v1 models catalog accepts bearer API keys and filters the list by allowed 
   assert.ok(ids.some((id) => id.startsWith("openai/")));
   assert.equal(
     ids.some((id) => id.startsWith("claude/") || id.startsWith("cc/")),
-    false
+    false,
   );
 });
 
@@ -144,7 +144,7 @@ test("v1 models catalog does NOT accept API keys supplied via query string (#330
   const key = await apiKeysDb.createApiKey("catalog-query-auth", "machine-catalog-query");
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request(`http://localhost/api/v1/models?token=${encodeURIComponent(key.key)}`)
+    new Request(`http://localhost/api/v1/models?token=${encodeURIComponent(key.key)}`),
   );
 
   assert.equal(response.status, 401);
@@ -161,7 +161,7 @@ test("v1 models catalog accepts API keys embedded in vscode path aliases when au
   const key = await apiKeysDb.createApiKey("catalog-path-auth", "machine-catalog-path");
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request(`http://localhost/api/v1/vscode/${encodeURIComponent(key.key)}/models`)
+    new Request(`http://localhost/api/v1/vscode/${encodeURIComponent(key.key)}/models`),
   );
   const body = (await response.json()) as any;
 
@@ -172,7 +172,7 @@ test("v1 models catalog accepts API keys embedded in vscode path aliases when au
 
 test("v1 models catalog includes display names by default", async () => {
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const model = body.data.find((item) => item.id === "tllm/claude_sonnet_4");
@@ -187,7 +187,7 @@ test("v1 models catalog omits display names when the feature flag is disabled", 
 
   try {
     const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-      new Request("http://localhost/api/v1/models")
+      new Request("http://localhost/api/v1/models"),
     );
     const body = (await response.json()) as any;
     const model = body.data.find((item) => item.id === "tllm/claude_sonnet_4");
@@ -216,7 +216,7 @@ test("v1 models catalog hides models excluded by every active connection while k
   });
 
   let response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   let body = (await response.json()) as any;
   let ids = new Set(body.data.map((item) => item.id));
@@ -231,7 +231,7 @@ test("v1 models catalog hides models excluded by every active connection while k
   });
 
   response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   body = (await response.json()) as any;
   ids = new Set(body.data.map((item) => item.id));
@@ -273,7 +273,7 @@ test("v1 models catalog includes combos and custom models while excluding hidden
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const ids = new Set(body.data.map((item) => item.id));
@@ -285,7 +285,7 @@ test("v1 models catalog includes combos and custom models while excluding hidden
   assert.equal(ids.has("openai/gpt-4o-mini"), false);
   assert.equal(
     [...ids].some((id) => (id as any).startsWith("claude/") || (id as any).startsWith("cc/")),
-    false
+    false,
   );
 });
 
@@ -310,7 +310,7 @@ test("v1 models catalog keeps only visible combos when no providers are active",
   await combosDb.updateCombo((inactive as any).id, { isActive: false });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
 
@@ -324,11 +324,11 @@ test("v1 models catalog keeps only visible combos when no providers are active",
   assert.equal(visibleCombo.context_length, 32000);
   assert.equal(
     body.data.some((item) => item.id === hidden.name),
-    false
+    false,
   );
   assert.equal(
     body.data.some((item) => item.id === inactive.name),
-    false
+    false,
   );
 });
 
@@ -372,7 +372,7 @@ test("v1 models catalog derives combo metadata from known targets conservatively
     });
 
     const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-      new Request("http://localhost/api/v1/models")
+      new Request("http://localhost/api/v1/models"),
     );
     const body = (await response.json()) as any;
     const combo = body.data.find((item) => item.id === "metadata-router");
@@ -430,7 +430,7 @@ test("v1 models catalog lets explicit combo context override derived context", a
     await combosDb.updateCombo((combo as any).id, { context_length: 12345 });
 
     const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-      new Request("http://localhost/api/v1/models")
+      new Request("http://localhost/api/v1/models"),
     );
     const body = (await response.json()) as any;
     const listed = body.data.find((item) => item.id === "context-router");
@@ -452,7 +452,7 @@ test("v1 models catalog keeps unknown combo targets visible without guessed meta
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const combo = body.data.find((item) => item.id === "unknown-router");
@@ -503,7 +503,7 @@ test("v1 models catalog aggregates nested combos and keeps hidden child combos u
     });
 
     const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-      new Request("http://localhost/api/v1/models")
+      new Request("http://localhost/api/v1/models"),
     );
     const body = (await response.json()) as any;
     const parent = body.data.find((item) => item.id === "parent-router");
@@ -514,7 +514,7 @@ test("v1 models catalog aggregates nested combos and keeps hidden child combos u
     assert.equal(parent.max_output_tokens, 90);
     assert.equal(
       body.data.some((item) => item.id === "hidden-child-router"),
-      false
+      false,
     );
   } finally {
     modelsDevSync.saveModelsDevCapabilities({});
@@ -554,7 +554,7 @@ test("v1 models catalog resolves provider aliases without corrupting slashful mo
     });
 
     const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-      new Request("http://localhost/api/v1/models")
+      new Request("http://localhost/api/v1/models"),
     );
     const body = (await response.json()) as any;
     const combo = body.data.find((item) => item.id === "alias-and-slash-router");
@@ -577,7 +577,7 @@ test("v1 models catalog does not final-enrich combo names as real models", async
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const combo = body.data.find((item) => item.id === "gpt-5.5");
@@ -598,7 +598,7 @@ test("v1 models catalog exposes claude alias and provider-prefixed built-in mode
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const aliasModel = body.data.find((item) => item.id === "cc/claude-sonnet-4-6");
@@ -625,7 +625,7 @@ test("v1 models catalog exposes refreshed GitHub Copilot aliases and drops retir
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const aliasModel = body.data.find((item) => item.id === "gh/gpt-5.4");
@@ -641,11 +641,11 @@ test("v1 models catalog exposes refreshed GitHub Copilot aliases and drops retir
   assert.equal(providerModel.parent, aliasModel.id);
   assert.equal(
     body.data.some((item) => item.id === "gh/gpt-5.1"),
-    false
+    false,
   );
   assert.equal(
     body.data.some((item) => item.id === "gh/claude-opus-4.1"),
-    false
+    false,
   );
 });
 
@@ -658,7 +658,7 @@ test("v1 models catalog exposes bare Codex-preferred IDs for native Codex client
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const getModel = (id: string) => body.data.find((item) => item.id === id);
@@ -688,7 +688,7 @@ test("v1 models catalog exposes Antigravity client-visible preview aliases inste
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const ids = new Set(body.data.map((item) => item.id));
@@ -731,7 +731,7 @@ test("v1 models catalog uses provider-node prefixes for compatible provider cust
   await modelsDb.addCustomModel("anthropic-compatible-demo", "claude-edge", "Claude Edge");
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const ids = new Set(body.data.map((item) => item.id));
@@ -771,12 +771,12 @@ test("v1 models catalog includes synced Gemini models and duplicates audio model
         source: "imported",
         supportedEndpoints: ["chat"],
       },
-    ]
+    ],
   );
   modelsDb.mergeModelCompatOverride("gemini", "gemini-hidden", { isHidden: true });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const audioVariants = body.data.filter((item) => item.id === "gemini/gemini-audio-live");
@@ -788,7 +788,7 @@ test("v1 models catalog includes synced Gemini models and duplicates audio model
   assert.equal(embedding.type, "embedding");
   assert.equal(
     body.data.some((item) => item.id === "gemini/gemini-hidden"),
-    false
+    false,
   );
 });
 
@@ -808,7 +808,7 @@ test("v1 models catalog keeps Gemini chat models untyped when synced endpoints a
   ]);
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const chatModel = body.data.find((item) => item.id === "gemini/gemini-2.5-pro-live");
@@ -837,7 +837,7 @@ test("v1 models catalog includes synced non-Gemini provider models from discover
   ]);
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const syncedModel = body.data.find((item) => item.id === "opencode-go/glm-5.1");
@@ -878,7 +878,7 @@ test("v1 models catalog advertises GLM-5.2 provider aliases with hosted context 
         inputTokenLimit: 128000,
         outputTokenLimit: 128000,
       },
-    ]
+    ],
   );
   await modelsDb.replaceSyncedAvailableModelsForConnection(
     "cloudflare-ai",
@@ -892,7 +892,7 @@ test("v1 models catalog advertises GLM-5.2 provider aliases with hosted context 
         inputTokenLimit: 128000,
         outputTokenLimit: 128000,
       },
-    ]
+    ],
   );
   await modelsDb.replaceSyncedAvailableModelsForConnection("zenmux", (zenmuxConnection as any).id, [
     {
@@ -919,7 +919,7 @@ test("v1 models catalog advertises GLM-5.2 provider aliases with hosted context 
     });
 
     const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-      new Request("http://localhost/api/v1/models")
+      new Request("http://localhost/api/v1/models"),
     );
     const body = (await response.json()) as any;
     const byId = new Map(body.data.map((item) => [item.id, item]));
@@ -951,7 +951,7 @@ test("v1 models catalog includes media, moderation, rerank, video, and music mod
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const byId = new Map(body.data.map((item) => [item.id, item]));
@@ -990,7 +990,7 @@ test("v1 models catalog does not duplicate imported Jina specialty models", asyn
   ]);
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const visibleJinaEmbeddingRows = body.data.filter(
@@ -998,14 +998,14 @@ test("v1 models catalog does not duplicate imported Jina specialty models", asyn
       item.owned_by === "jina-ai" &&
       item.root === "jina-embeddings-v5-text-small" &&
       item.type === "embedding" &&
-      !item.parent
+      !item.parent,
   );
   const visibleJinaRerankRows = body.data.filter(
     (item) =>
       item.owned_by === "jina-ai" &&
       item.root === "jina-reranker-v3" &&
       item.type === "rerank" &&
-      !item.parent
+      !item.parent,
   );
 
   assert.equal(response.status, 200);
@@ -1026,7 +1026,7 @@ test("v1 models catalog does not duplicate custom Jina specialty models", async 
     "Jina Embeddings v5 Text Small",
     "imported",
     "embeddings",
-    ["embeddings"]
+    ["embeddings"],
   );
   await modelsDb.addCustomModel(
     "jina-ai",
@@ -1034,11 +1034,11 @@ test("v1 models catalog does not duplicate custom Jina specialty models", async 
     "Jina Reranker v3",
     "imported",
     "rerank",
-    ["rerank"]
+    ["rerank"],
   );
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const visibleJinaEmbeddingRows = body.data.filter(
@@ -1046,14 +1046,14 @@ test("v1 models catalog does not duplicate custom Jina specialty models", async 
       item.owned_by === "jina-ai" &&
       item.root === "jina-embeddings-v5-text-small" &&
       item.type === "embedding" &&
-      !item.parent
+      !item.parent,
   );
   const visibleJinaRerankRows = body.data.filter(
     (item) =>
       item.owned_by === "jina-ai" &&
       item.root === "jina-reranker-v3" &&
       item.type === "rerank" &&
-      !item.parent
+      !item.parent,
   );
 
   assert.equal(response.status, 200);
@@ -1068,7 +1068,7 @@ test("v1 models catalog exposes image model input and output modalities for adva
   await seedConnection("topaz", { name: "topaz-images" });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const byId = new Map(body.data.map((item) => [item.id, item]));
@@ -1102,7 +1102,7 @@ test("v1 models catalog tolerates custom model lookup failures and keeps builtin
 
   try {
     const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-      new Request("http://localhost/api/v1/models")
+      new Request("http://localhost/api/v1/models"),
     );
     const body = (await response.json()) as any;
 
@@ -1152,7 +1152,7 @@ test("v1 models catalog exposes provider-prefixed custom models, filters by raw 
       },
       null,
     ]),
-    "cline"
+    "cline",
   );
 
   const key = await apiKeysDb.createApiKey("catalog-root-filter", "machine-root-filter");
@@ -1163,7 +1163,7 @@ test("v1 models catalog exposes provider-prefixed custom models, filters by raw 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
     new Request("http://localhost/api/v1/models", {
       headers: { Authorization: `Bearer ${key.key}` },
-    })
+    }),
   );
   const body = (await response.json()) as any;
   const ids = new Set(body.data.map((item) => item.id));
@@ -1211,7 +1211,7 @@ test("v1 models catalog uses synced models.dev limits instead of provider defaul
     });
 
     const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-      new Request("http://localhost/api/v1/models")
+      new Request("http://localhost/api/v1/models"),
     );
     const body = (await response.json()) as any;
     const model = body.data.find((item) => item.id === "openai/gpt-5.5");
@@ -1230,7 +1230,7 @@ test("v1 models catalog exposes Bedrock Claude token limits from static metadata
   await seedConnection("bedrock", { name: "bedrock-limits" });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const sonnet46 = body.data.find((item) => item.id === "bedrock/anthropic.claude-sonnet-4-6");
@@ -1284,7 +1284,7 @@ test("v1 models catalog lets provider-specific synced limits beat global static 
     });
 
     const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-      new Request("http://localhost/api/v1/models")
+      new Request("http://localhost/api/v1/models"),
     );
     const body = (await response.json()) as any;
     const model = body.data.find((item) => item.id === "gh/gpt-5.5");
@@ -1333,7 +1333,7 @@ test("v1 models catalog returns 500 when model compatibility lookup crashes", as
 
   try {
     const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-      new Request("http://localhost/api/v1/models")
+      new Request("http://localhost/api/v1/models"),
     );
     const body = (await response.json()) as any;
 
@@ -1361,7 +1361,7 @@ test("v1 models catalog skips duplicate built-ins and custom models from inactiv
   await modelsDb.addCustomModel("cline", "inactive-only", "Inactive Only");
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const duplicateBuiltins = body.data.filter((item) => item.id === "openai/gpt-4o-2024-11-20");
@@ -1371,7 +1371,7 @@ test("v1 models catalog skips duplicate built-ins and custom models from inactiv
   assert.equal(duplicateBuiltins[0].custom === true, false);
   assert.equal(
     body.data.some((item) => item.id === "cl/inactive-only" || item.id === "cline/inactive-only"),
-    false
+    false,
   );
 });
 
@@ -1398,7 +1398,7 @@ test("v1 models catalog adds managed fallback models for Claude-compatible provi
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const ids = new Set(body.data.map((item) => item.id));
@@ -1428,7 +1428,7 @@ test("v1 models catalog auto-calculates combo context_length from targets when n
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const comboModel = body.data.find((item) => item.id === "auto-context-combo");
@@ -1438,7 +1438,7 @@ test("v1 models catalog auto-calculates combo context_length from targets when n
   assert.equal(
     comboModel.context_length,
     128000,
-    "combo context_length should be the MIN of all target model limits"
+    "combo context_length should be the MIN of all target model limits",
   );
 });
 
@@ -1452,14 +1452,14 @@ test("v1 models catalog includes context_length for individual chat models", asy
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   // Individual chat models only — combos/routers (owned_by "combo", incl. the
   // built-in auto/* entries from #4164) resolve dynamically and have no fixed
   // context_length, so they are not "individual chat models" for this check.
   const chatModels = body.data.filter(
-    (item) => (!item.type || item.type === "chat") && item.owned_by !== "combo"
+    (item) => (!item.type || item.type === "chat") && item.owned_by !== "combo",
   );
 
   assert.equal(response.status, 200);
@@ -1468,7 +1468,7 @@ test("v1 models catalog includes context_length for individual chat models", asy
   for (const model of chatModels) {
     assert.ok(
       typeof model.context_length === "number" && model.context_length > 0,
-      `chat model ${model.id} should have a positive context_length, got ${model.context_length}`
+      `chat model ${model.id} should have a positive context_length, got ${model.context_length}`,
     );
   }
 });
@@ -1491,7 +1491,7 @@ test("v1 models catalog falls back to getTokenLimit for models without registry 
   ]);
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const model = body.data.find((item) => item.id === "opencode-go/test-model-no-context");
@@ -1500,7 +1500,7 @@ test("v1 models catalog falls back to getTokenLimit for models without registry 
   assert.ok(model, "synced model should appear");
   assert.ok(
     typeof model.context_length === "number" && model.context_length > 0,
-    `synced model without inputTokenLimit should get context_length via getTokenLimit fallback, got ${model.context_length}`
+    `synced model without inputTokenLimit should get context_length via getTokenLimit fallback, got ${model.context_length}`,
   );
 });
 
@@ -1515,7 +1515,7 @@ test("v1 models catalog prefers manual combo context_length over auto-calculated
   await combosDb.updateCombo((combo as any).id, { context_length: 64000 });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const comboModel = body.data.find((item) => item.id === "manual-context-combo");
@@ -1543,7 +1543,7 @@ test("v1 models catalog computes combo context_length from known targets when so
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const comboModel = body.data.find((item) => item.id === "mixed-context-combo");
@@ -1553,7 +1553,7 @@ test("v1 models catalog computes combo context_length from known targets when so
   assert.equal(
     comboModel.context_length,
     128000,
-    "combo context_length should be the MIN of known target model limits, ignoring targets with no registry/spec/synced source"
+    "combo context_length should be the MIN of known target model limits, ignoring targets with no registry/spec/synced source",
   );
 });
 
@@ -1562,7 +1562,7 @@ test("v1 models catalog computes combo context_length from known targets when so
 test("v1 models catalog includes noAuth provider models when no DB connections exist (#2798)", async () => {
   // No connections seeded — empty DB, simulating a fresh install with no credentials added.
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const ids: string[] = body.data.map((item: any) => item.id);
@@ -1572,12 +1572,12 @@ test("v1 models catalog includes noAuth provider models when no DB connections e
   // The registry defines models under alias "oc" (e.g. "oc/big-pickle").
   assert.ok(
     ids.some((id) => id.startsWith("oc/")),
-    `Expected at least one oc/* model in /v1/models but got none. IDs sample: ${ids.slice(0, 10).join(", ")}`
+    `Expected at least one oc/* model in /v1/models but got none. IDs sample: ${ids.slice(0, 10).join(", ")}`,
   );
   assert.equal(
     ids.some((id) => id.startsWith("opencode/")),
     false,
-    "catalog must not return opencode/* noAuth aliases because opencode/ routes to opencode-zen"
+    "catalog must not return opencode/* noAuth aliases because opencode/ routes to opencode-zen",
   );
 });
 
@@ -1585,7 +1585,7 @@ test("v1 models catalog hides disabled noAuth provider models", async () => {
   await settingsDb.updateSettings({ blockedProviders: ["opencode", "duckduckgo-web"] });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as any;
   const ids: string[] = body.data.map((item: any) => item.id);
@@ -1594,11 +1594,11 @@ test("v1 models catalog hides disabled noAuth provider models", async () => {
   assert.equal(
     ids.some((id) => id.startsWith("oc/")),
     false,
-    "OpenCode no-auth models must be hidden while no-auth providers are disabled"
+    "OpenCode no-auth models must be hidden while no-auth providers are disabled",
   );
   assert.equal(
     ids.some((id) => id.startsWith("ddgw/")),
     false,
-    "DuckDuckGo no-auth models must be hidden while no-auth providers are disabled"
+    "DuckDuckGo no-auth models must be hidden while no-auth providers are disabled",
   );
 });

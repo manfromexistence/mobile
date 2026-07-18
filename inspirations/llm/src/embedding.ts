@@ -39,12 +39,8 @@ export class EmbeddingPipeline {
 
     // 1. Create VM and get the core functions
     tvm.beginScope();
-    this.vm = this.tvm.detachFromCurrentScope(
-      this.tvm.createVirtualMachine(this.device),
-    );
-    this.prefill = this.tvm.detachFromCurrentScope(
-      this.vm.getFunction("prefill"),
-    );
+    this.vm = this.tvm.detachFromCurrentScope(this.tvm.createVirtualMachine(this.device));
+    this.prefill = this.tvm.detachFromCurrentScope(this.vm.getFunction("prefill"));
 
     // 2. Get json stored in the vm's metadata function
     const fgetMetadata = this.vm.getFunction("_metadata");
@@ -57,9 +53,7 @@ export class EmbeddingPipeline {
     metadata.params.forEach((param: any) => {
       paramNames.push(param.name);
     });
-    this.params = this.tvm.detachFromCurrentScope(
-      this.tvm.getParamsFromCacheByName(paramNames),
-    );
+    this.params = this.tvm.detachFromCurrentScope(this.tvm.getParamsFromCacheByName(paramNames));
 
     // 4. Read in compilation configurations from metadata
     // We use context window size max batch size to check validity of the model
@@ -84,10 +78,7 @@ export class EmbeddingPipeline {
       throw new MinValueError("prefillChunkSize", 0);
     }
     if (this.prefillChunkSize !== this.contextWindowSize) {
-      throw new EmbeddingChunkingUnsupportedError(
-        this.contextWindowSize,
-        this.prefillChunkSize,
-      );
+      throw new EmbeddingChunkingUnsupportedError(this.contextWindowSize, this.prefillChunkSize);
     }
     tvm.endScope();
   }
@@ -137,10 +128,7 @@ export class EmbeddingPipeline {
       const curInputSize = tokenizedInputs[i].length;
       totalNumTokens += curInputSize;
       if (curInputSize > this.contextWindowSize) {
-        throw new EmbeddingExceedContextWindowSizeError(
-          this.contextWindowSize,
-          curInputSize,
-        );
+        throw new EmbeddingExceedContextWindowSizeError(this.contextWindowSize, curInputSize);
       }
     }
     if (tokenizedInputs.length === 0) {
@@ -188,18 +176,10 @@ export class EmbeddingPipeline {
         );
       }
       // 3.4 Convert inputs and attention mask to tvm ndarray on GPU, of shape (curBatchSize, maxInputSize)
-      let inputNDArray = this.tvm.empty(
-        [flattenedInputSize],
-        "int32",
-        this.device,
-      );
+      let inputNDArray = this.tvm.empty([flattenedInputSize], "int32", this.device);
       inputNDArray.copyFrom(curBatchPaddedFlatten);
       inputNDArray = inputNDArray.view([curBatchSize, maxInputSize]);
-      let maskNDArray = this.tvm.empty(
-        [flattenedInputSize],
-        "int32",
-        this.device,
-      );
+      let maskNDArray = this.tvm.empty([flattenedInputSize], "int32", this.device);
       maskNDArray.copyFrom(curAttnMask);
       maskNDArray = maskNDArray.view([curBatchSize, maxInputSize]);
 
@@ -219,13 +199,9 @@ export class EmbeddingPipeline {
         this.tvm.cpu(),
       );
       logitsCurBatchOnCPU.copyFrom(logitsCurBatchOnGPU);
-      logitsCurBatchOnCPU = logitsCurBatchOnCPU.view([
-        curBatchSize * maxInputSize * hidden_size,
-      ]);
+      logitsCurBatchOnCPU = logitsCurBatchOnCPU.view([curBatchSize * maxInputSize * hidden_size]);
       await this.device.sync();
-      const logitsCurBatchOnCPUArray: Float32Array = <Float32Array>(
-        logitsCurBatchOnCPU.toArray()
-      );
+      const logitsCurBatchOnCPUArray: Float32Array = <Float32Array>logitsCurBatchOnCPU.toArray();
 
       // 3.7 Update final result. For each sentence, get [0,:], i.e. only the first token's output
       // That is, we are doing result.push(logits[:,0,:]) here.

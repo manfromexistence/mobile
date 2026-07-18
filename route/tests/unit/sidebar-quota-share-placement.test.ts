@@ -36,7 +36,7 @@ test("sidebar: costs-quota-share appears after quota in source", () => {
   assert.ok(idxQuotaShare >= 0, 'Could not find id: "costs-quota-share" in sidebarVisibility.ts');
   assert.ok(
     idxQuotaShare > idxQuota,
-    `costs-quota-share (idx ${idxQuotaShare}) must appear AFTER quota (idx ${idxQuota})`
+    `costs-quota-share (idx ${idxQuotaShare}) must appear AFTER quota (idx ${idxQuota})`,
   );
 });
 
@@ -50,7 +50,7 @@ test("sidebar: no array close ]; between quota and costs-quota-share (same array
   const between = src.slice(idxQuota, idxQuotaShare);
   assert.ok(
     !between.includes("];"),
-    `There must be NO array-close ]; between quota and costs-quota-share. Found one, meaning they are in different arrays.\nSlice between them:\n${between}`
+    `There must be NO array-close ]; between quota and costs-quota-share. Found one, meaning they are in different arrays.\nSlice between them:\n${between}`,
   );
 });
 
@@ -65,7 +65,7 @@ test("sidebar: costs section does not have costs-quota-share right after costs-b
   const gap = Math.abs(idxQuotaShare - idxBudget);
   assert.ok(
     gap > 200,
-    `costs-quota-share must NOT be immediately after costs-budget in the costs section (gap: ${gap} chars, expected > 200)`
+    `costs-quota-share must NOT be immediately after costs-budget in the costs section (gap: ${gap} chars, expected > 200)`,
   );
 });
 
@@ -76,6 +76,6 @@ test("sidebar: exactly one occurrence of costs-quota-share", () => {
   assert.equal(
     occurrences,
     1,
-    `Expected exactly 1 occurrence of id: "costs-quota-share", found ${occurrences}`
+    `Expected exactly 1 occurrence of id: "costs-quota-share", found ${occurrences}`,
   );
 });

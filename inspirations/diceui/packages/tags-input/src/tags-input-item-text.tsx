@@ -5,27 +5,25 @@ import { useTagsInput } from "./tags-input-root";
 
 const ITEM_TEXT_NAME = "TagsInputItemText";
 
-interface TagsInputItemTextProps
-  extends React.ComponentPropsWithoutRef<typeof Primitive.span> {}
+interface TagsInputItemTextProps extends React.ComponentPropsWithoutRef<typeof Primitive.span> {}
 
-const TagsInputItemText = React.forwardRef<
-  HTMLSpanElement,
-  TagsInputItemTextProps
->((props, ref) => {
-  const { children, ...itemTextProps } = props;
-  const context = useTagsInput(ITEM_TEXT_NAME);
-  const itemContext = useTagsInputItem(ITEM_TEXT_NAME);
+const TagsInputItemText = React.forwardRef<HTMLSpanElement, TagsInputItemTextProps>(
+  (props, ref) => {
+    const { children, ...itemTextProps } = props;
+    const context = useTagsInput(ITEM_TEXT_NAME);
+    const itemContext = useTagsInputItem(ITEM_TEXT_NAME);
 
-  if (itemContext.isEditing && context.editable && !itemContext.disabled) {
-    return <TagsInputEditableItemText />;
-  }
+    if (itemContext.isEditing && context.editable && !itemContext.disabled) {
+      return <TagsInputEditableItemText />;
+    }
 
-  return (
-    <Primitive.span id={itemContext.textId} {...itemTextProps} ref={ref}>
-      {children ?? itemContext.displayValue}
-    </Primitive.span>
-  );
-});
+    return (
+      <Primitive.span id={itemContext.textId} {...itemTextProps} ref={ref}>
+        {children ?? itemContext.displayValue}
+      </Primitive.span>
+    );
+  },
+);
 
 const ItemText = TagsInputItemText;
 
@@ -39,24 +37,18 @@ function TagsInputEditableItemText() {
     context.setEditingIndex(null);
   }, [context.setEditingIndex, itemContext.displayValue]);
 
-  const onChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const target = event.target;
-      target.style.width = "0";
-      target.style.width = `${target.scrollWidth + 4}px`;
-      setEditValue(event.target.value);
-    },
-    [],
-  );
+  const onChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const target = event.target;
+    target.style.width = "0";
+    target.style.width = `${target.scrollWidth + 4}px`;
+    setEditValue(event.target.value);
+  }, []);
 
-  const onFocus = React.useCallback(
-    (event: React.FocusEvent<HTMLInputElement>) => {
-      event.target.select();
-      event.target.style.width = "0";
-      event.target.style.width = `${event.target.scrollWidth + 4}px`;
-    },
-    [],
-  );
+  const onFocus = React.useCallback((event: React.FocusEvent<HTMLInputElement>) => {
+    event.target.select();
+    event.target.style.width = "0";
+    event.target.style.width = `${event.target.scrollWidth + 4}px`;
+  }, []);
 
   const onKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {

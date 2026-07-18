@@ -1,4 +1,4 @@
-import './PropTable.css';
+import "./PropTable.css";
 
 const PropTable = ({ data }) => (
   <div className="prop-table-section">
@@ -18,9 +18,13 @@ const PropTable = ({ data }) => (
         <tbody>
           {data.map((prop, index) => (
             <tr key={index}>
-              <td><code className="prop-code">{prop.name}</code></td>
+              <td>
+                <code className="prop-code">{prop.name}</code>
+              </td>
               <td className="prop-type">{prop.type}</td>
-              <td><code className="prop-code">{prop.default?.length ? prop.default : '—'}</code></td>
+              <td>
+                <code className="prop-code">{prop.default?.length ? prop.default : "—"}</code>
+              </td>
               <td className="prop-desc">{prop.description}</td>
             </tr>
           ))}
@@ -39,7 +43,7 @@ const PropTable = ({ data }) => (
           <p className="prop-card-desc">{prop.description}</p>
           <div className="prop-card-default">
             <span className="prop-card-label">Default</span>
-            <code className="prop-code">{prop.default?.length ? prop.default : '—'}</code>
+            <code className="prop-code">{prop.default?.length ? prop.default : "—"}</code>
           </div>
         </div>
       ))}

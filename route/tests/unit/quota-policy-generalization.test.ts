@@ -71,7 +71,7 @@ test("evaluateQuotaLimitPolicy blocks when configured window reaches threshold",
     "openai",
     buildConnection("conn-policy-1", {
       limitPolicy: { enabled: true, thresholdPercent: 90, windows: ["daily"] },
-    })
+    }),
   );
 
   assert.equal(result.blocked, true);
@@ -91,7 +91,7 @@ test("evaluateQuotaLimitPolicy matches canonical weekly window against labeled c
     buildConnection("conn-policy-weekly-label", {
       codexLimitPolicy: { use5h: true, useWeekly: true },
       limitPolicy: { enabled: true, windows: ["weekly"] },
-    })
+    }),
   );
 
   assert.equal(result.blocked, true);
@@ -105,7 +105,7 @@ test("evaluateQuotaLimitPolicy does not block when no quota data exists", () => 
     "openai",
     buildConnection("conn-policy-missing", {
       limitPolicy: { enabled: true, thresholdPercent: 90, windows: ["daily"] },
-    })
+    }),
   );
 
   assert.equal(result.blocked, false);

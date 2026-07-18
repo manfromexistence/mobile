@@ -8,11 +8,7 @@
     "@dnd-kit/utilities",
     "lucide-react"
   ],
-  "registryDependencies": [
-    "badge",
-    "button",
-    "kanban"
-  ],
+  "registryDependencies": ["badge", "button", "kanban"],
   "files": [
     {
       "path": "examples/kanban-dynamic-overlay-demo.tsx",

@@ -184,7 +184,7 @@ describe("opencode-zen ↔ opencode alias fix (end-to-end)", () => {
       assert.equal(
         md?.limits.contextWindow,
         REAL_OPENCODE_DATA[target.modelId as keyof typeof REAL_OPENCODE_DATA].limit_context,
-        `${target.modelId} should have the catalog-stored context`
+        `${target.modelId} should have the catalog-stored context`,
       );
       if (typeof md?.limits.contextWindow === "number") {
         contexts.push(md.limits.contextWindow);

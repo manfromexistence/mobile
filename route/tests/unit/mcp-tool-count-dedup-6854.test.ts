@@ -39,7 +39,7 @@ test("#6854: countUniqueMcpTools de-duplicates tools registered in multiple coll
     overlap.length > 0,
     "expected MCP_TOOLS and agentSkillTools to still share the agent-skills tool names " +
       "(if this fails because the overlap was removed instead, this test's premise no " +
-      "longer applies and it should be revisited)"
+      "longer applies and it should be revisited)",
   );
 
   const collections = {
@@ -67,17 +67,17 @@ test("#6854: countUniqueMcpTools de-duplicates tools registered in multiple coll
 
   const naiveAdditiveSum = Object.values(collections).reduce(
     (sum, collection) => sum + namesOf(collection).length,
-    0
+    0,
   );
 
   assert.equal(total, uniqueNames.size, "countUniqueMcpTools must equal the unique-name count");
   assert.equal(
     total,
     naiveAdditiveSum - overlap.length,
-    "unique count must be exactly the additive sum minus the double-counted overlap"
+    "unique count must be exactly the additive sum minus the double-counted overlap",
   );
   assert.ok(
     total < naiveAdditiveSum,
-    "unique count must be strictly less than the naive additive sum given a known overlap"
+    "unique count must be strictly less than the naive additive sum given a known overlap",
   );
 });

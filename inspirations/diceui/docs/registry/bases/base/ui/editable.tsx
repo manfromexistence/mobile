@@ -47,10 +47,7 @@ function useStoreContext(consumerName: string) {
   return context;
 }
 
-function useStore<T>(
-  selector: (state: StoreState) => T,
-  ogStore?: Store | null,
-): T {
+function useStore<T>(selector: (state: StoreState) => T, ogStore?: Store | null): T {
   const contextStore = React.useContext(StoreContext);
 
   const store = ogStore ?? contextStore;
@@ -59,10 +56,7 @@ function useStore<T>(
     throw new Error(`\`useStore\` must be used within \`${ROOT_NAME}\``);
   }
 
-  const getSnapshot = React.useCallback(
-    () => selector(store.getState()),
-    [store, selector],
-  );
+  const getSnapshot = React.useCallback(() => selector(store.getState()), [store, selector]);
 
   return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
@@ -99,10 +93,7 @@ function useEditableContext(consumerName: string) {
 }
 
 interface EditableProps
-  extends Omit<
-    React.ComponentProps<"div"> & useRender.ComponentProps<"div">,
-    "onSubmit"
-  > {
+  extends Omit<React.ComponentProps<"div"> & useRender.ComponentProps<"div">, "onSubmit"> {
   id?: string;
   defaultValue?: string;
   value?: string;
@@ -168,9 +159,7 @@ function Editable(props: EditableProps) {
 
   const previousValueRef = React.useRef(defaultValue);
 
-  const [formTrigger, setFormTrigger] = React.useState<RootElement | null>(
-    null,
-  );
+  const [formTrigger, setFormTrigger] = React.useState<RootElement | null>(null);
   const composedRef = useComposedRefs(ref, (node) => setFormTrigger(node));
   const isFormControl = formTrigger ? !!formTrigger.closest("form") : true;
 
@@ -369,9 +358,7 @@ function EditableLabel(props: EditableLabelProps) {
   });
 }
 
-interface EditableAreaProps
-  extends React.ComponentProps<"div">,
-    useRender.ComponentProps<"div"> {}
+interface EditableAreaProps extends React.ComponentProps<"div">, useRender.ComponentProps<"div"> {}
 
 function EditableArea(props: EditableAreaProps) {
   const { className, render, ref, ...areaProps } = props;
@@ -708,8 +695,7 @@ function EditableTrigger(props: EditableTriggerProps) {
         "aria-disabled": context.disabled || context.readOnly,
         ref,
         onClick: context.triggerMode === "click" ? onTrigger : undefined,
-        onDoubleClick:
-          context.triggerMode === "dblclick" ? onTrigger : undefined,
+        onDoubleClick: context.triggerMode === "dblclick" ? onTrigger : undefined,
       },
       triggerProps,
     ),
@@ -733,13 +719,7 @@ interface EditableToolbarProps
 }
 
 function EditableToolbar(props: EditableToolbarProps) {
-  const {
-    className,
-    orientation = "horizontal",
-    render,
-    ref,
-    ...toolbarProps
-  } = props;
+  const { className, orientation = "horizontal", render, ref, ...toolbarProps } = props;
   const context = useEditableContext(TOOLBAR_NAME);
 
   return useRender({

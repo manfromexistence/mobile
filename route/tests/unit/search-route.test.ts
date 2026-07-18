@@ -23,7 +23,7 @@ async function seedConnection(
     apiKey?: string | null;
     authType?: string;
     providerSpecificData?: Record<string, unknown>;
-  } = {}
+  } = {},
 ) {
   return providersDb.createProviderConnection({
     provider,
@@ -92,7 +92,7 @@ test("v1 search POST uses stored Linkup credentials and returns normalized resul
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -107,7 +107,7 @@ test("v1 search POST uses stored Linkup credentials and returns normalized resul
           max_results: 1,
           search_type: "web",
         }),
-      })
+      }),
     );
     const body = (await response.json()) as any;
 
@@ -115,7 +115,7 @@ test("v1 search POST uses stored Linkup credentials and returns normalized resul
     assert.equal(capturedUrl, "https://api.linkup.so/v1/search");
     assert.equal(
       (capturedInit?.headers as Record<string, string>).Authorization,
-      "Bearer linkup-key"
+      "Bearer linkup-key",
     );
     assert.equal(body.provider, "linkup-search");
     assert.equal(body.query, "omniroute linkup");
@@ -157,7 +157,7 @@ test("v1 search POST uses stored You.com credentials and returns unified news re
         },
         metadata: { search_uuid: "uuid-1", latency: 0.42 },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -174,7 +174,7 @@ test("v1 search POST uses stored You.com credentials and returns unified news re
           time_range: "week",
           content: { full_page: true, format: "markdown" },
         }),
-      })
+      }),
     );
     const body = (await response.json()) as any;
     const url = new URL(capturedUrl);
@@ -214,7 +214,7 @@ test("v1 search POST accepts authless SearXNG with provider_options baseUrl", as
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -231,14 +231,14 @@ test("v1 search POST accepts authless SearXNG with provider_options baseUrl", as
             baseUrl: "http://127.0.0.1:9090/custom-search",
           },
         }),
-      })
+      }),
     );
     const body = (await response.json()) as any;
 
     assert.equal(response.status, 200);
     assert.equal(
       capturedUrl,
-      "http://127.0.0.1:9090/custom-search/search?q=self+hosted+meta+search&format=json&categories=news"
+      "http://127.0.0.1:9090/custom-search/search?q=self+hosted+meta+search&format=json&categories=news",
     );
     assert.equal(body.provider, "searxng-search");
     assert.equal(body.results[0].title, "SearXNG result");
@@ -265,7 +265,7 @@ test("v1 search POST accepts authless SearXNG with the built-in default base URL
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -279,14 +279,14 @@ test("v1 search POST accepts authless SearXNG with the built-in default base URL
           provider: "searxng-search",
           search_type: "web",
         }),
-      })
+      }),
     );
     const body = (await response.json()) as any;
 
     assert.equal(response.status, 200);
     assert.equal(
       capturedUrl,
-      "http://localhost:8888/search?q=default+self+hosted+meta+search&format=json&categories=general"
+      "http://localhost:8888/search?q=default+self+hosted+meta+search&format=json&categories=general",
     );
     assert.equal(body.provider, "searxng-search");
     assert.equal(body.results[0].title, "Default SearXNG result");
@@ -320,7 +320,7 @@ test("v1 search POST preserves stored SearXNG baseUrl for authless providers", a
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -334,14 +334,14 @@ test("v1 search POST preserves stored SearXNG baseUrl for authless providers", a
           provider: "searxng-search",
           search_type: "web",
         }),
-      })
+      }),
     );
     const body = (await response.json()) as any;
 
     assert.equal(response.status, 200);
     assert.equal(
       capturedUrl,
-      "http://127.0.0.1:9090/custom-search/search?q=stored+self+hosted+meta+search&format=json&categories=general"
+      "http://127.0.0.1:9090/custom-search/search?q=stored+self+hosted+meta+search&format=json&categories=general",
     );
     assert.equal(body.provider, "searxng-search");
     assert.equal(body.results[0].title, "Stored SearXNG result");
@@ -367,7 +367,7 @@ test("v1 search POST auto-select uses authless SearXNG when no API-key providers
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -380,14 +380,14 @@ test("v1 search POST auto-select uses authless SearXNG when no API-key providers
           query: "auto select self hosted search",
           search_type: "web",
         }),
-      })
+      }),
     );
     const body = (await response.json()) as any;
 
     assert.equal(response.status, 200);
     assert.equal(
       capturedUrl,
-      "http://localhost:8888/search?q=auto+select+self+hosted+search&format=json&categories=general"
+      "http://localhost:8888/search?q=auto+select+self+hosted+search&format=json&categories=general",
     );
     assert.equal(body.provider, "searxng-search");
     assert.equal(body.results[0].title, "Auto-selected SearXNG result");

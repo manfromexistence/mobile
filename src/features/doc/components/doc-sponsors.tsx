@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { XIcon } from "lucide-react"
-import { useState } from "react"
-import { Button } from "@/components/base/ui/button"
+import { XIcon } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/base/ui/button";
 
-import { UTM_PARAMS } from "@/config/site"
-import { SPONSORS } from "@/features/sponsor/data"
-import { trackEvent } from "@/lib/events"
-import { addQueryParams } from "@/lib/utils/url"
+import { UTM_PARAMS } from "@/config/site";
+import { SPONSORS } from "@/features/sponsor/data";
+import { trackEvent } from "@/lib/events";
+import { addQueryParams } from "@/lib/utils/url";
 
 export function DocSponsors() {
-  const [visible, setVisible] = useState(true)
+  const [visible, setVisible] = useState(true);
 
   if (!visible) {
-    return null
+    return null;
   }
 
   return (
@@ -41,8 +41,8 @@ export function DocSponsors() {
               variant="ghost"
               size="icon-sm"
               onClick={() => {
-                trackEvent({ name: "doc_sponsors_close" })
-                setVisible(false)
+                trackEvent({ name: "doc_sponsors_close" });
+                setVisible(false);
               }}
             >
               <XIcon />
@@ -50,24 +50,24 @@ export function DocSponsors() {
           </div>
 
           <ul className="grid grid-cols-1 gap-1 sm:grid-cols-2">
-            {SPONSORS.filter(
-              (sponsor) => sponsor.tier === "gold" || sponsor.tier === "silver"
-            ).map((item) => (
-              <li key={item.name}>
-                <a
-                  className="flex items-center justify-center rounded-[9px] border bg-background text-foreground [&_svg]:w-full [&_svg]:max-w-75 [&_svg]:shrink-0"
-                  href={addQueryParams(item.url, UTM_PARAMS)}
-                  target="_blank"
-                  rel="noopener sponsored"
-                  aria-label={`${item.name} logo`}
-                >
-                  <item.logo aria-hidden />
-                </a>
-              </li>
-            ))}
+            {SPONSORS.filter((sponsor) => sponsor.tier === "gold" || sponsor.tier === "silver").map(
+              (item) => (
+                <li key={item.name}>
+                  <a
+                    className="flex items-center justify-center rounded-[9px] border bg-background text-foreground [&_svg]:w-full [&_svg]:max-w-75 [&_svg]:shrink-0"
+                    href={addQueryParams(item.url, UTM_PARAMS)}
+                    target="_blank"
+                    rel="noopener sponsored"
+                    aria-label={`${item.name} logo`}
+                  >
+                    <item.logo aria-hidden />
+                  </a>
+                </li>
+              ),
+            )}
           </ul>
         </aside>
       </div>
     </>
-  )
+  );
 }

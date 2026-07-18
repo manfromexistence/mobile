@@ -16,17 +16,25 @@ vi.mock("next/link", () => ({
 }));
 
 // Mock ScrapeResult to keep test focused
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/search-tools/components/ScrapeResult",
-  () => ({
-    default: ({ result }: { result: { content: string; url: string; provider: string; links: string[]; metadata: null; screenshot_url: null } }) =>
-      React.createElement("div", {
-        "data-testid": "scrape-result-mock",
-        "data-url": result.url,
-        "data-provider": result.provider,
-      }),
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/search-tools/components/ScrapeResult", () => ({
+  default: ({
+    result,
+  }: {
+    result: {
+      content: string;
+      url: string;
+      provider: string;
+      links: string[];
+      metadata: null;
+      screenshot_url: null;
+    };
+  }) =>
+    React.createElement("div", {
+      "data-testid": "scrape-result-mock",
+      "data-url": result.url,
+      "data-provider": result.provider,
+    }),
+}));
 
 // ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -76,7 +84,9 @@ function renderScrapeTab(): HTMLDivElement {
 
 describe("ScrapeTab", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {

@@ -6,7 +6,7 @@ describe("processManager", () => {
   it("should load module", async () => {
     const loadPromise = import("../../src/lib/versionManager/processManager.ts");
     const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Module load timeout")), 5000)
+      setTimeout(() => reject(new Error("Module load timeout")), 5000),
     );
     mod = await Promise.race([loadPromise, timeoutPromise]);
     assert.ok(mod);

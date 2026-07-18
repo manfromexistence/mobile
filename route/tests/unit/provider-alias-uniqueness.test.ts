@@ -39,7 +39,7 @@ test("no two provider IDs share the same alias in the open-sse registry", () => 
     [],
     `Alias collisions detected (each alias must map to exactly one provider id): ${collisions
       .map(([alias, ids]) => `"${alias}" → ${ids.join(", ")}`)
-      .join("; ")}`
+      .join("; ")}`,
   );
 });
 
@@ -80,6 +80,6 @@ test("no provider id is registered in both the API-key and web-cookie catalogs",
   assert.ok("huggingchat" in WEB_COOKIE_PROVIDERS, "huggingchat must be in the web-cookie catalog");
   assert.ok(
     !("huggingchat" in APIKEY_PROVIDERS),
-    "huggingchat must NOT be in the API-key catalog (use `huggingface` for the API key path)"
+    "huggingchat must NOT be in the API-key catalog (use `huggingface` for the API key path)",
   );
 });

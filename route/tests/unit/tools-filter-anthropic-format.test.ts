@@ -76,11 +76,11 @@ describe("tools empty-name filter — #346 / PR #397", () => {
     assert.equal(result.length, 2, "Should keep 2 valid tools (one of each format)");
     assert.ok(
       result.some((t) => t.function?.name === "openai_tool"),
-      "OpenAI tool preserved"
+      "OpenAI tool preserved",
     );
     assert.ok(
       result.some((t) => t.name === "anthropic_tool"),
-      "Anthropic tool preserved"
+      "Anthropic tool preserved",
     );
   });
 
@@ -123,15 +123,15 @@ describe("tools empty-name filter — #346 / PR #397", () => {
     assert.equal(result.length, 3, "Should keep web_search, exec_command, and apply_patch");
     assert.ok(
       result.some((t) => t.type === "web_search"),
-      "web_search preserved"
+      "web_search preserved",
     );
     assert.ok(
       result.some((t) => t.function?.name === "exec_command"),
-      "exec_command preserved"
+      "exec_command preserved",
     );
     assert.ok(
       result.some((t) => t.name === "apply_patch"),
-      "apply_patch preserved"
+      "apply_patch preserved",
     );
   });
 });

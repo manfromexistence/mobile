@@ -10,11 +10,13 @@ const {
 
 const { SafeOutboundFetchError } = await import("../../src/shared/network/safeOutboundFetch.ts");
 
-const { __setTlsFetchOverrideForTesting: __setPplxTlsFetchOverride } =
-  await import("../../open-sse/services/perplexityTlsClient.ts");
+const { __setTlsFetchOverrideForTesting: __setPplxTlsFetchOverride } = await import(
+  "../../open-sse/services/perplexityTlsClient.ts"
+);
 
-const { __setTlsFetchOverrideForTesting: __setGrokTlsFetchOverride } =
-  await import("../../open-sse/services/grokTlsClient.ts");
+const { __setTlsFetchOverrideForTesting: __setGrokTlsFetchOverride } = await import(
+  "../../open-sse/services/grokTlsClient.ts"
+);
 
 const { COMMAND_CODE_VERSION } = await import("../../open-sse/executors/commandCode.ts");
 
@@ -29,7 +31,7 @@ test.afterEach(() => {
 function toPlainHeaders(headers: HeadersInit | undefined) {
   if (headers instanceof Headers) return Object.fromEntries(headers.entries());
   return Object.fromEntries(
-    Object.entries(headers || {}).map(([key, value]) => [key, String(value)])
+    Object.entries(headers || {}).map(([key, value]) => [key, String(value)]),
   );
 }
 
@@ -72,7 +74,7 @@ test("Kiro API key validator resolves profiles with bearer auth", async () => {
       JSON.stringify({
         profiles: [{ arn: "arn:aws:codewhisperer:us-east-1:123:profile/API" }],
       }),
-      { status: 200 }
+      { status: 200 },
     );
   };
 
@@ -107,19 +109,19 @@ test("Kiro API key validator accepts API keys that cannot list profiles", async 
           __type: "com.amazon.aws.codewhisperer#AccessDeniedException",
           message: "API key authentication is not supported for this operation.",
         }),
-        { status: 403 }
+        { status: 403 },
       );
     }
 
     assert.equal(
       String(url),
-      "https://codewhisperer.us-east-1.amazonaws.com/generateAssistantResponse"
+      "https://codewhisperer.us-east-1.amazonaws.com/generateAssistantResponse",
     );
     assert.equal(headers.Authorization, "Bearer ksk-valid-without-profile-list");
     assert.equal(headers.tokentype, "API_KEY");
     assert.equal(
       headers["X-Amz-Target"] || headers["x-amz-target"],
-      "AmazonCodeWhispererStreamingService.GenerateAssistantResponse"
+      "AmazonCodeWhispererStreamingService.GenerateAssistantResponse",
     );
     assert.equal(body.conversationState.currentMessage.userInputMessage.modelId, "auto");
     assert.equal(body.inferenceConfig.maxTokens, 1);
@@ -148,7 +150,7 @@ test("Kiro API key validator rejects runtime auth failures after profile lookup 
           __type: "com.amazon.aws.codewhisperer#AccessDeniedException",
           message: "API key authentication is not supported for this operation.",
         }),
-        { status: 403 }
+        { status: 403 },
       );
     }
     return new Response(JSON.stringify({ message: "bearer token is invalid" }), { status: 403 });
@@ -315,7 +317,7 @@ test("AWS Polly specialty validator signs DescribeVoices with SigV4", async () =
     assert.equal(target, "https://polly.us-east-2.amazonaws.com/v1/voices?Engine=standard");
     assert.match(
       headers.Authorization,
-      /^AWS4-HMAC-SHA256 Credential=AKIA_POLLY\/\d{8}\/us-east-2\/polly\/aws4_request,/
+      /^AWS4-HMAC-SHA256 Credential=AKIA_POLLY\/\d{8}\/us-east-2\/polly\/aws4_request,/,
     );
     assert.equal(headers.host, "polly.us-east-2.amazonaws.com");
     assert.equal(headers["x-amz-content-sha256"].length, 64);
@@ -453,7 +455,7 @@ test("web-cookie provider validators accept valid Grok, Perplexity, Blackbox and
         JSON.stringify({
           user: { id: "bb-user-1", email: "premium@example.com" },
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     if (target.includes("app.blackbox.ai/api/check-subscription")) {
@@ -463,7 +465,7 @@ test("web-cookie provider validators accept valid Grok, Perplexity, Blackbox and
           isTrialSubscription: false,
           plan: "pro",
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     if (target.includes("meta.ai/api/graphql")) {
@@ -496,10 +498,10 @@ test("web-cookie provider validators accept valid Grok, Perplexity, Blackbox and
   assert.equal(museSpark.valid, true);
 
   const blackboxSessionCall = calls.find((call) =>
-    call.url.includes("app.blackbox.ai/api/auth/session")
+    call.url.includes("app.blackbox.ai/api/auth/session"),
   );
   const blackboxSubscriptionCall = calls.find((call) =>
-    call.url.includes("app.blackbox.ai/api/check-subscription")
+    call.url.includes("app.blackbox.ai/api/check-subscription"),
   );
   const museSparkCall = calls.find((call) => call.url.includes("meta.ai/api/graphql"));
 
@@ -508,7 +510,7 @@ test("web-cookie provider validators accept valid Grok, Perplexity, Blackbox and
   assert.ok(grokTlsCall!.url.includes("grok.com/rest/app-chat/conversations/new"));
   assert.equal(
     (grokTlsCall!.options.headers as Record<string, string>)["Cookie"],
-    "sso=grok-cookie"
+    "sso=grok-cookie",
   );
   const grokBody = JSON.parse(String(grokTlsCall!.options.body || "{}"));
   assert.equal(grokBody.modeId, "fast");
@@ -520,12 +522,12 @@ test("web-cookie provider validators accept valid Grok, Perplexity, Blackbox and
   assert.ok(pplxTlsCall!.url.includes("perplexity.ai/rest/sse/perplexity_ask"));
   assert.equal(
     (pplxTlsCall!.options.headers as Record<string, string>)["Cookie"],
-    "__Secure-next-auth.session-token=pplx-cookie"
+    "__Secure-next-auth.session-token=pplx-cookie",
   );
   assert.equal(blackboxSessionCall?.init.headers.Cookie, "__Secure-authjs.session-token=bb-cookie");
   assert.equal(
     blackboxSubscriptionCall?.init.headers.Cookie,
-    "__Secure-authjs.session-token=bb-cookie"
+    "__Secure-authjs.session-token=bb-cookie",
   );
   assert.equal(museSparkCall?.init.headers.Cookie, "abra_sess=meta-cookie");
   assert.equal(museSparkCall?.init.headers["X-FB-Friendly-Name"], "useEctoSendMessageSubscription");
@@ -552,7 +554,7 @@ test("web-cookie provider validators surface auth and subscription failures", as
         JSON.stringify({
           user: { id: "bb-user-2", email: "free@example.com" },
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     if (target.includes("app.blackbox.ai/api/check-subscription")) {
@@ -563,7 +565,7 @@ test("web-cookie provider validators surface auth and subscription failures", as
           previouslySubscribed: true,
           plan: "free",
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     if (target.includes("meta.ai/api/graphql")) {
@@ -831,8 +833,9 @@ test("grok-web validator: Cloudflare challenge page is detected and reported", a
 // ─── chatgpt-web validator ──────────────────────────────────────────────────
 // Mocks the TLS-impersonating fetch so unit tests don't need the native binding.
 
-const { __setTlsFetchOverrideForTesting } =
-  await import("../../open-sse/services/chatgptTlsClient.ts");
+const { __setTlsFetchOverrideForTesting } = await import(
+  "../../open-sse/services/chatgptTlsClient.ts"
+);
 
 function makeTlsResponse(status: number, body: string, headers: Record<string, string> = {}) {
   const h = new Headers();
@@ -851,7 +854,7 @@ test("chatgpt-web validator: accepts a valid session response with accessToken",
     return makeTlsResponse(
       200,
       JSON.stringify({ accessToken: "tok-abc", expires: "2030-01-01T00:00:00Z" }),
-      { "content-type": "application/json" }
+      { "content-type": "application/json" },
     );
   });
 
@@ -864,7 +867,7 @@ test("chatgpt-web validator: accepts a valid session response with accessToken",
   assert.equal(captured?.url, "https://chatgpt.com/api/auth/session");
   assert.equal(
     (captured?.opts.headers as Record<string, string>).Cookie,
-    "__Secure-next-auth.session-token=eyJSESSION"
+    "__Secure-next-auth.session-token=eyJSESSION",
   );
 });
 
@@ -895,7 +898,7 @@ test("chatgpt-web validator: passes full DevTools cookie blob through verbatim",
   await validateProviderApiKey({ provider: "chatgpt-web", apiKey: blob });
   assert.equal(
     capturedCookie,
-    "oai-did=foo; __Secure-next-auth.session-token.0=eyJchunk0; __Secure-next-auth.session-token.1=eyJchunk1; cf_clearance=cf123;"
+    "oai-did=foo; __Secure-next-auth.session-token.0=eyJchunk0; __Secure-next-auth.session-token.1=eyJchunk1; cf_clearance=cf123;",
   );
 });
 
@@ -903,7 +906,7 @@ test("chatgpt-web validator: 401 without cf-mitigated → invalid session cookie
   __setTlsFetchOverrideForTesting(async () =>
     makeTlsResponse(401, JSON.stringify({ error: "unauthorized" }), {
       "content-type": "application/json",
-    })
+    }),
   );
 
   const result = await validateProviderApiKey({
@@ -919,7 +922,7 @@ test("chatgpt-web validator: 403 with cf-mitigated header → Cloudflare hint", 
     makeTlsResponse(403, "<html>Just a moment...</html>", {
       "content-type": "text/html",
       "cf-mitigated": "challenge",
-    })
+    }),
   );
 
   const result = await validateProviderApiKey({
@@ -932,7 +935,7 @@ test("chatgpt-web validator: 403 with cf-mitigated header → Cloudflare hint", 
 
 test("chatgpt-web validator: 200 without accessToken → session expired", async () => {
   __setTlsFetchOverrideForTesting(async () =>
-    makeTlsResponse(200, JSON.stringify({}), { "content-type": "application/json" })
+    makeTlsResponse(200, JSON.stringify({}), { "content-type": "application/json" }),
   );
 
   const result = await validateProviderApiKey({
@@ -945,7 +948,7 @@ test("chatgpt-web validator: 200 without accessToken → session expired", async
 
 test("chatgpt-web validator: 5xx → ChatGPT unavailable", async () => {
   __setTlsFetchOverrideForTesting(async () =>
-    makeTlsResponse(503, "service unavailable", { "content-type": "text/plain" })
+    makeTlsResponse(503, "service unavailable", { "content-type": "text/plain" }),
   );
 
   const result = await validateProviderApiKey({
@@ -961,7 +964,7 @@ test("chatgpt-web validator: 200 non-JSON content-type surfaces a cookie hint", 
     makeTlsResponse(200, "<html>blocked</html>", {
       "content-type": "text/html",
       "cf-ray": "ray-123",
-    })
+    }),
   );
 
   const result = await validateProviderApiKey({
@@ -1209,7 +1212,7 @@ test("local OpenAI-style providers validate without sending Authorization when a
         "http://localhost:8000/v1/models",
         "http://localhost:13305/api/v1/models",
         "http://127.0.0.1:8080/v1/models",
-      ]
+      ],
     );
     assert.equal(calls[0].headers.Authorization, undefined);
     assert.equal(calls[1].headers.Authorization, undefined);
@@ -1273,7 +1276,7 @@ test("OpenAI-compatible validator covers /responses mode and final ping fallback
   assert.equal(responsesResult.method, "chat_completions");
   assert.deepEqual(
     calls.map((call) => call.url),
-    ["https://openai-like.example.com/v1/models", "https://openai-like.example.com/v1/responses"]
+    ["https://openai-like.example.com/v1/models", "https://openai-like.example.com/v1/responses"],
   );
   assert.equal(pingFallback.valid, true);
   assert.equal(pingFallback.error, null);
@@ -1509,7 +1512,7 @@ test("specialty validators cover Heroku, Databricks, Snowflake and GigaChat succ
           tok: "gigachat-access-token",
           exp: Date.now() + 60 * 60 * 1000,
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     if (target === "https://us.inference.heroku.com/v1/chat/completions") {
@@ -1527,7 +1530,7 @@ test("specialty validators cover Heroku, Databricks, Snowflake and GigaChat succ
       assert.equal(init.headers.Authorization, "Bearer snowflake-token");
       assert.equal(
         init.headers["X-Snowflake-Authorization-Token-Type"],
-        "PROGRAMMATIC_ACCESS_TOKEN"
+        "PROGRAMMATIC_ACCESS_TOKEN",
       );
       return new Response(JSON.stringify({ error: "bad request" }), { status: 400 });
     }
@@ -1567,7 +1570,7 @@ test("specialty validators cover Heroku, Databricks, Snowflake and GigaChat succ
   assert.equal(gigachat.valid, true);
   assert.equal(
     seen.some((call) => call.url === "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"),
-    true
+    true,
   );
 });
 
@@ -1649,7 +1652,7 @@ test("specialty validator accepts DataRobot gateway and deployment credentials",
         JSON.stringify({
           data: [{ model: "azure/gpt-5-mini-2025-08-07", isActive: true }],
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -1798,7 +1801,7 @@ test("specialty validator accepts native Bedrock model discovery with a configur
             },
           ],
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -1821,7 +1824,7 @@ test("specialty validator accepts native Bedrock model discovery with a configur
             },
           ],
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -1993,7 +1996,7 @@ test("specialty validator accepts Nous Research credentials on chat completions"
           id: "chatcmpl-nous",
           choices: [{ message: { role: "assistant", content: "ok" } }],
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -2069,7 +2072,7 @@ test("specialty validator accepts Nous Research key when probe model is rejected
       assert.equal(headers.Authorization, "Bearer nous-key");
       return new Response(
         JSON.stringify({ error: { message: "model not found", type: "invalid_request_error" } }),
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -2115,7 +2118,7 @@ test("specialty validator accepts Clarifai credentials through the OpenAI-compat
       assert.equal(headers.Authorization, "Key clarifai-pat");
       return new Response(
         JSON.stringify({ data: [{ id: "openai/chat-completion/models/gpt-oss-120b" }] }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -2355,8 +2358,9 @@ test("validateCommandCodeProvider rejects auth failures and provider outages", a
 
 // ─── claude-web validator ────────────────────────────────────────────────────
 
-const { __setTlsFetchOverrideForTesting: __setClaudeTlsFetchOverride } =
-  await import("../../open-sse/services/claudeTlsClient.ts");
+const { __setTlsFetchOverrideForTesting: __setClaudeTlsFetchOverride } = await import(
+  "../../open-sse/services/claudeTlsClient.ts"
+);
 
 function makeClaudeTlsResponse(status: number, body: string, headers: Record<string, string> = {}) {
   const h = new Headers();
@@ -2381,7 +2385,7 @@ test("claude-web validator: 200 from /api/organizations → valid", async () => 
   assert.equal(captured?.url, "https://claude.ai/api/organizations");
   assert.match(
     (captured?.opts.headers as Record<string, string>).Cookie || "",
-    /sessionKey=sk-ant-sid02-test-session-key/
+    /sessionKey=sk-ant-sid02-test-session-key/,
   );
   __setClaudeTlsFetchOverride(null);
 });
@@ -2402,7 +2406,7 @@ test("claude-web validator: full cookie blob passes through verbatim", async () 
 
 test("claude-web validator: 401 → invalid session cookie", async () => {
   __setClaudeTlsFetchOverride(async () =>
-    makeClaudeTlsResponse(401, JSON.stringify({ error: "unauthorized" }))
+    makeClaudeTlsResponse(401, JSON.stringify({ error: "unauthorized" })),
   );
 
   const result = await validateProviderApiKey({
@@ -2417,7 +2421,7 @@ test("claude-web validator: 401 → invalid session cookie", async () => {
 
 test("claude-web validator: 429 → valid (rate limited means auth passed)", async () => {
   __setClaudeTlsFetchOverride(async () =>
-    makeClaudeTlsResponse(429, JSON.stringify({ error: "rate limited" }))
+    makeClaudeTlsResponse(429, JSON.stringify({ error: "rate limited" })),
   );
 
   const result = await validateProviderApiKey({
@@ -2541,7 +2545,7 @@ test("copilot-web validator: valid access_token → 200", async () => {
     if (target.includes("copilot.microsoft.com/c/api/conversations")) {
       assert.match(
         ((init.headers as Record<string, string>) || {}).Authorization || "",
-        /Bearer eyJhbGci/
+        /Bearer eyJhbGci/,
       );
       return new Response(JSON.stringify({ conversations: [] }), { status: 200 });
     }
@@ -2689,8 +2693,9 @@ test("t3-web validator: valid cookies → passes through", async () => {
 });
 
 test("llama-cpp is classified as a self-hosted chat provider", async () => {
-  const { isSelfHostedChatProvider, isLocalProvider, providerAllowsOptionalApiKey } =
-    await import("../../src/shared/constants/providers.ts");
+  const { isSelfHostedChatProvider, isLocalProvider, providerAllowsOptionalApiKey } = await import(
+    "../../src/shared/constants/providers.ts"
+  );
 
   assert.equal(isSelfHostedChatProvider("llama-cpp"), true);
   assert.equal(isLocalProvider("llama-cpp"), true);
@@ -2791,7 +2796,7 @@ test("gitlawb-gmi validator: accepts valid API key via chat/completions probe", 
     assert.equal(String(url), "https://opengateway.gitlawb.com/v1/gmi-cloud/chat/completions");
     assert.equal(
       (init.headers as Record<string, string>).Authorization,
-      "Bearer glb-gmi-valid-key"
+      "Bearer glb-gmi-valid-key",
     );
     const body = JSON.parse(String(init.body));
     assert.equal(body.model, "XiaomiMiMo/MiMo-V2.5-Pro");

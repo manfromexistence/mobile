@@ -18,10 +18,7 @@ export default function SwapDemo() {
 
       <div className="flex flex-col items-center gap-2">
         <span className="text-muted-foreground text-sm">Hover to swap</span>
-        <Swap
-          activationMode="hover"
-          className="size-12 rounded-lg border bg-muted/50"
-        >
+        <Swap activationMode="hover" className="size-12 rounded-lg border bg-muted/50">
           <SwapOn>
             <Volume2Icon className="size-6" />
           </SwapOn>

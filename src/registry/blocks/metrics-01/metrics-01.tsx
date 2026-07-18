@@ -1,13 +1,9 @@
-import { format } from "date-fns"
+import { format } from "date-fns";
 
-import Grid from "@/components/charts/grid"
-import LineChart, { Line } from "@/components/charts/line-chart"
-import { ChartTooltip } from "@/components/charts/tooltip"
-import {
-  Metric,
-  MetricLabel,
-  MetricValue,
-} from "@/registry/blocks/metrics-01/components/metric"
+import Grid from "@/components/charts/grid";
+import LineChart, { Line } from "@/components/charts/line-chart";
+import { ChartTooltip } from "@/components/charts/tooltip";
+import { Metric, MetricLabel, MetricValue } from "@/registry/blocks/metrics-01/components/metric";
 
 export function Metrics01() {
   return (
@@ -33,30 +29,22 @@ export function Metrics01() {
               <dl className="grid grid-cols-2 md:grid-cols-4">
                 <Metric>
                   <MetricLabel>Unique visitors</MetricLabel>
-                  <MetricValue>
-                    {data.summary.uniqueVisitors.toLocaleString()}
-                  </MetricValue>
+                  <MetricValue>{data.summary.uniqueVisitors.toLocaleString()}</MetricValue>
                 </Metric>
 
                 <Metric>
                   <MetricLabel>Sessions</MetricLabel>
-                  <MetricValue>
-                    {data.summary.totalSessions.toLocaleString()}
-                  </MetricValue>
+                  <MetricValue>{data.summary.totalSessions.toLocaleString()}</MetricValue>
                 </Metric>
 
                 <Metric>
                   <MetricLabel>Views</MetricLabel>
-                  <MetricValue>
-                    {data.summary.totalScreenViews.toLocaleString()}
-                  </MetricValue>
+                  <MetricValue>{data.summary.totalScreenViews.toLocaleString()}</MetricValue>
                 </Metric>
 
                 <Metric>
                   <MetricLabel>Session duration</MetricLabel>
-                  <MetricValue>
-                    {formatDuration(data.summary.avgSessionDuration)}
-                  </MetricValue>
+                  <MetricValue>{formatDuration(data.summary.avgSessionDuration)}</MetricValue>
                 </Metric>
               </dl>
             </div>
@@ -73,11 +61,7 @@ export function Metrics01() {
                   stroke="var(--chart-line-secondary)"
                   strokeWidth={2}
                 />
-                <Line
-                  dataKey="uniqueVisitors"
-                  stroke="var(--chart-line-primary)"
-                  strokeWidth={2}
-                />
+                <Line dataKey="uniqueVisitors" stroke="var(--chart-line-primary)" strokeWidth={2} />
                 <ChartTooltip />
               </LineChart>
             ) : (
@@ -89,30 +73,30 @@ export function Metrics01() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-type ISODateString = string
+type ISODateString = string;
 
 type InsightsSummary = {
-  uniqueVisitors: number
-  totalSessions: number
-  totalScreenViews: number
-  avgSessionDuration: number
-}
+  uniqueVisitors: number;
+  totalSessions: number;
+  totalScreenViews: number;
+  avgSessionDuration: number;
+};
 
 type InsightsSeriesItem = {
-  date: ISODateString
-  uniqueVisitors: number
-  totalSessions: number
-}
+  date: ISODateString;
+  uniqueVisitors: number;
+  totalSessions: number;
+};
 
 type InsightsData = {
-  summary: InsightsSummary
-  series: InsightsSeriesItem[]
-  startDate: ISODateString
-  endDate: ISODateString
-}
+  summary: InsightsSummary;
+  series: InsightsSeriesItem[];
+  startDate: ISODateString;
+  endDate: ISODateString;
+};
 
 const data: InsightsData = {
   summary: {
@@ -275,22 +259,22 @@ const data: InsightsData = {
   ],
   startDate: "2026-05-31",
   endDate: "2026-06-30",
-}
+};
 
 /**
  * Formats a duration given in seconds into a compact `Xh Ym Zs` string.
  * Zero-valued units are omitted; a zero duration renders as `0s`.
  */
 export function formatDuration(seconds: number): string {
-  const totalSeconds = Math.round(seconds)
-  const hours = Math.floor(totalSeconds / 3600)
-  const minutes = Math.floor((totalSeconds % 3600) / 60)
-  const secs = totalSeconds % 60
+  const totalSeconds = Math.round(seconds);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const secs = totalSeconds % 60;
 
-  const parts: string[] = []
-  if (hours > 0) parts.push(`${hours}h`)
-  if (minutes > 0) parts.push(`${minutes}m`)
-  if (secs > 0) parts.push(`${secs}s`)
+  const parts: string[] = [];
+  if (hours > 0) parts.push(`${hours}h`);
+  if (minutes > 0) parts.push(`${minutes}m`);
+  if (secs > 0) parts.push(`${secs}s`);
 
-  return parts.length > 0 ? parts.join(" ") : "0s"
+  return parts.length > 0 ? parts.join(" ") : "0s";
 }

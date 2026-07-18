@@ -57,7 +57,7 @@ test("engineStatus(): output validates against MemoryEngineStatusSchema", async 
   assert.equal(
     result.success,
     true,
-    `engineStatus output failed schema validation: ${JSON.stringify((result as { error?: unknown }).error)}`
+    `engineStatus output failed schema validation: ${JSON.stringify((result as { error?: unknown }).error)}`,
   );
 });
 
@@ -113,7 +113,7 @@ test("engineStatus(): qdrant section when not configured", async () => {
   // healthy and latencyMs can be null when not configured
   assert.ok(
     status.qdrant.healthy === null || typeof status.qdrant.healthy === "boolean",
-    "qdrant.healthy must be null or boolean"
+    "qdrant.healthy must be null or boolean",
   );
 });
 
@@ -153,11 +153,7 @@ test("engineStatus(): detail strings are English, not mixed Portuguese (#5596)",
     "degradado",
     "selecionado",
   ];
-  for (const reason of [
-    status.embedding.reason,
-    status.vectorStore.reason,
-    status.rerank.reason,
-  ]) {
+  for (const reason of [status.embedding.reason, status.vectorStore.reason, status.rerank.reason]) {
     for (const w of ptWords) {
       assert.ok(!reason.includes(w), `reason "${reason}" still contains Portuguese "${w}"`);
     }

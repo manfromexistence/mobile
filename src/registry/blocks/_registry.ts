@@ -1,5 +1,5 @@
-import type { Registry } from "shadcn/schema"
-import { getRegistryItemUrl, getRegistryItemUrls } from "@/lib/utils/registry"
+import type { Registry } from "shadcn/schema";
+import { getRegistryItemUrl, getRegistryItemUrls } from "@/lib/utils/registry";
 
 export const blocks: Registry["items"] = [
   {
@@ -248,4 +248,4 @@ export const blocks: Registry["items"] = [
       previewClassName: "min-h-svh content-center-safe",
     },
   },
-]
+];

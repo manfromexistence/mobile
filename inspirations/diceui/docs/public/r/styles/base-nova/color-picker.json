@@ -26,7 +26,5 @@
     "@diceui/use-lazy-ref",
     "@diceui/compose-refs"
   ],
-  "dependencies": [
-    "@base-ui/react"
-  ]
+  "dependencies": ["@base-ui/react"]
 }

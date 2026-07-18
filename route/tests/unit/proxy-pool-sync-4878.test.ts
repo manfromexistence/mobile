@@ -64,7 +64,7 @@ test("#4878 add-to-pool returns a non-2xx status when connectivity test fails", 
   const res = await addToPoolRoute.POST(makeReq(), { params: Promise.resolve({ id }) });
   assert.ok(
     !res.ok && res.status >= 400,
-    `expected a non-2xx status on failure, got ${res.status}`
+    `expected a non-2xx status on failure, got ${res.status}`,
   );
   const body = await res.json();
   assert.equal(body.success, false);
@@ -146,7 +146,7 @@ test("#5595 sync route isolates a throwing provider — others still sync, error
   syncRoute._setProvidersForTests([bad, good]);
   try {
     const res = await syncRoute.POST(
-      new Request("http://localhost/api/settings/free-proxies/sync", { method: "POST" })
+      new Request("http://localhost/api/settings/free-proxies/sync", { method: "POST" }),
     );
     // RED before the fix: the throwing provider escaped to the outer catch → 500,
     // and the working provider never ran.
@@ -158,7 +158,7 @@ test("#5595 sync route isolates a throwing provider — others still sync, error
     // Failing source surfaced its error instead of aborting everything.
     assert.ok(
       body.results["proxifly"].errors.some((e: string) => e.includes("TLS handshake failed")),
-      `expected the proxifly error surfaced, got: ${JSON.stringify(body.results["proxifly"])}`
+      `expected the proxifly error surfaced, got: ${JSON.stringify(body.results["proxifly"])}`,
     );
   } finally {
     syncRoute._setProvidersForTests(null);

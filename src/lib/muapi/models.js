@@ -16,18 +16,7 @@ export const t2iModels = [
         name: "prompt",
       },
       aspect_ratio: {
-        enum: [
-          "1:1",
-          "3:4",
-          "4:3",
-          "9:16",
-          "16:9",
-          "3:2",
-          "2:3",
-          "5:4",
-          "4:5",
-          "21:9",
-        ],
+        enum: ["1:1", "3:4", "4:3", "9:16", "16:9", "3:2", "2:3", "5:4", "4:5", "21:9"],
         title: "Aspect Ratio",
         name: "aspect_ratio",
         type: "string",
@@ -188,17 +177,7 @@ export const t2iModels = [
         name: "prompt",
       },
       aspect_ratio: {
-        enum: [
-          "16:9",
-          "9:16",
-          "1:1",
-          "4:3",
-          "3:4",
-          "3:2",
-          "2:3",
-          "21:9",
-          "9:21",
-        ],
+        enum: ["16:9", "9:16", "1:1", "4:3", "3:4", "3:2", "2:3", "21:9", "9:21"],
         title: "Aspect Ratio",
         name: "aspect_ratio",
         type: "string",
@@ -489,9 +468,7 @@ export const t2iModels = [
     name: "Gpt4o Text To Image",
     inputs: {
       prompt: {
-        examples: [
-          "A diagram of the solar system with labeled planets, cartoon style.",
-        ],
+        examples: ["A diagram of the solar system with labeled planets, cartoon style."],
         description: "Text prompt describing the image.",
         type: "string",
         title: "Prompt",
@@ -534,24 +511,11 @@ export const t2iModels = [
         title: "Speed",
         name: "speed",
         type: "string",
-        description:
-          "The speed of which corresponds to different speed of Midjourney",
+        description: "The speed of which corresponds to different speed of Midjourney",
         default: "relaxed",
       },
       aspect_ratio: {
-        enum: [
-          "1:1",
-          "16:9",
-          "9:16",
-          "3:4",
-          "4:3",
-          "1:2",
-          "2:1",
-          "2:3",
-          "3:2",
-          "5:6",
-          "6:5",
-        ],
+        enum: ["1:1", "16:9", "9:16", "3:4", "4:3", "1:2", "2:1", "2:3", "3:2", "5:6", "6:5"],
         title: "Aspect Ratio",
         name: "aspect_ratio",
         type: "string",
@@ -680,17 +644,7 @@ export const t2iModels = [
         name: "prompt",
       },
       aspect_ratio: {
-        enum: [
-          "16:9",
-          "9:16",
-          "1:1",
-          "4:3",
-          "3:4",
-          "21:9",
-          "9:21",
-          "3:2",
-          "2:3",
-        ],
+        enum: ["16:9", "9:16", "1:1", "4:3", "3:4", "21:9", "9:21", "3:2", "2:3"],
         title: "Aspect Ratio",
         name: "aspect_ratio",
         type: "string",
@@ -1061,17 +1015,7 @@ export const t2iModels = [
         name: "image_url",
       },
       aspect_ratio: {
-        enum: [
-          "16:9",
-          "9:16",
-          "1:1",
-          "4:3",
-          "3:4",
-          "3:2",
-          "2:3",
-          "21:9",
-          "9:21",
-        ],
+        enum: ["16:9", "9:16", "1:1", "4:3", "3:4", "3:2", "2:3", "21:9", "9:21"],
         title: "Aspect Ratio",
         name: "aspect_ratio",
         type: "string",
@@ -1106,17 +1050,7 @@ export const t2iModels = [
         name: "prompt",
       },
       aspect_ratio: {
-        enum: [
-          "16:9",
-          "9:16",
-          "1:1",
-          "4:3",
-          "3:4",
-          "3:2",
-          "2:3",
-          "21:9",
-          "9:21",
-        ],
+        enum: ["16:9", "9:16", "1:1", "4:3", "3:4", "3:2", "2:3", "21:9", "9:21"],
         title: "Aspect Ratio",
         name: "aspect_ratio",
         type: "string",
@@ -1363,8 +1297,7 @@ export const t2iModels = [
         title: "Aspect Ratio",
         name: "aspect_ratio",
         type: "string",
-        description:
-          "Aspect ratio of the output image. Get 6 images each time.",
+        description: "Aspect ratio of the output image. Get 6 images each time.",
         default: "1:1",
       },
     },
@@ -1385,18 +1318,7 @@ export const t2iModels = [
         name: "prompt",
       },
       aspect_ratio: {
-        enum: [
-          "1:1",
-          "3:4",
-          "4:3",
-          "9:16",
-          "16:9",
-          "3:2",
-          "2:3",
-          "5:4",
-          "4:5",
-          "21:9",
-        ],
+        enum: ["1:1", "3:4", "4:3", "9:16", "16:9", "3:2", "2:3", "5:4", "4:5", "21:9"],
         title: "Aspect Ratio",
         name: "aspect_ratio",
         type: "string",
@@ -1690,8 +1612,7 @@ export const t2iModels = [
         examples: [
           "A photorealistic product photo of a luxury watch resting on a slab of black marble, dramatic cinematic lighting with a soft rim glow, ultra-detailed metallic textures, shallow depth of field, studio quality.",
         ],
-        description:
-          "Text prompt describing the image. Up to 20,000 characters supported.",
+        description: "Text prompt describing the image. Up to 20,000 characters supported.",
         type: "string",
         title: "Prompt",
         name: "prompt",
@@ -1980,8 +1901,7 @@ export const t2iModels = [
         type: "string",
         title: "Prompt",
         name: "prompt",
-        description:
-          "Text prompt describing the image to generate (max 1500 characters).",
+        description: "Text prompt describing the image to generate (max 1500 characters).",
         examples: [
           "A serene mountain lake at sunset with golden reflections on the water, surrounded by pine forests and snow-capped peaks, photorealistic, 8k.",
         ],
@@ -2006,21 +1926,21 @@ export const t2iModels = [
       },
     },
   },
-]
+];
 
-export const getModelById = (id) => t2iModels.find((m) => m.id === id)
+export const getModelById = (id) => t2iModels.find((m) => m.id === id);
 
 export const getAspectRatiosForModel = (modelId) => {
-  const model = getModelById(modelId)
-  if (!model) return ["1:1"]
+  const model = getModelById(modelId);
+  if (!model) return ["1:1"];
 
-  const arInput = model.inputs?.aspect_ratio
+  const arInput = model.inputs?.aspect_ratio;
   if (arInput && arInput.enum) {
-    return arInput.enum
+    return arInput.enum;
   }
 
-  return ["1:1", "16:9", "9:16", "4:3", "3:2", "21:9"]
-}
+  return ["1:1", "16:9", "9:16", "4:3", "3:2", "21:9"];
+};
 
 // ==========================================
 // Text-to-Video Models
@@ -2261,8 +2181,7 @@ export const t2vModels = [
         type: "string",
         title: "Request ID",
         name: "request_id",
-        description:
-          "Request ID of the original Seedance 2.0 video generation.",
+        description: "Request ID of the original Seedance 2.0 video generation.",
         placeholder: "abcdefg-123-456-789-a1b2c3d4e5f6",
       },
       prompt: {
@@ -3397,34 +3316,34 @@ export const t2vModels = [
       },
     },
   },
-]
+];
 
-export const getVideoModelById = (id) => t2vModels.find((m) => m.id === id)
+export const getVideoModelById = (id) => t2vModels.find((m) => m.id === id);
 
 export const getAspectRatiosForVideoModel = (modelId) => {
-  const model = getVideoModelById(modelId)
-  if (!model) return ["16:9"]
-  const arInput = model.inputs?.aspect_ratio
-  if (arInput && arInput.enum) return arInput.enum
-  return ["16:9", "9:16", "1:1"]
-}
+  const model = getVideoModelById(modelId);
+  if (!model) return ["16:9"];
+  const arInput = model.inputs?.aspect_ratio;
+  if (arInput && arInput.enum) return arInput.enum;
+  return ["16:9", "9:16", "1:1"];
+};
 
 export const getDurationsForModel = (modelId) => {
-  const model = getVideoModelById(modelId)
-  if (!model) return [5]
-  const durInput = model.inputs?.duration
-  if (durInput && durInput.enum) return durInput.enum
-  if (durInput) return [durInput.default || 5]
-  return []
-}
+  const model = getVideoModelById(modelId);
+  if (!model) return [5];
+  const durInput = model.inputs?.duration;
+  if (durInput && durInput.enum) return durInput.enum;
+  if (durInput) return [durInput.default || 5];
+  return [];
+};
 
 export const getResolutionsForVideoModel = (modelId) => {
-  const model = getVideoModelById(modelId)
-  if (!model) return []
-  const resInput = model.inputs?.resolution
-  if (resInput && resInput.enum) return resInput.enum
-  return []
-}
+  const model = getVideoModelById(modelId);
+  if (!model) return [];
+  const resInput = model.inputs?.resolution;
+  if (resInput && resInput.enum) return resInput.enum;
+  return [];
+};
 // Auto-generated from schema_data.json — Image to Image models
 export const i2iModels = [
   {
@@ -3449,8 +3368,7 @@ export const i2iModels = [
         type: "int",
         title: "Target Index",
         name: "target_index",
-        description:
-          "0 = largest face. To switch to another target face - switch to index 1.",
+        description: "0 = largest face. To switch to another target face - switch to index 1.",
         default: 0,
         minValue: 0,
         maxValue: 10,
@@ -3536,17 +3454,7 @@ export const i2iModels = [
         title: "Aspect Ratio",
         name: "aspect_ratio",
         description: "Aspect ratio of the output image.",
-        enum: [
-          "16:9",
-          "9:16",
-          "1:1",
-          "4:3",
-          "3:4",
-          "3:2",
-          "2:3",
-          "21:9",
-          "9:21",
-        ],
+        enum: ["16:9", "9:16", "1:1", "4:3", "3:4", "3:2", "2:3", "21:9", "9:21"],
         default: "1:1",
       },
       num_images: {
@@ -3620,9 +3528,7 @@ export const i2iModels = [
         title: "Prompt",
         name: "prompt",
         description: "Text prompt describing the image.",
-        examples: [
-          "Transform into a digital painting, soft fur texture, dreamy pastel colors",
-        ],
+        examples: ["Transform into a digital painting, soft fur texture, dreamy pastel colors"],
       },
       aspect_ratio: {
         type: "string",
@@ -3713,9 +3619,7 @@ export const i2iModels = [
         name: "prompt",
         description:
           "Text prompt describing the image, what you want the final edited image to look like.",
-        examples: [
-          "Replace the barista with a humanoid robot in a sleek metallic design.",
-        ],
+        examples: ["Replace the barista with a humanoid robot in a sleek metallic design."],
       },
       aspect_ratio: {
         type: "string",
@@ -3757,8 +3661,7 @@ export const i2iModels = [
         type: "string",
         title: "Speed",
         name: "speed",
-        description:
-          "The speed of which corresponds to different speed of Midjourney",
+        description: "The speed of which corresponds to different speed of Midjourney",
         enum: ["relaxed", "fast", "turbo"],
         default: "relaxed",
       },
@@ -3767,19 +3670,7 @@ export const i2iModels = [
         title: "Aspect Ratio",
         name: "aspect_ratio",
         description: "Aspect ratio of the output image.",
-        enum: [
-          "1:1",
-          "16:9",
-          "9:16",
-          "3:4",
-          "4:3",
-          "1:2",
-          "2:1",
-          "2:3",
-          "3:2",
-          "5:6",
-          "6:5",
-        ],
+        enum: ["1:1", "16:9", "9:16", "3:4", "4:3", "1:2", "2:1", "2:3", "3:2", "5:6", "6:5"],
         default: "1:1",
       },
       variety: {
@@ -3858,8 +3749,7 @@ export const i2iModels = [
         type: "string",
         title: "Speed",
         name: "speed",
-        description:
-          "The speed of which corresponds to different speed of Midjourney",
+        description: "The speed of which corresponds to different speed of Midjourney",
         enum: ["relaxed", "fast", "turbo"],
         default: "relaxed",
       },
@@ -3868,19 +3758,7 @@ export const i2iModels = [
         title: "Aspect Ratio",
         name: "aspect_ratio",
         description: "Aspect ratio of the output image.",
-        enum: [
-          "1:1",
-          "16:9",
-          "9:16",
-          "3:4",
-          "4:3",
-          "1:2",
-          "2:1",
-          "2:3",
-          "3:2",
-          "5:6",
-          "6:5",
-        ],
+        enum: ["1:1", "16:9", "9:16", "3:4", "4:3", "1:2", "2:1", "2:3", "3:2", "5:6", "6:5"],
         default: "1:1",
       },
       variety: {
@@ -3939,8 +3817,7 @@ export const i2iModels = [
         type: "string",
         title: "Speed",
         name: "speed",
-        description:
-          "The speed of which corresponds to different speed of Midjourney",
+        description: "The speed of which corresponds to different speed of Midjourney",
         enum: ["relaxed", "fast", "turbo"],
         default: "relaxed",
       },
@@ -3949,19 +3826,7 @@ export const i2iModels = [
         title: "Aspect Ratio",
         name: "aspect_ratio",
         description: "Aspect ratio of the output image.",
-        enum: [
-          "1:1",
-          "16:9",
-          "9:16",
-          "3:4",
-          "4:3",
-          "1:2",
-          "2:1",
-          "2:3",
-          "3:2",
-          "5:6",
-          "6:5",
-        ],
+        enum: ["1:1", "16:9", "9:16", "3:4", "4:3", "1:2", "2:1", "2:3", "3:2", "5:6", "6:5"],
         default: "1:1",
       },
       weight: {
@@ -4150,17 +4015,7 @@ export const i2iModels = [
         title: "Aspect Ratio",
         name: "aspect_ratio",
         description: "Aspect ratio of the output image.",
-        enum: [
-          "16:9",
-          "9:16",
-          "1:1",
-          "4:3",
-          "3:4",
-          "21:9",
-          "9:21",
-          "3:2",
-          "2:3",
-        ],
+        enum: ["16:9", "9:16", "1:1", "4:3", "3:4", "21:9", "9:21", "3:2", "2:3"],
         default: "1:1",
       },
     },
@@ -4226,19 +4081,7 @@ export const i2iModels = [
         title: "Aspect Ratio",
         name: "aspect_ratio",
         description: "Aspect ratio of the output image.",
-        enum: [
-          "Auto",
-          "1:1",
-          "3:4",
-          "4:3",
-          "9:16",
-          "16:9",
-          "3:2",
-          "2:3",
-          "5:4",
-          "4:5",
-          "21:9",
-        ],
+        enum: ["Auto", "1:1", "3:4", "4:3", "9:16", "16:9", "3:2", "2:3", "5:4", "4:5", "21:9"],
         default: "Auto",
       },
     },
@@ -4374,19 +4217,7 @@ export const i2iModels = [
         title: "Aspect Ratio",
         name: "aspect_ratio",
         description: "Aspect ratio of the output image.",
-        enum: [
-          "Auto",
-          "1:1",
-          "3:4",
-          "4:3",
-          "9:16",
-          "16:9",
-          "3:2",
-          "2:3",
-          "5:4",
-          "4:5",
-          "21:9",
-        ],
+        enum: ["Auto", "1:1", "3:4", "4:3", "9:16", "16:9", "3:2", "2:3", "5:4", "4:5", "21:9"],
         default: "Auto",
       },
     },
@@ -4452,17 +4283,7 @@ export const i2iModels = [
         title: "Aspect Ratio",
         name: "aspect_ratio",
         description: "Aspect ratio of the output image.",
-        enum: [
-          "16:9",
-          "9:16",
-          "1:1",
-          "4:3",
-          "3:4",
-          "3:2",
-          "2:3",
-          "21:9",
-          "9:21",
-        ],
+        enum: ["16:9", "9:16", "1:1", "4:3", "3:4", "3:2", "2:3", "21:9", "9:21"],
         default: "1:1",
       },
       num_images: {
@@ -4590,8 +4411,7 @@ export const i2iModels = [
         type: "string",
         title: "Upscale Factor",
         name: "upscale_factor",
-        description:
-          "Factor to upscale the image by (e.g. 2.0 doubles width and height).",
+        description: "Factor to upscale the image by (e.g. 2.0 doubles width and height).",
         enum: [1, 2, 4, 8],
         default: 2,
       },
@@ -4709,18 +4529,7 @@ export const i2iModels = [
         title: "Aspect Ratio",
         name: "aspect_ratio",
         description: "Aspect ratio of the output image.",
-        enum: [
-          "1:1",
-          "3:4",
-          "4:3",
-          "9:16",
-          "16:9",
-          "3:2",
-          "2:3",
-          "5:4",
-          "4:5",
-          "21:9",
-        ],
+        enum: ["1:1", "3:4", "4:3", "9:16", "16:9", "3:2", "2:3", "5:4", "4:5", "21:9"],
         default: "1:1",
       },
       resolution: {
@@ -4772,17 +4581,7 @@ export const i2iModels = [
         title: "Aspect Ratio",
         name: "aspect_ratio",
         description: "Aspect ratio of the output image.",
-        enum: [
-          "auto",
-          "16:9",
-          "9:16",
-          "1:1",
-          "4:3",
-          "3:4",
-          "2:3",
-          "3:2",
-          "21:9",
-        ],
+        enum: ["auto", "16:9", "9:16", "1:1", "4:3", "3:4", "2:3", "3:2", "21:9"],
         default: "1:1",
       },
       resolution: {
@@ -4931,17 +4730,7 @@ export const i2iModels = [
         title: "Aspect Ratio",
         name: "aspect_ratio",
         description: "Aspect ratio of the output image.",
-        enum: [
-          "auto",
-          "16:9",
-          "9:16",
-          "1:1",
-          "4:3",
-          "3:4",
-          "2:3",
-          "3:2",
-          "21:9",
-        ],
+        enum: ["auto", "16:9", "9:16", "1:1", "4:3", "3:4", "2:3", "3:2", "21:9"],
         default: "1:1",
       },
       resolution: {
@@ -5279,13 +5068,7 @@ export const i2iModels = [
         title: "Position",
         name: "position",
         description: "Position of the watermark on the image",
-        enum: [
-          "top-left",
-          "top-right",
-          "bottom-left",
-          "bottom-right",
-          "center",
-        ],
+        enum: ["top-left", "top-right", "bottom-left", "bottom-right", "center"],
         default: "bottom-right",
       },
       opacity: {
@@ -5406,7 +5189,7 @@ export const i2iModels = [
       },
     },
   },
-]
+];
 
 // Auto-generated from schema_data.json — Image to Video models
 export const i2vModels = [
@@ -5881,19 +5664,7 @@ export const i2vModels = [
         title: "Aspect Ratio",
         name: "aspect_ratio",
         description: "Aspect ratio of the output image.",
-        enum: [
-          "1:1",
-          "16:9",
-          "9:16",
-          "3:4",
-          "4:3",
-          "1:2",
-          "2:1",
-          "2:3",
-          "3:2",
-          "5:6",
-          "6:5",
-        ],
+        enum: ["1:1", "16:9", "9:16", "3:4", "4:3", "1:2", "2:1", "2:3", "3:2", "5:6", "6:5"],
         default: "1:1",
       },
       resolution: {
@@ -6772,8 +6543,7 @@ export const i2vModels = [
         type: "boolean",
         title: "Remove Watermark",
         name: "remove_watermark",
-        description:
-          "When enabled, removes watermarks from the generated video.",
+        description: "When enabled, removes watermarks from the generated video.",
         default: true,
       },
     },
@@ -6843,8 +6613,7 @@ export const i2vModels = [
         type: "boolean",
         title: "Remove Watermark",
         name: "remove_watermark",
-        description:
-          "When enabled, removes watermarks from the generated video.",
+        description: "When enabled, removes watermarks from the generated video.",
         default: true,
       },
     },
@@ -7551,8 +7320,7 @@ export const i2vModels = [
         type: "boolean",
         title: "Keep Original Sound",
         name: "keep_original_sound",
-        description:
-          "Select whether to keep the video original sound through the parameter.",
+        description: "Select whether to keep the video original sound through the parameter.",
         default: true,
       },
     },
@@ -7586,8 +7354,7 @@ export const i2vModels = [
         type: "boolean",
         title: "Sound",
         name: "sound",
-        description:
-          "Whether sound is generated simultaneously when generating a video.",
+        description: "Whether sound is generated simultaneously when generating a video.",
         default: true,
       },
     },
@@ -7661,8 +7428,7 @@ export const i2vModels = [
         type: "boolean",
         title: "Multi Clip",
         name: "multi_clip",
-        description:
-          "Enable multi-clip generation with dynamic camera changes.",
+        description: "Enable multi-clip generation with dynamic camera changes.",
         default: false,
       },
     },
@@ -8004,8 +7770,7 @@ export const i2vModels = [
         type: "boolean",
         title: "Generate Audio",
         name: "generate_audio",
-        description:
-          "When enabled, generate native audio with the video (adds to cost).",
+        description: "When enabled, generate native audio with the video (adds to cost).",
         default: false,
       },
     },
@@ -8048,8 +7813,7 @@ export const i2vModels = [
         type: "boolean",
         title: "Generate Audio",
         name: "generate_audio",
-        description:
-          "When enabled, generate native audio with the video (adds to cost).",
+        description: "When enabled, generate native audio with the video (adds to cost).",
         default: false,
       },
     },
@@ -8068,9 +7832,7 @@ export const i2vModels = [
         title: "Prompt",
         name: "prompt",
         description: "Text prompt describing the video.",
-        examples: [
-          "A cat in @image1 wakes up and walks towards the camera in slow motion.",
-        ],
+        examples: ["A cat in @image1 wakes up and walks towards the camera in slow motion."],
       },
       aspect_ratio: {
         type: "string",
@@ -8205,135 +7967,127 @@ export const i2vModels = [
       },
     },
   },
-]
+];
 
-export const getI2IModelById = (id) => i2iModels.find((m) => m.id === id)
-export const getI2VModelById = (id) => i2vModels.find((m) => m.id === id)
+export const getI2IModelById = (id) => i2iModels.find((m) => m.id === id);
+export const getI2VModelById = (id) => i2vModels.find((m) => m.id === id);
 
 export const getMaxImagesForI2VModel = (modelId) => {
-  const model = getI2VModelById(modelId)
-  if (!model) return 1
-  if (model.maxImages) return model.maxImages
-  if (model.lastImageField) return 2
-  return 1
-}
+  const model = getI2VModelById(modelId);
+  if (!model) return 1;
+  if (model.maxImages) return model.maxImages;
+  if (model.lastImageField) return 2;
+  return 1;
+};
 
 export const getAspectRatiosForI2IModel = (modelId) => {
-  const model = getI2IModelById(modelId)
-  if (!model) return ["1:1"]
-  if (
-    model.inputs &&
-    model.inputs.aspect_ratio &&
-    model.inputs.aspect_ratio.enum
-  )
-    return model.inputs.aspect_ratio.enum
-  return ["1:1", "16:9", "9:16"]
-}
+  const model = getI2IModelById(modelId);
+  if (!model) return ["1:1"];
+  if (model.inputs && model.inputs.aspect_ratio && model.inputs.aspect_ratio.enum)
+    return model.inputs.aspect_ratio.enum;
+  return ["1:1", "16:9", "9:16"];
+};
 
 export const getAspectRatiosForI2VModel = (modelId) => {
-  const model = getI2VModelById(modelId)
-  if (!model) return ["16:9"]
-  if (
-    model.inputs &&
-    model.inputs.aspect_ratio &&
-    model.inputs.aspect_ratio.enum
-  )
-    return model.inputs.aspect_ratio.enum
-  return ["16:9", "9:16", "1:1"]
-}
+  const model = getI2VModelById(modelId);
+  if (!model) return ["16:9"];
+  if (model.inputs && model.inputs.aspect_ratio && model.inputs.aspect_ratio.enum)
+    return model.inputs.aspect_ratio.enum;
+  return ["16:9", "9:16", "1:1"];
+};
 
 export const getDurationsForI2VModel = (modelId) => {
-  const model = getI2VModelById(modelId)
-  if (!model) return []
-  const dur = model.inputs && model.inputs.duration
-  if (!dur) return []
-  if (dur.enum) return dur.enum
+  const model = getI2VModelById(modelId);
+  if (!model) return [];
+  const dur = model.inputs && model.inputs.duration;
+  if (!dur) return [];
+  if (dur.enum) return dur.enum;
   if (dur.minValue !== undefined && dur.maxValue !== undefined && dur.step) {
-    const vals = []
-    for (let v = dur.minValue; v <= dur.maxValue; v += dur.step) vals.push(v)
-    return vals
+    const vals = [];
+    for (let v = dur.minValue; v <= dur.maxValue; v += dur.step) vals.push(v);
+    return vals;
   }
-  if (dur.default) return [dur.default]
-  return []
-}
+  if (dur.default) return [dur.default];
+  return [];
+};
 
 export const getResolutionsForI2VModel = (modelId) => {
-  const model = getI2VModelById(modelId)
-  if (!model) return []
-  const res = model.inputs && model.inputs.resolution
-  if (res && res.enum) return res.enum
-  return []
-}
+  const model = getI2VModelById(modelId);
+  if (!model) return [];
+  const res = model.inputs && model.inputs.resolution;
+  if (res && res.enum) return res.enum;
+  return [];
+};
 
 // Effect-style models declare `inputs.name` as an enum of effect types.
 export const getEffectsForI2VModel = (modelId) => {
-  const model = getI2VModelById(modelId)
-  return model?.inputs?.name?.enum || []
-}
+  const model = getI2VModelById(modelId);
+  return model?.inputs?.name?.enum || [];
+};
 
 export const getDefaultEffectForI2VModel = (modelId) => {
-  const model = getI2VModelById(modelId)
-  return model?.inputs?.name?.default || null
-}
+  const model = getI2VModelById(modelId);
+  return model?.inputs?.name?.default || null;
+};
 
 export const getModesForModel = (modelId) => {
-  const model = [...t2vModels, ...i2vModels].find((m) => m.id === modelId)
-  if (!model) return []
-  const modeInput = model.inputs?.mode
-  if (modeInput?.enum) return modeInput.enum
-  return []
-}
+  const model = [...t2vModels, ...i2vModels].find((m) => m.id === modelId);
+  if (!model) return [];
+  const modeInput = model.inputs?.mode;
+  if (modeInput?.enum) return modeInput.enum;
+  return [];
+};
 
 export const getResolutionsForI2IModel = (modelId) => {
-  const model = getI2IModelById(modelId)
-  if (!model) return []
-  if (model.inputs?.resolution?.enum) return model.inputs.resolution.enum
-  if (model.inputs?.quality?.enum) return model.inputs.quality.enum
-  return []
-}
+  const model = getI2IModelById(modelId);
+  if (!model) return [];
+  if (model.inputs?.resolution?.enum) return model.inputs.resolution.enum;
+  if (model.inputs?.quality?.enum) return model.inputs.quality.enum;
+  return [];
+};
 
 export const getEffectsForI2IModel = (modelId) => {
-  const model = getI2IModelById(modelId)
-  return model?.inputs?.name?.enum || []
-}
+  const model = getI2IModelById(modelId);
+  return model?.inputs?.name?.enum || [];
+};
 
 export const getDefaultEffectForI2IModel = (modelId) => {
-  const model = getI2IModelById(modelId)
-  return model?.inputs?.name?.default || null
-}
+  const model = getI2IModelById(modelId);
+  return model?.inputs?.name?.default || null;
+};
 
 // Returns the payload field name for quality/resolution for a t2i model ('resolution', 'quality', or null)
 export const getQualityFieldForModel = (modelId) => {
-  const model = getModelById(modelId)
-  if (!model) return null
-  if (model.inputs?.resolution) return "resolution"
-  if (model.inputs?.quality) return "quality"
-  return null
-}
+  const model = getModelById(modelId);
+  if (!model) return null;
+  if (model.inputs?.resolution) return "resolution";
+  if (model.inputs?.quality) return "quality";
+  return null;
+};
 
 // Returns quality/resolution options for a t2i model
 export const getResolutionsForModel = (modelId) => {
-  const model = getModelById(modelId)
-  if (!model) return []
-  if (model.inputs?.resolution?.enum) return model.inputs.resolution.enum
-  if (model.inputs?.quality?.enum) return model.inputs.quality.enum
-  return []
-}
+  const model = getModelById(modelId);
+  if (!model) return [];
+  if (model.inputs?.resolution?.enum) return model.inputs.resolution.enum;
+  if (model.inputs?.quality?.enum) return model.inputs.quality.enum;
+  return [];
+};
 
 // Returns the payload field name for quality/resolution for an i2i model ('resolution', 'quality', or null)
 export const getQualityFieldForI2IModel = (modelId) => {
-  const model = getI2IModelById(modelId)
-  if (!model) return null
-  if (model.inputs?.resolution) return "resolution"
-  if (model.inputs?.quality) return "quality"
-  return null
-}
+  const model = getI2IModelById(modelId);
+  if (!model) return null;
+  if (model.inputs?.resolution) return "resolution";
+  if (model.inputs?.quality) return "quality";
+  return null;
+};
 
 // Returns the maximum number of images an i2i model accepts (defaults to 1)
 export const getMaxImagesForI2IModel = (modelId) => {
-  const model = getI2IModelById(modelId)
-  return model?.maxImages || 1
-}
+  const model = getI2IModelById(modelId);
+  return model?.maxImages || 1;
+};
 
 // ─── Video-to-Video models ────────────────────────────────────────────────────
 export const v2vModels = [
@@ -8344,8 +8098,7 @@ export const v2vModels = [
     family: "tools",
     videoField: "video_url",
     hasPrompt: false,
-    description:
-      "Remove watermarks, logos, captions, and unwanted text from videos.",
+    description: "Remove watermarks, logos, captions, and unwanted text from videos.",
   },
   {
     id: "kling-v2.6-std-motion-control",
@@ -8381,7 +8134,7 @@ export const v2vModels = [
     description:
       "Kling V3.0 Pro Motion Control provides the highest level of detail and control for video generation.",
   },
-]
+];
 
 // ─── LipSync / Speech-to-Video models ────────────────────────────────────────
 // Image-based: portrait image + audio → talking video
@@ -8395,8 +8148,7 @@ export const lipsyncModels = [
     family: "infinitetalk",
     category: "image",
     hasPrompt: true,
-    description:
-      "Animate a portrait image into a talking video driven by audio.",
+    description: "Animate a portrait image into a talking video driven by audio.",
     inputs: {
       resolution: {
         type: "string",
@@ -8414,8 +8166,7 @@ export const lipsyncModels = [
     family: "wan",
     category: "image",
     hasPrompt: true,
-    description:
-      "Generate a talking portrait video from an image and audio using Wan 2.2.",
+    description: "Generate a talking portrait video from an image and audio using Wan 2.2.",
     inputs: {
       resolution: {
         type: "string",
@@ -8434,8 +8185,7 @@ export const lipsyncModels = [
     category: "image",
     hasPrompt: true,
     hasSeed: true,
-    description:
-      "High-quality lipsync from portrait image and audio using LTX 2.3.",
+    description: "High-quality lipsync from portrait image and audio using LTX 2.3.",
     inputs: {
       resolution: {
         type: "string",
@@ -8502,8 +8252,7 @@ export const lipsyncModels = [
     family: "lipsync",
     category: "video",
     hasPrompt: false,
-    description:
-      "Generate realistic lipsync from any audio using VEED's latest model.",
+    description: "Generate realistic lipsync from any audio using VEED's latest model.",
   },
   {
     id: "infinitetalk-video-to-video",
@@ -8512,8 +8261,7 @@ export const lipsyncModels = [
     family: "infinitetalk",
     category: "video",
     hasPrompt: true,
-    description:
-      "Apply audio-driven lipsync to an existing video using Infinite Talk.",
+    description: "Apply audio-driven lipsync to an existing video using Infinite Talk.",
     inputs: {
       resolution: {
         type: "string",
@@ -8524,24 +8272,19 @@ export const lipsyncModels = [
       },
     },
   },
-]
+];
 
-export const getLipSyncModelById = (id) =>
-  lipsyncModels.find((m) => m.id === id)
+export const getLipSyncModelById = (id) => lipsyncModels.find((m) => m.id === id);
 
 export const getResolutionsForLipSyncModel = (id) => {
-  const model = lipsyncModels.find((m) => m.id === id)
-  return model?.inputs?.resolution?.enum || []
-}
+  const model = lipsyncModels.find((m) => m.id === id);
+  return model?.inputs?.resolution?.enum || [];
+};
 
-export const imageLipSyncModels = lipsyncModels.filter(
-  (m) => m.category === "image"
-)
-export const videoLipSyncModels = lipsyncModels.filter(
-  (m) => m.category === "video"
-)
+export const imageLipSyncModels = lipsyncModels.filter((m) => m.category === "image");
+export const videoLipSyncModels = lipsyncModels.filter((m) => m.category === "video");
 
-export const getV2VModelById = (id) => v2vModels.find((m) => m.id === id)
+export const getV2VModelById = (id) => v2vModels.find((m) => m.id === id);
 
 // ─── Recast / Body Swap models ───────────────────────────────────────────────
 // Source video (the performance / motion) + character image (the new identity)
@@ -8578,14 +8321,14 @@ export const recastModels = [
     description:
       "Recast any character — drive a character image with the motion and performance from your video.",
   },
-]
+];
 
-export const getRecastModelById = (id) => recastModels.find((m) => m.id === id)
+export const getRecastModelById = (id) => recastModels.find((m) => m.id === id);
 
 export const getAspectRatiosForRecastModel = (id) => {
-  const model = recastModels.find((m) => m.id === id)
-  return model?.inputs?.aspect_ratio?.enum || []
-}
+  const model = recastModels.find((m) => m.id === id);
+  return model?.inputs?.aspect_ratio?.enum || [];
+};
 
 // ── Audio Models ──────────────────────────────────────────────────────────
 export const audioModels = [
@@ -8677,8 +8420,7 @@ export const audioModels = [
         title: "Vocal Gender",
         name: "vocal_gender",
         type: "string",
-        description:
-          "Vocal gender preference for the singing voice (optional).",
+        description: "Vocal gender preference for the singing voice (optional).",
         default: "male",
       },
       style_weight: {
@@ -8813,8 +8555,7 @@ export const audioModels = [
         title: "Vocal Gender",
         name: "vocal_gender",
         type: "string",
-        description:
-          "Vocal gender preference for the singing voice (optional).",
+        description: "Vocal gender preference for the singing voice (optional).",
         default: "male",
       },
       style_weight: {
@@ -8870,9 +8611,7 @@ export const audioModels = [
         name: "prompt",
       },
       audio_url: {
-        examples: [
-          "https://d3adwkbyhxyrtq.cloudfront.net/audios/186/755853337445/example.mp3",
-        ],
+        examples: ["https://d3adwkbyhxyrtq.cloudfront.net/audios/186/755853337445/example.mp3"],
         description:
           "The URL for uploading audio files. Ensure the uploaded audio does not exceed 2 minutes in length.",
         field: "audio",
@@ -8960,8 +8699,7 @@ export const audioModels = [
         title: "Vocal Gender",
         name: "vocal_gender",
         type: "string",
-        description:
-          "Vocal gender preference for the singing voice (optional).",
+        description: "Vocal gender preference for the singing voice (optional).",
         default: "male",
       },
       style_weight: {
@@ -9077,8 +8815,7 @@ export const audioModels = [
         type: "boolean",
         title: "Grab Lyrics",
         name: "grab_lyrics",
-        description:
-          "Whether to fetch lyric subtitles after generation is completed.",
+        description: "Whether to fetch lyric subtitles after generation is completed.",
         default: false,
       },
     },
@@ -9185,8 +8922,7 @@ export const audioModels = [
         type: "array",
         title: "Mashup Tracks",
         name: "audios_list",
-        description:
-          "Upload up to 2 audio files to mashup music from multiple audio tracks.",
+        description: "Upload up to 2 audio files to mashup music from multiple audio tracks.",
         field: "audios_list",
         items: {
           type: "string",
@@ -9375,8 +9111,7 @@ export const audioModels = [
         type: "string",
         title: "Voice Name",
         name: "voice_name",
-        description:
-          "A short label for your voice, shown in the voice picker (optional).",
+        description: "A short label for your voice, shown in the voice picker (optional).",
         placeholder: "My Voice",
       },
       description: {
@@ -9390,8 +9125,7 @@ export const audioModels = [
         type: "string",
         title: "Style Tags",
         name: "style",
-        description:
-          "Comma-separated style hints used at music generation time (optional).",
+        description: "Comma-separated style hints used at music generation time (optional).",
         placeholder: "Pop, Female Vocal",
       },
       language: {
@@ -9474,8 +9208,7 @@ export const audioModels = [
         type: "boolean",
         title: "Need Noise Reduction",
         name: "need_noise_reduction",
-        description:
-          "Enable noise reduction. Default is false (no noise reduction).",
+        description: "Enable noise reduction. Default is false (no noise reduction).",
         default: false,
       },
       need_volume_normalization: {
@@ -9489,8 +9222,7 @@ export const audioModels = [
         title: "Accuracy",
         name: "accuracy",
         type: "int",
-        description:
-          "Text validation accuracy threshold, with a value range of [0, 1].",
+        description: "Text validation accuracy threshold, with a value range of [0, 1].",
         default: 0.7,
         minValue: 0,
         maxValue: 1,
@@ -10023,8 +9755,7 @@ export const audioModels = [
         title: "Volume",
         name: "volume",
         type: "int",
-        description:
-          "Speech volume. Range: 0.1-10.0, where 1.0 is normal volume.",
+        description: "Speech volume. Range: 0.1-10.0, where 1.0 is normal volume.",
         default: 1,
         minValue: 0.1,
         maxValue: 10,
@@ -10041,15 +9772,7 @@ export const audioModels = [
         step: 1,
       },
       emotion: {
-        enum: [
-          "happy",
-          "sad",
-          "angry",
-          "fearful",
-          "disgusted",
-          "surprised",
-          "neutral",
-        ],
+        enum: ["happy", "sad", "angry", "fearful", "disgusted", "surprised", "neutral"],
         title: "Emotion",
         name: "emotion",
         type: "string",
@@ -10085,8 +9808,7 @@ export const audioModels = [
         type: "integer",
         title: "Channel",
         name: "channel",
-        description:
-          "he number of channels of the generated audio. 1: mono, 2: stereo.",
+        description: "he number of channels of the generated audio. 1: mono, 2: stereo.",
         default: 1,
       },
       format: {
@@ -10144,8 +9866,7 @@ export const audioModels = [
         title: "Language Boost",
         name: "language_boost",
         type: "string",
-        description:
-          "Enhance the ability to recognize specified languages and dialects.",
+        description: "Enhance the ability to recognize specified languages and dialects.",
         default: "auto",
       },
     },
@@ -10666,8 +10387,7 @@ export const audioModels = [
         title: "Volume",
         name: "volume",
         type: "int",
-        description:
-          "Speech volume. Range: 0.1-10.0, where 1.0 is normal volume.",
+        description: "Speech volume. Range: 0.1-10.0, where 1.0 is normal volume.",
         default: 1,
         minValue: 0.1,
         maxValue: 10,
@@ -10684,15 +10404,7 @@ export const audioModels = [
         step: 1,
       },
       emotion: {
-        enum: [
-          "happy",
-          "sad",
-          "angry",
-          "fearful",
-          "disgusted",
-          "surprised",
-          "neutral",
-        ],
+        enum: ["happy", "sad", "angry", "fearful", "disgusted", "surprised", "neutral"],
         title: "Emotion",
         name: "emotion",
         type: "string",
@@ -10728,8 +10440,7 @@ export const audioModels = [
         type: "integer",
         title: "Channel",
         name: "channel",
-        description:
-          "he number of channels of the generated audio. 1: mono, 2: stereo.",
+        description: "he number of channels of the generated audio. 1: mono, 2: stereo.",
         default: 1,
       },
       format: {
@@ -10787,8 +10498,7 @@ export const audioModels = [
         title: "Language Boost",
         name: "language_boost",
         type: "string",
-        description:
-          "Enhance the ability to recognize specified languages and dialects.",
+        description: "Enhance the ability to recognize specified languages and dialects.",
         default: "auto",
       },
     },
@@ -10821,6 +10531,6 @@ export const audioModels = [
       },
     },
   },
-]
+];
 
-export const getAudioModelById = (id) => audioModels.find((m) => m.id === id)
+export const getAudioModelById = (id) => audioModels.find((m) => m.id === id);

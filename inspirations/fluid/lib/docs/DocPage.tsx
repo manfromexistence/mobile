@@ -36,12 +36,14 @@ export function DocPage({
   const { base } = useBase();
 
   const currentIndex = slug ? docOrder.findIndex((c) => c.slug === slug) : -1;
-  const prev = currentIndex > 0
-    ? docOrder[currentIndex - 1]
-    : currentIndex === 0
-      ? { slug: "", name: "Introduction" }
-      : null;
-  const next = currentIndex >= 0 && currentIndex < docOrder.length - 1 ? docOrder[currentIndex + 1] : null;
+  const prev =
+    currentIndex > 0
+      ? docOrder[currentIndex - 1]
+      : currentIndex === 0
+        ? { slug: "", name: "Introduction" }
+        : null;
+  const next =
+    currentIndex >= 0 && currentIndex < docOrder.length - 1 ? docOrder[currentIndex + 1] : null;
 
   return (
     <div className="flex flex-col gap-8 px-6">
@@ -58,8 +60,19 @@ export function DocPage({
         {slug && (
           <div className="flex items-center gap-1 shrink-0">
             {prev ? (
-              <Tooltip content={<span>{prev.name} &ensp;<kbd className="font-mono opacity-50">&larr;</kbd></span>}>
-                <Link href={`/docs/${prev.slug}`} aria-label={`Previous: ${prev.name}`} className="outline-none" tabIndex={-1}>
+              <Tooltip
+                content={
+                  <span>
+                    {prev.name} &ensp;<kbd className="font-mono opacity-50">&larr;</kbd>
+                  </span>
+                }
+              >
+                <Link
+                  href={`/docs/${prev.slug}`}
+                  aria-label={`Previous: ${prev.name}`}
+                  className="outline-none"
+                  tabIndex={-1}
+                >
                   <Button variant="ghost" size="icon">
                     <ArrowRight className="rotate-180" />
                   </Button>
@@ -71,8 +84,19 @@ export function DocPage({
               </Button>
             )}
             {next ? (
-              <Tooltip content={<span>{next.name} &ensp;<kbd className="font-mono opacity-50">&rarr;</kbd></span>}>
-                <Link href={`/docs/${next.slug}`} aria-label={`Next: ${next.name}`} className="outline-none" tabIndex={-1}>
+              <Tooltip
+                content={
+                  <span>
+                    {next.name} &ensp;<kbd className="font-mono opacity-50">&rarr;</kbd>
+                  </span>
+                }
+              >
+                <Link
+                  href={`/docs/${next.slug}`}
+                  aria-label={`Next: ${next.name}`}
+                  className="outline-none"
+                  tabIndex={-1}
+                >
                   <Button variant="ghost" size="icon">
                     <ArrowRight />
                   </Button>
@@ -94,9 +118,7 @@ export function DocPage({
           >
             Installation
           </h2>
-          <InputCopy
-            value={`npx shadcn@latest add ${installUrl(installSlug ?? slug, base)}`}
-          />
+          <InputCopy value={`npx shadcn@latest add ${installUrl(installSlug ?? slug, base)}`} />
           {DUAL_FLAVOR_SLUGS.has(installSlug ?? slug) ? (
             <p className="text-[12px] text-muted-foreground">
               {base === "base"
@@ -107,8 +129,7 @@ export function DocPage({
             // User has Base UI selected globally, but this component has no
             // Base flavour. Surface that so the toggle doesn't feel inert.
             <p className="text-[12px] text-muted-foreground">
-              This component is primitive-agnostic — same source under both
-              flavors.
+              This component is primitive-agnostic — same source under both flavors.
             </p>
           ) : null}
         </div>

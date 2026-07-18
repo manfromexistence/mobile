@@ -1,25 +1,39 @@
-'use client';
+"use client";
 
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'motion/react';
-import { Children, cloneElement, useEffect, useMemo, useRef, useState } from 'react';
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from "motion/react";
+import { Children, cloneElement, useEffect, useMemo, useRef, useState } from "react";
 
-function DockItem({ children, className = '', onClick, mouseX, spring, distance, magnification, baseItemSize, label }) {
+function DockItem({
+  children,
+  className = "",
+  onClick,
+  mouseX,
+  spring,
+  distance,
+  magnification,
+  baseItemSize,
+  label,
+}) {
   const ref = useRef(null);
   const isHovered = useMotionValue(0);
 
-  const mouseDistance = useTransform(mouseX, val => {
+  const mouseDistance = useTransform(mouseX, (val) => {
     const rect = ref.current?.getBoundingClientRect() ?? {
       x: 0,
-      width: baseItemSize
+      width: baseItemSize,
     };
     return val - rect.x - baseItemSize / 2;
   });
 
-  const targetSize = useTransform(mouseDistance, [-distance, 0, distance], [baseItemSize, magnification, baseItemSize]);
+  const targetSize = useTransform(
+    mouseDistance,
+    [-distance, 0, distance],
+    [baseItemSize, magnification, baseItemSize],
+  );
   const size = useSpring(targetSize, spring);
 
-  const handleKeyDown = e => {
-    if (e.key === 'Enter' || e.key === ' ') {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       onClick?.();
     }
@@ -30,7 +44,7 @@ function DockItem({ children, className = '', onClick, mouseX, spring, distance,
       ref={ref}
       style={{
         width: size,
-        height: size
+        height: size,
       }}
       onHoverStart={() => isHovered.set(1)}
       onHoverEnd={() => isHovered.set(0)}
@@ -44,17 +58,17 @@ function DockItem({ children, className = '', onClick, mouseX, spring, distance,
       aria-haspopup="true"
       aria-label={label}
     >
-      {Children.map(children, child => cloneElement(child, { isHovered }))}
+      {Children.map(children, (child) => cloneElement(child, { isHovered }))}
     </motion.div>
   );
 }
 
-function DockLabel({ children, className = '', ...rest }) {
+function DockLabel({ children, className = "", ...rest }) {
   const { isHovered } = rest;
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = isHovered.on('change', latest => {
+    const unsubscribe = isHovered.on("change", (latest) => {
       setIsVisible(latest === 1);
     });
     return () => unsubscribe();
@@ -70,7 +84,7 @@ function DockLabel({ children, className = '', ...rest }) {
           transition={{ duration: 0.2 }}
           className={`${className} absolute -top-6 left-1/2 w-fit whitespace-pre rounded-md border border-neutral-700 bg-[#120F17] px-2 py-0.5 text-xs text-white`}
           role="tooltip"
-          style={{ x: '-50%' }}
+          style={{ x: "-50%" }}
         >
           {children}
         </motion.div>
@@ -79,32 +93,35 @@ function DockLabel({ children, className = '', ...rest }) {
   );
 }
 
-function DockIcon({ children, className = '' }) {
+function DockIcon({ children, className = "" }) {
   return <div className={`flex items-center justify-center ${className}`}>{children}</div>;
 }
 
 export default function Dock({
   items,
-  className = '',
+  className = "",
   spring = { mass: 0.1, stiffness: 150, damping: 12 },
   magnification = 70,
   distance = 200,
   panelHeight = 64,
   dockHeight = 256,
-  baseItemSize = 50
+  baseItemSize = 50,
 }) {
   const mouseX = useMotionValue(Infinity);
   const isHovered = useMotionValue(0);
 
   const maxHeight = useMemo(
     () => Math.max(dockHeight, magnification + magnification / 2 + 4),
-    [magnification, dockHeight]
+    [magnification, dockHeight],
   );
   const heightRow = useTransform(isHovered, [0, 1], [panelHeight, maxHeight]);
   const height = useSpring(heightRow, spring);
 
   return (
-    <motion.div style={{ height, scrollbarWidth: 'none' }} className="mx-2 flex max-w-full items-center">
+    <motion.div
+      style={{ height, scrollbarWidth: "none" }}
+      className="mx-2 flex max-w-full items-center"
+    >
       <motion.div
         onMouseMove={({ pageX }) => {
           isHovered.set(1);

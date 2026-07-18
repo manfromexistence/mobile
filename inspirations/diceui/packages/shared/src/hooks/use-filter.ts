@@ -217,10 +217,7 @@ function useFilter(options?: UseFilterOptions) {
         let patternIdx = 0;
         let stringIdx = 0;
 
-        while (
-          stringIdx < normalizedString.length &&
-          patternIdx < normalizedPattern.length
-        ) {
+        while (stringIdx < normalizedString.length && patternIdx < normalizedPattern.length) {
           if (normalizedString[stringIdx] === normalizedPattern[patternIdx]) {
             patternIdx++;
           }
@@ -236,10 +233,7 @@ function useFilter(options?: UseFilterOptions) {
       let patternIdx = 0;
       let stringIdx = 0;
 
-      while (
-        stringIdx < normalizedString.length &&
-        patternIdx < normalizedPattern.length
-      ) {
+      while (stringIdx < normalizedString.length && patternIdx < normalizedPattern.length) {
         if (
           collator.compare(
             normalizedString[stringIdx] ?? "",

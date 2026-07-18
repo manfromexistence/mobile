@@ -34,7 +34,7 @@ async function resetStorage() {
 
 async function getIds(): Promise<Set<string>> {
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as ModelsResponseBody;
   return new Set(body.data.map((item) => item.id));
@@ -63,7 +63,7 @@ test("#5192: blocking the Auto (Zero-Config) provider removes all auto/* combos"
   assert.deepEqual(
     leaked,
     [],
-    `no auto/* combos should be listed when Auto is blocked, but got: ${leaked.join(", ")}`
+    `no auto/* combos should be listed when Auto is blocked, but got: ${leaked.join(", ")}`,
   );
 });
 

@@ -88,7 +88,7 @@ function makeFetch(data: unknown, status = 200): typeof fetch {
       status,
       json: () => Promise.resolve(data),
       text: () => Promise.resolve(String(data)),
-    } as Response)
+    } as Response),
   );
 }
 
@@ -117,7 +117,7 @@ async function renderPage(mockFetchFn?: typeof fetch): Promise<HTMLElement> {
 
 function countAgentCards(container: HTMLElement): number {
   return Array.from(container.querySelectorAll<HTMLAnchorElement>("a[href]")).filter((a) =>
-    a.getAttribute("href")?.startsWith("/dashboard/cli-agents/")
+    a.getAttribute("href")?.startsWith("/dashboard/cli-agents/"),
   ).length;
 }
 
@@ -165,7 +165,7 @@ describe("CliAgentsPageClient", () => {
       // Use native value setter to trigger React's synthetic onChange
       const nativeSetter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        "value"
+        "value",
       )?.set;
       nativeSetter?.call(input, "hermes");
       input.dispatchEvent(new Event("change", { bubbles: true }));
@@ -175,9 +175,7 @@ describe("CliAgentsPageClient", () => {
     const visibleCards = countAgentCards(container);
     expect(visibleCards).toBe(1);
 
-    const remainingHrefs = Array.from(
-      container.querySelectorAll<HTMLAnchorElement>("a[href]")
-    )
+    const remainingHrefs = Array.from(container.querySelectorAll<HTMLAnchorElement>("a[href]"))
       .filter((a) => a.getAttribute("href")?.startsWith("/dashboard/cli-agents/"))
       .map((a) => a.getAttribute("href") ?? "");
 
@@ -200,7 +198,7 @@ describe("CliAgentsPageClient", () => {
     await act(async () => {
       const nativeSetter = Object.getOwnPropertyDescriptor(
         window.HTMLSelectElement.prototype,
-        "value"
+        "value",
       )?.set;
       nativeSetter?.call(select, "not_installed");
       select.dispatchEvent(new Event("change", { bubbles: true }));
@@ -221,7 +219,7 @@ describe("CliAgentsPageClient", () => {
       const input = container.querySelector("input[type='search']") as HTMLInputElement;
       const nativeSetter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        "value"
+        "value",
       )?.set;
       nativeSetter?.call(input, "zzznothingmatchesxyz");
       input.dispatchEvent(new Event("change", { bubbles: true }));
@@ -263,7 +261,7 @@ describe("CliAgentsPageClient", () => {
     });
 
     expect((mockFetchFn as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThan(
-      callsAfterMount
+      callsAfterMount,
     );
   }, 15000);
 });

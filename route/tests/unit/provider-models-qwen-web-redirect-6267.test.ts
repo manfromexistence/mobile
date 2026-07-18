@@ -58,7 +58,7 @@ async function seedConnection(provider: string, overrides: SeedOverrides = {}) {
 async function callRoute(connectionId: string, search = "") {
   return providerModelsRoute.GET(
     new Request(`http://localhost/api/providers/${connectionId}/models${search}`),
-    { params: { id: connectionId } }
+    { params: { id: connectionId } },
   );
 }
 
@@ -98,6 +98,6 @@ test("qwen-web model import degrades to the local catalog when the /models endpo
   const ids = (body.models || []).map((m) => m.id);
   assert.ok(
     ids.includes("qwen3.7-max"),
-    `qwen-web catalog should be surfaced; got: ${ids.join(", ")}`
+    `qwen-web catalog should be surfaced; got: ${ids.join(", ")}`,
   );
 });

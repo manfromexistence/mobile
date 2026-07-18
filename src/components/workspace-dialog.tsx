@@ -1,42 +1,42 @@
-"use client"
+"use client";
 
-import * as LucideIcons from "lucide-react"
-import * as React from "react"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import * as LucideIcons from "lucide-react";
+import * as React from "react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 
 interface WorkspaceDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   onCreateWorkspace: (workspace: {
-    name: string
-    icon: { type: "emoji" | "icon" | "dot"; value: string }
-    color: string
-  }) => void
+    name: string;
+    icon: { type: "emoji" | "icon" | "dot"; value: string };
+    color: string;
+  }) => void;
   editMode?: {
-    workspaceId: string
-    currentName: string
-    currentIcon: { type: "emoji" | "icon" | "dot"; value: string }
-  }
+    workspaceId: string;
+    currentName: string;
+    currentIcon: { type: "emoji" | "icon" | "dot"; value: string };
+  };
   onUpdateWorkspace?: (
     workspaceId: string,
     updates: {
-      name?: string
-      icon?: { type: "emoji" | "icon" | "dot"; value: string }
-    }
-  ) => void
+      name?: string;
+      icon?: { type: "emoji" | "icon" | "dot"; value: string };
+    },
+  ) => void;
 }
 
 const EMOJI_LIST = [
@@ -80,7 +80,7 @@ const EMOJI_LIST = [
   "🎾",
   "🏐",
   "🎳",
-]
+];
 
 const ICON_NAMES = [
   "Home",
@@ -123,7 +123,7 @@ const ICON_NAMES = [
   "MapPin",
   "Navigation",
   "Compass",
-]
+];
 
 export function WorkspaceDialog({
   open,
@@ -132,22 +132,22 @@ export function WorkspaceDialog({
   editMode,
   onUpdateWorkspace,
 }: WorkspaceDialogProps): React.ReactElement {
-  const [name, setName] = useState(editMode?.currentName || "")
+  const [name, setName] = useState(editMode?.currentName || "");
   const [selectedIcon, setSelectedIcon] = useState<{
-    type: "emoji" | "icon" | "dot"
-    value: string
-  }>(editMode?.currentIcon || { type: "dot", value: "" })
+    type: "emoji" | "icon" | "dot";
+    value: string;
+  }>(editMode?.currentIcon || { type: "dot", value: "" });
 
   // Update state when editMode changes
   React.useEffect(() => {
     if (editMode) {
-      setName(editMode.currentName)
-      setSelectedIcon(editMode.currentIcon)
+      setName(editMode.currentName);
+      setSelectedIcon(editMode.currentIcon);
     } else {
-      setName("")
-      setSelectedIcon({ type: "dot", value: "" })
+      setName("");
+      setSelectedIcon({ type: "dot", value: "" });
     }
-  }, [editMode])
+  }, [editMode]);
 
   function handleSubmit(): void {
     if (editMode && onUpdateWorkspace) {
@@ -155,37 +155,34 @@ export function WorkspaceDialog({
       onUpdateWorkspace(editMode.workspaceId, {
         name: name.trim() || editMode.currentName,
         icon: selectedIcon,
-      })
+      });
     } else {
       // Create mode
-      const workspaceName = name.trim() || `Workspace ${Date.now()}`
+      const workspaceName = name.trim() || `Workspace ${Date.now()}`;
       onCreateWorkspace({
         name: workspaceName,
         icon: selectedIcon,
         color: "hsl(var(--primary))",
-      })
+      });
     }
 
     // Reset form
-    setName("")
-    setSelectedIcon({ type: "dot", value: "" })
-    onOpenChange(false)
+    setName("");
+    setSelectedIcon({ type: "dot", value: "" });
+    onOpenChange(false);
   }
 
-  function renderIcon(
-    type: "emoji" | "icon" | "dot",
-    value: string
-  ): React.ReactElement {
+  function renderIcon(type: "emoji" | "icon" | "dot", value: string): React.ReactElement {
     if (type === "emoji") {
-      return <span className="text-base">{value}</span>
+      return <span className="text-base">{value}</span>;
     }
     if (type === "icon") {
-      const IconComponent = (LucideIcons as any)[value]
+      const IconComponent = (LucideIcons as any)[value];
       if (IconComponent) {
-        return <IconComponent className="h-4 w-4" />
+        return <IconComponent className="h-4 w-4" />;
       }
     }
-    return <div className="h-2 w-2 rounded-full bg-primary" />
+    return <div className="h-2 w-2 rounded-full bg-primary" />;
   }
 
   return (
@@ -221,9 +218,7 @@ export function WorkspaceDialog({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={
-                editMode
-                  ? "Enter workspace name"
-                  : "Leave empty for auto-generated name"
+                editMode ? "Enter workspace name" : "Leave empty for auto-generated name"
               }
               className="border-zinc-800 bg-zinc-800 text-zinc-100 placeholder:text-zinc-500"
             />
@@ -246,25 +241,17 @@ export function WorkspaceDialog({
                 >
                   Dot
                 </TabsTrigger>
-                <TabsTrigger
-                  value="emoji"
-                  className="data-[state=active]:bg-zinc-700"
-                >
+                <TabsTrigger value="emoji" className="data-[state=active]:bg-zinc-700">
                   Emoji
                 </TabsTrigger>
-                <TabsTrigger
-                  value="icon"
-                  className="data-[state=active]:bg-zinc-700"
-                >
+                <TabsTrigger value="icon" className="data-[state=active]:bg-zinc-700">
                   Icon
                 </TabsTrigger>
               </TabsList>
 
               <TabsContent value="dot" className="mt-4">
                 <div className="rounded-lg border border-zinc-800 bg-zinc-800/50 p-4 text-center">
-                  <p className="text-sm text-zinc-400">
-                    A simple colored dot will be used
-                  </p>
+                  <p className="text-sm text-zinc-400">A simple colored dot will be used</p>
                 </div>
               </TabsContent>
 
@@ -275,14 +262,12 @@ export function WorkspaceDialog({
                       <button
                         type="button"
                         key={emoji}
-                        onClick={() =>
-                          setSelectedIcon({ type: "emoji", value: emoji })
-                        }
+                        onClick={() => setSelectedIcon({ type: "emoji", value: emoji })}
                         className={cn(
                           "flex h-10 w-10 items-center justify-center rounded-md text-xl transition-colors hover:bg-zinc-700",
                           selectedIcon.type === "emoji" &&
                             selectedIcon.value === emoji &&
-                            "bg-zinc-700 ring-2 ring-zinc-600"
+                            "bg-zinc-700 ring-2 ring-zinc-600",
                         )}
                       >
                         {emoji}
@@ -296,26 +281,24 @@ export function WorkspaceDialog({
                 <ScrollArea className="h-48 rounded-lg border border-zinc-800 bg-zinc-800/50 p-4">
                   <div className="grid grid-cols-8 gap-2">
                     {ICON_NAMES.map((iconName) => {
-                      const IconComponent = (LucideIcons as any)[iconName]
-                      if (!IconComponent) return null
+                      const IconComponent = (LucideIcons as any)[iconName];
+                      if (!IconComponent) return null;
                       return (
                         <button
                           type="button"
                           key={iconName}
-                          onClick={() =>
-                            setSelectedIcon({ type: "icon", value: iconName })
-                          }
+                          onClick={() => setSelectedIcon({ type: "icon", value: iconName })}
                           className={cn(
                             "flex h-10 w-10 items-center justify-center rounded-md transition-colors hover:bg-zinc-700",
                             selectedIcon.type === "icon" &&
                               selectedIcon.value === iconName &&
-                              "bg-zinc-700 ring-2 ring-zinc-600"
+                              "bg-zinc-700 ring-2 ring-zinc-600",
                           )}
                           title={iconName}
                         >
                           <IconComponent className="h-4 w-4 text-zinc-300" />
                         </button>
-                      )
+                      );
                     })}
                   </div>
                 </ScrollArea>
@@ -332,14 +315,11 @@ export function WorkspaceDialog({
           >
             Cancel
           </Button>
-          <Button
-            onClick={handleSubmit}
-            className="bg-zinc-700 text-zinc-100 hover:bg-zinc-600"
-          >
+          <Button onClick={handleSubmit} className="bg-zinc-700 text-zinc-100 hover:bg-zinc-600">
             {editMode ? "Save Changes" : "Create Workspace"}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

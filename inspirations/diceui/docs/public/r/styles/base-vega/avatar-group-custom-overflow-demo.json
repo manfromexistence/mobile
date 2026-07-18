@@ -1,10 +1,7 @@
 {
   "name": "avatar-group-custom-overflow-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "avatar",
-    "avatar-group"
-  ],
+  "registryDependencies": ["avatar", "avatar-group"],
   "files": [
     {
       "path": "examples/avatar-group-custom-overflow-demo.tsx",

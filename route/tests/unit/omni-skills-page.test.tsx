@@ -40,10 +40,7 @@ describe("File structure — omni-skills directory", () => {
 
   for (const file of expectedFiles) {
     it(`file exists: omni-skills/${file}`, () => {
-      assert.ok(
-        existsSync(resolve(join(base, file))),
-        `Expected omni-skills/${file} to exist`
-      );
+      assert.ok(existsSync(resolve(join(base, file))), `Expected omni-skills/${file} to exist`);
     });
   }
 });
@@ -56,7 +53,7 @@ describe("page.tsx — server component", () => {
   it("is a server component (no 'use client' directive)", () => {
     assert.ok(
       !src.includes('"use client"') && !src.includes("'use client'"),
-      "page.tsx must not have 'use client'"
+      "page.tsx must not have 'use client'",
     );
   });
 
@@ -67,7 +64,7 @@ describe("page.tsx — server component", () => {
   it("has a default export named Page", () => {
     assert.ok(
       src.includes("export default function Page"),
-      "page.tsx must have 'export default function Page'"
+      "page.tsx must have 'export default function Page'",
     );
   });
 });
@@ -83,42 +80,36 @@ describe("OmniSkillsPageClient.tsx", () => {
 
   it("has all 4 tab IDs", () => {
     for (const tabId of ["skills", "executions", "sandbox", "marketplace"]) {
-      assert.ok(
-        src.includes(`id: "${tabId}"`),
-        `OmniSkillsPageClient must have tab id="${tabId}"`
-      );
+      assert.ok(src.includes(`id: "${tabId}"`), `OmniSkillsPageClient must have tab id="${tabId}"`);
     }
   });
 
   it("renders SkillsConceptCard with variant='omni'", () => {
     assert.ok(
       src.includes('variant="omni"'),
-      "OmniSkillsPageClient must render <SkillsConceptCard variant=\"omni\" />"
+      'OmniSkillsPageClient must render <SkillsConceptCard variant="omni" />',
     );
   });
 
   it("imports SkillsConceptCard from shared components", () => {
     assert.ok(
       src.includes("SkillsConceptCard"),
-      "OmniSkillsPageClient must import SkillsConceptCard"
+      "OmniSkillsPageClient must import SkillsConceptCard",
     );
   });
 
   it("has selectedSkillId state", () => {
     assert.ok(
       src.includes("selectedSkillId"),
-      "OmniSkillsPageClient must maintain selectedSkillId state"
+      "OmniSkillsPageClient must maintain selectedSkillId state",
     );
   });
 
   it("wires OmniSkillsList with inspector props", () => {
-    assert.ok(
-      src.includes("OmniSkillsList"),
-      "OmniSkillsPageClient must render OmniSkillsList"
-    );
+    assert.ok(src.includes("OmniSkillsList"), "OmniSkillsPageClient must render OmniSkillsList");
     assert.ok(
       src.includes("onSelectSkill"),
-      "OmniSkillsPageClient must pass onSelectSkill to OmniSkillsList"
+      "OmniSkillsPageClient must pass onSelectSkill to OmniSkillsList",
     );
   });
 
@@ -160,14 +151,14 @@ describe("OmniSkillCard.tsx", () => {
   it("exports OmniSkillCard", () => {
     assert.ok(
       src.includes("export function OmniSkillCard") || src.includes("export { OmniSkillCard }"),
-      "must export OmniSkillCard"
+      "must export OmniSkillCard",
     );
   });
 
   it("exports OmniSkill interface", () => {
     assert.ok(
       src.includes("export interface OmniSkill"),
-      "must export OmniSkill interface for other components"
+      "must export OmniSkill interface for other components",
     );
   });
 });
@@ -183,33 +174,26 @@ describe("SkillInspectorPane.tsx", () => {
 
   it("has all 4 sub-tab IDs", () => {
     for (const tabId of ["schema", "handler", "executions", "sandbox"]) {
-      assert.ok(
-        src.includes(`"${tabId}"`),
-        `SkillInspectorPane must include sub-tab "${tabId}"`
-      );
+      assert.ok(src.includes(`"${tabId}"`), `SkillInspectorPane must include sub-tab "${tabId}"`);
     }
   });
 
   it("has empty state text when no skill selected", () => {
-    assert.ok(
-      src.includes("Selecione uma skill"),
-      "must have empty state message"
-    );
+    assert.ok(src.includes("Selecione uma skill"), "must have empty state message");
   });
 
   it("fetches /api/skills/[id] for skill detail", () => {
     assert.ok(
       src.includes("/api/skills/${selectedSkillId}") ||
         src.includes("`/api/skills/${selectedSkillId}`"),
-      "must fetch /api/skills/${selectedSkillId} for detail"
+      "must fetch /api/skills/${selectedSkillId} for detail",
     );
   });
 
   it("fetches /api/skills/executions for the executions tab", () => {
     assert.ok(
-      src.includes("api/skills/executions?skillId=") ||
-        src.includes("api/skills/executions"),
-      "must fetch executions for the selected skill"
+      src.includes("api/skills/executions?skillId=") || src.includes("api/skills/executions"),
+      "must fetch executions for the selected skill",
     );
   });
 
@@ -251,9 +235,9 @@ describe("OmniExecutionsTab.tsx", () => {
   });
 
   it("renders a table with skill/status/duration/time columns", () => {
-    assert.ok(src.includes("{t(\"skill\")}"), "must have skill column");
-    assert.ok(src.includes("{t(\"status\")}"), "must have status column");
-    assert.ok(src.includes("{t(\"duration\")}"), "must have duration column");
+    assert.ok(src.includes('{t("skill")}'), "must have skill column");
+    assert.ok(src.includes('{t("status")}'), "must have status column");
+    assert.ok(src.includes('{t("duration")}'), "must have duration column");
   });
 
   it("has pagination buttons", () => {
@@ -290,7 +274,7 @@ describe("OmniMarketplaceTab.tsx", () => {
   it("has marketplace search logic", () => {
     assert.ok(
       src.includes("/api/skills/marketplace"),
-      "must call /api/skills/marketplace endpoint"
+      "must call /api/skills/marketplace endpoint",
     );
   });
 
@@ -307,19 +291,16 @@ describe("OmniMarketplaceTab.tsx", () => {
 // ─── E2E test update ──────────────────────────────────────────────────────────
 
 describe("E2E spec path", () => {
-  const src = readFileSync(
-    resolve(join(cwd, "tests/e2e/skills-marketplace.spec.ts")),
-    "utf-8"
-  );
+  const src = readFileSync(resolve(join(cwd, "tests/e2e/skills-marketplace.spec.ts")), "utf-8");
 
   it("uses /dashboard/omni-skills (not /dashboard/skills)", () => {
     assert.ok(
       src.includes("/dashboard/omni-skills"),
-      "E2E spec must navigate to /dashboard/omni-skills"
+      "E2E spec must navigate to /dashboard/omni-skills",
     );
     assert.ok(
       !src.includes('"/dashboard/skills"') && !src.includes("'/dashboard/skills'"),
-      "E2E spec must not have the old /dashboard/skills path in gotoDashboardRoute call"
+      "E2E spec must not have the old /dashboard/skills path in gotoDashboardRoute call",
     );
   });
 });

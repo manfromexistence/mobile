@@ -1,12 +1,8 @@
 {
   "name": "swap-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "swap"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["swap"],
   "files": [
     {
       "path": "examples/swap-demo.tsx",

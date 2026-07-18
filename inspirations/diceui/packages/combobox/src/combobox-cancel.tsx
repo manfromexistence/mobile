@@ -4,8 +4,7 @@ import { useComboboxContext } from "./combobox-root";
 
 const CANCEL_NAME = "ComboboxCancel";
 
-interface ComboboxCancelProps
-  extends React.ComponentPropsWithoutRef<typeof Primitive.button> {
+interface ComboboxCancelProps extends React.ComponentPropsWithoutRef<typeof Primitive.button> {
   /**
    * Whether the cancel button should always be rendered.
    *
@@ -40,28 +39,21 @@ const ComboboxCancel = React.forwardRef<HTMLButtonElement, ComboboxCancelProps>(
             context.inputRef.current?.focus();
           });
         })}
-        onPointerDown={composeEventHandlers(
-          cancelProps.onPointerDown,
-          (event) => {
-            if (isDisabled) return;
+        onPointerDown={composeEventHandlers(cancelProps.onPointerDown, (event) => {
+          if (isDisabled) return;
 
-            // prevent implicit pointer capture
-            const target = event.target;
-            if (!(target instanceof Element)) return;
-            if (target.hasPointerCapture(event.pointerId)) {
-              target.releasePointerCapture(event.pointerId);
-            }
+          // prevent implicit pointer capture
+          const target = event.target;
+          if (!(target instanceof Element)) return;
+          if (target.hasPointerCapture(event.pointerId)) {
+            target.releasePointerCapture(event.pointerId);
+          }
 
-            if (
-              event.button === 0 &&
-              event.ctrlKey === false &&
-              event.pointerType === "mouse"
-            ) {
-              // prevent cancel from stealing focus from the input
-              event.preventDefault();
-            }
-          },
-        )}
+          if (event.button === 0 && event.ctrlKey === false && event.pointerType === "mouse") {
+            // prevent cancel from stealing focus from the input
+            event.preventDefault();
+          }
+        })}
       />
     );
   },

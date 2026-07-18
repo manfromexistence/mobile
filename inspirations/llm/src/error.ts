@@ -22,12 +22,7 @@ export class MinValueError extends ConfigValueError {
 }
 
 export class RangeError extends ConfigValueError {
-  constructor(
-    paramName: string,
-    minValue: number,
-    maxValue: number,
-    additionalMessage?: string,
-  ) {
+  constructor(paramName: string, minValue: number, maxValue: number, additionalMessage?: string) {
     super(
       `Make sure ${minValue} < ${paramName} <= ${maxValue}.${additionalMessage ? " " + additionalMessage : ""}`,
     );
@@ -52,14 +47,8 @@ export class InvalidNumberStringError extends ConfigValueError {
 }
 
 export class DependencyError extends ConfigValueError {
-  constructor(
-    dependentParam: string,
-    requiredParam: string,
-    requiredValue: any,
-  ) {
-    super(
-      `${dependentParam} requires ${requiredParam} to be ${requiredValue}.`,
-    );
+  constructor(dependentParam: string, requiredParam: string, requiredValue: any) {
+    super(`${dependentParam} requires ${requiredParam} to be ${requiredValue}.`);
     this.name = "DependencyError";
   }
 }
@@ -96,9 +85,7 @@ export class ModelNotLoadedError extends Error {
 
 export class WorkerEngineModelNotLoadedError extends Error {
   constructor(engineName: string) {
-    super(
-      `${engineName} is not loaded with a model. Did you call \`engine.reload()\`?`,
-    );
+    super(`${engineName} is not loaded with a model. Did you call \`engine.reload()\`?`);
     this.name = "WorkerEngineModelNotLoadedError";
   }
 }
@@ -165,9 +152,7 @@ export class CannotFindImageEmbedError extends Error {
 
 export class UnsupportedDetailError extends Error {
   constructor(detail: string) {
-    super(
-      `Currently do not support field image_url.detail, but received: ${detail}`,
-    );
+    super(`Currently do not support field image_url.detail, but received: ${detail}`);
     this.name = "UnsupportedDetailError";
   }
 }
@@ -183,9 +168,7 @@ export class UnsupportedImageURLError extends Error {
 
 export class MultipleTextContentError extends Error {
   constructor() {
-    super(
-      `Each message can have at most one text contentPart, but received more than 1.`,
-    );
+    super(`Each message can have at most one text contentPart, but received more than 1.`);
     this.name = "MultipleTextContentError";
   }
 }
@@ -202,9 +185,7 @@ export class ToolCallOutputParseError extends Error {
 
 export class ToolCallOutputInvalidTypeError extends Error {
   constructor(expectedType: string) {
-    super(
-      `Internal error: expect output of function calling to be an ${expectedType}`,
-    );
+    super(`Internal error: expect output of function calling to be an ${expectedType}`);
     this.name = "ToolCallOutputInvalidTypeError";
   }
 }
@@ -220,9 +201,7 @@ export class ToolCallOutputMissingFieldsError extends Error {
 
 export class ConfigurationNotInitializedError extends Error {
   constructor() {
-    super(
-      "Configuration not initialized. Ensure you have called `reload()` function first.",
-    );
+    super("Configuration not initialized. Ensure you have called `reload()` function first.");
     this.name = "ConfigurationNotInitializedError";
   }
 }
@@ -238,9 +217,7 @@ export class MissingModelWasmError extends Error {
 
 export class FeatureSupportError extends Error {
   constructor(feature: string) {
-    super(
-      `This model requires feature ${feature}, which is not yet supported by this browser.`,
-    );
+    super(`This model requires feature ${feature}, which is not yet supported by this browser.`);
     this.name = "FeatureSupportError";
   }
 }
@@ -275,27 +252,21 @@ export class DeviceLostError extends Error {
 
 export class InvalidToolChoiceError extends Error {
   constructor(toolChoice: string) {
-    super(
-      `Invalid tool choice value: '${toolChoice}'. Please check your input and try again.`,
-    );
+    super(`Invalid tool choice value: '${toolChoice}'. Please check your input and try again.`);
     this.name = "InvalidToolChoiceError";
   }
 }
 
 export class UnsupportedToolChoiceTypeError extends Error {
   constructor() {
-    super(
-      "Unsupported tool choice type. Only tool choices of type 'function' are supported.",
-    );
+    super("Unsupported tool choice type. Only tool choices of type 'function' are supported.");
     this.name = "UnsupportedToolChoiceTypeError";
   }
 }
 
 export class FunctionNotFoundError extends Error {
   constructor(functionName: string) {
-    super(
-      `The tool choice function ${functionName} is not found in the tools list`,
-    );
+    super(`The tool choice function ${functionName} is not found in the tools list`);
     this.name = "FunctionNotFoundError";
   }
 }
@@ -482,9 +453,7 @@ export class TextCompletionExpectsKVEmptyError extends Error {
 
 export class TextCompletionConversationExpectsPrompt extends Error {
   constructor() {
-    super(
-      "Non-chat text completion API expects isTextCompletion is true, and prompt is defined.",
-    );
+    super("Non-chat text completion API expects isTextCompletion is true, and prompt is defined.");
     this.name = "TextCompletionConversationExpectsPrompt";
   }
 }
@@ -573,11 +542,7 @@ export class UnclearModelToUseError extends Error {
 }
 
 export class SpecifiedModelNotFoundError extends Error {
-  constructor(
-    loadedModels: string[],
-    requestedModelId: string,
-    requestName: string,
-  ) {
+  constructor(loadedModels: string[], requestedModelId: string, requestName: string) {
     super(
       `Specified model ${requestedModelId} for ${requestName} is not found in loaded models. ` +
         `Please check if the correct model is loaded/specified. ` +
@@ -588,11 +553,7 @@ export class SpecifiedModelNotFoundError extends Error {
 }
 
 export class IncorrectPipelineLoadedError extends Error {
-  constructor(
-    selectedModelId: string,
-    expectedPipeline: string,
-    requestName: string,
-  ) {
+  constructor(selectedModelId: string, expectedPipeline: string, requestName: string) {
     super(
       `${requestName} expects model to be loaded with ${expectedPipeline}. However, ` +
         `${selectedModelId} is not loaded with this pipeline.`,

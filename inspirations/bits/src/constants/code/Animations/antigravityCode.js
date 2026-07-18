@@ -1,7 +1,7 @@
-import code from '@content/Animations/Antigravity/Antigravity.jsx?raw';
-import tailwind from '@tailwind/Animations/Antigravity/Antigravity.jsx?raw';
-import tsCode from '@ts-default/Animations/Antigravity/Antigravity.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/Antigravity/Antigravity.tsx?raw';
+import code from "@content/Animations/Antigravity/Antigravity.jsx?raw";
+import tailwind from "@tailwind/Animations/Antigravity/Antigravity.jsx?raw";
+import tsCode from "@ts-default/Animations/Antigravity/Antigravity.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/Antigravity/Antigravity.tsx?raw";
 
 export const antigravity = {
   dependencies: `three @react-three/fiber`,
@@ -25,5 +25,5 @@ export const antigravity = {
   code,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

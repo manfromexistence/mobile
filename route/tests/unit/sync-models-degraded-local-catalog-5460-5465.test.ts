@@ -7,15 +7,16 @@ import assert from "node:assert/strict";
 // failed Import/Sync every time. The route now imports those (flagged
 // `intentional: true` by the models route) and only 502s a genuinely degraded
 // remote-fetch fallback.
-const { isDegradedLocalCatalog } =
-  await import("../../src/app/api/providers/[id]/sync-models/degradedLocalCatalog.ts");
+const { isDegradedLocalCatalog } = await import(
+  "../../src/app/api/providers/[id]/sync-models/degradedLocalCatalog.ts"
+);
 
 test("isDegradedLocalCatalog: intentional local-only catalog is NOT a degraded failure (#5460/#5465)", () => {
   // reka / voyage-ai / t3-web etc. — the models route tags these intentional.
   assert.equal(
     isDegradedLocalCatalog({ source: "local_catalog", intentional: true }),
     false,
-    "intentional local-catalog-only providers must import, not 502"
+    "intentional local-catalog-only providers must import, not 502",
   );
   // Case-insensitive on source.
   assert.equal(isDegradedLocalCatalog({ source: "LOCAL_CATALOG", intentional: true }), false);
@@ -26,7 +27,7 @@ test("isDegradedLocalCatalog: intentional local-only catalog is NOT a degraded f
       warning: "Codex live and GitHub catalogs unavailable — using local catalog",
     }),
     false,
-    "Codex's intentional local fallback must import normally"
+    "Codex's intentional local fallback must import normally",
   );
 });
 
@@ -38,7 +39,7 @@ test("isDegradedLocalCatalog: a degraded remote-fetch fallback IS a failure (502
       warning: "API unavailable — using local catalog",
     }),
     true,
-    "unflagged local_catalog is a degraded fallback and must 502"
+    "unflagged local_catalog is a degraded fallback and must 502",
   );
   assert.equal(isDegradedLocalCatalog({ source: "local_catalog", intentional: false }), true);
 });

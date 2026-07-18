@@ -1,1 +1,1 @@
-export * from "./github-contributions"
+export * from "./github-contributions";

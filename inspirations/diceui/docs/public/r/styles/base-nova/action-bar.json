@@ -15,7 +15,5 @@
     "@diceui/use-as-ref",
     "@diceui/use-isomorphic-layout-effect"
   ],
-  "dependencies": [
-    "@base-ui/react"
-  ]
+  "dependencies": ["@base-ui/react"]
 }

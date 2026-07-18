@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/LiquidEther/LiquidEther.jsx?raw';
-import css from '@content/Backgrounds/LiquidEther/LiquidEther.css?raw';
-import tailwind from '@tailwind/Backgrounds/LiquidEther/LiquidEther.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/LiquidEther/LiquidEther.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/LiquidEther/LiquidEther.tsx?raw';
+import code from "@content/Backgrounds/LiquidEther/LiquidEther.jsx?raw";
+import css from "@content/Backgrounds/LiquidEther/LiquidEther.css?raw";
+import tailwind from "@tailwind/Backgrounds/LiquidEther/LiquidEther.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/LiquidEther/LiquidEther.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/LiquidEther/LiquidEther.tsx?raw";
 
 export const liquidEther = {
   dependencies: `three`,
@@ -31,5 +31,5 @@ export const liquidEther = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

@@ -71,7 +71,7 @@ test("proxyFetch routes a deno-type context through the relay endpoint with rela
     proxyFetch("https://api.anthropic.com/v1/messages?x=1", {
       method: "POST",
       headers: { "x-existing": "keep-me" },
-    })
+    }),
   );
 
   assert.deepEqual(await response.json(), { via: "deno-relay" });
@@ -92,9 +92,9 @@ test("proxyFetch routes a deno-type context through the relay endpoint with rela
 test("proxyFetch fails closed when a deno context is missing relayAuth", async () => {
   await assert.rejects(
     runWithProxyContext({ type: "deno", host: "relay.example-org.deno.net" }, () =>
-      proxyFetch("https://api.anthropic.com/v1/messages", { method: "POST" })
+      proxyFetch("https://api.anthropic.com/v1/messages", { method: "POST" }),
     ),
-    /relay configuration error: missing relayAuth/i
+    /relay configuration error: missing relayAuth/i,
   );
   assert.equal(relayCalls.length, 0, "no relay dispatch when relayAuth is missing");
 });

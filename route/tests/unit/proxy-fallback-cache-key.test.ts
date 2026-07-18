@@ -29,11 +29,11 @@ test("proxy fallback negative cache is scoped by target URL, not only hostname",
 
   assert.equal(
     await findWorkingProxy("api.example.test", "https://api.example.test/v1/models"),
-    null
+    null,
   );
   assert.equal(
     await findWorkingProxy("api.example.test", "https://api.example.test/v1/chat/completions"),
-    proxyUrl
+    proxyUrl,
   );
   assert.deepEqual(probes, [
     "https://api.example.test/v1/models",

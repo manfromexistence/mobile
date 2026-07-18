@@ -26,11 +26,7 @@ export interface MediaSize {
 
 export type Shape = "rectangle" | "circle";
 
-export type ObjectFit =
-  | "contain"
-  | "cover"
-  | "horizontal-cover"
-  | "vertical-cover";
+export type ObjectFit = "contain" | "cover" | "horizontal-cover" | "vertical-cover";
 
 export interface CropperProps extends RenderProps {
   /**

@@ -30,11 +30,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/registry/bases/radix/ui/command";
-import {
-  Popover,
-  PopoverAnchor,
-  PopoverContent,
-} from "@/registry/bases/radix/ui/popover";
+import { Popover, PopoverAnchor, PopoverContent } from "@/registry/bases/radix/ui/popover";
 import {
   Select,
   SelectContent,
@@ -83,13 +79,10 @@ export function ShortTextCell<TData>({
     tableMeta?.onCellEditingStop?.();
   }, [tableMeta, rowIndex, columnId, initialValue, readOnly]);
 
-  const onInput = React.useCallback(
-    (event: React.FormEvent<HTMLDivElement>) => {
-      const currentValue = event.currentTarget.textContent ?? "";
-      setValue(currentValue);
-    },
-    [],
-  );
+  const onInput = React.useCallback((event: React.FormEvent<HTMLDivElement>) => {
+    const currentValue = event.currentTarget.textContent ?? "";
+    setValue(currentValue);
+  }, []);
 
   const onWrapperKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -123,12 +116,7 @@ export function ShortTextCell<TData>({
           setValue(initialValue);
           cellRef.current?.blur();
         }
-      } else if (
-        isFocused &&
-        event.key.length === 1 &&
-        !event.ctrlKey &&
-        !event.metaKey
-      ) {
+      } else if (isFocused && event.key.length === 1 && !event.ctrlKey && !event.metaKey) {
         // Handle typing to pre-fill the value when editing starts
         setValue(event.key);
 
@@ -198,8 +186,7 @@ export function ShortTextCell<TData>({
         onInput={onInput}
         suppressContentEditableWarning
         className={cn("size-full overflow-hidden outline-none", {
-          "whitespace-nowrap **:inline **:whitespace-nowrap [&_br]:hidden":
-            isEditing,
+          "whitespace-nowrap **:inline **:whitespace-nowrap [&_br]:hidden": isEditing,
         })}
       >
         {displayValue}
@@ -287,10 +274,7 @@ export function LongTextCell<TData>({
         const char = pendingCharRef.current;
         pendingCharRef.current = null;
         requestAnimationFrame(() => {
-          if (
-            textareaRef.current &&
-            document.activeElement === textareaRef.current
-          ) {
+          if (textareaRef.current && document.activeElement === textareaRef.current) {
             document.execCommand("insertText", false, char);
             textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
           }
@@ -444,12 +428,9 @@ export function NumberCell<TData>({
     tableMeta?.onCellEditingStop?.();
   }, [tableMeta, rowIndex, columnId, initialValue, value, readOnly]);
 
-  const onChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(event.target.value);
-    },
-    [],
-  );
+  const onChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+  }, []);
 
   const onWrapperKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -574,13 +555,10 @@ export function UrlCell<TData>({
     tableMeta?.onCellEditingStop?.();
   }, [tableMeta, rowIndex, columnId, initialValue, readOnly]);
 
-  const onInput = React.useCallback(
-    (event: React.FormEvent<HTMLDivElement>) => {
-      const currentValue = event.currentTarget.textContent ?? "";
-      setValue(currentValue);
-    },
-    [],
-  );
+  const onInput = React.useCallback((event: React.FormEvent<HTMLDivElement>) => {
+    const currentValue = event.currentTarget.textContent ?? "";
+    setValue(currentValue);
+  }, []);
 
   const onWrapperKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -637,15 +615,7 @@ export function UrlCell<TData>({
         });
       }
     },
-    [
-      isEditing,
-      isFocused,
-      initialValue,
-      tableMeta,
-      rowIndex,
-      columnId,
-      readOnly,
-    ],
+    [isEditing, isFocused, initialValue, tableMeta, rowIndex, columnId, readOnly],
   );
 
   const onLinkClick = React.useCallback(
@@ -715,10 +685,7 @@ export function UrlCell<TData>({
       onKeyDown={onWrapperKeyDown}
     >
       {!isEditing && displayValue ? (
-        <div
-          data-slot="grid-cell-content"
-          className="size-full overflow-hidden"
-        >
+        <div data-slot="grid-cell-content" className="size-full overflow-hidden">
           <a
             data-focused={isFocused && !isDangerousUrl ? "" : undefined}
             data-invalid={isDangerousUrl ? "" : undefined}
@@ -742,8 +709,7 @@ export function UrlCell<TData>({
           onInput={onInput}
           suppressContentEditableWarning
           className={cn("size-full overflow-hidden outline-none", {
-            "whitespace-nowrap **:inline **:whitespace-nowrap [&_br]:hidden":
-              isEditing,
+            "whitespace-nowrap **:inline **:whitespace-nowrap [&_br]:hidden": isEditing,
           })}
         >
           {displayValue}
@@ -786,11 +752,7 @@ export function CheckboxCell<TData>({
 
   const onWrapperKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
-      if (
-        isFocused &&
-        !readOnly &&
-        (event.key === " " || event.key === "Enter")
-      ) {
+      if (isFocused && !readOnly && (event.key === " " || event.key === "Enter")) {
         event.preventDefault();
         event.stopPropagation();
         onCheckedChange(!value);
@@ -819,19 +781,13 @@ export function CheckboxCell<TData>({
     event.stopPropagation();
   }, []);
 
-  const onCheckboxMouseDown = React.useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.stopPropagation();
-    },
-    [],
-  );
+  const onCheckboxMouseDown = React.useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+  }, []);
 
-  const onCheckboxDoubleClick = React.useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.stopPropagation();
-    },
-    [],
-  );
+  const onCheckboxDoubleClick = React.useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+  }, []);
 
   return (
     <DataGridCellWrapper<TData>
@@ -963,10 +919,7 @@ export function SelectCell<TData>({
             className="size-full items-start border-none p-0 shadow-none focus-visible:ring-0 dark:bg-transparent [&_svg]:hidden"
           >
             {displayLabel ? (
-              <Badge
-                variant="secondary"
-                className="whitespace-pre-wrap px-1.5 py-px"
-              >
+              <Badge variant="secondary" className="whitespace-pre-wrap px-1.5 py-px">
                 <SelectValue />
               </Badge>
             ) : (
@@ -1022,8 +975,7 @@ export function MultiSelectCell<TData>({
   const cellKey = getCellKey(rowIndex, columnId);
   const prevCellKeyRef = React.useRef(cellKey);
 
-  const [selectedValues, setSelectedValues] =
-    React.useState<string[]>(cellValue);
+  const [selectedValues, setSelectedValues] = React.useState<string[]>(cellValue);
   const [searchValue, setSearchValue] = React.useState("");
   const containerRef = React.useRef<HTMLDivElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -1054,9 +1006,7 @@ export function MultiSelectCell<TData>({
       if (readOnly) return;
       let newValues: string[] = [];
       setSelectedValues((curr) => {
-        newValues = curr.includes(value)
-          ? curr.filter((v) => v !== value)
-          : [...curr, value];
+        newValues = curr.includes(value) ? curr.filter((v) => v !== value) : [...curr, value];
         return newValues;
       });
       queueMicrotask(() => {
@@ -1158,20 +1108,16 @@ export function MultiSelectCell<TData>({
     .map((val) => optionByValue.get(val)?.label ?? val)
     .filter(Boolean);
 
-  const selectedValuesSet = React.useMemo(
-    () => new Set(selectedValues),
-    [selectedValues],
-  );
+  const selectedValuesSet = React.useMemo(() => new Set(selectedValues), [selectedValues]);
 
   const lineCount = getLineCount(rowHeight);
 
-  const { visibleItems: visibleLabels, hiddenCount: hiddenBadgeCount } =
-    useBadgeOverflow({
-      items: displayLabels,
-      getLabel: (label) => label,
-      containerRef,
-      lineCount,
-    });
+  const { visibleItems: visibleLabels, hiddenCount: hiddenBadgeCount } = useBadgeOverflow({
+    items: displayLabels,
+    getLabel: (label) => label,
+    containerRef,
+    lineCount,
+  });
 
   return (
     <DataGridCellWrapper<TData>
@@ -1207,11 +1153,7 @@ export function MultiSelectCell<TData>({
                   const label = optionByValue.get(value)?.label ?? value;
 
                   return (
-                    <Badge
-                      key={value}
-                      variant="secondary"
-                      className="gap-1 px-1.5 py-px"
-                    >
+                    <Badge key={value} variant="secondary" className="gap-1 px-1.5 py-px">
                       {label}
                       <button
                         type="button"
@@ -1283,19 +1225,12 @@ export function MultiSelectCell<TData>({
       {displayLabels.length > 0 ? (
         <div className="flex flex-wrap items-center gap-1 overflow-hidden">
           {visibleLabels.map((label, index) => (
-            <Badge
-              key={selectedValues[index]}
-              variant="secondary"
-              className="px-1.5 py-px"
-            >
+            <Badge key={selectedValues[index]} variant="secondary" className="px-1.5 py-px">
               {label}
             </Badge>
           ))}
           {hiddenBadgeCount > 0 && (
-            <Badge
-              variant="outline"
-              className="px-1.5 py-px text-muted-foreground"
-            >
+            <Badge variant="outline" className="px-1.5 py-px text-muted-foreground">
               +{hiddenBadgeCount}
             </Badge>
           )}
@@ -1389,9 +1324,7 @@ export function DateCell<TData>({
     >
       <Popover open={isEditing} onOpenChange={onOpenChange}>
         <PopoverAnchor asChild>
-          <span data-slot="grid-cell-content">
-            {formatDateForDisplay(value)}
-          </span>
+          <span data-slot="grid-cell-content">{formatDateForDisplay(value)}</span>
         </PopoverAnchor>
         {isEditing && (
           <PopoverContent
@@ -1428,10 +1361,7 @@ export function FileCell<TData>({
   isActiveSearchMatch,
   readOnly,
 }: DataGridCellProps<TData>) {
-  const cellValue = React.useMemo(
-    () => (cell.getValue() as FileCellData[]) ?? [],
-    [cell],
-  );
+  const cellValue = React.useMemo(() => (cell.getValue() as FileCellData[]) ?? [], [cell]);
 
   const cellKey = getCellKey(rowIndex, columnId);
   const prevCellKeyRef = React.useRef(cellKey);
@@ -1440,12 +1370,8 @@ export function FileCell<TData>({
   const descriptionId = React.useId();
 
   const [files, setFiles] = React.useState<FileCellData[]>(cellValue);
-  const [uploadingFiles, setUploadingFiles] = React.useState<Set<string>>(
-    new Set(),
-  );
-  const [deletingFiles, setDeletingFiles] = React.useState<Set<string>>(
-    new Set(),
-  );
+  const [uploadingFiles, setUploadingFiles] = React.useState<Set<string>>(new Set());
+  const [deletingFiles, setDeletingFiles] = React.useState<Set<string>>(new Set());
   const [isDraggingOver, setIsDraggingOver] = React.useState(false);
   const [isDragging, setIsDragging] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -1546,9 +1472,7 @@ export function FileCell<TData>({
           setError(firstError.reason);
 
           const truncatedName =
-            firstError.name.length > 20
-              ? `${firstError.name.slice(0, 20)}...`
-              : firstError.name;
+            firstError.name.length > 20 ? `${firstError.name.slice(0, 20)}...` : firstError.name;
 
           if (rejectedFiles.length === 1) {
             toast(firstError.reason, {
@@ -1640,16 +1564,7 @@ export function FileCell<TData>({
         }
       }
     },
-    [
-      files,
-      maxFiles,
-      validateFile,
-      tableMeta,
-      rowIndex,
-      columnId,
-      readOnly,
-      isPending,
-    ],
+    [files, maxFiles, validateFile, tableMeta, rowIndex, columnId, readOnly, isPending],
   );
 
   const removeFile = React.useCallback(
@@ -1671,9 +1586,7 @@ export function FileCell<TData>({
           });
         } catch (error) {
           toast.error(
-            error instanceof Error
-              ? error.message
-              : `Failed to delete ${fileToRemove.name}`,
+            error instanceof Error ? error.message : `Failed to delete ${fileToRemove.name}`,
           );
           setDeletingFiles((prev) => {
             const next = new Set(prev);
@@ -1715,9 +1628,7 @@ export function FileCell<TData>({
           columnId,
         });
       } catch (error) {
-        toast.error(
-          error instanceof Error ? error.message : "Failed to delete files",
-        );
+        toast.error(error instanceof Error ? error.message : "Failed to delete files");
         setDeletingFiles(new Set());
         return;
       }
@@ -1748,12 +1659,7 @@ export function FileCell<TData>({
     const x = event.clientX;
     const y = event.clientY;
 
-    if (
-      x <= rect.left ||
-      x >= rect.right ||
-      y <= rect.top ||
-      y >= rect.bottom
-    ) {
+    if (x <= rect.left || x >= rect.right || y <= rect.top || y >= rect.bottom) {
       setIsDraggingOver(false);
     }
   }, []);
@@ -1790,12 +1696,7 @@ export function FileCell<TData>({
     const x = event.clientX;
     const y = event.clientY;
 
-    if (
-      x <= rect.left ||
-      x >= rect.right ||
-      y <= rect.top ||
-      y >= rect.bottom
-    ) {
+    if (x <= rect.left || x >= rect.right || y <= rect.top || y >= rect.bottom) {
       setIsDragging(false);
     }
   }, []);
@@ -1897,15 +1798,7 @@ export function FileCell<TData>({
         });
       }
     },
-    [
-      isEditing,
-      isFocused,
-      cellValue,
-      tableMeta,
-      onDropzoneClick,
-      rowIndex,
-      columnId,
-    ],
+    [isEditing, isFocused, cellValue, tableMeta, onDropzoneClick, rowIndex, columnId],
   );
 
   React.useEffect(() => {
@@ -1920,16 +1813,15 @@ export function FileCell<TData>({
 
   const lineCount = getLineCount(rowHeight);
 
-  const { visibleItems: visibleFiles, hiddenCount: hiddenFileCount } =
-    useBadgeOverflow({
-      items: files,
-      getLabel: (file) => file.name,
-      containerRef,
-      lineCount,
-      cacheKeyPrefix: "file",
-      iconSize: 12,
-      maxWidth: 100,
-    });
+  const { visibleItems: visibleFiles, hiddenCount: hiddenFileCount } = useBadgeOverflow({
+    items: files,
+    getLabel: (file) => file.name,
+    containerRef,
+    lineCount,
+    cacheKeyPrefix: "file",
+    iconSize: 12,
+    maxWidth: 100,
+  });
 
   return (
     <DataGridCellWrapper<TData>
@@ -1995,9 +1887,7 @@ export function FileCell<TData>({
                   <p className="font-medium">
                     {isDragging ? "Drop files here" : "Drag files here"}
                   </p>
-                  <p className="text-muted-foreground text-xs">
-                    or click to browse
-                  </p>
+                  <p className="text-muted-foreground text-xs">or click to browse</p>
                 </div>
                 <p id={descriptionId} className="text-muted-foreground text-xs">
                   {maxFileSize
@@ -2105,21 +1995,14 @@ export function FileCell<TData>({
             const FileIcon = getFileIcon(file.type);
 
             return (
-              <Badge
-                key={file.id}
-                variant="secondary"
-                className="gap-1 px-1.5 py-px"
-              >
+              <Badge key={file.id} variant="secondary" className="gap-1 px-1.5 py-px">
                 {FileIcon && <FileIcon className="size-3 shrink-0" />}
                 <span className="max-w-[100px] truncate">{file.name}</span>
               </Badge>
             );
           })}
           {hiddenFileCount > 0 && (
-            <Badge
-              variant="outline"
-              className="px-1.5 py-px text-muted-foreground"
-            >
+            <Badge variant="outline" className="px-1.5 py-px text-muted-foreground">
               +{hiddenFileCount}
             </Badge>
           )}

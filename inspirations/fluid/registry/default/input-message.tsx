@@ -27,8 +27,7 @@ import { FileThumbnail } from "@/registry/default/file-thumbnail";
 import { Button } from "@/registry/radix/button";
 import { Tooltip } from "@/registry/radix/tooltip";
 
-const useIsoLayoutEffect =
-  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 // Touch devices have no hover, so hover-revealed affordances (like a queued
 // row's × button) would never appear. `(hover: none)` flags those so they can
@@ -56,9 +55,7 @@ interface InputMessageSlotContext {
   files: File[];
 }
 
-type InputMessageSlot =
-  | ReactNode
-  | ((ctx: InputMessageSlotContext) => ReactNode);
+type InputMessageSlot = ReactNode | ((ctx: InputMessageSlotContext) => ReactNode);
 
 /** A message held in the queue while the assistant is responding. Carries the
  *  trimmed text plus a snapshot of the files attached when it was queued, so
@@ -69,8 +66,7 @@ interface QueuedMessage {
   files: File[];
 }
 
-interface InputMessageProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+interface InputMessageProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
   /** Controlled textarea value. */
   value: string;
   /** Called with the new value on every textarea change. */
@@ -80,11 +76,7 @@ interface InputMessageProps
    *  and — for auto-dispatched queue items — `meta.queuedId` (the originating
    *  QueuedMessage id), so a consumer can e.g. morph the queued item into the
    *  sent message via a shared-layout (`layoutId`) transition. */
-  onSend?: (
-    value: string,
-    files: File[],
-    meta?: { queuedId?: string }
-  ) => void;
+  onSend?: (value: string, files: File[], meta?: { queuedId?: string }) => void;
   /** Placeholder text shown when the value is empty. */
   placeholder?: string;
   /** Content rendered in the bottom-left action area. Can be a function that
@@ -221,8 +213,7 @@ function QueuedRow({
   const XIcon = useIcon("x");
   const ImageIcon = useIcon("image");
   const fileCount = item.files.length;
-  const label =
-    item.text || `${fileCount} attachment${fileCount === 1 ? "" : "s"}`;
+  const label = item.text || `${fileCount} attachment${fileCount === 1 ? "" : "s"}`;
 
   return (
     <Reorder.Item
@@ -233,9 +224,7 @@ function QueuedRow({
       initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={
-        reduceMotion
-          ? { opacity: 0 }
-          : { opacity: 0, scale: 0.97, transition: spring.fast.exit }
+        reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.97, transition: spring.fast.exit }
       }
       transition={spring.fast}
       aria-label={`Queued message ${index + 1} of ${total}: ${label}`}
@@ -257,7 +246,7 @@ function QueuedRow({
         "group/qrow flex items-center gap-2 rounded-lg bg-muted px-2.5 py-1.5",
         "text-[13px] text-foreground/85 select-none outline-none",
         "cursor-grab active:cursor-grabbing",
-        "focus-visible:ring-1 focus-visible:ring-[#6B97FF]"
+        "focus-visible:ring-1 focus-visible:ring-[#6B97FF]",
       )}
       style={{ fontVariationSettings: fontWeights.normal }}
     >
@@ -288,7 +277,7 @@ function QueuedRow({
               ? "opacity-100"
               : "opacity-0 group-hover/qrow:opacity-100 focus-visible:opacity-100",
             "transition-opacity duration-80 cursor-pointer outline-none",
-            "focus-visible:ring-1 focus-visible:ring-[#6B97FF]"
+            "focus-visible:ring-1 focus-visible:ring-[#6B97FF]",
           )}
         >
           <XIcon size={13} strokeWidth={2.5} />
@@ -330,7 +319,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
       style,
       ...props
     },
-    ref
+    ref,
   ) => {
     const shape = useShape();
     const ArrowUpIcon = useIcon("arrow-up");
@@ -460,9 +449,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
         const [next, ...rest] = queueArr;
         onQueueChange?.(rest);
         onSend?.(next.text, next.files, { queuedId: next.id });
-        setLiveMsg(
-          `Message sent.${rest.length ? ` ${rest.length} still queued.` : ""}`
-        );
+        setLiveMsg(`Message sent.${rest.length ? ` ${rest.length} still queued.` : ""}`);
       }
     }, [status, supportsQueue, queueArr, onQueueChange, onSend]);
 
@@ -475,9 +462,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
         setHistoryIndex(null);
         onValueChange(item.text);
         if (supportsFiles) {
-          onFilesChange?.(
-            maxFiles != null ? item.files.slice(0, maxFiles) : item.files
-          );
+          onFilesChange?.(maxFiles != null ? item.files.slice(0, maxFiles) : item.files);
         }
         onQueueChange?.(queueRef.current.filter((q) => q.id !== item.id));
         requestAnimationFrame(() => {
@@ -487,20 +472,12 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
           el.setSelectionRange(el.value.length, el.value.length);
         });
       },
-      [
-        supportsQueue,
-        supportsFiles,
-        onValueChange,
-        onFilesChange,
-        maxFiles,
-        onQueueChange,
-      ]
+      [supportsQueue, supportsFiles, onValueChange, onFilesChange, maxFiles, onQueueChange],
     );
 
     const removeQueued = useCallback(
-      (item: QueuedMessage) =>
-        onQueueChange?.(queueRef.current.filter((q) => q.id !== item.id)),
-      [onQueueChange]
+      (item: QueuedMessage) => onQueueChange?.(queueRef.current.filter((q) => q.id !== item.id)),
+      [onQueueChange],
     );
 
     const moveQueued = useCallback(
@@ -513,7 +490,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
         [next[i], next[j]] = [next[j], next[i]];
         onQueueChange?.(next);
       },
-      [onQueueChange]
+      [onQueueChange],
     );
 
     // Send button morph: Stop (streaming + empty draft) → Queue (streaming +
@@ -527,11 +504,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
           ? "stop"
           : "send";
     const buttonLabel =
-      buttonMode === "stop"
-        ? "Stop"
-        : buttonMode === "queue"
-          ? "Queue message"
-          : sendLabel;
+      buttonMode === "stop" ? "Stop" : buttonMode === "queue" ? "Queue message" : sendLabel;
 
     const setCaretEnd = useCallback(() => {
       requestAnimationFrame(() => {
@@ -570,11 +543,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
             }
             return;
           }
-          if (
-            e.key === "ArrowDown" &&
-            historyIndex != null &&
-            !value.slice(end).includes("\n")
-          ) {
+          if (e.key === "ArrowDown" && historyIndex != null && !value.slice(end).includes("\n")) {
             e.preventDefault();
             const ni = historyIndex + 1;
             if (ni >= history.length) {
@@ -594,7 +563,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
           handleSend();
         }
       },
-      [history, value, historyIndex, onValueChange, setCaretEnd, handleSend]
+      [history, value, historyIndex, onValueChange, setCaretEnd, handleSend],
     );
 
     const handleContainerMouseDown = useCallback(
@@ -604,7 +573,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
         if (target === textareaRef.current) return;
         if (
           target.closest(
-            'button, a, input, select, textarea, [contenteditable], [role="button"], [data-im-queue]'
+            'button, a, input, select, textarea, [contenteditable], [role="button"], [data-im-queue]',
           )
         ) {
           return;
@@ -612,13 +581,17 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
         e.preventDefault();
         textareaRef.current?.focus();
       },
-      [clickToFocus, disabled]
+      [clickToFocus, disabled],
     );
 
     // ── File helpers ──────────────────────────────────────────────────
     const acceptTokens = useMemo(
-      () => accept.split(",").map((s) => s.trim()).filter(Boolean),
-      [accept]
+      () =>
+        accept
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean),
+      [accept],
     );
 
     const matchesAccept = useCallback(
@@ -628,7 +601,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
           if (token.startsWith(".")) return file.name.toLowerCase().endsWith(token.toLowerCase());
           return file.type === token;
         }),
-      [acceptTokens]
+      [acceptTokens],
     );
 
     const addFiles = useCallback(
@@ -651,7 +624,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
         const next = [...filesArr, ...accepted];
         onFilesChange(maxFiles != null ? next.slice(0, maxFiles) : next);
       },
-      [onFilesChange, filesArr, matchesAccept, maxFiles]
+      [onFilesChange, filesArr, matchesAccept, maxFiles],
     );
 
     const removeFile = useCallback(
@@ -659,7 +632,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
         if (!onFilesChange) return;
         onFilesChange(filesArr.filter((_, i) => i !== idx));
       },
-      [onFilesChange, filesArr]
+      [onFilesChange, filesArr],
     );
 
     const openFilePicker = useCallback(
@@ -680,18 +653,16 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
         }
         el.click();
       },
-      [accept]
+      [accept],
     );
 
     // ── Slot rendering ────────────────────────────────────────────────
     const slotCtx = useMemo<InputMessageSlotContext>(
       () => ({ openFilePicker, files: filesArr }),
-      [openFilePicker, filesArr]
+      [openFilePicker, filesArr],
     );
-    const leftContent =
-      typeof leftSlot === "function" ? leftSlot(slotCtx) : leftSlot;
-    const rightContent =
-      typeof rightSlot === "function" ? rightSlot(slotCtx) : rightSlot;
+    const leftContent = typeof leftSlot === "function" ? leftSlot(slotCtx) : leftSlot;
+    const rightContent = typeof rightSlot === "function" ? rightSlot(slotCtx) : rightSlot;
 
     // ── Drag-and-drop ────────────────────────────────────────────────
     const handleDragOver = useCallback(
@@ -703,18 +674,15 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
         e.dataTransfer.dropEffect = "copy";
         setDragOver(true);
       },
-      [supportsFiles, disabled]
+      [supportsFiles, disabled],
     );
 
-    const handleDragLeave = useCallback(
-      (e: ReactDragEvent<HTMLDivElement>) => {
-        const wrapper = e.currentTarget;
-        const next = e.relatedTarget as Node | null;
-        if (next && wrapper.contains(next)) return;
-        setDragOver(false);
-      },
-      []
-    );
+    const handleDragLeave = useCallback((e: ReactDragEvent<HTMLDivElement>) => {
+      const wrapper = e.currentTarget;
+      const next = e.relatedTarget as Node | null;
+      if (next && wrapper.contains(next)) return;
+      setDragOver(false);
+    }, []);
 
     const handleDrop = useCallback(
       (e: ReactDragEvent<HTMLDivElement>) => {
@@ -723,7 +691,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
         if (!supportsFiles || disabled) return;
         addFiles(Array.from(e.dataTransfer.files));
       },
-      [supportsFiles, disabled, addFiles]
+      [supportsFiles, disabled, addFiles],
     );
 
     const handleFileInputChange = useCallback(
@@ -732,7 +700,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
         addFiles(Array.from(e.target.files));
         e.target.value = ""; // Allow re-selecting the same file.
       },
-      [addFiles]
+      [addFiles],
     );
 
     return (
@@ -752,7 +720,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
           shape.container,
           clickToFocus && !disabled && "cursor-text",
           disabled && "opacity-50 pointer-events-none",
-          className
+          className,
         )}
         style={edgeShadow ? { boxShadow: edgeShadow, ...style } : style}
         onMouseEnter={() => setHovered(true)}
@@ -871,18 +839,14 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
               setFocusVisible(false);
               textareaProps?.onBlur?.(e);
             }}
-            placeholder={
-              dragOver && supportsFiles
-                ? "Drop files here to add to chat"
-                : placeholder
-            }
+            placeholder={dragOver && supportsFiles ? "Drop files here to add to chat" : placeholder}
             disabled={disabled}
             rows={minRows}
             aria-label={textareaProps?.["aria-label"] ?? "Message"}
             className={cn(
               "w-full resize-none bg-transparent outline-none",
               "text-[14px] leading-5 text-foreground placeholder:text-muted-foreground",
-              "px-2 py-2"
+              "px-2 py-2",
             )}
             style={{ fontVariationSettings: fontWeights.normal }}
             {...restTextareaProps}
@@ -902,11 +866,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.span
                     key={buttonMode === "stop" ? "stop" : "arrow"}
-                    initial={
-                      reduceMotion
-                        ? { opacity: 0 }
-                        : { opacity: 0, scale: 0.6 }
-                    }
+                    initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={
                       reduceMotion
@@ -922,10 +882,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
                       // Override icon-sm's small 14px svg — the send glyph reads
                       // better a touch larger. `size` matches the attribute to
                       // the CSS so the svg box stays centered.
-                      <ArrowUpIcon
-                        size={19}
-                        className="block !h-[19px] !w-[19px]"
-                      />
+                      <ArrowUpIcon size={19} className="block !h-[19px] !w-[19px]" />
                     )}
                   </motion.span>
                 </AnimatePresence>
@@ -939,7 +896,7 @@ const InputMessage = forwardRef<HTMLDivElement, InputMessageProps>(
         </SurfaceProvider>
       </div>
     );
-  }
+  },
 );
 
 InputMessage.displayName = "InputMessage";

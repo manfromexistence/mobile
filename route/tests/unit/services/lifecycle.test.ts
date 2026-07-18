@@ -24,11 +24,12 @@ const db = core.getDbInstance();
 // Seed service rows
 db.prepare(
   `INSERT OR IGNORE INTO version_manager (tool, status, port, auto_start, auto_update, provider_expose)
-   VALUES ('9router', 'stopped', 20130, 0, 1, 1)`
+   VALUES ('9router', 'stopped', 20130, 0, 1, 1)`,
 ).run();
 
-const { updateVersionManagerTool, getVersionManagerTool } =
-  await import("../../../src/lib/db/versionManager.ts");
+const { updateVersionManagerTool, getVersionManagerTool } = await import(
+  "../../../src/lib/db/versionManager.ts"
+);
 
 // Set version so installer functions have something to read
 await updateVersionManagerTool("9router", { installedVersion: "0.4.59", status: "stopped" });
@@ -166,8 +167,9 @@ test("POST /auto-start toggles DB field", async () => {
 });
 
 test("POST /auto-start returns 400 for invalid body", async () => {
-  const { POST } =
-    await import("../../../src/app/api/services/9router/auto-start/route.ts?t=as-bad");
+  const { POST } = await import(
+    "../../../src/app/api/services/9router/auto-start/route.ts?t=as-bad"
+  );
   const req = new Request("http://localhost", {
     method: "POST",
     body: JSON.stringify({ enabled: "yes" }), // should be boolean

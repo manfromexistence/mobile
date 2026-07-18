@@ -55,14 +55,18 @@ test("isRetryableProxyTarget rejects every private / link-local / metadata host"
     assert.equal(
       isRetryableProxyTarget(url),
       false,
-      `${url} must NOT be eligible for proxy-fallback (SSRF)`
+      `${url} must NOT be eligible for proxy-fallback (SSRF)`,
     );
   }
 });
 
 test("isRetryableProxyTarget allows public provider targets", () => {
   for (const url of PUBLIC_TARGETS) {
-    assert.equal(isRetryableProxyTarget(url), true, `${url} should be a valid proxy-fallback target`);
+    assert.equal(
+      isRetryableProxyTarget(url),
+      true,
+      `${url} should be a valid proxy-fallback target`,
+    );
   }
 });
 

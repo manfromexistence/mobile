@@ -1,7 +1,7 @@
-import code from '../../../content/Animations/Magnet/Magnet.jsx?raw';
-import tailwind from '@tailwind/Animations/Magnet/Magnet.jsx?raw';
-import tsCode from '@ts-default/Animations/Magnet/Magnet.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/Magnet/Magnet.tsx?raw';
+import code from "../../../content/Animations/Magnet/Magnet.jsx?raw";
+import tailwind from "@tailwind/Animations/Magnet/Magnet.jsx?raw";
+import tsCode from "@ts-default/Animations/Magnet/Magnet.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/Magnet/Magnet.tsx?raw";
 
 export const magnet = {
   usage: `import Magnet from './Magnet'
@@ -12,5 +12,5 @@ export const magnet = {
   code,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

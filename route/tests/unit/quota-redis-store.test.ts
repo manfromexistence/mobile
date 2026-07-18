@@ -120,8 +120,9 @@ function createMockRedisClient() {
 // ─── Tests ──────────────────────────────────────────────────────────────────
 
 test("redisQuotaStore: consume calls INCRBYFLOAT + EXPIRE and returns sliding window value", async () => {
-  const { RedisQuotaStore, resetRedisClient } =
-    await import("../../src/lib/quota/redisQuotaStore.ts");
+  const { RedisQuotaStore, resetRedisClient } = await import(
+    "../../src/lib/quota/redisQuotaStore.ts"
+  );
   resetRedisClient();
 
   const mock = createMockRedisClient();
@@ -183,8 +184,9 @@ test("redisQuotaStore: getRedisClient throws clear error if ioredis not installe
   }
 
   if (!ioredisAvailable) {
-    const { getRedisClient, resetRedisClient } =
-      await import("../../src/lib/quota/redisQuotaStore.ts");
+    const { getRedisClient, resetRedisClient } = await import(
+      "../../src/lib/quota/redisQuotaStore.ts"
+    );
     resetRedisClient();
 
     await assert.rejects(
@@ -192,12 +194,13 @@ test("redisQuotaStore: getRedisClient throws clear error if ioredis not installe
       (err: Error) => {
         assert.ok(err.message.includes("ioredis"), `Expected ioredis mention: ${err.message}`);
         return true;
-      }
+      },
     );
   } else {
     // ioredis is installed — just verify getRedisClient returns a client object
-    const { getRedisClient, resetRedisClient } =
-      await import("../../src/lib/quota/redisQuotaStore.ts");
+    const { getRedisClient, resetRedisClient } = await import(
+      "../../src/lib/quota/redisQuotaStore.ts"
+    );
     resetRedisClient();
 
     const client = await getRedisClient("redis://localhost:6399");
@@ -220,8 +223,9 @@ test(
     skip: process.env.RUN_QUOTA_REDIS_INT !== "1",
   },
   async () => {
-    const { RedisQuotaStore, resetRedisClient } =
-      await import("../../src/lib/quota/redisQuotaStore.ts");
+    const { RedisQuotaStore, resetRedisClient } = await import(
+      "../../src/lib/quota/redisQuotaStore.ts"
+    );
     resetRedisClient();
 
     const REDIS_URL = process.env.QUOTA_STORE_REDIS_URL ?? "redis://localhost:6379";
@@ -245,7 +249,7 @@ test(
     assert.equal(afterClear, 0);
 
     resetRedisClient();
-  }
+  },
 );
 
 test("redisQuotaStore: sliding window decay formula is correct", async () => {
@@ -272,8 +276,9 @@ test("redisQuotaStore: sliding window decay formula is correct", async () => {
 });
 
 test("redisQuotaStore: resetRedisQuotaStore resets the store singleton", async () => {
-  const { getRedisQuotaStore, resetRedisQuotaStore } =
-    await import("../../src/lib/quota/redisQuotaStore.ts");
+  const { getRedisQuotaStore, resetRedisQuotaStore } = await import(
+    "../../src/lib/quota/redisQuotaStore.ts"
+  );
 
   const store1 = getRedisQuotaStore("redis://localhost:6399");
   resetRedisQuotaStore();

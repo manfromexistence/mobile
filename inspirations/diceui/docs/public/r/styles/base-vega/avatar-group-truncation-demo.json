@@ -1,10 +1,7 @@
 {
   "name": "avatar-group-truncation-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "avatar",
-    "avatar-group"
-  ],
+  "registryDependencies": ["avatar", "avatar-group"],
   "files": [
     {
       "path": "examples/avatar-group-truncation-demo.tsx",

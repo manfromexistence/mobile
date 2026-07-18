@@ -6,9 +6,7 @@ import {
 } from "../src/web_worker";
 import { jest, test, expect, beforeEach } from "@jest/globals";
 
-const reloadMock = jest.fn<(...args: any[]) => Promise<void>>(
-  async () => undefined,
-);
+const reloadMock = jest.fn<(...args: any[]) => Promise<void>>(async () => undefined);
 const forwardMock = jest.fn<(...args: any[]) => Promise<any>>();
 const chatCompletionMock = jest.fn<(...args: any[]) => Promise<any>>();
 const completionMock = jest.fn<(...args: any[]) => Promise<any>>();
@@ -112,9 +110,7 @@ test("chatCompletionStreamInit registers async generator", async () => {
   };
   handler.onmessage(message, jest.fn());
   await flushMicrotasks();
-  expect(
-    (handler as any).loadedModelIdToAsyncGenerator.get("demo"),
-  ).toBeDefined();
+  expect((handler as any).loadedModelIdToAsyncGenerator.get("demo")).toBeDefined();
 });
 
 test("completionNonStreaming routes to engine completion", async () => {
@@ -169,17 +165,15 @@ test("reloadIfUnmatched triggers reload when model lists differ", async () => {
 test("unknown messages invoke onError and throw", () => {
   const handler = new WebWorkerMLCEngineHandler();
   const onError = jest.fn();
-  expect(() =>
-    handler.onmessage({ kind: "mystery", content: {} }, undefined, onError),
-  ).toThrow(UnknownMessageKindError);
+  expect(() => handler.onmessage({ kind: "mystery", content: {} }, undefined, onError)).toThrow(
+    UnknownMessageKindError,
+  );
   expect(onError).toHaveBeenCalled();
 });
 
 test("CreateWebWorkerMLCEngine instantiates client and reloads", async () => {
   const worker = { postMessage: jest.fn(), onmessage: undefined as any };
-  const reloadSpy = jest
-    .spyOn(WebWorkerMLCEngine.prototype, "reload")
-    .mockResolvedValue(undefined);
+  const reloadSpy = jest.spyOn(WebWorkerMLCEngine.prototype, "reload").mockResolvedValue(undefined);
   const engine = await CreateWebWorkerMLCEngine(worker, "model@a");
   expect(reloadSpy).toHaveBeenCalledWith("model@a", undefined);
   expect(engine.worker).toBe(worker);
@@ -225,9 +219,7 @@ test("WebWorkerMLCEngine completion sends message to worker", async () => {
     prompt: "hello",
   });
   expect(res.object).toBe("completion");
-  expect(worker.sent.some((msg) => msg.kind === "completionNonStreaming")).toBe(
-    true,
-  );
+  expect(worker.sent.some((msg) => msg.kind === "completionNonStreaming")).toBe(true);
 });
 
 test("WebWorkerMLCEngine embedding delegates to worker", async () => {
@@ -244,9 +236,7 @@ test("WebWorkerMLCEngine embedding delegates to worker", async () => {
 
 test("handleTask posts throw when task rejects", async () => {
   const handler = new WebWorkerMLCEngineHandler();
-  const postSpy = jest
-    .spyOn(handler as any, "postMessage")
-    .mockImplementation(() => undefined);
+  const postSpy = jest.spyOn(handler as any, "postMessage").mockImplementation(() => undefined);
   await handler.handleTask("fail", async () => {
     throw new Error("boom");
   });
@@ -310,7 +300,5 @@ test("WebWorkerMLCEngine info helpers resolve via worker messages", async () => 
   await expect(engine.getMaxStorageBufferBindingSize()).resolves.toBe(2048);
   engine.interruptGenerate();
   await flushMicrotasks();
-  expect(worker.sent.some((msg) => msg.kind === "interruptGenerate")).toBe(
-    true,
-  );
+  expect(worker.sent.some((msg) => msg.kind === "interruptGenerate")).toBe(true);
 });

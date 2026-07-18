@@ -80,22 +80,22 @@ test("transformer: native reasoning is closed before message content and uses a 
   // The reasoning item must be closed (output_item.done with a reasoning item)
   // BEFORE the first message output_item.added is emitted.
   const reasoningDoneIdx = events.findIndex(
-    (e) => e.event === "response.output_item.done" && e.data?.item?.type === "reasoning"
+    (e) => e.event === "response.output_item.done" && e.data?.item?.type === "reasoning",
   );
   const messageAddedIdx = events.findIndex(
-    (e) => e.event === "response.output_item.added" && e.data?.item?.type === "message"
+    (e) => e.event === "response.output_item.added" && e.data?.item?.type === "message",
   );
 
   assert.ok(reasoningDoneIdx >= 0, "reasoning item must be closed");
   assert.ok(messageAddedIdx >= 0, "message item must be added");
   assert.ok(
     reasoningDoneIdx < messageAddedIdx,
-    "reasoning must be closed before message content begins"
+    "reasoning must be closed before message content begins",
   );
 
   // Reasoning lives at output_index 0; the message must NOT reuse it.
   const reasoningIndex = events.find(
-    (e) => e.event === "response.output_item.added" && e.data?.item?.type === "reasoning"
+    (e) => e.event === "response.output_item.added" && e.data?.item?.type === "reasoning",
   ).data.output_index;
   const messageIndex = events[messageAddedIdx].data.output_index;
 
@@ -135,21 +135,21 @@ test("translator: native reasoning is closed before message content and uses a d
   }
 
   const reasoningDoneIdx = events.findIndex(
-    (e) => e.event === "response.output_item.done" && e.data?.item?.type === "reasoning"
+    (e) => e.event === "response.output_item.done" && e.data?.item?.type === "reasoning",
   );
   const messageAddedIdx = events.findIndex(
-    (e) => e.event === "response.output_item.added" && e.data?.item?.type === "message"
+    (e) => e.event === "response.output_item.added" && e.data?.item?.type === "message",
   );
 
   assert.ok(reasoningDoneIdx >= 0, "reasoning item must be closed");
   assert.ok(messageAddedIdx >= 0, "message item must be added");
   assert.ok(
     reasoningDoneIdx < messageAddedIdx,
-    "reasoning must be closed before message content begins"
+    "reasoning must be closed before message content begins",
   );
 
   const reasoningIndex = events.find(
-    (e) => e.event === "response.output_item.added" && e.data?.item?.type === "reasoning"
+    (e) => e.event === "response.output_item.added" && e.data?.item?.type === "reasoning",
   ).data.output_index;
   const messageIndex = events[messageAddedIdx].data.output_index;
 

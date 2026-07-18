@@ -23,7 +23,9 @@ export function BottomSheetPreview() {
       >
         <ul className="divide-y divide-border">
           {["Share", "Duplicate", "Move to folder", "Rename", "Archive", "Delete"].map((item) => (
-            <li key={item} className="py-3 text-sm text-foreground">{item}</li>
+            <li key={item} className="py-3 text-sm text-foreground">
+              {item}
+            </li>
           ))}
         </ul>
         <div className="py-12 text-center text-xs text-muted-foreground">

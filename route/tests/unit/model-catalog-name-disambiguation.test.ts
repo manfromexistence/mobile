@@ -31,7 +31,7 @@ test("qualifies names shared across multiple providers with their prefix", () =>
   assert.equal(
     result[2].name,
     "opencode-zen/GPT-5.5",
-    "ambiguous name should gain opencode-zen/ prefix"
+    "ambiguous name should gain opencode-zen/ prefix",
   );
   assert.equal(result[3].name, "Claude Sonnet 4.6", "unique name should remain unqualified");
 });

@@ -21,7 +21,7 @@ test("resolveUniversalHandoffConfig returns disabled defaults when no config", (
 test("applies combo-level config over defaults", () => {
   const r = resolveUniversalHandoffConfig(
     { enabled: true, trigger: "always", ttlMinutes: 60 } as any,
-    null
+    null,
   );
   assert.strictEqual(r.enabled, true);
   assert.strictEqual(r.trigger, "always");
@@ -69,7 +69,7 @@ test("clamps maxMessagesForSummary to range [5, 100]", () => {
 test("providerAllowlist is resolved from combo config", () => {
   const r = resolveUniversalHandoffConfig(
     { providerAllowlist: ["anthropic", "openai"] } as any,
-    null
+    null,
   );
   assert.deepStrictEqual(r.providerAllowlist, ["anthropic", "openai"]);
 });
@@ -134,7 +134,7 @@ test("buildUniversalHandoffSystemMessage escapes XML special chars", () => {
       summary: '<s> & "q"',
       keyDecisions: ['d & "<>"'],
       activeEntities: ["e<test>"],
-    })
+    }),
   );
   assert.ok(msg.includes("m&lt;a&gt;"));
   assert.ok(msg.includes("m&lt;b&gt;"));

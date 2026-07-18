@@ -37,10 +37,7 @@ export interface ResponsiveDialogProps
 }
 
 export interface ResponsiveDialogTriggerProps
-  extends EmptyCompProps<
-    React.ComponentProps<typeof DialogTrigger>,
-    "button"
-  > {}
+  extends EmptyCompProps<React.ComponentProps<typeof DialogTrigger>, "button"> {}
 
 export interface ResponsiveDialogCloseProps
   extends EmptyCompProps<React.ComponentProps<typeof DialogClose>, "button"> {}

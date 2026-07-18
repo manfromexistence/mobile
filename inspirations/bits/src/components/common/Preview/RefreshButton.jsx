@@ -1,6 +1,6 @@
-import { Button, Icon } from '@chakra-ui/react';
-import { FiRefreshCw } from 'react-icons/fi';
-import { colors } from '../../../constants/colors';
+import { Button, Icon } from "@chakra-ui/react";
+import { FiRefreshCw } from "react-icons/fi";
+import { colors } from "../../../constants/colors";
 
 const RefreshButton = ({ onClick }) => (
   <Button

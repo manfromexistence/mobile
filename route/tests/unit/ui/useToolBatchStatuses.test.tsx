@@ -26,7 +26,7 @@ function makeFetch(data: unknown, status = 200): typeof fetch {
       status,
       json: () => Promise.resolve(data),
       text: () => Promise.resolve(JSON.stringify(data)),
-    } as Response)
+    } as Response),
   );
 }
 
@@ -69,7 +69,7 @@ async function mountHook(): Promise<{
         onUpdate={(s) => {
           latest = s;
         }}
-      />
+      />,
     );
   });
 
@@ -87,8 +87,9 @@ async function mountHook(): Promise<{
 // ── Lifecycle ─────────────────────────────────────────────────────────────────
 
 beforeEach(() => {
-  (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-    true;
+  (
+    globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+  ).IS_REACT_ACT_ENVIRONMENT = true;
 });
 
 afterEach(() => {
@@ -165,7 +166,9 @@ describe("useToolBatchStatuses", () => {
       await new Promise((r) => setTimeout(r, 50));
     });
 
-    expect((mockFetch as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThan(callsAfterMount);
+    expect((mockFetch as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThan(
+      callsAfterMount,
+    );
   });
 
   it("registers focus event listener on mount", async () => {
@@ -203,7 +206,7 @@ describe("useToolBatchStatuses", () => {
   it("sets error when fetch throws a network error", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn(() => Promise.reject(new Error("Network failure")))
+      vi.fn(() => Promise.reject(new Error("Network failure"))),
     );
 
     const { getState } = await mountHook();

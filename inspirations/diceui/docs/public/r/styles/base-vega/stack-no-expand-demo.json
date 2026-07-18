@@ -1,9 +1,7 @@
 {
   "name": "stack-no-expand-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "stack"
-  ],
+  "registryDependencies": ["stack"],
   "files": [
     {
       "path": "examples/stack-no-expand-demo.tsx",

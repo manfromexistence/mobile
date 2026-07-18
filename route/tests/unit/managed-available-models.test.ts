@@ -10,8 +10,9 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const core = await import("../../src/lib/db/core.ts");
 const modelsDb = await import("../../src/lib/db/models.ts");
 const localDb = await import("../../src/lib/localDb.ts");
-const { compatibleProviderSupportsModelImport, getCompatibleFallbackModels } =
-  await import("../../src/lib/providers/managedAvailableModels.ts");
+const { compatibleProviderSupportsModelImport, getCompatibleFallbackModels } = await import(
+  "../../src/lib/providers/managedAvailableModels.ts"
+);
 const {
   deleteManagedAvailableModelAliases,
   deleteManagedAvailableModelAliasesForProvider,
@@ -37,7 +38,7 @@ test.after(() => {
 test("CC compatible fallback models mirror the OAuth Claude Code registry list", () => {
   assert.deepEqual(
     getCompatibleFallbackModels("anthropic-compatible-cc-demo"),
-    getModelsByProviderId("claude")
+    getModelsByProviderId("claude"),
   );
 });
 

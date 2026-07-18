@@ -65,28 +65,12 @@ interface TabsProps
 }
 
 const Tabs = forwardRef<HTMLDivElement, TabsProps>(
-  (
-    {
-      value,
-      onValueChange,
-      selectedIndex,
-      onSelect,
-      defaultValue,
-      children,
-      ...props
-    },
-    ref
-  ) => {
+  ({ value, onValueChange, selectedIndex, onSelect, defaultValue, children, ...props }, ref) => {
     const [valueOrder, setValueOrder] = useState<string[]>([]);
-    const [uncontrolledValue, setUncontrolledValue] = useState<string | undefined>(
-      defaultValue
-    );
+    const [uncontrolledValue, setUncontrolledValue] = useState<string | undefined>(defaultValue);
     const updateValueOrder = useCallback((order: string[]) => {
       setValueOrder((current) => {
-        if (
-          current.length === order.length &&
-          current.every((v, i) => v === order[i])
-        ) {
+        if (current.length === order.length && current.every((v, i) => v === order[i])) {
           return current;
         }
         return order;
@@ -98,9 +82,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
     // FF layer's selectedValue matches what the primitive shows.
     const resolvedValue =
       value ??
-      (selectedIndex != null
-        ? valueOrder[selectedIndex]
-        : uncontrolledValue ?? valueOrder[0]);
+      (selectedIndex != null ? valueOrder[selectedIndex] : (uncontrolledValue ?? valueOrder[0]));
 
     // Base UI passes (value, eventDetails); we only need value.
     const handleValueChange = useCallback(
@@ -115,7 +97,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
           if (idx !== -1) onSelect(idx);
         }
       },
-      [onValueChange, onSelect, valueOrder, value, selectedIndex]
+      [onValueChange, onSelect, valueOrder, value, selectedIndex],
     );
 
     return (
@@ -143,7 +125,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
         </TabsPrimitive.Root>
       </TabsValueOrderContext.Provider>
     );
-  }
+  },
 );
 
 Tabs.displayName = "Tabs";
@@ -186,7 +168,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
       (index: number, _value: string, el: HTMLElement | null) => {
         registerItem(index, el);
       },
-      [registerItem]
+      [registerItem],
     );
 
     useEffect(() => {
@@ -198,7 +180,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         isMouseInside.current = true;
         handlers.onMouseMove(e);
       },
-      [handlers]
+      [handlers],
     );
 
     const handleMouseLeave = useCallback(() => {
@@ -208,16 +190,14 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
     const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
     const selectedValue = valueOrderCtx?.selectedValue;
-    const selectedIdx =
-      selectedValue !== undefined ? values.indexOf(selectedValue) : -1;
+    const selectedIdx = selectedValue !== undefined ? values.indexOf(selectedValue) : -1;
 
     useEffect(() => {
       setOptimisticIdx(selectedIdx >= 0 ? selectedIdx : null);
     }, [selectedIdx]);
 
     const activeSelectedIdx = optimisticIdx;
-    const selectedRect =
-      activeSelectedIdx !== null ? itemRects[activeSelectedIdx] : null;
+    const selectedRect = activeSelectedIdx !== null ? itemRects[activeSelectedIdx] : null;
     const hoverRect = hoveredIndex !== null ? itemRects[hoveredIndex] : null;
     const focusRect = focusedIndex !== null ? itemRects[focusedIndex] : null;
     const isHoveringSelected = hoveredIndex === activeSelectedIdx;
@@ -245,14 +225,9 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
           // Match Radix's `activationMode="automatic"` — arrow keys move + activate.
           activateOnFocus
           ref={(node) => {
-            (
-              containerRef as React.MutableRefObject<HTMLDivElement | null>
-            ).current = node;
+            (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
             if (typeof ref === "function") ref(node);
-            else if (ref)
-              (
-                ref as React.MutableRefObject<HTMLDivElement | null>
-              ).current = node;
+            else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
           }}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
@@ -263,9 +238,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             if (indexAttr != null) {
               const idx = Number(indexAttr);
               setHoveredIndex(idx);
-              setFocusedIndex(
-                (e.target as HTMLElement).matches(":focus-visible") ? idx : null
-              );
+              setFocusedIndex((e.target as HTMLElement).matches(":focus-visible") ? idx : null);
             }
           }}
           onBlur={(e) => {
@@ -277,7 +250,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
           className={cn(
             "relative inline-flex items-center gap-0.5 p-1 select-none bg-muted",
             shape.container,
-            className
+            className,
           )}
           {...props}
         >
@@ -287,7 +260,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
               className={cn(
                 "absolute pointer-events-none",
                 surfaceClasses(indicatorLevel),
-                shape.bg
+                shape.bg,
               )}
               initial={false}
               animate={{
@@ -308,10 +281,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
           <AnimatePresence>
             {hoverRect && !isHoveringSelected && selectedRect && (
               <motion.div
-                className={cn(
-                  "absolute pointer-events-none bg-hover",
-                  shape.bg
-                )}
+                className={cn("absolute pointer-events-none bg-hover", shape.bg)}
                 initial={{
                   left: selectedRect.left,
                   width: selectedRect.width,
@@ -355,7 +325,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
               <motion.div
                 className={cn(
                   "absolute pointer-events-none z-20 border border-[#6B97FF]",
-                  shape.focusRing
+                  shape.focusRing,
                 )}
                 initial={false}
                 animate={{
@@ -377,15 +347,14 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         </TabsPrimitive.List>
       </TabsListContext.Provider>
     );
-  }
+  },
 );
 
 TabsList.displayName = "TabsList";
 
 /* ─────────────────────── TabItem ─────────────────────── */
 
-interface TabItemProps
-  extends ComponentPropsWithoutRef<typeof TabsPrimitive.Tab> {
+interface TabItemProps extends ComponentPropsWithoutRef<typeof TabsPrimitive.Tab> {
   value: string;
   icon?: IconComponent;
   label: string;
@@ -410,20 +379,18 @@ const TabItem = forwardRef<HTMLButtonElement, TabItemProps>(
       <TabsPrimitive.Tab
         onClick={() => setOptimisticIdx(_index)}
         ref={(node) => {
-          (
-            internalRef as React.MutableRefObject<HTMLElement | null>
-          ).current = node as HTMLButtonElement | null;
+          (internalRef as React.MutableRefObject<HTMLElement | null>).current =
+            node as HTMLButtonElement | null;
           if (typeof ref === "function") ref(node as HTMLButtonElement);
           else if (ref)
-            (
-              ref as React.MutableRefObject<HTMLButtonElement | null>
-            ).current = node as HTMLButtonElement | null;
+            (ref as React.MutableRefObject<HTMLButtonElement | null>).current =
+              node as HTMLButtonElement | null;
         }}
         value={value}
         data-proximity-index={_index}
         className={cn(
           "relative z-10 flex items-center gap-2 px-3 py-1.5 cursor-pointer bg-transparent border-none outline-none",
-          className
+          className,
         )}
         {...props}
       >
@@ -433,7 +400,7 @@ const TabItem = forwardRef<HTMLButtonElement, TabItemProps>(
             strokeWidth={isActive ? 2 : 1.5}
             className={cn(
               "transition-[color,stroke-width] duration-80",
-              isActive ? "text-foreground" : "text-muted-foreground"
+              isActive ? "text-foreground" : "text-muted-foreground",
             )}
           />
         )}
@@ -448,12 +415,10 @@ const TabItem = forwardRef<HTMLButtonElement, TabItemProps>(
           <span
             className={cn(
               "col-start-1 row-start-1 transition-[color,font-variation-settings] duration-80",
-              isActive ? "text-foreground" : "text-muted-foreground"
+              isActive ? "text-foreground" : "text-muted-foreground",
             )}
             style={{
-              fontVariationSettings: isSelected
-                ? fontWeights.semibold
-                : fontWeights.normal,
+              fontVariationSettings: isSelected ? fontWeights.semibold : fontWeights.normal,
             }}
           >
             {label}
@@ -461,29 +426,20 @@ const TabItem = forwardRef<HTMLButtonElement, TabItemProps>(
         </span>
       </TabsPrimitive.Tab>
     );
-  }
+  },
 );
 
 TabItem.displayName = "TabItem";
 
 /* ─────────────────────── TabPanel ─────────────────────── */
 
-interface TabPanelProps
-  extends ComponentPropsWithoutRef<typeof TabsPrimitive.Panel> {
+interface TabPanelProps extends ComponentPropsWithoutRef<typeof TabsPrimitive.Panel> {
   value: string;
 }
 
-const TabPanel = forwardRef<HTMLDivElement, TabPanelProps>(
-  ({ className, ...props }, ref) => {
-    return (
-      <TabsPrimitive.Panel
-        ref={ref}
-        className={cn("outline-none", className)}
-        {...props}
-      />
-    );
-  }
-);
+const TabPanel = forwardRef<HTMLDivElement, TabPanelProps>(({ className, ...props }, ref) => {
+  return <TabsPrimitive.Panel ref={ref} className={cn("outline-none", className)} {...props} />;
+});
 
 TabPanel.displayName = "TabPanel";
 

@@ -51,7 +51,7 @@ test("detectFormatFromEndpoint: /chat/completions with input but no messages →
 test("detectFormatFromEndpoint: /chat/completions with string input and no messages → openai-responses", () => {
   assert.equal(
     detectFormatFromEndpoint({ input: "hello" }, "/chat/completions"),
-    "openai-responses"
+    "openai-responses",
   );
 });
 
@@ -65,39 +65,27 @@ test("detectFormatFromEndpoint: /chat/completions with input AND messages → op
 test("detectFormatFromEndpoint: /chat/completions with input: undefined → openai (falsy input ignored)", () => {
   assert.equal(
     detectFormatFromEndpoint({ input: undefined, model: "x" }, "/v1/chat/completions"),
-    "openai"
+    "openai",
   );
 });
 
 // ── /completions (non-chat) path ─────────────────────────────────────────────
 
 test("detectFormatFromEndpoint: /completions path with messages → openai", () => {
-  assert.equal(
-    detectFormatFromEndpoint({ messages: [] }, "/v1/completions"),
-    "openai"
-  );
+  assert.equal(detectFormatFromEndpoint({ messages: [] }, "/v1/completions"), "openai");
 });
 
 test("detectFormatFromEndpoint: /completions path with input and no messages → openai-responses", () => {
-  assert.equal(
-    detectFormatFromEndpoint({ input: "hello" }, "/completions"),
-    "openai-responses"
-  );
+  assert.equal(detectFormatFromEndpoint({ input: "hello" }, "/completions"), "openai-responses");
 });
 
 // ── No path / unknown path — falls back to body-based detection ───────────────
 
 test("detectFormatFromEndpoint: no path falls back to body-based detectFormat", () => {
   // Pure messages body → openai
-  assert.equal(
-    detectFormatFromEndpoint({ messages: [{ role: "user", content: "hi" }] }),
-    "openai"
-  );
+  assert.equal(detectFormatFromEndpoint({ messages: [{ role: "user", content: "hi" }] }), "openai");
 });
 
 test("detectFormatFromEndpoint: unknown path falls back to body-based detectFormat", () => {
-  assert.equal(
-    detectFormatFromEndpoint({ messages: [] }, "/v1/custom/endpoint"),
-    "openai"
-  );
+  assert.equal(detectFormatFromEndpoint({ messages: [] }, "/v1/custom/endpoint"), "openai");
 });

@@ -6,7 +6,7 @@ import { siliconflowProvider } from "../../open-sse/config/providers/registry/si
 test("siliconflow registry uses the .com baseUrl", () => {
   assert.ok(
     siliconflowProvider.baseUrl.startsWith("https://api.siliconflow.com/"),
-    `expected .com baseUrl, got ${siliconflowProvider.baseUrl}`
+    `expected .com baseUrl, got ${siliconflowProvider.baseUrl}`,
   );
 });
 

@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { useThemeConfig } from "@/components/active-theme"
-import { Label } from "@/registry/elevenlabs-ui/ui/label"
+import { cn } from "@/lib/utils";
+import { useThemeConfig } from "@/components/active-theme";
+import { Label } from "@/registry/elevenlabs-ui/ui/label";
 import {
   Select,
   SelectContent,
@@ -12,7 +12,7 @@ import {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from "@/registry/elevenlabs-ui/ui/select"
+} from "@/registry/elevenlabs-ui/ui/select";
 
 const DEFAULT_THEMES = [
   {
@@ -27,7 +27,7 @@ const DEFAULT_THEMES = [
     name: "Mono",
     value: "mono",
   },
-]
+];
 
 const COLOR_THEMES = [
   {
@@ -58,10 +58,10 @@ const COLOR_THEMES = [
     name: "Teal",
     value: "teal",
   },
-]
+];
 
 export function ThemeSelector({ className }: React.ComponentProps<"div">) {
-  const { activeTheme, setActiveTheme } = useThemeConfig()
+  const { activeTheme, setActiveTheme } = useThemeConfig();
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
@@ -105,5 +105,5 @@ export function ThemeSelector({ className }: React.ComponentProps<"div">) {
         </SelectContent>
       </Select>
     </div>
-  )
+  );
 }

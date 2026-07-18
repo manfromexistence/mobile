@@ -1,58 +1,46 @@
-"use client"
+"use client";
 
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react"
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
 
-const DEFAULT_THEME = "default"
+const DEFAULT_THEME = "default";
 
 type ThemeContextType = {
-  activeTheme: string
-  setActiveTheme: (theme: string) => void
-}
+  activeTheme: string;
+  setActiveTheme: (theme: string) => void;
+};
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ActiveThemeProvider({
   children,
   initialTheme,
 }: {
-  children: ReactNode
-  initialTheme?: string
+  children: ReactNode;
+  initialTheme?: string;
 }) {
-  const [activeTheme, setActiveTheme] = useState<string>(
-    () => initialTheme || DEFAULT_THEME
-  )
+  const [activeTheme, setActiveTheme] = useState<string>(() => initialTheme || DEFAULT_THEME);
 
   useEffect(() => {
     Array.from(document.body.classList)
       .filter((className) => className.startsWith("theme-"))
       .forEach((className) => {
-        document.body.classList.remove(className)
-      })
-    document.body.classList.add(`theme-${activeTheme}`)
+        document.body.classList.remove(className);
+      });
+    document.body.classList.add(`theme-${activeTheme}`);
     if (activeTheme.endsWith("-scaled")) {
-      document.body.classList.add("theme-scaled")
+      document.body.classList.add("theme-scaled");
     }
-  }, [activeTheme])
+  }, [activeTheme]);
 
-  const value = useMemo(
-    () => ({ activeTheme, setActiveTheme }),
-    [activeTheme, setActiveTheme]
-  )
+  const value = useMemo(() => ({ activeTheme, setActiveTheme }), [activeTheme, setActiveTheme]);
 
-  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
 export function useThemeConfig() {
-  const context = useContext(ThemeContext)
+  const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error("useThemeConfig must be used within an ActiveThemeProvider")
+    throw new Error("useThemeConfig must be used within an ActiveThemeProvider");
   }
-  return context
+  return context;
 }

@@ -20,14 +20,14 @@ const BIN_CLI = join(__dirname, "..", "..", "bin", "cli");
 
 test("createSqliteNativeError message mentions `runtime repair` on ABI mismatch", () => {
   const abiError = new Error(
-    "The module was compiled against a different Node.js version using NODE_MODULE_VERSION 115."
+    "The module was compiled against a different Node.js version using NODE_MODULE_VERSION 115.",
   );
   const produced = createSqliteNativeError(abiError);
   assert.ok(produced instanceof Error, "returns an Error");
   assert.match(
     produced.message,
     /runtime repair/,
-    `expected the native-error message to mention \`runtime repair\`, got: ${produced.message}`
+    `expected the native-error message to mention \`runtime repair\`, got: ${produced.message}`,
   );
 });
 
@@ -37,7 +37,7 @@ test("createSqliteNativeError message mentions `runtime repair` on ERR_DLOPEN_FA
   assert.match(
     produced.message,
     /runtime repair/,
-    `expected the native-error message to mention \`runtime repair\`, got: ${produced.message}`
+    `expected the native-error message to mention \`runtime repair\`, got: ${produced.message}`,
   );
 });
 
@@ -52,7 +52,7 @@ test("serve.mjs ABI-mismatch hint source mentions `runtime repair`", () => {
   assert.match(
     src,
     /runtime repair/,
-    "serve.mjs should surface `omniroute runtime repair` as a recovery hint"
+    "serve.mjs should surface `omniroute runtime repair` as a recovery hint",
   );
 });
 
@@ -78,12 +78,12 @@ test("top-level `repair` alias and `runtime repair` share the same handler modul
   assert.match(
     src,
     /ensureBetterSqliteRuntime/,
-    "runtime.mjs must use the existing ensureBetterSqliteRuntime engine"
+    "runtime.mjs must use the existing ensureBetterSqliteRuntime engine",
   );
   // The repair action helper is invoked from both registrations.
   const repairActionRefs = (src.match(/runRepairAction/g) || []).length;
   assert.ok(
     repairActionRefs >= 2,
-    `expected the shared repair action to be referenced by both \`runtime repair\` and the top-level alias, found ${repairActionRefs} reference(s)`
+    `expected the shared repair action to be referenced by both \`runtime repair\` and the top-level alias, found ${repairActionRefs} reference(s)`,
   );
 });

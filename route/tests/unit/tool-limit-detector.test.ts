@@ -80,7 +80,7 @@ describe("toolLimitDetector", () => {
 
   it("should parse Grok-style error capturing the maximum (200), not the provided count (427)", () => {
     const result = parseToolLimitFromError(
-      "Maximum tools limit reached. 427 tools have been provided but the maximum is 200."
+      "Maximum tools limit reached. 427 tools have been provided but the maximum is 200.",
     );
     assert.strictEqual(result, 200);
   });

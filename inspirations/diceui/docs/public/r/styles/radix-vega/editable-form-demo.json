@@ -1,11 +1,7 @@
 {
   "name": "editable-form-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "button",
-    "editable",
-    "form"
-  ],
+  "registryDependencies": ["button", "editable", "form"],
   "files": [
     {
       "path": "examples/editable-form-demo.tsx",

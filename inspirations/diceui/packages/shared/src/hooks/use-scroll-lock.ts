@@ -17,8 +17,7 @@ const nonTextInputTypes = new Set([
 
 function getCanOpenKeyboard(target: Element) {
   return (
-    (target instanceof HTMLInputElement &&
-      !nonTextInputTypes.has(target.type)) ||
+    (target instanceof HTMLInputElement && !nonTextInputTypes.has(target.type)) ||
     target instanceof HTMLTextAreaElement ||
     (target instanceof HTMLElement && target.isContentEditable)
   );
@@ -28,14 +27,11 @@ function isNodeScrollable(node: Element | null): boolean {
   if (!node) return false;
 
   const style = window.getComputedStyle(node);
-  const hasScrollStyle = /(auto|scroll)/.test(
-    style.overflow + style.overflowX + style.overflowY,
-  );
+  const hasScrollStyle = /(auto|scroll)/.test(style.overflow + style.overflowX + style.overflowY);
 
   return (
     hasScrollStyle &&
-    (node.scrollHeight !== node.clientHeight ||
-      node.scrollWidth !== node.clientWidth)
+    (node.scrollHeight !== node.clientHeight || node.scrollWidth !== node.clientWidth)
   );
 }
 
@@ -125,8 +121,7 @@ function useScrollLock({
     const html = doc.documentElement;
     const body = doc.body;
 
-    const shouldAllowPinchZoom =
-      allowPinchZoom ?? win.visualViewport?.scale !== 1;
+    const shouldAllowPinchZoom = allowPinchZoom ?? win.visualViewport?.scale !== 1;
 
     // Don't lock if pinch-zoom is active in Safari
     if (isSafari() && !shouldAllowPinchZoom) {
@@ -157,21 +152,14 @@ function useScrollLock({
       bodyBoxSizing: body.style.boxSizing,
     };
 
-    const scrollbarWidth = Math.max(
-      0,
-      win.innerWidth - doc.documentElement.clientWidth,
-    );
-    const scrollbarHeight = Math.max(
-      0,
-      win.innerHeight - doc.documentElement.clientHeight,
-    );
+    const scrollbarWidth = Math.max(0, win.innerWidth - doc.documentElement.clientWidth);
+    const scrollbarHeight = Math.max(0, win.innerHeight - doc.documentElement.clientHeight);
     const dvhSupported = getIsDvhSupported();
     const isInsetScroll = getIsInsetScroll(referenceElement);
 
     function onScrollLock() {
       // Handle scrollbar-gutter in modern browsers
-      const isScrollbarGutterStable =
-        htmlStyle.scrollbarGutter?.includes("stable");
+      const isScrollbarGutterStable = htmlStyle.scrollbarGutter?.includes("stable");
       const isScrollableY = html.scrollHeight > html.clientHeight;
       const isScrollableX = html.scrollWidth > html.clientWidth;
       const isOverflowYScroll =
@@ -181,23 +169,17 @@ function useScrollLock({
 
       // Calculate margins to prevent content shift
       const marginY =
-        Number.parseFloat(bodyStyle.marginTop) +
-        Number.parseFloat(bodyStyle.marginBottom);
+        Number.parseFloat(bodyStyle.marginTop) + Number.parseFloat(bodyStyle.marginBottom);
       const marginX =
-        Number.parseFloat(bodyStyle.marginLeft) +
-        Number.parseFloat(bodyStyle.marginRight);
+        Number.parseFloat(bodyStyle.marginLeft) + Number.parseFloat(bodyStyle.marginRight);
 
       if (isIOS()) {
         const topValue = scrollPositionRef.current.top;
         const leftValue = scrollPositionRef.current.left;
         const widthValue =
-          marginX || scrollbarWidth
-            ? `calc(100vw - ${marginX + scrollbarWidth}px)`
-            : "100vw";
+          marginX || scrollbarWidth ? `calc(100vw - ${marginX + scrollbarWidth}px)` : "100vw";
         const heightValue =
-          marginY || scrollbarHeight
-            ? `calc(100vh - ${marginY + scrollbarHeight}px)`
-            : "100vh";
+          marginY || scrollbarHeight ? `calc(100vh - ${marginY + scrollbarHeight}px)` : "100vh";
 
         body.style.position = "fixed";
         body.style.width = widthValue;
@@ -220,10 +202,7 @@ function useScrollLock({
 
           // Find the first scrollable parent
           while (currentNode && currentNode !== html) {
-            if (
-              isNodeScrollable(currentNode) &&
-              currentNode instanceof HTMLElement
-            ) {
+            if (isNodeScrollable(currentNode) && currentNode instanceof HTMLElement) {
               scrollableRef.current = currentNode;
               const style = win.getComputedStyle(currentNode);
               if (style.overscrollBehavior === "auto") {
@@ -269,11 +248,9 @@ function useScrollLock({
                 return;
               }
 
-              win.visualViewport.addEventListener(
-                "resize",
-                () => scrollIntoView(target),
-                { once: true },
-              );
+              win.visualViewport.addEventListener("resize", () => scrollIntoView(target), {
+                once: true,
+              });
             });
           }
         }
@@ -301,22 +278,16 @@ function useScrollLock({
         // Standard scroll lock
         Object.assign(html.style, {
           overflowY:
-            !isScrollbarGutterStable && (isScrollableY || isOverflowYScroll)
-              ? "scroll"
-              : "hidden",
+            !isScrollbarGutterStable && (isScrollableY || isOverflowYScroll) ? "scroll" : "hidden",
           overflowX:
-            !isScrollbarGutterStable && (isScrollableX || isOverflowXScroll)
-              ? "scroll"
-              : "hidden",
+            !isScrollbarGutterStable && (isScrollableX || isOverflowXScroll) ? "scroll" : "hidden",
           paddingRight: scrollbarWidth > 0 ? `${scrollbarWidth}px` : "",
         });
 
         Object.assign(body.style, {
           position: "relative",
           width:
-            marginX || scrollbarWidth
-              ? `calc(100vw - ${marginX + scrollbarWidth}px)`
-              : "100vw",
+            marginX || scrollbarWidth ? `calc(100vw - ${marginX + scrollbarWidth}px)` : "100vw",
           height: dvhSupported
             ? marginY
               ? `calc(100dvh - ${marginY}px)`
@@ -364,10 +335,7 @@ function useScrollLock({
       body.removeAttribute("data-scroll-lock-left");
 
       // Restore scroll position
-      win.scrollTo(
-        scrollPositionRef.current.left,
-        scrollPositionRef.current.top,
-      );
+      win.scrollTo(scrollPositionRef.current.left, scrollPositionRef.current.top);
     }
 
     function onResize() {

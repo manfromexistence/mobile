@@ -90,7 +90,7 @@ test("getUsageForProvider (qoder) exchanges the PAT then reads /user/status", as
     assert.match(u, /openapi\.qoder\.sh\/api\/v3\/user\/status/);
     assert.equal(
       String((init?.headers as Record<string, string>)?.Authorization),
-      "Bearer jt-usage"
+      "Bearer jt-usage",
     );
     return new Response(
       JSON.stringify({
@@ -101,7 +101,7 @@ test("getUsageForProvider (qoder) exchanges the PAT then reads /user/status", as
         isQuotaExceeded: false,
         nextResetAt: 1784736000000,
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   };
 
@@ -141,12 +141,12 @@ test("qoder is registered for both the usage fetcher and the quota widget whitel
 test("a qoder PAT (apikey) connection is picked up by the provider-limits sync", () => {
   assert.equal(
     isSupportedUsageConnection({ id: "c1", provider: "qoder", authType: "apikey" }),
-    true
+    true,
   );
   // Sanity: an unrelated apikey provider not on the list is excluded.
   assert.equal(
     isSupportedUsageConnection({ id: "c2", provider: "some-random-provider", authType: "apikey" }),
-    false
+    false,
   );
 });
 

@@ -51,7 +51,7 @@ test("#2986 payload rules survive a restart (DB fallback when override is cleare
   assert.equal(
     config.default!.length,
     1,
-    "the persisted rule must be returned after restart (read from the DB, not the empty file)"
+    "the persisted rule must be returned after restart (read from the DB, not the empty file)",
   );
 });
 

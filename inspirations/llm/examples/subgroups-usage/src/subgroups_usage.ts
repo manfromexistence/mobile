@@ -14,9 +14,7 @@ function toSg32ModelLib(modelLib: string): string {
   const wasmFileIndex = pathParts.length - 1;
   const variantDirIndex = wasmFileIndex - 1;
   if (variantDirIndex < 0 || pathParts[variantDirIndex] !== "base") {
-    throw Error(
-      `Expected model_lib path variant directory to be "base": ${modelLib}`,
-    );
+    throw Error(`Expected model_lib path variant directory to be "base": ${modelLib}`);
   }
   pathParts[variantDirIndex] = "sg32";
   modelLibUrl.pathname = pathParts.join("/");
@@ -35,8 +33,7 @@ async function main() {
   if (adapter == null) {
     throw Error("Unable to request a WebGPU adapter.");
   }
-  const adapterInfo =
-    adapter.info || (await (adapter as any).requestAdapterInfo());
+  const adapterInfo = adapter.info || (await (adapter as any).requestAdapterInfo());
   const subgroupMinSize = adapterInfo.subgroupMinSize;
   const subgroupMaxSize = adapterInfo.subgroupMaxSize;
   const supportsSubgroups =

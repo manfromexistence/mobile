@@ -101,7 +101,7 @@ test("add → list → remove round-trips a scope pool", async () => {
   assert.equal(body.total, 2);
   assert.deepEqual(
     body.members.map((m) => m.proxyId),
-    [a, b]
+    [a, b],
   );
 
   // Remove one.
@@ -136,7 +136,7 @@ test("PATCH sets and GET reads back the rotation strategy", async () => {
 test("PATCH accepts sticky with a sticky window", async () => {
   await resetStorage();
   const res = await PATCH(
-    jsonRequest("PATCH", { scope: "global", strategy: "sticky", stickyWindowMinutes: 15 })
+    jsonRequest("PATCH", { scope: "global", strategy: "sticky", stickyWindowMinutes: 15 }),
   );
   assert.equal(res.status, 200);
   assert.equal(((await res.json()) as { strategy: string }).strategy, "sticky");

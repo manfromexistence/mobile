@@ -1,13 +1,13 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
 
 const ShapeGrid = ({
-  direction = 'right',
+  direction = "right",
   speed = 1,
-  borderColor = '#999',
+  borderColor = "#999",
   squareSize = 40,
-  hoverFillColor = '#222',
-  shape = 'square',
-  hoverTrailAmount = 0
+  hoverFillColor = "#222",
+  shape = "square",
+  hoverTrailAmount = 0,
 }) => {
   const canvasRef = useRef(null);
   const requestRef = useRef(null);
@@ -21,10 +21,10 @@ const ShapeGrid = ({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
 
-    const isHex = shape === 'hexagon';
-    const isTri = shape === 'triangle';
+    const isHex = shape === "hexagon";
+    const isTri = shape === "triangle";
     const hexHoriz = squareSize * 1.5;
     const hexVert = squareSize * Math.sqrt(3);
 
@@ -35,7 +35,7 @@ const ShapeGrid = ({
       numSquaresY.current = Math.ceil(canvas.height / squareSize) + 1;
     };
 
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
 
     const drawHex = (cx, cy, size) => {
@@ -120,7 +120,7 @@ const ShapeGrid = ({
           for (let row = -2; row < rows; row++) {
             const cx = col * halfW + offsetX;
             const cy = row * squareSize + squareSize / 2 + offsetY;
-            const flip = ((col + colShift + row + rowShift) % 2 + 2) % 2 !== 0;
+            const flip = (((col + colShift + row + rowShift) % 2) + 2) % 2 !== 0;
 
             const cellKey = `${col},${row}`;
             const alpha = cellOpacities.current.get(cellKey);
@@ -137,7 +137,7 @@ const ShapeGrid = ({
             ctx.stroke();
           }
         }
-      } else if (shape === 'circle') {
+      } else if (shape === "circle") {
         const offsetX = ((gridOffset.current.x % squareSize) + squareSize) % squareSize;
         const offsetY = ((gridOffset.current.y % squareSize) + squareSize) % squareSize;
 
@@ -197,10 +197,10 @@ const ShapeGrid = ({
         0,
         canvas.width / 2,
         canvas.height / 2,
-        Math.sqrt(canvas.width ** 2 + canvas.height ** 2) / 2
+        Math.sqrt(canvas.width ** 2 + canvas.height ** 2) / 2,
       );
-      gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-      gradient.addColorStop(1, '#120F17');
+      gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
+      gradient.addColorStop(1, "#120F17");
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -212,19 +212,19 @@ const ShapeGrid = ({
       const wrapY = isHex ? hexVert : isTri ? squareSize * 2 : squareSize;
 
       switch (direction) {
-        case 'right':
+        case "right":
           gridOffset.current.x = (gridOffset.current.x - effectiveSpeed + wrapX) % wrapX;
           break;
-        case 'left':
+        case "left":
           gridOffset.current.x = (gridOffset.current.x + effectiveSpeed + wrapX) % wrapX;
           break;
-        case 'up':
+        case "up":
           gridOffset.current.y = (gridOffset.current.y + effectiveSpeed + wrapY) % wrapY;
           break;
-        case 'down':
+        case "down":
           gridOffset.current.y = (gridOffset.current.y - effectiveSpeed + wrapY) % wrapY;
           break;
-        case 'diagonal':
+        case "diagonal":
           gridOffset.current.x = (gridOffset.current.x - effectiveSpeed + wrapX) % wrapX;
           gridOffset.current.y = (gridOffset.current.y - effectiveSpeed + wrapY) % wrapY;
           break;
@@ -271,7 +271,7 @@ const ShapeGrid = ({
       }
     };
 
-    const handleMouseMove = event => {
+    const handleMouseMove = (event) => {
       const rect = canvas.getBoundingClientRect();
       const mouseX = event.clientX - rect.left;
       const mouseY = event.clientY - rect.top;
@@ -294,7 +294,8 @@ const ShapeGrid = ({
         ) {
           if (hoveredSquareRef.current && hoverTrailAmount > 0) {
             trailCells.current.unshift({ ...hoveredSquareRef.current });
-            if (trailCells.current.length > hoverTrailAmount) trailCells.current.length = hoverTrailAmount;
+            if (trailCells.current.length > hoverTrailAmount)
+              trailCells.current.length = hoverTrailAmount;
           }
           hoveredSquareRef.current = { x: col, y: row };
         }
@@ -316,11 +317,12 @@ const ShapeGrid = ({
         ) {
           if (hoveredSquareRef.current && hoverTrailAmount > 0) {
             trailCells.current.unshift({ ...hoveredSquareRef.current });
-            if (trailCells.current.length > hoverTrailAmount) trailCells.current.length = hoverTrailAmount;
+            if (trailCells.current.length > hoverTrailAmount)
+              trailCells.current.length = hoverTrailAmount;
           }
           hoveredSquareRef.current = { x: col, y: row };
         }
-      } else if (shape === 'circle') {
+      } else if (shape === "circle") {
         const offsetX = ((gridOffset.current.x % squareSize) + squareSize) % squareSize;
         const offsetY = ((gridOffset.current.y % squareSize) + squareSize) % squareSize;
 
@@ -337,7 +339,8 @@ const ShapeGrid = ({
         ) {
           if (hoveredSquareRef.current && hoverTrailAmount > 0) {
             trailCells.current.unshift({ ...hoveredSquareRef.current });
-            if (trailCells.current.length > hoverTrailAmount) trailCells.current.length = hoverTrailAmount;
+            if (trailCells.current.length > hoverTrailAmount)
+              trailCells.current.length = hoverTrailAmount;
           }
           hoveredSquareRef.current = { x: col, y: row };
         }
@@ -358,7 +361,8 @@ const ShapeGrid = ({
         ) {
           if (hoveredSquareRef.current && hoverTrailAmount > 0) {
             trailCells.current.unshift({ ...hoveredSquareRef.current });
-            if (trailCells.current.length > hoverTrailAmount) trailCells.current.length = hoverTrailAmount;
+            if (trailCells.current.length > hoverTrailAmount)
+              trailCells.current.length = hoverTrailAmount;
           }
           hoveredSquareRef.current = { x: col, y: row };
         }
@@ -368,20 +372,21 @@ const ShapeGrid = ({
     const handleMouseLeave = () => {
       if (hoveredSquareRef.current && hoverTrailAmount > 0) {
         trailCells.current.unshift({ ...hoveredSquareRef.current });
-        if (trailCells.current.length > hoverTrailAmount) trailCells.current.length = hoverTrailAmount;
+        if (trailCells.current.length > hoverTrailAmount)
+          trailCells.current.length = hoverTrailAmount;
       }
       hoveredSquareRef.current = null;
     };
 
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mouseleave', handleMouseLeave);
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseleave", handleMouseLeave);
     requestRef.current = requestAnimationFrame(updateAnimation);
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
+      window.removeEventListener("resize", resizeCanvas);
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
-      canvas.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('mouseleave', handleMouseLeave);
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, [direction, speed, borderColor, hoverFillColor, squareSize, shape, hoverTrailAmount]);
 

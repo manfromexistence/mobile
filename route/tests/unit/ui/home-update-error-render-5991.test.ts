@@ -16,14 +16,14 @@ import { dirname, resolve } from "node:path";
 const here = dirname(fileURLToPath(import.meta.url));
 const source = readFileSync(
   resolve(here, "../../../src/app/(dashboard)/dashboard/HomePageClient.tsx"),
-  "utf8"
+  "utf8",
 );
 
 test("HomePageClient imports the safe API error extractor", () => {
   assert.match(
     source,
     /import\s*\{\s*extractApiErrorMessage\s*\}\s*from\s*["']@\/shared\/http\/apiErrorMessage["']/,
-    "HomePageClient must import extractApiErrorMessage to render API errors safely (#5991)"
+    "HomePageClient must import extractApiErrorMessage to render API errors safely (#5991)",
   );
 });
 
@@ -33,7 +33,7 @@ test("the update-error handler funnels the body through extractApiErrorMessage (
   assert.match(
     source,
     /notify\.error\(\s*extractApiErrorMessage\(\s*data\s*,/,
-    "the update-error notify.error must use extractApiErrorMessage(data, …) (#5991)"
+    "the update-error notify.error must use extractApiErrorMessage(data, …) (#5991)",
   );
 });
 
@@ -43,6 +43,6 @@ test("the update-error handler never passes the raw error object to notify.error
   assert.doesNotMatch(
     source,
     /notify\.error\(\s*data\.error\b/,
-    "notify.error(data.error …) renders the error envelope object as a React child → React #31 (#5991)"
+    "notify.error(data.error …) renders the error envelope object as a React child → React #31 (#5991)",
   );
 });

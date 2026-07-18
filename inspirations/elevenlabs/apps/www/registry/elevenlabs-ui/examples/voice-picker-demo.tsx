@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import type { ElevenLabs } from "@elevenlabs/elevenlabs-js"
+import { useState } from "react";
+import type { ElevenLabs } from "@elevenlabs/elevenlabs-js";
 
-import { VoicePicker } from "@/registry/elevenlabs-ui/ui/voice-picker"
+import { VoicePicker } from "@/registry/elevenlabs-ui/ui/voice-picker";
 
 const voices: ElevenLabs.Voice[] = [
   {
@@ -18,8 +18,7 @@ const voices: ElevenLabs.Voice[] = [
       language: "en",
       use_case: "conversational",
     },
-    description:
-      "Matter-of-fact, personable woman. Great for conversational use cases.",
+    description: "Matter-of-fact, personable woman. Great for conversational use cases.",
     previewUrl:
       "https://storage.googleapis.com/eleven-public-prod/premade/voices/21m00Tcm4TlvDq8ikWAM/b4928a68-c03b-411f-8533-3d5c299fd451.mp3",
   },
@@ -53,13 +52,11 @@ const voices: ElevenLabs.Voice[] = [
     previewUrl:
       "https://storage.googleapis.com/eleven-public-prod/premade/voices/2EiwWnXFnvU5JabPnv8n/65d80f52-703f-4cae-a91d-75d4e200ed02.mp3",
   },
-]
+];
 
 export default function VoicePickerDemo() {
-  const [selectedVoice, setSelectedVoice] = useState<string>(
-    "21m00Tcm4TlvDq8ikWAM"
-  )
-  const [open, setOpen] = useState(false)
+  const [selectedVoice, setSelectedVoice] = useState<string>("21m00Tcm4TlvDq8ikWAM");
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="w-full max-w-lg">
@@ -67,14 +64,14 @@ export default function VoicePickerDemo() {
         voices={voices}
         value={selectedVoice}
         onValueChange={(value) => {
-          setSelectedVoice(value)
+          setSelectedVoice(value);
           // Keep dropdown open after selection
-          setOpen(true)
+          setOpen(true);
         }}
         open={open}
         onOpenChange={setOpen}
         placeholder="Select a voice..."
       />
     </div>
-  )
+  );
 }

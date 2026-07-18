@@ -29,7 +29,9 @@ function writePlugin(dir: string, name: string, source: string, integrity?: stri
 const activeDirs: string[] = [];
 function cleanupDirs() {
   for (const d of activeDirs) {
-    try { fs.rmSync(d, { recursive: true, force: true }); } catch {}
+    try {
+      fs.rmSync(d, { recursive: true, force: true });
+    } catch {}
   }
   activeDirs.length = 0;
 }
@@ -44,7 +46,9 @@ test.beforeEach(() => {
 test.after(() => {
   core.resetDbInstance();
   cleanupDirs();
-  try { fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true }); } catch {}
+  try {
+    fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true });
+  } catch {}
 });
 
 test("computeIntegrity returns correct format", async () => {
@@ -76,7 +80,7 @@ test("valid integrity passes loading", async () => {
 
   const manifestMod = await import("../../src/lib/plugins/manifest.ts");
   const manifest = manifestMod.applyDefaults(
-    JSON.parse(fs.readFileSync(path.join(pluginDir, "plugin.json"), "utf-8"))
+    JSON.parse(fs.readFileSync(path.join(pluginDir, "plugin.json"), "utf-8")),
   );
 
   const loaded = await loader.loadPlugin(path.join(pluginDir, "index.js"), manifest);
@@ -92,12 +96,12 @@ test("mismatched integrity throws", async () => {
 
   const manifestMod = await import("../../src/lib/plugins/manifest.ts");
   const manifest = manifestMod.applyDefaults(
-    JSON.parse(fs.readFileSync(path.join(pluginDir, "plugin.json"), "utf-8"))
+    JSON.parse(fs.readFileSync(path.join(pluginDir, "plugin.json"), "utf-8")),
   );
 
   await assert.rejects(
     () => loader.loadPlugin(path.join(pluginDir, "index.js"), manifest),
-    /integrity/
+    /integrity/,
   );
 });
 
@@ -109,7 +113,7 @@ test("missing integrity field is OK (backward compat)", async () => {
 
   const manifestMod = await import("../../src/lib/plugins/manifest.ts");
   const manifest = manifestMod.applyDefaults(
-    JSON.parse(fs.readFileSync(path.join(pluginDir, "plugin.json"), "utf-8"))
+    JSON.parse(fs.readFileSync(path.join(pluginDir, "plugin.json"), "utf-8")),
   );
 
   const loaded = await loader.loadPlugin(path.join(pluginDir, "index.js"), manifest);

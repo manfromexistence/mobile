@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { Dock, DockIcon } from "@/components/ui/dock"
+import { Dock, DockIcon } from "@/components/ui/dock";
 
-export type IconProps = React.HTMLAttributes<SVGElement>
+export type IconProps = React.HTMLAttributes<SVGElement>;
 
 export function DockDemo() {
   return (
@@ -24,7 +24,7 @@ export function DockDemo() {
         </DockIcon>
       </Dock>
     </div>
-  )
+  );
 }
 
 const Icons = {
@@ -86,11 +86,7 @@ const Icons = {
     </svg>
   ),
   whatsapp: (props: IconProps) => (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 175.216 175.552"
-      {...props}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 175.216 175.552" {...props}>
       <defs>
         <linearGradient
           id="b"
@@ -138,4 +134,4 @@ const Icons = {
       />
     </svg>
   ),
-}
+};

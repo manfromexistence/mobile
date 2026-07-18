@@ -1,28 +1,24 @@
-"use client"
+"use client";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/registry/elevenlabs-ui/ui/avatar"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/registry/elevenlabs-ui/ui/avatar";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/registry/elevenlabs-ui/ui/card"
-import { Input } from "@/registry/elevenlabs-ui/ui/input"
-import { Label } from "@/registry/elevenlabs-ui/ui/label"
+} from "@/registry/elevenlabs-ui/ui/card";
+import { Input } from "@/registry/elevenlabs-ui/ui/input";
+import { Label } from "@/registry/elevenlabs-ui/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/registry/elevenlabs-ui/ui/select"
-import { Separator } from "@/registry/elevenlabs-ui/ui/separator"
+} from "@/registry/elevenlabs-ui/ui/select";
+import { Separator } from "@/registry/elevenlabs-ui/ui/separator";
 
 const people = [
   {
@@ -45,27 +41,20 @@ const people = [
     email: "e@example.com",
     avatar: "/avatars/01.png",
   },
-]
+];
 export function CardsShare() {
   return (
     <Card>
       <CardHeader>
         <CardTitle>Share this document</CardTitle>
-        <CardDescription>
-          Anyone with the link can view this document.
-        </CardDescription>
+        <CardDescription>Anyone with the link can view this document.</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-2">
           <Label htmlFor="link" className="sr-only">
             Link
           </Label>
-          <Input
-            id="link"
-            value="http://example.com/link/to/document"
-            className="h-8"
-            readOnly
-          />
+          <Input id="link" value="http://example.com/link/to/document" className="h-8" readOnly />
           <Button size="sm" variant="outline" className="shadow-none">
             Copy Link
           </Button>
@@ -75,30 +64,19 @@ export function CardsShare() {
           <div className="text-sm font-medium">People with access</div>
           <div className="grid gap-6">
             {people.map((person) => (
-              <div
-                key={person.email}
-                className="flex items-center justify-between gap-4"
-              >
+              <div key={person.email} className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-4">
                   <Avatar>
                     <AvatarImage src={person.avatar} alt="Image" />
                     <AvatarFallback>{person.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm leading-none font-medium">
-                      {person.name}
-                    </p>
-                    <p className="text-muted-foreground text-sm">
-                      {person.email}
-                    </p>
+                    <p className="text-sm leading-none font-medium">{person.name}</p>
+                    <p className="text-muted-foreground text-sm">{person.email}</p>
                   </div>
                 </div>
                 <Select defaultValue="edit">
-                  <SelectTrigger
-                    className="ml-auto pr-2"
-                    aria-label="Edit"
-                    size="sm"
-                  >
+                  <SelectTrigger className="ml-auto pr-2" aria-label="Edit" size="sm">
                     <SelectValue placeholder="Select" />
                   </SelectTrigger>
                   <SelectContent align="end">
@@ -112,5 +90,5 @@ export function CardsShare() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

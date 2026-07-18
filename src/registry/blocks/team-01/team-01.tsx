@@ -1,20 +1,15 @@
-import { GlowCard, GlowCardGrid } from "@/registry/components/glow-card-grid"
+import { GlowCard, GlowCardGrid } from "@/registry/components/glow-card-grid";
 
 export default function Team01() {
   return (
     <div className="container px-4 py-8">
       <GlowCardGrid className="lg:grid-cols-4">
         {CARDS.map((card) => (
-          <GlowCard
-            key={card.name}
-            name={card.name}
-            handle={card.handle}
-            avatar={card.avatar}
-          />
+          <GlowCard key={card.name} name={card.name} handle={card.handle} avatar={card.avatar} />
         ))}
       </GlowCardGrid>
     </div>
-  )
+  );
 }
 
 const CARDS = [
@@ -58,4 +53,4 @@ const CARDS = [
     handle: "@iamncdai",
     avatar: "https://unavatar.io/x/iamncdai",
   },
-]
+];

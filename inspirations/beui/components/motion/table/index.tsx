@@ -56,9 +56,7 @@ export function Table<T>({
 }: TableProps<T>) {
   const reduce = useReducedMotion();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const thRefs: HeaderCellRefs = useRef<
-    Record<string, HTMLTableCellElement | null>
-  >({});
+  const thRefs: HeaderCellRefs = useRef<Record<string, HTMLTableCellElement | null>>({});
 
   const rows = useMemo(
     () =>
@@ -69,14 +67,8 @@ export function Table<T>({
     [data, getRowId],
   );
 
-  const {
-    orderedColumns,
-    dragKey,
-    dropIndex,
-    startReorder,
-    moveReorder,
-    endReorder,
-  } = useColumnReorder({ columns, thRefs, onColumnOrderChange });
+  const { orderedColumns, dragKey, dropIndex, startReorder, moveReorder, endReorder } =
+    useColumnReorder({ columns, thRefs, onColumnOrderChange });
 
   const { sort, sortedRows, toggleSort } = useColumnSort({
     rows,
@@ -93,13 +85,12 @@ export function Table<T>({
     onColumnResize,
   });
 
-  const { selected, allSelected, someSelected, toggleAll, toggleRow } =
-    useRowSelection({
-      sortedRows,
-      selectedRowIds,
-      defaultSelectedRowIds,
-      onSelectionChange,
-    });
+  const { selected, allSelected, someSelected, toggleAll, toggleRow } = useRowSelection({
+    sortedRows,
+    selectedRowIds,
+    defaultSelectedRowIds,
+    onSelectionChange,
+  });
 
   const virtualizer = useVirtualizer({
     count: sortedRows.length,
@@ -112,17 +103,13 @@ export function Table<T>({
   const totalSize = virtualizer.getTotalSize();
   const paddingTop = virtualItems.length > 0 ? virtualItems[0].start : 0;
   const paddingBottom =
-    virtualItems.length > 0
-      ? totalSize - virtualItems[virtualItems.length - 1].end
-      : 0;
+    virtualItems.length > 0 ? totalSize - virtualItems[virtualItems.length - 1].end : 0;
 
   const hasRowMenu = !!(onInsertRow || onDeleteRow);
   const hasColumnMenu = !!(onInsertColumn || onDeleteColumn);
   // Only shrink-wrap (w-max) once every column has an explicit resized width;
   // otherwise stay fill-width so a flexible column can't size to cell content.
-  const sized =
-    orderedColumns.length > 0 &&
-    orderedColumns.every((c) => widths[c.key] != null);
+  const sized = orderedColumns.length > 0 && orderedColumns.every((c) => widths[c.key] != null);
 
   // Infinite scroll: fire onEndReached once per near-bottom dwell, paused while
   // loading; the guard resets when the load completes.
@@ -153,9 +140,7 @@ export function Table<T>({
   }, []);
 
   const rowRefs = useRef<Record<string, HTMLTableRowElement | null>>({});
-  const [activeRow, setActiveRow] = useState<{ id: string; index: number } | null>(
-    null,
-  );
+  const [activeRow, setActiveRow] = useState<{ id: string; index: number } | null>(null);
   const rowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activateRow = useCallback((id: string, index: number) => {
     if (rowTimer.current) clearTimeout(rowTimer.current);
@@ -172,17 +157,9 @@ export function Table<T>({
 
   return (
     <div
-      className={cn(
-        "w-full overflow-hidden border border-border bg-background text-sm",
-        className,
-      )}
+      className={cn("w-full overflow-hidden border border-border bg-background text-sm", className)}
     >
-      <div
-        ref={scrollRef}
-        onScroll={handleScroll}
-        className="overflow-auto"
-        style={{ height }}
-      >
+      <div ref={scrollRef} onScroll={handleScroll} className="overflow-auto" style={{ height }}>
         <table
           className={cn("border-collapse", sized ? "w-max min-w-full" : "min-w-full")}
           style={{ tableLayout: "fixed" }}
@@ -192,9 +169,7 @@ export function Table<T>({
             {orderedColumns.map((column) => {
               const override = widths[column.key];
               const width = override ? `${override}px` : column.width;
-              return (
-                <col key={column.key} style={width ? { width } : undefined} />
-              );
+              return <col key={column.key} style={width ? { width } : undefined} />;
             })}
             {/* Empty filler owns the leftover space — no gap, content unpinned. */}
             <col />
@@ -240,10 +215,7 @@ export function Table<T>({
                 />
               ) : (
                 <tr>
-                  <td
-                    colSpan={leadColumns + 1}
-                    className="p-10 text-center text-muted-foreground"
-                  >
+                  <td colSpan={leadColumns + 1} className="p-10 text-center text-muted-foreground">
                     {emptyState}
                   </td>
                 </tr>
@@ -267,9 +239,7 @@ export function Table<T>({
                       data-selected={isSelected}
                       style={{ height: rowHeight }}
                       onPointerEnter={
-                        hasRowMenu
-                          ? () => activateRow(entry.id, vItem.index)
-                          : undefined
+                        hasRowMenu ? () => activateRow(entry.id, vItem.index) : undefined
                       }
                       onPointerLeave={hasRowMenu ? deactivateRow : undefined}
                       className={cn(
@@ -292,18 +262,13 @@ export function Table<T>({
                       {orderedColumns.map((column) => (
                         <td
                           key={column.key}
-                          className={cn(
-                            "truncate px-4 text-foreground",
-                            alignText(column.align),
-                          )}
+                          className={cn("truncate px-4 text-foreground", alignText(column.align))}
                         >
                           {!column.cell && column.editable ? (
                             <EditableCell
                               value={String(readCell(entry.row, column) ?? "")}
                               label={`${column.key} for row ${vItem.index + 1}`}
-                              onChange={(next) =>
-                                onCellEdit?.(entry.id, column.key, next)
-                              }
+                              onChange={(next) => onCellEdit?.(entry.id, column.key, next)}
                             />
                           ) : (
                             readCell(entry.row, column)

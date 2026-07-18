@@ -17,14 +17,14 @@ test("getOmniRouteTokenCounts normalizes common usage shapes", () => {
       prompt_tokens: 12,
       completion_tokens: 5,
     }),
-    { input: 12, output: 5 }
+    { input: 12, output: 5 },
   );
   assert.deepEqual(
     getOmniRouteTokenCounts({
       input_tokens: "9",
       output_tokens: "4",
     }),
-    { input: 9, output: 4 }
+    { input: 9, output: 4 },
   );
 });
 

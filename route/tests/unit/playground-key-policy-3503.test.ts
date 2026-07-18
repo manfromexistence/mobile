@@ -53,9 +53,13 @@ test.after(() => {
 
 test("#3503 — authenticated session + key-id header resolves the key secret server-side", async () => {
   const out = await resolvePlaygroundTestKey(
-    req({ [PLAYGROUND_KEY_ID_HEADER]: KEY_ID, cookie: await sessionCookie() })
+    req({ [PLAYGROUND_KEY_ID_HEADER]: KEY_ID, cookie: await sessionCookie() }),
   );
-  assert.equal(out, KEY_SECRET, "an authenticated session should resolve the selected key's secret by id");
+  assert.equal(
+    out,
+    KEY_SECRET,
+    "an authenticated session should resolve the selected key's secret by id",
+  );
 });
 
 test("#3503 — SECURITY: the key-id header is IGNORED without an authenticated session", async () => {
@@ -66,7 +70,7 @@ test("#3503 — SECURITY: the key-id header is IGNORED without an authenticated 
 
 test("#3503 — SECURITY: an invalid session token is rejected", async () => {
   const out = await resolvePlaygroundTestKey(
-    req({ [PLAYGROUND_KEY_ID_HEADER]: KEY_ID, cookie: "auth_token=not-a-valid-jwt" })
+    req({ [PLAYGROUND_KEY_ID_HEADER]: KEY_ID, cookie: "auth_token=not-a-valid-jwt" }),
   );
   assert.equal(out, null, "a forged/invalid session token must not resolve a key");
 });

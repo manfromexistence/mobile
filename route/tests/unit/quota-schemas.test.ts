@@ -12,7 +12,7 @@ import {
 
 test("PoolCreateSchema accepts valid input", () => {
   assert.ok(
-    PoolCreateSchema.safeParse({ connectionId: "c", name: "Team Pool", allocations: [] }).success
+    PoolCreateSchema.safeParse({ connectionId: "c", name: "Team Pool", allocations: [] }).success,
   );
 });
 
@@ -34,7 +34,7 @@ test("PoolCreateSchema rejects empty connectionId", () => {
 test("PoolCreateSchema rejects name > 120 chars", () => {
   assert.equal(
     PoolCreateSchema.safeParse({ connectionId: "c", name: "x".repeat(121) }).success,
-    false
+    false,
   );
 });
 
@@ -55,7 +55,7 @@ test("PoolUpdateSchema rejects empty name when provided", () => {
 test("PlanUpsertSchema accepts valid dimensions array", () => {
   assert.ok(
     PlanUpsertSchema.safeParse({ dimensions: [{ unit: "percent", window: "5h", limit: 100 }] })
-      .success
+      .success,
   );
 });
 
@@ -83,14 +83,14 @@ test("QuotaStoreSettingsSchema accepts redis driver with valid URL", () => {
     QuotaStoreSettingsSchema.safeParse({
       driver: "redis",
       redisUrl: "redis://localhost:6379",
-    }).success
+    }).success,
   );
 });
 
 test("QuotaStoreSettingsSchema rejects malformed redisUrl", () => {
   assert.equal(
     QuotaStoreSettingsSchema.safeParse({ driver: "redis", redisUrl: "not-a-url" }).success,
-    false
+    false,
   );
 });
 
@@ -119,7 +119,7 @@ test("QuotaPreviewQuerySchema rejects negative estimatedTokens", () => {
       poolId: "p",
       estimatedTokens: "-1",
     }).success,
-    false
+    false,
   );
 });
 

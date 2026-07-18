@@ -1,10 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const providerPageUtils =
-  await import("../../src/app/(dashboard)/dashboard/providers/providerPageUtils.ts");
-const providerPageStorage =
-  await import("../../src/app/(dashboard)/dashboard/providers/providerPageStorage.ts");
+const providerPageUtils = await import(
+  "../../src/app/(dashboard)/dashboard/providers/providerPageUtils.ts"
+);
+const providerPageStorage = await import(
+  "../../src/app/(dashboard)/dashboard/providers/providerPageStorage.ts"
+);
 const providers = await import("../../src/shared/constants/providers.ts");
 const providerCatalog = await import("../../src/lib/providers/catalog.ts");
 
@@ -21,7 +23,7 @@ test("merged OAuth providers keep free-tier providers in the OAuth section", () 
   const entries = providerPageUtils.buildMergedOAuthProviderEntries(
     mockOauthProviders,
     mockFreeProviders,
-    getProviderStats
+    getProviderStats,
   );
 
   const oauthIds = Object.keys(mockOauthProviders);
@@ -29,11 +31,11 @@ test("merged OAuth providers keep free-tier providers in the OAuth section", () 
 
   assert.deepEqual(
     entries.slice(0, oauthIds.length).map((entry) => entry.providerId),
-    oauthIds
+    oauthIds,
   );
   assert.deepEqual(
     entries.slice(oauthIds.length).map((entry) => entry.providerId),
-    freeIds
+    freeIds,
   );
 
   const freeEntry = entries.find((entry) => entry.providerId === freeIds[0]);
@@ -42,7 +44,7 @@ test("merged OAuth providers keep free-tier providers in the OAuth section", () 
   assert.equal(freeEntry.toggleAuthType, "free");
   assert.equal(
     statsCalls.some((call) => call.providerId === freeIds[0] && call.authType === "free"),
-    true
+    true,
   );
 });
 
@@ -75,7 +77,7 @@ test("configured-only filter keeps only providers with saved connections", () =>
 
   assert.deepEqual(
     visible.map((entry) => entry.providerId),
-    ["claude", "cursor"]
+    ["claude", "cursor"],
   );
   assert.equal(providerPageUtils.filterConfiguredProviderEntries(entries, false).length, 3);
 });
@@ -110,7 +112,7 @@ test("configured-only filter keeps no-auth providers even without a saved connec
   const visible = providerPageUtils.filterConfiguredProviderEntries(entries, true);
   assert.deepEqual(
     visible.map((entry) => entry.providerId),
-    ["duckduckgo-web", "opencode"]
+    ["duckduckgo-web", "opencode"],
   );
 });
 
@@ -146,12 +148,12 @@ test("compact provider entries dedupe providers and move no-auth entries to the 
 
   const visible = providerPageUtils.buildCompactProviderEntries(
     [[opencode, openRouterFromFree], [claude, openRouterFromAggregator], [opencode]],
-    { deferNoAuth: true }
+    { deferNoAuth: true },
   );
 
   assert.deepEqual(
     visible.map((entry) => entry.providerId),
-    ["openrouter", "claude", "opencode"]
+    ["openrouter", "claude", "opencode"],
   );
   assert.equal(visible.filter((entry) => entry.providerId === "openrouter").length, 1);
 });
@@ -174,7 +176,7 @@ test("compact provider entries prefer non-no-auth duplicates over deferred no-au
 
   const visible = providerPageUtils.buildCompactProviderEntries(
     [[noAuthEntry], [configuredEntry]],
-    { deferNoAuth: true }
+    { deferNoAuth: true },
   );
 
   assert.equal(visible.length, 1);
@@ -210,29 +212,29 @@ test("search filter matches provider name and id case-insensitively", () => {
   const byName = providerPageUtils.filterConfiguredProviderEntries(entries, false, "claude");
   assert.deepEqual(
     byName.map((e) => e.providerId),
-    ["claude"]
+    ["claude"],
   );
 
   const byNameCaseInsensitive = providerPageUtils.filterConfiguredProviderEntries(
     entries,
     false,
-    "OPENAI"
+    "OPENAI",
   );
   assert.deepEqual(
     byNameCaseInsensitive.map((e) => e.providerId),
-    ["openai"]
+    ["openai"],
   );
 
   const byPartialName = providerPageUtils.filterConfiguredProviderEntries(entries, false, "google");
   assert.deepEqual(
     byPartialName.map((e) => e.providerId),
-    ["gemini"]
+    ["gemini"],
   );
 
   const byId = providerPageUtils.filterConfiguredProviderEntries(entries, false, "gem");
   assert.deepEqual(
     byId.map((e) => e.providerId),
-    ["gemini"]
+    ["gemini"],
   );
 
   const noMatch = providerPageUtils.filterConfiguredProviderEntries(entries, false, "xyz");
@@ -273,17 +275,17 @@ test("search and configured-only filters work together", () => {
   const configuredAndSearched = providerPageUtils.filterConfiguredProviderEntries(
     entries,
     true,
-    "claude"
+    "claude",
   );
   assert.deepEqual(
     configuredAndSearched.map((e) => e.providerId),
-    ["claude"]
+    ["claude"],
   );
 
   const configuredButNoMatch = providerPageUtils.filterConfiguredProviderEntries(
     entries,
     true,
-    "openai"
+    "openai",
   );
   assert.equal(configuredButNoMatch.length, 0);
 });
@@ -494,7 +496,7 @@ test("static catalog entries resolve local, search, audio, web-cookie and upstre
   assert.equal(upstreamProvider?.category, "upstream-proxy");
   assert.equal(
     upstreamProvider?.name,
-    providerCatalog.STATIC_PROVIDER_CATALOG_GROUPS["upstream-proxy"].providers.cliproxyapi.name
+    providerCatalog.STATIC_PROVIDER_CATALOG_GROUPS["upstream-proxy"].providers.cliproxyapi.name,
   );
 });
 
@@ -593,143 +595,143 @@ test("grok-web taxonomy stays web-cookie only and does not leak into api-key ent
 
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "sdwebui"),
-    false
+    false,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "comfyui"),
-    false
+    false,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "lm-studio"),
-    false
+    false,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "vllm"),
-    false
+    false,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "lemonade"),
-    false
+    false,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "grok-web"),
-    false
+    false,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "synthetic"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "gitlab"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "thebai"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "fenayai"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "chutes"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "datarobot"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "clarifai"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "empower"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "nous-research"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "poe"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "azure-ai"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "bedrock"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "watsonx"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "oci"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "sap"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "modal"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "reka"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "nlpcloud"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "runwayml"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "voyage-ai"),
-    true
+    true,
   );
   assert.equal(
     apiKeyEntries.some((entry) => entry.providerId === "jina-ai"),
-    true
+    true,
   );
   assert.equal(
     localEntries.some((entry) => entry.providerId === "sdwebui"),
-    true
+    true,
   );
   assert.equal(
     localEntries.some((entry) => entry.providerId === "comfyui"),
-    true
+    true,
   );
   assert.equal(
     localEntries.some((entry) => entry.providerId === "lm-studio"),
-    true
+    true,
   );
   assert.equal(
     localEntries.some((entry) => entry.providerId === "vllm"),
-    true
+    true,
   );
   assert.equal(
     localEntries.some((entry) => entry.providerId === "lemonade"),
-    true
+    true,
   );
   assert.equal(
     webCookieEntries.some((entry) => entry.providerId === "grok-web"),
-    true
+    true,
   );
   assert.equal(
     webCookieEntries.some((entry) => entry.providerId === "blackbox-web"),
-    true
+    true,
   );
   assert.equal(
     webCookieEntries.some((entry) => entry.providerId === "muse-spark-web"),
-    true
+    true,
   );
 });
 
@@ -749,7 +751,7 @@ test("compatible catalog entries keep dynamic compatible metadata", () => {
         anthropicCompatibleName: "Anthropic Compatible",
         openAiCompatibleName: "OpenAI Compatible",
       },
-    }
+    },
   );
 
   assert.equal(compatibleProvider?.category, "compatible");
@@ -801,7 +803,7 @@ test("model search filter matches providers by model id", async () => {
     false,
     undefined,
     undefined,
-    "minimax-m3"
+    "minimax-m3",
   );
   const matchedIds = byModelId.map((e) => e.providerId);
   assert.ok(matchedIds.includes("trae"), "trae should match minimax-m3 by model id");
@@ -817,11 +819,11 @@ test("model search filter matches providers by model id", async () => {
       false,
       undefined,
       undefined,
-      "MiniMax-M3"
+      "MiniMax-M3",
     );
     assert.ok(
       byMinimaxM3.map((e) => e.providerId).includes("minimax"),
-      "minimax should match MiniMax-M3 by model id"
+      "minimax should match MiniMax-M3 by model id",
     );
   }
 
@@ -831,7 +833,7 @@ test("model search filter matches providers by model id", async () => {
     false,
     undefined,
     undefined,
-    "model-that-does-not-exist"
+    "model-that-does-not-exist",
   );
   assert.equal(byNonexistentModel.length, 0);
 
@@ -841,7 +843,7 @@ test("model search filter matches providers by model id", async () => {
     false,
     undefined,
     undefined,
-    ""
+    "",
   );
   assert.equal(byEmptyModel.length, entries.length);
 
@@ -851,7 +853,7 @@ test("model search filter matches providers by model id", async () => {
     false,
     undefined,
     undefined,
-    "   "
+    "   ",
   );
   assert.equal(byWhitespaceModel.length, entries.length);
 });
@@ -880,15 +882,15 @@ test("model search filter matches by model name", () => {
     false,
     undefined,
     undefined,
-    "MiniMax M3"
+    "MiniMax M3",
   );
   assert.ok(
     byName.map((e) => e.providerId).includes("minimax"),
-    "minimax should match by model name 'MiniMax M3'"
+    "minimax should match by model name 'MiniMax M3'",
   );
   assert.ok(
     !byName.map((e) => e.providerId).includes("openai"),
-    "openai should not match 'MiniMax M3'"
+    "openai should not match 'MiniMax M3'",
   );
 });
 
@@ -930,7 +932,7 @@ test("model search filter combines with configured-only and text search", () => 
     true,
     undefined,
     undefined,
-    "minimax-m3"
+    "minimax-m3",
   );
   const modelAndConfigIds = modelAndConfigured.map((e) => e.providerId);
   // trae has minimax-m3 AND is configured (total > 0)
@@ -939,7 +941,7 @@ test("model search filter combines with configured-only and text search", () => 
   // bazaarlink is not in our test entries
   assert.ok(
     !modelAndConfigIds.includes("openai"),
-    "openai should not match minimax-m3 model filter"
+    "openai should not match minimax-m3 model filter",
   );
 
   // Model filter + text search: both must match (AND logic)
@@ -948,12 +950,12 @@ test("model search filter combines with configured-only and text search", () => 
     false,
     "Trae",
     undefined,
-    "minimax-m3"
+    "minimax-m3",
   );
   assert.deepEqual(
     modelAndSearch.map((e) => e.providerId),
     ["trae"],
-    "only trae matches both search 'Trae' AND model 'minimax-m3'"
+    "only trae matches both search 'Trae' AND model 'minimax-m3'",
   );
 
   // Model filter that matches nothing with valid text search
@@ -962,7 +964,7 @@ test("model search filter combines with configured-only and text search", () => 
     false,
     undefined,
     undefined,
-    "nonexistent-model-xyz"
+    "nonexistent-model-xyz",
   );
   assert.equal(noModelMatch.length, 0);
 });
@@ -984,7 +986,7 @@ test("model search filter is case-insensitive and partial-match", () => {
     false,
     undefined,
     undefined,
-    "MINIMAX-M3"
+    "MINIMAX-M3",
   );
   assert.equal(byUppercase.length, 1, "model search should be case-insensitive");
 
@@ -994,7 +996,7 @@ test("model search filter is case-insensitive and partial-match", () => {
     false,
     undefined,
     undefined,
-    "minimax"
+    "minimax",
   );
   assert.equal(byPartial.length, 1, "partial model id 'minimax' should match 'minimax-m3'");
 });
@@ -1025,39 +1027,39 @@ test("buildCompatibleProviderGroups partitions nodes by type + claude-code prefi
       // name omitted → falls back to the provided label
       { id: "anon-oai", type: "openai-compatible" },
     ],
-    labels
+    labels,
   );
 
   assert.deepEqual(
     groups.openai.map((p) => p.id),
     ["my-oai", "anon-oai"],
-    "openai-compatible nodes land in the openai bucket"
+    "openai-compatible nodes land in the openai bucket",
   );
   assert.equal(groups.openai[0].apiType, "responses", "apiType is preserved");
   assert.equal(
     groups.openai[1].name,
     labels.openaiCompatibleName,
-    "missing name falls back to the openai-compatible label"
+    "missing name falls back to the openai-compatible label",
   );
 
   // #2166: custom remote icon URL passthrough.
   assert.equal(
     groups.openai[0].iconUrl,
     "https://cdn.example.com/icons/my-oai.png",
-    "iconUrl is preserved for nodes that set it"
+    "iconUrl is preserved for nodes that set it",
   );
   assert.equal(groups.openai[1].iconUrl, undefined, "iconUrl is undefined when the node has none");
 
   assert.deepEqual(
     groups.anthropic.map((p) => p.id),
     ["my-anthropic"],
-    "plain anthropic-compatible nodes land in the anthropic bucket"
+    "plain anthropic-compatible nodes land in the anthropic bucket",
   );
 
   assert.deepEqual(
     groups.claudeCode.map((p) => p.id),
     ["anthropic-compatible-cc-acme"],
-    "anthropic-compatible nodes with the cc- prefix land in the claudeCode bucket"
+    "anthropic-compatible nodes with the cc- prefix land in the claudeCode bucket",
   );
 });
 
@@ -1069,35 +1071,35 @@ test("connectionMatchesProviderCard counts a dual-auth provider's PAT (apikey) c
   // shows a connected qoder as "not connected".
   assert.equal(
     connectionMatchesProviderCard({ provider: "qoder", authType: "apikey" }, "qoder", "oauth"),
-    true
+    true,
   );
   assert.equal(
     connectionMatchesProviderCard({ provider: "kiro", authType: "api_key" }, "kiro", "oauth"),
-    true
+    true,
   );
   assert.equal(
     connectionMatchesProviderCard({ provider: "qoder", authType: "oauth" }, "qoder", "oauth"),
-    true
+    true,
   );
 
   // A normal OAuth-only provider must NOT count an apikey connection on its OAuth card.
   assert.equal(
     connectionMatchesProviderCard({ provider: "claude", authType: "apikey" }, "claude", "oauth"),
-    false
+    false,
   );
   assert.equal(
     connectionMatchesProviderCard({ provider: "claude", authType: "oauth" }, "claude", "oauth"),
-    true
+    true,
   );
 
   // Provider mismatch and the "free" card (counts everything) behave as expected.
   assert.equal(
     connectionMatchesProviderCard({ provider: "openai", authType: "apikey" }, "qoder", "oauth"),
-    false
+    false,
   );
   assert.equal(
     connectionMatchesProviderCard({ provider: "qoder", authType: "apikey" }, "qoder", "free"),
-    true
+    true,
   );
 
   // Defensive: a null/undefined connection must not throw (gemini-code-assist).

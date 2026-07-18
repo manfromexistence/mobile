@@ -155,7 +155,7 @@ test("onFlush callback invoked at stream close", async () => {
     () => {
       flushCalled = true;
       return "";
-    }
+    },
   );
 
   await testTransform(transform, [`data: {"choices":[{"delta":{"content":"x"}}]}\n\n`]);
@@ -193,7 +193,7 @@ test("onFlush called exactly once when [DONE] is present", async () => {
     () => {
       flushCount++;
       return null;
-    }
+    },
   );
 
   await testTransform(transform, [

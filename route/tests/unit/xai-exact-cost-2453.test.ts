@@ -38,10 +38,7 @@ test("computeCostFromPricing: xAI exact cost_in_usd_ticks overrides the token-ba
     ...TOKENS_1M_EACH,
     cost_in_usd_ticks: DOC_EXAMPLE_TICKS,
   });
-  assert.ok(
-    Math.abs(cost - DOC_EXAMPLE_USD) < 1e-9,
-    `expected ${DOC_EXAMPLE_USD}, got ${cost}`
-  );
+  assert.ok(Math.abs(cost - DOC_EXAMPLE_USD) < 1e-9, `expected ${DOC_EXAMPLE_USD}, got ${cost}`);
   assert.notEqual(cost, 3, "must not fall back to the $3 token-based estimate");
 });
 
@@ -108,11 +105,11 @@ test("extractUsageFromResponse: rejects malformed exact cost values", () => {
           cost_in_usd_ticks: value,
         },
       },
-      "xai"
+      "xai",
     );
     assert.ok(
       !("cost_in_usd_ticks" in usage),
-      `must not add cost_in_usd_ticks for malformed value ${value}`
+      `must not add cost_in_usd_ticks for malformed value ${value}`,
     );
   }
 });
@@ -126,7 +123,7 @@ test("extractUsageFromResponse: xAI OpenAI-shaped usage carries cost_in_usd_tick
         cost_in_usd_ticks: DOC_EXAMPLE_TICKS,
       },
     },
-    "xai"
+    "xai",
   );
   assert.equal(usage.cost_in_usd_ticks, DOC_EXAMPLE_TICKS);
 });
@@ -141,7 +138,7 @@ test("extractUsageFromResponse CONTROL: non-xAI OpenAI usage without the field s
         completion_tokens_details: { reasoning_tokens: 2 },
       },
     },
-    "openai"
+    "openai",
   );
   assert.deepEqual(usage, {
     prompt_tokens: 12,

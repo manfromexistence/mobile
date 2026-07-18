@@ -1,1 +1,1 @@
-export { default } from './AnnouncementBar';
+export { default } from "./AnnouncementBar";

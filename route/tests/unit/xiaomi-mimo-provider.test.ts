@@ -23,7 +23,7 @@ test("xiaomi-mimo registry uses the current default base URL and MiMo V2.5 model
   }
   assert.deepEqual(
     entry.models.map((model) => model.id),
-    ["mimo-v2.5-pro", "mimo-v2.5"]
+    ["mimo-v2.5-pro", "mimo-v2.5"],
   );
 });
 
@@ -37,12 +37,12 @@ test("xiaomi-mimo TTS models are registered in the audio speech registry", () =>
   assert.equal(provider.format, "xiaomi-mimo-tts");
   assert.deepEqual(
     provider.models.map((model) => model.id),
-    ["mimo-v2.5-tts", "mimo-v2.5-tts-voicedesign", "mimo-v2.5-tts-voiceclone"]
+    ["mimo-v2.5-tts", "mimo-v2.5-tts-voicedesign", "mimo-v2.5-tts-voiceclone"],
   );
   assert.ok(
     getAllAudioModels().some(
-      (model) => model.id === "xiaomi-mimo/mimo-v2.5-tts" && model.subtype === "speech"
-    )
+      (model) => model.id === "xiaomi-mimo/mimo-v2.5-tts" && model.subtype === "speech",
+    ),
   );
 });
 
@@ -55,7 +55,7 @@ test("xiaomi-mimo executor appends /chat/completions for regional base URLs", ()
         baseUrl: "https://token-plan-sgp.xiaomimimo.com/v1",
       },
     }),
-    "https://token-plan-sgp.xiaomimimo.com/v1/chat/completions"
+    "https://token-plan-sgp.xiaomimimo.com/v1/chat/completions",
   );
 
   assert.equal(
@@ -64,7 +64,7 @@ test("xiaomi-mimo executor appends /chat/completions for regional base URLs", ()
         baseUrl: "https://token-plan-cn.xiaomimimo.com/v1/chat/completions",
       },
     }),
-    "https://token-plan-cn.xiaomimimo.com/v1/chat/completions"
+    "https://token-plan-cn.xiaomimimo.com/v1/chat/completions",
   );
 });
 
@@ -82,7 +82,7 @@ test("xiaomi-mimo create schema accepts custom regional baseUrl", () => {
   if (validation.success) {
     assert.equal(
       validation.data.providerSpecificData?.baseUrl,
-      "https://token-plan-sgp.xiaomimimo.com/v1"
+      "https://token-plan-sgp.xiaomimimo.com/v1",
     );
   }
 });
@@ -98,7 +98,7 @@ test("xiaomi-mimo update schema accepts custom regional baseUrl", () => {
   if (validation.success) {
     assert.equal(
       validation.data.providerSpecificData?.baseUrl,
-      "https://token-plan-cn.xiaomimimo.com/v1"
+      "https://token-plan-cn.xiaomimimo.com/v1",
     );
   }
 });

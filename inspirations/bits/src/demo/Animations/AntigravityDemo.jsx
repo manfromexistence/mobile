@@ -1,23 +1,23 @@
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box, Flex } from '@chakra-ui/react';
-import { useMemo, useEffect } from 'react';
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box, Flex } from "@chakra-ui/react";
+import { useMemo, useEffect } from "react";
 
-import Customize from '../../components/common/Preview/Customize';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSelect from '../../components/common/Preview/PreviewSelect';
-import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '@/components/code/Dependencies';
-import CodeExample from '@/components/code/CodeExample';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
-import useForceRerender from '../../hooks/useForceRerender';
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import Customize from "../../components/common/Preview/Customize";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSelect from "../../components/common/Preview/PreviewSelect";
+import PropTable from "../../components/common/Preview/PropTable";
+import Dependencies from "@/components/code/Dependencies";
+import CodeExample from "@/components/code/CodeExample";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
+import useForceRerender from "../../hooks/useForceRerender";
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
-import OpenInStudioButton from '../../components/common/Preview/OpenInStudioButton';
+import OpenInStudioButton from "../../components/common/Preview/OpenInStudioButton";
 
-import { antigravity } from '@/constants/code/Animations/antigravityCode';
-import Antigravity from '../../ts-default/Animations/Antigravity/Antigravity';
+import { antigravity } from "@/constants/code/Animations/antigravityCode";
+import Antigravity from "../../ts-default/Animations/Antigravity/Antigravity";
 
 const DEFAULT_PROPS = {
   magnetRadius: 6,
@@ -27,14 +27,14 @@ const DEFAULT_PROPS = {
   particleSize: 1.5,
   lerpSpeed: 0.05,
   count: 300,
-  color: '#5227FF',
+  color: "#5227FF",
   autoAnimate: true,
   particleVariance: 1,
   rotationSpeed: 0,
   depthFactor: 1,
   pulseSpeed: 3,
-  particleShape: 'capsule',
-  fieldStrength: 10
+  particleShape: "capsule",
+  fieldStrength: 10,
 };
 
 const AntigravityDemo = () => {
@@ -54,7 +54,7 @@ const AntigravityDemo = () => {
     depthFactor,
     pulseSpeed,
     particleShape,
-    fieldStrength
+    fieldStrength,
   } = props;
 
   const [key, forceRerender] = useForceRerender();
@@ -77,107 +77,112 @@ const AntigravityDemo = () => {
     depthFactor,
     pulseSpeed,
     particleShape,
-    fieldStrength
+    fieldStrength,
   ]);
 
   const propData = useMemo(
     () => [
       {
-        name: 'count',
-        type: 'number',
-        default: '300',
-        description: 'Number of particles'
+        name: "count",
+        type: "number",
+        default: "300",
+        description: "Number of particles",
       },
       {
-        name: 'magnetRadius',
-        type: 'number',
-        default: '10',
-        description: 'Radius of the magnetic field'
+        name: "magnetRadius",
+        type: "number",
+        default: "10",
+        description: "Radius of the magnetic field",
       },
       {
-        name: 'ringRadius',
-        type: 'number',
-        default: '10',
-        description: 'Radius of the formed ring'
+        name: "ringRadius",
+        type: "number",
+        default: "10",
+        description: "Radius of the formed ring",
       },
       {
-        name: 'waveSpeed',
-        type: 'number',
-        default: '0.4',
-        description: 'Speed of the wave animation'
+        name: "waveSpeed",
+        type: "number",
+        default: "0.4",
+        description: "Speed of the wave animation",
       },
       {
-        name: 'waveAmplitude',
-        type: 'number',
-        default: '1',
-        description: 'Intensity of the wave (0 for perfect circle)'
+        name: "waveAmplitude",
+        type: "number",
+        default: "1",
+        description: "Intensity of the wave (0 for perfect circle)",
       },
       {
-        name: 'particleSize',
-        type: 'number',
-        default: '2',
-        description: 'Scale multiplier for particles'
+        name: "particleSize",
+        type: "number",
+        default: "2",
+        description: "Scale multiplier for particles",
       },
       {
-        name: 'lerpSpeed',
-        type: 'number',
-        default: '0.1',
-        description: 'How fast particles move to the ring'
+        name: "lerpSpeed",
+        type: "number",
+        default: "0.1",
+        description: "How fast particles move to the ring",
       },
       {
-        name: 'color',
-        type: 'string',
-        default: '#FF9FFC',
-        description: 'Color of the particles'
+        name: "color",
+        type: "string",
+        default: "#FF9FFC",
+        description: "Color of the particles",
       },
       {
-        name: 'autoAnimate',
-        type: 'boolean',
-        default: 'false',
-        description: 'Automatically animate when idle'
+        name: "autoAnimate",
+        type: "boolean",
+        default: "false",
+        description: "Automatically animate when idle",
       },
       {
-        name: 'particleVariance',
-        type: 'number',
-        default: '1',
-        description: 'Variance in particle size (0-1)'
+        name: "particleVariance",
+        type: "number",
+        default: "1",
+        description: "Variance in particle size (0-1)",
       },
       {
-        name: 'rotationSpeed',
-        type: 'number',
-        default: '0',
-        description: 'Rotation speed of the ring'
+        name: "rotationSpeed",
+        type: "number",
+        default: "0",
+        description: "Rotation speed of the ring",
       },
       {
-        name: 'depthFactor',
-        type: 'number',
-        default: '1',
-        description: 'Z-axis depth multiplier'
+        name: "depthFactor",
+        type: "number",
+        default: "1",
+        description: "Z-axis depth multiplier",
       },
       {
-        name: 'pulseSpeed',
-        type: 'number',
-        default: '3',
-        description: 'Speed of particle size pulsation'
+        name: "pulseSpeed",
+        type: "number",
+        default: "3",
+        description: "Speed of particle size pulsation",
       },
       {
-        name: 'particleShape',
-        type: 'string',
-        default: 'capsule',
-        description: 'Shape of the particles'
+        name: "particleShape",
+        type: "string",
+        default: "capsule",
+        description: "Shape of the particles",
       },
       {
-        name: 'fieldStrength',
-        type: 'number',
-        default: '10',
-        description: 'Tightness of the ring formation'
-      }
+        name: "fieldStrength",
+        type: "number",
+        default: "10",
+        description: "Tightness of the ring formation",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box position="relative" className="demo-container" h={500} overflow="hidden" p={0}>
@@ -219,24 +224,28 @@ const AntigravityDemo = () => {
                 depthFactor,
                 pulseSpeed,
                 particleShape,
-                fieldStrength
+                fieldStrength,
               }}
               defaultProps={DEFAULT_PROPS}
             />
           </Flex>
 
           <Customize>
-            <PreviewColorPickerCustom title="Color" color={color} onChange={val => updateProp('color', val)} />
+            <PreviewColorPickerCustom
+              title="Color"
+              color={color}
+              onChange={(val) => updateProp("color", val)}
+            />
             <PreviewSelect
               title="Particle Shape"
               options={[
-                { value: 'capsule', label: 'Capsule' },
-                { value: 'sphere', label: 'Sphere' },
-                { value: 'box', label: 'Box' },
-                { value: 'tetrahedron', label: 'Tetrahedron' }
+                { value: "capsule", label: "Capsule" },
+                { value: "sphere", label: "Sphere" },
+                { value: "box", label: "Box" },
+                { value: "tetrahedron", label: "Tetrahedron" },
               ]}
               value={particleShape}
-              onChange={val => updateProp('particleShape', val)}
+              onChange={(val) => updateProp("particleShape", val)}
               width={150}
             />
             <PreviewSlider
@@ -245,7 +254,7 @@ const AntigravityDemo = () => {
               max={50}
               step={1}
               value={magnetRadius}
-              onChange={val => updateProp('magnetRadius', val)}
+              onChange={(val) => updateProp("magnetRadius", val)}
             />
             <PreviewSlider
               title="Ring Radius"
@@ -253,7 +262,7 @@ const AntigravityDemo = () => {
               max={25}
               step={1}
               value={ringRadius}
-              onChange={val => updateProp('ringRadius', val)}
+              onChange={(val) => updateProp("ringRadius", val)}
             />
             <PreviewSlider
               title="Wave Speed"
@@ -261,7 +270,7 @@ const AntigravityDemo = () => {
               max={5}
               step={0.1}
               value={waveSpeed}
-              onChange={val => updateProp('waveSpeed', val)}
+              onChange={(val) => updateProp("waveSpeed", val)}
             />
             <PreviewSlider
               title="Wave Amplitude"
@@ -269,7 +278,7 @@ const AntigravityDemo = () => {
               max={5}
               step={0.1}
               value={waveAmplitude}
-              onChange={val => updateProp('waveAmplitude', val)}
+              onChange={(val) => updateProp("waveAmplitude", val)}
             />
             <PreviewSlider
               title="Particle Size"
@@ -277,7 +286,7 @@ const AntigravityDemo = () => {
               max={2}
               step={0.1}
               value={particleSize}
-              onChange={val => updateProp('particleSize', val)}
+              onChange={(val) => updateProp("particleSize", val)}
             />
             <PreviewSlider
               title="Particle Variance"
@@ -285,7 +294,7 @@ const AntigravityDemo = () => {
               max={1}
               step={0.1}
               value={particleVariance}
-              onChange={val => updateProp('particleVariance', val)}
+              onChange={(val) => updateProp("particleVariance", val)}
             />
             <PreviewSlider
               title="Lerp Speed"
@@ -293,7 +302,7 @@ const AntigravityDemo = () => {
               max={0.2}
               step={0.01}
               value={lerpSpeed}
-              onChange={val => updateProp('lerpSpeed', val)}
+              onChange={(val) => updateProp("lerpSpeed", val)}
             />
             <PreviewSlider
               title="Count"
@@ -301,7 +310,7 @@ const AntigravityDemo = () => {
               max={5000}
               step={100}
               value={count}
-              onChange={val => updateProp('count', val)}
+              onChange={(val) => updateProp("count", val)}
             />
             <PreviewSlider
               title="Rotation Speed"
@@ -309,7 +318,7 @@ const AntigravityDemo = () => {
               max={5}
               step={0.1}
               value={rotationSpeed}
-              onChange={val => updateProp('rotationSpeed', val)}
+              onChange={(val) => updateProp("rotationSpeed", val)}
             />
             <PreviewSlider
               title="Depth Factor"
@@ -317,7 +326,7 @@ const AntigravityDemo = () => {
               max={5}
               step={0.1}
               value={depthFactor}
-              onChange={val => updateProp('depthFactor', val)}
+              onChange={(val) => updateProp("depthFactor", val)}
             />
             <PreviewSlider
               title="Pulse Speed"
@@ -325,7 +334,7 @@ const AntigravityDemo = () => {
               max={10}
               step={0.1}
               value={pulseSpeed}
-              onChange={val => updateProp('pulseSpeed', val)}
+              onChange={(val) => updateProp("pulseSpeed", val)}
             />
             <PreviewSlider
               title="Field Strength"
@@ -333,18 +342,18 @@ const AntigravityDemo = () => {
               max={20}
               step={0.1}
               value={fieldStrength}
-              onChange={val => updateProp('fieldStrength', val)}
+              onChange={(val) => updateProp("fieldStrength", val)}
             />
 
             <PreviewSwitch
               title="Auto Animate"
               isChecked={autoAnimate}
-              onChange={val => updateProp('autoAnimate', val)}
+              onChange={(val) => updateProp("autoAnimate", val)}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['@react-three/fiber', 'three']} />
+          <Dependencies dependencyList={["@react-three/fiber", "three"]} />
         </PreviewTab>
 
         <CodeTab>

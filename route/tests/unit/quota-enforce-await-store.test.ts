@@ -13,13 +13,7 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 test("enforce.ts awaits every getQuotaStore() call (it is async)", () => {
-  const p = join(
-    fileURLToPath(import.meta.url),
-    "..",
-    "..",
-    "..",
-    "src/lib/quota/enforce.ts"
-  );
+  const p = join(fileURLToPath(import.meta.url), "..", "..", "..", "src/lib/quota/enforce.ts");
   const src = readFileSync(p, "utf8");
   const totalCalls = (src.match(/getQuotaStore\(\)/g) || []).length;
   const awaitedCalls = (src.match(/await\s+getQuotaStore\(\)/g) || []).length;
@@ -27,6 +21,6 @@ test("enforce.ts awaits every getQuotaStore() call (it is async)", () => {
   assert.equal(
     awaitedCalls,
     totalCalls,
-    `every getQuotaStore() must be awaited — found ${totalCalls} call(s), ${awaitedCalls} awaited`
+    `every getQuotaStore() must be awaited — found ${totalCalls} call(s), ${awaitedCalls} awaited`,
   );
 });

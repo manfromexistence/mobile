@@ -90,9 +90,7 @@ export function MultiChainSwap({
       )}
     >
       <div className="flex h-12 items-center justify-between border-b border-border/50 px-3">
-        <span className="px-2 text-sm font-semibold tracking-tight text-foreground">
-          Swap
-        </span>
+        <span className="px-2 text-sm font-semibold tracking-tight text-foreground">Swap</span>
         <button
           type="button"
           aria-label="Settings"
@@ -147,12 +145,7 @@ export function MultiChainSwap({
           reduce={!!reduce}
         />
 
-        <ActionButton
-          from={from}
-          to={to}
-          amount={numericAmount}
-          destAddress={destAddress}
-        />
+        <ActionButton from={from} to={to} amount={numericAmount} destAddress={destAddress} />
       </div>
 
       <TokenPicker

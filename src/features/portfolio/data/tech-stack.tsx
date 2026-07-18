@@ -6,9 +6,9 @@ import {
   ShadcnIcon,
   TsIcon,
   VercelIcon,
-} from "@/components/icons"
+} from "@/components/icons";
 
-import type { TechStack } from "../types/tech-stack"
+import type { TechStack } from "../types/tech-stack";
 
 export const TECH_STACK: TechStack[] = [
   {
@@ -410,4 +410,4 @@ export const TECH_STACK: TechStack[] = [
     ),
     categories: ["Design"],
   },
-]
+];

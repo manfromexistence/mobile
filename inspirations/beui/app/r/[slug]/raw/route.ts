@@ -7,10 +7,7 @@ export function generateStaticParams() {
   return allRegistryTargets().map((c) => ({ slug: c.slug }));
 }
 
-export async function GET(
-  _req: Request,
-  ctx: { params: Promise<{ slug: string }> },
-) {
+export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }> }) {
   const { slug } = await ctx.params;
   const cat = findCategoryBySlug(slug);
   if (!cat) return new Response("not_found", { status: 404 });
@@ -24,7 +21,7 @@ export async function GET(
         "cache-control": "public, max-age=300, s-maxage=3600",
         "access-control-allow-origin": "*",
         "access-control-allow-methods": "GET, OPTIONS",
-        "link": `</r/${slug}>; rel="alternate"; type="application/json"`,
+        link: `</r/${slug}>; rel="alternate"; type="application/json"`,
       },
     });
   } catch {

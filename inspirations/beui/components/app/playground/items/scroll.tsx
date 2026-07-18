@@ -28,10 +28,7 @@ function ScrollPreview({ values }: { values: Values; replayKey: number }) {
 
   return (
     <div className="min-h-[200px] w-full">
-      <div
-        ref={ref}
-        className="relative h-52 overflow-y-auto rounded-xl border border-border"
-      >
+      <div ref={ref} className="relative h-52 overflow-y-auto rounded-xl border border-border">
         <div className="h-[560px] px-4 pt-3">
           <p className="text-xs text-muted-foreground">scroll down ↓</p>
           <div className="sticky top-20 flex justify-center">

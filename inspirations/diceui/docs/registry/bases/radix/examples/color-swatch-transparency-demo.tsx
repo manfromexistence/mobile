@@ -24,9 +24,7 @@ export default function ColorSwatchTransparencyDemo() {
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <span className="font-medium text-sm">
-          Without Transparency Pattern
-        </span>
+        <span className="font-medium text-sm">Without Transparency Pattern</span>
         <div className="flex gap-2">
           <ColorSwatch color="rgba(239, 68, 68, 0.8)" withoutTransparency />
           <ColorSwatch color="rgba(34, 197, 94, 0.6)" withoutTransparency />
@@ -34,9 +32,7 @@ export default function ColorSwatchTransparencyDemo() {
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <span className="font-medium text-sm">
-          With Transparency Pattern (Default)
-        </span>
+        <span className="font-medium text-sm">With Transparency Pattern (Default)</span>
         <div className="flex gap-2">
           <ColorSwatch color="rgba(239, 68, 68, 0.8)" />
           <ColorSwatch color="rgba(34, 197, 94, 0.6)" />

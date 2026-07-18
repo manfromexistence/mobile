@@ -21,7 +21,7 @@ test("getOpenCodeGoUsage does not send the user's OpenCode Go API key to api.z.a
     assert.strictEqual(calledHost, null);
     assert.ok(
       typeof result.message === "string" && result.message.length > 0,
-      "expected a descriptive message when no quota URL is configured"
+      "expected a descriptive message when no quota URL is configured",
     );
   } finally {
     globalThis.fetch = originalFetch;

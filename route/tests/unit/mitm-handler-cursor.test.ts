@@ -7,7 +7,7 @@ test("cursor handler — happy path forwards mapped model", async () => {
   const r = await runHandler(
     new CursorHandler(),
     { model: "claude-sonnet-4.5", messages: [] },
-    "gpt-4o"
+    "gpt-4o",
   );
   assert.ok(r.fetchCalled);
   assert.equal(r.status, 200);

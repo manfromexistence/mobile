@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
-const { default: RequestLoggerDetail } =
-  await import("../../src/shared/components/RequestLoggerDetail.tsx");
+const { default: RequestLoggerDetail } = await import(
+  "../../src/shared/components/RequestLoggerDetail.tsx"
+);
 
 test("event stream shows only when debugEnabled and appears above legacy response", () => {
   const html = renderToStaticMarkup(
@@ -36,23 +37,23 @@ test("event stream shows only when debugEnabled and appears above legacy respons
       debugEnabled: true,
       onClose: () => {},
       onCopy: async () => true,
-    })
+    }),
   );
 
   assert.notEqual(
     html.indexOf(">Provider Event Stream<"),
     -1,
-    "Event Stream should be present when debugEnabled"
+    "Event Stream should be present when debugEnabled",
   );
   // Ensure the legacy response payload is present and that the Event Stream appears above it
   assert.notEqual(
     html.indexOf(">Response Payload (Legacy)<"),
     -1,
-    "Legacy response payload should be present"
+    "Legacy response payload should be present",
   );
   assert(
     html.indexOf(">Provider Event Stream<") < html.indexOf(">Response Payload (Legacy)<"),
-    "Event Stream should appear before Response Payload (Legacy)"
+    "Event Stream should appear before Response Payload (Legacy)",
   );
 });
 
@@ -81,13 +82,13 @@ test("event stream hidden when debugEnabled is false", () => {
       debugEnabled: false,
       onClose: () => {},
       onCopy: async () => true,
-    })
+    }),
   );
 
   assert.equal(
     html.indexOf(">Provider Event Stream<"),
     -1,
-    "Event Stream should be hidden when debugEnabled is false"
+    "Event Stream should be hidden when debugEnabled is false",
   );
 });
 
@@ -114,14 +115,14 @@ test("status discrepancy shows both OmniRoute and provider statuses", () => {
       debugEnabled: false,
       onClose: () => {},
       onCopy: async () => true,
-    })
+    }),
   );
 
   assert.notEqual(html.indexOf("Upstream: 200"), -1, "Should display upstream/provider status");
   assert.notEqual(
     html.indexOf("OmniRoute returned 504"),
     -1,
-    "Should indicate OmniRoute returned its own status"
+    "Should indicate OmniRoute returned its own status",
   );
 });
 
@@ -158,14 +159,14 @@ test("request logger detail renders stream chunks correctly", () => {
       debugEnabled: true,
       onClose: () => {},
       onCopy: async () => true,
-    })
+    }),
   );
 
   const expectedFragment = "message_start";
   assert.notEqual(
     html.indexOf(">Provider Event Stream<"),
     -1,
-    "Event Stream header should be present"
+    "Event Stream header should be present",
   );
   // The new UI renders the provider stream under a "Provider Event Stream" section
   // (the raw key is no longer dumped inline); match case-insensitively so the check
@@ -173,11 +174,11 @@ test("request logger detail renders stream chunks correctly", () => {
   assert.notEqual(
     html.toLowerCase().indexOf("provider"),
     -1,
-    "Stream chunks output should reference the provider stream"
+    "Stream chunks output should reference the provider stream",
   );
   assert.notEqual(
     html.indexOf(expectedFragment),
     -1,
-    "Stream content (message_start) should be present in rendered HTML"
+    "Stream content (message_start) should be present in rendered HTML",
   );
 });

@@ -1,5 +1,5 @@
-import nextCoreWebVitals from "eslint-config-next/core-web-vitals"
-import nextTypescript from "eslint-config-next/typescript"
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
+import nextTypescript from "eslint-config-next/typescript";
 
 const eslintConfig = [
   {
@@ -21,6 +21,6 @@ const eslintConfig = [
       "react-hooks/preserve-manual-memoization": "off",
     },
   },
-]
+];
 
-export default eslintConfig
+export default eslintConfig;

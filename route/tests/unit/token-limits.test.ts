@@ -50,14 +50,14 @@ function insertUsage(
   tokensInput: number,
   tokensOutput: number,
   ts: string,
-  extra: { cacheRead?: number; cacheCreation?: number; reasoning?: number } = {}
+  extra: { cacheRead?: number; cacheCreation?: number; reasoning?: number } = {},
 ) {
   const db = core.getDbInstance();
   db.prepare(
     `INSERT INTO usage_history
        (provider, model, api_key_id, tokens_input, tokens_output,
         tokens_cache_read, tokens_cache_creation, tokens_reasoning, success, timestamp)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?)`,
   ).run(
     provider,
     model,
@@ -67,7 +67,7 @@ function insertUsage(
     extra.cacheRead ?? 0,
     extra.cacheCreation ?? 0,
     extra.reasoning ?? 0,
-    ts
+    ts,
   );
 }
 
@@ -104,15 +104,15 @@ test("window rollover: daily/weekly/monthly produce distinct windowStart", async
   // Distinct windows across a boundary.
   assert.notEqual(
     tokenLimits.resetWindowIfElapsed(daily, D1).windowStart,
-    tokenLimits.resetWindowIfElapsed(daily, D2).windowStart
+    tokenLimits.resetWindowIfElapsed(daily, D2).windowStart,
   );
   assert.notEqual(
     tokenLimits.resetWindowIfElapsed(weekly, W1).windowStart,
-    tokenLimits.resetWindowIfElapsed(weekly, W2).windowStart
+    tokenLimits.resetWindowIfElapsed(weekly, W2).windowStart,
   );
   assert.notEqual(
     tokenLimits.resetWindowIfElapsed(monthly, NOW_JAN).windowStart,
-    tokenLimits.resetWindowIfElapsed(monthly, NOW_FEB).windowStart
+    tokenLimits.resetWindowIfElapsed(monthly, NOW_FEB).windowStart,
   );
 
   // Same window: two distinct `now`s inside the same period give same windowStart.
@@ -120,19 +120,19 @@ test("window rollover: daily/weekly/monthly produce distinct windowStart", async
   const dailySameB = Date.UTC(2026, 0, 10, 23);
   assert.equal(
     tokenLimits.resetWindowIfElapsed(daily, dailySameA).windowStart,
-    tokenLimits.resetWindowIfElapsed(daily, dailySameB).windowStart
+    tokenLimits.resetWindowIfElapsed(daily, dailySameB).windowStart,
   );
   // weekly same window: Mon and Sun of same week.
   const weekMon = Date.UTC(2026, 0, 5, 3); // Monday
   const weekSun = Date.UTC(2026, 0, 11, 20); // Sunday same week
   assert.equal(
     tokenLimits.resetWindowIfElapsed(weekly, weekMon).windowStart,
-    tokenLimits.resetWindowIfElapsed(weekly, weekSun).windowStart
+    tokenLimits.resetWindowIfElapsed(weekly, weekSun).windowStart,
   );
   // monthly same window: two days in January.
   assert.equal(
     tokenLimits.resetWindowIfElapsed(monthly, NOW_JAN).windowStart,
-    tokenLimits.resetWindowIfElapsed(monthly, Date.UTC(2026, 0, 28, 4)).windowStart
+    tokenLimits.resetWindowIfElapsed(monthly, Date.UTC(2026, 0, 28, 4)).windowStart,
   );
 });
 
@@ -151,7 +151,14 @@ test("seed-on-miss equals usage_history SUM for the active window", async () => 
   // Different month (excluded).
   insertUsage("k2", "openai", "gpt-4o", 999, 999, new Date(Date.UTC(2025, 11, 31)).toISOString());
   // Different model (excluded).
-  insertUsage("k2", "openai", "gpt-4o-mini", 777, 777, new Date(Date.UTC(2026, 0, 13)).toISOString());
+  insertUsage(
+    "k2",
+    "openai",
+    "gpt-4o-mini",
+    777,
+    777,
+    new Date(Date.UTC(2026, 0, 13)).toISOString(),
+  );
 
   const expected = 100 + 50 + 30 + 20;
   assert.equal(counter.seedWindowUsageFromHistory(limit, NOW_JAN), expected);
@@ -194,11 +201,19 @@ test("seed total excludes cache tokens (no double-count) (FIX 2)", async () => {
 
   // tokens_input ALREADY INCLUDES cache_read + cache_creation (these columns are a
   // breakdown, per migration 012). Billable = input + output + reasoning ONLY.
-  insertUsage("k2c", "anthropic", "claude-sonnet", 500, 200, new Date(Date.UTC(2026, 0, 12)).toISOString(), {
-    cacheRead: 300,
-    cacheCreation: 100,
-    reasoning: 40,
-  });
+  insertUsage(
+    "k2c",
+    "anthropic",
+    "claude-sonnet",
+    500,
+    200,
+    new Date(Date.UTC(2026, 0, 12)).toISOString(),
+    {
+      cacheRead: 300,
+      cacheCreation: 100,
+      reasoning: 40,
+    },
+  );
 
   // 500 + 200 + 40 = 740. Must NOT add cacheRead/cacheCreation again (would be 1140).
   assert.equal(counter.seedWindowUsageFromHistory(limit, NOW_JAN), 740);

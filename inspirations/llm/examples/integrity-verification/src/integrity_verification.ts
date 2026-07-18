@@ -29,8 +29,7 @@ async function main() {
   const appConfig: webllm.AppConfig = {
     model_list: [
       {
-        model:
-          "https://huggingface.co/mlc-ai/Llama-3.2-1B-Instruct-q4f16_1-MLC",
+        model: "https://huggingface.co/mlc-ai/Llama-3.2-1B-Instruct-q4f16_1-MLC",
         model_id: "Llama-3.2-1B-Instruct-q4f16_1-MLC",
         model_lib:
           webllm.modelLibURLPrefix +
@@ -55,15 +54,12 @@ async function main() {
   };
 
   try {
-    const engine = await webllm.CreateMLCEngine(
-      "Llama-3.2-1B-Instruct-q4f16_1-MLC",
-      {
-        appConfig,
-        initProgressCallback: (report: webllm.InitProgressReport) => {
-          setStatus(report.text);
-        },
+    const engine = await webllm.CreateMLCEngine("Llama-3.2-1B-Instruct-q4f16_1-MLC", {
+      appConfig,
+      initProgressCallback: (report: webllm.InitProgressReport) => {
+        setStatus(report.text);
       },
-    );
+    });
 
     setStatus("Model loaded! Generating response...");
 

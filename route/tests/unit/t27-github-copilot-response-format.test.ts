@@ -38,7 +38,7 @@ test("T27: Claude + response_format=json_object injects system instruction and s
   assert.equal(transformed.messages[0].role, "system");
   assert.match(
     transformed.messages[0].content,
-    /Respond only with valid JSON\. Do not include any text/i
+    /Respond only with valid JSON\. Do not include any text/i,
   );
 });
 
@@ -63,7 +63,7 @@ test("T27: GitHub executor preserves SSE frames and only materializes non-stream
       {
         status: 200,
         headers: { "content-type": "text/event-stream" },
-      }
+      },
     ),
     url: "https://api.githubcopilot.com/chat/completions",
     headers: {},
@@ -135,7 +135,7 @@ test("T27: requests use copilotToken from providerSpecificData when available", 
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -228,6 +228,6 @@ test("T27: needsRefresh respects providerSpecificData copilot token metadata", (
         copilotTokenExpiresAt: expiresAt,
       },
     }),
-    false
+    false,
   );
 });

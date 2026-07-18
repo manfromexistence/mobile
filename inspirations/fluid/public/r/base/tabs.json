@@ -3,11 +3,7 @@
   "name": "tabs",
   "title": "Tabs (Base UI)",
   "description": "Segmented control tabs with sliding active indicator, proximity hover, and spring animations. Base UI flavor.",
-  "dependencies": [
-    "framer-motion",
-    "@base-ui/react",
-    "lucide-react"
-  ],
+  "dependencies": ["framer-motion", "@base-ui/react", "lucide-react"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

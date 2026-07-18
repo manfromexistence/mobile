@@ -69,7 +69,9 @@ export function ComponentPreview({
   const showButton = !!playbackButton || !!onReplay;
 
   return (
-    <div className={`flex flex-col gap-0 w-full border border-border/60 transition-[border-color] duration-80 focus-within:border-foreground/40 ${shape.container}`}>
+    <div
+      className={`flex flex-col gap-0 w-full border border-border/60 transition-[border-color] duration-80 focus-within:border-foreground/40 ${shape.container}`}
+    >
       {/* Tab bar — min-height reserves the playback button's height (h-10 + pt-3)
           so the header doesn't shift when the button mounts/unmounts. */}
       <div className="flex items-center gap-0 px-3 pt-3 min-h-[52px]">

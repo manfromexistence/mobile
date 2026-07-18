@@ -12,11 +12,7 @@ import { cn } from "@/registry/default/lib/utils";
 
 /** Inline code chip used throughout the prose. */
 function Code({ children }: { children: ReactNode }) {
-  return (
-    <code className="mx-1 rounded bg-muted px-1 py-0.5 text-[12px]">
-      {children}
-    </code>
-  );
+  return <code className="mx-1 rounded bg-muted px-1 py-0.5 text-[12px]">{children}</code>;
 }
 
 // ---------------------------------------------------------------------------
@@ -54,14 +50,14 @@ const REFERENCE_TIERS = [
     exitTransition: spring.fast.exit,
     components: [
       { label: "Hover & focus rings", slug: null },
-      { label: "Checkbox",            slug: "/docs/checkbox-group" },
-      { label: "Radio",               slug: "/docs/radio-group" },
-      { label: "Tooltip",             slug: "/docs/tooltip" },
-      { label: "Table rows",          slug: "/docs/table" },
-      { label: "Input copy",          slug: "/docs/input-copy" },
-      { label: "Slider",              slug: "/docs/slider" },
-      { label: "Select",              slug: "/docs/select" },
-      { label: "Color picker",        slug: "/docs/color-picker" },
+      { label: "Checkbox", slug: "/docs/checkbox-group" },
+      { label: "Radio", slug: "/docs/radio-group" },
+      { label: "Tooltip", slug: "/docs/tooltip" },
+      { label: "Table rows", slug: "/docs/table" },
+      { label: "Input copy", slug: "/docs/input-copy" },
+      { label: "Slider", slug: "/docs/slider" },
+      { label: "Select", slug: "/docs/select" },
+      { label: "Color picker", slug: "/docs/color-picker" },
     ],
   },
   {
@@ -74,11 +70,11 @@ const REFERENCE_TIERS = [
     enterTransition: spring.moderate,
     exitTransition: spring.moderate.exit,
     components: [
-      { label: "Dropdown",          slug: "/docs/dropdown" },
-      { label: "Tabs indicator",    slug: "/docs/tabs" },
-      { label: "Switch thumb",      slug: "/docs/switch" },
-      { label: "Accordion",         slug: "/docs/accordion" },
-      { label: "Chat bubbles",      slug: "/docs/chat-message" },
+      { label: "Dropdown", slug: "/docs/dropdown" },
+      { label: "Tabs indicator", slug: "/docs/tabs" },
+      { label: "Switch thumb", slug: "/docs/switch" },
+      { label: "Accordion", slug: "/docs/accordion" },
+      { label: "Chat bubbles", slug: "/docs/chat-message" },
     ],
   },
   {
@@ -91,7 +87,7 @@ const REFERENCE_TIERS = [
     enterTransition: spring.settle,
     exitTransition: spring.settle.exit,
     components: [
-      { label: "Mobile drawer",           slug: null },
+      { label: "Mobile drawer", slug: null },
       { label: "Selection merge / split", slug: "/docs/checkbox-group" },
     ],
   },
@@ -105,9 +101,9 @@ const REFERENCE_TIERS = [
     enterTransition: spring.slow,
     exitTransition: spring.slow.exit,
     components: [
-      { label: "Dialog",              slug: "/docs/dialog" },
-      { label: "Ask-user questions",  slug: "/docs/ask-user-questions" },
-      { label: "Thinking steps",      slug: "/docs/thinking-steps" },
+      { label: "Dialog", slug: "/docs/dialog" },
+      { label: "Ask-user questions", slug: "/docs/ask-user-questions" },
+      { label: "Thinking steps", slug: "/docs/thinking-steps" },
     ],
   },
 ];
@@ -115,12 +111,15 @@ const REFERENCE_TIERS = [
 // ms to wait before reversing (covers spring settle + tiny pause)
 const ENTER_SETTLE = { fast: 220, moderate: 400, settle: 400, slow: 560 } as const;
 // ms the exit takes (blocks re-clicks until done)
-const EXIT_SETTLE  = { fast: 150, moderate: 200, settle: 200, slow: 250 } as const;
+const EXIT_SETTLE = { fast: 150, moderate: 200, settle: 200, slow: 250 } as const;
 
 function SpringReferenceSection() {
   const [atEnds, setAtEnds] = useState([false, false, false, false]);
   const [transitions, setTransitions] = useState<Transition[]>([
-    spring.fast, spring.moderate, spring.settle, spring.slow,
+    spring.fast,
+    spring.moderate,
+    spring.settle,
+    spring.slow,
   ]);
   const [busy, setBusy] = useState([false, false, false, false]);
 
@@ -130,80 +129,82 @@ function SpringReferenceSection() {
     const k = tier.key as keyof typeof ENTER_SETTLE;
 
     // Enter: L → R
-    setBusy(b      => b.map((v, j) => j === i ? true  : v));
-    setTransitions(t => t.map((v, j) => j === i ? (tier.enterTransition as Transition) : v));
-    setAtEnds(a    => a.map((v, j) => j === i ? true  : v));
+    setBusy((b) => b.map((v, j) => (j === i ? true : v)));
+    setTransitions((t) => t.map((v, j) => (j === i ? (tier.enterTransition as Transition) : v)));
+    setAtEnds((a) => a.map((v, j) => (j === i ? true : v)));
 
     // Exit: R → L (after spring settles)
     setTimeout(() => {
-      setTransitions(t => t.map((v, j) => j === i ? (tier.exitTransition as Transition) : v));
-      setAtEnds(a      => a.map((v, j) => j === i ? false : v));
+      setTransitions((t) => t.map((v, j) => (j === i ? (tier.exitTransition as Transition) : v)));
+      setAtEnds((a) => a.map((v, j) => (j === i ? false : v)));
       setTimeout(() => {
-        setBusy(b => b.map((v, j) => j === i ? false : v));
+        setBusy((b) => b.map((v, j) => (j === i ? false : v)));
       }, EXIT_SETTLE[k]);
     }, ENTER_SETTLE[k]);
   };
 
   return (
     <div className="flex flex-col">
-      {REFERENCE_TIERS.map(({ key, trackWidth, enterToken, exitToken, enterMeta, exitMeta, components }, i) => (
-        <div
-          key={key}
-          className={cn("flex flex-col gap-4 py-6", i > 0 && "border-t border-border")}
-        >
-          <div className="flex flex-col gap-0.5">
-            <span
-              className="text-[13px] text-foreground"
-              style={{ fontVariationSettings: fontWeights.semibold }}
-            >
-              {key}
-            </span>
-            <span className="text-[12px] text-muted-foreground">
-              → <code className="font-mono">{enterToken}</code> {enterMeta}
-            </span>
-            <span className="text-[12px] text-muted-foreground">
-              ← <code className="font-mono">{exitToken}</code> {exitMeta}
-            </span>
-          </div>
-
-          {/* Track constrained to tier width */}
-          <button
-            onClick={() => fire(i)}
-            aria-label={`Play ${key} enter then exit`}
-            className={cn(
-              "flex h-7 cursor-pointer items-center rounded-full bg-muted px-0.5 outline-none",
-              "focus-visible:ring-1 focus-visible:ring-[#6B97FF]",
-              trackWidth,
-              atEnds[i] ? "justify-end" : "justify-start"
-            )}
+      {REFERENCE_TIERS.map(
+        ({ key, trackWidth, enterToken, exitToken, enterMeta, exitMeta, components }, i) => (
+          <div
+            key={key}
+            className={cn("flex flex-col gap-4 py-6", i > 0 && "border-t border-border")}
           >
-            <motion.div
-              layout
-              transition={transitions[i]}
-              className="h-6 w-6 rounded-full bg-foreground"
-            />
-          </button>
+            <div className="flex flex-col gap-0.5">
+              <span
+                className="text-[13px] text-foreground"
+                style={{ fontVariationSettings: fontWeights.semibold }}
+              >
+                {key}
+              </span>
+              <span className="text-[12px] text-muted-foreground">
+                → <code className="font-mono">{enterToken}</code> {enterMeta}
+              </span>
+              <span className="text-[12px] text-muted-foreground">
+                ← <code className="font-mono">{exitToken}</code> {exitMeta}
+              </span>
+            </div>
 
-          {/* Component chips — links where a page exists */}
-          <div className="flex flex-wrap gap-x-3 gap-y-1">
-            {components.map(({ label, slug }) =>
-              slug ? (
-                <Link
-                  key={label}
-                  href={slug}
-                  className="text-[13px] text-muted-foreground/50 transition-colors hover:text-foreground"
-                >
-                  {label}
-                </Link>
-              ) : (
-                <span key={label} className="text-[13px] text-muted-foreground/30">
-                  {label}
-                </span>
-              )
-            )}
+            {/* Track constrained to tier width */}
+            <button
+              onClick={() => fire(i)}
+              aria-label={`Play ${key} enter then exit`}
+              className={cn(
+                "flex h-7 cursor-pointer items-center rounded-full bg-muted px-0.5 outline-none",
+                "focus-visible:ring-1 focus-visible:ring-[#6B97FF]",
+                trackWidth,
+                atEnds[i] ? "justify-end" : "justify-start",
+              )}
+            >
+              <motion.div
+                layout
+                transition={transitions[i]}
+                className="h-6 w-6 rounded-full bg-foreground"
+              />
+            </button>
+
+            {/* Component chips — links where a page exists */}
+            <div className="flex flex-wrap gap-x-3 gap-y-1">
+              {components.map(({ label, slug }) =>
+                slug ? (
+                  <Link
+                    key={label}
+                    href={slug}
+                    className="text-[13px] text-muted-foreground/50 transition-colors hover:text-foreground"
+                  >
+                    {label}
+                  </Link>
+                ) : (
+                  <span key={label} className="text-[13px] text-muted-foreground/30">
+                    {label}
+                  </span>
+                ),
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        ),
+      )}
     </div>
   );
 }
@@ -237,10 +238,7 @@ function SpringTokensDemo() {
   const [atEnd, setAtEnd] = useState(false);
 
   return (
-    <ComponentPreview
-      code={SPRING_TOKENS_CODE}
-      onReplay={() => setAtEnd((v) => !v)}
-    >
+    <ComponentPreview code={SPRING_TOKENS_CODE} onReplay={() => setAtEnd((v) => !v)}>
       <div className="flex w-full max-w-md flex-col gap-5">
         {SPRING_TIERS.map(({ key, token, meta, usage }) => (
           <div key={key} className="flex flex-col gap-1.5">
@@ -251,9 +249,7 @@ function SpringTokensDemo() {
               >
                 {key}
               </span>
-              <span className="font-mono text-[11px] text-muted-foreground/70">
-                {meta}
-              </span>
+              <span className="font-mono text-[11px] text-muted-foreground/70">{meta}</span>
               <span className="ml-auto hidden text-[12px] text-muted-foreground sm:inline">
                 {usage}
               </span>
@@ -263,7 +259,7 @@ function SpringTokensDemo() {
               aria-label={`Run the ${key} spring`}
               className={cn(
                 "flex h-10 w-full cursor-pointer items-center rounded-full bg-muted px-1 outline-none focus-visible:ring-1 focus-visible:ring-[#6B97FF]",
-                atEnd ? "justify-end" : "justify-start"
+                atEnd ? "justify-end" : "justify-start",
               )}
             >
               <motion.div
@@ -361,8 +357,7 @@ function ModalExitDemo() {
   // the difference back to back rather than all at once.
   const [openSame, setOpenSame] = useState(false);
   const [openFaster, setOpenFaster] = useState(false);
-  const labelClass =
-    "flex items-center justify-center gap-2 text-[12px] text-muted-foreground";
+  const labelClass = "flex items-center justify-center gap-2 text-[12px] text-muted-foreground";
   return (
     <ComponentPreview code={MODAL_CODE} minHeightClass="min-h-[320px]">
       <div className="flex w-full max-w-2xl flex-col items-center gap-4">
@@ -379,8 +374,7 @@ function ModalExitDemo() {
               Toggle modal
             </Button>
             <span className={labelClass}>
-              <span aria-hidden="true">❌</span> Same exit time — drags on the way
-              out
+              <span aria-hidden="true">❌</span> Same exit time — drags on the way out
             </span>
           </div>
           {/* Faster exit */}
@@ -400,14 +394,13 @@ function ModalExitDemo() {
           </div>
         </div>
         <p className="text-center text-[12px] text-muted-foreground/70">
-          Toggle one, then the other — both open on{" "}
-          <span className="font-mono">spring.slow</span>; only the close differs.
+          Toggle one, then the other — both open on <span className="font-mono">spring.slow</span>;
+          only the close differs.
         </p>
       </div>
     </ComponentPreview>
   );
 }
-
 
 // ---------------------------------------------------------------------------
 // Page
@@ -423,36 +416,32 @@ export default function MotionDoc() {
     >
       <DocSection title="Three speeds">
         <p className="text-[13px] leading-relaxed text-muted-foreground">
-          All animations come from one of three springs in{" "}
-          <Code>lib/springs</Code>. Hover states and small toggles use{" "}
-          <Code>fast</Code>. Dropdowns and tabs use <Code>moderate</Code>.
-          Dialogs and drawers use <Code>slow</Code>. No component invents its
-          own timing, so things you've never thought about together will move
-          at the same pace. A fourth token, <Code>settle</Code>, is{" "}
-          <Code>moderate</Code> with the bounce removed — critically damped,
-          for panels and sheets that must land exactly (the mobile drawer, the
-          merged selection backgrounds).
+          All animations come from one of three springs in <Code>lib/springs</Code>. Hover states
+          and small toggles use <Code>fast</Code>. Dropdowns and tabs use <Code>moderate</Code>.
+          Dialogs and drawers use <Code>slow</Code>. No component invents its own timing, so things
+          you've never thought about together will move at the same pace. A fourth token,{" "}
+          <Code>settle</Code>, is <Code>moderate</Code> with the bounce removed — critically damped,
+          for panels and sheets that must land exactly (the mobile drawer, the merged selection
+          backgrounds).
         </p>
         <SpringTokensDemo />
       </DocSection>
 
       <DocSection title="Slow in, faster out">
         <p className="text-[13px] leading-relaxed text-muted-foreground">
-          Both modals open on <Code>spring.slow</Code>. The only difference is
-          the close: the left exits on the same <Code>spring.slow</Code>, the
-          right on <Code>spring.slow.exit</Code> — one tier faster. Toggle the
-          left one first. That slight drag on the way out is exactly what
-          you're trying to avoid.
+          Both modals open on <Code>spring.slow</Code>. The only difference is the close: the left
+          exits on the same <Code>spring.slow</Code>, the right on <Code>spring.slow.exit</Code> —
+          one tier faster. Toggle the left one first. That slight drag on the way out is exactly
+          what you're trying to avoid.
         </p>
         <ModalExitDemo />
       </DocSection>
 
       <DocSection title="All tokens">
         <p className="text-[13px] leading-relaxed text-muted-foreground">
-          Click a track to see it. The ball enters right on the spring, then
-          returns left on the exit tween. Everything lives in{" "}
-          <Code>lib/springs</Code> — duration values belong there, not
-          scattered through component code.
+          Click a track to see it. The ball enters right on the spring, then returns left on the
+          exit tween. Everything lives in <Code>lib/springs</Code> — duration values belong there,
+          not scattered through component code.
         </p>
         <SpringReferenceSection />
 
@@ -464,9 +453,8 @@ export default function MotionDoc() {
         </h3>
         <p className="text-[13px] leading-relaxed text-muted-foreground">
           All springs respect the OS setting. Wrap the app tree in{" "}
-          <Code>{`<MotionConfig reducedMotion="user">`}</Code> and when the
-          user turns on reduced motion, the position changes drop out and only
-          the opacity fades remain.
+          <Code>{`<MotionConfig reducedMotion="user">`}</Code> and when the user turns on reduced
+          motion, the position changes drop out and only the opacity fades remain.
         </p>
       </DocSection>
     </DocPage>

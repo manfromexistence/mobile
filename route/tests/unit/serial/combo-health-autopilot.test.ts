@@ -152,7 +152,7 @@ test("combo health autopilot supports report-only mode without actions", async (
   assert.ok(report.combos[0].issues.length > 0);
   assert.equal(
     report.combos[0].issues.every((issue) => issue.actions.length === 0),
-    true
+    true,
   );
 });
 
@@ -161,34 +161,34 @@ test("combo health autopilot route requires auth, validates query, and returns 4
   const { combo } = await seedDegradedCombo();
 
   const unauthenticated = await route.GET(
-    new Request(`http://localhost/api/usage/combo-health-autopilot?comboId=${combo.id}`)
+    new Request(`http://localhost/api/usage/combo-health-autopilot?comboId=${combo.id}`),
   );
   assert.equal(unauthenticated.status, 401);
 
   const invalid = await route.GET(
     await makeManagementSessionRequest(
-      "http://localhost/api/usage/combo-health-autopilot?range=bad"
-    )
+      "http://localhost/api/usage/combo-health-autopilot?range=bad",
+    ),
   );
   assert.equal(invalid.status, 400);
 
   const missing = await route.GET(
     await makeManagementSessionRequest(
-      "http://localhost/api/usage/combo-health-autopilot?comboId=11111111-1111-4111-8111-111111111111"
-    )
+      "http://localhost/api/usage/combo-health-autopilot?comboId=11111111-1111-4111-8111-111111111111",
+    ),
   );
   assert.equal(missing.status, 404);
 
   const authenticated = await route.GET(
     await makeManagementSessionRequest(
-      `http://localhost/api/usage/combo-health-autopilot?range=24h&horizon=7d&includeActions=false&comboId=${combo.id}`
-    )
+      `http://localhost/api/usage/combo-health-autopilot?range=24h&horizon=7d&includeActions=false&comboId=${combo.id}`,
+    ),
   );
   assert.equal(authenticated.status, 200);
   const body = await authenticated.json();
   assert.equal(body.summary.comboCount, 1);
   assert.equal(
     body.combos[0].issues.every((issue: { actions: unknown[] }) => issue.actions.length === 0),
-    true
+    true,
   );
 });

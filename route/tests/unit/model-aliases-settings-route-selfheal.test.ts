@@ -60,7 +60,7 @@ test("GET /api/settings/model-aliases hydrates custom aliases from DB when in-me
 
   // GET should detect empty state, read from DB, and return the aliases.
   const response = await route.GET(
-    await makeManagementSessionRequest("http://localhost/api/settings/model-aliases")
+    await makeManagementSessionRequest("http://localhost/api/settings/model-aliases"),
   );
   const body = (await response.json()) as any;
 
@@ -70,13 +70,13 @@ test("GET /api/settings/model-aliases hydrates custom aliases from DB when in-me
   assert.equal(
     body.all["claude-opus-4-8"],
     "mimo/mimo-v2.5-pro",
-    "all should include custom aliases merged with built-in"
+    "all should include custom aliases merged with built-in",
   );
 
   // Subsequent calls should return the same data (hydration was persisted
   // in-memory, no redundant DB read needed).
   const response2 = await route.GET(
-    await makeManagementSessionRequest("http://localhost/api/settings/model-aliases")
+    await makeManagementSessionRequest("http://localhost/api/settings/model-aliases"),
   );
   const body2 = (await response2.json()) as any;
   assert.equal(body2.custom["claude-opus-4-8"], "mimo/mimo-v2.5-pro");
@@ -92,11 +92,11 @@ test("GET /api/settings/model-aliases skips hydration when custom aliases are al
   // triggering applyRuntimeSettings, which would overwrite _customAliases).
   const db = core.getDbInstance();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'modelAliases', ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'modelAliases', ?)",
   ).run(JSON.stringify({ "db-only-model": "db-target" }));
 
   const response = await route.GET(
-    await makeManagementSessionRequest("http://localhost/api/settings/model-aliases")
+    await makeManagementSessionRequest("http://localhost/api/settings/model-aliases"),
   );
   const body = (await response.json()) as any;
 
@@ -111,7 +111,7 @@ test("GET /api/settings/model-aliases handles missing modelAliases in DB gracefu
   modelDeprecation.setCustomAliases({});
 
   const response = await route.GET(
-    await makeManagementSessionRequest("http://localhost/api/settings/model-aliases")
+    await makeManagementSessionRequest("http://localhost/api/settings/model-aliases"),
   );
   const body = (await response.json()) as any;
 

@@ -26,7 +26,7 @@ test("fetchRemoteImage rejects when DNS resolves a public hostname to loopback (
         // Inject a fake DNS resolver: attacker.example.com resolves to 127.0.0.1
         lookup: async () => [{ address: "127.0.0.1", family: 4 }],
       }),
-    /blocked|private|rebind/i
+    /blocked|private|rebind/i,
   );
   assert.equal(fetchCalled, false, "fetch must not be called when DNS resolves to a private IP");
 });
@@ -43,7 +43,7 @@ test("fetchRemoteImage rejects when DNS resolves to cloud-metadata IP (169.254.1
         guard: "public-only",
         lookup: async () => [{ address: "169.254.169.254", family: 4 }],
       }),
-    /blocked|private|rebind/i
+    /blocked|private|rebind/i,
   );
   assert.equal(fetchCalled, false);
 });
@@ -63,7 +63,7 @@ test("fetchRemoteImage rejects when any of multiple resolved IPs is private (mul
           { address: "10.0.0.1", family: 4 },
         ],
       }),
-    /blocked|private|rebind/i
+    /blocked|private|rebind/i,
   );
   assert.equal(fetchCalled, false);
 });
@@ -115,7 +115,7 @@ test("fetchRemoteImage rejects when DNS resolution fails entirely", async () => 
           throw new Error("ENOTFOUND");
         },
       }),
-    /resolve|dns|blocked/i
+    /resolve|dns|blocked/i,
   );
   assert.equal(fetchCalled, false);
 });

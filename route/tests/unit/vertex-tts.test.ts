@@ -19,12 +19,12 @@ test("gemini-3.1-flash-tts-preview is the first entry in the vertex TTS catalog 
   assert.ok(VERTEX_TTS, "vertex entry must exist in AUDIO_SPEECH_PROVIDERS");
   assert.ok(
     Array.isArray(VERTEX_TTS.models) && VERTEX_TTS.models.length > 0,
-    "vertex must have at least one model"
+    "vertex must have at least one model",
   );
   assert.equal(
     VERTEX_TTS.models[0].id,
     "gemini-3.1-flash-tts-preview",
-    "First vertex TTS model must be gemini-3.1-flash-tts-preview (the new default)"
+    "First vertex TTS model must be gemini-3.1-flash-tts-preview (the new default)",
   );
 });
 

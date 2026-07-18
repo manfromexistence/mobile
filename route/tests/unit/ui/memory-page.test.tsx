@@ -32,36 +32,23 @@ vi.mock("swr", () => ({
 }));
 
 // Mock all child tab components + concept card
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/memory/components/MemoryConceptCard",
-  () => ({
-    default: () => React.createElement("div", { "data-testid": "concept-card" }, "ConceptCard"),
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/memory/components/MemoryConceptCard", () => ({
+  default: () => React.createElement("div", { "data-testid": "concept-card" }, "ConceptCard"),
+}));
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/memory/components/tabs/MemoriesTab",
-  () => ({
-    default: () =>
-      React.createElement("div", { "data-testid": "memories-tab-content" }, "MemoriesTab"),
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/memory/components/tabs/MemoriesTab", () => ({
+  default: () =>
+    React.createElement("div", { "data-testid": "memories-tab-content" }, "MemoriesTab"),
+}));
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/memory/components/tabs/PlaygroundTab",
-  () => ({
-    default: () =>
-      React.createElement("div", { "data-testid": "playground-tab-content" }, "PlaygroundTab"),
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/memory/components/tabs/PlaygroundTab", () => ({
+  default: () =>
+    React.createElement("div", { "data-testid": "playground-tab-content" }, "PlaygroundTab"),
+}));
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/memory/components/tabs/EngineTab",
-  () => ({
-    default: () =>
-      React.createElement("div", { "data-testid": "engine-tab-content" }, "EngineTab"),
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/memory/components/tabs/EngineTab", () => ({
+  default: () => React.createElement("div", { "data-testid": "engine-tab-content" }, "EngineTab"),
+}));
 
 const cleanupCallbacks: Array<() => void> = [];
 
@@ -75,8 +62,9 @@ function makeContainer(): HTMLElement {
 describe("MemoryPage", () => {
   beforeEach(() => {
     mockTabValue = null;
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-      true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {

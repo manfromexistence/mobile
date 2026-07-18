@@ -121,7 +121,9 @@ test("createMemory() UPSERT: same apiKeyId+key updates existing row", async () =
   // Verify only one row in DB for this key
   const db = core.getDbInstance();
   const count = (
-    db.prepare("SELECT COUNT(*) as cnt FROM memories WHERE api_key_id = ? AND key = ?").get("key-b", "upsert:test") as {
+    db
+      .prepare("SELECT COUNT(*) as cnt FROM memories WHERE api_key_id = ? AND key = ?")
+      .get("key-b", "upsert:test") as {
       cnt: number;
     }
   ).cnt;
@@ -208,11 +210,7 @@ test("updateMemory() metadata-only change does NOT mark needs_reindex (content u
 
   const pending = memoryVec.getMemoryReindexQueue(100);
   const inQueue = pending.some((item) => item.id === created.id);
-  assert.equal(
-    inQueue,
-    false,
-    "metadata-only update should NOT schedule vector re-gen"
-  );
+  assert.equal(inQueue, false, "metadata-only update should NOT schedule vector re-gen");
 });
 
 test("getMemoryTokensUsed() returns 0 for empty DB", () => {

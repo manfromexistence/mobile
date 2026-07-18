@@ -31,7 +31,7 @@ test("#3258 groq/llama-3.3-70b-versatile strips output_config.effort and thinkin
   assert.equal(out.thinking, undefined, "thinking must be stripped");
   assert.ok(
     !out.output_config || out.output_config.effort === undefined,
-    "output_config.effort must be stripped (else claude→openai re-injects reasoning_effort)"
+    "output_config.effort must be stripped (else claude→openai re-injects reasoning_effort)",
   );
   setThinkingBudgetConfig(DEFAULT_THINKING_CONFIG);
 });

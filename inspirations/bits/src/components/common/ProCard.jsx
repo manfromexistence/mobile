@@ -1,5 +1,5 @@
-import { useRef, useEffect } from 'react';
-import { LuArrowRight } from 'react-icons/lu';
+import { useRef, useEffect } from "react";
+import { LuArrowRight } from "react-icons/lu";
 
 const ORB_COUNT = 5;
 const LINE_DIST = 120;
@@ -8,7 +8,7 @@ function useParticles(canvasRef) {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     let raf;
     let w, h;
 
@@ -68,7 +68,7 @@ function useParticles(canvasRef) {
         const alpha = 0.06 * pulse;
         const grad = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
         grad.addColorStop(0, `rgba(168,85,247,${alpha * 2.5})`);
-        grad.addColorStop(1, 'rgba(168,85,247,0)');
+        grad.addColorStop(1, "rgba(168,85,247,0)");
         ctx.beginPath();
         ctx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
         ctx.fillStyle = grad;
@@ -95,7 +95,12 @@ const ProCard = () => {
   useParticles(canvasRef);
 
   return (
-    <a href="https://pro.reactbits.dev" target="_blank" rel="noopener noreferrer" className="pro-card-link">
+    <a
+      href="https://pro.reactbits.dev"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="pro-card-link"
+    >
       <div className="pro-card">
         <canvas ref={canvasRef} className="pro-card-particles" />
         <div className="pro-card-glow" />

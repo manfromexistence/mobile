@@ -30,8 +30,7 @@ class StubObserver {
 }
 
 globalThis.ResizeObserver ??= StubObserver as unknown as typeof ResizeObserver;
-globalThis.IntersectionObserver ??=
-  StubObserver as unknown as typeof IntersectionObserver;
+globalThis.IntersectionObserver ??= StubObserver as unknown as typeof IntersectionObserver;
 
 if (typeof window.scrollTo !== "function") {
   window.scrollTo = () => {};

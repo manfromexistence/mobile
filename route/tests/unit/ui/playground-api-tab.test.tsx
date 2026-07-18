@@ -14,7 +14,7 @@ vi.mock("next-intl", () => ({
 vi.mock("next/dynamic", () => ({
   default: (
     fn: () => Promise<{ default: React.ComponentType<Record<string, unknown>> }>,
-    _opts?: unknown
+    _opts?: unknown,
   ) => {
     let Component: React.ComponentType<Record<string, unknown>> | null = null;
     fn().then((m) => {
@@ -76,7 +76,9 @@ vi.mock("@/shared/components", () => ({
       ))}
     </select>
   ),
-  Badge: ({ children }: { children: React.ReactNode }) => <span data-testid="badge">{children}</span>,
+  Badge: ({ children }: { children: React.ReactNode }) => (
+    <span data-testid="badge">{children}</span>
+  ),
 }));
 
 vi.mock("@/shared/constants/providers", () => ({
@@ -128,8 +130,9 @@ async function waitFor(fn: () => boolean, timeout = 3000): Promise<void> {
 
 describe("ApiTab", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean })
-      .IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
 
     // Default fetch mock: models + providers return empty
     mockFetch.mockImplementation(async (url: string) => {
@@ -214,9 +217,7 @@ describe("ApiTab", () => {
 
     // The badge should reflect the new endpoint
     const badges = el.querySelectorAll("[data-testid='badge']");
-    const endpointBadge = Array.from(badges).find((b) =>
-      b.textContent?.includes("/v1/")
-    );
+    const endpointBadge = Array.from(badges).find((b) => b.textContent?.includes("/v1/"));
     expect(endpointBadge?.textContent).toContain("embeddings");
   });
 
@@ -263,8 +264,8 @@ describe("ApiTab", () => {
     });
 
     // Find Send button
-    const sendBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.includes("send")
+    const sendBtn = Array.from(el.querySelectorAll("button")).find((b) =>
+      b.textContent?.includes("send"),
     ) as HTMLButtonElement | undefined;
 
     // Selecting a model + the auto-populated request body must enable Send —

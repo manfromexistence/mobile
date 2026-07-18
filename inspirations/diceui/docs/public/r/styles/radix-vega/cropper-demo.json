@@ -1,9 +1,7 @@
 {
   "name": "cropper-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "cropper"
-  ],
+  "registryDependencies": ["cropper"],
   "files": [
     {
       "path": "examples/cropper-demo.tsx",

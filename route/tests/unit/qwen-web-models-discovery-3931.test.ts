@@ -78,7 +78,7 @@ test("#3931 qwen-web model discovery fetches the public /api/v2/models catalog",
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as ModelsBody;
@@ -86,7 +86,7 @@ test("#3931 qwen-web model discovery fetches the public /api/v2/models catalog",
     assert.equal(
       body.source,
       "api",
-      "should serve the live qwen-web catalog, not local_catalog/empty"
+      "should serve the live qwen-web catalog, not local_catalog/empty",
     );
     assert.ok(fetchedUrl, `should have probed ${QWEN_WEB_MODELS_URL}`);
     const ids = body.models.map((m) => m.id);
@@ -117,7 +117,7 @@ test("#3931 qwen-web parseResponse tolerates the flatter { data: [...] } shape",
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as ModelsBody;

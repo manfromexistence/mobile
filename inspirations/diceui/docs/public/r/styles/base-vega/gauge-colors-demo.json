@@ -1,9 +1,7 @@
 {
   "name": "gauge-colors-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "gauge"
-  ],
+  "registryDependencies": ["gauge"],
   "files": [
     {
       "path": "examples/gauge-colors-demo.tsx",

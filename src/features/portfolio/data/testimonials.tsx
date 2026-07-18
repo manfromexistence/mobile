@@ -1,6 +1,6 @@
-import { ShadcnIcon, VercelIcon } from "@/components/icons"
+import { ShadcnIcon, VercelIcon } from "@/components/icons";
 
-import type { Testimonial } from "../types/testimonials"
+import type { Testimonial } from "../types/testimonials";
 
 // Long quotes (more than 50 characters), ordered by date ascending
 export const TESTIMONIALS_1: Testimonial[] = [
@@ -18,8 +18,7 @@ export const TESTIMONIALS_1: Testimonial[] = [
     authorName: "HireTimSF.com",
     authorTagline: "Building @menu_ceo",
     url: "https://x.com/hiretimsf/status/2058272162369466488",
-    quote:
-      "This guy is really talented Design engineer. I am a big fan of his work.",
+    quote: "This guy is really talented Design engineer. I am a big fan of his work.",
     date: "2026-05-24",
     isVerified: true,
   },
@@ -114,8 +113,7 @@ export const TESTIMONIALS_1: Testimonial[] = [
     authorName: "Francesco Ciulla",
     authorTagline: "Developer Advocate @daily.dev",
     url: "https://x.com/FrancescoCiull4/status/2006332479536529608",
-    quote:
-      "your portfolio is stunning. i created mine some weeks ago but this is another planet.",
+    quote: "your portfolio is stunning. i created mine some weeks ago but this is another planet.",
     date: "2025-12-31",
     isVerified: true,
   },
@@ -133,8 +131,7 @@ export const TESTIMONIALS_1: Testimonial[] = [
     authorName: "Christopher Burns",
     authorTagline: "Creator of c15t.com",
     url: "https://x.com/BurnedChris/status/2000947403571204445",
-    quote:
-      "This is super cool, Full circle moment (the prototype for c15t actually used shadcn)",
+    quote: "This is super cool, Full circle moment (the prototype for c15t actually used shadcn)",
     date: "2025-12-16",
     isVerified: true,
   },
@@ -153,8 +150,7 @@ export const TESTIMONIALS_1: Testimonial[] = [
     authorName: "OrcDev",
     authorTagline: "Creator of 8bitcn.com",
     url: "https://x.com/orcdev/status/1980378575170859446",
-    quote:
-      "Seriously, this is one of the best portfolio templates I’ve ever seen.",
+    quote: "Seriously, this is one of the best portfolio templates I’ve ever seen.",
     date: "2025-10-21",
     isVerified: true,
   },
@@ -163,8 +159,7 @@ export const TESTIMONIALS_1: Testimonial[] = [
     authorName: "Guillermo Rauch",
     authorTagline: "CEO @Vercel",
     url: "https://x.com/rauchg/status/1978913158514237669",
-    quote:
-      "awesome. Love the components, especially slide-to-unlock. Great job",
+    quote: "awesome. Love the components, especially slide-to-unlock. Great job",
     date: "2025-10-17",
     isVerified: true,
     isFeatured: true,
@@ -176,8 +171,7 @@ export const TESTIMONIALS_1: Testimonial[] = [
     authorName: "Jean P.D. Meijer",
     authorTagline: "Design Engineer",
     url: "https://x.com/initjean/status/1948159885960438151",
-    quote:
-      "congrats you deserve it! react wheel picker is so smooth, its insane 🐐",
+    quote: "congrats you deserve it! react wheel picker is so smooth, its insane 🐐",
     date: "2025-07-24",
     isVerified: true,
   },
@@ -204,12 +198,11 @@ export const TESTIMONIALS_1: Testimonial[] = [
     authorName: "GitHub Projects Community",
     authorTagline: "Followed by @github",
     url: "https://x.com/GithubProjects/status/1931034244337271044",
-    quote:
-      "Everything you’d want in a picker, minus the styling headaches. Awesome job!",
+    quote: "Everything you’d want in a picker, minus the styling headaches. Awesome job!",
     date: "2025-06-07",
     isVerified: true,
   },
-]
+];
 
 // Short quotes (50 characters or fewer), ordered by date ascending
 export const TESTIMONIALS_2: Testimonial[] = [
@@ -470,4 +463,4 @@ export const TESTIMONIALS_2: Testimonial[] = [
     date: "2025-05-18",
     isVerified: true,
   },
-]
+];

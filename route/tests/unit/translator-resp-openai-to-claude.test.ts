@@ -1,10 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiToClaudeResponse } =
-  await import("../../open-sse/translator/response/openai-to-claude.ts");
-const { translateNonStreamingResponse } =
-  await import("../../open-sse/handlers/responseTranslator.ts");
+const { openaiToClaudeResponse } = await import(
+  "../../open-sse/translator/response/openai-to-claude.ts"
+);
+const { translateNonStreamingResponse } = await import(
+  "../../open-sse/handlers/responseTranslator.ts"
+);
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 
 function createState() {
@@ -25,7 +27,7 @@ test("OpenAI stream: text delta starts Claude message and closes cleanly on stop
       model: "gpt-4.1",
       choices: [{ index: 0, delta: { content: "Hello" }, finish_reason: null }],
     },
-    state
+    state,
   );
   const final = openaiToClaudeResponse(
     {
@@ -34,7 +36,7 @@ test("OpenAI stream: text delta starts Claude message and closes cleanly on stop
       choices: [{ index: 0, delta: {}, finish_reason: "stop" }],
       usage: { prompt_tokens: 3, completion_tokens: 2, total_tokens: 5 },
     },
-    state
+    state,
   );
   const result = flatten([first, final]);
 
@@ -57,7 +59,7 @@ test("OpenAI stream: reasoning_content closes before text content starts", () =>
       model: "gpt-4.1",
       choices: [{ index: 0, delta: { reasoning_content: "Plan" }, finish_reason: null }],
     },
-    state
+    state,
   );
   const text = openaiToClaudeResponse(
     {
@@ -65,7 +67,7 @@ test("OpenAI stream: reasoning_content closes before text content starts", () =>
       model: "gpt-4.1",
       choices: [{ index: 0, delta: { content: "Answer" }, finish_reason: null }],
     },
-    state
+    state,
   );
   const result = flatten([reasoning, text]);
 
@@ -102,7 +104,7 @@ test("OpenAI stream: tool calls strip Claude OAuth prefix and keep cache usage",
         },
       ],
     },
-    state
+    state,
   );
   const finished = openaiToClaudeResponse(
     {
@@ -134,7 +136,7 @@ test("OpenAI stream: tool calls strip Claude OAuth prefix and keep cache usage",
         },
       },
     },
-    state
+    state,
   );
   const result = flatten([started, finished]);
 
@@ -176,7 +178,7 @@ test("OpenAI stream: two finish_reason chunks emit finish events exactly once", 
       ],
       usage: { prompt_tokens: 5, completion_tokens: 2, total_tokens: 7 },
     },
-    state
+    state,
   );
   // Duplicate terminal chunk: empty delta, same finish_reason.
   const second = openaiToClaudeResponse(
@@ -186,7 +188,7 @@ test("OpenAI stream: two finish_reason chunks emit finish events exactly once", 
       choices: [{ index: 0, delta: {}, finish_reason: "tool_calls" }],
       usage: { prompt_tokens: 5, completion_tokens: 2, total_tokens: 7 },
     },
-    state
+    state,
   );
   const result = flatten([first, second]);
 
@@ -228,7 +230,7 @@ test("OpenAI non-stream: chat completion becomes Claude message with thinking an
       },
     },
     FORMATS.OPENAI,
-    FORMATS.CLAUDE
+    FORMATS.CLAUDE,
   );
 
   assert.equal((result as any).type, "message");

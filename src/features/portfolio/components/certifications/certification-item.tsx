@@ -1,6 +1,6 @@
-import { format } from "date-fns"
-import { ArrowUpRightIcon, CircleCheckBigIcon } from "lucide-react"
-import Image from "next/image"
+import { format } from "date-fns";
+import { ArrowUpRightIcon, CircleCheckBigIcon } from "lucide-react";
+import Image from "next/image";
 import {
   AccentureIcon,
   AnimationsDevIcon,
@@ -9,11 +9,11 @@ import {
   MetaIcon,
   MicrosoftIcon,
   VercelIcon,
-} from "@/components/icons"
-import { Separator } from "@/components/ui/separator"
-import { cn } from "@/lib/utils"
+} from "@/components/icons";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
-import type { Certification } from "../../types/certifications"
+import type { Certification } from "../../types/certifications";
 
 /**
  * Issuer logos referenced by name in the data layer (`issuerIconName`).
@@ -28,22 +28,17 @@ const ISSUER_ICONS: Record<string, React.ReactNode> = {
   meta: <MetaIcon />,
   microsoft: <MicrosoftIcon />,
   vercel: <VercelIcon />,
-}
+};
 
 export function CertificationItem({
   className,
   certification,
 }: {
-  className?: string
-  certification: Certification
+  className?: string;
+  certification: Certification;
 }) {
   return (
-    <div
-      className={cn(
-        "relative flex items-center pr-2 hover:bg-accent-muted",
-        className
-      )}
-    >
+    <div className={cn("relative flex items-center pr-2 hover:bg-accent-muted", className)}>
       {certification.issuerLogoURL ? (
         <Image
           src={certification.issuerLogoURL}
@@ -60,12 +55,12 @@ export function CertificationItem({
           className={cn(
             "mx-4 flex size-6 shrink-0 items-center justify-center rounded-md select-none",
             "border border-muted-foreground/15 ring-1 ring-line ring-offset-1 ring-offset-background",
-            "bg-muted text-muted-foreground [&_svg]:size-4"
+            "bg-muted text-muted-foreground [&_svg]:size-4",
           )}
         >
-          {(certification.issuerIconName
-            ? ISSUER_ICONS[certification.issuerIconName]
-            : null) ?? <CircleCheckBigIcon />}
+          {(certification.issuerIconName ? ISSUER_ICONS[certification.issuerIconName] : null) ?? (
+            <CircleCheckBigIcon />
+          )}
         </div>
       )}
 
@@ -103,9 +98,7 @@ export function CertificationItem({
         </dl>
       </div>
 
-      {certification.credentialURL && (
-        <ArrowUpRightIcon className="size-4 text-muted-foreground" />
-      )}
+      {certification.credentialURL && <ArrowUpRightIcon className="size-4 text-muted-foreground" />}
     </div>
-  )
+  );
 }

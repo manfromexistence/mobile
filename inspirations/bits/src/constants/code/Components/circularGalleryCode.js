@@ -1,8 +1,8 @@
-import css from '@content/Components/CircularGallery/CircularGallery.css?raw';
-import code from '@content/Components/CircularGallery/CircularGallery.jsx?raw';
-import tailwind from '@tailwind/Components/CircularGallery/CircularGallery.jsx?raw';
-import tsCode from '@ts-default/Components/CircularGallery/CircularGallery.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/CircularGallery/CircularGallery.tsx?raw';
+import css from "@content/Components/CircularGallery/CircularGallery.css?raw";
+import code from "@content/Components/CircularGallery/CircularGallery.jsx?raw";
+import tailwind from "@tailwind/Components/CircularGallery/CircularGallery.jsx?raw";
+import tsCode from "@ts-default/Components/CircularGallery/CircularGallery.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/CircularGallery/CircularGallery.tsx?raw";
 
 export const circularGallery = {
   dependencies: `ogl`,
@@ -24,5 +24,5 @@ export const circularGallery = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

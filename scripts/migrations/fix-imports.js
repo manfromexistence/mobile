@@ -1,11 +1,11 @@
-const fs = require("fs")
-const { execSync } = require("child_process")
+const fs = require("fs");
+const { execSync } = require("child_process");
 
 // Restore base/ui
 try {
-  execSync("git checkout src/components/base/ui")
+  execSync("git checkout src/components/base/ui");
 } catch (e) {
-  console.log("Error checking out base/ui", e)
+  console.log("Error checking out base/ui", e);
 }
 
 const files = [
@@ -43,40 +43,36 @@ const files = [
   "src/features/portfolio/components/testimonials.tsx",
   "src/registry/components/code-block-command/code-block-command.tsx",
   "src/registry/transformed/components/code-block-command/code-block-command.tsx",
-]
+];
 
 for (const file of files) {
-  if (!fs.existsSync(file)) continue
+  if (!fs.existsSync(file)) continue;
 
   // Get the original content from HEAD
-  let headContent = ""
+  let headContent = "";
   try {
-    headContent = execSync(`git show HEAD:${file}`).toString()
+    headContent = execSync(`git show HEAD:${file}`).toString();
   } catch (_e) {
-    continue
+    continue;
   }
 
   // Find all base/ui imports in HEAD
-  const baseUiRegex =
-    /import\s+.*?\s+from\s+['"]@\/components\/base\/ui\/.*?['"]/g
-  const matches = headContent.match(baseUiRegex)
+  const baseUiRegex = /import\s+.*?\s+from\s+['"]@\/components\/base\/ui\/.*?['"]/g;
+  const matches = headContent.match(baseUiRegex);
 
   if (matches) {
-    let currentContent = fs.readFileSync(file, "utf8")
+    let currentContent = fs.readFileSync(file, "utf8");
 
     for (const match of matches) {
       // match is something like: import { Button } from "@/components/base/ui/button"
       // The corrupted version in currentContent is: import { Button } from "@/components/ui/button"
-      const corruptedMatch = match.replace(
-        "@/components/base/ui/",
-        "@/components/ui/"
-      )
+      const corruptedMatch = match.replace("@/components/base/ui/", "@/components/ui/");
 
-      currentContent = currentContent.replace(corruptedMatch, match)
+      currentContent = currentContent.replace(corruptedMatch, match);
     }
 
-    fs.writeFileSync(file, currentContent, "utf8")
+    fs.writeFileSync(file, currentContent, "utf8");
   }
 }
 
-console.log("Restored base/ui and reverted imports perfectly.")
+console.log("Restored base/ui and reverted imports perfectly.");

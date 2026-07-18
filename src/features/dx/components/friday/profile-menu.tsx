@@ -73,11 +73,7 @@ export function ProfileMenu({ open, onClose }: { open: boolean; onClose: () => v
                         onClick={() => setTheme("dark")}
                         label="Dark"
                       />
-                      <ThemeBtn
-                        active={false}
-                        onClick={() => setTheme("system")}
-                        label="Auto"
-                      />
+                      <ThemeBtn active={false} onClick={() => setTheme("system")} label="Auto" />
                     </div>
                   }
                 />
@@ -94,9 +90,7 @@ export function ProfileMenu({ open, onClose }: { open: boolean; onClose: () => v
                   icon={<CreditCardIcon className="h-4 w-4" />}
                   label="Billing"
                   right={
-                    <span className="text-[10.5px] text-muted-foreground">
-                      Pro \u00B7 $20/mo
-                    </span>
+                    <span className="text-[10.5px] text-muted-foreground">Pro \u00B7 $20/mo</span>
                   }
                 />
                 <Row icon={<SettingsIcon className="h-4 w-4" />} label="Settings" />
@@ -128,9 +122,7 @@ function Row({
       whileHover={{ x: 1 }}
       className={cn(
         "flex w-full items-center justify-between gap-3 rounded-lg px-2.5 py-2 text-[13px] transition-colors",
-        danger
-          ? "text-red-500 hover:bg-red-500/10"
-          : "text-foreground hover:bg-surface-2",
+        danger ? "text-red-500 hover:bg-red-500/10" : "text-foreground hover:bg-surface-2",
       )}
     >
       <div className="flex items-center gap-2.5">
@@ -157,9 +149,7 @@ function ThemeBtn({
       onClick={onClick}
       className={cn(
         "rounded px-1.5 py-0.5 text-[10.5px] font-medium transition-colors",
-        active
-          ? "bg-foreground text-background"
-          : "text-muted-foreground hover:text-foreground",
+        active ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground",
       )}
     >
       {label}

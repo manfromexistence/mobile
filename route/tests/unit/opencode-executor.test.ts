@@ -89,7 +89,7 @@ describe("OpencodeExecutor", () => {
         assert.equal(
           zenModels.some((m) => m.id === variant),
           false,
-          `${variant} should not be exposed on opencode-zen`
+          `${variant} should not be exposed on opencode-zen`,
         );
       }
     });
@@ -110,14 +110,14 @@ describe("OpencodeExecutor", () => {
 
     it("routes claude target format models to messages endpoint", async () => {
       const m27Result = await goExecutor.execute(
-        createInput("minimax-m2.7", true, { apiKey: "claude-key" })
+        createInput("minimax-m2.7", true, { apiKey: "claude-key" }),
       );
       assert.equal(m27Result.url, "https://opencode.ai/zen/go/v1/messages");
       assert.equal(fetchCalls[0].url, "https://opencode.ai/zen/go/v1/messages");
       assert.equal(m27Result.headers["anthropic-version"], "2023-06-01");
 
       const m25Result = await goExecutor.execute(
-        createInput("minimax-m2.5", true, { apiKey: "claude-key" })
+        createInput("minimax-m2.5", true, { apiKey: "claude-key" }),
       );
       assert.equal(m25Result.url, "https://opencode.ai/zen/go/v1/messages");
       assert.equal(fetchCalls[1].url, "https://opencode.ai/zen/go/v1/messages");
@@ -148,11 +148,11 @@ describe("OpencodeExecutor", () => {
 
       assert.equal(
         result.url,
-        "https://opencode.ai/zen/v1/models/gemini-2.5-pro:streamGenerateContent?alt=sse"
+        "https://opencode.ai/zen/v1/models/gemini-2.5-pro:streamGenerateContent?alt=sse",
       );
       assert.equal(
         fetchCalls[0].url,
-        "https://opencode.ai/zen/v1/models/gemini-2.5-pro:streamGenerateContent?alt=sse"
+        "https://opencode.ai/zen/v1/models/gemini-2.5-pro:streamGenerateContent?alt=sse",
       );
     });
 
@@ -168,7 +168,7 @@ describe("OpencodeExecutor", () => {
       assert.equal(result.url, "https://opencode.ai/zen/v1/models/gemini-2.5-pro:generateContent");
       assert.equal(
         fetchCalls[0].url,
-        "https://opencode.ai/zen/v1/models/gemini-2.5-pro:generateContent"
+        "https://opencode.ai/zen/v1/models/gemini-2.5-pro:generateContent",
       );
     });
 
@@ -192,7 +192,7 @@ describe("OpencodeExecutor", () => {
 
     it("adds anthropic version for claude target format", async () => {
       const result = await goExecutor.execute(
-        createInput("minimax-m2.7", true, { apiKey: "claude-key" })
+        createInput("minimax-m2.7", true, { apiKey: "claude-key" }),
       );
 
       assert.deepEqual(result.headers, {
@@ -250,13 +250,13 @@ describe("OpencodeExecutor", () => {
 
     it("routes opencode-go qwen models to claude messages endpoint", async () => {
       const qwen36 = await goExecutor.execute(
-        createInput("qwen3.6-plus", true, { apiKey: "claude-key" })
+        createInput("qwen3.6-plus", true, { apiKey: "claude-key" }),
       );
       assert.equal(qwen36.url, "https://opencode.ai/zen/go/v1/messages");
       assert.equal(qwen36.headers["anthropic-version"], "2023-06-01");
 
       const qwen35 = await goExecutor.execute(
-        createInput("qwen3.5-plus", true, { apiKey: "claude-key" })
+        createInput("qwen3.5-plus", true, { apiKey: "claude-key" }),
       );
       assert.equal(qwen35.url, "https://opencode.ai/zen/go/v1/messages");
       assert.equal(qwen35.headers["anthropic-version"], "2023-06-01");
@@ -324,7 +324,7 @@ describe("OpencodeExecutor", () => {
         { apiKey: "claude-key" },
         true,
         { "User-Agent": "opencode/1.0" },
-        "minimax-m2.7"
+        "minimax-m2.7",
       );
       assert.equal(headers["User-Agent"], "opencode/1.0");
       assert.equal(headers["x-api-key"], "claude-key");
@@ -411,7 +411,7 @@ describe("OpencodeExecutor", () => {
           "x-opencode-session": "sess-claude",
           "User-Agent": "opencode/1.0",
         },
-        "minimax-m2.7"
+        "minimax-m2.7",
       );
       assert.equal(headers["x-opencode-session"], "sess-claude");
       assert.equal(headers["x-api-key"], "claude-key");
@@ -494,7 +494,7 @@ describe("OpencodeExecutor", () => {
       assert.ok(
         typeof headers["x-opencode-request"] === "string" &&
           headers["x-opencode-request"].length > 0,
-        "expected a synthesized x-opencode-request id"
+        "expected a synthesized x-opencode-request id",
       );
     });
 
@@ -539,7 +539,7 @@ describe("OpencodeExecutor", () => {
       });
       assert.ok(
         typeof headers["x-opencode-request"] === "string" &&
-          headers["x-opencode-request"].length > 0
+          headers["x-opencode-request"].length > 0,
       );
     });
   });
@@ -582,7 +582,7 @@ describe("OpencodeExecutor", () => {
         "deepseek-v4-pro",
         baseBody("deepseek-v4-pro"),
         false,
-        { apiKey: "test-key" }
+        { apiKey: "test-key" },
       );
       assert.equal(out.model, "deepseek-v4-pro");
       assert.equal(out.reasoning_effort, undefined);
@@ -593,7 +593,7 @@ describe("OpencodeExecutor", () => {
         "some-other-model-high",
         baseBody("some-other-model-high"),
         false,
-        { apiKey: "test-key" }
+        { apiKey: "test-key" },
       );
       assert.equal(out.model, "some-other-model-high");
       assert.equal(out.reasoning_effort, undefined);

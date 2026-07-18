@@ -64,9 +64,7 @@ export default function Home() {
         <section className="mx-auto max-w-7xl px-4 pb-16">
           <div className="mb-8 flex flex-col gap-4 border-t border-border pt-12 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="font-pixel text-xs font-medium uppercase text-muted-foreground">
-                New
-              </p>
+              <p className="font-pixel text-xs font-medium uppercase text-muted-foreground">New</p>
               <h2 className="mt-2 font-pixel text-3xl font-medium leading-tight text-foreground md:text-4xl">
                 Recently launched.
               </h2>

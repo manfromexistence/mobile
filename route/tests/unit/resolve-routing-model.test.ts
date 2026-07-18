@@ -15,18 +15,21 @@ describe("resolveRoutingModel (#4863)", () => {
   it("X-Route-Model header overrides body.model", () => {
     assert.equal(
       resolveRoutingModel(req({ "x-route-model": "my-combo" }), { model: "codex/gpt-5.3-codex" }),
-      "my-combo"
+      "my-combo",
     );
   });
 
   it("trims surrounding whitespace from the header value", () => {
     assert.equal(
       resolveRoutingModel(req({ "x-route-model": "  alias-x  " }), { model: "fallback" }),
-      "alias-x"
+      "alias-x",
     );
   });
 
   it("falls back to body.model when the header is empty/whitespace-only", () => {
-    assert.equal(resolveRoutingModel(req({ "x-route-model": "   " }), { model: "fallback" }), "fallback");
+    assert.equal(
+      resolveRoutingModel(req({ "x-route-model": "   " }), { model: "fallback" }),
+      "fallback",
+    );
   });
 });

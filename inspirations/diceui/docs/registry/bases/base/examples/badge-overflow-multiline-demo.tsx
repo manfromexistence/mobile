@@ -29,9 +29,7 @@ export default function BadgeOverflowMultilineDemo() {
         <div className="w-64 rounded-md border p-3">
           <BadgeOverflow
             items={technologies}
-            renderBadge={(_, label) => (
-              <Badge variant="secondary">{label}</Badge>
-            )}
+            renderBadge={(_, label) => <Badge variant="secondary">{label}</Badge>}
           />
         </div>
       </div>

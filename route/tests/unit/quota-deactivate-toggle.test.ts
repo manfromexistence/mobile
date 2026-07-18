@@ -44,7 +44,7 @@ test("QuotaCardGrid forwards the per-connection toggle handler and busy id", () 
   assert.match(grid, /onToggleActive:\s*\(id: string, nextActive: boolean\)\s*=>\s*void/);
   assert.match(
     grid,
-    /onToggleActive=\{\(nextActive\)\s*=>\s*onToggleActive\(conn\.id, nextActive\)\}/
+    /onToggleActive=\{\(nextActive\)\s*=>\s*onToggleActive\(conn\.id, nextActive\)\}/,
   );
   assert.match(grid, /togglingActive=\{togglingActiveId === conn\.id\}/);
 });
@@ -54,17 +54,17 @@ test("index handleToggleActive PUTs isActive, updates state and notifies", () =>
   assert.match(
     index,
     /fetch\(`\/api\/providers\/\$\{connectionId\}`,\s*\{[\s\S]*method:\s*"PUT"[\s\S]*isActive: nextActive/,
-    "must PUT { isActive } to the per-connection route"
+    "must PUT { isActive } to the per-connection route",
   );
   assert.match(
     index,
     /c\.id === connectionId \? \{ \.\.\.c, isActive: nextActive \} : c/,
-    "must optimistically update local connection state"
+    "must optimistically update local connection state",
   );
   assert.match(
     index,
     /onToggleActive=\{handleToggleActive\}/,
-    "must wire the handler into the grid"
+    "must wire the handler into the grid",
   );
   assert.match(index, /togglingActiveId=\{togglingActiveId\}/);
 });
@@ -72,7 +72,7 @@ test("index handleToggleActive PUTs isActive, updates state and notifies", () =>
 test("toggle i18n keys exist in en and pt-BR", () => {
   for (const locale of ["en", "pt-BR"]) {
     const msgs = JSON.parse(
-      fs.readFileSync(path.join(repoRoot, `src/i18n/messages/${locale}.json`), "utf8")
+      fs.readFileSync(path.join(repoRoot, `src/i18n/messages/${locale}.json`), "utf8"),
     );
     for (const key of [
       "deactivateAccount",

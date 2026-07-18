@@ -37,19 +37,15 @@ export default function ResponsiveDialogConfirmDemo() {
         <ResponsiveDialogHeader>
           <ResponsiveDialogTitle>Delete project?</ResponsiveDialogTitle>
           <ResponsiveDialogDescription>
-            This will permanently delete &quot;My Awesome Project&quot; and all
-            of its data. This action cannot be undone.
+            This will permanently delete &quot;My Awesome Project&quot; and all of its data. This
+            action cannot be undone.
           </ResponsiveDialogDescription>
         </ResponsiveDialogHeader>
         <ResponsiveDialogFooter>
           <ResponsiveDialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </ResponsiveDialogClose>
-          <Button
-            variant="destructive"
-            onClick={onDelete}
-            disabled={isDeleting}
-          >
+          <Button variant="destructive" onClick={onDelete} disabled={isDeleting}>
             {isDeleting && <Loader2 className="size-4 animate-spin" />}
             Delete
           </Button>

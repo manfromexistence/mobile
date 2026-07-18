@@ -16,10 +16,9 @@ async function main() {
     setLabel("init-label", report.text);
   };
   const selectedModel = "Llama-3.1-8B-Instruct-q4f32_1-MLC";
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    { initProgressCallback: initProgressCallback },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+  });
 
   const request: webllm.ChatCompletionRequest = {
     stream: true,
@@ -27,8 +26,7 @@ async function main() {
     messages: [
       {
         role: "system",
-        content:
-          "You are a pirate chatbot who always responds in pirate speak!",
+        content: "You are a pirate chatbot who always responds in pirate speak!",
       },
       { role: "user", content: "Who are you?" },
     ],

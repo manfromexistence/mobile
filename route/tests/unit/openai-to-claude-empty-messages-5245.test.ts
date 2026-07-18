@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiToClaudeRequest } =
-  await import("../../open-sse/translator/request/openai-to-claude.ts");
+const { openaiToClaudeRequest } = await import(
+  "../../open-sse/translator/request/openai-to-claude.ts"
+);
 
 // Regression: an all-system OpenAI request (e.g. an all-system compaction or
 // title-generation turn from a client like OpenCode) hoists every
@@ -20,7 +21,7 @@ test("openaiToClaudeRequest: all-system input never yields an empty messages arr
         { role: "system", content: "Summarize the conversation so far." },
       ],
     },
-    false
+    false,
   );
 
   // system content is hoisted to the top-level `system` field …
@@ -39,7 +40,7 @@ test("openaiToClaudeRequest: developer-only input also gets a synthesized user t
   const result = openaiToClaudeRequest(
     "claude-sonnet-4-6",
     { messages: [{ role: "developer", content: "Follow these rules." }] },
-    false
+    false,
   );
   assert.equal(result.messages.length, 1);
   assert.equal(result.messages[0].role, "user");
@@ -54,7 +55,7 @@ test("openaiToClaudeRequest: normal system+user request is unaffected by the gua
         { role: "user", content: "Summarize: hello world" },
       ],
     },
-    false
+    false,
   );
   // Exactly the real user turn — no synthesized placeholder appended.
   assert.equal(result.messages.length, 1);

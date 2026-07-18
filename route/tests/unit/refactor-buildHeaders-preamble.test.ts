@@ -18,7 +18,7 @@ class TestExecutor extends BaseExecutor {
 
   publicBuildHeadersPreamble(
     credentials: ProviderCredentials,
-    stream: boolean
+    stream: boolean,
   ): { headers: Record<string, string>; effectiveKey: string } {
     return this.buildHeadersPreamble(credentials, stream);
   }

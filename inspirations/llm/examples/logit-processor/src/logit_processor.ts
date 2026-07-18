@@ -40,19 +40,13 @@ async function main() {
 
   // Below we demonstrate the usage of a low-level API `forwardTokensAndSample()`
   const prompt: Array<number> = [42];
-  let nextToken = await engine.forwardTokensAndSample(
-    prompt,
-    /*isPrefill=*/ true,
-  );
+  let nextToken = await engine.forwardTokensAndSample(prompt, /*isPrefill=*/ true);
   console.log(nextToken);
 
   let counter = prompt.length;
   while (counter < AUTOREGRESS_LIMIT) {
     counter += 1;
-    nextToken = await engine.forwardTokensAndSample(
-      [nextToken],
-      /*isPrefill=*/ false,
-    );
+    nextToken = await engine.forwardTokensAndSample([nextToken], /*isPrefill=*/ false);
     console.log(nextToken);
   }
 
@@ -63,10 +57,7 @@ async function main() {
   console.log(nextToken);
   while (counter < AUTOREGRESS_LIMIT) {
     counter += 1;
-    nextToken = await engine.forwardTokensAndSample(
-      [nextToken],
-      /*isPrefill=*/ false,
-    );
+    nextToken = await engine.forwardTokensAndSample([nextToken], /*isPrefill=*/ false);
     console.log(nextToken);
   }
 

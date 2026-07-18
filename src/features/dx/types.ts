@@ -1,63 +1,54 @@
-export type MessageRole = "user" | "assistant" | "system"
+export type MessageRole = "user" | "assistant" | "system";
 
 export interface Message {
-  id: string
-  role: MessageRole
-  content: string
-  createdAt: number
+  id: string;
+  role: MessageRole;
+  content: string;
+  createdAt: number;
   metrics?: {
-    speed: number
-    durationMs: number
-    tokenCount: number
-  }
+    speed: number;
+    durationMs: number;
+    tokenCount: number;
+  };
 }
 
 export interface Conversation {
-  id: string
-  title: string
-  messages: Message[]
-  modelId: string
-  createdAt: number
-  updatedAt: number
-  spaceId?: string
-  archived?: boolean
+  id: string;
+  title: string;
+  messages: Message[];
+  modelId: string;
+  createdAt: number;
+  updatedAt: number;
+  spaceId?: string;
+  archived?: boolean;
 }
 
 export interface StreamChunk {
-  type: "text" | "done" | "error"
-  content?: string
-  error?: string
+  type: "text" | "done" | "error";
+  content?: string;
+  error?: string;
 }
 
-export type ModelId =
-  | "opencode-low"
-  | "opencode-high"
-  | "opencode-xhigh"
-  | "opencode-default"
-  | "opencode-medium"
-  | "opencode-xlow"
-  | "qwen-0.5b"
-  | "tinyllama-1.1b"
-  | "minicpm-1b"
+export type ModelId = string;
 
 export interface ModelOption {
-  id: ModelId
-  name: string
-  provider: "huggingface" | "openai-compatible"
-  modelName: string
-  quantization: string
-  contextLength: number
-  description: string
-  maxTokens: number
-  temperature: number
-  topP: number
-  repetitionPenalty: number
-  status: "available" | "downloading" | "unavailable"
+  id: ModelId;
+  name: string;
+  provider: "huggingface" | "openai-compatible";
+  modelName: string;
+  quantization: string;
+  contextLength: number;
+  description: string;
+  maxTokens: number;
+  temperature: number;
+  topP: number;
+  repetitionPenalty: number;
+  status: "available" | "downloading" | "unavailable";
 }
 
 export interface ChatState {
-  conversations: Conversation[]
-  currentConversationId: string | null
-  isGenerating: boolean
-  selectedModel: ModelId
+  conversations: Conversation[];
+  currentConversationId: string | null;
+  isGenerating: boolean;
+  selectedModel: ModelId;
 }

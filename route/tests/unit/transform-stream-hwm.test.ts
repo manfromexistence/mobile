@@ -32,7 +32,7 @@ const encoder = new TextEncoder();
 
 async function collectStreamOutput(
   readable: ReadableStream<Uint8Array>,
-  timeoutMs = 2000
+  timeoutMs = 2000,
 ): Promise<string> {
   const decoder = new TextDecoder();
   const reader = readable.getReader();
@@ -43,7 +43,7 @@ async function collectStreamOutput(
     const result = await Promise.race([
       reader.read(),
       new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("collectStreamOutput timeout")), deadline - Date.now())
+        setTimeout(() => reject(new Error("collectStreamOutput timeout")), deadline - Date.now()),
       ),
     ]);
     if (result.done) break;
@@ -156,7 +156,7 @@ test("createSSEStream: idle timeout fires when no data arrives", async () => {
     // On immediate close without data, only [DONE] should appear
     assert.ok(
       output.includes("[DONE]") || output.length === 0,
-      "empty stream should either emit [DONE] or nothing"
+      "empty stream should either emit [DONE] or nothing",
     );
   } finally {
     cleanupDb();

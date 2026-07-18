@@ -1,9 +1,7 @@
 {
   "name": "stepper",
   "type": "registry:ui",
-  "dependencies": [
-    "radix-ui"
-  ],
+  "dependencies": ["radix-ui"],
   "registryDependencies": [
     "button",
     "@diceui/use-as-ref",

@@ -66,7 +66,7 @@ test("MODELS_CATALOG_PREFIX_MODE=alias suppresses canonical provider-id prefixes
     assert.equal(
       ids.has("claude/claude-sonnet-4-6"),
       false,
-      "canonical prefix claude/ should be absent"
+      "canonical prefix claude/ should be absent",
     );
     assert.ok(ids.has("cl/demo-custom"), "alias prefix cl/ should be present");
     assert.equal(ids.has("cline/demo-custom"), false, "canonical prefix cline/ should be absent");
@@ -83,7 +83,7 @@ test("MODELS_CATALOG_PREFIX_MODE=dual emits both alias and canonical prefixes (d
     assert.ok(ids.has("cc/claude-sonnet-4-6"), "alias prefix cc/ should be present in dual mode");
     assert.ok(
       ids.has("claude/claude-sonnet-4-6"),
-      "canonical prefix claude/ should be present in dual mode"
+      "canonical prefix claude/ should be present in dual mode",
     );
   } finally {
     featureFlagsDb.removeFeatureFlagOverride("MODELS_CATALOG_PREFIX_MODE");
@@ -99,7 +99,7 @@ test("?prefix=alias query param overrides flag to alias-only mode", async () => 
     assert.equal(
       ids.has("claude/claude-sonnet-4-6"),
       false,
-      "canonical prefix absent with ?prefix=alias"
+      "canonical prefix absent with ?prefix=alias",
     );
   } finally {
     featureFlagsDb.removeFeatureFlagOverride("MODELS_CATALOG_PREFIX_MODE");
@@ -114,11 +114,11 @@ test("?prefix=canonical query param overrides flag to canonical-only mode", asyn
     assert.equal(
       ids.has("cc/claude-sonnet-4-6"),
       false,
-      "alias prefix absent with ?prefix=canonical"
+      "alias prefix absent with ?prefix=canonical",
     );
     assert.ok(
       ids.has("claude/claude-sonnet-4-6"),
-      "canonical prefix present with ?prefix=canonical"
+      "canonical prefix present with ?prefix=canonical",
     );
   } finally {
     featureFlagsDb.removeFeatureFlagOverride("MODELS_CATALOG_PREFIX_MODE");

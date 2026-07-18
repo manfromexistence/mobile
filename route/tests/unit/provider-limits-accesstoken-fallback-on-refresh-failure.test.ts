@@ -18,9 +18,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-process.env.DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-accesstoken-fallback-")
-);
+process.env.DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-accesstoken-fallback-"));
 
 const { getExecutor } = await import("../../open-sse/executors/index.ts");
 const { refreshAndUpdateCredentials } = await import("../../src/lib/usage/providerLimits.ts");
@@ -51,12 +49,12 @@ test("falls back to the existing accessToken for a non-github provider when refr
     assert.equal(
       result.refreshed,
       false,
-      "a non-github provider with an accessToken must fall back, not throw"
+      "a non-github provider with an accessToken must fall back, not throw",
     );
     assert.equal(
       result.connection.accessToken,
       "still-valid-access-token",
-      "the existing access token must be preserved"
+      "the existing access token must be preserved",
     );
   } finally {
     exec.needsRefresh = origNeeds;
@@ -76,7 +74,7 @@ test("still throws when refresh fails AND there is no accessToken to fall back o
     await assert.rejects(
       () => refreshAndUpdateCredentials(conn, { allowRotatingRefresh: true }),
       /Failed to refresh credentials/,
-      "without an accessToken the refresh failure must surface as an error"
+      "without an accessToken the refresh failure must surface as an error",
     );
   } finally {
     exec.needsRefresh = origNeeds;

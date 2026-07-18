@@ -215,11 +215,11 @@ describe("backfillResponsesCompletedOutput", () => {
     assert.equal(backfillResponsesCompletedOutput({ type: "response.completed" }, items), false);
     assert.equal(
       backfillResponsesCompletedOutput({ type: "response.completed", response: null }, items),
-      false
+      false,
     );
     assert.equal(
       backfillResponsesCompletedOutput({ type: "response.completed", response: [] }, items),
-      false
+      false,
     );
   });
 

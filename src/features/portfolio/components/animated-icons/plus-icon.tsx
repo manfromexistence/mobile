@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { motion, useAnimation } from "motion/react"
-import { useCallback, useImperativeHandle, useRef } from "react"
+import { motion, useAnimation } from "motion/react";
+import { useCallback, useImperativeHandle, useRef } from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 export type PlusIconHandle = {
-  startAnimation: () => void
-  stopAnimation: () => void
-}
+  startAnimation: () => void;
+  stopAnimation: () => void;
+};
 
 export type PlusIconProps = React.ComponentPropsWithRef<"div"> & {
-  ref?: React.Ref<PlusIconHandle>
-  size?: number
-}
+  ref?: React.Ref<PlusIconHandle>;
+  size?: number;
+};
 
 export function PlusIcon({
   ref,
@@ -23,39 +23,39 @@ export function PlusIcon({
   size = 28,
   ...props
 }: PlusIconProps) {
-  const controls = useAnimation()
-  const isControlledRef = useRef(false)
+  const controls = useAnimation();
+  const isControlledRef = useRef(false);
 
   useImperativeHandle(ref, () => {
-    isControlledRef.current = true
+    isControlledRef.current = true;
 
     return {
       startAnimation: () => controls.start("animate"),
       stopAnimation: () => controls.start("normal"),
-    }
-  })
+    };
+  });
 
   const handleMouseEnter = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (isControlledRef.current) {
-        onMouseEnter?.(e)
+        onMouseEnter?.(e);
       } else {
-        controls.start("animate")
+        controls.start("animate");
       }
     },
-    [controls, onMouseEnter]
-  )
+    [controls, onMouseEnter],
+  );
 
   const handleMouseLeave = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (isControlledRef.current) {
-        onMouseLeave?.(e)
+        onMouseLeave?.(e);
       } else {
-        controls.start("normal")
+        controls.start("normal");
       }
     },
-    [controls, onMouseLeave]
-  )
+    [controls, onMouseLeave],
+  );
 
   return (
     <div
@@ -89,5 +89,5 @@ export function PlusIcon({
         <path d="M12 5v14" />
       </motion.svg>
     </div>
-  )
+  );
 }

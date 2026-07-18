@@ -1,25 +1,25 @@
-import { format } from "date-fns"
-import Grid from "@/components/charts/grid"
-import LineChart, { Line } from "@/components/charts/line-chart"
-import { ChartTooltip } from "@/components/charts/tooltip"
+import { format } from "date-fns";
+import Grid from "@/components/charts/grid";
+import LineChart, { Line } from "@/components/charts/line-chart";
+import { ChartTooltip } from "@/components/charts/tooltip";
 import {
   Panel,
   PanelHeader,
   PanelTitle,
   PanelTitleSup,
-} from "@/features/portfolio/components/panel"
-import { PanelTitleCopy } from "@/features/portfolio/components/panel-title-copy"
-import { getInsights } from "@/features/portfolio/data/insights"
-import { cn } from "@/lib/utils"
-import { formatDuration } from "@/lib/utils/format"
+} from "@/features/portfolio/components/panel";
+import { PanelTitleCopy } from "@/features/portfolio/components/panel-title-copy";
+import { getInsights } from "@/features/portfolio/data/insights";
+import { cn } from "@/lib/utils";
+import { formatDuration } from "@/lib/utils/format";
 
-const ID = "insights"
+const ID = "insights";
 
 export async function Insights() {
-  const data = await getInsights()
+  const data = await getInsights();
 
   if (data === null) {
-    return null
+    return null;
   }
 
   return (
@@ -28,8 +28,8 @@ export async function Insights() {
         <PanelTitle>
           <a href={`#${ID}`}>Insights</a>
           <PanelTitleSup>
-            ({format(new Date(data.startDate), "dd.MM")} –{" "}
-            {format(new Date(data.endDate), "dd.MM")})
+            ({format(new Date(data.startDate), "dd.MM")} – {format(new Date(data.endDate), "dd.MM")}
+            )
           </PanelTitleSup>
           <PanelTitleCopy id={ID} />
         </PanelTitle>
@@ -45,30 +45,22 @@ export async function Insights() {
         <dl className="grid grid-cols-2 md:grid-cols-4">
           <Metric>
             <MetricLabel>Unique visitors</MetricLabel>
-            <MetricValue>
-              {data.summary.unique_visitors.toLocaleString()}
-            </MetricValue>
+            <MetricValue>{data.summary.unique_visitors.toLocaleString()}</MetricValue>
           </Metric>
 
           <Metric>
             <MetricLabel>Sessions</MetricLabel>
-            <MetricValue>
-              {data.summary.total_sessions.toLocaleString()}
-            </MetricValue>
+            <MetricValue>{data.summary.total_sessions.toLocaleString()}</MetricValue>
           </Metric>
 
           <Metric>
             <MetricLabel>Views</MetricLabel>
-            <MetricValue>
-              {data.summary.total_screen_views.toLocaleString()}
-            </MetricValue>
+            <MetricValue>{data.summary.total_screen_views.toLocaleString()}</MetricValue>
           </Metric>
 
           <Metric>
             <MetricLabel>Session duration</MetricLabel>
-            <MetricValue>
-              {formatDuration(data.summary.avg_session_duration)}
-            </MetricValue>
+            <MetricValue>{formatDuration(data.summary.avg_session_duration)}</MetricValue>
           </Metric>
         </dl>
       </div>
@@ -79,22 +71,14 @@ export async function Insights() {
             className={cn(
               "sm:aspect-3/1!",
               "[--chart-1:var(--color-zinc-900)] [--chart-2:var(--color-zinc-400)]",
-              "dark:[--chart-1:var(--color-zinc-100)] dark:[--chart-2:var(--color-zinc-600)]"
+              "dark:[--chart-1:var(--color-zinc-100)] dark:[--chart-2:var(--color-zinc-600)]",
             )}
             data={data.series}
             margin={{ top: 16, right: 32, bottom: 40, left: 32 }}
           >
             <Grid horizontal />
-            <Line
-              dataKey="total_sessions"
-              stroke="var(--chart-2)"
-              strokeWidth={2}
-            />
-            <Line
-              dataKey="unique_visitors"
-              stroke="var(--chart-1)"
-              strokeWidth={2}
-            />
+            <Line dataKey="total_sessions" stroke="var(--chart-2)" strokeWidth={2} />
+            <Line dataKey="unique_visitors" stroke="var(--chart-1)" strokeWidth={2} />
             <ChartTooltip
               rowLabels={{
                 total_sessions: "Sessions",
@@ -113,7 +97,7 @@ export async function Insights() {
         </figcaption>
       </figure>
     </Panel>
-  )
+  );
 }
 
 function Metric({ className, ...props }: React.ComponentProps<"div">) {
@@ -123,11 +107,11 @@ function Metric({ className, ...props }: React.ComponentProps<"div">) {
       className={cn(
         "flex flex-col gap-2 p-4",
         "max-sm:nth-[2n+1]:screen-line-bottom sm:nth-[3n+1]:screen-line-bottom",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
 function MetricLabel({ className, ...props }: React.ComponentProps<"div">) {
@@ -137,22 +121,19 @@ function MetricLabel({ className, ...props }: React.ComponentProps<"div">) {
       className={cn("text-sm leading-none text-muted-foreground", className)}
       {...props}
     />
-  )
+  );
 }
 
 function MetricValue({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <dd
       data-slot="metric-value"
-      className={cn(
-        "text-lg leading-none font-semibold tabular-nums",
-        className
-      )}
+      className={cn("text-lg leading-none font-semibold tabular-nums", className)}
       {...props}
     />
-  )
+  );
 }
 
 export function InsightsSkeleton() {
-  return <Panel className="h-90.75" />
+  return <Panel className="h-90.75" />;
 }

@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { createContext, useEffect, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export const ActiveRouteContext = createContext();
 
@@ -10,7 +10,7 @@ export const ActiveRouteProvider = ({ children }) => {
   const [subcategory, setSubcategory] = useState(null);
 
   useEffect(() => {
-    const parts = location.pathname.split('/');
+    const parts = location.pathname.split("/");
     if (parts.length >= 3 && parts[1] && parts[2]) {
       setCategory(parts[1]);
       setSubcategory(parts[2]);
@@ -22,7 +22,7 @@ export const ActiveRouteProvider = ({ children }) => {
 
   const value = useMemo(
     () => ({ category, subcategory, isCategoryRoute: !!(category && subcategory) }),
-    [category, subcategory]
+    [category, subcategory],
   );
 
   return <ActiveRouteContext.Provider value={value}>{children}</ActiveRouteContext.Provider>;

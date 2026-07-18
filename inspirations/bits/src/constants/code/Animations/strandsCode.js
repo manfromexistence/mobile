@@ -1,8 +1,8 @@
-import code from '@content/Animations/Strands/Strands.jsx?raw';
-import css from '@content/Animations/Strands/Strands.css?raw';
-import tailwind from '@tailwind/Animations/Strands/Strands.jsx?raw';
-import tsCode from '@ts-default/Animations/Strands/Strands.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/Strands/Strands.tsx?raw';
+import code from "@content/Animations/Strands/Strands.jsx?raw";
+import css from "@content/Animations/Strands/Strands.css?raw";
+import tailwind from "@tailwind/Animations/Strands/Strands.jsx?raw";
+import tsCode from "@ts-default/Animations/Strands/Strands.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/Strands/Strands.tsx?raw";
 
 export const strands = {
   dependencies: `ogl`,
@@ -33,5 +33,5 @@ export const strands = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

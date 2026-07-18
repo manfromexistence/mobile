@@ -1,15 +1,10 @@
-import { FileIcon } from "lucide-react"
+import { FileIcon } from "lucide-react";
 
-type IconProps = React.HTMLAttributes<SVGElement>
+type IconProps = React.HTMLAttributes<SVGElement>;
 
 export const Icons = {
   logo: (props: IconProps) => (
-    <svg
-      viewBox="0 0 876 876"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    <svg viewBox="0 0 876 876" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path d="M468 292H528V584H468V292Z" fill="currentColor" />
       <path d="M348 292H408V584H348V292Z" fill="currentColor" />
     </svg>
@@ -155,12 +150,7 @@ export const Icons = {
     </svg>
   ),
   v0: (props: IconProps) => (
-    <svg
-      viewBox="0 0 40 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    <svg viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path
         d="M23.3919 0H32.9188C36.7819 0 39.9136 3.13165 39.9136 6.99475V16.0805H36.0006V6.99475C36.0006 6.90167 35.9969 6.80925 35.9898 6.71766L26.4628 16.079C26.4949 16.08 26.5272 16.0805 26.5595 16.0805H36.0006V19.7762H26.5595C22.6964 19.7762 19.4788 16.6139 19.4788 12.7508V3.68923H23.3919V12.7508C23.3919 12.9253 23.4054 13.0977 23.4316 13.2668L33.1682 3.6995C33.0861 3.6927 33.003 3.68923 32.9188 3.68923H23.3919V0Z"
         fill="currentColor"
@@ -201,12 +191,7 @@ export const Icons = {
     </svg>
   ),
   elevenlabs: (props: IconProps) => (
-    <svg
-      viewBox="0 0 694 90"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    <svg viewBox="0 0 694 90" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path
         d="M248.261 22.1901H230.466L251.968 88.5124H271.123L292.625 22.1901H274.83L261.365 72.1488L248.261 22.1901Z"
         fill="currentColor"
@@ -226,10 +211,7 @@ export const Icons = {
         d="M295.962 55.2893C295.962 31.1157 307.949 20.7025 326.609 20.7025C345.269 20.7025 355.897 30.9917 355.897 55.5372V59.5041H313.139C313.757 73.8843 318.082 78.719 326.362 78.719C332.911 78.719 336.989 74.876 337.731 68.1818H355.155C354.043 82.8099 341.932 90 326.362 90C306.589 90 295.962 79.4628 295.962 55.2893ZM338.719 47.9752C337.854 35.8264 333.653 31.8595 326.362 31.8595C319.071 31.8595 314.498 35.9504 313.263 47.9752H338.719Z"
         fill="currentColor"
       />
-      <path
-        d="M438.443 0H456.856V73.7603H491.457V88.5124H438.443V0Z"
-        fill="currentColor"
-      />
+      <path d="M438.443 0H456.856V73.7603H491.457V88.5124H438.443V0Z" fill="currentColor" />
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -252,21 +234,21 @@ export const Icons = {
       />
     </svg>
   ),
-}
+};
 
 export function getIconForLanguageExtension(language: string) {
   switch (language) {
     case "json":
-      return <Icons.json />
+      return <Icons.json />;
     case "css":
-      return <Icons.css className="fill-foreground" />
+      return <Icons.css className="fill-foreground" />;
     case "js":
     case "jsx":
     case "ts":
     case "tsx":
     case "typescript":
-      return <Icons.ts className="fill-foreground" />
+      return <Icons.ts className="fill-foreground" />;
     default:
-      return <FileIcon />
+      return <FileIcon />;
   }
 }

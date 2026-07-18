@@ -21,18 +21,56 @@ export function CommandPalettePreview() {
         <kbd className="rounded border border-border bg-card px-1.5 py-0.5 text-xs text-foreground">
           ⌘ J
         </kbd>{" "}
-        (or <kbd className="rounded border border-border bg-card px-1.5 py-0.5 text-xs text-foreground">Ctrl J</kbd>) to open.
+        (or{" "}
+        <kbd className="rounded border border-border bg-card px-1.5 py-0.5 text-xs text-foreground">
+          Ctrl J
+        </kbd>
+        ) to open.
       </p>
       <CommandPalette
         open={open}
         onOpenChange={setOpen}
         shortcut="j"
         items={[
-          { id: "home", label: "Go to Home", group: "Navigation", icon: Home, hint: "G H", onSelect: () => {} },
-          { id: "profile", label: "Open profile", group: "Navigation", icon: User, hint: "G P", onSelect: () => {} },
-          { id: "settings", label: "Settings", group: "Navigation", icon: Settings, onSelect: () => {} },
-          { id: "new-doc", label: "Create document", group: "Actions", icon: FileText, hint: "⌘ N", onSelect: () => {} },
-          { id: "new-project", label: "New project", group: "Actions", icon: Plus, hint: "⌘ ⇧ N", onSelect: () => {} },
+          {
+            id: "home",
+            label: "Go to Home",
+            group: "Navigation",
+            icon: Home,
+            hint: "G H",
+            onSelect: () => {},
+          },
+          {
+            id: "profile",
+            label: "Open profile",
+            group: "Navigation",
+            icon: User,
+            hint: "G P",
+            onSelect: () => {},
+          },
+          {
+            id: "settings",
+            label: "Settings",
+            group: "Navigation",
+            icon: Settings,
+            onSelect: () => {},
+          },
+          {
+            id: "new-doc",
+            label: "Create document",
+            group: "Actions",
+            icon: FileText,
+            hint: "⌘ N",
+            onSelect: () => {},
+          },
+          {
+            id: "new-project",
+            label: "New project",
+            group: "Actions",
+            icon: Plus,
+            hint: "⌘ ⇧ N",
+            onSelect: () => {},
+          },
         ]}
       />
     </div>

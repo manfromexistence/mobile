@@ -63,11 +63,7 @@ export function AttachmentChips({
                 )}
               >
                 {a.preview ? (
-                  <img
-                    src={a.preview}
-                    alt={a.name}
-                    className="h-5 w-5 rounded object-cover"
-                  />
+                  <img src={a.preview} alt={a.name} className="h-5 w-5 rounded object-cover" />
                 ) : (
                   <div
                     className={cn(
@@ -79,9 +75,7 @@ export function AttachmentChips({
                   </div>
                 )}
                 <span className="font-medium max-w-[120px] truncate">{a.name}</span>
-                {a.meta && (
-                  <span className="text-[10px] text-muted-foreground">{a.meta}</span>
-                )}
+                {a.meta && <span className="text-[10px] text-muted-foreground">{a.meta}</span>}
                 <motion.button
                   type="button"
                   onClick={() => onRemove(a.id)}

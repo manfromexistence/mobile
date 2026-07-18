@@ -13,7 +13,7 @@ test("resolveOmniRouteBaseUrl prefers OMNIROUTE_BASE_URL", () => {
       BASE_URL: "https://base.example.com",
       NEXT_PUBLIC_BASE_URL: "https://public.example.com",
     }),
-    "https://internal.example.com"
+    "https://internal.example.com",
   );
 });
 
@@ -23,7 +23,7 @@ test("resolveOmniRouteBaseUrl falls back to BASE_URL", () => {
       BASE_URL: "https://base.example.com/",
       NEXT_PUBLIC_BASE_URL: "https://public.example.com",
     }),
-    "https://base.example.com"
+    "https://base.example.com",
   );
 });
 
@@ -32,7 +32,7 @@ test("resolveOmniRouteBaseUrl falls back to NEXT_PUBLIC_BASE_URL", () => {
     resolveOmniRouteBaseUrl({
       NEXT_PUBLIC_BASE_URL: "https://public.example.com/",
     }),
-    "https://public.example.com"
+    "https://public.example.com",
   );
 });
 
@@ -43,7 +43,7 @@ test("resolveOmniRouteBaseUrl ignores blank values", () => {
       BASE_URL: "",
       NEXT_PUBLIC_BASE_URL: " https://public.example.com/ ",
     }),
-    "https://public.example.com"
+    "https://public.example.com",
   );
 });
 

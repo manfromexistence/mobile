@@ -190,10 +190,7 @@ export class LLMChatPipeline {
     this.fullVocabSize = this.config.vocab_size;
     this.bitmaskSize = Math.ceil(this.fullVocabSize / 32);
 
-    this.conversation = getConversation(
-      config.conv_template,
-      config.conv_config,
-    );
+    this.conversation = getConversation(config.conv_template, config.conv_config);
     this.stopStr = this.conversation.getStopStr();
     this.stopTokens = this.conversation.getStopTokens();
     if (config.bos_token_id !== undefined) {
@@ -203,8 +200,7 @@ export class LLMChatPipeline {
     // fallback mechanisms
     if (config.tokenizer_info !== undefined) {
       this.token_postproc_method = config.tokenizer_info.token_postproc_method;
-      this.prepend_space_in_encode =
-        config.tokenizer_info.prepend_space_in_encode;
+      this.prepend_space_in_encode = config.tokenizer_info.prepend_space_in_encode;
     } else if (config.token_table_postproc_method !== undefined) {
       this.token_postproc_method = config.token_table_postproc_method;
       this.prepend_space_in_encode = false;
@@ -224,9 +220,7 @@ export class LLMChatPipeline {
 
     // 1. Create VM and read model metadata
     tvm.beginScope();
-    this.vm = this.tvm.detachFromCurrentScope(
-      this.tvm.createVirtualMachine(this.device),
-    );
+    this.vm = this.tvm.detachFromCurrentScope(this.tvm.createVirtualMachine(this.device));
 
     const vmFunctionRegistry = LLMChatPipeline.loadVMFunctionRegistry(this.vm, [
       "prefill",
@@ -251,8 +245,7 @@ export class LLMChatPipeline {
     const metadata = JSON.parse(metadataStr);
     this.kvStateKind = this.parseKVStateKind(metadata.kv_state_kind);
 
-    const vmFunctionAvailability =
-      LLMChatPipeline.getVMFunctionAvailability(vmFunctionRegistry);
+    const vmFunctionAvailability = LLMChatPipeline.getVMFunctionAvailability(vmFunctionRegistry);
     this.resolvedModelABI = LLMChatPipeline.resolveModelABI(
       this.kvStateKind,
       vmFunctionAvailability,
@@ -298,40 +291,22 @@ export class LLMChatPipeline {
       LLMChatPipeline.getRequiredVMFunctionByName("embed", vmFunctionRegistry),
     );
     this.fapplyBitmask = this.tvm.detachFromCurrentScope(
-      LLMChatPipeline.getRequiredVMFunctionByName(
-        "apply_bitmask_inplace",
-        vmFunctionRegistry,
-      ),
+      LLMChatPipeline.getRequiredVMFunctionByName("apply_bitmask_inplace", vmFunctionRegistry),
     );
     this.fapplyPenalty = this.tvm.detachFromCurrentScope(
-      LLMChatPipeline.getRequiredVMFunctionByName(
-        "apply_penalty_inplace",
-        vmFunctionRegistry,
-      ),
+      LLMChatPipeline.getRequiredVMFunctionByName("apply_penalty_inplace", vmFunctionRegistry),
     );
     this.fapplyLogitBias = this.tvm.detachFromCurrentScope(
-      LLMChatPipeline.getRequiredVMFunctionByName(
-        "apply_logit_bias_inplace",
-        vmFunctionRegistry,
-      ),
+      LLMChatPipeline.getRequiredVMFunctionByName("apply_logit_bias_inplace", vmFunctionRegistry),
     );
     this.fsoftmaxWithTemperature = this.tvm.detachFromCurrentScope(
-      LLMChatPipeline.getRequiredVMFunctionByName(
-        "softmax_with_temperature",
-        vmFunctionRegistry,
-      ),
+      LLMChatPipeline.getRequiredVMFunctionByName("softmax_with_temperature", vmFunctionRegistry),
     );
     this.fsampleWithTopP = this.tvm.detachFromCurrentScope(
-      LLMChatPipeline.getRequiredVMFunctionByName(
-        "sample_with_top_p",
-        vmFunctionRegistry,
-      ),
+      LLMChatPipeline.getRequiredVMFunctionByName("sample_with_top_p", vmFunctionRegistry),
     );
     this.fargsortProbs = this.tvm.detachFromCurrentScope(
-      LLMChatPipeline.getRequiredVMFunctionByName(
-        "argsort_probs",
-        vmFunctionRegistry,
-      ),
+      LLMChatPipeline.getRequiredVMFunctionByName("argsort_probs", vmFunctionRegistry),
     );
     const imageEmbed = vmFunctionRegistry.image_embed;
     if (imageEmbed !== undefined) {
@@ -345,9 +320,7 @@ export class LLMChatPipeline {
     metadata.params.forEach((param: any) => {
       paramNames.push(param.name);
     });
-    this.params = this.tvm.detachFromCurrentScope(
-      this.tvm.getParamsFromCacheByName(paramNames),
-    );
+    this.params = this.tvm.detachFromCurrentScope(this.tvm.getParamsFromCacheByName(paramNames));
 
     // 4. Read in compilation configurations from metadata
     this.prefillChunkSize = metadata.prefill_chunk_size;
@@ -361,10 +334,7 @@ export class LLMChatPipeline {
     this.contextWindowSize = config.context_window_size;
     this.attentionSinkSize = config.attention_sink_size;
     if (this.contextWindowSize !== -1 && this.slidingWindowSize !== -1) {
-      throw new WindowSizeConfigurationError(
-        this.contextWindowSize,
-        this.slidingWindowSize,
-      );
+      throw new WindowSizeConfigurationError(this.contextWindowSize, this.slidingWindowSize);
     } else if (this.slidingWindowSize != -1) {
       // Use sliding window and attention sink
       log.info("Using slidingWindowSize: ", this.slidingWindowSize);
@@ -379,10 +349,7 @@ export class LLMChatPipeline {
     } else {
       throw new WindowSizeSpecificationError();
     }
-    if (
-      config.max_history_size !== undefined &&
-      config.max_history_size !== null
-    ) {
+    if (config.max_history_size !== undefined && config.max_history_size !== null) {
       if (config.max_history_size <= 0) {
         throw new MinValueError("max_history_size", 0);
       }
@@ -411,17 +378,13 @@ export class LLMChatPipeline {
       this.tvm.getGlobalFunc("vm.builtin.kv_state_end_forward"),
     );
     this.fKVCacheEnableSlidingWindowForSeq = this.tvm.detachFromCurrentScope(
-      this.tvm.getGlobalFunc(
-        "vm.builtin.attention_kv_cache_enable_sliding_window_for_seq",
-      ),
+      this.tvm.getGlobalFunc("vm.builtin.attention_kv_cache_enable_sliding_window_for_seq"),
     );
 
     const defaultPageSize = 16;
     const defaultMaxNumSequence = 1;
     const maxTotalSeqLen =
-      this.slidingWindowSize != -1
-        ? this.slidingWindowSize
-        : this.contextWindowSize;
+      this.slidingWindowSize != -1 ? this.slidingWindowSize : this.contextWindowSize;
 
     if (this.resolvedModelABI.needsKVCache) {
       const createKVCache = LLMChatPipeline.getRequiredVMFunctionByName(
@@ -471,9 +434,7 @@ export class LLMChatPipeline {
       this.sampleIndices[i] = i;
     }
     this.sampleIndicesDevice = this.tvm.detachFromCurrentScope(
-      this.tvm
-        .empty([numSamples], "int32", this.device)
-        .copyFrom(this.sampleIndices),
+      this.tvm.empty([numSamples], "int32", this.device).copyFrom(this.sampleIndices),
     );
 
     this.topPDevice = this.tvm.detachFromCurrentScope(
@@ -671,9 +632,7 @@ export class LLMChatPipeline {
     this.tvm.setSeed(seed);
   }
 
-  private getResponseFormatKey(
-    responseFormat?: ResponseFormat | null,
-  ): string | undefined {
+  private getResponseFormatKey(responseFormat?: ResponseFormat | null): string | undefined {
     if (!responseFormat) {
       return undefined;
     }
@@ -688,9 +647,7 @@ export class LLMChatPipeline {
       if (structuralTag === undefined || structuralTag === null) {
         return undefined;
       }
-      return typeof structuralTag === "string"
-        ? structuralTag
-        : JSON.stringify(structuralTag);
+      return typeof structuralTag === "string" ? structuralTag : JSON.stringify(structuralTag);
     }
     return undefined;
   }
@@ -726,9 +683,7 @@ export class LLMChatPipeline {
     genConfig?: GenerationConfig,
   ): Promise<void> {
     if (msgRole !== Role.user && msgRole !== Role.tool) {
-      throw new MessageOrderError(
-        "The last message should be from `user` or `tool`.",
-      );
+      throw new MessageOrderError("The last message should be from `user` or `tool`.");
     }
     if (this.resetStatsPerPrefill) {
       this.resetRuntimeStats();
@@ -770,16 +725,12 @@ export class LLMChatPipeline {
       responseFormat?.type === "structural_tag"
     ) {
       const curResponseFormatKey = this.getResponseFormatKey(responseFormat);
-      if (
-        curResponseFormatKey === this.responseFormatCacheKey &&
-        this.grammarMatcher
-      ) {
+      if (curResponseFormatKey === this.responseFormatCacheKey && this.grammarMatcher) {
         // If we did not change the schema and have instantiated a GrammarMatcher, we reuse it.
         const tGrammarInitStart = performance.now();
         log.info("Reuse grammar matcher.");
         this.grammarMatcher.reset();
-        this.curRoundGrammarInitTotalTime =
-          (performance.now() - tGrammarInitStart) / 1e3;
+        this.curRoundGrammarInitTotalTime = (performance.now() - tGrammarInitStart) / 1e3;
       } else {
         // Else dispose current grammarMatcher, reinitialize, and update this.schema.
         /* eslint-disable no-async-promise-executor */
@@ -800,31 +751,24 @@ export class LLMChatPipeline {
               this.fullVocabSize,
               this.stopTokens,
             );
-            this.grammarCompiler =
-              await xgr.GrammarCompiler.createGrammarCompiler(
-                this.xgTokenizerInfo,
-              );
+            this.grammarCompiler = await xgr.GrammarCompiler.createGrammarCompiler(
+              this.xgTokenizerInfo,
+            );
           }
           const grammar: xgr.CompiledGrammar =
             responseFormat.type === undefined
               ? await this.grammarCompiler!.compileBuiltinJSONGrammar()
               : responseFormat.type === "json_object"
-                ? await this.grammarCompiler!.compileJSONSchema(
-                    responseFormat.schema!,
-                  )
+                ? await this.grammarCompiler!.compileJSONSchema(responseFormat.schema!)
                 : responseFormat.type === "grammar"
-                  ? await this.grammarCompiler!.compileGrammar(
-                      responseFormat.grammar!,
-                    )
+                  ? await this.grammarCompiler!.compileGrammar(responseFormat.grammar!)
                   : await this.grammarCompiler!.compileStructuralTag(
                       responseFormat.structural_tag!,
                     );
-          this.grammarMatcher =
-            await xgr.GrammarMatcher.createGrammarMatcher(grammar);
+          this.grammarMatcher = await xgr.GrammarMatcher.createGrammarMatcher(grammar);
           grammar.dispose();
           this.responseFormatCacheKey = curResponseFormatKey;
-          this.curRoundGrammarInitTotalTime =
-            (performance.now() - tGrammarInitStart) / 1e3;
+          this.curRoundGrammarInitTotalTime = (performance.now() - tGrammarInitStart) / 1e3;
           resolve();
         });
       }
@@ -840,10 +784,7 @@ export class LLMChatPipeline {
         const emptyThinkingBlockStr = "<think>\n\n</think>\n\n";
         const encoded = this.tokenizer.encode(emptyThinkingBlockStr);
         this.outputIds.push(...encoded);
-        conversation.appendEmptyThinkingReplyHeader(
-          Role.assistant,
-          emptyThinkingBlockStr,
-        );
+        conversation.appendEmptyThinkingReplyHeader(Role.assistant, emptyThinkingBlockStr);
       } else {
         conversation.appendReplyHeader(Role.assistant);
       }
@@ -857,11 +798,7 @@ export class LLMChatPipeline {
     }
 
     // 1. Chunk inputData to embed and forward in one shot for each, minimize intermediate data
-    const retGetChunks = getChunkedPrefillInputData(
-      inputData,
-      this.prefillChunkSize,
-      getEmbedSize,
-    );
+    const retGetChunks = getChunkedPrefillInputData(inputData, this.prefillChunkSize, getEmbedSize);
     const chunks: Array<Array<number> | ImageURL>[] = retGetChunks[0];
     const chunkLens: Array<number> = retGetChunks[1];
 
@@ -872,13 +809,9 @@ export class LLMChatPipeline {
       const chunk = chunks[i];
       const chunkLen = chunkLens[i];
       const prevFilledLen = this.filledKVCacheLength;
-      logits = this.tvm.detachFromCurrentScope(
-        await this.embedAndForward(chunk, chunkLen),
-      );
+      logits = this.tvm.detachFromCurrentScope(await this.embedAndForward(chunk, chunkLen));
       if (this.filledKVCacheLength !== prevFilledLen + chunkLen) {
-        throw new Error(
-          "Internal Error: filledKVCacheLength does not match expected value.",
-        );
+        throw new Error("Internal Error: filledKVCacheLength does not match expected value.");
       }
     }
     this.imageDataCache.clear();
@@ -907,18 +840,12 @@ export class LLMChatPipeline {
     const tstart = performance.now();
 
     this.tvm.beginScope();
-    const chunk: Array<Array<number>> = [
-      this.outputIds.slice(this.outputIds.length - 1),
-    ];
+    const chunk: Array<Array<number>> = [this.outputIds.slice(this.outputIds.length - 1)];
     const chunkLen = chunk.length;
     const prevFilledLen = this.filledKVCacheLength;
-    const logits = this.tvm.detachFromCurrentScope(
-      await this.embedAndForward(chunk, chunkLen),
-    );
+    const logits = this.tvm.detachFromCurrentScope(await this.embedAndForward(chunk, chunkLen));
     if (this.filledKVCacheLength !== prevFilledLen + chunkLen) {
-      throw new Error(
-        "Internal Error: filledKVCacheLength does not match expected value.",
-      );
+      throw new Error("Internal Error: filledKVCacheLength does not match expected value.");
     }
     this.tvm.endScope();
 
@@ -955,10 +882,7 @@ export class LLMChatPipeline {
    * @param nextToken The next token.
    * @param genConfig Configs that override `this.config` for this round of generation.
    */
-  private processNextToken(
-    nextToken: number,
-    genConfig?: GenerationConfig,
-  ): void {
+  private processNextToken(nextToken: number, genConfig?: GenerationConfig): void {
     if (this.stopTriggered) {
       throw Error("Cannot call process when it is stoppped");
     }
@@ -1034,10 +958,7 @@ export class LLMChatPipeline {
     }
 
     // Stop condition 4: exceed KVCache's context window size
-    if (
-      this.slidingWindowSize == -1 &&
-      this.filledKVCacheLength == this.contextWindowSize
-    ) {
+    if (this.slidingWindowSize == -1 && this.filledKVCacheLength == this.contextWindowSize) {
       this.stopTriggered = true;
       this.finishReason = "length";
       log.info("Generation stopped due to exceeding context_window_size.");
@@ -1060,15 +981,9 @@ export class LLMChatPipeline {
   private getTokensEmbeddings(inputTokens: number[]): tvmjs.Tensor {
     this.tvm.beginScope();
     if (inputTokens.length > this.prefillChunkSize) {
-      throw new Error(
-        "Internal Error: getTokensEmbeddings input should be <= prefillChunkSize.",
-      );
+      throw new Error("Internal Error: getTokensEmbeddings input should be <= prefillChunkSize.");
     }
-    const inputData = this.tvm.empty(
-      [inputTokens.length],
-      "int32",
-      this.device,
-    );
+    const inputData = this.tvm.empty([inputTokens.length], "int32", this.device);
     inputData.copyFrom(inputTokens);
     const embed: tvmjs.Tensor = this.tvm.detachFromCurrentScope(
       this.embed!(inputData, this.params),
@@ -1083,10 +998,7 @@ export class LLMChatPipeline {
    * Must match the model's image_embed output size.
    * Based on mlc_llm/serve/data.py _compute_embed_size.
    */
-  private computeImageEmbedSize(
-    imageHeight: number,
-    imageWidth: number,
-  ): number {
+  private computeImageEmbedSize(imageHeight: number, imageWidth: number): number {
     const modelType = this.config.model_type;
     if (modelType === "phi3_v") {
       const [cropH, cropW] = this.calculateCropShape(imageHeight, imageWidth);
@@ -1109,10 +1021,7 @@ export class LLMChatPipeline {
    * Calculate resize dimensions per model type.
    * Based on vlm_utils.cc CalculateResizeShape
    */
-  private calculateResizeShape(
-    imageHeight: number,
-    imageWidth: number,
-  ): [number, number] {
+  private calculateResizeShape(imageHeight: number, imageWidth: number): [number, number] {
     switch (this.config.model_type) {
       case "phi3_v": {
         const hdNum = 16;
@@ -1127,9 +1036,7 @@ export class LLMChatPipeline {
         return [newH, newW];
       }
       default:
-        throw new Error(
-          `Unsupported model type "${this.config.model_type}" for image resize.`,
-        );
+        throw new Error(`Unsupported model type "${this.config.model_type}" for image resize.`);
     }
   }
 
@@ -1137,37 +1044,26 @@ export class LLMChatPipeline {
    * Calculate crop dimensions per model type.
    * Based on vlm_utils.cc CalculateCropShape / CalculatePadShape
    */
-  private calculateCropShape(
-    imageHeight: number,
-    imageWidth: number,
-  ): [number, number] {
+  private calculateCropShape(imageHeight: number, imageWidth: number): [number, number] {
     switch (this.config.model_type) {
       case "phi3_v": {
-        const [resizedHeight, resizedWidth] = this.calculateResizeShape(
-          imageHeight,
-          imageWidth,
-        );
+        const [resizedHeight, resizedWidth] = this.calculateResizeShape(imageHeight, imageWidth);
         const padH = Math.ceil(resizedHeight / 336) * 336;
         return [Math.floor(padH / 336), Math.floor(resizedWidth / 336)];
       }
       default:
-        throw new Error(
-          `Unsupported model type "${this.config.model_type}" for image crop.`,
-        );
+        throw new Error(`Unsupported model type "${this.config.model_type}" for image crop.`);
     }
   }
 
   /**
    * Embed an image input.
    */
-  private async getImageEmbeddings(
-    inputImage: ImageURL,
-  ): Promise<tvmjs.Tensor> {
+  private async getImageEmbeddings(inputImage: ImageURL): Promise<tvmjs.Tensor> {
     this.tvm.beginScope();
     // 1. Transform ImageURL into image input in TVMArray
     const url = inputImage.url;
-    const imgData: ImageData =
-      this.imageDataCache.get(url) ?? (await getImageDataFromURL(url));
+    const imgData: ImageData = this.imageDataCache.get(url) ?? (await getImageDataFromURL(url));
     const pixelValues: Uint8ClampedArray = getRGBArrayFromImageData(imgData);
     const pixelArray = this.tvm
       .empty([imgData.height, imgData.width, 3], "uint32", this.device)
@@ -1175,14 +1071,8 @@ export class LLMChatPipeline {
       .view([1, imgData.height, imgData.width, 3]); // NHWC
 
     // 2. Calculate resize and crop dimensions
-    const [resizeH, resizeW] = this.calculateResizeShape(
-      imgData.height,
-      imgData.width,
-    );
-    const [cropH, cropW] = this.calculateCropShape(
-      imgData.height,
-      imgData.width,
-    );
+    const [resizeH, resizeW] = this.calculateResizeShape(imgData.height, imgData.width);
+    const [cropH, cropW] = this.calculateCropShape(imgData.height, imgData.width);
     const resizeHeightShape = this.tvm.makeShapeTuple([resizeH]);
     const resizeWidthShape = this.tvm.makeShapeTuple([resizeW]);
     const cropHeightShape = this.tvm.makeShapeTuple([cropH]);
@@ -1199,10 +1089,7 @@ export class LLMChatPipeline {
         this.params,
       ),
     );
-    const expectedSize = this.computeImageEmbedSize(
-      imgData.height,
-      imgData.width,
-    );
+    const expectedSize = this.computeImageEmbedSize(imgData.height, imgData.width);
     if (embed.shape[0] !== expectedSize) {
       throw new Error(
         `InternalError: expect embed.shape[0] to be ${expectedSize}, ` +
@@ -1229,9 +1116,7 @@ export class LLMChatPipeline {
     inputDataLen: number,
   ): Promise<tvmjs.Tensor> {
     if (inputDataLen > this.prefillChunkSize) {
-      throw new Error(
-        "InternalError: expect inputDataLen <= this.prefillChunkSize.",
-      );
+      throw new Error("InternalError: expect inputDataLen <= this.prefillChunkSize.");
     }
     // TODO: we should combine string data to embed once, then rearrange the embeddings; currently
     // ["hi", imageUrl, "hi"] would call embed kernels 3 times, while 2 would suffice.
@@ -1318,23 +1203,19 @@ export class LLMChatPipeline {
       .filter((entry) => entry[1] !== undefined)
       .map((entry) => entry[0])
       .sort();
-    const availableStr =
-      availableNames.length === 0 ? "(none)" : availableNames.join(", ");
+    const availableStr = availableNames.length === 0 ? "(none)" : availableNames.join(", ");
     throw new Error(
       `Cannot find required VM function \`${name}\`. Available candidate functions: ${availableStr}`,
     );
   }
 
-  private static getVMFunctionAvailability(
-    registry: VMFunctionRegistry,
-  ): VMFunctionAvailability {
+  private static getVMFunctionAvailability(registry: VMFunctionRegistry): VMFunctionAvailability {
     return {
       prefill: registry.prefill !== undefined,
       batch_prefill: registry.batch_prefill !== undefined,
       decode: registry.decode !== undefined,
       batch_decode: registry.batch_decode !== undefined,
-      create_tir_paged_kv_cache:
-        registry.create_tir_paged_kv_cache !== undefined,
+      create_tir_paged_kv_cache: registry.create_tir_paged_kv_cache !== undefined,
       create_rnn_state: registry.create_rnn_state !== undefined,
     };
   }
@@ -1357,9 +1238,7 @@ export class LLMChatPipeline {
     ) {
       return kvStateKind;
     }
-    throw new Error(
-      `Unsupported kv_state_kind in model metadata: ${kvStateKindRaw}`,
-    );
+    throw new Error(`Unsupported kv_state_kind in model metadata: ${kvStateKindRaw}`);
   }
 
   private static resolveModelABI(
@@ -1367,19 +1246,15 @@ export class LLMChatPipeline {
     availability: VMFunctionAvailability,
   ): ResolvedModelABI {
     const hasSingleKernelPair = availability.prefill && availability.decode;
-    const hasBatchKernelPair =
-      availability.batch_prefill && availability.batch_decode;
+    const hasBatchKernelPair = availability.batch_prefill && availability.batch_decode;
     const availableNames = Object.entries(availability)
       .filter((entry) => entry[1])
       .map((entry) => entry[0])
       .sort();
-    const availableStr =
-      availableNames.length === 0 ? "(none)" : availableNames.join(", ");
+    const availableStr = availableNames.length === 0 ? "(none)" : availableNames.join(", ");
 
     if (kvStateKind === "none") {
-      throw new Error(
-        "kv_state_kind=`none` is not supported in LLMChatPipeline chat runtime.",
-      );
+      throw new Error("kv_state_kind=`none` is not supported in LLMChatPipeline chat runtime.");
     }
 
     if (kvStateKind === "hybrid") {
@@ -1416,9 +1291,7 @@ export class LLMChatPipeline {
 
     if (kvStateKind === "rnn_state") {
       if (!availability.create_rnn_state) {
-        throw new Error(
-          "Invalid rnn_state ABI. Missing required function: create_rnn_state.",
-        );
+        throw new Error("Invalid rnn_state ABI. Missing required function: create_rnn_state.");
       }
       if (hasSingleKernelPair) {
         return {
@@ -1494,16 +1367,10 @@ export class LLMChatPipeline {
   }
 
   private getSingleStateForABI(): tvmjs.TVMObject {
-    if (
-      this.resolvedModelABI.needsKVCache &&
-      !this.resolvedModelABI.needsRNNState
-    ) {
+    if (this.resolvedModelABI.needsKVCache && !this.resolvedModelABI.needsRNNState) {
       return this.requireKVCache();
     }
-    if (
-      !this.resolvedModelABI.needsKVCache &&
-      this.resolvedModelABI.needsRNNState
-    ) {
+    if (!this.resolvedModelABI.needsKVCache && this.resolvedModelABI.needsRNNState) {
       return this.requireRNNState();
     }
     throw new Error(
@@ -1525,30 +1392,18 @@ export class LLMChatPipeline {
     return states;
   }
 
-  private invokePrefill(
-    allEmbeddings: tvmjs.Tensor,
-    inputDataLen: number,
-  ): any {
+  private invokePrefill(allEmbeddings: tvmjs.Tensor, inputDataLen: number): any {
     if (this.resolvedModelABI.prefillABI === "single") {
-      return this.prefill(
-        allEmbeddings,
-        this.getSingleStateForABI(),
-        this.params,
-      );
+      return this.prefill(allEmbeddings, this.getSingleStateForABI(), this.params);
     }
 
     if (this.prefillLogitPositions === undefined) {
-      throw new Error(
-        "InternalError: batch prefill ABI requires prefillLogitPositions tensor.",
-      );
+      throw new Error("InternalError: batch prefill ABI requires prefillLogitPositions tensor.");
     }
     this.prefillLogitPositionHost[0] = inputDataLen - 1;
     this.prefillLogitPositions.copyFrom(this.prefillLogitPositionHost);
 
-    if (
-      this.resolvedModelABI.needsKVCache &&
-      this.resolvedModelABI.needsRNNState
-    ) {
+    if (this.resolvedModelABI.needsKVCache && this.resolvedModelABI.needsRNNState) {
       return this.prefill(
         allEmbeddings,
         this.prefillLogitPositions,
@@ -1567,16 +1422,9 @@ export class LLMChatPipeline {
 
   private invokeDecode(allEmbeddings: tvmjs.Tensor): any {
     if (this.resolvedModelABI.decodeABI === "single") {
-      return this.decoding(
-        allEmbeddings,
-        this.getSingleStateForABI(),
-        this.params,
-      );
+      return this.decoding(allEmbeddings, this.getSingleStateForABI(), this.params);
     }
-    if (
-      this.resolvedModelABI.needsKVCache &&
-      this.resolvedModelABI.needsRNNState
-    ) {
+    if (this.resolvedModelABI.needsKVCache && this.resolvedModelABI.needsRNNState) {
       return this.decoding(
         allEmbeddings,
         this.requireKVCache(),
@@ -1584,11 +1432,7 @@ export class LLMChatPipeline {
         this.params,
       );
     }
-    return this.decoding(
-      allEmbeddings,
-      this.getSingleStateForABI(),
-      this.params,
-    );
+    return this.decoding(allEmbeddings, this.getSingleStateForABI(), this.params);
   }
 
   // NOTE: caller must call device.sync()
@@ -1606,10 +1450,7 @@ export class LLMChatPipeline {
     return this.logitsOnCPU;
   }
 
-  private async sampleTokenFromLogits(
-    logitsOnGPU: tvmjs.Tensor,
-    genConfig?: GenerationConfig,
-  ) {
+  private async sampleTokenFromLogits(logitsOnGPU: tvmjs.Tensor, genConfig?: GenerationConfig) {
     // 0. Get value of temperature, top_p, and various penalties, possibly overridden by genConfig
     // Also load other genConfig items like logit_bias. Consume all fields of `genConfig` here.
     function _hasValue(value: any): boolean {
@@ -1684,16 +1525,10 @@ export class LLMChatPipeline {
     if (repetition_penalty <= 0) {
       throw new MinValueError("repetition_penalty", 0);
     }
-    if (
-      frequency_penalty &&
-      (frequency_penalty < -2.0 || frequency_penalty > 2.0)
-    ) {
+    if (frequency_penalty && (frequency_penalty < -2.0 || frequency_penalty > 2.0)) {
       throw new RangeError("frequency_penalty", -2.0, 2.0);
     }
-    if (
-      presence_penalty &&
-      (presence_penalty < -2.0 || presence_penalty > 2.0)
-    ) {
+    if (presence_penalty && (presence_penalty < -2.0 || presence_penalty > 2.0)) {
       throw new RangeError("presence_penalty", -2.0, 2.0);
     }
 
@@ -1713,10 +1548,8 @@ export class LLMChatPipeline {
       }
 
       const tBitmaskStart = performance.now();
-      const bitMaskOnCPU: Int32Array =
-        await this.grammarMatcher.getNextTokenBitmask();
-      this.curRoundGrammarPerTokenTotalTime +=
-        (performance.now() - tBitmaskStart) / 1e3;
+      const bitMaskOnCPU: Int32Array = await this.grammarMatcher.getNextTokenBitmask();
+      this.curRoundGrammarPerTokenTotalTime += (performance.now() - tBitmaskStart) / 1e3;
 
       if (bitMaskOnCPU.length !== this.bitmaskSize) {
         throw new Error(
@@ -1727,23 +1560,14 @@ export class LLMChatPipeline {
       const bitMaskOnGPU = this.tvm
         .empty([1, this.bitmaskSize], "int32", this.device)
         .copyFrom(bitMaskOnCPU);
-      const seqIdsArray = this.tvm
-        .empty([1], "int32", this.device)
-        .copyFrom([0]);
-      this.fapplyBitmask(
-        logitsOnGPU.view([1, this.fullVocabSize]),
-        seqIdsArray,
-        bitMaskOnGPU,
-      );
+      const seqIdsArray = this.tvm.empty([1], "int32", this.device).copyFrom([0]);
+      this.fapplyBitmask(logitsOnGPU.view([1, this.fullVocabSize]), seqIdsArray, bitMaskOnGPU);
       this.tvm.endScope();
 
       if (genConfig?.enable_latency_breakdown) {
         const grammarBitmaskEnd = performance.now();
-        const grammarBitmaskTimeSpent =
-          (grammarBitmaskEnd - grammarBitmaskBegin) / 1e3;
-        this.curRoundLatencyBreakdown.grammarBitmaskTime.push(
-          grammarBitmaskTimeSpent,
-        );
+        const grammarBitmaskTimeSpent = (grammarBitmaskEnd - grammarBitmaskBegin) / 1e3;
+        this.curRoundLatencyBreakdown.grammarBitmaskTime.push(grammarBitmaskTimeSpent);
       }
     }
 
@@ -1760,20 +1584,15 @@ export class LLMChatPipeline {
       if (this.logitsOnCPU == undefined) {
         throw Error("logits should be assigned");
       }
-      let logitsOnCPUArray: Float32Array = <Float32Array>(
-        this.logitsOnCPU.toArray()
-      );
+      let logitsOnCPUArray: Float32Array = <Float32Array>this.logitsOnCPU.toArray();
       logitsOnCPUArray = this.logitProcessor.processLogits(logitsOnCPUArray);
       logitsOnGPU.copyFrom(logitsOnCPUArray);
       this.logitsOnCPU.copyFrom(logitsOnCPUArray);
 
       if (genConfig?.enable_latency_breakdown) {
         const logitProcessorEnd = performance.now();
-        const logitProcessorTimeSpent =
-          (logitProcessorEnd - logitProcessorBegin) / 1e3;
-        this.curRoundLatencyBreakdown.logitProcessorTime.push(
-          logitProcessorTimeSpent,
-        );
+        const logitProcessorTimeSpent = (logitProcessorEnd - logitProcessorBegin) / 1e3;
+        this.curRoundLatencyBreakdown.logitProcessorTime.push(logitProcessorTimeSpent);
       }
     }
 
@@ -1799,9 +1618,7 @@ export class LLMChatPipeline {
         .empty([numTokens], "int32", this.device)
         .copyFrom(pos2seqIds);
 
-      const tokenIdsDevice = this.tvm
-        .empty([numTokens], "int32", this.device)
-        .copyFrom(tokenIds);
+      const tokenIdsDevice = this.tvm.empty([numTokens], "int32", this.device).copyFrom(tokenIds);
 
       const tokenLogitBiasDevice = this.tvm
         .empty([numTokens], "float32", this.device)
@@ -1824,11 +1641,7 @@ export class LLMChatPipeline {
     }
 
     // 3. Apply penalties to logits on GPU
-    if (
-      frequency_penalty != 0.0 ||
-      presence_penalty != 0.0 ||
-      repetition_penalty != 1.0
-    ) {
+    if (frequency_penalty != 0.0 || presence_penalty != 0.0 || repetition_penalty != 1.0) {
       const appearedTokens = [...this.appearedTokensFreq.keys()];
       const appearedTokensFreqs = [...this.appearedTokensFreq.values()];
 
@@ -1850,25 +1663,17 @@ export class LLMChatPipeline {
         tokenCnt.set(appearedTokensFreqs);
 
         this.tvm.beginScope();
-        const seqIdsArray = this.tvm
-          .empty([1], "int32", this.device)
-          .copyFrom([0]);
+        const seqIdsArray = this.tvm.empty([1], "int32", this.device).copyFrom([0]);
 
         const pos2seqIdsDevice = this.tvm
           .empty([numTokens], "int32", this.device)
           .copyFrom(pos2seqIds);
 
-        const tokenIdsDevice = this.tvm
-          .empty([numTokens], "int32", this.device)
-          .copyFrom(tokenIds);
+        const tokenIdsDevice = this.tvm.empty([numTokens], "int32", this.device).copyFrom(tokenIds);
 
-        const tokenCntDevice = this.tvm
-          .empty([numTokens], "int32", this.device)
-          .copyFrom(tokenCnt);
+        const tokenCntDevice = this.tvm.empty([numTokens], "int32", this.device).copyFrom(tokenCnt);
 
-        const penaltiesDevice = this.tvm
-          .empty([1, 3], "float32", this.device)
-          .copyFrom(penalties);
+        const penaltiesDevice = this.tvm.empty([1, 3], "float32", this.device).copyFrom(penalties);
 
         this.fapplyPenalty(
           logitsOnGPU.view([1, this.fullVocabSize]),
@@ -1934,9 +1739,7 @@ export class LLMChatPipeline {
       this.topPDevice,
     );
     const sampledTokensHost = this.tvm.detachFromCurrentScope(
-      this.tvm
-        .empty([numSeqs], "int32", this.tvm.cpu())
-        .copyFrom(sampledTokensDevice),
+      this.tvm.empty([numSeqs], "int32", this.tvm.cpu()).copyFrom(sampledTokensDevice),
     );
     if (logprobs && top_logprobs! > 0) {
       this.updateLogitsOnCPU(probs);
@@ -1951,9 +1754,7 @@ export class LLMChatPipeline {
     }
 
     if (logprobs && top_logprobs! > 0) {
-      this.tokenLogprobArray.push(
-        this.getTokenLogprob(sampledToken, top_logprobs!),
-      );
+      this.tokenLogprobArray.push(this.getTokenLogprob(sampledToken, top_logprobs!));
     }
 
     if (genConfig?.enable_latency_breakdown) {
@@ -1972,8 +1773,7 @@ export class LLMChatPipeline {
       }
       const tAcceptStart = performance.now();
       const accepted = this.grammarMatcher.acceptToken(sampledToken);
-      this.curRoundGrammarPerTokenTotalTime +=
-        (performance.now() - tAcceptStart) / 1e3;
+      this.curRoundGrammarPerTokenTotalTime += (performance.now() - tAcceptStart) / 1e3;
       if (!accepted) {
         throw Error("Grammar matcher rejected the newly sampled token.");
       }
@@ -2126,18 +1926,12 @@ export class LLMChatPipeline {
       this.slidingWindowSize == -1 && // There is no limit on contextWindowSize for sliding window
       numPromptTokens + this.filledKVCacheLength > this.contextWindowSize
     ) {
-      throw new ContextWindowSizeExceededError(
-        numPromptTokens,
-        this.contextWindowSize,
-      );
+      throw new ContextWindowSizeExceededError(numPromptTokens, this.contextWindowSize);
     }
     return [ret, numPromptTokens, getEmbedSize];
   }
 
-  async forwardTokensAndSample(
-    inputIds: Array<number>,
-    isPrefill: boolean,
-  ): Promise<number> {
+  async forwardTokensAndSample(inputIds: Array<number>, isPrefill: boolean): Promise<number> {
     const tstart = performance.now();
     this.tvm.beginScope();
     // 1. Chunk inputData if needed
@@ -2158,9 +1952,7 @@ export class LLMChatPipeline {
       const prevFilledLen = this.filledKVCacheLength;
       logitsOnGPU = await this.embedAndForward(chunk, chunkLen);
       if (this.filledKVCacheLength !== prevFilledLen + chunkLen) {
-        throw new Error(
-          "Internal Error: filledKVCacheLength does not match expected value.",
-        );
+        throw new Error("Internal Error: filledKVCacheLength does not match expected value.");
       }
     }
 
@@ -2195,10 +1987,7 @@ export class LLMChatPipeline {
    *
    * @return The `ChatCompletionTokenLogprob` for this single autoregressive step.
    */
-  private getTokenLogprob(
-    sampledToken: number,
-    top_logprobs: number,
-  ): ChatCompletionTokenLogprob {
+  private getTokenLogprob(sampledToken: number, top_logprobs: number): ChatCompletionTokenLogprob {
     if (this.logitsOnCPU == undefined) {
       throw Error("logits should be assigned");
     }

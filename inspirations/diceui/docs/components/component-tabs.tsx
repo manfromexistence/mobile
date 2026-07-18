@@ -1,12 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  MdxTabs,
-  MdxTabsContent,
-  MdxTabsList,
-  MdxTabsTrigger,
-} from "@/components/mdx-tabs";
+import { MdxTabs, MdxTabsContent, MdxTabsList, MdxTabsTrigger } from "@/components/mdx-tabs";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/registry/bases/radix/ui/skeleton";
 import type { RegistryBase } from "@/registry/registry";
@@ -49,10 +44,7 @@ export function ComponentTabs({
 }: ComponentTabsProps) {
   const code = React.Children.toArray(children)[0] as React.ReactElement;
 
-  const Component = React.useMemo(
-    () => getExampleComponent(base, name),
-    [base, name],
-  );
+  const Component = React.useMemo(() => getExampleComponent(base, name), [base, name]);
 
   return (
     <MdxTabs
@@ -72,8 +64,7 @@ export function ComponentTabs({
         tabIndex={preventPreviewFocus ? -1 : 0}
         className={cn(
           "not-prose relative",
-          preventPreviewFocus &&
-            "focus-visible:outline-hidden focus-visible:ring-0",
+          preventPreviewFocus && "focus-visible:outline-hidden focus-visible:ring-0",
         )}
       >
         <div

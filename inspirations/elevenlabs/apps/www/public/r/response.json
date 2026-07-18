@@ -1,9 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "response",
-  "dependencies": [
-    "streamdown"
-  ],
+  "dependencies": ["streamdown"],
   "files": [
     {
       "path": "components/ui/response.tsx",

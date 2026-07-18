@@ -65,7 +65,7 @@ test("rate limit manager handles soft over-limit warnings and normal header lear
     "openai",
     "conn-over-limit",
     { "x-ratelimit-over-limit": "yes" },
-    200
+    200,
   );
 
   const softStatus = rateLimitManager.getRateLimitStatus("openai", "conn-over-limit");
@@ -81,7 +81,7 @@ test("rate limit manager handles soft over-limit warnings and normal header lear
       "x-ratelimit-remaining-requests": "5",
       "x-ratelimit-reset-requests": "30s",
     },
-    200
+    200,
   );
   await rateLimitManager.__flushLearnedLimitsForTests();
 
@@ -107,7 +107,7 @@ test("rate limit manager handles soft over-limit warnings and normal header lear
         return map[name] ?? null;
       },
     },
-    200
+    200,
   );
   await rateLimitManager.__flushLearnedLimitsForTests();
 
@@ -134,7 +134,7 @@ test("rate limit manager handles 429 limiter teardown and disable cleanup", asyn
       "x-ratelimit-reset-requests": "10s",
     },
     200,
-    "gemini-2.5-flash"
+    "gemini-2.5-flash",
   );
   await rateLimitManager.__flushLearnedLimitsForTests();
   assert.ok(rateLimitManager.getAllRateLimitStatus()["gemini:conn-disable:gemini-2.5-flash"]);
@@ -155,7 +155,7 @@ test("rate limit manager uses model-scoped limiter keys for GitHub Copilot (#162
       "x-ratelimit-reset-requests": "15s",
     },
     200,
-    "gpt-5.1-codex-max"
+    "gpt-5.1-codex-max",
   );
   await rateLimitManager.__flushLearnedLimitsForTests();
 
@@ -163,13 +163,13 @@ test("rate limit manager uses model-scoped limiter keys for GitHub Copilot (#162
   const allStatuses = rateLimitManager.getAllRateLimitStatus();
   assert.ok(
     allStatuses["github:conn-github:gpt-5.1-codex-max"],
-    "GitHub limiter key should be model-scoped (github:conn:model)"
+    "GitHub limiter key should be model-scoped (github:conn:model)",
   );
   // Verify the limiter state is model-scoped via test helper
   const limiterState = await rateLimitManager.__getLimiterStateForTests(
     "github",
     "conn-github",
-    "gpt-5.1-codex-max"
+    "gpt-5.1-codex-max",
   );
   assert.equal(limiterState?.key, "github:conn-github:gpt-5.1-codex-max");
 });
@@ -186,14 +186,14 @@ test("rate limit manager parses retry hints from response bodies and locks model
       },
     },
     429,
-    "gpt-4o"
+    "gpt-4o",
   );
 
   assert.equal(accountFallback.getModelLockoutInfo("openai", "conn-body", "gpt-4o"), null);
   const limiterState = await rateLimitManager.__getLimiterStateForTests(
     "openai",
     "conn-body",
-    "gpt-4o"
+    "gpt-4o",
   );
   assert.equal(limiterState?.key, "openai:conn-body");
   assert.equal(rateLimitManager.getRateLimitStatus("openai", "conn-body").active, true);
@@ -203,7 +203,7 @@ test("rate limit manager parses retry hints from response bodies and locks model
     "conn-body",
     JSON.stringify({ error: { type: "rate_limit_error" } }),
     429,
-    null
+    null,
   );
   assert.equal(rateLimitManager.getRateLimitStatus("openai", "conn-body").active, true);
 });

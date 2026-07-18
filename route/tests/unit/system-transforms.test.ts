@@ -119,8 +119,8 @@ test("obfuscate_words walks tool descriptions (description + function.descriptio
   assert.ok((body.tools[0] as { description: string }).description.includes(`o${ZWJ}pencode`));
   assert.ok(
     (body.tools[1] as { function: { description: string } }).function.description.includes(
-      `o${ZWJ}pen-webui`
-    )
+      `o${ZWJ}pen-webui`,
+    ),
   );
 });
 
@@ -254,7 +254,7 @@ test("applySystemTransformPipeline: anthropic-compatible-cc-* falls back to PROV
   const result = applySystemTransformPipeline(
     "anthropic-compatible-cc-claude-opus-4-7",
     body,
-    DEFAULT_SYSTEM_TRANSFORMS_CONFIG
+    DEFAULT_SYSTEM_TRANSFORMS_CONFIG,
   );
   // Full CC bridge pipeline ran → billing header injected at [0]
   assert.ok(result.appliedOpKinds.includes("inject_billing_header"));
@@ -340,7 +340,7 @@ test("setSystemTransformsConfig migrates legacy { enabled, pipeline } into provi
   // The custom pipeline is now under the CC bridge provider
   const hasMarker = cc.pipeline.some(
     (op: { kind: string; match?: string }) =>
-      op.kind === "replace_text" && op.match === "legacy-key-marker"
+      op.kind === "replace_text" && op.match === "legacy-key-marker",
   );
   assert.ok(hasMarker);
   // Other providers still come from defaults (claude pipeline preserved)
@@ -550,6 +550,6 @@ test("defaults parity: DEFAULT_SYSTEM_TRANSFORMS_CONFIG matches the UI mirror sn
     UI_DEFAULTS_SNAPSHOT,
     "Server DEFAULT_SYSTEM_TRANSFORMS_CONFIG drifted from the UI mirror in " +
       "src/app/(dashboard)/dashboard/settings/components/RoutingTab.tsx " +
-      "(DEFAULT_SYSTEM_TRANSFORMS_CLIENT). Update both in the same commit."
+      "(DEFAULT_SYSTEM_TRANSFORMS_CLIENT). Update both in the same commit.",
   );
 });

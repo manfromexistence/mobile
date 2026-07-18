@@ -44,7 +44,7 @@ describe("webhook guard blocks cloud-metadata unconditionally (#3269 hardening)"
         assert.throws(
           () => parseAndValidateWebhookUrl(target),
           OutboundUrlGuardError,
-          `expected ${target} to be blocked`
+          `expected ${target} to be blocked`,
         );
       }
     } finally {

@@ -85,8 +85,9 @@ vi.mock("@/shared/utils/clipboard", () => ({
   copyToClipboard: vi.fn(async () => undefined),
 }));
 
-const { default: HomePageClient } =
-  await import("../../../src/app/(dashboard)/dashboard/HomePageClient");
+const { default: HomePageClient } = await import(
+  "../../../src/app/(dashboard)/dashboard/HomePageClient"
+);
 
 function jsonResponse(body: unknown) {
   return {
@@ -112,7 +113,7 @@ beforeEach(() => {
           jsonResponse({
             showQuickStartOnHome: true,
             showProviderTopologyOnHome: false,
-          })
+          }),
         );
       }
       if (url === "/api/providers") {
@@ -129,14 +130,14 @@ beforeEach(() => {
             updateAvailable: false,
             channel: "test",
             autoUpdateSupported: false,
-          })
+          }),
         );
       }
       if (url === "/api/provider-nodes") {
         return Promise.resolve(jsonResponse({ nodes: [] }));
       }
       return Promise.resolve(jsonResponse({}));
-    })
+    }),
   );
 
   container = document.createElement("div");

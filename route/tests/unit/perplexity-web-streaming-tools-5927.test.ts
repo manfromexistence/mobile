@@ -108,7 +108,7 @@ test("Tools stream: <tool> text becomes delta.tool_calls + finish_reason tool_ca
         const content = c.choices?.[0]?.delta?.content;
         return typeof content !== "string" || !content.includes("<tool>");
       }),
-      "no chunk contains raw <tool> text in delta.content"
+      "no chunk contains raw <tool> text in delta.content",
     );
 
     const toolChunk = chunks.find((c) => c.choices[0].delta && c.choices[0].delta.tool_calls);
@@ -157,7 +157,7 @@ test("Tools regression: streaming request with NO tools still streams plain cont
 
     assert.ok(
       chunks.every((c) => !(c.choices[0].delta && c.choices[0].delta.tool_calls)),
-      "no tool_calls emitted without a tools array"
+      "no tool_calls emitted without a tools array",
     );
     const finishChunk = chunks.find((c) => c.choices[0].finish_reason);
     assert.equal(finishChunk.choices[0].finish_reason, "stop");

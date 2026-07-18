@@ -1,13 +1,8 @@
 {
   "name": "combobox-tags-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "combobox",
-    "tags-input"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["combobox", "tags-input"],
   "files": [
     {
       "path": "examples/combobox-tags-demo.tsx",

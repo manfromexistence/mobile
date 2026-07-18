@@ -1,29 +1,29 @@
-import { Box, Flex, Text, Icon, Portal } from '@chakra-ui/react';
-import { ChevronDown, Info } from 'lucide-react';
-import { useRef, useEffect, useState, Suspense, lazy } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import Navbar from '../components/landingnew/Navbar/Navbar';
-import DotField from '../components/landingnew/Hero/DotField';
-import { TOOLS as BASE_TOOLS } from '../constants/Tools';
-import { colors } from '../constants/colors';
-import '../tools/tools.css';
-import '../css/tools-landing.css';
-import Footer from '../components/landingnew/Footer/Footer';
-import { FaArrowRight } from 'react-icons/fa6';
+import { Box, Flex, Text, Icon, Portal } from "@chakra-ui/react";
+import { ChevronDown, Info } from "lucide-react";
+import { useRef, useEffect, useState, Suspense, lazy } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import Navbar from "../components/landingnew/Navbar/Navbar";
+import DotField from "../components/landingnew/Hero/DotField";
+import { TOOLS as BASE_TOOLS } from "../constants/Tools";
+import { colors } from "../constants/colors";
+import "../tools/tools.css";
+import "../css/tools-landing.css";
+import Footer from "../components/landingnew/Footer/Footer";
+import { FaArrowRight } from "react-icons/fa6";
 
-const BackgroundStudio = lazy(() => import('../tools/background-studio/BackgroundStudio'));
-const ShapeMagic = lazy(() => import('../tools/shape-magic/ShapeMagic'));
-const TextureLab = lazy(() => import('../tools/texture-lab/TextureLab'));
+const BackgroundStudio = lazy(() => import("../tools/background-studio/BackgroundStudio"));
+const ShapeMagic = lazy(() => import("../tools/shape-magic/ShapeMagic"));
+const TextureLab = lazy(() => import("../tools/texture-lab/TextureLab"));
 
 const TOOL_COMPONENTS = {
-  'background-studio': BackgroundStudio,
-  'shape-magic': ShapeMagic,
-  'texture-lab': TextureLab
+  "background-studio": BackgroundStudio,
+  "shape-magic": ShapeMagic,
+  "texture-lab": TextureLab,
 };
 
-const TOOLS = BASE_TOOLS.map(tool => ({
+const TOOLS = BASE_TOOLS.map((tool) => ({
   ...tool,
-  component: TOOL_COMPONENTS[tool.id]
+  component: TOOL_COMPONENTS[tool.id],
 }));
 
 const ToolDropdown = ({ selectedTool, onSelect, isOpen, setIsOpen }) => {
@@ -32,16 +32,16 @@ const ToolDropdown = ({ selectedTool, onSelect, isOpen, setIsOpen }) => {
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0 });
 
-  const selected = TOOLS.find(t => t.id === selectedTool) || TOOLS[0];
+  const selected = TOOLS.find((t) => t.id === selectedTool) || TOOLS[0];
 
   useEffect(() => {
-    const handleClickOutside = e => {
+    const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setIsOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [setIsOpen]);
 
   useEffect(() => {
@@ -83,20 +83,27 @@ const ToolDropdown = ({ selectedTool, onSelect, isOpen, setIsOpen }) => {
             <div
               ref={infoRef}
               className="info-tooltip-trigger"
-              onClick={e => e.stopPropagation()}
-              onMouseDown={e => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
               onMouseEnter={() => setTooltipVisible(true)}
               onMouseLeave={() => setTooltipVisible(false)}
             >
               <Info size={14} color={colors.accent} />
             </div>
-            <Flex align="center" justify="center" w={6} h={6} borderRadius="6px" bg={colors.bgHover}>
+            <Flex
+              align="center"
+              justify="center"
+              w={6}
+              h={6}
+              borderRadius="6px"
+              bg={colors.bgHover}
+            >
               <Icon
                 as={ChevronDown}
                 boxSize={3.5}
                 color={colors.accent}
                 transition="transform 0.2s"
-                transform={isOpen ? 'rotate(180deg)' : 'rotate(0deg)'}
+                transform={isOpen ? "rotate(180deg)" : "rotate(0deg)"}
               />
             </Flex>
           </Flex>
@@ -114,13 +121,13 @@ const ToolDropdown = ({ selectedTool, onSelect, isOpen, setIsOpen }) => {
         borderRadius="12px"
         overflow="hidden"
         opacity={isOpen ? 1 : 0}
-        visibility={isOpen ? 'visible' : 'hidden'}
-        transform={isOpen ? 'translateY(0)' : 'translateY(-8px)'}
+        visibility={isOpen ? "visible" : "hidden"}
+        transform={isOpen ? "translateY(0)" : "translateY(-8px)"}
         transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
         zIndex={100}
         boxShadow="0 8px 32px rgba(0, 0, 0, 0.4)"
       >
-        {TOOLS.map(tool => (
+        {TOOLS.map((tool) => (
           <Flex
             key={tool.id}
             as="button"
@@ -133,7 +140,7 @@ const ToolDropdown = ({ selectedTool, onSelect, isOpen, setIsOpen }) => {
             w="100%"
             px={3}
             py={2.5}
-            bg={selectedTool === tool.id ? colors.bgElevated : 'transparent'}
+            bg={selectedTool === tool.id ? colors.bgElevated : "transparent"}
             _hover={{ bg: colors.bgElevated }}
             transition="all 0.15s"
           >
@@ -143,10 +150,18 @@ const ToolDropdown = ({ selectedTool, onSelect, isOpen, setIsOpen }) => {
               w={6}
               h={6}
               borderRadius="8px"
-              bg={selectedTool === tool.id ? `linear-gradient(135deg, ${colors.primary} 0%, #7B4FFF 100%)` : colors.bgHover}
+              bg={
+                selectedTool === tool.id
+                  ? `linear-gradient(135deg, ${colors.primary} 0%, #7B4FFF 100%)`
+                  : colors.bgHover
+              }
               transition="all 0.15s"
             >
-              <Icon as={tool.icon} boxSize={3.5} color={selectedTool === tool.id ? '#fff' : colors.accent} />
+              <Icon
+                as={tool.icon}
+                boxSize={3.5}
+                color={selectedTool === tool.id ? "#fff" : colors.accent}
+              />
             </Flex>
             <Text fontSize="14px" fontWeight={selectedTool === tool.id ? 600 : 500} color="#fff">
               {tool.label}
@@ -187,9 +202,9 @@ const ToolDropdown = ({ selectedTool, onSelect, isOpen, setIsOpen }) => {
 };
 
 const ComingSoon = ({ label, toolSelector }) => (
-  <Flex h="100%" w="100%" gap={4} direction={{ base: 'column', lg: 'row' }}>
+  <Flex h="100%" w="100%" gap={4} direction={{ base: "column", lg: "row" }}>
     {/* Controls Panel - shown on desktop */}
-    <Box w="280px" flexShrink={0} display={{ base: 'none', lg: 'flex' }} flexDirection="column">
+    <Box w="280px" flexShrink={0} display={{ base: "none", lg: "flex" }} flexDirection="column">
       {toolSelector && <Box mb={4}>{toolSelector}</Box>}
       <Text fontSize="13px" color={colors.accentMuted}>
         Settings will appear here when the tool is ready.
@@ -203,12 +218,12 @@ const ComingSoon = ({ label, toolSelector }) => (
       justify="center"
       direction="column"
       gap={3}
-      borderRadius={{ base: '12px', lg: '16px' }}
+      borderRadius={{ base: "12px", lg: "16px" }}
       border={`1px solid ${colors.borderPrimary}`}
       bg={colors.bgCard}
-      minH={{ base: '200px', lg: 'auto' }}
+      minH={{ base: "200px", lg: "auto" }}
     >
-      <Text fontSize={{ base: '20px', md: '24px' }} fontWeight={700} color="#fff">
+      <Text fontSize={{ base: "20px", md: "24px" }} fontWeight={700} color="#fff">
         {label}
       </Text>
       <Text fontSize="14px" color={colors.accentMuted}>
@@ -219,11 +234,15 @@ const ComingSoon = ({ label, toolSelector }) => (
 );
 
 const ToolContent = ({ toolId, toolSelector, mobileToolSelector }) => {
-  const tool = TOOLS.find(t => t.id === toolId);
+  const tool = TOOLS.find((t) => t.id === toolId);
 
   if (!tool?.component) {
     return (
-      <ComingSoon label={tool?.label || 'Tool'} toolSelector={toolSelector} mobileToolSelector={mobileToolSelector} />
+      <ComingSoon
+        label={tool?.label || "Tool"}
+        toolSelector={toolSelector}
+        mobileToolSelector={mobileToolSelector}
+      />
     );
   }
 
@@ -249,9 +268,9 @@ export default function ToolsPage() {
 
   useEffect(() => {
     if (!toolId) {
-      document.title = 'React Bits - Tools';
+      document.title = "React Bits - Tools";
     } else {
-      const tool = TOOLS.find(t => t.id === toolId);
+      const tool = TOOLS.find((t) => t.id === toolId);
       if (tool) {
         document.title = `React Bits - ${tool.label}`;
       }
@@ -272,13 +291,14 @@ export default function ToolsPage() {
             <div className="tools-landing-header-left">
               <h1 className="tools-landing-title">Creative Tools</h1>
               <p className="tools-landing-subtitle">
-                Free utilities to boost your creative workflow and help you get the most out of React Bits in your projects.
+                Free utilities to boost your creative workflow and help you get the most out of
+                React Bits in your projects.
               </p>
             </div>
           </div>
 
           <div className="tools-landing-grid">
-            {TOOLS.map(tool => {
+            {TOOLS.map((tool) => {
               const IconComp = tool.icon;
               return (
                 <Link to={`/tools/${tool.id}`} className="tools-landing-card" key={tool.id}>
@@ -313,11 +333,11 @@ export default function ToolsPage() {
     );
   }
 
-  const handleToolSelect = id => {
+  const handleToolSelect = (id) => {
     navigate(`/tools/${id}`);
   };
 
-  const selectedTool = TOOLS.find(t => t.id === toolId)?.id || 'background-studio';
+  const selectedTool = TOOLS.find((t) => t.id === toolId)?.id || "background-studio";
 
   return (
     <Box h="100vh" bg="#120F17" overflow="hidden">
@@ -325,7 +345,7 @@ export default function ToolsPage() {
 
       <Box
         px={{ base: 3, md: 6 }}
-        pt={{ base: '80px', md: '80px' }}
+        pt={{ base: "80px", md: "80px" }}
         pb={{ base: 3, md: 6 }}
         h="100vh"
         overflow="hidden"
@@ -333,7 +353,7 @@ export default function ToolsPage() {
         flexDirection="column"
       >
         {/* Mobile Tool Selector - shown at top on mobile */}
-        <Box display={{ base: 'block', lg: 'none' }} mb={3} flexShrink={0}>
+        <Box display={{ base: "block", lg: "none" }} mb={3} flexShrink={0}>
           <ToolDropdown
             selectedTool={selectedTool}
             onSelect={handleToolSelect}

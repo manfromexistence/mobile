@@ -17,7 +17,7 @@ function csrfResponse(): Response {
       token: "csrf-token",
       expiresAt: new Date(Date.now() + 60_000).toISOString(),
     }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
+    { status: 200, headers: { "Content-Type": "application/json" } },
   );
 }
 
@@ -49,12 +49,12 @@ describe("installDashboardCsrfFetch", () => {
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
       "/api/auth/csrf",
-      expect.objectContaining({ cache: "no-store", credentials: "same-origin" })
+      expect.objectContaining({ cache: "no-store", credentials: "same-origin" }),
     );
     expect(fetchMock).toHaveBeenNthCalledWith(
       2,
       "/api/settings",
-      expect.objectContaining({ method: "PATCH" })
+      expect.objectContaining({ method: "PATCH" }),
     );
 
     const headers = fetchMock.mock.calls[1][1]?.headers as Headers;

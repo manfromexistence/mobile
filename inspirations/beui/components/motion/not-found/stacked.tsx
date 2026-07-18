@@ -3,15 +3,9 @@
 import { motion, useReducedMotion } from "motion/react";
 import { SPRING_PANEL } from "@/lib/ease";
 import { useHoverCapable } from "@/lib/hooks/use-hover-capable";
-import {
-  NOT_FOUND_DEFAULTS,
-  NotFoundActions,
-  NotFoundStage,
-  type NotFoundProps,
-} from "./shared";
+import { NOT_FOUND_DEFAULTS, NotFoundActions, NotFoundStage, type NotFoundProps } from "./shared";
 
-const CARD =
-  "absolute inset-0 rounded-3xl border border-border bg-card shadow-sm";
+const CARD = "absolute inset-0 rounded-3xl border border-border bg-card shadow-sm";
 
 export function NotFoundStacked({
   className,

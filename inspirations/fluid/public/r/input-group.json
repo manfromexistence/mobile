@@ -3,10 +3,7 @@
   "name": "input-group",
   "title": "Input Group",
   "description": "Grouped input fields with proximity-based highlighting, animated label transitions, optional icons, and error states.",
-  "dependencies": [
-    "lucide-react",
-    "@base-ui/react"
-  ],
+  "dependencies": ["lucide-react", "@base-ui/react"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/font-weight.json",

@@ -54,7 +54,7 @@ test("logger's file transport stream carries an error listener (never an unhandl
   assert.ok(
     stream.listenerCount("error") > 0,
     "the file-transport stream must have an 'error' listener attached — otherwise a worker " +
-      "write failure (e.g. ENOENT after DATA_DIR is removed) re-throws as an uncaughtException (#6360)"
+      "write failure (e.g. ENOENT after DATA_DIR is removed) re-throws as an uncaughtException (#6360)",
   );
 });
 
@@ -83,7 +83,7 @@ test("logger must not crash the process when its worker transport reports a writ
       "error",
       Object.assign(new Error(`ENOENT: no such file or directory, open '${logFile}'`), {
         code: "ENOENT",
-      })
+      }),
     );
 
     // Give any (mis)handling a tick to surface as an uncaughtException before
@@ -94,7 +94,7 @@ test("logger must not crash the process when its worker transport reports a writ
     assert.equal(
       uncaught,
       null,
-      `logger transport write failure after DATA_DIR removal must not raise an uncaughtException: ${String(uncaught)}`
+      `logger transport write failure after DATA_DIR removal must not raise an uncaughtException: ${String(uncaught)}`,
     );
   } finally {
     process.removeListener("uncaughtException", onUncaughtException);

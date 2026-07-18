@@ -38,10 +38,7 @@ export interface RenderProps {
    */
   render?:
     | React.ReactElement
-    | ((
-        props: Record<string, unknown>,
-        state: Record<string, unknown>,
-      ) => React.ReactElement);
+    | ((props: Record<string, unknown>, state: Record<string, unknown>) => React.ReactElement);
 }
 
 export type Direction = "ltr" | "rtl";

@@ -21,9 +21,7 @@ const TMP = fs.mkdtempSync(path.join(os.tmpdir(), "omni-xai-usage-"));
 process.env.DATA_DIR = TMP;
 
 const core = await import("../../src/lib/db/core.ts");
-const { getMonthlyProviderTokensForConnection } = await import(
-  "../../src/lib/usage/usageStats.ts"
-);
+const { getMonthlyProviderTokensForConnection } = await import("../../src/lib/usage/usageStats.ts");
 const { __testing, USAGE_FETCHER_PROVIDERS, getUsageForProvider } = await import(
   "../../open-sse/services/usage.ts"
 );
@@ -34,12 +32,12 @@ function insertUsage(
   provider: string,
   tokensIn: number,
   tokensOut: number,
-  timestamp: string
+  timestamp: string,
 ) {
   const db = core.getDbInstance();
   db.prepare(
     `INSERT INTO usage_history (provider, connection_id, tokens_input, tokens_output, timestamp)
-     VALUES (?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?)`,
   ).run(provider, connectionId, tokensIn, tokensOut, timestamp);
 }
 
@@ -49,7 +47,7 @@ describe("xAI self-tracked usage", () => {
     const now = new Date();
     const inWindow = now.toISOString();
     const outOfWindow = new Date(
-      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 15)
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 15),
     ).toISOString();
     // in-window usage for conn-x: 2.0M + 0.3M
     insertUsage("conn-x", "xai", 2_000_000, 0, inWindow);
@@ -74,7 +72,7 @@ describe("xAI self-tracked usage", () => {
   it("registers 'xai' as a usage-fetcher provider", () => {
     assert.ok(
       (USAGE_FETCHER_PROVIDERS as readonly string[]).includes("xai"),
-      "xai must be listed in USAGE_FETCHER_PROVIDERS"
+      "xai must be listed in USAGE_FETCHER_PROVIDERS",
     );
   });
 

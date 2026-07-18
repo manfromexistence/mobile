@@ -102,6 +102,6 @@ test("Antigravity cache entry is still sanitized (non-user-callable quota key dr
   assert.ok("credits" in (entry.quotas as Record<string, unknown>), "credits is kept");
   assert.ok(
     !("definitely-not-a-real-model" in (entry.quotas as Record<string, unknown>)),
-    "non-user-callable quota key is dropped for antigravity"
+    "non-user-callable quota key is dropped for antigravity",
   );
 });

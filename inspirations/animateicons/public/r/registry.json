@@ -7,9 +7,7 @@
       "name": "hu-activity",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -23,9 +21,7 @@
       "name": "hu-bookmark-check",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -39,9 +35,7 @@
       "name": "hu-bookmark",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -55,9 +49,7 @@
       "name": "hu-bookmark-minus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -71,9 +63,7 @@
       "name": "hu-bookmark-remove",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -87,9 +77,7 @@
       "name": "hu-check-check",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -103,9 +91,7 @@
       "name": "hu-check",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -119,9 +105,7 @@
       "name": "hu-chevron-right",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -135,9 +119,7 @@
       "name": "hu-compass-0-1",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -151,9 +133,7 @@
       "name": "hu-compass-0-2",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -167,9 +147,7 @@
       "name": "hu-copy",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -183,9 +161,7 @@
       "name": "hu-dashboard-0-1",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -199,9 +175,7 @@
       "name": "hu-dashboard-0-2",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -215,9 +189,7 @@
       "name": "hu-dashboard-0-3",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -231,9 +203,7 @@
       "name": "hu-discord",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -247,9 +217,7 @@
       "name": "hu-download",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -263,9 +231,7 @@
       "name": "hu-eye",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -279,9 +245,7 @@
       "name": "hu-facebook",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -295,9 +259,7 @@
       "name": "hu-figma",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -311,9 +273,7 @@
       "name": "hu-github",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -327,9 +287,7 @@
       "name": "hu-heart",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -343,9 +301,7 @@
       "name": "hu-loading-0-1",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -359,9 +315,7 @@
       "name": "hu-loading-0-2",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -375,9 +329,7 @@
       "name": "hu-menu-0-1",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -391,9 +343,7 @@
       "name": "hu-menu-0-2",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -407,9 +357,7 @@
       "name": "hu-mouse-pointer-click-0-1",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -423,9 +371,7 @@
       "name": "hu-new-twitter",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -439,9 +385,7 @@
       "name": "hu-notification",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -455,9 +399,7 @@
       "name": "hu-notification-off",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -471,9 +413,7 @@
       "name": "hu-search",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -487,9 +427,7 @@
       "name": "hu-settings-0-1",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -503,9 +441,7 @@
       "name": "hu-settings-0-2",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -519,9 +455,7 @@
       "name": "hu-twitter",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -535,9 +469,7 @@
       "name": "lu-a-arrow-down",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -551,9 +483,7 @@
       "name": "lu-a-arrow-up",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -567,9 +497,7 @@
       "name": "lu-accessibility",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -583,9 +511,7 @@
       "name": "lu-activity",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -599,9 +525,7 @@
       "name": "lu-angry",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -615,9 +539,7 @@
       "name": "lu-annoyed",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -631,9 +553,7 @@
       "name": "lu-arrow-down-up",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -647,9 +567,7 @@
       "name": "lu-arrow-up-0-1",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -663,9 +581,7 @@
       "name": "lu-arrow-up-1-0",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -679,9 +595,7 @@
       "name": "lu-arrow-up-a-z",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -695,9 +609,7 @@
       "name": "lu-arrow-up-z-a",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -711,9 +623,7 @@
       "name": "lu-atom",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -727,9 +637,7 @@
       "name": "lu-audio-lines",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -743,9 +651,7 @@
       "name": "lu-badge-cent",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -759,9 +665,7 @@
       "name": "lu-badge-dollar",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -775,9 +679,7 @@
       "name": "lu-baggage-claim",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -791,9 +693,7 @@
       "name": "lu-battery-full",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -807,9 +707,7 @@
       "name": "lu-battery",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -823,9 +721,7 @@
       "name": "lu-bell",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -839,9 +735,7 @@
       "name": "lu-bell-minus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -855,9 +749,7 @@
       "name": "lu-bell-plus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -871,9 +763,7 @@
       "name": "lu-bell-ring",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -887,9 +777,7 @@
       "name": "lu-biceps-flexed",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -903,9 +791,7 @@
       "name": "lu-bike",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -919,9 +805,7 @@
       "name": "lu-bitcoin",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -935,9 +819,7 @@
       "name": "lu-blend",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -951,9 +833,7 @@
       "name": "lu-blocks",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -967,9 +847,7 @@
       "name": "lu-bolt",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -983,9 +861,7 @@
       "name": "lu-book-open-check",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -999,9 +875,7 @@
       "name": "lu-book-open",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1015,9 +889,7 @@
       "name": "lu-book-open-text",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1031,9 +903,7 @@
       "name": "lu-bookmark-check",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1047,9 +917,7 @@
       "name": "lu-bookmark",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1063,9 +931,7 @@
       "name": "lu-bookmark-minus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1079,9 +945,7 @@
       "name": "lu-bookmark-plus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1095,9 +959,7 @@
       "name": "lu-bookmark-x",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1111,9 +973,7 @@
       "name": "lu-box",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1127,9 +987,7 @@
       "name": "lu-boxes",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1143,9 +1001,7 @@
       "name": "lu-brain",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1159,9 +1015,7 @@
       "name": "lu-bring-to-front",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1175,9 +1029,7 @@
       "name": "lu-chart-area",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1191,9 +1043,7 @@
       "name": "lu-chart-bar",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1207,9 +1057,7 @@
       "name": "lu-chart-column",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1223,9 +1071,7 @@
       "name": "lu-chart-line",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1239,9 +1085,7 @@
       "name": "lu-chart-network",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1255,9 +1099,7 @@
       "name": "lu-chart-no-axes-combined",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1271,9 +1113,7 @@
       "name": "lu-chart-pie",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1287,9 +1127,7 @@
       "name": "lu-chart-scatter",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1303,9 +1141,7 @@
       "name": "lu-check-check",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1319,9 +1155,7 @@
       "name": "lu-check",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1335,9 +1169,7 @@
       "name": "lu-chevron-down",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1351,9 +1183,7 @@
       "name": "lu-chevron-left",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1367,9 +1197,7 @@
       "name": "lu-chevron-right",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1383,9 +1211,7 @@
       "name": "lu-chevron-up",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1399,9 +1225,7 @@
       "name": "lu-chevrons-down",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1415,9 +1239,7 @@
       "name": "lu-chevrons-left",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1431,9 +1253,7 @@
       "name": "lu-chevrons-left-right-ellipsis",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1447,9 +1267,7 @@
       "name": "lu-chevrons-left-right",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1463,9 +1281,7 @@
       "name": "lu-chevrons-right",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1479,9 +1295,7 @@
       "name": "lu-chevrons-right-left",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1495,9 +1309,7 @@
       "name": "lu-chevrons-up",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1511,9 +1323,7 @@
       "name": "lu-chrome",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1527,9 +1337,7 @@
       "name": "lu-circle-check-big",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1543,9 +1351,7 @@
       "name": "lu-circle-check",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1559,9 +1365,7 @@
       "name": "lu-circle-chevron-down",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1575,9 +1379,7 @@
       "name": "lu-circle-chevron-left",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1591,9 +1393,7 @@
       "name": "lu-circle-chevron-right",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1607,9 +1407,7 @@
       "name": "lu-circle-chevron-up",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1623,9 +1421,7 @@
       "name": "lu-circle-plus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1639,9 +1435,7 @@
       "name": "lu-clipboard",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1655,9 +1449,7 @@
       "name": "lu-cloud-upload",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1671,9 +1463,7 @@
       "name": "lu-code",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1687,9 +1477,7 @@
       "name": "lu-code-xml",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1703,9 +1491,7 @@
       "name": "lu-coffee",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1719,9 +1505,7 @@
       "name": "lu-compass",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1735,9 +1519,7 @@
       "name": "lu-contact",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1751,9 +1533,7 @@
       "name": "lu-contact-round",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1767,9 +1547,7 @@
       "name": "lu-copy",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1783,9 +1561,7 @@
       "name": "lu-corner-down-left",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1799,9 +1575,7 @@
       "name": "lu-corner-down-right",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1815,9 +1589,7 @@
       "name": "lu-corner-left-down",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1831,9 +1603,7 @@
       "name": "lu-corner-left-up",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1847,9 +1617,7 @@
       "name": "lu-corner-right-down",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1863,9 +1631,7 @@
       "name": "lu-corner-right-up",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1879,9 +1645,7 @@
       "name": "lu-corner-up-left",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1895,9 +1659,7 @@
       "name": "lu-corner-up-right",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1911,9 +1673,7 @@
       "name": "lu-credit-card",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1927,9 +1687,7 @@
       "name": "lu-dashboard",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1943,9 +1701,7 @@
       "name": "lu-diff",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1959,9 +1715,7 @@
       "name": "lu-dollar-sign",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1975,9 +1729,7 @@
       "name": "lu-download",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -1991,9 +1743,7 @@
       "name": "lu-ellipsis",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2007,9 +1757,7 @@
       "name": "lu-ellipsis-vertical",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2023,9 +1771,7 @@
       "name": "lu-euro",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2039,9 +1785,7 @@
       "name": "lu-external-link",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2055,9 +1799,7 @@
       "name": "lu-eye-closed",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2071,9 +1813,7 @@
       "name": "lu-eye",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2087,9 +1827,7 @@
       "name": "lu-eye-off",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2103,9 +1841,7 @@
       "name": "lu-facebook",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2119,9 +1855,7 @@
       "name": "lu-figma",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2135,9 +1869,7 @@
       "name": "lu-flame",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2151,9 +1883,7 @@
       "name": "lu-folder",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2167,9 +1897,7 @@
       "name": "lu-folder-open",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2183,9 +1911,7 @@
       "name": "lu-framer",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2199,9 +1925,7 @@
       "name": "lu-gamepad",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2215,9 +1939,7 @@
       "name": "lu-georgian-lari",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2231,9 +1953,7 @@
       "name": "lu-git-branch",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2247,9 +1967,7 @@
       "name": "lu-git-branch-minus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2263,9 +1981,7 @@
       "name": "lu-git-branch-plus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2279,9 +1995,7 @@
       "name": "lu-git-commit-horizontal",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2295,9 +2009,7 @@
       "name": "lu-git-commit-vertical",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2311,9 +2023,7 @@
       "name": "lu-git-compare-arrows",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2327,9 +2037,7 @@
       "name": "lu-git-compare",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2343,9 +2051,7 @@
       "name": "lu-git-fork",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2359,9 +2065,7 @@
       "name": "lu-git-merge-conflict",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2375,9 +2079,7 @@
       "name": "lu-git-merge",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2391,9 +2093,7 @@
       "name": "lu-github",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2407,9 +2107,7 @@
       "name": "lu-gitlab",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2423,9 +2121,7 @@
       "name": "lu-globe",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2439,9 +2135,7 @@
       "name": "lu-globe-lock",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2455,9 +2149,7 @@
       "name": "lu-hand-coins",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2471,9 +2163,7 @@
       "name": "lu-headphones",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2487,9 +2177,7 @@
       "name": "lu-headphones-off",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2503,9 +2191,7 @@
       "name": "lu-headset",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2519,9 +2205,7 @@
       "name": "lu-heart",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2535,9 +2219,7 @@
       "name": "lu-house",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2551,9 +2233,7 @@
       "name": "lu-indian-rupee",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2567,9 +2247,7 @@
       "name": "lu-info",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2583,9 +2261,7 @@
       "name": "lu-instagram",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2599,9 +2275,7 @@
       "name": "lu-key",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2615,9 +2289,7 @@
       "name": "lu-key-round",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2631,9 +2303,7 @@
       "name": "lu-key-square",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2647,9 +2317,7 @@
       "name": "lu-layers",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2663,9 +2331,7 @@
       "name": "lu-layout-grid",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2679,9 +2345,7 @@
       "name": "lu-layout-list",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2695,9 +2359,7 @@
       "name": "lu-link",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2711,9 +2373,7 @@
       "name": "lu-linkedin",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2727,9 +2387,7 @@
       "name": "lu-list-chevrons-up-down",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2743,9 +2401,7 @@
       "name": "lu-loader-circle",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2759,9 +2415,7 @@
       "name": "lu-loader",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2775,9 +2429,7 @@
       "name": "lu-lock",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2791,9 +2443,7 @@
       "name": "lu-login",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2807,9 +2457,7 @@
       "name": "lu-logout",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2823,9 +2471,7 @@
       "name": "lu-mail",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2839,9 +2485,7 @@
       "name": "lu-mails",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2855,9 +2499,7 @@
       "name": "lu-map-pin-check",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2871,9 +2513,7 @@
       "name": "lu-map-pin-check-inside",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2887,9 +2527,7 @@
       "name": "lu-map-pin",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2903,9 +2541,7 @@
       "name": "lu-map-pinned",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2919,9 +2555,7 @@
       "name": "lu-mars",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2935,9 +2569,7 @@
       "name": "lu-menu",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2951,9 +2583,7 @@
       "name": "lu-message-circle",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2967,9 +2597,7 @@
       "name": "lu-mic",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2983,9 +2611,7 @@
       "name": "lu-mic-off",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -2999,9 +2625,7 @@
       "name": "lu-minus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3015,9 +2639,7 @@
       "name": "lu-moon",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3031,9 +2653,7 @@
       "name": "lu-mouse-pointer-click",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3047,9 +2667,7 @@
       "name": "lu-move-diagonal-2",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3063,9 +2681,7 @@
       "name": "lu-move-diagonal",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3079,9 +2695,7 @@
       "name": "lu-move-horizontal",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3095,9 +2709,7 @@
       "name": "lu-move-left",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3111,9 +2723,7 @@
       "name": "lu-move-right",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3127,9 +2737,7 @@
       "name": "lu-move-vertical",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3143,9 +2751,7 @@
       "name": "lu-package-open",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3159,9 +2765,7 @@
       "name": "lu-paperclip",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3175,9 +2779,7 @@
       "name": "lu-pause",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3191,9 +2793,7 @@
       "name": "lu-philippine-peso",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3207,9 +2807,7 @@
       "name": "lu-phone-call",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3223,9 +2821,7 @@
       "name": "lu-phone-forwarded",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3239,9 +2835,7 @@
       "name": "lu-phone",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3255,9 +2849,7 @@
       "name": "lu-phone-incoming",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3271,9 +2863,7 @@
       "name": "lu-phone-missed",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3287,9 +2877,7 @@
       "name": "lu-play",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3303,9 +2891,7 @@
       "name": "lu-plus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3319,9 +2905,7 @@
       "name": "lu-pound-sterling",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3335,9 +2919,7 @@
       "name": "lu-qr-code",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3351,9 +2933,7 @@
       "name": "lu-reply-all",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3367,9 +2947,7 @@
       "name": "lu-reply",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3383,9 +2961,7 @@
       "name": "lu-rocket",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3399,9 +2975,7 @@
       "name": "lu-russian-ruble",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3415,9 +2989,7 @@
       "name": "lu-saudi-riyal",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3431,9 +3003,7 @@
       "name": "lu-scan",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3447,9 +3017,7 @@
       "name": "lu-scan-line",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3463,9 +3031,7 @@
       "name": "lu-scan-qr-code",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3479,9 +3045,7 @@
       "name": "lu-search",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3495,9 +3059,7 @@
       "name": "lu-send",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3511,9 +3073,7 @@
       "name": "lu-settings",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3527,9 +3087,7 @@
       "name": "lu-share",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3543,9 +3101,7 @@
       "name": "lu-shield-check",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3559,9 +3115,7 @@
       "name": "lu-shield-user",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3575,9 +3129,7 @@
       "name": "lu-shield-x",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3591,9 +3143,7 @@
       "name": "lu-shopping-bag",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3607,9 +3157,7 @@
       "name": "lu-shopping-cart",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3623,9 +3171,7 @@
       "name": "lu-signal",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3639,9 +3185,7 @@
       "name": "lu-sliders-horizontal",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3655,9 +3199,7 @@
       "name": "lu-snow-flake",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3671,9 +3213,7 @@
       "name": "lu-sparkles",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3687,9 +3227,7 @@
       "name": "lu-spray-can",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3703,9 +3241,7 @@
       "name": "lu-square-arrow-out-up-right",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3719,9 +3255,7 @@
       "name": "lu-star",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3735,9 +3269,7 @@
       "name": "lu-sun",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3751,9 +3283,7 @@
       "name": "lu-swiss-franc",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3767,9 +3297,7 @@
       "name": "lu-swords",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3783,9 +3311,7 @@
       "name": "lu-telescope",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3799,9 +3325,7 @@
       "name": "lu-terminal",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3815,9 +3339,7 @@
       "name": "lu-thumbs-down",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3831,9 +3353,7 @@
       "name": "lu-thumbs-up",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3847,9 +3367,7 @@
       "name": "lu-trash-2",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3863,9 +3381,7 @@
       "name": "lu-trash",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3879,9 +3395,7 @@
       "name": "lu-trending-down",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3895,9 +3409,7 @@
       "name": "lu-trending-up-down",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3911,9 +3423,7 @@
       "name": "lu-trending-up",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3927,9 +3437,7 @@
       "name": "lu-triangle-alert",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3943,9 +3451,7 @@
       "name": "lu-turkish-lira",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3959,9 +3465,7 @@
       "name": "lu-twitter",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3975,9 +3479,7 @@
       "name": "lu-unlink",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -3991,9 +3493,7 @@
       "name": "lu-upload",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4007,9 +3507,7 @@
       "name": "lu-user-check",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4023,9 +3521,7 @@
       "name": "lu-user-cog",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4039,9 +3535,7 @@
       "name": "lu-user",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4055,9 +3549,7 @@
       "name": "lu-user-lock",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4071,9 +3563,7 @@
       "name": "lu-user-minus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4087,9 +3577,7 @@
       "name": "lu-user-pen",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4103,9 +3591,7 @@
       "name": "lu-user-plus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4119,9 +3605,7 @@
       "name": "lu-user-round-check",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4135,9 +3619,7 @@
       "name": "lu-user-round-cog",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4151,9 +3633,7 @@
       "name": "lu-user-round",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4167,9 +3647,7 @@
       "name": "lu-user-round-minus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4183,9 +3661,7 @@
       "name": "lu-user-round-pen",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4199,9 +3675,7 @@
       "name": "lu-user-round-search",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4215,9 +3689,7 @@
       "name": "lu-user-round-x",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4231,9 +3703,7 @@
       "name": "lu-user-search",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4247,9 +3717,7 @@
       "name": "lu-user-star",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4263,9 +3731,7 @@
       "name": "lu-user-x",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4279,9 +3745,7 @@
       "name": "lu-users",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4295,9 +3759,7 @@
       "name": "lu-users-round",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4311,9 +3773,7 @@
       "name": "lu-venus",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4327,9 +3787,7 @@
       "name": "lu-wallet",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4343,9 +3801,7 @@
       "name": "lu-wallet-minimal",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4359,9 +3815,7 @@
       "name": "lu-webhook",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4375,9 +3829,7 @@
       "name": "lu-wifi-cog",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4391,9 +3843,7 @@
       "name": "lu-wifi",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4407,9 +3857,7 @@
       "name": "lu-wifi-off",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4423,9 +3871,7 @@
       "name": "lu-wifi-pen",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4439,9 +3885,7 @@
       "name": "lu-wifi-sync",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4455,9 +3899,7 @@
       "name": "lu-x",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4471,9 +3913,7 @@
       "name": "lu-yen-yuan",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {
@@ -4487,9 +3927,7 @@
       "name": "lu-zap",
       "type": "registry:ui",
       "registryDependencies": [],
-      "dependencies": [
-        "motion"
-      ],
+      "dependencies": ["motion"],
       "devDependencies": [],
       "files": [
         {

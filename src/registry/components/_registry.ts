@@ -1,13 +1,12 @@
-import type { Registry } from "shadcn/schema"
-import { getRegistryItemUrl } from "@/lib/utils/registry"
+import type { Registry } from "shadcn/schema";
+import { getRegistryItemUrl } from "@/lib/utils/registry";
 
 export const components: Registry["items"] = [
   {
     name: "theme-switcher",
     type: "registry:component",
     title: "Theme Switcher",
-    description:
-      "Toggle between system, light, and dark themes in Next.js apps.",
+    description: "Toggle between system, light, and dark themes in Next.js apps.",
     dependencies: ["next-themes", "motion"],
     files: [
       {
@@ -23,8 +22,7 @@ export const components: Registry["items"] = [
     name: "text-flip",
     type: "registry:component",
     title: "Text Flip",
-    description:
-      "Animated text that cycles through items with a smooth flip transition.",
+    description: "Animated text that cycles through items with a smooth flip transition.",
     dependencies: ["motion"],
     files: [
       {
@@ -120,8 +118,7 @@ export const components: Registry["items"] = [
   {
     name: "chevrons-up-down-icon",
     type: "registry:component",
-    description:
-      "Animated chevrons icon that morphs between up and down directions.",
+    description: "Animated chevrons icon that morphs between up and down directions.",
     dependencies: ["motion"],
     files: [
       {
@@ -137,8 +134,7 @@ export const components: Registry["items"] = [
     name: "typography",
     type: "registry:component",
     title: "Typography",
-    description:
-      "Custom prose styles for headings, links, inline code, and emphasis.",
+    description: "Custom prose styles for headings, links, inline code, and emphasis.",
     devDependencies: ["@tailwindcss/typography"],
     css: {
       "@plugin @tailwindcss/typography": {},
@@ -172,8 +168,7 @@ export const components: Registry["items"] = [
     name: "work-experience",
     type: "registry:component",
     title: "Work Experience",
-    description:
-      "Display work experiences with role details, company logos, and durations.",
+    description: "Display work experiences with role details, company logos, and durations.",
     dependencies: ["react-markdown", "date-fns"],
     registryDependencies: [
       "collapsible",
@@ -211,8 +206,7 @@ export const components: Registry["items"] = [
     name: "slide-to-unlock",
     type: "registry:component",
     title: "Slide to Unlock",
-    description:
-      "Interactive slider inspired by the classic iPhone “slide to unlock” gesture.",
+    description: "Interactive slider inspired by the classic iPhone “slide to unlock” gesture.",
     dependencies: ["motion"],
     registryDependencies: [getRegistryItemUrl("shimmering-text")],
     files: [
@@ -230,10 +224,7 @@ export const components: Registry["items"] = [
     type: "registry:component",
     title: "Testimonials Marquee",
     description: "Scrolling marquee to showcase user testimonials.",
-    registryDependencies: [
-      "@kibo-ui/marquee",
-      getRegistryItemUrl("testimonial"),
-    ],
+    registryDependencies: ["@kibo-ui/marquee", getRegistryItemUrl("testimonial")],
     categories: ["marketing"],
     docs: "https://chanhdai.com/components/testimonials-marquee",
   },
@@ -241,8 +232,7 @@ export const components: Registry["items"] = [
     name: "testimonial",
     type: "registry:component",
     title: "Testimonial",
-    description:
-      "Display user feedback with author info, avatar, and verified badge.",
+    description: "Display user feedback with author info, avatar, and verified badge.",
     files: [
       {
         path: "components/testimonial/testimonial.tsx",
@@ -257,8 +247,7 @@ export const components: Registry["items"] = [
     name: "github-stars",
     type: "registry:component",
     title: "GitHub Stars",
-    description:
-      "Display GitHub repo star count with formatted numbers and full-count tooltip.",
+    description: "Display GitHub repo star count with formatted numbers and full-count tooltip.",
     registryDependencies: ["button", "tooltip"],
     files: [
       {
@@ -274,8 +263,7 @@ export const components: Registry["items"] = [
     name: "scroll-fade-effect",
     type: "registry:component",
     title: "Scroll Fade Effect",
-    description:
-      "Fade content edges as you scroll, for both vertical and horizontal layouts.",
+    description: "Fade content edges as you scroll, for both vertical and horizontal layouts.",
     files: [
       {
         path: "components/scroll-fade-effect/scroll-fade-effect.tsx",
@@ -333,16 +321,13 @@ export const components: Registry["items"] = [
         "--scroll-buffer": "2rem",
         "mask-image":
           "linear-gradient(to top, transparent, black 90%), linear-gradient(to bottom, transparent 0%, black 100%), linear-gradient(black, black)",
-        "mask-size":
-          "100% var(--top-mask-height), 100% var(--bottom-mask-height), 100% 100%",
+        "mask-size": "100% var(--top-mask-height), 100% var(--bottom-mask-height), 100% 100%",
         "mask-repeat": "no-repeat, no-repeat, no-repeat",
-        "mask-position":
-          "0 var(--mask-offset-top), 0 calc(100% - var(--mask-offset-bottom)), 0 0",
+        "mask-position": "0 var(--mask-offset-top), 0 calc(100% - var(--mask-offset-bottom)), 0 0",
         "mask-composite": "exclude",
         "animation-name": "show-top-mask, hide-bottom-mask",
         "animation-timeline": "scroll(self), scroll(self)",
-        "animation-range":
-          "0 var(--scroll-buffer), calc(100% - var(--scroll-buffer)) 100%",
+        "animation-range": "0 var(--scroll-buffer), calc(100% - var(--scroll-buffer)) 100%",
         "animation-fill-mode": "both",
       },
       "@utility scroll-fade-effect-x": {
@@ -352,16 +337,13 @@ export const components: Registry["items"] = [
         "--scroll-buffer": "2rem",
         "mask-image":
           "linear-gradient(to left, transparent, black 90%), linear-gradient(to right, transparent 0%, black 100%), linear-gradient(black, black)",
-        "mask-size":
-          "var(--left-mask-width) 100%, var(--right-mask-width) 100%, 100% 100%",
+        "mask-size": "var(--left-mask-width) 100%, var(--right-mask-width) 100%, 100% 100%",
         "mask-repeat": "no-repeat, no-repeat, no-repeat",
-        "mask-position":
-          "var(--mask-offset-left) 0, calc(100% - var(--mask-offset-right)) 0, 0 0",
+        "mask-position": "var(--mask-offset-left) 0, calc(100% - var(--mask-offset-right)) 0, 0 0",
         "mask-composite": "exclude",
         "animation-name": "show-left-mask, hide-right-mask",
         "animation-timeline": "scroll(self inline), scroll(self inline)",
-        "animation-range":
-          "0 var(--scroll-buffer), calc(100% - var(--scroll-buffer)) 100%",
+        "animation-range": "0 var(--scroll-buffer), calc(100% - var(--scroll-buffer)) 100%",
         "animation-fill-mode": "both",
       },
     },
@@ -372,8 +354,7 @@ export const components: Registry["items"] = [
     name: "consent-manager",
     type: "registry:component",
     title: "Consent Manager",
-    description:
-      "Cookie and tracking consent banner for Next.js, built on c15t.",
+    description: "Cookie and tracking consent banner for Next.js, built on c15t.",
     dependencies: ["@c15t/nextjs"],
     registryDependencies: ["button"],
     files: [
@@ -390,8 +371,7 @@ export const components: Registry["items"] = [
     name: "copy-button",
     type: "registry:component",
     title: "Copy Button",
-    description:
-      "Copy text to clipboard with visual, haptic, and audio feedback.",
+    description: "Copy text to clipboard with visual, haptic, and audio feedback.",
     dependencies: ["motion", "@rexa-developer/tiks", "web-haptics"],
     registryDependencies: ["button", getRegistryItemUrl("icon-swap")],
     files: [
@@ -413,13 +393,9 @@ export const components: Registry["items"] = [
     name: "code-block-command",
     type: "registry:component",
     title: "Code Block Command",
-    description:
-      "Display install commands with package manager switcher and copy button.",
+    description: "Display install commands with package manager switcher and copy button.",
     dependencies: ["@base-ui/react", "motion", "jotai"],
-    registryDependencies: [
-      getRegistryItemUrl("icon-swap"),
-      getRegistryItemUrl("copy-button"),
-    ],
+    registryDependencies: [getRegistryItemUrl("icon-swap"), getRegistryItemUrl("copy-button")],
     files: [
       {
         path: "components/code-block-command/code-block-command.tsx",
@@ -529,8 +505,7 @@ export const components: Registry["items"] = [
     name: "elastic-slider",
     type: "registry:component",
     title: "Elastic Slider",
-    description:
-      "Slider with elastic rubber-band drag and magnetic snap feedback.",
+    description: "Slider with elastic rubber-band drag and magnetic snap feedback.",
     dependencies: ["motion"],
     registryDependencies: [getRegistryItemUrl("use-controllable-state")],
     files: [
@@ -567,11 +542,7 @@ export const components: Registry["items"] = [
     description:
       "Visualize year-long GitHub contribution activity with daily counts, tooltips, and a profile link.",
     dependencies: ["date-fns"],
-    registryDependencies: [
-      "tooltip",
-      "spinner",
-      getRegistryItemUrl("contribution-graph"),
-    ],
+    registryDependencies: ["tooltip", "spinner", getRegistryItemUrl("contribution-graph")],
     files: [
       {
         path: "components/github-contributions/github-contributions.tsx",
@@ -597,8 +568,7 @@ export const components: Registry["items"] = [
     name: "toc-minimap",
     type: "registry:component",
     title: "TOC Minimap",
-    description:
-      "Navigate page sections with a compact, hoverable TOC minimap.",
+    description: "Navigate page sections with a compact, hoverable TOC minimap.",
     registryDependencies: ["hover-card", "@soundcn/u-mini-map-open"],
     files: [
       {
@@ -614,8 +584,7 @@ export const components: Registry["items"] = [
     name: "fluid-gradient-text",
     type: "registry:component",
     title: "Fluid Gradient Text",
-    description:
-      "Render text with a fluid gradient that shifts with pointer movement.",
+    description: "Render text with a fluid gradient that shifts with pointer movement.",
     dependencies: ["motion"],
     files: [
       {
@@ -664,8 +633,7 @@ export const components: Registry["items"] = [
     name: "dot-grid-spotlight",
     type: "registry:component",
     title: "Dot Grid Spotlight",
-    description:
-      "Interactive dot grid with a cursor-tracking spotlight effect.",
+    description: "Interactive dot grid with a cursor-tracking spotlight effect.",
     files: [
       {
         path: "components/dot-grid-spotlight/dot-grid-spotlight.tsx",
@@ -680,8 +648,7 @@ export const components: Registry["items"] = [
     name: "spinning-circular-text",
     type: "registry:component",
     title: "Spinning Circular Text",
-    description:
-      "Text arranged in a circle with a continuous spinning animation.",
+    description: "Text arranged in a circle with a continuous spinning animation.",
     files: [
       {
         path: "components/spinning-circular-text/spinning-circular-text.tsx",
@@ -709,8 +676,7 @@ export const components: Registry["items"] = [
     name: "mobius-loop-icon",
     type: "registry:component",
     title: "Mobius Loop Icon",
-    description:
-      "Animated Mobius loop icon that morphs between circles and infinity shape.",
+    description: "Animated Mobius loop icon that morphs between circles and infinity shape.",
     dependencies: ["motion"],
     files: [
       {
@@ -742,8 +708,7 @@ export const components: Registry["items"] = [
     name: "testimonial-2",
     type: "registry:component",
     title: "Testimonial 2",
-    description:
-      "Display a testimonial quote with author attribution and source link.",
+    description: "Display a testimonial quote with author attribution and source link.",
     files: [
       {
         path: "components/testimonial-2/testimonial-2.tsx",
@@ -758,8 +723,7 @@ export const components: Registry["items"] = [
     name: "line-nav",
     type: "registry:component",
     title: "Line Nav",
-    description:
-      "Vertical navigation with a line marker that expands on hover and active state.",
+    description: "Vertical navigation with a line marker that expands on hover and active state.",
     dependencies: ["motion"],
     files: [
       {
@@ -775,8 +739,7 @@ export const components: Registry["items"] = [
     name: "share-menu",
     type: "registry:component",
     title: "Share Menu",
-    description:
-      "Share menu to copy a link or post to X, LinkedIn, and the native share sheet.",
+    description: "Share menu to copy a link or post to X, LinkedIn, and the native share sheet.",
     registryDependencies: ["button", "dropdown-menu", "sonner"],
     files: [
       {
@@ -792,8 +755,7 @@ export const components: Registry["items"] = [
     name: "spotlight-logo",
     type: "registry:component",
     title: "Spotlight Logo",
-    description:
-      "SVG logo with a cursor-tracking gradient highlight and tactile press.",
+    description: "SVG logo with a cursor-tracking gradient highlight and tactile press.",
     dependencies: ["motion"],
     registryDependencies: ["@soundcn/metal-click"],
     files: [
@@ -806,4 +768,4 @@ export const components: Registry["items"] = [
     categories: ["effects"],
     docs: "https://chanhdai.com/components/spotlight-logo",
   },
-]
+];

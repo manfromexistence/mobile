@@ -23,12 +23,9 @@ export default function FileUploadChatInputDemo() {
   const [files, setFiles] = React.useState<File[]>([]);
   const [isUploading, setIsUploading] = React.useState(false);
 
-  const onInputChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setInput(event.target.value);
-    },
-    [],
-  );
+  const onInputChange = React.useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(event.target.value);
+  }, []);
 
   const onUpload: NonNullable<FileUploadProps["onUpload"]> = React.useCallback(
     async (files, { onProgress, onSuccess, onError }) => {
@@ -44,9 +41,7 @@ export default function FileUploadChatInputDemo() {
             // Simulate chunk upload with delays
             for (let i = 0; i < totalChunks; i++) {
               // Simulate network delay (100-300ms per chunk)
-              await new Promise((resolve) =>
-                setTimeout(resolve, Math.random() * 200 + 100),
-              );
+              await new Promise((resolve) => setTimeout(resolve, Math.random() * 200 + 100));
 
               // Update progress for this specific file
               uploadedChunks++;
@@ -58,10 +53,7 @@ export default function FileUploadChatInputDemo() {
             await new Promise((resolve) => setTimeout(resolve, 500));
             onSuccess(file);
           } catch (error) {
-            onError(
-              file,
-              error instanceof Error ? error : new Error("Upload failed"),
-            );
+            onError(file, error instanceof Error ? error : new Error("Upload failed"));
           } finally {
             setIsUploading(false);
           }
@@ -83,14 +75,11 @@ export default function FileUploadChatInputDemo() {
     });
   }, []);
 
-  const onSubmit = React.useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      setInput("");
-      setFiles([]);
-    },
-    [],
-  );
+  const onSubmit = React.useCallback((event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setInput("");
+    setFiles([]);
+  }, []);
 
   return (
     <FileUpload
@@ -115,19 +104,14 @@ export default function FileUploadChatInputDemo() {
             <Upload className="size-6 text-muted-foreground" />
           </div>
           <p className="font-medium text-sm">Drag & drop files here</p>
-          <p className="text-muted-foreground text-xs">
-            Upload max 5 files each up to 5MB
-          </p>
+          <p className="text-muted-foreground text-xs">Upload max 5 files each up to 5MB</p>
         </div>
       </FileUploadDropzone>
       <form
         onSubmit={onSubmit}
         className="relative flex w-full max-w-md flex-col gap-2.5 rounded-md border border-input px-3 py-2 outline-none focus-within:ring-1 focus-within:ring-ring/50"
       >
-        <FileUploadList
-          orientation="horizontal"
-          className="overflow-x-auto px-0 py-1"
-        >
+        <FileUploadList orientation="horizontal" className="overflow-x-auto px-0 py-1">
           {files.map((file, index) => (
             <FileUploadItem key={index} value={file} className="max-w-52 p-1.5">
               <FileUploadItemPreview className="size-8 [&>svg]:size-5">
@@ -155,21 +139,12 @@ export default function FileUploadChatInputDemo() {
         />
         <div className="flex items-center justify-end gap-1.5">
           <FileUploadTrigger asChild>
-            <Button
-              type="button"
-              size="icon"
-              variant="ghost"
-              className="size-7 rounded-sm"
-            >
+            <Button type="button" size="icon" variant="ghost" className="size-7 rounded-sm">
               <Paperclip className="size-3.5" />
               <span className="sr-only">Attach file</span>
             </Button>
           </FileUploadTrigger>
-          <Button
-            size="icon"
-            className="size-7 rounded-sm"
-            disabled={!input.trim() || isUploading}
-          >
+          <Button size="icon" className="size-7 rounded-sm" disabled={!input.trim() || isUploading}>
             <ArrowUp className="size-3.5" />
             <span className="sr-only">Send message</span>
           </Button>

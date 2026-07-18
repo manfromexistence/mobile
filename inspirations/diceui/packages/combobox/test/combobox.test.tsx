@@ -1,10 +1,4 @@
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test, vi } from "vitest";
 
@@ -41,12 +35,7 @@ describe("Combobox", () => {
       badgeListOrientation?: "horizontal" | "vertical";
     } = {},
   ) {
-    const {
-      value,
-      multiple,
-      badgeListOrientation = "horizontal",
-      ...comboboxProps
-    } = props;
+    const { value, multiple, badgeListOrientation = "horizontal", ...comboboxProps } = props;
 
     return render(
       <Combobox.Root value={value} multiple={multiple} {...comboboxProps}>
@@ -250,9 +239,7 @@ describe("Combobox", () => {
     fireEvent.keyDown(input, { key: "ArrowLeft" });
 
     // Check if the last badge is highlighted
-    const lastBadge = screen
-      .getByText("heelflip")
-      .closest("[data-highlighted]");
+    const lastBadge = screen.getByText("heelflip").closest("[data-highlighted]");
     expect(lastBadge).toBeInTheDocument();
 
     // Delete highlighted badge with Enter
@@ -320,9 +307,7 @@ describe("Combobox", () => {
 
   test("handles custom filtering", async () => {
     const customFilter = (options: string[], term: string) =>
-      options.filter((option) =>
-        option.toLowerCase().includes(term.toLowerCase()),
-      );
+      options.filter((option) => option.toLowerCase().includes(term.toLowerCase()));
 
     renderCombobox({
       onFilter: customFilter,
@@ -376,9 +361,7 @@ describe("Combobox", () => {
   test("renders without crashing", () => {
     renderCombobox();
     expect(screen.getByText("Favorite tricks")).toBeInTheDocument();
-    expect(
-      screen.getByPlaceholderText(getInputPlaceholder()),
-    ).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(getInputPlaceholder())).toBeInTheDocument();
   });
 
   test("handles disabled state", async () => {
@@ -464,14 +447,8 @@ describe("Combobox", () => {
     });
 
     const horizontalBadgeList = screen.getByRole("listbox");
-    expect(horizontalBadgeList).toHaveAttribute(
-      "data-orientation",
-      "horizontal",
-    );
-    expect(horizontalBadgeList).toHaveAttribute(
-      "aria-orientation",
-      "horizontal",
-    );
+    expect(horizontalBadgeList).toHaveAttribute("data-orientation", "horizontal");
+    expect(horizontalBadgeList).toHaveAttribute("aria-orientation", "horizontal");
 
     // Cleanup and test vertical orientation
     cleanup();

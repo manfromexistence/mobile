@@ -1,9 +1,7 @@
 {
   "name": "editable-autosize-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "editable"
-  ],
+  "registryDependencies": ["editable"],
   "files": [
     {
       "path": "examples/editable-autosize-demo.tsx",

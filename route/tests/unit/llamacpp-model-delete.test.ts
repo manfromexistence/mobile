@@ -105,7 +105,7 @@ test("removeSyncedAvailableModel skips malformed syncedAvailableModels rows", as
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "syncedAvailableModels",
     "llama-cpp:broken",
-    "{not valid json"
+    "{not valid json",
   );
 
   const removed = await modelsDb.removeSyncedAvailableModel("llama-cpp", "model-delete");
@@ -117,7 +117,7 @@ test("removeSyncedAvailableModel skips malformed syncedAvailableModels rows", as
   const validModels = JSON.parse(valid.value);
   assert.deepEqual(
     validModels.map((m) => m.id),
-    ["model-ok"]
+    ["model-ok"],
   );
 
   const malformed = db

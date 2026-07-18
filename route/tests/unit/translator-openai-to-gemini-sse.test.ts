@@ -54,7 +54,7 @@ test("OPENAI_TO_GEMINI_FINISH_REASON maps the four canonical finish reasons", ()
 test("openAIChunkToGeminiChunk: skips role-only deltas with no content/finish_reason", () => {
   const out = openAIChunkToGeminiChunk(
     { choices: [{ delta: { role: "assistant" } }] },
-    "gemini-pro"
+    "gemini-pro",
   );
   assert.equal(out, null);
 });
@@ -62,7 +62,7 @@ test("openAIChunkToGeminiChunk: skips role-only deltas with no content/finish_re
 test("openAIChunkToGeminiChunk: text delta becomes Gemini content part", () => {
   const out = openAIChunkToGeminiChunk(
     { choices: [{ delta: { content: "Hello" }, finish_reason: null }] },
-    "gemini-pro"
+    "gemini-pro",
   );
   assert.deepEqual(out, {
     candidates: [
@@ -84,7 +84,7 @@ test("openAIChunkToGeminiChunk: reasoning_content becomes a `thought: true` part
         },
       ],
     },
-    "gemini-pro"
+    "gemini-pro",
   );
   assert.deepEqual(out!.candidates[0].content.parts, [
     { text: "think", thought: true },
@@ -104,7 +104,7 @@ test("openAIChunkToGeminiChunk: final chunk attaches usageMetadata + modelVersio
       },
       model: "gemini-2.5-pro",
     },
-    "fallback-model"
+    "fallback-model",
   );
   assert.equal(out!.candidates[0].finishReason, "MAX_TOKENS");
   // Empty parts -> [{ text: "" }] so the SDK still sees a valid content shape.
@@ -219,7 +219,7 @@ test("convertOpenAIResponseToGemini: passes through bodies that are already Gemi
 test("convertOpenAIResponseToGemini: surfaces upstream error bodies untouched", async () => {
   const upstream = Response.json(
     { error: { message: "quota exceeded", code: 429 } },
-    { status: 429 }
+    { status: 429 },
   );
   const out = await convertOpenAIResponseToGemini(upstream, "gemini-pro");
   assert.equal(out.status, 429);

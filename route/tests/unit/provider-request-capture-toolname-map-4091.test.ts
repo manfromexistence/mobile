@@ -72,7 +72,7 @@ test("#4091 body() preserves the non-enumerable cloak map dropped by the capture
   assert.equal(
     (captured as Record<string, unknown>)._toolNameMap,
     undefined,
-    "precondition: JSON round-trip drops the non-enumerable _toolNameMap"
+    "precondition: JSON round-trip drops the non-enumerable _toolNameMap",
   );
   const prepared: ProviderRequestPrepared = {
     url: "https://api.anthropic.com/v1/messages",
@@ -94,7 +94,7 @@ test("#4091 body() preserves the non-enumerable cloak map dropped by the capture
   const restored = remapToolNamesInResponse(chunk, true, map as Map<string, string>);
   assert.ok(
     restored.includes(`"name":"${ORIGINAL}"`),
-    "cloaked alias must be restored to the registered MCP tool name"
+    "cloaked alias must be restored to the registered MCP tool name",
   );
   assert.ok(!restored.includes(`"name":"${ALIAS}"`), "cloaked alias must not leak to the client");
 });
@@ -115,11 +115,11 @@ test("#4091 body() preserves the map kept non-enumerable on the captured copy to
   assert.ok(finalBody._toolNameMap instanceof Map);
   assert.ok(
     !Object.keys(finalBody).includes("_toolNameMap"),
-    "_toolNameMap must stay non-enumerable so it never re-serializes upstream"
+    "_toolNameMap must stay non-enumerable so it never re-serializes upstream",
   );
   assert.ok(
     !JSON.stringify(finalBody).includes("_toolNameMap"),
-    "_toolNameMap must not appear in a serialized provider body"
+    "_toolNameMap must not appear in a serialized provider body",
   );
 });
 

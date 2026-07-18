@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import type { CSSProperties } from "react"
+import type { CSSProperties } from "react";
 
 interface EyeProps {
-  style: CSSProperties
-  className?: string
-  crackPath?: string
+  style: CSSProperties;
+  className?: string;
+  crackPath?: string;
 }
 
 export function Eye({ style, className, crackPath }: EyeProps) {
   // Determine which clip-path to use
-  let clipPath: string | undefined
+  let clipPath: string | undefined;
 
   if (crackPath) {
     // Use crack pattern
-    clipPath = `path('${crackPath}')`
+    clipPath = `path('${crackPath}')`;
   } else if (style.backgroundColor === "#ff2d55") {
     // Use heart shape for love animation - no clipping, just the shape itself
-    clipPath = undefined
+    clipPath = undefined;
   }
 
   return (
@@ -37,5 +37,5 @@ export function Eye({ style, className, crackPath }: EyeProps) {
         }),
       }}
     />
-  )
+  );
 }

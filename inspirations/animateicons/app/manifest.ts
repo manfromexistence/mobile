@@ -11,19 +11,19 @@ import type { MetadataRoute } from "next";
  * SRP: AnimateIcons app identity only. No content lives here.
  */
 export default function manifest(): MetadataRoute.Manifest {
-	return {
-		name: "AnimateIcons",
-		short_name: "AnimateIcons",
-		description:
-			"Free, open-source animated SVG icons for React. Drop-in components built on motion/react.",
-		start_url: "/",
-		display: "standalone",
-		background_color: "#0b0b0b",
-		theme_color: "#0b0b0b",
-		categories: ["developer", "productivity", "design"],
-		icons: [
-			{ src: "/logo.svg", sizes: "any", type: "image/svg+xml" },
-			{ src: "/og.png", sizes: "1200x630", type: "image/png" },
-		],
-	};
+  return {
+    name: "AnimateIcons",
+    short_name: "AnimateIcons",
+    description:
+      "Free, open-source animated SVG icons for React. Drop-in components built on motion/react.",
+    start_url: "/",
+    display: "standalone",
+    background_color: "#0b0b0b",
+    theme_color: "#0b0b0b",
+    categories: ["developer", "productivity", "design"],
+    icons: [
+      { src: "/logo.svg", sizes: "any", type: "image/svg+xml" },
+      { src: "/og.png", sizes: "1200x630", type: "image/png" },
+    ],
+  };
 }

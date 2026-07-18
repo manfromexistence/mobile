@@ -1,41 +1,41 @@
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box } from "@chakra-ui/react";
+import { useMemo } from "react";
 
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
-import Customize from '../../components/common/Preview/Customize';
-import CodeExample from '../../components/code/CodeExample';
+import Customize from "../../components/common/Preview/Customize";
+import CodeExample from "../../components/code/CodeExample";
 
-import PropTable from '../../components/common/Preview/PropTable';
-import PreviewSelect from '../../components/common/Preview/PreviewSelect';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
+import PropTable from "../../components/common/Preview/PropTable";
+import PreviewSelect from "../../components/common/Preview/PreviewSelect";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
 
-import { electricBorder } from '../../constants/code/Animations/electricBorderCode';
-import ElectricBorder from '../../content/Animations/ElectricBorder/ElectricBorder';
+import { electricBorder } from "../../constants/code/Animations/electricBorderCode";
+import ElectricBorder from "../../content/Animations/ElectricBorder/ElectricBorder";
 
 const DEFAULT_PROPS = {
-  example: 'card',
+  example: "card",
   cardProps: {
-    color: '#7df9ff',
+    color: "#7df9ff",
     speed: 1,
     chaos: 0.12,
-    borderRadius: 16
+    borderRadius: 16,
   },
   buttonProps: {
-    color: '#B497CF',
+    color: "#B497CF",
     speed: 1,
     chaos: 0.12,
-    borderRadius: 999
+    borderRadius: 999,
   },
   circleProps: {
-    color: '#7df9ff',
+    color: "#7df9ff",
     speed: 1,
     chaos: 0.12,
-    borderRadius: 999
-  }
+    borderRadius: 999,
+  },
 };
 
 const ElectricBorderDemo = () => {
@@ -45,54 +45,55 @@ const ElectricBorderDemo = () => {
   const propData = useMemo(
     () => [
       {
-        name: 'color',
-        type: 'string',
+        name: "color",
+        type: "string",
         default: '"#5227FF"',
-        description: 'Stroke/glow color. Any CSS color (hex, rgb, hsl).'
+        description: "Stroke/glow color. Any CSS color (hex, rgb, hsl).",
       },
       {
-        name: 'speed',
-        type: 'number',
-        default: '1',
-        description: 'Animation speed multiplier (higher = faster).'
+        name: "speed",
+        type: "number",
+        default: "1",
+        description: "Animation speed multiplier (higher = faster).",
       },
       {
-        name: 'chaos',
-        type: 'number',
-        default: '0.12',
-        description: 'Distortion intensity (0 = no distortion, higher = more chaotic).'
+        name: "chaos",
+        type: "number",
+        default: "0.12",
+        description: "Distortion intensity (0 = no distortion, higher = more chaotic).",
       },
       {
-        name: 'borderRadius',
-        type: 'number',
-        default: '24',
-        description: 'Border radius in pixels for the electric border path.'
+        name: "borderRadius",
+        type: "number",
+        default: "24",
+        description: "Border radius in pixels for the electric border path.",
       },
       {
-        name: 'className',
-        type: 'string',
-        default: '—',
-        description: 'Optional className applied to the root wrapper.'
+        name: "className",
+        type: "string",
+        default: "—",
+        description: "Optional className applied to the root wrapper.",
       },
       {
-        name: 'style',
-        type: 'React.CSSProperties',
-        default: '—',
-        description: 'Inline styles for the wrapper.'
+        name: "style",
+        type: "React.CSSProperties",
+        default: "—",
+        description: "Inline styles for the wrapper.",
       },
       {
-        name: 'children',
-        type: 'ReactNode',
-        default: '—',
-        description: 'Content rendered inside the bordered container.'
-      }
+        name: "children",
+        type: "ReactNode",
+        default: "—",
+        description: "Content rendered inside the bordered container.",
+      },
     ],
-    []
+    [],
   );
 
-  const activePropsKey = example === 'card' ? 'cardProps' : example === 'button' ? 'buttonProps' : 'circleProps';
+  const activePropsKey =
+    example === "card" ? "cardProps" : example === "button" ? "buttonProps" : "circleProps";
   const activeProps = props[activePropsKey];
-  const updateActiveProps = updates => updateProp(activePropsKey, { ...activeProps, ...updates });
+  const updateActiveProps = (updates) => updateProp(activePropsKey, { ...activeProps, ...updates });
 
   return (
     <ComponentPropsProvider
@@ -100,18 +101,18 @@ const ElectricBorderDemo = () => {
       defaultProps={DEFAULT_PROPS}
       resetProps={resetProps}
       hasChanges={hasChanges}
-      demoOnlyProps={['example', 'cardProps', 'buttonProps', 'circleProps']}
+      demoOnlyProps={["example", "cardProps", "buttonProps", "circleProps"]}
       computedProps={{
         color: activeProps.color,
         speed: activeProps.speed,
         chaos: activeProps.chaos,
-        borderRadius: activeProps.borderRadius
+        borderRadius: activeProps.borderRadius,
       }}
     >
       <TabsLayout>
         <PreviewTab>
           <Box position="relative" className="demo-container" h={500} overflow="hidden">
-            {example === 'card' ? (
+            {example === "card" ? (
               <ElectricBorder
                 color={cardProps.color}
                 speed={cardProps.speed}
@@ -119,12 +120,14 @@ const ElectricBorderDemo = () => {
                 borderRadius={cardProps.borderRadius}
               >
                 <div
-                  style={{ width: '300px', height: '360px', borderRadius: cardProps.borderRadius }}
+                  style={{ width: "300px", height: "360px", borderRadius: cardProps.borderRadius }}
                   className="eb-demo-card"
                 >
                   <div className="eb-demo-badge">Featured</div>
                   <h3 className="eb-demo-title">Electric Card</h3>
-                  <p className="eb-demo-desc">An electric border for shocking your users, the right way.</p>
+                  <p className="eb-demo-desc">
+                    An electric border for shocking your users, the right way.
+                  </p>
                   <div className="eb-demo-row">
                     <span className="eb-demo-chip">Live</span>
                     <span className="eb-demo-chip">v1.0</span>
@@ -132,7 +135,7 @@ const ElectricBorderDemo = () => {
                   <button className="eb-demo-cta">Get Started</button>
                 </div>
               </ElectricBorder>
-            ) : example === 'button' ? (
+            ) : example === "button" ? (
               <ElectricBorder
                 color={buttonProps.color}
                 speed={buttonProps.speed}
@@ -141,7 +144,10 @@ const ElectricBorderDemo = () => {
                 className="eb-button-container"
               >
                 <div className="eb-demo-button-wrap">
-                  <button className="eb-demo-button" style={{ borderRadius: buttonProps.borderRadius }}>
+                  <button
+                    className="eb-demo-button"
+                    style={{ borderRadius: buttonProps.borderRadius }}
+                  >
                     Learn More
                   </button>
                 </div>
@@ -153,7 +159,7 @@ const ElectricBorderDemo = () => {
                 chaos={circleProps.chaos}
                 borderRadius={circleProps.borderRadius}
               >
-                <div style={{ width: '200px', height: '200px', borderRadius: '50%' }} />
+                <div style={{ width: "200px", height: "200px", borderRadius: "50%" }} />
               </ElectricBorder>
             )}
           </Box>
@@ -165,14 +171,18 @@ const ElectricBorderDemo = () => {
               width={140}
               value={example}
               options={[
-                { label: 'Card', value: 'card' },
-                { label: 'Button', value: 'button' },
-                { label: 'Circle', value: 'circle' }
+                { label: "Card", value: "card" },
+                { label: "Button", value: "button" },
+                { label: "Circle", value: "circle" },
               ]}
-              onChange={v => updateProp('example', v)}
+              onChange={(v) => updateProp("example", v)}
             />
 
-            <PreviewColorPickerCustom title="Color" color={activeProps.color} onChange={val => updateActiveProps({ color: val })} />
+            <PreviewColorPickerCustom
+              title="Color"
+              color={activeProps.color}
+              onChange={(val) => updateActiveProps({ color: val })}
+            />
 
             <PreviewSlider
               title="Speed"
@@ -180,7 +190,7 @@ const ElectricBorderDemo = () => {
               max={3}
               step={0.1}
               value={activeProps.speed}
-              onChange={v => updateActiveProps({ speed: v })}
+              onChange={(v) => updateActiveProps({ speed: v })}
             />
             <PreviewSlider
               title="Chaos"
@@ -188,7 +198,7 @@ const ElectricBorderDemo = () => {
               max={0.3}
               step={0.01}
               value={activeProps.chaos}
-              onChange={v => updateActiveProps({ chaos: v })}
+              onChange={(v) => updateActiveProps({ chaos: v })}
             />
             <PreviewSlider
               title="Border Radius"
@@ -197,7 +207,7 @@ const ElectricBorderDemo = () => {
               step={1}
               value={activeProps.borderRadius}
               valueUnit="px"
-              onChange={v => updateActiveProps({ borderRadius: v })}
+              onChange={(v) => updateActiveProps({ borderRadius: v })}
             />
           </Customize>
 

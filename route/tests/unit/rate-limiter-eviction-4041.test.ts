@@ -22,7 +22,7 @@ test("evictStaleRateLimitWindows is exported from rateLimiter", async () => {
   assert.equal(
     typeof evictStaleRateLimitWindows,
     "function",
-    "evictStaleRateLimitWindows must be exported"
+    "evictStaleRateLimitWindows must be exported",
   );
 });
 
@@ -50,29 +50,29 @@ test("evictStaleRateLimitWindows deletes keys whose window has ended and keeps c
   assert.equal(
     store.has(makeKey("user-a", windowSize, pastWindow1)),
     false,
-    "past window -1 for user-a must be evicted"
+    "past window -1 for user-a must be evicted",
   );
   assert.equal(
     store.has(makeKey("user-a", windowSize, pastWindow2)),
     false,
-    "past window -5 for user-a must be evicted"
+    "past window -5 for user-a must be evicted",
   );
   assert.equal(
     store.has(makeKey("user-b", windowSize, pastWindow1)),
     false,
-    "past window -1 for user-b must be evicted"
+    "past window -1 for user-b must be evicted",
   );
 
   // Current key must survive
   assert.equal(
     store.has(makeKey("user-a", windowSize, currentWindow)),
     true,
-    "current window for user-a must survive"
+    "current window for user-a must survive",
   );
   assert.equal(
     store.get(makeKey("user-a", windowSize, currentWindow)),
     2,
-    "current window count must be unchanged"
+    "current window count must be unchanged",
   );
 
   assert.equal(store.size, 1, "only 1 key should remain after eviction");

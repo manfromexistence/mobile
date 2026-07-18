@@ -6,11 +6,7 @@ import {
 } from "@shikijs/transformers";
 import { remarkGfm, remarkNpm } from "fumadocs-core/mdx-plugins";
 import { fileGenerator, remarkDocGen } from "fumadocs-docgen";
-import {
-  defineConfig,
-  defineDocs,
-  frontmatterSchema,
-} from "fumadocs-mdx/config";
+import { defineConfig, defineDocs, frontmatterSchema } from "fumadocs-mdx/config";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import { codeImport } from "remark-code-import";

@@ -56,9 +56,7 @@ export default function CropperControlledDemo() {
           />
         </div>
         <div className="flex w-full flex-col gap-2.5">
-          <Label htmlFor={`${id}-rotation`}>
-            Rotation: {rotation.toFixed(0)}°
-          </Label>
+          <Label htmlFor={`${id}-rotation`}>Rotation: {rotation.toFixed(0)}°</Label>
           <Slider
             id={`${id}-rotation`}
             value={[rotation]}

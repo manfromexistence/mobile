@@ -1,9 +1,4 @@
-import type {
-  CompositionProps,
-  Direction,
-  EmptyProps,
-  Orientation,
-} from "@/types";
+import type { CompositionProps, Direction, EmptyProps, Orientation } from "@/types";
 
 export interface ScrollSpyProps extends EmptyProps<"div">, CompositionProps {
   /**
@@ -121,9 +116,7 @@ export interface ScrollSpyProps extends EmptyProps<"div">, CompositionProps {
   scrollContainer?: HTMLElement | null;
 }
 
-export interface ScrollSpyNavProps
-  extends EmptyProps<"nav">,
-    CompositionProps {}
+export interface ScrollSpyNavProps extends EmptyProps<"nav">, CompositionProps {}
 
 export interface ScrollSpyLinkProps extends EmptyProps<"a">, CompositionProps {
   /**
@@ -136,13 +129,9 @@ export interface ScrollSpyLinkProps extends EmptyProps<"a">, CompositionProps {
   value: string;
 }
 
-export interface ScrollSpyViewportProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface ScrollSpyViewportProps extends EmptyProps<"div">, CompositionProps {}
 
-export interface ScrollSpySectionProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface ScrollSpySectionProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The unique value that links the section with the link.
    *

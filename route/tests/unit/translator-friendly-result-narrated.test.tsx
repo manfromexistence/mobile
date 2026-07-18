@@ -9,10 +9,7 @@ import type { TranslateNarratedResult } from "@/app/(dashboard)/dashboard/transl
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string, params?: Record<string, string | number>) => {
     if (!params) return key;
-    return Object.entries(params).reduce(
-      (acc, [k, v]) => acc.replace(`{${k}}`, String(v)),
-      key
-    );
+    return Object.entries(params).reduce((acc, [k, v]) => acc.replace(`{${k}}`, String(v)), key);
   },
 }));
 
@@ -50,18 +47,15 @@ vi.mock("@/shared/components", () => ({
 }));
 
 // --- Mock exampleTemplates (FORMAT_META) ---
-vi.mock(
-  "@/app/(dashboard)/dashboard/translator/exampleTemplates",
-  () => ({
-    FORMAT_META: {
-      openai: { label: "OpenAI", color: "emerald", icon: "smart_toy" },
-      claude: { label: "Claude", color: "orange", icon: "psychology" },
-      gemini: { label: "Gemini", color: "blue", icon: "auto_awesome" },
-    },
-    FORMAT_OPTIONS: [],
-    getExampleTemplates: () => [],
-  })
-);
+vi.mock("@/app/(dashboard)/dashboard/translator/exampleTemplates", () => ({
+  FORMAT_META: {
+    openai: { label: "OpenAI", color: "emerald", icon: "smart_toy" },
+    claude: { label: "Claude", color: "orange", icon: "psychology" },
+    gemini: { label: "Gemini", color: "blue", icon: "auto_awesome" },
+  },
+  FORMAT_OPTIONS: [],
+  getExampleTemplates: () => [],
+}));
 
 // --- Setup ---
 const cleanupCallbacks: Array<() => void> = [];
@@ -89,7 +83,9 @@ function idleResult(): TranslateNarratedResult {
 
 describe("ResultNarrated", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {
@@ -99,9 +95,7 @@ describe("ResultNarrated", () => {
   });
 
   it("exports a default function component", async () => {
-    const mod = await import(
-      "@/app/(dashboard)/dashboard/translator/components/ResultNarrated"
-    );
+    const mod = await import("@/app/(dashboard)/dashboard/translator/components/ResultNarrated");
     expect(typeof mod.default).toBe("function");
   });
 
@@ -117,7 +111,7 @@ describe("ResultNarrated", () => {
           result={idleResult()}
           onSeeTranslatedJson={vi.fn()}
           onSeePipeline={vi.fn()}
-        />
+        />,
       );
     });
     expect(container.querySelector("[data-testid='card']")).toBeTruthy();
@@ -135,11 +129,11 @@ describe("ResultNarrated", () => {
           result={idleResult()}
           onSeeTranslatedJson={vi.fn()}
           onSeePipeline={vi.fn()}
-        />
+        />,
       );
     });
-    const icons = Array.from(container.querySelectorAll(".material-symbols-outlined")).map(
-      (el) => el.textContent?.trim()
+    const icons = Array.from(container.querySelectorAll(".material-symbols-outlined")).map((el) =>
+      el.textContent?.trim(),
     );
     expect(icons).toContain("info");
   });
@@ -150,14 +144,18 @@ describe("ResultNarrated", () => {
     );
     const container = makeContainer();
     const root = createRoot(container);
-    const result: TranslateNarratedResult = { ...idleResult(), status: "translating", target: "gemini" };
+    const result: TranslateNarratedResult = {
+      ...idleResult(),
+      status: "translating",
+      target: "gemini",
+    };
     await act(async () => {
       root.render(
-        <ResultNarrated result={result} onSeeTranslatedJson={vi.fn()} onSeePipeline={vi.fn()} />
+        <ResultNarrated result={result} onSeeTranslatedJson={vi.fn()} onSeePipeline={vi.fn()} />,
       );
     });
-    const icons = Array.from(container.querySelectorAll(".material-symbols-outlined")).map(
-      (el) => el.textContent?.trim()
+    const icons = Array.from(container.querySelectorAll(".material-symbols-outlined")).map((el) =>
+      el.textContent?.trim(),
     );
     expect(icons).toContain("progress_activity");
     // Text should contain the i18n key with Gemini substituted
@@ -170,14 +168,18 @@ describe("ResultNarrated", () => {
     );
     const container = makeContainer();
     const root = createRoot(container);
-    const result: TranslateNarratedResult = { ...idleResult(), status: "sending", target: "openai" };
+    const result: TranslateNarratedResult = {
+      ...idleResult(),
+      status: "sending",
+      target: "openai",
+    };
     await act(async () => {
       root.render(
-        <ResultNarrated result={result} onSeeTranslatedJson={vi.fn()} onSeePipeline={vi.fn()} />
+        <ResultNarrated result={result} onSeeTranslatedJson={vi.fn()} onSeePipeline={vi.fn()} />,
       );
     });
-    const icons = Array.from(container.querySelectorAll(".material-symbols-outlined")).map(
-      (el) => el.textContent?.trim()
+    const icons = Array.from(container.querySelectorAll(".material-symbols-outlined")).map((el) =>
+      el.textContent?.trim(),
     );
     expect(icons).toContain("progress_activity");
     expect(container.textContent).toContain("OpenAI");
@@ -200,7 +202,7 @@ describe("ResultNarrated", () => {
     };
     await act(async () => {
       root.render(
-        <ResultNarrated result={result} onSeeTranslatedJson={vi.fn()} onSeePipeline={vi.fn()} />
+        <ResultNarrated result={result} onSeeTranslatedJson={vi.fn()} onSeePipeline={vi.fn()} />,
       );
     });
     // Success badge should be present
@@ -235,11 +237,11 @@ describe("ResultNarrated", () => {
           result={result}
           onSeeTranslatedJson={onSeeTranslatedJson}
           onSeePipeline={vi.fn()}
-        />
+        />,
       );
     });
     const jsonBtn = container.querySelector(
-      "[data-testid='btn'][aria-label*='JSON'], [data-testid='btn'][aria-label*='json']"
+      "[data-testid='btn'][aria-label*='JSON'], [data-testid='btn'][aria-label*='json']",
     ) as HTMLButtonElement | null;
     expect(jsonBtn).toBeTruthy();
     await act(async () => {
@@ -270,11 +272,11 @@ describe("ResultNarrated", () => {
           result={result}
           onSeeTranslatedJson={vi.fn()}
           onSeePipeline={onSeePipeline}
-        />
+        />,
       );
     });
     const pipelineBtn = container.querySelector(
-      "[data-testid='btn'][aria-label*='pipeline']"
+      "[data-testid='btn'][aria-label*='pipeline']",
     ) as HTMLButtonElement | null;
     expect(pipelineBtn).toBeTruthy();
     await act(async () => {
@@ -296,7 +298,7 @@ describe("ResultNarrated", () => {
     };
     await act(async () => {
       root.render(
-        <ResultNarrated result={result} onSeeTranslatedJson={vi.fn()} onSeePipeline={vi.fn()} />
+        <ResultNarrated result={result} onSeeTranslatedJson={vi.fn()} onSeePipeline={vi.fn()} />,
       );
     });
     const errorBadge = container.querySelector("[data-testid='badge'][data-variant='error']");
@@ -317,7 +319,7 @@ describe("ResultNarrated", () => {
     };
     await act(async () => {
       root.render(
-        <ResultNarrated result={result} onSeeTranslatedJson={vi.fn()} onSeePipeline={vi.fn()} />
+        <ResultNarrated result={result} onSeeTranslatedJson={vi.fn()} onSeePipeline={vi.fn()} />,
       );
     });
     const textContent = container.textContent ?? "";
@@ -338,7 +340,7 @@ describe("ResultNarrated", () => {
     };
     await act(async () => {
       root.render(
-        <ResultNarrated result={result} onSeeTranslatedJson={vi.fn()} onSeePipeline={vi.fn()} />
+        <ResultNarrated result={result} onSeeTranslatedJson={vi.fn()} onSeePipeline={vi.fn()} />,
       );
     });
     const textContent = container.textContent ?? "";
@@ -358,7 +360,7 @@ describe("ResultNarrated", () => {
           result={idleResult()}
           onSeeTranslatedJson={vi.fn()}
           onSeePipeline={vi.fn()}
-        />
+        />,
       );
     });
     const liveRegion = container.querySelector("[aria-live='polite']");

@@ -9,16 +9,8 @@ export function CheckboxPreview() {
 
   return (
     <div className="flex flex-col gap-3">
-      <Checkbox
-        checked={terms}
-        onCheckedChange={setTerms}
-        label="Accept terms and conditions"
-      />
-      <Checkbox
-        checked={updates}
-        onCheckedChange={setUpdates}
-        label="Email me product updates"
-      />
+      <Checkbox checked={terms} onCheckedChange={setTerms} label="Accept terms and conditions" />
+      <Checkbox checked={updates} onCheckedChange={setUpdates} label="Email me product updates" />
       <Checkbox checked indeterminate onCheckedChange={() => {}} label="Select all (partial)" />
       <Checkbox checked disabled onCheckedChange={() => {}} label="Disabled" />
     </div>

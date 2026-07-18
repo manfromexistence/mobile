@@ -42,14 +42,14 @@ test("buildRefreshFailureUpdate starts a circuit streak of 1 on first failure", 
   assert.equal(update.providerSpecificData.refreshCircuit.streak, 1);
   assert.ok(
     new Date(update.providerSpecificData.refreshCircuit.until).getTime() > NOW_MS,
-    "must set a future backoff window"
+    "must set a future backoff window",
   );
 });
 
 test("buildRefreshFailureUpdate increments the streak across consecutive failures", () => {
   const update = buildRefreshFailureUpdate(
     { testStatus: "active", providerSpecificData: { refreshCircuit: { streak: 3 } } },
-    NOW
+    NOW,
   );
   assert.equal(update.providerSpecificData.refreshCircuit.streak, 4);
 });
@@ -57,7 +57,7 @@ test("buildRefreshFailureUpdate increments the streak across consecutive failure
 test("buildRefreshFailureUpdate preserves unrelated providerSpecificData", () => {
   const update = buildRefreshFailureUpdate(
     { testStatus: "active", providerSpecificData: { projectId: "p-123", copilotToken: "x" } },
-    NOW
+    NOW,
   );
   assert.equal(update.providerSpecificData.projectId, "p-123");
   assert.equal(update.providerSpecificData.copilotToken, "x");
@@ -79,10 +79,7 @@ test("isInRefreshBackoff false when no circuit recorded", () => {
 });
 
 test("expired connections still track expiredRetryCount AND the circuit", () => {
-  const update = buildRefreshFailureUpdate(
-    { testStatus: "expired", expiredRetryCount: 1 },
-    NOW
-  );
+  const update = buildRefreshFailureUpdate({ testStatus: "expired", expiredRetryCount: 1 }, NOW);
   assert.equal(update.testStatus, "expired");
   assert.equal(update.expiredRetryCount, 2);
   assert.equal(update.providerSpecificData.refreshCircuit.streak, 1);

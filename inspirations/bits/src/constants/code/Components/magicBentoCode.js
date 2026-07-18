@@ -1,8 +1,8 @@
-import code from '@content/Components/MagicBento/MagicBento.jsx?raw';
-import css from '@content/Components/MagicBento/MagicBento.css?raw';
-import tailwind from '@tailwind/Components/MagicBento/MagicBento.jsx?raw';
-import tsCode from '@ts-default/Components/MagicBento/MagicBento.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/MagicBento/MagicBento.tsx?raw';
+import code from "@content/Components/MagicBento/MagicBento.jsx?raw";
+import css from "@content/Components/MagicBento/MagicBento.css?raw";
+import tailwind from "@tailwind/Components/MagicBento/MagicBento.jsx?raw";
+import tsCode from "@ts-default/Components/MagicBento/MagicBento.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/MagicBento/MagicBento.tsx?raw";
 
 export const magicBento = {
   dependencies: `gsap`,
@@ -24,5 +24,5 @@ export const magicBento = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

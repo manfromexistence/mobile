@@ -52,7 +52,7 @@ test("toMemoryRetrievalConfig: strategy=hybrid → retrievalStrategy=hybrid", as
   assert.equal(
     config.retrievalStrategy,
     "hybrid",
-    "hybrid strategy must map to retrievalStrategy=hybrid"
+    "hybrid strategy must map to retrievalStrategy=hybrid",
   );
 });
 
@@ -67,7 +67,7 @@ test("toMemoryRetrievalConfig: strategy=semantic → retrievalStrategy=semantic"
   assert.equal(
     config.retrievalStrategy,
     "semantic",
-    "semantic strategy must map to retrievalStrategy=semantic"
+    "semantic strategy must map to retrievalStrategy=semantic",
   );
 });
 
@@ -82,7 +82,7 @@ test("toMemoryRetrievalConfig: strategy=recent → retrievalStrategy=exact (mapp
   assert.equal(
     config.retrievalStrategy,
     "exact",
-    "recent strategy must map to retrievalStrategy=exact"
+    "recent strategy must map to retrievalStrategy=exact",
   );
 });
 
@@ -94,20 +94,18 @@ test("omniroute_memory_search: strategy=hybrid in DB → handler returns success
   // Seed a memory to ensure retrieval has something to work with
   db.prepare(
     `INSERT INTO memories (id, api_key_id, session_id, type, key, content, metadata, created_at, updated_at, expires_at)
-     VALUES ('mcp-h1', 'api-mcp-h', '', 'factual', 'key-h1', 'Paris is the capital of France', '{}', datetime('now'), datetime('now'), NULL)`
+     VALUES ('mcp-h1', 'api-mcp-h', '', 'factual', 'key-h1', 'Paris is the capital of France', '{}', datetime('now'), datetime('now'), NULL)`,
   ).run();
 
   // Set memoryStrategy = "hybrid" in settings
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'memoryStrategy', ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'memoryStrategy', ?)",
   ).run(JSON.stringify("hybrid"));
 
   const { invalidateMemorySettingsCache } = await import("../../src/lib/memory/settings.ts");
   invalidateMemorySettingsCache();
 
-  const { memoryTools } = await import(
-    "../../open-sse/mcp-server/tools/memoryTools.ts"
-  );
+  const { memoryTools } = await import("../../open-sse/mcp-server/tools/memoryTools.ts");
   const handler = memoryTools.omniroute_memory_search.handler;
 
   const result = await handler({ apiKeyId: "api-mcp-h", query: "Paris" });
@@ -124,20 +122,18 @@ test("omniroute_memory_search: strategy=recent in DB → handler maps to exact, 
 
   db.prepare(
     `INSERT INTO memories (id, api_key_id, session_id, type, key, content, metadata, created_at, updated_at, expires_at)
-     VALUES ('mcp-r1', 'api-mcp-r', '', 'factual', 'key-r1', 'Berlin is the capital of Germany', '{}', datetime('now'), datetime('now'), NULL)`
+     VALUES ('mcp-r1', 'api-mcp-r', '', 'factual', 'key-r1', 'Berlin is the capital of Germany', '{}', datetime('now'), datetime('now'), NULL)`,
   ).run();
 
   // Set memoryStrategy = "recent"
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'memoryStrategy', ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'memoryStrategy', ?)",
   ).run(JSON.stringify("recent"));
 
   const { invalidateMemorySettingsCache } = await import("../../src/lib/memory/settings.ts");
   invalidateMemorySettingsCache();
 
-  const { memoryTools } = await import(
-    "../../open-sse/mcp-server/tools/memoryTools.ts"
-  );
+  const { memoryTools } = await import("../../open-sse/mcp-server/tools/memoryTools.ts");
   const handler = memoryTools.omniroute_memory_search.handler;
 
   const result = await handler({ apiKeyId: "api-mcp-r" });
@@ -157,13 +153,13 @@ test("toMemoryRetrievalConfig: DEFAULT_MEMORY_SETTINGS maps to retrievalStrategy
   assert.equal(
     DEFAULT_MEMORY_SETTINGS.strategy,
     "hybrid",
-    "DEFAULT_MEMORY_SETTINGS.strategy must be 'hybrid'"
+    "DEFAULT_MEMORY_SETTINGS.strategy must be 'hybrid'",
   );
   const config = toMemoryRetrievalConfig(DEFAULT_MEMORY_SETTINGS);
   assert.equal(
     config.retrievalStrategy,
     "hybrid",
-    "default settings must map to retrievalStrategy=hybrid"
+    "default settings must map to retrievalStrategy=hybrid",
   );
 });
 
@@ -184,6 +180,6 @@ test("omniroute_memory_search: hardcoded fallback config has retrievalStrategy=e
   assert.equal(
     config.retrievalStrategy,
     "exact",
-    "fallback from catch path must use retrievalStrategy=exact"
+    "fallback from catch path must use retrievalStrategy=exact",
   );
 });

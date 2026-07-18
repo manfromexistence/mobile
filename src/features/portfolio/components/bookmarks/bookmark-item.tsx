@@ -1,34 +1,26 @@
-import { format } from "date-fns"
-import { ArrowUpRightIcon } from "lucide-react"
-import { NewsIcon } from "@/components/icons"
-import { Separator } from "@/components/ui/separator"
-import { UTM_PARAMS } from "@/config/site"
-import {
-  type Bookmark,
-  BookmarkCategory,
-} from "@/features/portfolio/types/bookmarks"
-import { cn } from "@/lib/utils"
-import { addQueryParams } from "@/lib/utils/url"
+import { format } from "date-fns";
+import { ArrowUpRightIcon } from "lucide-react";
+import { NewsIcon } from "@/components/icons";
+import { Separator } from "@/components/ui/separator";
+import { UTM_PARAMS } from "@/config/site";
+import { type Bookmark, BookmarkCategory } from "@/features/portfolio/types/bookmarks";
+import { cn } from "@/lib/utils";
+import { addQueryParams } from "@/lib/utils/url";
 
 export function BookmarkItem({
   className,
   bookmark,
 }: {
-  className?: string
-  bookmark: Bookmark
+  className?: string;
+  bookmark: Bookmark;
 }) {
   return (
-    <div
-      className={cn(
-        "relative flex items-center pr-2 hover:bg-accent-muted",
-        className
-      )}
-    >
+    <div className={cn("relative flex items-center pr-2 hover:bg-accent-muted", className)}>
       <div
         className={cn(
           "mx-4 flex size-6 shrink-0 items-center justify-center rounded-md select-none",
           "border border-muted-foreground/15 ring-1 ring-line ring-offset-1 ring-offset-background",
-          "bg-muted text-muted-foreground [&_svg]:size-4"
+          "bg-muted text-muted-foreground [&_svg]:size-4",
         )}
       >
         {bookmark.icon ?? CATEGORY_ICONS[bookmark.category]}
@@ -36,11 +28,7 @@ export function BookmarkItem({
 
       <div className="flex-1 space-y-1 border-l border-dashed border-line p-4 pr-2">
         <h3 className="leading-snug font-medium text-balance">
-          <a
-            href={addQueryParams(bookmark.url, UTM_PARAMS)}
-            target="_blank"
-            rel="noopener"
-          >
+          <a href={addQueryParams(bookmark.url, UTM_PARAMS)} target="_blank" rel="noopener">
             <span className="absolute inset-0" aria-hidden />
             {bookmark.title}
           </a>
@@ -86,7 +74,7 @@ export function BookmarkItem({
 
       <ArrowUpRightIcon className="size-4 text-muted-foreground" />
     </div>
-  )
+  );
 }
 
 const CATEGORY_ICONS: Record<BookmarkCategory, React.ReactNode> = {
@@ -141,4 +129,4 @@ const CATEGORY_ICONS: Record<BookmarkCategory, React.ReactNode> = {
       <path d="M13 2.5V3C13 5.82843 13 7.24264 13.8787 8.12132C14.7574 9 16.1716 9 19 9H19.5M20 10.6569V14C20 17.7712 20 19.6569 18.8284 20.8284C17.6569 22 15.7712 22 12 22C8.22876 22 6.34315 22 5.17157 20.8284C4 19.6569 4 17.7712 4 14V9.45584C4 6.21082 4 4.58831 4.88607 3.48933C5.06508 3.26731 5.26731 3.06508 5.48933 2.88607C6.58831 2 8.21082 2 11.4558 2C12.1614 2 12.5141 2 12.8372 2.11401C12.9044 2.13772 12.9702 2.165 13.0345 2.19575C13.3436 2.34355 13.593 2.593 14.0919 3.09188L18.8284 7.82843C19.4065 8.40649 19.6955 8.69552 19.8478 9.06306C20 9.4306 20 9.83935 20 10.6569Z" />
     </svg>
   ),
-}
+};

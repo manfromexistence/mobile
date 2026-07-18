@@ -1,12 +1,8 @@
 {
   "name": "combobox-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "combobox"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["combobox"],
   "files": [
     {
       "path": "examples/combobox-demo.tsx",

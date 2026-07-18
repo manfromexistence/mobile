@@ -49,7 +49,7 @@ test("#1534: namespace MCP tools flatten into one Chat function per sub-tool", (
   assert.equal(
     out.tools.some((t) => t.function?.name === "mcp__ctx7__"),
     false,
-    "the empty `mcp__ctx7__` namespace placeholder must not be emitted"
+    "the empty `mcp__ctx7__` namespace placeholder must not be emitted",
   );
 
   // Each flattened function keeps its own parameters.

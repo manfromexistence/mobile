@@ -24,7 +24,7 @@ test("#2247 — route.ts exposes Qoder PAT disambiguation message", () => {
   assert.match(
     source,
     /Personal Access Token is stored on this connection\. Switch this connection to API Key auth/,
-    "expected the disambiguated Qoder message to be present in test/route.ts"
+    "expected the disambiguated Qoder message to be present in test/route.ts",
   );
 });
 
@@ -58,6 +58,6 @@ test("#2247 — early-return on runtime diagnosis short-circuits upstream test",
   assert.match(
     runtimeBlock.slice(0, 600),
     /if \(\(runtime as any\)\?\.diagnosis\)/,
-    "expected the route to check runtime?.diagnosis immediately after getProviderRuntimeStatus()"
+    "expected the route to check runtime?.diagnosis immediately after getProviderRuntimeStatus()",
   );
 });

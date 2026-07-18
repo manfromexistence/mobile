@@ -22,19 +22,19 @@ test("KIRO_CONFIG exposes the social-flow client id and device-code URLs", () =>
   assert.ok(KIRO_CONFIG.socialClientId.length > 0, "socialClientId must be non-empty");
   assert.ok(
     KIRO_CONFIG.socialDeviceAuthorizeUrl.startsWith("https://"),
-    "socialDeviceAuthorizeUrl must use HTTPS"
+    "socialDeviceAuthorizeUrl must use HTTPS",
   );
   assert.ok(
     KIRO_CONFIG.socialDevicePollUrl.startsWith("https://"),
-    "socialDevicePollUrl must use HTTPS"
+    "socialDevicePollUrl must use HTTPS",
   );
   assert.ok(
     KIRO_CONFIG.socialDeviceAuthorizeUrl.endsWith("/oauth/device/authorization"),
-    "socialDeviceAuthorizeUrl must point at the AWS Kiro device authorize endpoint"
+    "socialDeviceAuthorizeUrl must point at the AWS Kiro device authorize endpoint",
   );
   assert.ok(
     KIRO_CONFIG.socialDevicePollUrl.endsWith("/oauth/device/poll"),
-    "socialDevicePollUrl must point at the AWS Kiro device poll endpoint"
+    "socialDevicePollUrl must point at the AWS Kiro device poll endpoint",
   );
 });
 
@@ -63,19 +63,19 @@ test("Kiro social-flow routes do not duplicate the AWS auth URL or 'kiro-cli' li
     const content = fs.readFileSync(routePath, "utf8");
     assert.ok(
       content.includes('from "@/lib/oauth/constants/oauth"'),
-      `${routePath} must import KIRO_CONFIG from @/lib/oauth/constants/oauth`
+      `${routePath} must import KIRO_CONFIG from @/lib/oauth/constants/oauth`,
     );
     assert.ok(
       content.includes("KIRO_CONFIG.socialClientId"),
-      `${routePath} must reference KIRO_CONFIG.socialClientId instead of the "kiro-cli" literal`
+      `${routePath} must reference KIRO_CONFIG.socialClientId instead of the "kiro-cli" literal`,
     );
     assert.ok(
       !/['"]kiro-cli['"]/.test(content),
-      `${routePath} must NOT inline the "kiro-cli" literal — use KIRO_CONFIG.socialClientId`
+      `${routePath} must NOT inline the "kiro-cli" literal — use KIRO_CONFIG.socialClientId`,
     );
     assert.ok(
       !/['"]https:\/\/prod\.us-east-1\.auth\.desktop\.kiro\.dev/.test(content),
-      `${routePath} must NOT inline the Kiro auth service URL — use KIRO_CONFIG.socialDeviceAuthorizeUrl / socialDevicePollUrl`
+      `${routePath} must NOT inline the Kiro auth service URL — use KIRO_CONFIG.socialDeviceAuthorizeUrl / socialDevicePollUrl`,
     );
   }
 });

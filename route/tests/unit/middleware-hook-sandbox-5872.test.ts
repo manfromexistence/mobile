@@ -20,7 +20,9 @@ import {
 } from "../../src/lib/middleware/registry.ts";
 import { HookPriority, type HookConfig } from "../../src/lib/middleware/types.ts";
 
-function baseConfig(overrides: Partial<HookConfig> & Pick<HookConfig, "name" | "code">): HookConfig {
+function baseConfig(
+  overrides: Partial<HookConfig> & Pick<HookConfig, "name" | "code">,
+): HookConfig {
   return {
     description: "test hook",
     priority: HookPriority.NORMAL,
@@ -57,7 +59,7 @@ test("(a) valid hook compiles, runs in sandbox, and returns a HookResult applied
         context.body.injected = "yes";
         return { body: { added: true }, model: "gpt-4o-mini" };
       `,
-    })
+    }),
   );
 
   const { context } = await runHooks(ctx());
@@ -87,7 +89,7 @@ test("(b) hook cannot reach ambient authority: process / require / globalThis ar
           },
         };
       `,
-    })
+    }),
   );
 
   const { context } = await runHooks(ctx());
@@ -107,7 +109,7 @@ test("(b') hook attempting to read process.env throws inside the sandbox (no lea
       baseConfig({
         name: "env-read-hook",
         code: `return { body: { stolen: process.env.__SECRET_5872 } };`,
-      })
+      }),
     );
 
     const { context } = await runHooks(ctx());
@@ -127,7 +129,7 @@ test("(c) runaway synchronous hook is aborted by the execution timeout", async (
     baseConfig({
       name: "runaway-hook",
       code: `while (true) {}`,
-    })
+    }),
   );
 
   const { context } = await runHooks(ctx());
@@ -144,7 +146,7 @@ test("(d) recompilation on update reuses the cached middleware and runs the new 
     baseConfig({
       name: "recompile-hook",
       code: `return { body: { version: 1 } };`,
-    })
+    }),
   );
 
   let out = await runHooks(ctx());

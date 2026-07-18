@@ -13,9 +13,8 @@ export const registryConfig = {
    * @see https://ui.shadcn.com/docs/registry/namespace#url-pattern-system
    */
   namespaceUrl:
-    process.env.NEXT_PUBLIC_REGISTRY_NAMESPACE_URL ||
-    "https://chanhdai.com/r/{name}.json",
-}
+    process.env.NEXT_PUBLIC_REGISTRY_NAMESPACE_URL || "https://chanhdai.com/r/{name}.json",
+};
 
 export const componentCategories = [
   {
@@ -72,25 +71,22 @@ export const componentCategories = [
     description:
       "Functional helpers and often invisible wrappers that provide underlying system capabilities, sensory user feedback, or abstract business logic.",
   },
-]
+];
 
 export const blockCategories = [
   {
     name: "marketing",
     title: "Marketing",
-    description:
-      "Landing pages, sections, blog templates, and high-converting testimonial blocks.",
+    description: "Landing pages, sections, blog templates, and high-converting testimonial blocks.",
   },
   {
     name: "application",
     title: "Application",
-    description:
-      "Dashboard layouts, metric cards, settings pages, and core web app interfaces.",
+    description: "Dashboard layouts, metric cards, settings pages, and core web app interfaces.",
   },
   {
     name: "ecommerce",
     title: "Ecommerce",
-    description:
-      "Product grids, shopping carts, filters, and streamlined checkout components.",
+    description: "Product grids, shopping carts, filters, and streamlined checkout components.",
   },
-]
+];

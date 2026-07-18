@@ -23,12 +23,9 @@ function freshState(): NonStreamingSseTerminalState {
   return { currentEvent: "", pendingLine: "" };
 }
 
-test("typed terminal (data carries \"type\") is still detected via JSON.parse", () => {
+test('typed terminal (data carries "type") is still detected via JSON.parse', () => {
   const state = freshState();
-  const done = appendNonStreamingSseTerminalSignal(
-    state,
-    'data: {"type":"message_stop"}\n\n'
-  );
+  const done = appendNonStreamingSseTerminalSignal(state, 'data: {"type":"message_stop"}\n\n');
   assert.equal(done, true);
 });
 
@@ -40,11 +37,11 @@ test("Claude terminal signalled by event: line with a typeless data body is dete
   assert.equal(done, true);
 });
 
-test("OpenAI chunks (no \"type\", non-terminal event) are not falsely terminated; [DONE] still ends", () => {
+test('OpenAI chunks (no "type", non-terminal event) are not falsely terminated; [DONE] still ends', () => {
   const state = freshState();
   const mid = appendNonStreamingSseTerminalSignal(
     state,
-    'data: {"choices":[{"delta":{"content":"hi"}}]}\n\n'
+    'data: {"choices":[{"delta":{"content":"hi"}}]}\n\n',
   );
   assert.equal(mid, false, "a normal OpenAI chunk must not be treated as terminal");
   const end = appendNonStreamingSseTerminalSignal(state, "data: [DONE]\n\n");
@@ -55,7 +52,7 @@ test("non-terminal typed event does not terminate", () => {
   const state = freshState();
   const done = appendNonStreamingSseTerminalSignal(
     state,
-    'data: {"type":"content_block_delta"}\n\n'
+    'data: {"type":"content_block_delta"}\n\n',
   );
   assert.equal(done, false);
 });

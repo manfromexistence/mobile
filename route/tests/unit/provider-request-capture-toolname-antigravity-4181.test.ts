@@ -25,10 +25,7 @@ import {
   createPreparedRequestLogger,
   type ProviderRequestPrepared,
 } from "../../open-sse/utils/providerRequestLogging.ts";
-import {
-  cloakAntigravityToolPayload,
-  AG_TOOL_SUFFIX,
-} from "../../open-sse/config/toolCloaking.ts";
+import { cloakAntigravityToolPayload, AG_TOOL_SUFFIX } from "../../open-sse/config/toolCloaking.ts";
 
 function makeCapture() {
   const logged: unknown[] = [];
@@ -73,8 +70,16 @@ function makeCloakedAntigravityBody(): Record<string, unknown> {
       tools: [
         {
           functionDeclarations: [
-            { name: CUSTOM_TOOL, description: "Read a file", parameters: { type: "OBJECT", properties: {} } },
-            { name: NATIVE_TOOL, description: "Run a shell command", parameters: { type: "OBJECT", properties: {} } },
+            {
+              name: CUSTOM_TOOL,
+              description: "Read a file",
+              parameters: { type: "OBJECT", properties: {} },
+            },
+            {
+              name: NATIVE_TOOL,
+              description: "Run a shell command",
+              parameters: { type: "OBJECT", properties: {} },
+            },
           ],
         },
       ],
@@ -113,7 +118,7 @@ test("#4181 body() preserves the Antigravity _ide cloak map dropped by the captu
   assert.equal(
     (captured as Record<string, unknown>)._toolNameMap,
     undefined,
-    "precondition: JSON round-trip drops the non-enumerable _toolNameMap"
+    "precondition: JSON round-trip drops the non-enumerable _toolNameMap",
   );
   const prepared: ProviderRequestPrepared = {
     url: "https://server.codeium.com/exa.language_server_pb.LanguageServerService/GenerateAntigravity",
@@ -130,7 +135,7 @@ test("#4181 body() preserves the Antigravity _ide cloak map dropped by the captu
   assert.equal(
     (map as Map<string, string>).get(CLOAKED_TOOL),
     CUSTOM_TOOL,
-    "_ide alias must resolve back to the original tool name"
+    "_ide alias must resolve back to the original tool name",
   );
 });
 
@@ -149,11 +154,11 @@ test("#4181 the re-attached Antigravity map stays non-enumerable (never re-seria
   assert.ok(finalBody._toolNameMap instanceof Map);
   assert.ok(
     !Object.keys(finalBody).includes("_toolNameMap"),
-    "_toolNameMap must stay non-enumerable so it never re-serializes upstream"
+    "_toolNameMap must stay non-enumerable so it never re-serializes upstream",
   );
   assert.ok(
     !JSON.stringify(finalBody).includes("_toolNameMap"),
-    "_toolNameMap must not appear in a serialized provider body"
+    "_toolNameMap must not appear in a serialized provider body",
   );
 });
 
@@ -166,7 +171,11 @@ test("#4181 body() leaves non-cloaked Antigravity traffic untouched (no spurious
       tools: [
         {
           functionDeclarations: [
-            { name: NATIVE_TOOL, description: "Run a shell command", parameters: { type: "OBJECT", properties: {} } },
+            {
+              name: NATIVE_TOOL,
+              description: "Run a shell command",
+              parameters: { type: "OBJECT", properties: {} },
+            },
           ],
         },
       ],

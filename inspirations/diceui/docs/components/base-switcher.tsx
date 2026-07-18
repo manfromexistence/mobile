@@ -13,23 +13,11 @@ interface BaseSwitcherProps extends React.ComponentProps<"div"> {
   pathname: string;
 }
 
-export function BaseSwitcher({
-  base,
-  pathname,
-  className,
-  ...props
-}: BaseSwitcherProps) {
+export function BaseSwitcher({ base, pathname, className, ...props }: BaseSwitcherProps) {
   return (
-    <div
-      role="tablist"
-      className={cn("inline-flex h-9 items-center gap-6", className)}
-      {...props}
-    >
+    <div role="tablist" className={cn("inline-flex h-9 items-center gap-6", className)} {...props}>
       {bases.map((baseItem) => {
-        const href = pathname.replace(
-          `/components/${base}/`,
-          `/components/${baseItem.value}/`,
-        );
+        const href = pathname.replace(`/components/${base}/`, `/components/${baseItem.value}/`);
         const isActive = base === baseItem.value;
 
         return (

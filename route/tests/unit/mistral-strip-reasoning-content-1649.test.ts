@@ -33,14 +33,14 @@ test("DefaultExecutor.transformRequest strips nested reasoning_content for mistr
     "mistral-large",
     bodyWithReasoningContent(),
     STREAM,
-    CREDENTIALS
+    CREDENTIALS,
   ) as Record<string, unknown>;
   const messages = out.messages as Array<Record<string, unknown>>;
   const assistant = messages.find((m) => m.role === "assistant") as Record<string, unknown>;
   assert.equal(
     Object.prototype.hasOwnProperty.call(assistant, "reasoning_content"),
     false,
-    "mistral assistant message must not carry reasoning_content"
+    "mistral assistant message must not carry reasoning_content",
   );
   assert.equal(assistant.content, "answer", "the rest of the message must be preserved");
   assert.equal(messages.length, 2, "no messages dropped");
@@ -51,13 +51,13 @@ test("DefaultExecutor.transformRequest preserves reasoning_content for non-mistr
     "deepseek-chat",
     bodyWithReasoningContent(),
     STREAM,
-    CREDENTIALS
+    CREDENTIALS,
   ) as Record<string, unknown>;
   const messages = out.messages as Array<Record<string, unknown>>;
   const assistant = messages.find((m) => m.role === "assistant") as Record<string, unknown>;
   assert.equal(
     assistant.reasoning_content,
     "internal chain of thought",
-    "deepseek requires replayed reasoning_content — must be preserved"
+    "deepseek requires replayed reasoning_content — must be preserved",
   );
 });

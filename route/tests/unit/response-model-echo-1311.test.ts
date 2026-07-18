@@ -28,7 +28,7 @@ test("echoModelInObject is a no-op when echoModel is falsy or model is absent", 
 test("echoModelInSseLine rewrites a data chunk and leaves [DONE]/comments alone", () => {
   assert.equal(
     echoModelInSseLine('data: {"id":"1","model":"gpt-5.5","choices":[]}', "claude-sonnet-cx"),
-    'data: {"id":"1","model":"claude-sonnet-cx","choices":[]}'
+    'data: {"id":"1","model":"claude-sonnet-cx","choices":[]}',
   );
   assert.equal(echoModelInSseLine("data: [DONE]", "claude-sonnet-cx"), "data: [DONE]");
   assert.equal(echoModelInSseLine(": keep-alive", "claude-sonnet-cx"), ": keep-alive");

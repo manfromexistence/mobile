@@ -1,8 +1,8 @@
-import code from '@content/Components/CardNav/CardNav.jsx?raw';
-import css from '@content/Components/CardNav/CardNav.css?raw';
-import tailwind from '@tailwind/Components/CardNav/CardNav.jsx?raw';
-import tsCode from '@ts-default/Components/CardNav/CardNav.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/CardNav/CardNav.tsx?raw';
+import code from "@content/Components/CardNav/CardNav.jsx?raw";
+import css from "@content/Components/CardNav/CardNav.css?raw";
+import tailwind from "@tailwind/Components/CardNav/CardNav.jsx?raw";
+import tsCode from "@ts-default/Components/CardNav/CardNav.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/CardNav/CardNav.tsx?raw";
 
 export const cardNav = {
   dependencies: `gsap`,
@@ -58,5 +58,5 @@ const App = () => {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

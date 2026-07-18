@@ -41,6 +41,6 @@ test("#6409 ENVIRONMENT.md documents the memory tradeoff of the Turbopack build 
     mentionsMemory,
     "OMNIROUTE_USE_TURBOPACK row must mention the memory/RAM tradeoff so contributors on " +
       "memory-constrained machines know the webpack fallback (=0) exists BEFORE `npm run build` " +
-      "balloons past 14 GB (#6409), not just the Windows/native-binding-compat reason currently documented"
+      "balloons past 14 GB (#6409), not just the Windows/native-binding-compat reason currently documented",
   );
 });

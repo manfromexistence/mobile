@@ -220,9 +220,7 @@ describe("useScrollLock", () => {
       scrollbarGutter: "auto",
     } as unknown as CSSStyleDeclaration);
 
-    render(
-      <ScrollLockComponent enabled={true} referenceElement={customElement} />,
-    );
+    render(<ScrollLockComponent enabled={true} referenceElement={customElement} />);
 
     // Force a layout calculation
     vi.runAllTimers();
@@ -265,13 +263,9 @@ describe("useScrollLock", () => {
     vi.runAllTimers();
 
     expect(document.body.style.position).toBe("fixed");
-    expect(document.body.style.width).toBe(
-      `calc(100vw - ${scrollbarWidth + 20}px)`,
-    );
+    expect(document.body.style.width).toBe(`calc(100vw - ${scrollbarWidth + 20}px)`);
     // Check data attributes since jsdom 27.3+ doesn't properly reflect top/left in style object
-    expect(document.body.getAttribute("data-scroll-lock-top")).toBe(
-      String(scrollY),
-    );
+    expect(document.body.getAttribute("data-scroll-lock-top")).toBe(String(scrollY));
     expect(document.body.getAttribute("data-scroll-lock-left")).toBe("0");
     expect(document.body.style.boxSizing).toBe("border-box");
     expect(document.body.style.overflow).toBe("hidden");
@@ -521,12 +515,8 @@ describe("useScrollLock", () => {
 
     expect(scrollableElement.style.overscrollBehavior).toBe("contain");
     expect(document.body.style.position).toBe("fixed");
-    expect(document.body.style.width).toBe(
-      `calc(100vw - ${scrollbarWidth + 20}px)`,
-    );
-    expect(document.body.style.height).toBe(
-      `calc(100vh - ${scrollbarHeight + 20}px)`,
-    );
+    expect(document.body.style.width).toBe(`calc(100vw - ${scrollbarWidth + 20}px)`);
+    expect(document.body.style.height).toBe(`calc(100vh - ${scrollbarHeight + 20}px)`);
 
     // Restore original getComputedStyle
     window.getComputedStyle = originalGetComputedStyle;
@@ -561,11 +551,9 @@ describe("useScrollLock", () => {
     expect(input.style.transform).toBe("");
 
     // Verify visualViewport event listener was called
-    expect(mockAddEventListener).toHaveBeenCalledWith(
-      "resize",
-      expect.any(Function),
-      { once: true },
-    );
+    expect(mockAddEventListener).toHaveBeenCalledWith("resize", expect.any(Function), {
+      once: true,
+    });
 
     document.body.removeChild(input);
   });
@@ -627,9 +615,7 @@ describe("useScrollLock", () => {
 
     expect(document.documentElement.style.overflowY).toBe("scroll");
     expect(document.documentElement.style.overflowX).toBe("scroll");
-    expect(document.body.style.width).toBe(
-      `calc(100vw - ${scrollbarWidth + 20}px)`,
-    );
+    expect(document.body.style.width).toBe(`calc(100vw - ${scrollbarWidth + 20}px)`);
     expect(document.body.style.height).toBe("calc(100dvh - 20px)");
   });
 });

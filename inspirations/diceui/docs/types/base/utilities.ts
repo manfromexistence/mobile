@@ -95,14 +95,7 @@ export interface HitboxProps extends RenderProps {
    * The position where the hitbox should be applied.
    * @default "all"
    */
-  position?:
-    | "all"
-    | "top"
-    | "bottom"
-    | "left"
-    | "right"
-    | "vertical"
-    | "horizontal";
+  position?: "all" | "top" | "bottom" | "left" | "right" | "vertical" | "horizontal";
 
   /**
    * The border radius of the hitbox.

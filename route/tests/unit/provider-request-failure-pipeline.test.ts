@@ -11,21 +11,25 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const core = await import("../../src/lib/db/core.ts");
 const settingsDb = await import("../../src/lib/db/settings.ts");
 const { invalidateDbCache } = await import("../../src/lib/db/readCache.ts");
-const { invalidateCacheControlSettingsCache } =
-  await import("../../src/lib/cacheControlSettings.ts");
+const { invalidateCacheControlSettingsCache } = await import(
+  "../../src/lib/cacheControlSettings.ts"
+);
 const { clearCache } = await import("../../src/lib/semanticCache.ts");
 const { clearIdempotency } = await import("../../src/lib/idempotencyLayer.ts");
-const { getPendingRequests, clearPendingRequests } =
-  await import("../../src/lib/usage/usageHistory.ts");
+const { getPendingRequests, clearPendingRequests } = await import(
+  "../../src/lib/usage/usageHistory.ts"
+);
 const { clearInflight } = await import("../../open-sse/services/requestDedup.ts");
-const { resetAll: resetAccountSemaphores } =
-  await import("../../open-sse/services/accountSemaphore.ts");
+const { resetAll: resetAccountSemaphores } = await import(
+  "../../open-sse/services/accountSemaphore.ts"
+);
 const { clearModelLock } = await import("../../open-sse/services/accountFallback.ts");
 const { getCallLogs, getCallLogById } = await import("../../src/lib/usage/callLogs.ts");
 const { handleChatCore } = await import("../../open-sse/handlers/chatCore.ts");
 const { resetPayloadRulesConfigForTests } = await import("../../open-sse/services/payloadRules.ts");
-const { CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA, CONTEXT_1M_BETA_HEADER } =
-  await import("../../open-sse/services/claudeCodeCompatible.ts");
+const { CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA, CONTEXT_1M_BETA_HEADER } = await import(
+  "../../open-sse/services/claudeCodeCompatible.ts"
+);
 
 const originalFetch = globalThis.fetch;
 
@@ -131,18 +135,18 @@ test("network failure persisted call log includes providerRequest in pipeline pa
 
   assert.ok(
     detail.pipelinePayloads,
-    "expected pipeline payloads when call_log_pipeline_enabled is true"
+    "expected pipeline payloads when call_log_pipeline_enabled is true",
   );
   assert.ok(
     detail.pipelinePayloads.providerRequest,
-    "providerRequest must be present in pipeline payloads even on network failure"
+    "providerRequest must be present in pipeline payloads even on network failure",
   );
   const providerReqBody =
     detail.pipelinePayloads.providerRequest.body ?? detail.pipelinePayloads.providerRequest;
   assert.equal(
     providerReqBody.model,
     "gpt-4o-mini",
-    "providerRequest should contain the translated model"
+    "providerRequest should contain the translated model",
   );
   const messages =
     providerReqBody.messages ?? (Array.isArray(providerReqBody) ? providerReqBody : null);
@@ -152,7 +156,7 @@ test("network failure persisted call log includes providerRequest in pipeline pa
   assert.equal(
     detail.pipelinePayloads.providerResponse ?? null,
     null,
-    "providerResponse should be null/absent on network failure (no response received)"
+    "providerResponse should be null/absent on network failure (no response received)",
   );
   assert.ok(detail.pipelinePayloads.error, "pipeline payloads should include the error details");
 });
@@ -199,7 +203,7 @@ test("network timeout persisted call log includes providerRequest in pipeline pa
 
     assert.ok(
       detail.pipelinePayloads?.providerRequest,
-      "providerRequest must be present in pipeline payloads on timeout"
+      "providerRequest must be present in pipeline payloads on timeout",
     );
     const providerReqBody =
       detail.pipelinePayloads?.providerRequest?.body ?? detail.pipelinePayloads?.providerRequest;
@@ -224,7 +228,7 @@ test("provider error response (HTTP 502) includes both providerRequest and provi
       {
         status: 502,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   };
 
@@ -252,16 +256,16 @@ test("provider error response (HTTP 502) includes both providerRequest and provi
   assert.ok(detail.pipelinePayloads, "expected pipeline payloads");
   assert.ok(
     detail.pipelinePayloads.providerRequest,
-    "providerRequest must be present on HTTP error response"
+    "providerRequest must be present on HTTP error response",
   );
   assert.ok(
     detail.pipelinePayloads.providerResponse,
-    "providerResponse must be present on HTTP error response (upstream responded)"
+    "providerResponse must be present on HTTP error response (upstream responded)",
   );
   assert.equal(
     detail.pipelinePayloads.providerResponse.status,
     502,
-    "providerResponse status should reflect the upstream error"
+    "providerResponse status should reflect the upstream error",
   );
 });
 
@@ -293,7 +297,7 @@ test("successful response includes both providerRequest and providerResponse in 
           "cf-ray": "response-ray",
           server: "cloudflare",
         },
-      }
+      },
     );
   };
 
@@ -321,17 +325,17 @@ test("successful response includes both providerRequest and providerResponse in 
   assert.ok(detail.pipelinePayloads.providerRequest, "providerRequest must be present on success");
   assert.ok(
     detail.pipelinePayloads.providerResponse,
-    "providerResponse must be present on success"
+    "providerResponse must be present on success",
   );
   assert.equal(
     detail.pipelinePayloads.providerRequest.headers["cf-ray"],
     undefined,
-    "providerRequest headers must not be overwritten with upstream response headers"
+    "providerRequest headers must not be overwritten with upstream response headers",
   );
   assert.equal(
     detail.pipelinePayloads.providerRequest.headers.server,
     undefined,
-    "providerRequest headers must not include upstream response server header"
+    "providerRequest headers must not include upstream response server header",
   );
   assert.equal(detail.pipelinePayloads.providerRequest.headers.Accept, "application/json");
   assert.equal(detail.pipelinePayloads.providerRequest.headers["Content-Type"], "application/json");
@@ -402,7 +406,7 @@ test("streaming response preserves request headers in providerRequest pipeline p
   assert.equal(
     providerRequest.headers["cf-ray"],
     undefined,
-    "streaming providerRequest headers must not be response headers"
+    "streaming providerRequest headers must not be response headers",
   );
   assert.equal(providerRequest.headers.server, undefined);
   assert.equal(providerRequest.headers.Accept, "text/event-stream");
@@ -489,7 +493,7 @@ test("CC-compatible providerRequest log keeps request beta headers and summarize
   assert.match(providerRequest.headers["anthropic-beta"], new RegExp(CONTEXT_1M_BETA_HEADER));
   assert.match(
     providerRequest.headers["anthropic-beta"],
-    new RegExp(CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA)
+    new RegExp(CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA),
   );
   assert.equal(providerRequest.body.thinking.display, "summarized");
 });

@@ -18,9 +18,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-quota-combo-groups-")
-);
+const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-quota-combo-groups-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
 
 const core = await import("../../src/lib/db/core.ts");
@@ -130,7 +128,7 @@ test("G1: two pools in same group → combos named qtSd/<group>/provider/model (
     assert.equal(
       parsed.groupSlug,
       groupSlug,
-      `Combo "${c.name}" groupSlug should be "${groupSlug}" (group name), got "${parsed.groupSlug}"`
+      `Combo "${c.name}" groupSlug should be "${groupSlug}" (group name), got "${parsed.groupSlug}"`,
     );
   }
 
@@ -139,7 +137,10 @@ test("G1: two pools in same group → combos named qtSd/<group>/provider/model (
     const p = parseQuotaModelName(c.name);
     return p?.groupSlug === groupSlug && p?.provider === "openrouter";
   });
-  assert.ok(orCombos.length > 0, `Expected openrouter combos under qtSd/${groupSlug}/openrouter/...`);
+  assert.ok(
+    orCombos.length > 0,
+    `Expected openrouter combos under qtSd/${groupSlug}/openrouter/...`,
+  );
 
   // Combos for baidu must exist under the group slug
   const baiduCombos = allCombos.filter((c) => {
@@ -210,7 +211,7 @@ test("G2: re-syncing pool A (openrouter) does not delete pool B (baidu) combos i
     baiduAfter.length,
     baiduBefore.length,
     `Re-syncing pool A (openrouter) must not prune pool B's (baidu) combos. ` +
-      `Before: ${baiduBefore.length}, After: ${baiduAfter.length}`
+      `Before: ${baiduBefore.length}, After: ${baiduAfter.length}`,
   );
 
   // Also verify openrouter combos still present
@@ -255,7 +256,7 @@ test("G3: pool in default 'group-demo' group produces combos under groupdemo slu
     assert.equal(
       parsed.groupSlug,
       "groupdemo",
-      `Combo "${c.name}" should be under "groupdemo" slug (GroupDemo group), got "${parsed.groupSlug}"`
+      `Combo "${c.name}" should be under "groupdemo" slug (GroupDemo group), got "${parsed.groupSlug}"`,
     );
   }
 });
@@ -287,7 +288,14 @@ test("G4: stale same-group same-provider combo is pruned on re-sync", async () =
   const staleComboName = `qtSd/${groupSlug}/openrouter/fake-stale-model`;
   await combosDb.createCombo({
     name: staleComboName,
-    models: [{ kind: "model", model: "openrouter/fake-stale-model", providerId: "openrouter", weight: 100 }],
+    models: [
+      {
+        kind: "model",
+        model: "openrouter/fake-stale-model",
+        providerId: "openrouter",
+        weight: 100,
+      },
+    ],
     strategy: "priority",
     isHidden: true,
   });

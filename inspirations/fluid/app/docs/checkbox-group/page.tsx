@@ -32,7 +32,11 @@ const [checked, setChecked] = useState<Set<number>>(new Set([0]));
 </CheckboxGroup>`;
 
 const groupProps: PropDef[] = [
-  { name: "checkedIndices", type: "Set<number>", description: "Set of checked item indices. Used for merged background rendering." },
+  {
+    name: "checkedIndices",
+    type: "Set<number>",
+    description: "Set of checked item indices. Used for merged background rendering.",
+  },
   { name: "children", type: "ReactNode", description: "CheckboxItem children." },
 ];
 

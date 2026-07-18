@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
-import { LiveWaveform } from "@/registry/elevenlabs-ui/ui/live-waveform"
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
+import { LiveWaveform } from "@/registry/elevenlabs-ui/ui/live-waveform";
 
 export default function LiveWaveformDemo() {
-  const [active, setActive] = useState(false)
-  const [processing, setProcessing] = useState(false)
-  const [mode, setMode] = useState<"static" | "scrolling">("static")
+  const [active, setActive] = useState(false);
+  const [processing, setProcessing] = useState(false);
+  const [mode, setMode] = useState<"static" | "scrolling">("static");
 
   const handleToggleActive = () => {
-    setActive(!active)
+    setActive(!active);
     if (!active) {
-      setProcessing(false)
+      setProcessing(false);
     }
-  }
+  };
 
   const handleToggleProcessing = () => {
-    setProcessing(!processing)
+    setProcessing(!processing);
     if (!processing) {
-      setActive(false)
+      setActive(false);
     }
-  }
+  };
 
   return (
     <div className="bg-card w-full rounded-lg border p-6">
@@ -47,11 +47,7 @@ export default function LiveWaveformDemo() {
         />
 
         <div className="flex flex-wrap justify-center gap-2">
-          <Button
-            size="sm"
-            variant={active ? "default" : "outline"}
-            onClick={handleToggleActive}
-          >
+          <Button size="sm" variant={active ? "default" : "outline"} onClick={handleToggleActive}>
             {active ? "Stop" : "Start"} Listening
           </Button>
           <Button
@@ -71,5 +67,5 @@ export default function LiveWaveformDemo() {
         </div>
       </div>
     </div>
-  )
+  );
 }

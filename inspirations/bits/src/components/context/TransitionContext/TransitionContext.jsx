@@ -1,13 +1,13 @@
-import { createContext, useState, useCallback, useRef } from 'react';
+import { createContext, useState, useCallback, useRef } from "react";
 
 const TransitionContext = createContext();
 
 export const TransitionProvider = ({ children }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [transitionPhase, setTransitionPhase] = useState('idle');
+  const [transitionPhase, setTransitionPhase] = useState("idle");
   const preloadedComponents = useRef(new Map());
 
-  const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const preloadComponent = useCallback(async (subcategory, componentMap) => {
     if (!subcategory || preloadedComponents.current.has(subcategory)) {
@@ -23,7 +23,7 @@ export const TransitionProvider = ({ children }) => {
         return component;
       }
     } catch (error) {
-      console.error('Failed to preload component:', error);
+      console.error("Failed to preload component:", error);
     }
     return null;
   }, []);
@@ -33,25 +33,25 @@ export const TransitionProvider = ({ children }) => {
       if (isTransitioning) return;
       setIsTransitioning(true);
 
-      setTransitionPhase('fade-out');
+      setTransitionPhase("fade-out");
 
       const preloadPromise = preloadComponent(targetSubcategory, componentMap);
       await delay(250);
 
-      setTransitionPhase('loading');
+      setTransitionPhase("loading");
 
       const MAX_PRELOAD_WAIT = 500;
       await Promise.race([preloadPromise, delay(MAX_PRELOAD_WAIT)]);
 
       onNavigate();
 
-      setTransitionPhase('fade-in');
+      setTransitionPhase("fade-in");
       await delay(250);
 
-      setTransitionPhase('idle');
+      setTransitionPhase("idle");
       setIsTransitioning(false);
     },
-    [isTransitioning, preloadComponent]
+    [isTransitioning, preloadComponent],
   );
 
   const value = {
@@ -60,7 +60,10 @@ export const TransitionProvider = ({ children }) => {
     startTransition,
     preloadComponent,
     clearPreloadedComponents: useCallback(() => preloadedComponents.current.clear(), []),
-    getPreloadedComponent: useCallback(subcategory => preloadedComponents.current.get(subcategory), [])
+    getPreloadedComponent: useCallback(
+      (subcategory) => preloadedComponents.current.get(subcategory),
+      [],
+    ),
   };
 
   return <TransitionContext.Provider value={value}>{children}</TransitionContext.Provider>;

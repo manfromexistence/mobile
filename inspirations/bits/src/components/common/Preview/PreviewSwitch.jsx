@@ -1,4 +1,4 @@
-import '../../../css/preview-slider.css';
+import "../../../css/preview-slider.css";
 
 const PreviewSwitch = ({ title, isChecked, onChange, isDisabled }) => {
   const handleChange = () => {
@@ -19,7 +19,7 @@ const PreviewSwitch = ({ title, isChecked, onChange, isDisabled }) => {
         tabIndex={isDisabled ? -1 : 0}
         onClick={handleChange}
         onKeyDown={(e) => {
-          if (e.key === ' ' || e.key === 'Enter') {
+          if (e.key === " " || e.key === "Enter") {
             e.preventDefault();
             handleChange();
           }

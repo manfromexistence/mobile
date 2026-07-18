@@ -1,22 +1,22 @@
-import { compareDesc } from "date-fns"
+import { compareDesc } from "date-fns";
 
-import { CollapsibleList } from "@/components/collapsible-list"
+import { CollapsibleList } from "@/components/collapsible-list";
 import {
   Panel,
   PanelHeader,
   PanelTitle,
   PanelTitleSup,
-} from "@/features/portfolio/components/panel"
-import { PanelTitleCopy } from "@/features/portfolio/components/panel-title-copy"
-import { BOOKMARKS } from "@/features/portfolio/data/bookmarks"
+} from "@/features/portfolio/components/panel";
+import { PanelTitleCopy } from "@/features/portfolio/components/panel-title-copy";
+import { BOOKMARKS } from "@/features/portfolio/data/bookmarks";
 
-import { BookmarkItem } from "./bookmark-item"
+import { BookmarkItem } from "./bookmark-item";
 
 const SORTED_BOOKMARKS = [...BOOKMARKS].sort((a, b) => {
-  return compareDesc(new Date(a.bookmarkedAt), new Date(b.bookmarkedAt))
-})
+  return compareDesc(new Date(a.bookmarkedAt), new Date(b.bookmarkedAt));
+});
 
-const ID = "bookmarks"
+const ID = "bookmarks";
 
 export function Bookmarks() {
   return (
@@ -35,5 +35,5 @@ export function Bookmarks() {
         renderItem={(item) => <BookmarkItem bookmark={item} />}
       />
     </Panel>
-  )
+  );
 }

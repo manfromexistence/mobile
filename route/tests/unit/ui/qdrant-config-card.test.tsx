@@ -37,8 +37,9 @@ function makeContainer(): HTMLElement {
 
 describe("QdrantConfigCard", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-      true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
     globalThis.fetch = vi.fn().mockImplementation((url: string) => {
       if (url === "/api/settings/qdrant") {
         return Promise.resolve({
@@ -135,9 +136,7 @@ describe("QdrantConfigCard", () => {
 
     const putCalls = fetchMock.mock.calls.filter(
       (c: [string, { method?: string }]) =>
-        typeof c[0] === "string" &&
-        c[0] === "/api/settings/qdrant" &&
-        c[1]?.method === "PUT",
+        typeof c[0] === "string" && c[0] === "/api/settings/qdrant" && c[1]?.method === "PUT",
     );
     expect(putCalls.length).toBeGreaterThan(0);
   });
@@ -198,32 +197,32 @@ describe("QdrantConfigCard", () => {
   });
 
   it("search test button calls /api/settings/qdrant/search and renders results", async () => {
-    const fetchMock = vi.fn().mockImplementation((url: string, opts?: { method?: string; body?: string }) => {
-      if (url === "/api/settings/qdrant") {
-        return Promise.resolve({
-          ok: true,
-          json: async () => MOCK_QDRANT_SETTINGS,
-        });
-      }
-      if (url === "/api/settings/qdrant/embedding-models") {
-        return Promise.resolve({
-          ok: true,
-          json: async () => ({ models: [] }),
-        });
-      }
-      if (url === "/api/settings/qdrant/search" && opts?.method === "POST") {
-        return Promise.resolve({
-          ok: true,
-          json: async () => ({
+    const fetchMock = vi
+      .fn()
+      .mockImplementation((url: string, opts?: { method?: string; body?: string }) => {
+        if (url === "/api/settings/qdrant") {
+          return Promise.resolve({
             ok: true,
-            results: [
-              { id: "r1", score: 0.9876, payload: { content: "test content" } },
-            ],
-          }),
-        });
-      }
-      return Promise.resolve({ ok: true, json: async () => ({}) });
-    });
+            json: async () => MOCK_QDRANT_SETTINGS,
+          });
+        }
+        if (url === "/api/settings/qdrant/embedding-models") {
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({ models: [] }),
+          });
+        }
+        if (url === "/api/settings/qdrant/search" && opts?.method === "POST") {
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({
+              ok: true,
+              results: [{ id: "r1", score: 0.9876, payload: { content: "test content" } }],
+            }),
+          });
+        }
+        return Promise.resolve({ ok: true, json: async () => ({}) });
+      });
     globalThis.fetch = fetchMock;
 
     const { default: QdrantConfigCard } = await import(

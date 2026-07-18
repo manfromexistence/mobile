@@ -1,9 +1,9 @@
-import { Chat } from "@/features/dx/components/chat"
+import { Chat } from "@/features/dx/components/chat";
 
 export function generateStaticParams() {
-  return []
+  return [];
 }
 
 export default function ChatSlugPage() {
-  return <Chat swapped />
+  return <Chat swapped />;
 }

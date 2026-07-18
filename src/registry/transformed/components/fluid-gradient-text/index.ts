@@ -1,1 +1,1 @@
-export * from "./fluid-gradient-text"
+export * from "./fluid-gradient-text";

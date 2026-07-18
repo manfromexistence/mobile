@@ -45,7 +45,7 @@ test("filters flat items by case-insensitive substring match on label", () => {
   assert.equal(result[0].id, "omni-proxy");
   assert.deepEqual(
     result[0].children.map((c) => ("label" in c ? c.id : c.id)),
-    ["combos"]
+    ["combos"],
   );
 });
 
@@ -64,7 +64,7 @@ test("filters items inside a group, dropping non-matching group members", () => 
   assert.ok(group, "expected the tools group to survive filtering");
   assert.deepEqual(
     group!.items.map((i) => i.id),
-    ["logs"]
+    ["logs"],
   );
 });
 

@@ -38,7 +38,7 @@ test("zenmux-free WEB_COOKIE_PROVIDERS entry is marked as free-tier", () => {
   assert.ok(typeof p.freeNote === "string" && (p.freeNote as string).length > 0);
   assert.ok(
     !(p.freeNote as string).includes("MiMo V2 Flash Free"),
-    "free note must not advertise deprecated MiMo V2 Flash Free"
+    "free note must not advertise deprecated MiMo V2 Flash Free",
   );
   assert.ok(typeof p.authHint === "string" && (p.authHint as string).length > 0);
 });
@@ -63,11 +63,11 @@ test("zenmux-free registry excludes deprecated MiMo V2 Flash Free", () => {
 
   assert.ok(
     ids.includes("deepseek/deepseek-chat"),
-    "deepseek/deepseek-chat (DeepSeek V3.2) must be registered"
+    "deepseek/deepseek-chat (DeepSeek V3.2) must be registered",
   );
   assert.ok(
     ids.includes("z-ai/glm-4.7-flash-free"),
-    "z-ai/glm-4.7-flash-free (GLM 4.7 Flash Free) must be registered"
+    "z-ai/glm-4.7-flash-free (GLM 4.7 Flash Free) must be registered",
   );
   assert.ok(!ids.includes("xiaomi/mimo-v2-flash-free"), "xiaomi/mimo-v2-flash-free is deprecated");
   assert.equal(r.models.length, 11, "must have exactly 11 models");
@@ -79,7 +79,7 @@ test("zenmux-free model names are human-readable strings", () => {
     assert.ok(m.id && typeof m.id === "string", `model id must be a string: ${JSON.stringify(m)}`);
     assert.ok(
       m.name && typeof m.name === "string",
-      `model name must be a string: ${JSON.stringify(m)}`
+      `model name must be a string: ${JSON.stringify(m)}`,
     );
   }
 });
@@ -136,7 +136,7 @@ test("ZenmuxFreeExecutor injects Cookie header from credentials when ctoken is p
         Object.entries((init?.headers as Record<string, string>) || {}).map(([k, v]) => [
           k.toLowerCase(),
           v,
-        ])
+        ]),
       ),
     });
     // Simulate upstream 200 OK with a minimal Anthropic SSE stream
@@ -167,7 +167,7 @@ test("ZenmuxFreeExecutor injects Cookie header from credentials when ctoken is p
     assert.ok(req.headers["cookie"], "Cookie header must be set");
     assert.ok(
       req.headers["cookie"].includes("ctoken=my-ctoken-value"),
-      "Cookie header must include ctoken"
+      "Cookie header must include ctoken",
     );
     // Anthropic-specific headers must be present
     assert.ok(req.headers["anthropic-version"], "anthropic-version header must be set");

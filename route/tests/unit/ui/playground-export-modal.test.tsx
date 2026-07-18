@@ -82,7 +82,9 @@ describe("ExportCodeModal", () => {
     const tabs = el.querySelectorAll("[role='tab']") as NodeListOf<HTMLButtonElement>;
 
     for (const tab of Array.from(tabs)) {
-      await act(async () => { tab.click(); });
+      await act(async () => {
+        tab.click();
+      });
       const pre = el.querySelector("pre");
       const code = pre?.textContent ?? "";
       // Real key regex — must not match
@@ -102,7 +104,9 @@ describe("ExportCodeModal", () => {
     const copyBtn = el.querySelector("[aria-label='copyLangCode']") as HTMLButtonElement;
     expect(copyBtn).not.toBeNull();
 
-    await act(async () => { copyBtn.click(); });
+    await act(async () => {
+      copyBtn.click();
+    });
 
     expect(writeTextMock).toHaveBeenCalledTimes(1);
     const copiedText = writeTextMock.mock.calls[0][0] as string;
@@ -123,7 +127,9 @@ describe("ExportCodeModal", () => {
     const pythonTab = Array.from(tabs).find((t) => t.textContent?.trim() === "Python");
     expect(pythonTab).not.toBeNull();
 
-    await act(async () => { pythonTab!.click(); });
+    await act(async () => {
+      pythonTab!.click();
+    });
 
     const newPre = el.querySelector("pre");
     const pythonCode = newPre?.textContent ?? "";
@@ -139,7 +145,9 @@ describe("ExportCodeModal", () => {
 
     const tabs = el.querySelectorAll("[role='tab']") as NodeListOf<HTMLButtonElement>;
     const tsTab = Array.from(tabs).find((t) => t.textContent?.trim() === "TypeScript");
-    await act(async () => { tsTab!.click(); });
+    await act(async () => {
+      tsTab!.click();
+    });
 
     const pre = el.querySelector("pre");
     const code = pre?.textContent ?? "";

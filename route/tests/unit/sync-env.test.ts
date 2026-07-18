@@ -29,7 +29,7 @@ function writeEnvExample(rootDir: string) {
       "# COMMENTED_KEY=skip-me",
       "",
     ].join("\n"),
-    "utf8"
+    "utf8",
   );
 }
 
@@ -48,7 +48,7 @@ function writeOauthEnvExample(rootDir: string) {
       "JWT_SECRET=should-not-be-copied",
       "",
     ].join("\n"),
-    "utf8"
+    "utf8",
   );
 }
 
@@ -93,7 +93,7 @@ test("syncEnv appends only missing keys and preserves existing values", () => {
         "CLAUDE_OAUTH_CLIENT_ID=custom-claude",
         "",
       ].join("\n"),
-      "utf8"
+      "utf8",
     );
 
     process.env.DATA_DIR = rootDir;
@@ -133,7 +133,7 @@ test("syncEnv treats quoted and unquoted values as equivalent", () => {
         'CLAUDE_USER_AGENT="claude-cli/2.1.145 (external, cli)"',
         "",
       ].join("\n"),
-      "utf8"
+      "utf8",
     );
 
     process.env.DATA_DIR = rootDir;

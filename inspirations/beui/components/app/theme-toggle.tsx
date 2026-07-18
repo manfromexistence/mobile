@@ -22,7 +22,15 @@ export function ThemeToggle({ className }: { className?: string }) {
         className,
       )}
     >
-      {mounted ? (isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />) : <div className="h-4 w-4" />}
+      {mounted ? (
+        isDark ? (
+          <Sun className="h-4 w-4" />
+        ) : (
+          <Moon className="h-4 w-4" />
+        )
+      ) : (
+        <div className="h-4 w-4" />
+      )}
     </button>
   );
 }

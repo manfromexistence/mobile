@@ -145,7 +145,7 @@ test("runOnResponse chains response through handlers", async () => {
   registerHook("onResponse", "p1", () => ({ response: { modified: "by-p1" } }));
   const result = await runOnResponse(
     { requestId: "test", body: {}, model: "test", metadata: {} },
-    { original: true }
+    { original: true },
   );
   assert.deepEqual(result, { modified: "by-p1" });
 });
@@ -154,7 +154,7 @@ test("runOnResponse passes through if no modification", async () => {
   registerHook("onResponse", "p1", () => undefined);
   const result = await runOnResponse(
     { requestId: "test", body: {}, model: "test", metadata: {} },
-    { original: true }
+    { original: true },
   );
   assert.deepEqual(result, { original: true });
 });
@@ -168,7 +168,7 @@ test("runOnError fires emitHook", async () => {
   });
   await runOnError(
     { requestId: "test", body: {}, model: "test", metadata: {} },
-    new Error("test error")
+    new Error("test error"),
   );
   assert.ok(errorReceived);
 });

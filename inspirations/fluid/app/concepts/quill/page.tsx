@@ -16,11 +16,7 @@ import {
   TableHead,
   TableCell,
 } from "@/registry/default/table";
-import {
-  TabsSubtle,
-  TabsSubtleItem,
-  TabsSubtlePanel,
-} from "@/registry/default/tabs-subtle";
+import { TabsSubtle, TabsSubtleItem, TabsSubtlePanel } from "@/registry/default/tabs-subtle";
 import { Dropdown, DropdownLabel } from "@/registry/default/dropdown";
 import { MenuItem } from "@/registry/default/menu-item";
 import { ChatMessage } from "@/registry/default/chat-message";
@@ -42,15 +38,43 @@ interface Initiative {
 }
 
 const INITIATIVES: Initiative[] = [
-  { name: "Self-serve onboarding", owner: "Dana", status: { label: "On track", color: "green" }, target: "Aug 15" },
-  { name: "Billing v2 migration", owner: "Mara", status: { label: "At risk", color: "amber" }, target: "Sep 1" },
-  { name: "Mobile offline mode", owner: "Alex", status: { label: "Planned", color: "gray" }, target: "Sep 20" },
-  { name: "SOC 2 Type II", owner: "Sam", status: { label: "On track", color: "green" }, target: "Oct 30" },
+  {
+    name: "Self-serve onboarding",
+    owner: "Dana",
+    status: { label: "On track", color: "green" },
+    target: "Aug 15",
+  },
+  {
+    name: "Billing v2 migration",
+    owner: "Mara",
+    status: { label: "At risk", color: "amber" },
+    target: "Sep 1",
+  },
+  {
+    name: "Mobile offline mode",
+    owner: "Alex",
+    status: { label: "Planned", color: "gray" },
+    target: "Sep 20",
+  },
+  {
+    name: "SOC 2 Type II",
+    owner: "Sam",
+    status: { label: "On track", color: "green" },
+    target: "Oct 30",
+  },
 ];
 
 const COMMENTS = [
-  { id: "c1", from: "user" as const, text: "Should Billing v2 block the mobile work, or can they run in parallel?" },
-  { id: "c2", from: "assistant" as const, text: "They can run in parallel — the only shared surface is the pricing API, and that's already versioned. I'd only serialize them if Mara's team gets pulled into the SOC 2 evidence collection." },
+  {
+    id: "c1",
+    from: "user" as const,
+    text: "Should Billing v2 block the mobile work, or can they run in parallel?",
+  },
+  {
+    id: "c2",
+    from: "assistant" as const,
+    text: "They can run in parallel — the only shared surface is the pricing API, and that's already versioned. I'd only serialize them if Mara's team gets pulled into the SOC 2 evidence collection.",
+  },
 ];
 
 const BLOCK_TYPES = [
@@ -135,10 +159,7 @@ function AIBlock() {
   return (
     <div className="flex flex-col gap-3">
       {blocks.map((b, i) => (
-        <div
-          key={i}
-          className={cn("flex gap-2.5 rounded-xl p-3.5", surfaceClasses(2, 2))}
-        >
+        <div key={i} className={cn("flex gap-2.5 rounded-xl p-3.5", surfaceClasses(2, 2))}>
           <Sparkle size={16} className="mt-0.5 shrink-0 text-muted-foreground" />
           <p className="text-[14px] leading-relaxed text-foreground">{b}</p>
         </div>
@@ -148,7 +169,11 @@ function AIBlock() {
         <ThinkingSteps defaultOpen className="w-full max-w-full">
           <ThinkingStepsHeader>Drafting with Quill AI</ThinkingStepsHeader>
           <ThinkingStepsContent>
-            <ThinkingStep icon="square-library" label="Reading the page context" status="complete" />
+            <ThinkingStep
+              icon="square-library"
+              label="Reading the page context"
+              status="complete"
+            />
             <ThinkingStep icon="brain" label="Outlining the response" status="complete" />
             <ThinkingStep icon="pencil" label="Writing" status="active" isLast />
           </ThinkingStepsContent>
@@ -179,17 +204,16 @@ function DocumentBody() {
   return (
     <div className="flex flex-col gap-5">
       <p className="text-[15px] leading-relaxed text-muted-foreground">
-        The single source of truth for what we&rsquo;re building this quarter, why,
-        and who owns each bet. Edit freely — every block here is a Fluid
-        Functionalism component.
+        The single source of truth for what we&rsquo;re building this quarter, why, and who owns
+        each bet. Edit freely — every block here is a Fluid Functionalism component.
       </p>
 
       {/* Callout */}
       <div className={cn("flex gap-3 rounded-xl p-4", surfaceClasses(2, 2))}>
         <span className="text-[18px] leading-none">💡</span>
         <p className="text-[14px] leading-relaxed text-foreground">
-          Decisions are final once they land in the Initiatives table. Use
-          comments for anything still in debate.
+          Decisions are final once they land in the Initiatives table. Use comments for anything
+          still in debate.
         </p>
       </div>
 
@@ -239,9 +263,7 @@ function DocumentBody() {
                   {it.status.label}
                 </Badge>
               </TableCell>
-              <TableCell className="text-muted-foreground tabular-nums">
-                {it.target}
-              </TableCell>
+              <TableCell className="text-muted-foreground tabular-nums">{it.target}</TableCell>
             </TableRow>
           ))}
         </TableBody>

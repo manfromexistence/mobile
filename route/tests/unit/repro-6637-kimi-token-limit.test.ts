@@ -27,7 +27,8 @@ test("#6637: Kimi's 'exceeded model token limit' 400 must be classified as conte
   //     -> "stopping combo"
   //
   // For the fallback to proceed to the next target, at least one of these must be true.
-  const isRecognizedAsOverflow = isContextOverflow400(KIMI_ERROR_TEXT) || isParamValidation400(KIMI_ERROR_TEXT);
+  const isRecognizedAsOverflow =
+    isContextOverflow400(KIMI_ERROR_TEXT) || isParamValidation400(KIMI_ERROR_TEXT);
 
   assert.equal(
     isRecognizedAsOverflow,
@@ -36,6 +37,6 @@ test("#6637: Kimi's 'exceeded model token limit' 400 must be classified as conte
       `overflow so combo fallback continues to the next target, but neither ` +
       `isContextOverflow400() nor isParamValidation400() matched it. This causes ` +
       `handleComboChat's #2101 guard to treat it as a body-specific error and halt the ` +
-      `whole combo (bug #6637).`
+      `whole combo (bug #6637).`,
   );
 });

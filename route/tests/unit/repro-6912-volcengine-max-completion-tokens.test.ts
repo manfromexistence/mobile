@@ -43,7 +43,7 @@ function toPlainHeaders(headers) {
   if (!headers) return {};
   if (headers instanceof Headers) return Object.fromEntries(headers.entries());
   return Object.fromEntries(
-    Object.entries(headers).map(([key, value]) => [key, value == null ? "" : String(value)])
+    Object.entries(headers).map(([key, value]) => [key, value == null ? "" : String(value)]),
   );
 }
 
@@ -62,7 +62,7 @@ function buildOpenAIResponse(text = "ok") {
       ],
       usage: { prompt_tokens: 4, completion_tokens: 2, total_tokens: 6 },
     }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
+    { status: 200, headers: { "Content-Type": "application/json" } },
   );
 }
 
@@ -142,7 +142,11 @@ test("#6912: chatCore renames max_completion_tokens to max_tokens for volcengine
     },
   });
 
-  assert.equal(call.body.max_tokens, 30, "expected max_completion_tokens to be normalized to max_tokens for volcengine");
+  assert.equal(
+    call.body.max_tokens,
+    30,
+    "expected max_completion_tokens to be normalized to max_tokens for volcengine",
+  );
   assert.equal(call.body.max_completion_tokens, undefined);
 });
 
@@ -159,7 +163,11 @@ test("#6912: chatCore does not clobber an already-present max_tokens", async () 
     },
   });
 
-  assert.equal(call.body.max_tokens, 500, "existing max_tokens must win over max_completion_tokens");
+  assert.equal(
+    call.body.max_tokens,
+    500,
+    "existing max_tokens must win over max_completion_tokens",
+  );
   assert.equal(call.body.max_completion_tokens, undefined);
 });
 

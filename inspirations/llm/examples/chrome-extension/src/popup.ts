@@ -70,9 +70,7 @@ let initProgressCallback = (report: InitProgressReport) => {
 let selectedModel = "Qwen2-0.5B-Instruct-q4f16_1-MLC";
 
 // populate model-selection
-const modelSelector = getElementAndCheck(
-  "model-selection",
-) as HTMLSelectElement;
+const modelSelector = getElementAndCheck("model-selection") as HTMLSelectElement;
 for (let i = 0; i < prebuiltAppConfig.model_list.length; ++i) {
   const model = prebuiltAppConfig.model_list[i];
   const opt = document.createElement("option");
@@ -122,11 +120,7 @@ let requestInProgress = false;
 
 // Disable submit button if input field is empty
 queryInput.addEventListener("keyup", () => {
-  if (
-    (<HTMLInputElement>queryInput).value === "" ||
-    requestInProgress ||
-    isLoadingParams
-  ) {
+  if ((<HTMLInputElement>queryInput).value === "" || requestInProgress || isLoadingParams) {
     (<HTMLButtonElement>submitButton).disabled = true;
   } else {
     (<HTMLButtonElement>submitButton).disabled = false;

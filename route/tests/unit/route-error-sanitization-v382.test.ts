@@ -34,11 +34,11 @@ test("db-backups/import awaits getSettings() before re-hydrating the system prom
   assert.match(
     src,
     /const importedSettings = await getSettings\(\);/,
-    "must await getSettings() so systemPrompt re-hydration actually runs"
+    "must await getSettings() so systemPrompt re-hydration actually runs",
   );
   assert.ok(
     !/const importedSettings = getSettings\(\);/.test(src),
-    "must not read systemPrompt off an un-awaited Promise"
+    "must not read systemPrompt off an un-awaited Promise",
   );
 });
 
@@ -48,7 +48,7 @@ test("cache/stats route routes errors through sanitizeErrorMessage", () => {
   assert.match(src, /sanitizeErrorMessage\(error\)/, "catch blocks must sanitize the error");
   assert.ok(
     !/\(error as Error\)\.message/.test(src),
-    "must not put raw (error as Error).message in the response body"
+    "must not put raw (error as Error).message in the response body",
   );
 });
 
@@ -58,7 +58,7 @@ test("hermes-agent-settings GET sanitizes its error response (no raw String(erro
   assert.match(src, /sanitizeErrorMessage\(error\)/, "GET catch must sanitize the error");
   assert.ok(
     !/error: String\(error\)/.test(src),
-    "must not return raw String(error) in the response body"
+    "must not return raw String(error) in the response body",
   );
 });
 
@@ -67,7 +67,7 @@ test("hermes-agent-settings POST validates baseUrl as an http(s) URL", () => {
   assert.match(
     src,
     /import \{ validateBaseUrl \}/,
-    "must import the shared validateBaseUrl helper"
+    "must import the shared validateBaseUrl helper",
   );
   assert.match(src, /validateBaseUrl\(baseUrl\)/, "POST must validate the supplied baseUrl");
 });

@@ -1,20 +1,8 @@
 "use client";
 // beui.dev/components/blocks/expandable-tabs
 
-import {
-  AnimatePresence,
-  motion,
-  useReducedMotion,
-  type Variants,
-} from "motion/react";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import { AnimatePresence, motion, useReducedMotion, type Variants } from "motion/react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { EASE_OUT } from "@/lib/ease";
 import { cn } from "@/lib/utils";
 
@@ -239,11 +227,7 @@ export function ExpandableTabs({
   }, [setActive, visualActiveId]);
 
   const closedSize = {
-    width:
-      items.length * TAB_W +
-      Math.max(0, items.length - 1) * BAR_GAP +
-      BAR_X +
-      ROOT_BORDER,
+    width: items.length * TAB_W + Math.max(0, items.length - 1) * BAR_GAP + BAR_X + ROOT_BORDER,
     height: BAR_H + ROOT_BORDER,
   };
   const openSize = size
@@ -258,11 +242,7 @@ export function ExpandableTabs({
     (item: ExpandableTabsItem) =>
       Math.max(
         TAB_W,
-        ACTIVE_LEFT_PAD +
-          ICON_W +
-          LABEL_GAP +
-          (labelWidths[item.id] ?? 0) +
-          ACTIVE_RIGHT_PAD,
+        ACTIVE_LEFT_PAD + ICON_W + LABEL_GAP + (labelWidths[item.id] ?? 0) + ACTIVE_RIGHT_PAD,
       ),
     [labelWidths],
   );
@@ -277,7 +257,7 @@ export function ExpandableTabs({
             ? {
                 width: targetSize.width,
                 height: targetSize.height,
-                // Dynamically shift upwards by the height delta to force 
+                // Dynamically shift upwards by the height delta to force
                 // bottom-to-top growth while pinning the bottom edge.
                 y: closedSize.height - targetSize.height,
               }
@@ -308,10 +288,7 @@ export function ExpandableTabs({
         </div>
 
         <div
-          className={cn(
-            "absolute left-0 right-0 top-0 z-10 overflow-hidden",
-            classNames?.panel,
-          )}
+          className={cn("absolute left-0 right-0 top-0 z-10 overflow-hidden", classNames?.panel)}
           style={{ bottom: BAR_H + PANEL_DOCK_GAP }}
         >
           <AnimatePresence mode="popLayout" initial={false}>
@@ -322,9 +299,7 @@ export function ExpandableTabs({
                 initial="enter"
                 animate="center"
                 exit="exit"
-                transition={
-                  reduce ? { duration: 0.15, ease: EASE_OUT } : CONTENT_SPRING
-                }
+                transition={reduce ? { duration: 0.15, ease: EASE_OUT } : CONTENT_SPRING}
                 className="w-max"
                 style={{
                   transformOrigin: "bottom center",
@@ -369,9 +344,7 @@ export function ExpandableTabs({
                   "relative isolate flex h-8 min-w-8 shrink-0 items-center justify-center overflow-hidden rounded-[18px] px-2 text-sm font-medium outline-none",
                   "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   active && isActive && "min-w-0 justify-start pl-2.5 pr-4",
-                  isActive
-                    ? "text-foreground"
-                    : "text-muted-foreground hover:text-foreground",
+                  isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground",
                   classNames?.tab,
                   isActive && classNames?.activeTab,
                 )}
@@ -384,12 +357,7 @@ export function ExpandableTabs({
                     )}
                   />
                 ) : null}
-                <span
-                  className={cn(
-                    "grid shrink-0 place-items-center",
-                    classNames?.icon,
-                  )}
-                >
+                <span className={cn("grid shrink-0 place-items-center", classNames?.icon)}>
                   {item.icon}
                 </span>
                 <motion.span
@@ -410,13 +378,7 @@ export function ExpandableTabs({
                           filter: isActive ? "blur(0px)" : "blur(3px)",
                         }
                   }
-                  transition={
-                    reduce
-                      ? { duration: 0 }
-                      : isActive
-                        ? LABEL_OPEN
-                        : LABEL_CLOSE
-                  }
+                  transition={reduce ? { duration: 0 } : isActive ? LABEL_OPEN : LABEL_CLOSE}
                   className={cn(
                     "inline-block overflow-hidden whitespace-nowrap",
                     classNames?.label,
@@ -435,10 +397,7 @@ export function ExpandableTabs({
       >
         {items.map((item) => (
           <span
-            className={cn(
-              "whitespace-nowrap text-sm font-medium leading-none",
-              classNames?.label,
-            )}
+            className={cn("whitespace-nowrap text-sm font-medium leading-none", classNames?.label)}
             key={item.id}
             ref={setLabelMeasureRef(item.id)}
           >

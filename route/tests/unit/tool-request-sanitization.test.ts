@@ -13,8 +13,9 @@ const { NON_ANTHROPIC_THINKING_PLACEHOLDER } = await import(
   "../../open-sse/translator/helpers/claudeHelper.ts"
 );
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
-const { clearModelsDevCapabilities, saveModelsDevCapabilities } =
-  await import("../../src/lib/modelsDevSync.ts");
+const { clearModelsDevCapabilities, saveModelsDevCapabilities } = await import(
+  "../../src/lib/modelsDevSync.ts"
+);
 
 function buildCapability(overrides = {}) {
   return {
@@ -106,7 +107,7 @@ test("tool sanitization: coerces schemas and descriptions in tool arrays", () =>
           },
         },
       },
-    ])
+    ]),
   );
 
   assert.equal(tools[0].function.description, "5");
@@ -138,7 +139,7 @@ test("translateRequest sanitizes tools before Claude output", () => {
     },
     false,
     null,
-    "claude"
+    "claude",
   );
 
   assert.equal(translated.tools[0].description, "");
@@ -171,7 +172,7 @@ test("translateRequest sanitizes OpenAI tool payloads on passthrough", () => {
     },
     false,
     null,
-    "openai"
+    "openai",
   );
 
   assert.equal(translated.tools[0].function.description, "7");
@@ -190,7 +191,7 @@ test("tool sanitization: injects empty reasoning_content only for DeepSeek tool-
   const deepseekMessages = injectEmptyReasoningContentForToolCalls(
     messages,
     "deepseek",
-    "deepseek-v4-flash"
+    "deepseek-v4-flash",
   );
   const openaiMessages = injectEmptyReasoningContentForToolCalls(messages, "openai", "gpt-4o");
 
@@ -228,7 +229,7 @@ test("translateRequest injects reasoning_content for DeepSeek assistant tool cal
     },
     false,
     null,
-    "deepseek"
+    "deepseek",
   );
 
   assert.equal(translated.messages[1].reasoning_content, NON_ANTHROPIC_THINKING_PLACEHOLDER);

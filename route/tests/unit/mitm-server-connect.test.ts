@@ -23,15 +23,12 @@ const shim = requireCjs("../../src/mitm/_internal/bypass.cjs") as {
   routeBypass: (
     h: string,
     targetHosts: Set<string> | string[] | undefined,
-    userPatterns: string[]
+    userPatterns: string[],
   ) => "bypass" | "target" | "passthrough";
   parseBypassJson: (raw: string) => string[];
 };
 
-const TARGETS = new Set([
-  "daily-cloudcode-pa.googleapis.com",
-  "api.githubcopilot.com",
-]);
+const TARGETS = new Set(["daily-cloudcode-pa.googleapis.com", "api.githubcopilot.com"]);
 
 test("DEFAULT_BYPASS_PATTERNS — at least the 4 mandatory regexes", () => {
   assert.ok(shim.DEFAULT_BYPASS_PATTERNS.length >= 4);
@@ -66,10 +63,7 @@ test("routeBypass — bypass beats target match (precedence)", () => {
 });
 
 test("routeBypass — known target hostname → target", () => {
-  assert.equal(
-    shim.routeBypass("daily-cloudcode-pa.googleapis.com", TARGETS, []),
-    "target"
-  );
+  assert.equal(shim.routeBypass("daily-cloudcode-pa.googleapis.com", TARGETS, []), "target");
   assert.equal(shim.routeBypass("api.githubcopilot.com", TARGETS, []), "target");
 });
 
@@ -80,45 +74,26 @@ test("routeBypass — unknown hostname → passthrough", () => {
 
 test("routeBypass — user glob pattern → bypass", () => {
   const userPatterns = ["*.internal.example.com"];
-  assert.equal(
-    shim.routeBypass("admin.internal.example.com", TARGETS, userPatterns),
-    "bypass"
-  );
-  assert.equal(
-    shim.routeBypass("external.example.com", TARGETS, userPatterns),
-    "passthrough"
-  );
+  assert.equal(shim.routeBypass("admin.internal.example.com", TARGETS, userPatterns), "bypass");
+  assert.equal(shim.routeBypass("external.example.com", TARGETS, userPatterns), "passthrough");
 });
 
 test("routeBypass — empty hostname → passthrough", () => {
   assert.equal(shim.routeBypass("", TARGETS, []), "passthrough");
-  assert.equal(
-    shim.routeBypass(undefined as unknown as string, TARGETS, []),
-    "passthrough"
-  );
+  assert.equal(shim.routeBypass(undefined as unknown as string, TARGETS, []), "passthrough");
 });
 
 test("routeBypass — targetHosts may be an array (not just Set)", () => {
-  const targetsArr = [
-    "daily-cloudcode-pa.googleapis.com",
-    "api.githubcopilot.com",
-  ];
-  assert.equal(
-    shim.routeBypass("api.githubcopilot.com", targetsArr, []),
-    "target"
-  );
+  const targetsArr = ["daily-cloudcode-pa.googleapis.com", "api.githubcopilot.com"];
+  assert.equal(shim.routeBypass("api.githubcopilot.com", targetsArr, []), "target");
   assert.equal(shim.routeBypass("example.com", targetsArr, []), "passthrough");
 });
 
 test("routeBypass — case-insensitive on hostname", () => {
   assert.equal(shim.routeBypass("MyApp.Okta.COM", TARGETS, []), "bypass");
   assert.equal(
-    shim.routeBypass(
-      "DAILY-cloudcode-pa.googleapis.com".toLowerCase(),
-      TARGETS,
-      []
-    ),
-    "target"
+    shim.routeBypass("DAILY-cloudcode-pa.googleapis.com".toLowerCase(), TARGETS, []),
+    "target",
   );
 });
 
@@ -175,10 +150,7 @@ test("parseBypassJson — missing patterns property → []", () => {
 });
 
 test("parseBypassJson — patterns not an array → []", () => {
-  assert.deepEqual(
-    shim.parseBypassJson(JSON.stringify({ patterns: "foo" })),
-    []
-  );
+  assert.deepEqual(shim.parseBypassJson(JSON.stringify({ patterns: "foo" })), []);
 });
 
 test("parseBypassJson — filters out non-string and empty entries", () => {
@@ -203,24 +175,24 @@ test("C2 header contract — server.cjs intercept must inject x-omniroute-source
   assert.match(
     src,
     /"x-omniroute-source":\s*"agent-bridge"/,
-    'server.cjs must inject "x-omniroute-source: agent-bridge"'
+    'server.cjs must inject "x-omniroute-source: agent-bridge"',
   );
   assert.match(
     src,
     /"x-omniroute-agent":\s*agentId/,
-    'server.cjs must inject "x-omniroute-agent: <id>" from the host→agent map'
+    'server.cjs must inject "x-omniroute-agent: <id>" from the host→agent map',
   );
   // Antigravity non-regression: the historical host must still resolve to
   // the antigravity agent id, so the existing flow continues to work.
   assert.match(
     src,
     /TARGET_HOST_AGENT\.set\(lower,\s*id\)/,
-    "server.cjs must populate TARGET_HOST_AGENT from targets.json"
+    "server.cjs must populate TARGET_HOST_AGENT from targets.json",
   );
   assert.match(
     src,
     /TARGET_HOST_AGENT\.set\(h,\s*"antigravity"\)/,
-    "server.cjs must seed antigravity baseline in TARGET_HOST_AGENT"
+    "server.cjs must seed antigravity baseline in TARGET_HOST_AGENT",
   );
 });
 
@@ -236,17 +208,17 @@ test("Hard Rule #12 — server.cjs intercept error path uses sanitizeErrorMessag
   assert.match(
     src,
     /sanitizeErrorMessage\(error\s*&&\s*error\.message\)/,
-    "intercept() error path must route through sanitizeErrorMessage()"
+    "intercept() error path must route through sanitizeErrorMessage()",
   );
   // The historical raw-leak pattern must be gone from the error body literal.
   const errorBodyRegion = src.match(
-    /res\.end\(\s*JSON\.stringify\(\{\s*error[\s\S]*?type:\s*"mitm_error"[\s\S]*?\}\)\s*\)/
+    /res\.end\(\s*JSON\.stringify\(\{\s*error[\s\S]*?type:\s*"mitm_error"[\s\S]*?\}\)\s*\)/,
   );
   assert.ok(errorBodyRegion, "intercept() must build a JSON error body");
   assert.doesNotMatch(
     errorBodyRegion[0],
     /message:\s*error\.message[^a-zA-Z_]/,
-    "intercept() error body must not contain raw error.message"
+    "intercept() error body must not contain raw error.message",
   );
 });
 
@@ -257,20 +229,16 @@ test("C1 contract — server.cjs registers a CONNECT handler", async () => {
   const here = path.dirname(url.fileURLToPath(import.meta.url));
   const serverPath = path.resolve(here, "../../src/mitm/server.cjs");
   const src = fs.readFileSync(serverPath, "utf-8");
-  assert.match(
-    src,
-    /server\.on\(\s*"connect"/,
-    "server.cjs must register a CONNECT handler"
-  );
+  assert.match(src, /server\.on\(\s*"connect"/, "server.cjs must register a CONNECT handler");
   assert.match(
     src,
     /net\.connect\(/,
-    "server.cjs must dial upstream via net.connect for bypass/passthrough"
+    "server.cjs must dial upstream via net.connect for bypass/passthrough",
   );
   assert.match(
     src,
     /HTTP\/1\.1\s+200\s+Connection Established/,
-    "server.cjs CONNECT path must reply with 200 Connection Established"
+    "server.cjs CONNECT path must reply with 200 Connection Established",
   );
 });
 
@@ -287,12 +255,12 @@ test("R4 fix #5 — connection listener guards against double-count on re-emit",
   assert.match(
     src,
     /socket\.__mitmCounted/,
-    "connection listener must use socket.__mitmCounted guard to prevent double-count on CONNECT target re-emit"
+    "connection listener must use socket.__mitmCounted guard to prevent double-count on CONNECT target re-emit",
   );
   assert.match(
     src,
     /if\s*\(\s*socket\.__mitmCounted\s*\)\s*return/,
-    "connection listener must early-return when socket is already counted"
+    "connection listener must early-return when socket is already counted",
   );
 });
 
@@ -310,6 +278,6 @@ test("R4 fix #5 — CONNECT handler scope is documented", async () => {
   assert.match(
     src,
     /HTTPS-proxy-tunneled-in-TLS|explicit HTTPS proxy/i,
-    "CONNECT handler must carry a comment clarifying its real scope"
+    "CONNECT handler must carry a comment clarifying its real scope",
   );
 });

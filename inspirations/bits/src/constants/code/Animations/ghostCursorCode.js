@@ -1,8 +1,8 @@
-import code from '@content/Animations/GhostCursor/GhostCursor.jsx?raw';
-import css from '@content/Animations/GhostCursor/GhostCursor.css?raw';
-import tailwind from '@tailwind/Animations/GhostCursor/GhostCursor.jsx?raw';
-import tsCode from '@ts-default/Animations/GhostCursor/GhostCursor.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/GhostCursor/GhostCursor.tsx?raw';
+import code from "@content/Animations/GhostCursor/GhostCursor.jsx?raw";
+import css from "@content/Animations/GhostCursor/GhostCursor.css?raw";
+import tailwind from "@tailwind/Animations/GhostCursor/GhostCursor.jsx?raw";
+import tsCode from "@ts-default/Animations/GhostCursor/GhostCursor.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/GhostCursor/GhostCursor.tsx?raw";
 
 export const ghostCursor = {
   dependencies: `three`,
@@ -34,5 +34,5 @@ export const ghostCursor = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

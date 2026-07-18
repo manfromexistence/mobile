@@ -16,7 +16,7 @@ test("MITM_TOOL_HOSTS stays in sync with the canonical MITM target registry", ()
   assert.deepEqual(
     MITM_TOOL_HOSTS,
     fromRegistry,
-    "MITM_TOOL_HOSTS must exactly match ALL_TARGETS hosts — update src/shared/constants/mitmToolHosts.ts"
+    "MITM_TOOL_HOSTS must exactly match ALL_TARGETS hosts — update src/shared/constants/mitmToolHosts.ts",
   );
 });
 

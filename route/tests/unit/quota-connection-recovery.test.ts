@@ -25,8 +25,11 @@ function conn(overrides: Partial<RecoverableConnectionInput>): RecoverableConnec
 
 test("isRecoverableCooldownConnection: unavailable + elapsed cooldown → recoverable", () => {
   assert.equal(
-    isRecoverableCooldownConnection(conn({ testStatus: "unavailable", rateLimitedUntil: PAST }), NOW),
-    true
+    isRecoverableCooldownConnection(
+      conn({ testStatus: "unavailable", rateLimitedUntil: PAST }),
+      NOW,
+    ),
+    true,
   );
 });
 
@@ -34,9 +37,9 @@ test("isRecoverableCooldownConnection: cooldown still in the future → NOT reco
   assert.equal(
     isRecoverableCooldownConnection(
       conn({ testStatus: "unavailable", rateLimitedUntil: FUTURE }),
-      NOW
+      NOW,
     ),
-    false
+    false,
   );
 });
 
@@ -45,7 +48,7 @@ test("isRecoverableCooldownConnection: terminal states are never recovered", () 
     assert.equal(
       isRecoverableCooldownConnection(conn({ testStatus: status, rateLimitedUntil: PAST }), NOW),
       false,
-      `${status} must not be recoverable`
+      `${status} must not be recoverable`,
     );
   }
 });
@@ -53,21 +56,24 @@ test("isRecoverableCooldownConnection: terminal states are never recovered", () 
 test("isRecoverableCooldownConnection: terminal-status matching is case/space insensitive", () => {
   assert.equal(
     isRecoverableCooldownConnection(conn({ testStatus: " Banned ", rateLimitedUntil: PAST }), NOW),
-    false
+    false,
   );
 });
 
 test("isRecoverableCooldownConnection: no rateLimitedUntil → NOT recoverable", () => {
   assert.equal(
-    isRecoverableCooldownConnection(conn({ testStatus: "unavailable", rateLimitedUntil: null }), NOW),
-    false
+    isRecoverableCooldownConnection(
+      conn({ testStatus: "unavailable", rateLimitedUntil: null }),
+      NOW,
+    ),
+    false,
   );
   assert.equal(
     isRecoverableCooldownConnection(
       conn({ testStatus: "unavailable", rateLimitedUntil: undefined }),
-      NOW
+      NOW,
     ),
-    false
+    false,
   );
 });
 
@@ -77,18 +83,18 @@ test("isRecoverableCooldownConnection: status other than 'unavailable' is left a
   // concern (the lazy backoff-decay path already handles active rows).
   assert.equal(
     isRecoverableCooldownConnection(conn({ testStatus: "active", rateLimitedUntil: PAST }), NOW),
-    false
+    false,
   );
   assert.equal(
     isRecoverableCooldownConnection(conn({ testStatus: null, rateLimitedUntil: PAST }), NOW),
-    false
+    false,
   );
 });
 
 test("isRecoverableCooldownConnection: missing connection id → NOT recoverable", () => {
   assert.equal(
     isRecoverableCooldownConnection(conn({ id: "", rateLimitedUntil: PAST }), NOW),
-    false
+    false,
   );
 });
 
@@ -97,16 +103,16 @@ test("isRecoverableCooldownConnection: numeric-epoch rateLimitedUntil string is 
   assert.equal(
     isRecoverableCooldownConnection(
       conn({ testStatus: "unavailable", rateLimitedUntil: String(NOW - 1_000) }),
-      NOW
+      NOW,
     ),
-    true
+    true,
   );
   assert.equal(
     isRecoverableCooldownConnection(
       conn({ testStatus: "unavailable", rateLimitedUntil: String(NOW + 1_000) }),
-      NOW
+      NOW,
     ),
-    false
+    false,
   );
 });
 
@@ -124,7 +130,7 @@ test("selectRecoverableConnections returns only the elapsed-cooldown unavailable
   const recoverable = selectRecoverableConnections(connections, NOW);
   assert.deepEqual(
     recoverable.map((c) => c.id),
-    ["elapsed"]
+    ["elapsed"],
   );
 });
 
@@ -132,7 +138,7 @@ test("selectRecoverableConnections returns [] for empty / non-array input", () =
   assert.deepEqual(selectRecoverableConnections([], NOW), []);
   assert.deepEqual(
     selectRecoverableConnections(undefined as unknown as RecoverableConnectionInput[], NOW),
-    []
+    [],
   );
 });
 

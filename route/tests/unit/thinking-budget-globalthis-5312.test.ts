@@ -36,7 +36,7 @@ test("#5312: setThinkingBudgetConfig writes to the globalThis-shared slot", () =
   assert.equal(
     store[GLOBAL_KEY]?.mode,
     "auto",
-    "config must live on globalThis so it is shared across Next's separate module graphs (instrumentation vs routes)"
+    "config must live on globalThis so it is shared across Next's separate module graphs (instrumentation vs routes)",
   );
 });
 
@@ -47,7 +47,7 @@ test("#5312: getThinkingBudgetConfig reads the globalThis-shared slot (a cross-g
   assert.equal(
     getThinkingBudgetConfig().mode,
     "custom",
-    "getter must read globalThis; a module-local `let _config` would not see the cross-graph hydration (the #5312 fix-A break)"
+    "getter must read globalThis; a module-local `let _config` would not see the cross-graph hydration (the #5312 fix-A break)",
   );
   assert.equal(getThinkingBudgetConfig().customBudget, 8192);
 });

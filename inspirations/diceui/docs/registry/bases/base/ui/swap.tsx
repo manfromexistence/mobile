@@ -25,10 +25,7 @@ interface Store {
 
 const StoreContext = React.createContext<Store | null>(null);
 
-function useStore<T>(
-  selector: (state: StoreState) => T,
-  ogStore?: Store | null,
-): T {
+function useStore<T>(selector: (state: StoreState) => T, ogStore?: Store | null): T {
   const contextStore = React.useContext(StoreContext);
 
   const store = ogStore ?? contextStore;
@@ -37,17 +34,12 @@ function useStore<T>(
     throw new Error(`\`useStore\` must be used within \`Swap\``);
   }
 
-  const getSnapshot = React.useCallback(
-    () => selector(store.getState()),
-    [store, selector],
-  );
+  const getSnapshot = React.useCallback(() => selector(store.getState()), [store, selector]);
 
   return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
 
-interface SwapProps
-  extends React.ComponentProps<"div">,
-    useRender.ComponentProps<"div"> {
+interface SwapProps extends React.ComponentProps<"div">, useRender.ComponentProps<"div"> {
   swapped?: boolean;
   defaultSwapped?: boolean;
   onSwappedChange?: (swapped: boolean) => void;
@@ -135,8 +127,7 @@ function Swap(props: SwapProps) {
   const onClick = React.useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       propsRef.current.onClick?.(event);
-      if (event.defaultPrevented || propsRef.current.activationMode !== "click")
-        return;
+      if (event.defaultPrevented || propsRef.current.activationMode !== "click") return;
 
       onToggle();
     },
@@ -146,12 +137,7 @@ function Swap(props: SwapProps) {
   const onMouseEnter = React.useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       propsRef.current.onMouseEnter?.(event);
-      if (
-        event.defaultPrevented ||
-        activationMode !== "hover" ||
-        propsRef.current.disabled
-      )
-        return;
+      if (event.defaultPrevented || activationMode !== "hover" || propsRef.current.disabled) return;
 
       store.setState("swapped", true);
     },
@@ -161,12 +147,7 @@ function Swap(props: SwapProps) {
   const onMouseLeave = React.useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       propsRef.current.onMouseLeave?.(event);
-      if (
-        event.defaultPrevented ||
-        activationMode !== "hover" ||
-        propsRef.current.disabled
-      )
-        return;
+      if (event.defaultPrevented || activationMode !== "hover" || propsRef.current.disabled) return;
 
       store.setState("swapped", false);
     },
@@ -222,9 +203,7 @@ function Swap(props: SwapProps) {
   return <StoreContext.Provider value={store}>{element}</StoreContext.Provider>;
 }
 
-interface SwapOnProps
-  extends React.ComponentProps<"div">,
-    useRender.ComponentProps<"div"> {}
+interface SwapOnProps extends React.ComponentProps<"div">, useRender.ComponentProps<"div"> {}
 
 function SwapOn({ render, className, ...props }: SwapOnProps) {
   const swapped = useStore((state) => state.swapped);
@@ -251,9 +230,7 @@ function SwapOn({ render, className, ...props }: SwapOnProps) {
   });
 }
 
-interface SwapOffProps
-  extends React.ComponentProps<"div">,
-    useRender.ComponentProps<"div"> {}
+interface SwapOffProps extends React.ComponentProps<"div">, useRender.ComponentProps<"div"> {}
 
 function SwapOff({ render, className, ...props }: SwapOffProps) {
   const swapped = useStore((state) => state.swapped);

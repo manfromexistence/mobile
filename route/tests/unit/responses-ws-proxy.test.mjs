@@ -86,7 +86,7 @@ test("responses ws proxy prepares and forwards OpenAI Responses websocket events
               model: "gpt-5.5",
               stream: undefined,
             },
-          })
+          }),
         );
         return;
       }
@@ -163,7 +163,7 @@ test("responses ws proxy prepares and forwards OpenAI Responses websocket events
       model: "gpt-5.5",
       input: [{ role: "user", content: "hello" }],
       reasoning: { effort: "xhigh" },
-    })
+    }),
   );
 
   await waitFor(() => downstreamMessages.find((entry) => entry.type === "response.completed"));
@@ -216,7 +216,7 @@ test("responses ws proxy logs prepare failures to request history", async () => 
               code: "codex_credentials_unavailable",
               message: "No available Codex OAuth connection for Responses WebSocket",
             },
-          })
+          }),
         );
         return;
       }
@@ -261,7 +261,7 @@ test("responses ws proxy logs prepare failures to request history", async () => 
       type: "response.create",
       model: "gpt-5.5",
       input: [{ role: "user", content: "hello" }],
-    })
+    }),
   );
 
   await waitFor(() => downstreamMessages.find((entry) => entry.type === "response.failed"));
@@ -304,7 +304,7 @@ test("responses ws proxy serializes client frames while upstream prepare is pend
             upstreamUrl: "wss://chatgpt.com/backend-api/codex/responses",
             headers: { Authorization: "Bearer upstream-token" },
             response: { ...body.response, model: "gpt-5.5", stream: undefined },
-          })
+          }),
         );
         return;
       }
@@ -348,7 +348,7 @@ test("responses ws proxy serializes client frames while upstream prepare is pend
       type: "response.create",
       model: "gpt-5.5",
       input: [{ role: "user", content: "first" }],
-    })
+    }),
   );
   ws.send(JSON.stringify({ type: "response.cancel", response_id: "resp_1" }));
 
@@ -408,7 +408,7 @@ test("responses ws proxy closes oversized client messages with 1009", async () =
       type: "response.create",
       model: "gpt-5.5",
       input: [{ role: "user", content: "x".repeat(128) }],
-    })
+    }),
   );
 
   const event = await closed;

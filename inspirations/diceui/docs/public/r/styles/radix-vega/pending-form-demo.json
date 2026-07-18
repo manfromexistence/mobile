@@ -1,12 +1,7 @@
 {
   "name": "pending-form-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "pending",
-    "button",
-    "input",
-    "label"
-  ],
+  "registryDependencies": ["pending", "button", "input", "label"],
   "files": [
     {
       "path": "examples/pending-form-demo.tsx",

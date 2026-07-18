@@ -78,9 +78,7 @@ export interface SpeedDialTriggerProps
   extends Omit<ButtonProps, keyof React.ComponentProps<"button">>,
     CompositionProps {}
 
-export interface SpeedDialContentProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface SpeedDialContentProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The distance in pixels from the trigger.
    * @default 8
@@ -127,9 +125,7 @@ export interface SpeedDialContentProps
   onInteractOutside?: (event: PointerDownOutsideEvent) => void;
 }
 
-export interface SpeedDialItemProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface SpeedDialItemProps extends EmptyProps<"div">, CompositionProps {}
 
 export interface SpeedDialActionProps
   extends Omit<ButtonProps, keyof React.ComponentProps<"button">>,
@@ -148,6 +144,4 @@ export interface SpeedDialActionProps
   onSelect?: (event: Event) => void;
 }
 
-export interface SpeedDialLabelProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface SpeedDialLabelProps extends EmptyProps<"div">, CompositionProps {}

@@ -1,9 +1,7 @@
 {
   "name": "status-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "status"
-  ],
+  "registryDependencies": ["status"],
   "files": [
     {
       "path": "examples/status-demo.tsx",

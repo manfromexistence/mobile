@@ -1,46 +1,39 @@
-"use client"
+"use client";
 
-import { useEffect, useMemo, useState } from "react"
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card"
-import { useSound } from "@/lib/soundcn/hooks/use-sound"
-import { uMiniMapOpenSound } from "@/lib/soundcn/u-mini-map-open"
-import { cn } from "@/lib/utils"
+import { useEffect, useMemo, useState } from "react";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { useSound } from "@/lib/soundcn/hooks/use-sound";
+import { uMiniMapOpenSound } from "@/lib/soundcn/u-mini-map-open";
+import { cn } from "@/lib/utils";
 
 export type TOCItemType = {
-  title: React.ReactNode
-  url: string
-  depth: number
-}
+  title: React.ReactNode;
+  url: string;
+  depth: number;
+};
 
 export type TOCMinimapProps = {
   /** @fumadocsHref #tocitemtype */
-  items: TOCItemType[]
-  className?: string
-}
+  items: TOCItemType[];
+  className?: string;
+};
 
 export function TOCMinimap({ items, className }: TOCMinimapProps) {
-  const itemIds = useMemo(
-    () => items.map((item) => item.url.replace("#", "")),
-    [items]
-  )
+  const itemIds = useMemo(() => items.map((item) => item.url.replace("#", "")), [items]);
 
-  const activeHeading = useActiveHeading(itemIds)
+  const activeHeading = useActiveHeading(itemIds);
 
-  const [play] = useSound(uMiniMapOpenSound, { volume: 0.3 })
+  const [play] = useSound(uMiniMapOpenSound, { volume: 0.3 });
 
   if (!items.length) {
-    return null
+    return null;
   }
 
   return (
     <div className={cn("ml-auto w-18", className)}>
       <HoverCard
         onOpenChange={(open) => {
-          if (open) play()
+          if (open) play();
         }}
       >
         <HoverCardTrigger asChild delay={0} closeDelay={0}>
@@ -54,7 +47,7 @@ export function TOCMinimap({ items, className }: TOCMinimapProps) {
                   "h-0.5 w-6 shrink-0 rounded-xs bg-ring/50 transition-[background-color] duration-200",
                   "data-[depth=3]:ml-2 data-[depth=3]:w-4",
                   "data-[depth=4]:ml-4 data-[depth=4]:w-2",
-                  "data-active:bg-foreground"
+                  "data-active:bg-foreground",
                 )}
               />
             ))}
@@ -79,7 +72,7 @@ export function TOCMinimap({ items, className }: TOCMinimapProps) {
                     className={cn(
                       "line-clamp-2 w-full transition-[color] duration-200",
                       "text-muted-foreground hover:text-foreground data-active:text-foreground",
-                      "data-[depth=3]:pl-4 data-[depth=4]:pl-8"
+                      "data-[depth=3]:pl-4 data-[depth=4]:pl-8",
                     )}
                     onClick={handleItemClick}
                   >
@@ -92,53 +85,53 @@ export function TOCMinimap({ items, className }: TOCMinimapProps) {
         </HoverCardContent>
       </HoverCard>
     </div>
-  )
+  );
 }
 
 export function useActiveHeading(itemIds: string[]) {
-  const [activeId, setActiveId] = useState<string | null>(null)
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            setActiveId(entry.target.id)
+            setActiveId(entry.target.id);
           }
         }
       },
-      { rootMargin: "0% 0% -80% 0%", threshold: 0.98 }
-    )
+      { rootMargin: "0% 0% -80% 0%", threshold: 0.98 },
+    );
 
     for (const id of itemIds ?? []) {
-      const element = document.getElementById(id)
+      const element = document.getElementById(id);
       if (element) {
-        observer.observe(element)
+        observer.observe(element);
       }
     }
 
     return () => {
       for (const id of itemIds ?? []) {
-        const element = document.getElementById(id)
+        const element = document.getElementById(id);
         if (element) {
-          observer.unobserve(element)
+          observer.unobserve(element);
         }
       }
-    }
-  }, [itemIds])
+    };
+  }, [itemIds]);
 
-  return activeId
+  return activeId;
 }
 
 function handleItemClick(e: React.MouseEvent<HTMLAnchorElement>) {
-  e.preventDefault()
-  const url = e.currentTarget.getAttribute("href") ?? ""
-  scrollToHeading(url)
+  e.preventDefault();
+  const url = e.currentTarget.getAttribute("href") ?? "";
+  scrollToHeading(url);
 }
 
 function scrollToHeading(url: string) {
-  history.pushState(null, "", url)
+  history.pushState(null, "", url);
   document.getElementById(url.replace("#", ""))?.scrollIntoView({
     behavior: "smooth",
-  })
+  });
 }

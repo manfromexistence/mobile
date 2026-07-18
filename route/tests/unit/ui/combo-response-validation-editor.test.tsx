@@ -34,10 +34,8 @@ function render(value: ResponseValidationValue | undefined, onChange: (v: unknow
 
 function setTextarea(testid: string, text: string) {
   const el = container.querySelector<HTMLTextAreaElement>(`[data-testid="${testid}"]`);
-  const setter = Object.getOwnPropertyDescriptor(
-    window.HTMLTextAreaElement.prototype,
-    "value"
-  )!.set!;
+  const setter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value")!
+    .set!;
   act(() => {
     setter.call(el, text);
     el!.dispatchEvent(new Event("input", { bubbles: true }));
@@ -74,11 +72,13 @@ describe("ResponseValidationEditor (4985)", () => {
   it("renders existing predicate rows from the value", () => {
     render(
       { jsonPathPredicates: [{ path: "choices[0].message.content", condition: "nonEmpty" }] },
-      vi.fn()
+      vi.fn(),
     );
     const rows = container.querySelectorAll('[data-testid="rv-predicate-row"]');
     expect(rows.length).toBe(1);
-    const pathInput = container.querySelector<HTMLInputElement>('[data-testid="rv-predicate-path"]');
+    const pathInput = container.querySelector<HTMLInputElement>(
+      '[data-testid="rv-predicate-path"]',
+    );
     expect(pathInput?.value).toBe("choices[0].message.content");
   });
 });

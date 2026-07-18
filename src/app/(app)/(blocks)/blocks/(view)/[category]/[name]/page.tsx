@@ -1,56 +1,52 @@
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react"
-import type { Metadata, Route } from "next"
-import Link from "next/link"
-import { cache } from "react"
-import type { SoftwareSourceCode, WithContext } from "schema-dts"
-import { BlockDisplay } from "@/app/(preview)/components/block-display"
-import { Button } from "@/components/ui/button"
-import { Kbd } from "@/components/ui/kbd"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { JSON_LD_ID } from "@/config/json-ld"
-import { blockCategories } from "@/config/registry"
-import { LICENSE, SOURCE_CODE_GITHUB_URL, X_HANDLE } from "@/config/site"
-import { DocKeyboardShortcuts } from "@/features/doc/components/doc-keyboard-shortcuts"
-import { DocShareMenu } from "@/features/doc/components/doc-share-menu"
-import { getAllBlockStaticParams } from "@/lib/blocks"
-import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld"
-import { getRegistryItem } from "@/lib/registry"
-import { absoluteUrl } from "@/lib/utils"
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
+import type { Metadata, Route } from "next";
+import Link from "next/link";
+import { cache } from "react";
+import type { SoftwareSourceCode, WithContext } from "schema-dts";
+import { BlockDisplay } from "@/app/(preview)/components/block-display";
+import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { JSON_LD_ID } from "@/config/json-ld";
+import { blockCategories } from "@/config/registry";
+import { LICENSE, SOURCE_CODE_GITHUB_URL, X_HANDLE } from "@/config/site";
+import { DocKeyboardShortcuts } from "@/features/doc/components/doc-keyboard-shortcuts";
+import { DocShareMenu } from "@/features/doc/components/doc-share-menu";
+import { getAllBlockStaticParams } from "@/lib/blocks";
+import { JsonLdScript, jsonLdBreadcrumbList } from "@/lib/json-ld";
+import { getRegistryItem } from "@/lib/registry";
+import { absoluteUrl } from "@/lib/utils";
 
-export const revalidate = false
-export const dynamic = "force-static"
-export const dynamicParams = false
+export const revalidate = false;
+export const dynamic = "force-static";
+export const dynamicParams = false;
 
-const getCachedStaticParams = cache(getAllBlockStaticParams)
+const getCachedStaticParams = cache(getAllBlockStaticParams);
 
 export async function generateStaticParams() {
-  return await getCachedStaticParams()
+  return await getCachedStaticParams();
 }
 
 const getCachedRegistryItem = cache(async (name: string) => {
-  return await getRegistryItem(name)
-})
+  return await getRegistryItem(name);
+});
 
 export async function generateMetadata({
   params,
 }: PageProps<"/blocks/[category]/[name]">): Promise<Metadata> {
-  const { category, name } = await params
+  const { category, name } = await params;
 
-  const item = await getCachedRegistryItem(name)
+  const item = await getCachedRegistryItem(name);
 
   if (!item) {
-    return {}
+    return {};
   }
 
-  const title = item.name
-  const description = item.description
+  const title = item.name;
+  const description = item.description;
 
-  const blockUrl = `/blocks/${category}/${item.name}`
-  const ogImage = "/og/default.png"
+  const blockUrl = `/blocks/${category}/${item.name}`;
+  const ogImage = "/og/default.png";
 
   return {
     title,
@@ -74,15 +70,15 @@ export async function generateMetadata({
       creator: X_HANDLE,
       images: [ogImage],
     },
-  }
+  };
 }
 
 function getSoftwareSourceCodeJsonLd(
   category: string,
-  item: { name: string; description?: string; meta?: { createdAt?: string } }
+  item: { name: string; description?: string; meta?: { createdAt?: string } },
 ): WithContext<SoftwareSourceCode> {
-  const blockUrl = `/blocks/${category}/${item.name}`
-  const description = item.description ?? ""
+  const blockUrl = `/blocks/${category}/${item.name}`;
+  const description = item.description ?? "";
 
   return {
     "@context": "https://schema.org",
@@ -92,9 +88,7 @@ function getSoftwareSourceCodeJsonLd(
     description,
     image: absoluteUrl("/og/default.png"),
     url: absoluteUrl(blockUrl),
-    datePublished: item.meta?.createdAt
-      ? new Date(item.meta.createdAt).toISOString()
-      : undefined,
+    datePublished: item.meta?.createdAt ? new Date(item.meta.createdAt).toISOString() : undefined,
     codeRepository: SOURCE_CODE_GITHUB_URL,
     programmingLanguage: [{ "@type": "ComputerLanguage", name: "TypeScript" }],
     runtimePlatform: "React 19",
@@ -108,30 +102,26 @@ function getSoftwareSourceCodeJsonLd(
       name: "Blocks",
       url: absoluteUrl("/blocks"),
     },
-  }
+  };
 }
 
-export default async function BlockViewPage({
-  params,
-}: PageProps<"/blocks/[category]/[name]">) {
-  const { category, name } = await params
+export default async function BlockViewPage({ params }: PageProps<"/blocks/[category]/[name]">) {
+  const { category, name } = await params;
 
-  const blocks = await getCachedStaticParams()
+  const blocks = await getCachedStaticParams();
 
   const { previous, next } = findNeighbour(
     blocks.map((block) => `${block.category}/${block.name}`),
-    `${category}/${name}`
-  )
+    `${category}/${name}`,
+  );
 
-  const categoryItem = blockCategories.find((c) => c.name === category)
+  const categoryItem = blockCategories.find((c) => c.name === category);
 
-  const item = await getCachedRegistryItem(name)
+  const item = await getCachedRegistryItem(name);
 
   return (
     <>
-      {item && (
-        <JsonLdScript data={getSoftwareSourceCodeJsonLd(category, item)} />
-      )}
+      {item && <JsonLdScript data={getSoftwareSourceCodeJsonLd(category, item)} />}
 
       <JsonLdScript
         data={jsonLdBreadcrumbList([
@@ -181,16 +171,8 @@ export default async function BlockViewPage({
             <Tooltip>
               <TooltipTrigger
                 render={
-                  <Button
-                    className="size-7 border-none"
-                    variant="secondary"
-                    size="icon-sm"
-                    asChild
-                  >
-                    <Link
-                      href={`/blocks/${previous}`}
-                      aria-label="Previous Block"
-                    >
+                  <Button className="size-7 border-none" variant="secondary" size="icon-sm" asChild>
+                    <Link href={`/blocks/${previous}`} aria-label="Previous Block">
                       <ArrowLeftIcon />
                     </Link>
                   </Button>
@@ -211,12 +193,7 @@ export default async function BlockViewPage({
             <Tooltip>
               <TooltipTrigger
                 render={
-                  <Button
-                    className="size-7 border-none"
-                    variant="secondary"
-                    size="icon-sm"
-                    asChild
-                  >
+                  <Button className="size-7 border-none" variant="secondary" size="icon-sm" asChild>
                     <Link href={`/blocks/${next}`} aria-label="Next Block">
                       <ArrowRightIcon />
                     </Link>
@@ -244,20 +221,20 @@ export default async function BlockViewPage({
 
       <div className="stripe-divider" />
     </>
-  )
+  );
 }
 
 function findNeighbour(blocks: string[], slug: string) {
-  const len = blocks.length
+  const len = blocks.length;
 
   for (let i = 0; i < len; ++i) {
     if (blocks[i] === slug) {
       return {
         previous: i > 0 ? blocks[i - 1] : null,
         next: i < len - 1 ? blocks[i + 1] : null,
-      }
+      };
     }
   }
 
-  return { previous: null, next: null }
+  return { previous: null, next: null };
 }

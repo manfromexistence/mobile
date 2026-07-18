@@ -12,8 +12,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { createResponsesApiTransformStream } =
-  await import("../../open-sse/transformer/responsesTransformer.ts");
+const { createResponsesApiTransformStream } = await import(
+  "../../open-sse/transformer/responsesTransformer.ts"
+);
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -85,7 +86,7 @@ test("response.completed output is sorted by output_index: function_call at inde
   const types = completed.output.map((item) => item.type);
   assert.ok(
     types.indexOf("function_call") < types.indexOf("message"),
-    `function_call (output_index 0) must appear before message (output_index 2), got order: ${types.join(", ")}`
+    `function_call (output_index 0) must appear before message (output_index 2), got order: ${types.join(", ")}`,
   );
 
   const funcCall = completed.output.find((item) => item.type === "function_call");

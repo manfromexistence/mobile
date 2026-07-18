@@ -17,7 +17,5 @@
     "@diceui/use-lazy-ref",
     "@diceui/use-mobile"
   ],
-  "dependencies": [
-    "vaul"
-  ]
+  "dependencies": ["vaul"]
 }

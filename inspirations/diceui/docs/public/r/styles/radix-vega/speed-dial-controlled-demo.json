@@ -1,14 +1,8 @@
 {
   "name": "speed-dial-controlled-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react",
-    "sonner"
-  ],
-  "registryDependencies": [
-    "button",
-    "speed-dial"
-  ],
+  "dependencies": ["lucide-react", "sonner"],
+  "registryDependencies": ["button", "speed-dial"],
   "files": [
     {
       "path": "examples/speed-dial-controlled-demo.tsx",

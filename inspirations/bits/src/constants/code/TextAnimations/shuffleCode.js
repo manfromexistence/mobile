@@ -1,8 +1,8 @@
-import code from '@content/TextAnimations/Shuffle/Shuffle.jsx?raw';
-import css from '@content/TextAnimations/Shuffle/Shuffle.css?raw';
-import tailwind from '@tailwind/TextAnimations/Shuffle/Shuffle.jsx?raw';
-import tsCode from '@ts-default/TextAnimations/Shuffle/Shuffle.tsx?raw';
-import tsTailwind from '@ts-tailwind/TextAnimations/Shuffle/Shuffle.tsx?raw';
+import code from "@content/TextAnimations/Shuffle/Shuffle.jsx?raw";
+import css from "@content/TextAnimations/Shuffle/Shuffle.css?raw";
+import tailwind from "@tailwind/TextAnimations/Shuffle/Shuffle.jsx?raw";
+import tsCode from "@ts-default/TextAnimations/Shuffle/Shuffle.tsx?raw";
+import tsTailwind from "@ts-tailwind/TextAnimations/Shuffle/Shuffle.tsx?raw";
 
 export const shuffle = {
   dependencies: `gsap @gsap/react`,
@@ -25,5 +25,5 @@ export const shuffle = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

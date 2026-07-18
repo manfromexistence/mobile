@@ -68,7 +68,7 @@ function makeHandleChatCore(responseText = "test response", status = 200) {
       JSON.stringify({
         choices: [{ message: { role: "assistant", content: responseText }, index: 0 }],
       }),
-      { status, headers: { "content-type": "application/json" } }
+      { status, headers: { "content-type": "application/json" } },
     );
   };
 }
@@ -106,7 +106,7 @@ test("handlePipelineCombo throws PIPELINE_DISABLED when combo pipeline_enabled i
         log,
         settings,
       }),
-    { message: "PIPELINE_DISABLED" }
+    { message: "PIPELINE_DISABLED" },
   );
 });
 
@@ -126,7 +126,7 @@ test("handlePipelineCombo throws PIPELINE_DISABLED when settings pipeline_enable
         log,
         settings,
       }),
-    { message: "PIPELINE_DISABLED" }
+    { message: "PIPELINE_DISABLED" },
   );
 });
 
@@ -150,7 +150,7 @@ test("handlePipelineCombo throws PIPELINE_TOKEN_THRESHOLD for short prompts", as
         log,
         settings,
       }),
-    { message: "PIPELINE_TOKEN_THRESHOLD" }
+    { message: "PIPELINE_TOKEN_THRESHOLD" },
   );
 });
 
@@ -194,7 +194,7 @@ test("handlePipelineCombo final stage streams when body.stream is true", async (
     "Explain the theory of relativity in detail with mathematical proofs and step by step derivation of the equations involved in special relativity including Lorentz transformations time dilation and length contraction with comprehensive examples";
   const body = makeBody(
     [{ role: "user", content: longPrompt }],
-    true // stream = true
+    true, // stream = true
   );
   const combo = makeCombo();
   const settings = makeSettings();
@@ -270,7 +270,7 @@ test("handlePipelineCombo resolves stage models from object-form combo.models", 
       JSON.stringify({
         choices: [{ message: { role: "assistant", content: "ok" }, index: 0 }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -289,7 +289,7 @@ test("handlePipelineCombo resolves stage models from object-form combo.models", 
     assert.equal(typeof m, "string", "stage model must be a string, not a raw config object");
     assert.ok(
       comboNames.has(m as string),
-      `resolved model "${String(m)}" should come from the combo pool, not the default fallback`
+      `resolved model "${String(m)}" should come from the combo pool, not the default fallback`,
     );
   }
 });

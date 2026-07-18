@@ -34,7 +34,7 @@ const PROVIDER = "codex";
 function makeAlloc(
   weight: number,
   policy: "hard" | "soft" | "burst",
-  opts: { capValue?: number; capUnit?: "tokens" | "requests" | "usd" | "percent" } = {}
+  opts: { capValue?: number; capUnit?: "tokens" | "requests" | "usd" | "percent" } = {},
 ) {
   return { apiKeyId: API_KEY_ID, weight, policy, ...opts };
 }
@@ -132,7 +132,7 @@ await test("enforceQuotaShare — store.peek throws → fail-open (never rejects
   assert.equal(
     typeof result,
     "object",
-    "enforceQuotaShare must always resolve to an object, never throw"
+    "enforceQuotaShare must always resolve to an object, never throw",
   );
 });
 
@@ -147,12 +147,7 @@ const { decideFairShare } = await import("../../src/lib/quota/fairShare.ts");
 
 const THRESHOLD = 0.5;
 
-function dim(
-  globalUsedPercent: number,
-  consumed: number,
-  limit = 1000,
-  consumedTotal?: number
-) {
+function dim(globalUsedPercent: number, consumed: number, limit = 1000, consumedTotal?: number) {
   return {
     key: { poolId: POOL_ID, unit: "tokens" as const, window: "hourly" as const },
     limit,
@@ -263,7 +258,11 @@ await test("enforceQuotaShare (via fairShare) — generous mode, burst, consumed
     saturationThreshold: THRESHOLD,
   });
 
-  assert.equal(decision.kind, "allow", "burst in generous mode → always allow while global headroom exists");
+  assert.equal(
+    decision.kind,
+    "allow",
+    "burst in generous mode → always allow while global headroom exists",
+  );
 });
 
 // ---------------------------------------------------------------------------
@@ -282,7 +281,7 @@ await test("enforceQuotaShare — always resolves to { kind } shape", async () =
   for (const result of results) {
     assert.ok(
       result.kind === "allow" || result.kind === "block",
-      `result.kind must be 'allow' or 'block', got: ${result.kind}`
+      `result.kind must be 'allow' or 'block', got: ${result.kind}`,
     );
   }
 });

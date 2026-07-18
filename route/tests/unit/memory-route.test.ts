@@ -61,7 +61,7 @@ test("GET /api/memory filters by q and returns matching stats", async () => {
   await seedMemories();
 
   const response = await memoryRoute.GET(
-    new Request("http://localhost/api/memory?apiKeyId=key-a&q=typescript&limit=20&page=1")
+    new Request("http://localhost/api/memory?apiKeyId=key-a&q=typescript&limit=20&page=1"),
   );
 
   assert.equal(response.status, 200);
@@ -80,7 +80,7 @@ test("GET /api/memory continues to honor limit+offset requests", async () => {
   await seedMemories();
 
   const response = await memoryRoute.GET(
-    new Request("http://localhost/api/memory?apiKeyId=key-a&limit=1&offset=1")
+    new Request("http://localhost/api/memory?apiKeyId=key-a&limit=1&offset=1"),
   );
 
   assert.equal(response.status, 200);

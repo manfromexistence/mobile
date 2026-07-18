@@ -30,12 +30,7 @@ type FilesPanelProps = {
   setActiveFile: (id: string | null) => void;
 };
 
-export function FilesPanel({
-  state,
-  setState,
-  activeFile,
-  setActiveFile,
-}: FilesPanelProps) {
+export function FilesPanel({ state, setState, activeFile, setActiveFile }: FilesPanelProps) {
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -54,11 +49,7 @@ export function FilesPanel({
         <FileTabs state={state} activeFile={activeFile} setActiveFile={setActiveFile} />
         <div className="flex-1 min-h-0">
           {activeFile ? (
-            <CodeEditor
-              key={activeFile}
-              file={state.nodes[activeFile]}
-              theme={"vs-dark"}
-            />
+            <CodeEditor key={activeFile} file={state.nodes[activeFile]} theme={"vs-dark"} />
           ) : (
             <EmptyEditor />
           )}
@@ -192,9 +183,7 @@ function TreeNode({
         }}
         className={cn(
           "group/row flex items-center gap-1 px-1 py-1 rounded cursor-pointer transition-colors text-[12.5px]",
-          isActive
-            ? "bg-surface-2 text-foreground"
-            : "text-foreground-muted hover:bg-surface-2",
+          isActive ? "bg-surface-2 text-foreground" : "text-foreground-muted hover:bg-surface-2",
         )}
         style={{ paddingLeft: 6 + depth * 12 }}
       >
@@ -303,9 +292,7 @@ function FileTabs({
       <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface text-[12px] text-foreground border border-border shadow-sm">
         <FileIcon name={file.name} />
         <span className="font-medium">{file.name}</span>
-        <span className="text-muted-foreground font-mono text-[10.5px] ml-1.5">
-          {path}
-        </span>
+        <span className="text-muted-foreground font-mono text-[10.5px] ml-1.5">{path}</span>
         <button
           onClick={() => setActiveFile(null)}
           className="ml-1 grid h-4 w-4 place-items-center rounded text-muted-foreground hover:bg-surface-2 hover:text-foreground"

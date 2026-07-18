@@ -1,29 +1,29 @@
-import { useMemo } from 'react';
-import { Box } from '@chakra-ui/react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
+import { useMemo } from "react";
+import { Box } from "@chakra-ui/react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
 
-import RefreshButton from '../../components/common/Preview/RefreshButton';
-import CodeExample from '../../components/code/CodeExample';
-import Customize from '../../components/common/Preview/Customize';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSelect from '../../components/common/Preview/PreviewSelect';
-import PreviewInput from '../../components/common/Preview/PreviewInput';
-import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '../../components/code/Dependencies';
-import useForceRerender from '../../hooks/useForceRerender';
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import RefreshButton from "../../components/common/Preview/RefreshButton";
+import CodeExample from "../../components/code/CodeExample";
+import Customize from "../../components/common/Preview/Customize";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSelect from "../../components/common/Preview/PreviewSelect";
+import PreviewInput from "../../components/common/Preview/PreviewInput";
+import PropTable from "../../components/common/Preview/PropTable";
+import Dependencies from "../../components/code/Dependencies";
+import useForceRerender from "../../hooks/useForceRerender";
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
-import CountUp from '../../content/TextAnimations/CountUp/CountUp';
-import { countup } from '../../constants/code/TextAnimations/countUpCode';
+import CountUp from "../../content/TextAnimations/CountUp/CountUp";
+import { countup } from "../../constants/code/TextAnimations/countUpCode";
 
 const DEFAULT_PROPS = {
   from: 0,
   to: 100,
   duration: 1,
   delay: 0,
-  direction: 'up',
-  separator: ','
+  direction: "up",
+  separator: ",",
 };
 
 const CountUpDemo = () => {
@@ -34,74 +34,79 @@ const CountUpDemo = () => {
   const propData = useMemo(
     () => [
       {
-        name: 'to',
-        type: 'number',
-        default: '—',
-        description: 'The target number to count up to.'
+        name: "to",
+        type: "number",
+        default: "—",
+        description: "The target number to count up to.",
       },
       {
-        name: 'from',
-        type: 'number',
-        default: '0',
-        description: 'The initial number from which the count starts.'
+        name: "from",
+        type: "number",
+        default: "0",
+        description: "The initial number from which the count starts.",
       },
       {
-        name: 'direction',
-        type: 'string',
+        name: "direction",
+        type: "string",
         default: '"up"',
         description:
-          'Direction of the count; can be "up" or "down". When this is set to "down", "from" and "to" become reversed, in order to count down.'
+          'Direction of the count; can be "up" or "down". When this is set to "down", "from" and "to" become reversed, in order to count down.',
       },
       {
-        name: 'delay',
-        type: 'number',
-        default: '0',
-        description: 'Delay in seconds before the counting starts.'
+        name: "delay",
+        type: "number",
+        default: "0",
+        description: "Delay in seconds before the counting starts.",
       },
       {
-        name: 'duration',
-        type: 'number',
-        default: '2',
+        name: "duration",
+        type: "number",
+        default: "2",
         description:
-          'Duration of the count animation - based on the damping and stiffness configured inside the component.'
+          "Duration of the count animation - based on the damping and stiffness configured inside the component.",
       },
       {
-        name: 'className',
-        type: 'string',
+        name: "className",
+        type: "string",
         default: '""',
-        description: 'CSS class to apply to the component for additional styling.'
+        description: "CSS class to apply to the component for additional styling.",
       },
       {
-        name: 'startWhen',
-        type: 'boolean',
-        default: 'true',
+        name: "startWhen",
+        type: "boolean",
+        default: "true",
         description:
-          'A boolean to control whether the animation should start when the component is in view. It basically works like an if statement, if this is true, the count will start.'
+          "A boolean to control whether the animation should start when the component is in view. It basically works like an if statement, if this is true, the count will start.",
       },
       {
-        name: 'separator',
-        type: 'string',
+        name: "separator",
+        type: "string",
         default: '""',
-        description: 'Character to use as a thousands separator in the displayed number.'
+        description: "Character to use as a thousands separator in the displayed number.",
       },
       {
-        name: 'onStart',
-        type: 'function',
-        default: '—',
-        description: 'Callback function that is called when the count animation starts.'
+        name: "onStart",
+        type: "function",
+        default: "—",
+        description: "Callback function that is called when the count animation starts.",
       },
       {
-        name: 'onEnd',
-        type: 'function',
-        default: '—',
-        description: 'Callback function that is called when the count animation ends.'
-      }
+        name: "onEnd",
+        type: "function",
+        default: "—",
+        description: "Callback function that is called when the count animation ends.",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box position="relative" className="demo-container" minH={200}>
@@ -125,7 +130,10 @@ const CountUpDemo = () => {
               max={10000}
               step={100}
               value={to}
-              onChange={v => { updateProp('to', v); forceRerender(); }}
+              onChange={(v) => {
+                updateProp("to", v);
+                forceRerender();
+              }}
             />
             <PreviewSlider
               title="From"
@@ -133,7 +141,10 @@ const CountUpDemo = () => {
               max={1000}
               step={10}
               value={from}
-              onChange={v => { updateProp('from', v); forceRerender(); }}
+              onChange={(v) => {
+                updateProp("from", v);
+                forceRerender();
+              }}
             />
             <PreviewSlider
               title="Duration"
@@ -141,7 +152,10 @@ const CountUpDemo = () => {
               max={10}
               step={0.5}
               value={duration}
-              onChange={v => { updateProp('duration', v); forceRerender(); }}
+              onChange={(v) => {
+                updateProp("duration", v);
+                forceRerender();
+              }}
             />
             <PreviewSlider
               title="Delay"
@@ -149,28 +163,37 @@ const CountUpDemo = () => {
               max={5}
               step={0.5}
               value={delay}
-              onChange={v => { updateProp('delay', v); forceRerender(); }}
+              onChange={(v) => {
+                updateProp("delay", v);
+                forceRerender();
+              }}
             />
             <PreviewSelect
               title="Direction"
               value={direction}
               options={[
-                { value: 'up', label: 'Up' },
-                { value: 'down', label: 'Down' }
+                { value: "up", label: "Up" },
+                { value: "down", label: "Down" },
               ]}
-              onChange={v => { updateProp('direction', v); forceRerender(); }}
+              onChange={(v) => {
+                updateProp("direction", v);
+                forceRerender();
+              }}
             />
             <PreviewInput
               title="Separator"
               value={separator}
               placeholder=","
               maxLength={1}
-              onChange={v => { updateProp('separator', v); forceRerender(); }}
+              onChange={(v) => {
+                updateProp("separator", v);
+                forceRerender();
+              }}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['motion']} />
+          <Dependencies dependencyList={["motion"]} />
         </PreviewTab>
 
         <CodeTab>

@@ -84,7 +84,7 @@ test("detectTestKind detects rerank by id and by metadata, and rerank wins over 
   assert.equal(detectTestKind("vendor/opaque-model", { apiFormat: "rerank" }).isRerank, true);
   assert.equal(
     detectTestKind("vendor/opaque-model", { supportedEndpoints: ["embeddings"] }).isEmbedding,
-    true
+    true,
   );
   // A model that looks like both rerank and embedding resolves to rerank only.
   const both = detectTestKind("vendor/rerank-embedding-hybrid", null);
@@ -103,7 +103,7 @@ test("extractProviderErrorMessage includes upstream details when generic error i
 
   assert.equal(
     extractProviderErrorMessage(body, "Internal Server Error"),
-    "HuggingChat returned HTTP 500: Model is temporarily overloaded"
+    "HuggingChat returned HTTP 500: Model is temporarily overloaded",
   );
 });
 

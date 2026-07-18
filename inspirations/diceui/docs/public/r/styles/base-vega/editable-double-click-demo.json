@@ -1,9 +1,7 @@
 {
   "name": "editable-double-click-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "editable"
-  ],
+  "registryDependencies": ["editable"],
   "files": [
     {
       "path": "examples/editable-double-click-demo.tsx",

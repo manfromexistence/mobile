@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 
 const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-provider-model-management-route-")
+  path.join(os.tmpdir(), "omniroute-provider-model-management-route-"),
 );
 process.env.DATA_DIR = TEST_DATA_DIR;
 
@@ -44,7 +44,7 @@ test("provider-models PATCH updates hidden flag for custom models", async () => 
   const response = await providerModelsRoute.PATCH(
     buildPatchRequest("http://localhost/api/provider-models?provider=openai&modelId=gpt-test", {
       isHidden: true,
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -59,8 +59,8 @@ test("provider-models PATCH persists visibility overrides for catalog models", a
   const response = await providerModelsRoute.PATCH(
     buildPatchRequest(
       "http://localhost/api/provider-models?provider=claude&modelId=claude-sonnet-4-6",
-      { isHidden: true }
-    )
+      { isHidden: true },
+    ),
   );
   const body = (await response.json()) as any;
 
@@ -76,14 +76,14 @@ test("provider-models PATCH supports bulk visibility updates", async () => {
     buildPatchRequest("http://localhost/api/provider-models?provider=claude", {
       isHidden: true,
       modelIds: ["claude-opus-4-6", "claude-sonnet-4-6"],
-    })
+    }),
   );
 
   const response = await providerModelsRoute.PATCH(
     buildPatchRequest("http://localhost/api/provider-models?provider=claude", {
       isHidden: false,
       modelIds: ["claude-opus-4-6", "claude-sonnet-4-6"],
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -99,7 +99,7 @@ test("provider-models PATCH validates required fields", async () => {
   const response = await providerModelsRoute.PATCH(
     buildPatchRequest("http://localhost/api/provider-models?provider=claude", {
       modelIds: ["claude-sonnet-4-6"],
-    })
+    }),
   );
   const body = (await response.json()) as any;
 

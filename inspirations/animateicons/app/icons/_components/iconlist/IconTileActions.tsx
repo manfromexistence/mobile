@@ -27,37 +27,25 @@ import { getIconCode } from "@/actions/getIconCode";
 import { CheckIcon } from "@/components/icons/CheckIcon";
 import { V0Icon, type V0IconHandle } from "@/components/icons/V0Icon";
 import { CopyIcon, type CopyIconHandle } from "@/icons/lucide/copy-icon";
-import {
-	PackageOpenIcon,
-	type PackageOpenIconHandle,
-} from "@/icons/lucide/package-open-icon";
-import {
-	TerminalIcon,
-	type TerminalIconHandle,
-} from "@/icons/lucide/terminal-icon";
+import { PackageOpenIcon, type PackageOpenIconHandle } from "@/icons/lucide/package-open-icon";
+import { TerminalIcon, type TerminalIconHandle } from "@/icons/lucide/terminal-icon";
 import { Loader } from "lucide-react";
 import { useRef } from "react";
+import { npmImportLine, useDistribution } from "../../_contexts/DistributionContext";
 import {
-	npmImportLine,
-	useDistribution,
-} from "../../_contexts/DistributionContext";
-import {
-	useIconTileDispatch,
-	useIsCopiedCli,
-	useIsCopiedCode,
-	useIsLoading,
+  useIconTileDispatch,
+  useIsCopiedCli,
+  useIsCopiedCode,
+  useIsLoading,
 } from "../../_contexts/IconTileContext";
-import {
-	cliCommandFor,
-	usePackageManager,
-} from "../../_contexts/PackageManagerContext";
+import { cliCommandFor, usePackageManager } from "../../_contexts/PackageManagerContext";
 import IconAction from "./IconAction";
 
 type Props = {
-	tileId: string;
-	library: IconLibrary;
-	prefix: IconLibraryPrefix;
-	name: string;
+  tileId: string;
+  library: IconLibrary;
+  prefix: IconLibraryPrefix;
+  name: string;
 };
 
 /**
@@ -68,107 +56,95 @@ type Props = {
  */
 const codeCache = new Map<string, string>();
 
-const IconTileActions: React.FC<Props> = ({
-	tileId,
-	library,
-	prefix,
-	name,
-}) => {
-	const isCopied = useIsCopiedCode(tileId);
-	const isCopiedCli = useIsCopiedCli(tileId);
-	const isLoading = useIsLoading(tileId);
-	const { setCopiedCodeId, setCopiedCliId, setLoadingId } =
-		useIconTileDispatch();
-	const { packageManager } = usePackageManager();
-	const { distribution } = useDistribution();
+const IconTileActions: React.FC<Props> = ({ tileId, library, prefix, name }) => {
+  const isCopied = useIsCopiedCode(tileId);
+  const isCopiedCli = useIsCopiedCli(tileId);
+  const isLoading = useIsLoading(tileId);
+  const { setCopiedCodeId, setCopiedCliId, setLoadingId } = useIconTileDispatch();
+  const { packageManager } = usePackageManager();
+  const { distribution } = useDistribution();
 
-	const cliRef = useRef<TerminalIconHandle>(null);
-	const npmRef = useRef<PackageOpenIconHandle>(null);
-	const codeRef = useRef<CopyIconHandle>(null);
-	const v0Ref = useRef<V0IconHandle>(null);
+  const cliRef = useRef<TerminalIconHandle>(null);
+  const npmRef = useRef<PackageOpenIconHandle>(null);
+  const codeRef = useRef<CopyIconHandle>(null);
+  const v0Ref = useRef<V0IconHandle>(null);
 
-	const copyInstallSnippet = async () => {
-		const payload =
-			distribution === "npm"
-				? npmImportLine(name, library as "lucide" | "huge")
-				: `${cliCommandFor(packageManager)} shadcn@latest add https://animateicons.in/r/${prefix}-${name}.json`;
+  const copyInstallSnippet = async () => {
+    const payload =
+      distribution === "npm"
+        ? npmImportLine(name, library as "lucide" | "huge")
+        : `${cliCommandFor(packageManager)} shadcn@latest add https://animateicons.in/r/${prefix}-${name}.json`;
 
-		await navigator.clipboard.writeText(payload);
-		setCopiedCliId(tileId);
-		window.setTimeout(() => setCopiedCliId(null), 1500);
-	};
+    await navigator.clipboard.writeText(payload);
+    setCopiedCliId(tileId);
+    window.setTimeout(() => setCopiedCliId(null), 1500);
+  };
 
-	const copyToClipboard = async () => {
-		let code = codeCache.get(tileId);
+  const copyToClipboard = async () => {
+    let code = codeCache.get(tileId);
 
-		if (!code) {
-			setLoadingId(tileId);
-			const fetched = await getIconCode(name, library);
-			if (fetched) {
-				code = fetched;
-				codeCache.set(tileId, code);
-			}
-			setLoadingId(null);
-		}
+    if (!code) {
+      setLoadingId(tileId);
+      const fetched = await getIconCode(name, library);
+      if (fetched) {
+        code = fetched;
+        codeCache.set(tileId, code);
+      }
+      setLoadingId(null);
+    }
 
-		if (code) {
-			await navigator.clipboard.writeText(code);
-			setCopiedCodeId(tileId);
-			window.setTimeout(() => setCopiedCodeId(null), 1500);
-		}
-	};
+    if (code) {
+      await navigator.clipboard.writeText(code);
+      setCopiedCodeId(tileId);
+      window.setTimeout(() => setCopiedCodeId(null), 1500);
+    }
+  };
 
-	const isNpm = distribution === "npm";
+  const isNpm = distribution === "npm";
 
-	return (
-		<div className="mt-2 flex items-center justify-center gap-6">
-			<IconAction
-				tooltip={isNpm ? "copy npm import" : "copy shadcn/cli command"}
-				ariaLabel={
-					isCopiedCli
-						? "Copied"
-						: isNpm
-							? "Copy npm import"
-							: "Copy CLI Command"
-				}
-				iconRef={isNpm ? npmRef : cliRef}
-				onClick={copyInstallSnippet}
-			>
-				{isCopiedCli ? (
-					<CheckIcon />
-				) : isNpm ? (
-					<PackageOpenIcon size={18} ref={npmRef} />
-				) : (
-					<TerminalIcon size={18} ref={cliRef} />
-				)}
-			</IconAction>
+  return (
+    <div className="mt-2 flex items-center justify-center gap-6">
+      <IconAction
+        tooltip={isNpm ? "copy npm import" : "copy shadcn/cli command"}
+        ariaLabel={isCopiedCli ? "Copied" : isNpm ? "Copy npm import" : "Copy CLI Command"}
+        iconRef={isNpm ? npmRef : cliRef}
+        onClick={copyInstallSnippet}
+      >
+        {isCopiedCli ? (
+          <CheckIcon />
+        ) : isNpm ? (
+          <PackageOpenIcon size={18} ref={npmRef} />
+        ) : (
+          <TerminalIcon size={18} ref={cliRef} />
+        )}
+      </IconAction>
 
-			<IconAction
-				tooltip="copy code"
-				ariaLabel={isCopied ? "Code Copied" : "Copy JSX Code"}
-				iconRef={codeRef}
-				onClick={copyToClipboard}
-			>
-				{isCopied ? (
-					<CheckIcon />
-				) : isLoading ? (
-					<Loader size={17} className="animate-spin" />
-				) : (
-					<CopyIcon size={17} ref={codeRef} />
-				)}
-			</IconAction>
+      <IconAction
+        tooltip="copy code"
+        ariaLabel={isCopied ? "Code Copied" : "Copy JSX Code"}
+        iconRef={codeRef}
+        onClick={copyToClipboard}
+      >
+        {isCopied ? (
+          <CheckIcon />
+        ) : isLoading ? (
+          <Loader size={17} className="animate-spin" />
+        ) : (
+          <CopyIcon size={17} ref={codeRef} />
+        )}
+      </IconAction>
 
-			<IconAction
-				as="link"
-				tooltip="open in v0.dev"
-				ariaLabel="Open in v0.dev"
-				iconRef={v0Ref}
-				href={`https://v0.dev/chat/api/open?url=https://animateicons.in/r/${prefix}-${name}.json`}
-			>
-				<V0Icon size={22} ref={v0Ref} />
-			</IconAction>
-		</div>
-	);
+      <IconAction
+        as="link"
+        tooltip="open in v0.dev"
+        ariaLabel="Open in v0.dev"
+        iconRef={v0Ref}
+        href={`https://v0.dev/chat/api/open?url=https://animateicons.in/r/${prefix}-${name}.json`}
+      >
+        <V0Icon size={22} ref={v0Ref} />
+      </IconAction>
+    </div>
+  );
 };
 
 export default IconTileActions;

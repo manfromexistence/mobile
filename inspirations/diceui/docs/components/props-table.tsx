@@ -19,11 +19,7 @@ interface PropsTableProps {
 export function PropsTable({ variant = "default", data }: PropsTableProps) {
   const hasDefaultValues = data.some((item) => item.defaultValue);
   const firstColumn =
-    variant === "default"
-      ? "Prop"
-      : variant === "title"
-        ? "Title"
-        : "CSS Variable";
+    variant === "default" ? "Prop" : variant === "title" ? "Title" : "CSS Variable";
 
   return (
     <div className="mdx">

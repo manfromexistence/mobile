@@ -17,8 +17,9 @@ const { normalizeComboStep } = await import("../../src/lib/combos/steps.ts");
 const { clearAllModelLockouts } = await import("../../open-sse/services/accountFallback.ts");
 const { resetAllCircuitBreakers } = await import("../../src/shared/utils/circuitBreaker.ts");
 
-type RouteExplainabilityResponse =
-  import("../../src/lib/usage/routeExplain.ts").RouteExplainabilityResponse;
+type RouteExplainabilityResponse = import(
+  "../../src/lib/usage/routeExplain.ts",
+).RouteExplainabilityResponse;
 
 async function resetStorage() {
   clearAllModelLockouts();
@@ -69,7 +70,7 @@ test("route explainability builds a direct-route explanation from call logs", as
   assert.equal(explanation.resilience?.provider.circuitBreakerState, "CLOSED");
   assert.equal(
     explanation.decision.factors.some((factor) => factor.name === "Direct routing"),
-    true
+    true,
   );
   assert.equal(explanation.recommendations.length > 0, true);
 });
@@ -105,9 +106,9 @@ test("route explainability includes selected-target resilience reasons", async (
   assert.equal(explanation.resilience?.targetState, "skipped");
   assert.equal(
     explanation.resilience?.skipReasons.some(
-      (reason) => reason.code === "connection_cooldown" && reason.connectionId === connection.id
+      (reason) => reason.code === "connection_cooldown" && reason.connectionId === connection.id,
     ),
-    true
+    true,
   );
 });
 
@@ -173,7 +174,7 @@ test("route explainability surfaces nearby combo fallback evidence", async () =>
   assert.equal(explanation.relatedTargets.length, 2);
   assert.equal(
     explanation.relatedTargets.some((target) => target.id === "combo-distant-step"),
-    false
+    false,
   );
   assert.equal(explanation.fallbacksTriggered.length, 1);
   assert.equal(explanation.fallbacksTriggered[0].id, "combo-failed-step");
@@ -254,9 +255,9 @@ test("route explainability replays why a combo target was selected", async () =>
   assert.equal(explanation.decisionReplay.recompute?.alignment, "matches_recomputed_top_target");
   assert.equal(
     explanation.decisionReplay.recompute?.candidates.some(
-      (candidate) => candidate.executionKey === fastStep.id && candidate.isRuntimeSelected
+      (candidate) => candidate.executionKey === fastStep.id && candidate.isRuntimeSelected,
     ),
-    true
+    true,
   );
 });
 
@@ -291,7 +292,7 @@ test("route explainability warns when replay recomputes a non-auto combo", async
   assert.equal(explanation.decisionReplay.recompute?.strategy, "priority");
   assert.equal(
     explanation.decisionReplay.recompute?.warnings.some((warning) => warning.includes("not auto")),
-    true
+    true,
   );
 });
 
@@ -312,7 +313,7 @@ test("route explainability API returns a routing decision document", async () =>
     new Request("http://localhost/api/usage/route-explain/api-route-1"),
     {
       params: Promise.resolve({ id: "api-route-1" }),
-    }
+    },
   );
   const body = (await response.json()) as RouteExplainabilityResponse;
 

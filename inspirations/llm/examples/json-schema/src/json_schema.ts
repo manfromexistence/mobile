@@ -42,10 +42,10 @@ async function simpleStructuredTextExample() {
   // const selectedModel = "Llama-3.2-3B-Instruct-q4f16_1-MLC";
   // const selectedModel = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC";
   const selectedModel = "Phi-3.5-mini-instruct-q4f16_1-MLC";
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    { initProgressCallback: initProgressCallback, logLevel: "INFO" },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+    logLevel: "INFO",
+  });
 
   // Note that you'd need to prompt the model to answer in JSON either in
   // user's message or the system prompt
@@ -116,10 +116,10 @@ async function harryPotterExample() {
   // const selectedModel = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC";
   // const selectedModel = "Phi-3.5-mini-instruct-q4f16_1-MLC";
 
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    { initProgressCallback: initProgressCallback, logLevel: "INFO" },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+    logLevel: "INFO",
+  });
 
   // Note that you'd need to prompt the model to answer in JSON either in
   // user's message or the system prompt
@@ -186,12 +186,9 @@ async function functionCallingExample() {
   };
 
   const selectedModel = "Hermes-2-Pro-Llama-3-8B-q4f16_1-MLC";
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    {
-      initProgressCallback: initProgressCallback,
-    },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+  });
 
   const request: webllm.ChatCompletionRequest = {
     stream: false,
@@ -209,8 +206,7 @@ async function functionCallingExample() {
       },
       {
         role: "user",
-        content:
-          "What is the current weather in celsius in Pittsburgh and Tokyo?",
+        content: "What is the current weather in celsius in Pittsburgh and Tokyo?",
       },
     ],
     response_format: {
@@ -250,10 +246,10 @@ ws ::= [ \n\t]*
   const selectedModel = "Llama-3.2-3B-Instruct-q4f16_1-MLC";
   // const selectedModel = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC";
   // const selectedModel = "Phi-3.5-mini-instruct-q4f16_1-MLC";
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    { initProgressCallback: initProgressCallback, logLevel: "INFO" },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+    logLevel: "INFO",
+  });
 
   // Note that you'd need to prompt the model to answer in JSON either in
   // user's message or the system prompt

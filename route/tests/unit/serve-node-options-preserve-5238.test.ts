@@ -14,8 +14,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { buildServerNodeOptions, buildNodeHeapArgs, envHasExplicitHeapFlag } =
-  await import("../../scripts/build/runtime-env.mjs");
+const { buildServerNodeOptions, buildNodeHeapArgs, envHasExplicitHeapFlag } = await import(
+  "../../scripts/build/runtime-env.mjs"
+);
 
 const HEAP_RE = /--max-old-space-size=(\d+)/g;
 function heapValues(nodeOptions: string): string[] {
@@ -34,7 +35,7 @@ test("#5238 case 1: user-set NODE_OPTIONS heap wins, no second/calibrated flag i
   assert.deepEqual(
     buildNodeHeapArgs(env, 512),
     [],
-    "no explicit CLI --max-old-space-size when user pinned NODE_OPTIONS"
+    "no explicit CLI --max-old-space-size when user pinned NODE_OPTIONS",
   );
 });
 

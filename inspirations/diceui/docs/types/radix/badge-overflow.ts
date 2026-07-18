@@ -1,8 +1,6 @@
 import type { CompositionProps, EmptyProps } from "@/types";
 
-export interface BadgeOverflowProps<T = string>
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface BadgeOverflowProps<T = string> extends EmptyProps<"div">, CompositionProps {
   /**
    * Array of items to display as badges.
    *

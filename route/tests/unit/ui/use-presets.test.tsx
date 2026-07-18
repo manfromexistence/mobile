@@ -5,9 +5,7 @@
 import React, { act, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import {
-  usePresets,
-} from "../../../src/app/(dashboard)/dashboard/playground/hooks/usePresets";
+import { usePresets } from "../../../src/app/(dashboard)/dashboard/playground/hooks/usePresets";
 import type { PlaygroundPresetListItem } from "../../../src/shared/schemas/playground";
 
 // ─── Minimal hook test harness ────────────────────────────────────────────────

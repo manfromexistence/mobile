@@ -1,22 +1,22 @@
 export type Testimonial = {
   /** URL to the person's profile picture or avatar image */
-  authorAvatar: string
+  authorAvatar: string;
   /** Full display name of the person giving the testimonial */
-  authorName: string
+  authorName: string;
   /** Short tagline, title, or description of the person */
-  authorTagline: string
+  authorTagline: string;
   /** Link to the person's profile, website, or social media page */
-  url: string
+  url: string;
   /** The testimonial text content or recommendation message */
-  quote: string
+  quote: string;
   /** Date when the testimonial was given (YYYY-MM-DD) */
-  date: string
+  date: string;
   /** Flag to indicate if the testimonial is from a verified user */
-  isVerified?: boolean
+  isVerified?: boolean;
   /** Flag to indicate if this testimonial should be highlighted as featured */
-  isFeatured?: boolean
+  isFeatured?: boolean;
   /** Optional numeric value to control the display order of testimonials */
-  order?: number
+  order?: number;
 
-  icon?: React.ReactNode
-}
+  icon?: React.ReactNode;
+};

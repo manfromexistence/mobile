@@ -1,9 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "waveform-demo",
-  "registryDependencies": [
-    "https://ui.elevenlabs.io/r/waveform.json"
-  ],
+  "registryDependencies": ["https://ui.elevenlabs.io/r/waveform.json"],
   "files": [
     {
       "path": "examples/waveform-demo.tsx",

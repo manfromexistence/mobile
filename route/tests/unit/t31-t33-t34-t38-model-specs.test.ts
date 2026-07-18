@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 
 const { REGISTRY } = await import("../../open-sse/config/providerRegistry.ts");
 const { getStaticModelsForProvider } = await import("../../src/lib/providers/staticModels.ts");
-const { resolveModelAlias: resolveDeprecatedAlias } =
-  await import("../../open-sse/services/modelDeprecation.ts");
+const { resolveModelAlias: resolveDeprecatedAlias } = await import(
+  "../../open-sse/services/modelDeprecation.ts"
+);
 const { normalizeThinkingLevel } = await import("../../open-sse/services/thinkingBudget.ts");
 const {
   MODEL_SPECS,

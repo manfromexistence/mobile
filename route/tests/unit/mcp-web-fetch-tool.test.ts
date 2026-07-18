@@ -38,7 +38,7 @@ test("omniroute_web_fetch is mapped in MCP_TOOL_SCOPES with execute:search", () 
   assert.ok(scopes != null, "omniroute_web_fetch must have a scope mapping");
   assert.ok(
     scopes.includes("execute:search"),
-    "omniroute_web_fetch must require execute:search scope"
+    "omniroute_web_fetch must require execute:search scope",
   );
 });
 
@@ -71,7 +71,7 @@ test("webFetchInput rejects missing URL", () => {
   assert.throws(
     () => webFetchInput.parse({}),
     /URL is required/,
-    "Missing url should fail validation"
+    "Missing url should fail validation",
   );
 });
 
@@ -79,14 +79,14 @@ test("webFetchInput rejects empty URL", () => {
   assert.throws(
     () => webFetchInput.parse({ url: "" }),
     /URL is required/,
-    "Empty url should fail validation"
+    "Empty url should fail validation",
   );
 });
 
 test("webFetchInput rejects depth > 2 (matches WebFetchRequest type constraint)", () => {
   assert.throws(
     () => webFetchInput.parse({ url: "https://example.com", depth: 3 }),
-    "depth > 2 should fail validation to match the 0 | 1 | 2 type in WebFetchRequest"
+    "depth > 2 should fail validation to match the 0 | 1 | 2 type in WebFetchRequest",
   );
 });
 
@@ -105,14 +105,14 @@ test("webFetchInput accepts provider=tinyfish", () => {
 test("webFetchInput rejects invalid provider", () => {
   assert.throws(
     () => webFetchInput.parse({ url: "https://example.com", provider: "unknown-provider" }),
-    "Unknown provider should fail validation"
+    "Unknown provider should fail validation",
   );
 });
 
 test("webFetchInput rejects invalid format", () => {
   assert.throws(
     () => webFetchInput.parse({ url: "https://example.com", format: "xml" }),
-    "Invalid format should fail validation"
+    "Invalid format should fail validation",
   );
 });
 

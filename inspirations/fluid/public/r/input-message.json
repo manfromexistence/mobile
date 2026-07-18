@@ -3,9 +3,7 @@
   "name": "input-message",
   "title": "Input Message",
   "description": "Chat-style message composer with auto-resizing textarea, drag-and-drop file attachments (PNG / JPEG / PDF), flexible left/right action slots, and a built-in send button on a Surface-2 substrate.",
-  "dependencies": [
-    "framer-motion"
-  ],
+  "dependencies": ["framer-motion"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

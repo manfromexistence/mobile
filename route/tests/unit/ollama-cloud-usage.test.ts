@@ -7,7 +7,7 @@ const { USAGE_SUPPORTED_PROVIDERS } = await import("../../src/shared/constants/p
 test("USAGE_SUPPORTED_PROVIDERS includes ollama-cloud", () => {
   assert.ok(
     (USAGE_SUPPORTED_PROVIDERS as string[]).includes("ollama-cloud"),
-    "ollama-cloud must be in the usage-supported providers allowlist"
+    "ollama-cloud must be in the usage-supported providers allowlist",
   );
 });
 
@@ -17,7 +17,7 @@ test("USAGE_FETCHER_PROVIDERS includes ollama-cloud (#7026)", () => {
   // never registers a preflight quota fetcher for ollama-cloud even though the scraper exists.
   assert.ok(
     (usage.USAGE_FETCHER_PROVIDERS as readonly string[]).includes("ollama-cloud"),
-    "ollama-cloud is handled by getUsageForProvider's switch and must be listed in USAGE_FETCHER_PROVIDERS"
+    "ollama-cloud is handled by getUsageForProvider's switch and must be listed in USAGE_FETCHER_PROVIDERS",
   );
 });
 
@@ -29,7 +29,7 @@ test("registerGenericQuotaFetchers wires a preflight quota fetcher for ollama-cl
   registerGenericQuotaFetchers();
   assert.ok(
     getQuotaFetcher("ollama-cloud"),
-    "a generic quota fetcher must be registered for ollama-cloud after registerGenericQuotaFetchers()"
+    "a generic quota fetcher must be registered for ollama-cloud after registerGenericQuotaFetchers()",
   );
 });
 
@@ -88,7 +88,7 @@ test("getUsageForProvider scrapes Ollama Cloud settings quota", async () => {
         '<div data-usage-track style="width: 67%"></div>',
         '<span class="local-time" data-time="2026-06-29T15:00:00.000Z"></span>',
       ].join(""),
-      { status: 200, headers: { "content-type": "text/html" } }
+      { status: 200, headers: { "content-type": "text/html" } },
     );
   };
 
@@ -139,7 +139,7 @@ test("getUsageForProvider keeps Ollama Cloud reset times aligned to usage tracks
         '<span class="local-time" data-time="2026-06-29T15:00:00.000Z"></span>',
         "</div>",
       ].join(""),
-      { status: 200, headers: { "content-type": "text/html" } }
+      { status: 200, headers: { "content-type": "text/html" } },
     );
 
   try {

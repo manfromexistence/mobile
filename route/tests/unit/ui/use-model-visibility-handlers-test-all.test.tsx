@@ -19,9 +19,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
 
-const {
-  useModelVisibilityHandlers,
-} = await import(
+const { useModelVisibilityHandlers } = await import(
   "../../../src/app/(dashboard)/dashboard/providers/[id]/hooks/useModelVisibilityHandlers"
 );
 

@@ -1,8 +1,8 @@
-import code from '@content/Animations/LaserFlow/LaserFlow.jsx?raw';
-import css from '@content/Animations/LaserFlow/LaserFlow.css?raw';
-import tailwind from '@tailwind/Animations/LaserFlow/LaserFlow.jsx?raw';
-import tsCode from '@ts-default/Animations/LaserFlow/LaserFlow.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/LaserFlow/LaserFlow.tsx?raw';
+import code from "@content/Animations/LaserFlow/LaserFlow.jsx?raw";
+import css from "@content/Animations/LaserFlow/LaserFlow.css?raw";
+import tailwind from "@tailwind/Animations/LaserFlow/LaserFlow.jsx?raw";
+import tsCode from "@ts-default/Animations/LaserFlow/LaserFlow.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/LaserFlow/LaserFlow.tsx?raw";
 
 export const laserFlow = {
   dependencies: `three`,
@@ -99,5 +99,5 @@ function LaserFlowBoxExample() {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

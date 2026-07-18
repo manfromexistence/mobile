@@ -81,7 +81,7 @@ describe("AgentCard", { timeout: 30000 }, () => {
           mappings: [],
           onDnsToggle: vi.fn(),
           onMappingsSave: vi.fn(),
-        })
+        }),
       );
     });
 
@@ -105,7 +105,7 @@ describe("AgentCard", { timeout: 30000 }, () => {
           mappings: [],
           onDnsToggle: vi.fn(),
           onMappingsSave: vi.fn(),
-        })
+        }),
       );
     });
 
@@ -151,7 +151,7 @@ describe("AgentCard", { timeout: 30000 }, () => {
           mappings: [],
           onDnsToggle,
           onMappingsSave: vi.fn(),
-        })
+        }),
       );
     });
 
@@ -163,7 +163,7 @@ describe("AgentCard", { timeout: 30000 }, () => {
 
     // Find and click DNS button
     const dnsButton = Array.from(container.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("startDns")
+      b.textContent?.includes("startDns"),
     );
     expect(dnsButton).not.toBeNull();
 
@@ -190,7 +190,7 @@ describe("AgentCard", { timeout: 30000 }, () => {
           mappings: [],
           onDnsToggle: vi.fn(),
           onMappingsSave: vi.fn(),
-        })
+        }),
       );
     });
 
@@ -202,7 +202,7 @@ describe("AgentCard", { timeout: 30000 }, () => {
 
     // Find setup wizard button
     const wizardBtn = Array.from(document.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("setupWizard")
+      b.textContent?.includes("setupWizard"),
     );
 
     await act(async () => {

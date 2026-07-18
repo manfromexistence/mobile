@@ -1,12 +1,8 @@
 {
   "name": "speed-dial-labels-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "speed-dial"
-  ],
-  "dependencies": [
-    "lucide-react"
-  ],
+  "registryDependencies": ["speed-dial"],
+  "dependencies": ["lucide-react"],
   "files": [
     {
       "path": "examples/speed-dial-labels-demo.tsx",

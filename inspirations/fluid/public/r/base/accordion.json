@@ -3,11 +3,7 @@
   "name": "accordion",
   "title": "Accordion (Base UI)",
   "description": "Collapsible accordion with animated height transitions, spring-animated chevron, and proximity hover in grouped mode. Base UI flavor.",
-  "dependencies": [
-    "framer-motion",
-    "@base-ui/react",
-    "lucide-react"
-  ],
+  "dependencies": ["framer-motion", "@base-ui/react", "lucide-react"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

@@ -1,7 +1,7 @@
-import { transformIcons } from "shadcn/utils"
-import { Project, ScriptKind } from "ts-morph"
+import { transformIcons } from "shadcn/utils";
+import { Project, ScriptKind } from "ts-morph";
 
-import { fixImport } from "@/lib/registry"
+import { fixImport } from "@/lib/registry";
 
 function buildDisplayConfig(styleName: string) {
   return {
@@ -34,29 +34,29 @@ function buildDisplayConfig(styleName: string) {
       hooks: "@/hooks",
       ui: "@/components/ui",
     },
-  }
+  };
 }
 
 export async function formatCode(code: string, styleName: string) {
-  code = fixImport(code)
+  code = fixImport(code);
 
   try {
-    const config = buildDisplayConfig(styleName)
-    const project = new Project({ compilerOptions: {} })
+    const config = buildDisplayConfig(styleName);
+    const project = new Project({ compilerOptions: {} });
     const sourceFile = project.createSourceFile("component.tsx", code, {
       scriptKind: ScriptKind.TSX,
-    })
+    });
 
     await transformIcons({
       filename: "component.tsx",
       raw: code,
       sourceFile,
       config,
-    })
+    });
 
-    return sourceFile.getFullText()
+    return sourceFile.getFullText();
   } catch (error) {
-    console.error("Transform failed:", error)
-    return code
+    console.error("Transform failed:", error);
+    return code;
   }
 }

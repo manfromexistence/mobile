@@ -58,7 +58,7 @@ function claudeUsageResponse() {
       five_hour: { utilization: 10, resets_at: new Date(Date.now() + 3600000).toISOString() },
       seven_day: { utilization: 20, resets_at: new Date(Date.now() + 86400000).toISOString() },
     }),
-    { status: 200, headers: { "content-type": "application/json" } }
+    { status: 200, headers: { "content-type": "application/json" } },
   );
 }
 
@@ -74,7 +74,7 @@ function claudeBootstrapResponse() {
         organization_rate_limit_tier: "pro",
       },
     }),
-    { status: 200, headers: { "content-type": "application/json" } }
+    { status: 200, headers: { "content-type": "application/json" } },
   );
 }
 
@@ -99,7 +99,11 @@ test("syncAllProviderLimits processes OAuth connections sequentially with spacin
 
   globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(
-      typeof input === "string" ? input : input instanceof URL ? input.href : (input as Request).url
+      typeof input === "string"
+        ? input
+        : input instanceof URL
+          ? input.href
+          : (input as Request).url,
     );
     const conn = tokenOf(init);
     if (connFirstStart[conn] === undefined) connFirstStart[conn] = Date.now();
@@ -124,7 +128,7 @@ test("syncAllProviderLimits processes OAuth connections sequentially with spacin
   assert.equal(
     maxDistinctConns,
     1,
-    `Two different OAuth connections must never be fetched concurrently, observed ${maxDistinctConns}`
+    `Two different OAuth connections must never be fetched concurrently, observed ${maxDistinctConns}`,
   );
 
   // The spacing gap must separate consecutive connections' first fetches.
@@ -134,6 +138,6 @@ test("syncAllProviderLimits processes OAuth connections sequentially with spacin
   for (let i = 1; i < starts.length; i++) gaps.push(starts[i] - starts[i - 1]);
   assert.ok(
     gaps.every((g) => g >= 50),
-    `every inter-connection gap must be >= configured spacing (~60ms), gaps=${gaps.join(",")}`
+    `every inter-connection gap must be >= configured spacing (~60ms), gaps=${gaps.join(",")}`,
   );
 });

@@ -1,9 +1,9 @@
 // Thanks @shadcn
 // Source: https://github.com/shadcn-ui/ui/blob/main/apps/v4/registry/themes.ts
 
-import type { RegistryItem } from "shadcn/schema"
+import type { RegistryItem } from "shadcn/schema";
 
-import { withThemeSource } from "./theme-item"
+import { withThemeSource } from "./theme-item";
 
 export const THEMES: RegistryItem[] = [
   {
@@ -1086,8 +1086,8 @@ export const THEMES: RegistryItem[] = [
       },
     },
   },
-] as const satisfies RegistryItem[]
+] as const satisfies RegistryItem[];
 
 export function getShadcnThemes(): RegistryItem[] {
-  return THEMES.map((theme) => withThemeSource(theme, "shadcn"))
+  return THEMES.map((theme) => withThemeSource(theme, "shadcn"));
 }

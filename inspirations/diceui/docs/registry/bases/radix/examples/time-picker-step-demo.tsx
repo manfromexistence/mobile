@@ -13,12 +13,7 @@ import {
 
 export default function TimePickerStepDemo() {
   return (
-    <TimePicker
-      className="w-[280px]"
-      defaultValue="10:00"
-      minuteStep={15}
-      secondStep={10}
-    >
+    <TimePicker className="w-[280px]" defaultValue="10:00" minuteStep={15} secondStep={10}>
       <TimePickerLabel>Meeting Time (15 min intervals)</TimePickerLabel>
       <TimePickerInputGroup>
         <TimePickerInput segment="hour" />

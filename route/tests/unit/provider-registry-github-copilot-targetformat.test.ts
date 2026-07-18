@@ -49,7 +49,7 @@ for (const id of MUST_NOT_BE_RESPONSES) {
     assert.notEqual(
       model.targetFormat,
       "openai-responses",
-      `github/${id} must route via chat/completions (Copilot Responses API rejects it)`
+      `github/${id} must route via chat/completions (Copilot Responses API rejects it)`,
     );
   });
 }
@@ -76,7 +76,7 @@ for (const id of [
     assert.equal(
       model.targetFormat,
       "openai-responses",
-      `github/${id} is OpenAI-native and must keep the Responses API`
+      `github/${id} is OpenAI-native and must keep the Responses API`,
     );
   });
 }

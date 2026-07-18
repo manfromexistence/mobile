@@ -49,24 +49,18 @@ export default function CropperControlledDemo() {
           <Slider
             id={`${id}-zoom`}
             value={[zoom]}
-            onValueChange={(value) =>
-              setZoom(Array.isArray(value) ? (value[0] ?? 1) : value)
-            }
+            onValueChange={(value) => setZoom(Array.isArray(value) ? (value[0] ?? 1) : value)}
             min={1}
             max={3}
             step={0.1}
           />
         </div>
         <div className="flex w-full flex-col gap-2.5">
-          <Label htmlFor={`${id}-rotation`}>
-            Rotation: {rotation.toFixed(0)}°
-          </Label>
+          <Label htmlFor={`${id}-rotation`}>Rotation: {rotation.toFixed(0)}°</Label>
           <Slider
             id={`${id}-rotation`}
             value={[rotation]}
-            onValueChange={(value) =>
-              setRotation(Array.isArray(value) ? (value[0] ?? 0) : value)
-            }
+            onValueChange={(value) => setRotation(Array.isArray(value) ? (value[0] ?? 0) : value)}
             min={-180}
             max={180}
             step={1}

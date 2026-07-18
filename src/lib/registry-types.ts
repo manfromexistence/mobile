@@ -1,3 +1,3 @@
-import type { RegistryItem } from "shadcn/schema"
+import type { RegistryItem } from "shadcn/schema";
 
-export type RegistryItemFile = NonNullable<RegistryItem["files"]>[number]
+export type RegistryItemFile = NonNullable<RegistryItem["files"]>[number];

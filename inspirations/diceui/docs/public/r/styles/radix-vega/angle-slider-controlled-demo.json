@@ -1,14 +1,8 @@
 {
   "name": "angle-slider-controlled-demo",
   "type": "registry:example",
-  "dependencies": [
-    "motion",
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "angle-slider",
-    "button"
-  ],
+  "dependencies": ["motion", "lucide-react"],
+  "registryDependencies": ["angle-slider", "button"],
   "files": [
     {
       "path": "examples/angle-slider-controlled-demo.tsx",

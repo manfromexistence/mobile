@@ -86,7 +86,7 @@ describe("MitmProxyMovedPage — page-moved banner (C4)", { timeout: 30000 }, ()
     });
 
     const goNowBtn = Array.from(container.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("agentBridge.pageMoved.goNow")
+      b.textContent?.includes("agentBridge.pageMoved.goNow"),
     );
     expect(goNowBtn).not.toBeNull();
 

@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 
 type Theme = "light" | "dark" | "system";
 
@@ -43,8 +36,7 @@ export function FridayThemeProvider({ children }: { children: ReactNode }) {
     setMounted(true);
     const stored = (localStorage.getItem(STORAGE_KEY) as Theme | null) ?? "dark";
     setThemeState(stored);
-    const resolved =
-      stored === "system" ? getSystemTheme() : (stored as "light" | "dark");
+    const resolved = stored === "system" ? getSystemTheme() : (stored as "light" | "dark");
     applyTheme(resolved);
   }, [applyTheme]);
 

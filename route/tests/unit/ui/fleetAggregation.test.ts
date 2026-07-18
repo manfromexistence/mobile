@@ -19,7 +19,7 @@ const NOW = 1_000_000; // fixed "now" for deterministic tests
 function ev(
   type: "attempt" | "succeeded" | "failed",
   provider: string,
-  timestampOffset: number // relative to NOW (negative = in the past)
+  timestampOffset: number, // relative to NOW (negative = in the past)
 ): ComboEventInput {
   return {
     comboName: "fleet-combo",
@@ -145,7 +145,7 @@ describe("aggregateComboEventsToSets — window boundary", () => {
     // timestamp === NOW - WINDOW_MS: age === WINDOW_MS → not within (age < windowMs)
     assert.ok(
       last.has("boundary") || !active.has("boundary"),
-      "boundary event should be last or absent from active"
+      "boundary event should be last or absent from active",
     );
   });
 

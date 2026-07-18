@@ -22,7 +22,7 @@ const src = fs.readFileSync(TOOLTIP_SRC, "utf8");
 test("#2352 Tooltip imports createPortal from react-dom", () => {
   assert.ok(
     /createPortal\s*\}\s*from\s+"react-dom"/.test(src),
-    "Tooltip must import createPortal so it can break out of clipping ancestors"
+    "Tooltip must import createPortal so it can break out of clipping ancestors",
   );
 });
 
@@ -32,21 +32,21 @@ test("#2352 Tooltip exposes usePortal prop defaulted to true", () => {
   assert.ok(propDecl.test(src), "TooltipProps must declare optional usePortal prop");
   assert.ok(
     propTrue.test(src),
-    "usePortal must default to true (the unsafe-by-default was the bug)"
+    "usePortal must default to true (the unsafe-by-default was the bug)",
   );
 });
 
 test("#2352 Tooltip portal target is document.body", () => {
   assert.ok(
     /createPortal\([^)]+,\s*document\.body\)/.test(src),
-    "Portal target must be document.body so the tooltip escapes overflow:hidden ancestors"
+    "Portal target must be document.body so the tooltip escapes overflow:hidden ancestors",
   );
 });
 
 test("#2352 multiline prop swaps whitespace-nowrap for wrap-friendly classes", () => {
   assert.ok(
     /multiline\s*\?\s*"max-w-xs whitespace-normal break-words"\s*:\s*"whitespace-nowrap"/.test(src),
-    "multiline=true must enable wrapping; default keeps the legacy single-line layout"
+    "multiline=true must enable wrapping; default keeps the legacy single-line layout",
   );
 });
 
@@ -56,7 +56,7 @@ test("#2352 portal tooltip uses fixed positioning (not absolute)", () => {
   // trigger's getBoundingClientRect().
   assert.ok(
     /portalEnabled[\s\S]{0,200}?`fixed\b/.test(src),
-    "Portal-rendered tooltip must use position:fixed to align with computed coords"
+    "Portal-rendered tooltip must use position:fixed to align with computed coords",
   );
 });
 
@@ -65,6 +65,6 @@ test("#2352 portal tooltip clamps to viewport bounds (overflow-aware)", () => {
   // right or left edge of the screen — that's the user's screenshot bug.
   assert.ok(
     /maxLeft|minLeft|window\.innerWidth/.test(src),
-    "Portal tooltip must clamp horizontally so a trigger near the viewport edge stays visible"
+    "Portal tooltip must clamp horizontally so a trigger near the viewport edge stays visible",
   );
 });

@@ -1,12 +1,7 @@
 {
   "name": "cropper-shapes-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "cropper",
-    "label",
-    "select",
-    "switch"
-  ],
+  "registryDependencies": ["cropper", "label", "select", "switch"],
   "files": [
     {
       "path": "examples/cropper-shapes-demo.tsx",

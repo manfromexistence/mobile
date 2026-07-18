@@ -40,7 +40,7 @@ test("pricing GET keeps legacy payload by default and exposes source metadata on
     JSON.stringify({
       "model-litellm": { prompt: 1 },
       "model-user": { prompt: 2 },
-    })
+    }),
   );
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "models_dev_pricing",
@@ -48,7 +48,7 @@ test("pricing GET keeps legacy payload by default and exposes source metadata on
     JSON.stringify({
       "model-modelsdev": { prompt: 3 },
       "model-user": { completion: 4 },
-    })
+    }),
   );
 
   await settingsDb.updatePricing({
@@ -69,7 +69,7 @@ test("pricing GET keeps legacy payload by default and exposes source metadata on
   });
 
   const sourceResponse = await pricingRoute.GET(
-    new Request("http://localhost/api/pricing?includeSources=1")
+    new Request("http://localhost/api/pricing?includeSources=1"),
   );
   assert.equal(sourceResponse.status, 200);
 

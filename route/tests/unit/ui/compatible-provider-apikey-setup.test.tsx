@@ -42,7 +42,7 @@ function render(props: Record<string, unknown>) {
         onSave={async () => undefined}
         onClose={() => {}}
         {...(props as any)}
-      />
+      />,
     );
   });
   containers.push({ root, el });
@@ -50,10 +50,7 @@ function render(props: Record<string, unknown>) {
 }
 
 function setInputValue(input: HTMLInputElement, value: string) {
-  const setter = Object.getOwnPropertyDescriptor(
-    window.HTMLInputElement.prototype,
-    "value"
-  )!.set!;
+  const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")!.set!;
   act(() => {
     setter.call(input, value);
     input.dispatchEvent(new Event("input", { bubbles: true }));
@@ -73,8 +70,8 @@ beforeEach(() => {
   vi.stubGlobal(
     "fetch",
     vi.fn(() =>
-      Promise.resolve({ ok: true, json: () => Promise.resolve({ valid: true }) } as Response)
-    )
+      Promise.resolve({ ok: true, json: () => Promise.resolve({ valid: true }) } as Response),
+    ),
   );
 });
 
@@ -116,7 +113,7 @@ describe("AddApiKeyModal — compatible provider default-model field (PR #925)",
     setInputValue(defaultModelInput, "gpt-4o-mini");
 
     const saveBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "save"
+      (b) => b.textContent?.trim() === "save",
     )!;
     act(() => {
       saveBtn.dispatchEvent(new MouseEvent("click", { bubbles: true }));

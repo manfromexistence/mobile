@@ -47,19 +47,13 @@ export default function RatingFormDemo() {
             <FormItem>
               <FormLabel>Rating</FormLabel>
               <FormControl>
-                <Rating
-                  value={field.value}
-                  onValueChange={field.onChange}
-                  step={0.5}
-                >
+                <Rating value={field.value} onValueChange={field.onChange} step={0.5}>
                   {Array.from({ length: 5 }, (_, i) => (
                     <RatingItem key={i} />
                   ))}
                 </Rating>
               </FormControl>
-              <FormDescription>
-                Rate your experience from 1 to 5 stars.
-              </FormDescription>
+              <FormDescription>Rate your experience from 1 to 5 stars.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

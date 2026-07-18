@@ -54,7 +54,7 @@ test("DynamicCertStore.createSNICallback resolves a context for the SNI host", a
   const store = new DynamicCertStore("OmniRoute MITM CA (test)");
   const cb = store.createSNICallback();
   const ctx = await new Promise((resolve, reject) =>
-    cb("dynamic.example.org", (err: Error | null, c: unknown) => (err ? reject(err) : resolve(c)))
+    cb("dynamic.example.org", (err: Error | null, c: unknown) => (err ? reject(err) : resolve(c))),
   );
   assert.ok(ctx, "SNICallback must yield a SecureContext");
 });

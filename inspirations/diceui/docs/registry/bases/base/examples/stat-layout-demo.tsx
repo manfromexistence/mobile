@@ -18,9 +18,7 @@ export default function StatLayoutDemo() {
         <StatIndicator variant="icon" color="success">
           <Users />
         </StatIndicator>
-        <StatDescription>
-          Total number of active subscribers as of today
-        </StatDescription>
+        <StatDescription>Total number of active subscribers as of today</StatDescription>
       </Stat>
 
       <Stat>
@@ -34,9 +32,7 @@ export default function StatLayoutDemo() {
           <ArrowUp />
           +15.3% from last month
         </StatTrend>
-        <StatDescription>
-          Revenue generated in the current billing period
-        </StatDescription>
+        <StatDescription>Revenue generated in the current billing period</StatDescription>
       </Stat>
     </div>
   );

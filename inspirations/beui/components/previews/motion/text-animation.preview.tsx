@@ -11,7 +11,7 @@ export function TextAnimationPreview() {
 
   useEffect(() => {
     const id = window.setInterval(() => {
-      setVariant((currentVariant) => currentVariant === "reveal" ? "shimmer" : "reveal");
+      setVariant((currentVariant) => (currentVariant === "reveal" ? "shimmer" : "reveal"));
     }, 3000);
     return () => window.clearInterval(id);
   }, []);

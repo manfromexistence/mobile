@@ -1,8 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { buildImproveChatBody, parseImprovedContent, META_SYSTEM_PROMPT, ImprovePromptRequestSchema } =
-  await import("../../src/lib/playground/promptImprover.ts");
+const {
+  buildImproveChatBody,
+  parseImprovedContent,
+  META_SYSTEM_PROMPT,
+  ImprovePromptRequestSchema,
+} = await import("../../src/lib/playground/promptImprover.ts");
 
 // ── META_SYSTEM_PROMPT ────────────────────────────────────────────────────────
 
@@ -189,8 +193,10 @@ test("parseImprovedContent: reversed order (<<PROMPT>> before <<SYSTEM>>)", () =
   // Both markers present, <<PROMPT>> is at index < <<SYSTEM>> index
   // sysStart > promptStart in this case — covers else branch for sysContent
   // and the if(hasSystemMarker && systemIndex > promptStart) branch for promptContent
-  assert.ok(result.improvedSystem !== undefined || result.improvedPrompt !== undefined,
-    "should parse at least one field from reversed markers");
+  assert.ok(
+    result.improvedSystem !== undefined || result.improvedPrompt !== undefined,
+    "should parse at least one field from reversed markers",
+  );
 });
 
 // ── ImprovePromptRequestSchema validation ─────────────────────────────────────

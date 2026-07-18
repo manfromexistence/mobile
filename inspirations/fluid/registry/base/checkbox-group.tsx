@@ -24,14 +24,11 @@ interface CheckboxGroupContextValue {
   activeIndex: number | null;
 }
 
-const CheckboxGroupContext = createContext<CheckboxGroupContextValue | null>(
-  null
-);
+const CheckboxGroupContext = createContext<CheckboxGroupContextValue | null>(null);
 
 function useCheckboxGroup() {
   const ctx = useContext(CheckboxGroupContext);
-  if (!ctx)
-    throw new Error("useCheckboxGroup must be used within a CheckboxGroup");
+  if (!ctx) throw new Error("useCheckboxGroup must be used within a CheckboxGroup");
   return ctx;
 }
 
@@ -97,8 +94,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
 
     const activeRect = activeIndex !== null ? itemRects[activeIndex] : null;
     const focusRect = focusedIndex !== null ? itemRects[focusedIndex] : null;
-    const isHoveringOther =
-      activeIndex !== null && !checkedIndices.has(activeIndex);
+    const isHoveringOther = activeIndex !== null && !checkedIndices.has(activeIndex);
     const shape = useShape();
 
     // Selected backgrounds, with the merge/split boundary animation when one
@@ -123,9 +119,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
             if (indexAttr != null) {
               const idx = Number(indexAttr);
               setActiveIndex(idx);
-              setFocusedIndex(
-                (e.target as HTMLElement).matches(":focus-visible") ? idx : null
-              );
+              setFocusedIndex((e.target as HTMLElement).matches(":focus-visible") ? idx : null);
             }
           }}
           onBlur={(e) => {
@@ -139,16 +133,17 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
             // carries role="checkbox", so a bare [role="checkbox"] selector
             // matches twice per row and arrows skip onto the hidden control.
             const items = Array.from(
-              containerRef.current?.querySelectorAll("[data-proximity-index]") ?? []
+              containerRef.current?.querySelectorAll("[data-proximity-index]") ?? [],
             ) as HTMLElement[];
             const currentIdx = items.indexOf(e.target as HTMLElement);
             if (currentIdx === -1) return;
 
             if (["ArrowDown", "ArrowUp"].includes(e.key)) {
               e.preventDefault();
-              const next = e.key === "ArrowDown"
-                ? (currentIdx + 1) % items.length
-                : (currentIdx - 1 + items.length) % items.length;
+              const next =
+                e.key === "ArrowDown"
+                  ? (currentIdx + 1) % items.length
+                  : (currentIdx - 1 + items.length) % items.length;
               items[next].focus();
             } else if (e.key === "Home") {
               e.preventDefault();
@@ -159,10 +154,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
             }
           }}
           role="group"
-          className={cn(
-            "relative flex flex-col w-72 max-w-full select-none",
-            className
-          )}
+          className={cn("relative flex flex-col w-72 max-w-full select-none", className)}
           {...props}
         >
           {/* Selected backgrounds (merged for contiguous checked items).
@@ -224,7 +216,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
         </div>
       </CheckboxGroupContext.Provider>
     );
-  }
+  },
 );
 
 CheckboxGroup.displayName = "CheckboxGroup";
@@ -276,7 +268,7 @@ const CheckboxItem = forwardRef<HTMLDivElement, CheckboxItemProps>(
           // move (click still fires) and land focus on the row instead. Skip
           // genuinely interactive children so we don't hijack their focus.
           const interactive = (e.target as HTMLElement).closest(
-            'button:not([tabindex="-1"]), a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            'button:not([tabindex="-1"]), a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
           );
           if (interactive && interactive !== e.currentTarget) return;
           e.preventDefault();
@@ -290,7 +282,7 @@ const CheckboxItem = forwardRef<HTMLDivElement, CheckboxItemProps>(
         }}
         className={cn(
           `relative z-10 flex items-center gap-2.5 ${shape.item} px-3 py-1.5 cursor-pointer outline-none`,
-          className
+          className,
         )}
         {...props}
       >
@@ -310,8 +302,8 @@ const CheckboxItem = forwardRef<HTMLDivElement, CheckboxItemProps>(
               checked
                 ? "border-[1.5px] border-transparent"
                 : isActive
-                ? "border-[1.5px] border-neutral-400 dark:border-neutral-500"
-                : "border-[1.5px] border-border"
+                  ? "border-[1.5px] border-neutral-400 dark:border-neutral-500"
+                  : "border-[1.5px] border-border",
             )}
           />
           {/* Check mark */}
@@ -378,14 +370,10 @@ const CheckboxItem = forwardRef<HTMLDivElement, CheckboxItemProps>(
           <span
             className={cn(
               "col-start-1 row-start-1 transition-[color,font-variation-settings] duration-80",
-              checked || isActive
-                ? "text-foreground"
-                : "text-muted-foreground"
+              checked || isActive ? "text-foreground" : "text-muted-foreground",
             )}
             style={{
-              fontVariationSettings: checked
-                ? fontWeights.semibold
-                : fontWeights.normal,
+              fontVariationSettings: checked ? fontWeights.semibold : fontWeights.normal,
             }}
           >
             {label}
@@ -393,7 +381,7 @@ const CheckboxItem = forwardRef<HTMLDivElement, CheckboxItemProps>(
         </span>
       </div>
     );
-  }
+  },
 );
 
 CheckboxItem.displayName = "CheckboxItem";

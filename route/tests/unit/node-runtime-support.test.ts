@@ -73,7 +73,7 @@ test("getNodeRuntimeSupport rejects unsupported major lines", () => {
   assert.equal(node27.reason, "unreleased-major");
   assert.match(
     getNodeRuntimeWarning("27.1.0") || "",
-    /currently supports Node\.js 22\.x, 24\.x, 25\.x, and 26\.x/i
+    /currently supports Node\.js 22\.x, 24\.x, 25\.x, and 26\.x/i,
   );
 });
 

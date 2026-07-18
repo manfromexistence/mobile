@@ -12,20 +12,20 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
  * in; the MCP SDK, zod, and fuse.js stay external (declared dependencies).
  */
 export default defineConfig({
-	entry: { index: "src/index.ts" },
-	format: ["esm"],
-	target: "node18",
-	platform: "node",
-	splitting: false,
-	clean: true,
-	sourcemap: false,
-	dts: false,
-	minify: false,
-	banner: { js: "#!/usr/bin/env node" },
-	esbuildOptions(options) {
-		options.alias = {
-			...(options.alias ?? {}),
-			"@animateicons/core": path.resolve(__dirname, "../core/src/index.ts"),
-		};
-	},
+  entry: { index: "src/index.ts" },
+  format: ["esm"],
+  target: "node18",
+  platform: "node",
+  splitting: false,
+  clean: true,
+  sourcemap: false,
+  dts: false,
+  minify: false,
+  banner: { js: "#!/usr/bin/env node" },
+  esbuildOptions(options) {
+    options.alias = {
+      ...(options.alias ?? {}),
+      "@animateicons/core": path.resolve(__dirname, "../core/src/index.ts"),
+    };
+  },
 });

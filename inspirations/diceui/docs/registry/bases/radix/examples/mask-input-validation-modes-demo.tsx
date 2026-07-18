@@ -47,28 +47,26 @@ export default function MaskInputValidationModesDemo() {
   const [submitAttempted, setSubmitAttempted] = React.useState(false);
 
   const onValidate = React.useCallback(
-    (mode: keyof typeof validationStates) =>
-      (isValid: boolean, unmaskedValue: string) => {
-        const message = isValid
-          ? `✓ Valid (${unmaskedValue.length}/10)`
-          : `✗ Invalid (${unmaskedValue.length}/10)`;
+    (mode: keyof typeof validationStates) => (isValid: boolean, unmaskedValue: string) => {
+      const message = isValid
+        ? `✓ Valid (${unmaskedValue.length}/10)`
+        : `✗ Invalid (${unmaskedValue.length}/10)`;
 
-        setValidationStates((prev) => ({
-          ...prev,
-          [mode]: { isValid, message },
-        }));
-      },
+      setValidationStates((prev) => ({
+        ...prev,
+        [mode]: { isValid, message },
+      }));
+    },
     [],
   );
 
   const onValueChange = React.useCallback(
-    (mode: keyof typeof values) =>
-      (_maskedValue: string, unmaskedValue: string) => {
-        setValues((prev) => ({
-          ...prev,
-          [mode]: unmaskedValue,
-        }));
-      },
+    (mode: keyof typeof values) => (_maskedValue: string, unmaskedValue: string) => {
+      setValues((prev) => ({
+        ...prev,
+        [mode]: unmaskedValue,
+      }));
+    },
     [],
   );
 
@@ -151,9 +149,7 @@ function ValidationModeCard({
     <div className="flex flex-col gap-3 rounded-md border bg-card p-4 text-card-foreground shadow-sm">
       <div className="flex flex-col gap-1">
         <h4 className="font-medium text-xs">{mode.label}</h4>
-        <p className="text-muted-foreground text-xs leading-tight">
-          {mode.description}
-        </p>
+        <p className="text-muted-foreground text-xs leading-tight">{mode.description}</p>
       </div>
       {onSubmit ? (
         <form onSubmit={onSubmit} className="flex flex-col gap-2">

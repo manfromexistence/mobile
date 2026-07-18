@@ -26,8 +26,7 @@ test("parseT3Credentials: form (a) — convex-session-id=...; sessionToken=...",
 
 test("parseT3Credentials: form (b) — full Cookie header already containing convex-session-id", () => {
   const creds = {
-    apiKey:
-      "__Secure-better-auth.session_token=foo; convex-session-id=session-123; theme=dark",
+    apiKey: "__Secure-better-auth.session_token=foo; convex-session-id=session-123; theme=dark",
   };
   const parsed = parseT3Credentials(creds);
   assert.ok(parsed);
@@ -37,7 +36,7 @@ test("parseT3Credentials: form (b) — full Cookie header already containing con
   assert.equal(
     parsed.cookieHeader.match(/convex-session-id=/g)?.length,
     1,
-    "convex-session-id must appear exactly once"
+    "convex-session-id must appear exactly once",
   );
 });
 

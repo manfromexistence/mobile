@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/Threads/Threads.jsx?raw';
-import css from '@content/Backgrounds/Threads/Threads.css?raw';
-import tailwind from '@tailwind/Backgrounds/Threads/Threads.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/Threads/Threads.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/Threads/Threads.tsx?raw';
+import code from "@content/Backgrounds/Threads/Threads.jsx?raw";
+import css from "@content/Backgrounds/Threads/Threads.css?raw";
+import tailwind from "@tailwind/Backgrounds/Threads/Threads.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/Threads/Threads.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/Threads/Threads.tsx?raw";
 
 export const threads = {
   dependencies: `ogl`,
@@ -19,5 +19,5 @@ export const threads = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

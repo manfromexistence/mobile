@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { createSseHeartbeatTransform, HEARTBEAT_SHAPES, shapeForClientFormat } =
-  await import("../../open-sse/utils/sseHeartbeat.ts");
+const { createSseHeartbeatTransform, HEARTBEAT_SHAPES, shapeForClientFormat } = await import(
+  "../../open-sse/utils/sseHeartbeat.ts"
+);
 
 const STREAM_TS_STRIP_RE = /^event:\s*keepalive\b/i;
 
@@ -18,7 +19,7 @@ async function readWithTimeout(reader, timeoutMs = 250) {
       new Promise((_, reject) => {
         timeout = setTimeout(
           () => reject(new Error("Timed out waiting for SSE heartbeat")),
-          timeoutMs
+          timeoutMs,
         );
       }),
     ]);
@@ -65,7 +66,7 @@ test("integration: anthropic-ping heartbeat reaches downstream and does NOT trig
       for (const line of chunk.split("\n")) {
         assert.ok(
           !STREAM_TS_STRIP_RE.test(line.trim()),
-          `heartbeat chunk produced a stream.ts-strippable line: ${line}`
+          `heartbeat chunk produced a stream.ts-strippable line: ${line}`,
         );
       }
       break;
@@ -81,8 +82,8 @@ test("integration: openai-chunk heartbeat is valid JSON parseable by SDKs", asyn
     start(controller) {
       controller.enqueue(
         new TextEncoder().encode(
-          `data: {"id":"chatcmpl-1","object":"chat.completion.chunk","choices":[]}\n\n`
-        )
+          `data: {"id":"chatcmpl-1","object":"chat.completion.chunk","choices":[]}\n\n`,
+        ),
       );
     },
   });

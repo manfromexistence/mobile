@@ -78,11 +78,7 @@ export const ui: Registry["items"] = [
         type: "registry:ui",
       },
     ],
-    registryDependencies: [
-      "button",
-      "@diceui/use-as-ref",
-      "@diceui/use-lazy-ref",
-    ],
+    registryDependencies: ["button", "@diceui/use-as-ref", "@diceui/use-lazy-ref"],
     dependencies: ["@base-ui/react"],
   },
   {
@@ -218,11 +214,7 @@ export const ui: Registry["items"] = [
         type: "registry:ui",
       },
     ],
-    registryDependencies: [
-      "direction",
-      "@diceui/use-as-ref",
-      "@diceui/use-lazy-ref",
-    ],
+    registryDependencies: ["direction", "@diceui/use-as-ref", "@diceui/use-lazy-ref"],
     dependencies: ["@base-ui/react"],
   },
   {

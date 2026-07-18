@@ -1,4 +1,4 @@
-import { type Registry } from "shadcn/schema"
+import { type Registry } from "shadcn/schema";
 
 export const blocks: Registry["items"] = [
   {
@@ -190,11 +190,7 @@ export const blocks: Registry["items"] = [
     name: "music-player-01",
     description: "Music player with playlist",
     type: "registry:block",
-    registryDependencies: [
-      "https://ui.elevenlabs.io/r/audio-player.json",
-      "button",
-      "scroll-area",
-    ],
+    registryDependencies: ["https://ui.elevenlabs.io/r/audio-player.json", "button", "scroll-area"],
     files: [
       {
         path: "blocks/music-player-01/page.tsx",
@@ -214,10 +210,7 @@ export const blocks: Registry["items"] = [
     name: "music-player-02",
     description: "Simple music player",
     type: "registry:block",
-    registryDependencies: [
-      "https://ui.elevenlabs.io/r/audio-player.json",
-      "card",
-    ],
+    registryDependencies: ["https://ui.elevenlabs.io/r/audio-player.json", "card"],
     files: [
       {
         path: "blocks/music-player-02/page.tsx",
@@ -275,11 +268,7 @@ export const blocks: Registry["items"] = [
     name: "voice-nav-01",
     description: "Voice-nav site navigation",
     type: "registry:block",
-    registryDependencies: [
-      "https://ui.elevenlabs.io/r/voice-button.json",
-      "button",
-      "card",
-    ],
+    registryDependencies: ["https://ui.elevenlabs.io/r/voice-button.json", "button", "card"],
     dependencies: ["@elevenlabs/elevenlabs-js", "ai", "zod"],
     files: [
       {
@@ -347,4 +336,4 @@ export const blocks: Registry["items"] = [
     },
     categories: ["audio"],
   },
-]
+];

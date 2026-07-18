@@ -242,7 +242,7 @@ test("stripUnsupportedParams model-level denylist overrides provider-level allow
   assert.equal(
     (result as Record<string, unknown>).thinking,
     undefined,
-    "model denylist should win over provider allowlist"
+    "model denylist should win over provider allowlist",
   );
   assert.equal((result as Record<string, unknown>).max_tokens, 100);
 });

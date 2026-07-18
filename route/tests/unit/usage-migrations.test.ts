@@ -191,7 +191,7 @@ test("migrateUsageJsonToSqlite migrates usage history aliases and TTFT fallbacks
                tokens_reasoning, status, success, latency_ms, ttft_ms, error_code
         FROM usage_history
         ORDER BY timestamp ASC
-      `
+      `,
     )
     .all()
     .map((row) => ({ ...row }));
@@ -283,7 +283,7 @@ test("migrateUsageJsonToSqlite migrates call logs to summary rows and ignores du
                detail_state, artifact_relpath, has_request_body, has_response_body, error_summary
         FROM call_logs
         ORDER BY timestamp ASC
-      `
+      `,
     )
     .all();
 
@@ -303,7 +303,7 @@ test("migrateUsageJsonToSqlite migrates call logs to summary rows and ignores du
       has_request_body: 1,
       has_response_body: 1,
       error_summary: "bad upstream",
-    }
+    },
   );
   assert.equal(typeof rows[0].artifact_relpath, "string");
   assert.equal((rows[1] as any).id.length > 0, true);
@@ -319,7 +319,7 @@ test("migrateUsageJsonToSqlite migrates call logs to summary rows and ignores du
   assert.equal((rows[1] as any).error_summary, null);
 
   const firstArtifact = JSON.parse(
-    fs.readFileSync(path.join(TEST_DATA_DIR, "call_logs", rows[0].artifact_relpath), "utf8")
+    fs.readFileSync(path.join(TEST_DATA_DIR, "call_logs", rows[0].artifact_relpath), "utf8"),
   );
   assert.deepEqual(firstArtifact.requestBody, { messages: [{ role: "user", content: "hi" }] });
   assert.deepEqual(firstArtifact.responseBody, { id: "resp-1" });
@@ -327,8 +327,8 @@ test("migrateUsageJsonToSqlite migrates call logs to summary rows and ignores du
   const secondArtifact = JSON.parse(
     fs.readFileSync(
       path.join(TEST_DATA_DIR, "call_logs", (rows as any)[1].artifact_relpath),
-      "utf8"
-    )
+      "utf8",
+    ),
   );
   assert.deepEqual(secondArtifact.requestBody, { foo: "bar" });
   assert.equal(secondArtifact.responseBody, null);

@@ -17,19 +17,14 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-quota-exclusivity-"),
-);
+const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-quota-exclusivity-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
-process.env.API_KEY_SECRET =
-  process.env.API_KEY_SECRET || "exclusivity-reconcile-test-secret";
+process.env.API_KEY_SECRET = process.env.API_KEY_SECRET || "exclusivity-reconcile-test-secret";
 
 const core = await import("../../src/lib/db/core.ts");
 const apiKeysDb = await import("../../src/lib/db/apiKeys.ts");
 const poolsDb = await import("../../src/lib/db/quotaPools.ts");
-const { reconcilePoolExclusivity } = await import(
-  "../../src/lib/quota/quotaKey.ts"
-);
+const { reconcilePoolExclusivity } = await import("../../src/lib/quota/quotaKey.ts");
 
 // ---------------------------------------------------------------------------
 // Test lifecycle helpers

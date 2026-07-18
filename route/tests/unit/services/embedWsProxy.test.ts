@@ -212,7 +212,7 @@ describe("embedWsProxy", () => {
     assert.ok(!headerStr.includes("cookie:"), "cookie must be stripped");
     assert.ok(
       !headerStr.includes("bearer client-token"),
-      "original authorization must be stripped"
+      "original authorization must be stripped",
     );
     assert.ok(!headerStr.includes("origin:"), "origin must be stripped");
 
@@ -239,7 +239,7 @@ describe("embedWsProxy", () => {
     assert.equal(authHeaders.length, 1, "exactly one Authorization header must be present");
     assert.ok(
       authHeaders[0].includes(`Bearer ${apiKey}`),
-      `Authorization must be 'Bearer ${apiKey}', got: ${authHeaders[0]}`
+      `Authorization must be 'Bearer ${apiKey}', got: ${authHeaders[0]}`,
     );
   });
 });

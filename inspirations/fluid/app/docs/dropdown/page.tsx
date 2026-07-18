@@ -89,29 +89,80 @@ const [view, setView] = useState(0);
 const dropdownProps: PropDef[] = [
   { name: "checkedIndex", type: "number", description: "Index of the currently checked item." },
   { name: "children", type: "ReactNode", description: "MenuItem children." },
-  { name: "aria-label", type: "string", description: "Accessible name for the inline panel. The always-visible panel renders as a plain role=\"group\" — popup menu semantics (role=\"menu\") belong to the triggered DropdownContent." },
+  {
+    name: "aria-label",
+    type: "string",
+    description:
+      'Accessible name for the inline panel. The always-visible panel renders as a plain role="group" — popup menu semantics (role="menu") belong to the triggered DropdownContent.',
+  },
 ];
 
 const dropdownMenuProps: PropDef[] = [
   { name: "children", type: "ReactNode", description: "DropdownTrigger and DropdownContent." },
   { name: "open", type: "boolean", description: "Controlled open state." },
-  { name: "defaultOpen", type: "boolean", default: "false", description: "Initial open state (uncontrolled)." },
-  { name: "onOpenChange", type: "(open: boolean) => void", description: "Called when the menu opens or closes." },
-  { name: "disabled", type: "boolean", default: "false", description: "Disables opening the menu." },
+  {
+    name: "defaultOpen",
+    type: "boolean",
+    default: "false",
+    description: "Initial open state (uncontrolled).",
+  },
+  {
+    name: "onOpenChange",
+    type: "(open: boolean) => void",
+    description: "Called when the menu opens or closes.",
+  },
+  {
+    name: "disabled",
+    type: "boolean",
+    default: "false",
+    description: "Disables opening the menu.",
+  },
 ];
 
 const dropdownTriggerProps: PropDef[] = [
-  { name: "render", type: "ReactElement", description: "Element to render as the trigger (Base UI composition), e.g. a Button." },
-  { name: "children", type: "ReactNode", description: "Trigger content when no render element is given." },
+  {
+    name: "render",
+    type: "ReactElement",
+    description: "Element to render as the trigger (Base UI composition), e.g. a Button.",
+  },
+  {
+    name: "children",
+    type: "ReactNode",
+    description: "Trigger content when no render element is given.",
+  },
   { name: "disabled", type: "boolean", default: "false", description: "Disables the trigger." },
 ];
 
 const dropdownContentProps: PropDef[] = [
-  { name: "children", type: "ReactNode", description: "MenuItem, DropdownLabel, and DropdownSeparator children." },
-  { name: "checkedIndex", type: "number", description: "Index of the checked item — drives the animated selected background and the radio-group value." },
-  { name: "side", type: "\"top\" | \"bottom\" | \"left\" | \"right\"", default: "\"bottom\"", description: "Preferred side of the trigger to place the popup." },
-  { name: "align", type: "\"start\" | \"center\" | \"end\"", default: "\"start\"", description: "Alignment against the trigger." },
-  { name: "sideOffset", type: "number", default: "6", description: "Gap between trigger and popup, in pixels." },
+  {
+    name: "children",
+    type: "ReactNode",
+    description: "MenuItem, DropdownLabel, and DropdownSeparator children.",
+  },
+  {
+    name: "checkedIndex",
+    type: "number",
+    description:
+      "Index of the checked item — drives the animated selected background and the radio-group value.",
+  },
+  {
+    name: "side",
+    type: '"top" | "bottom" | "left" | "right"',
+    default: '"bottom"',
+    description: "Preferred side of the trigger to place the popup.",
+  },
+  {
+    name: "align",
+    type: '"start" | "center" | "end"',
+    default: '"start"',
+    description: "Alignment against the trigger.",
+  },
+  {
+    name: "sideOffset",
+    type: "number",
+    default: "6",
+    description: "Gap between trigger and popup, in pixels.",
+  },
 ];
 
 const labelProps: PropDef[] = [
@@ -134,10 +185,22 @@ const menuItemProps: PropDef[] = [
   { name: "icon", type: "IconComponent", description: "Icon displayed in the menu item." },
   { name: "label", type: "string", description: "Text label for the menu item." },
   { name: "index", type: "number", description: "Position index within the dropdown." },
-  { name: "checked", type: "boolean", default: "false", description: "Whether this item is checked. When set (even false), the item is a radio-style option; when undefined it is a plain action item." },
+  {
+    name: "checked",
+    type: "boolean",
+    default: "false",
+    description:
+      "Whether this item is checked. When set (even false), the item is a radio-style option; when undefined it is a plain action item.",
+  },
   { name: "onSelect", type: "() => void", description: "Called when this item is selected." },
   { name: "disabled", type: "boolean", default: "false", description: "Disables the item." },
-  { name: "closeOnClick", type: "boolean", default: "true", description: "Popup-only: whether selecting the item closes the menu. Ignored in the inline panel." },
+  {
+    name: "closeOnClick",
+    type: "boolean",
+    default: "true",
+    description:
+      "Popup-only: whether selecting the item closes the menu. Ignored in the inline panel.",
+  },
 ];
 
 export default function DropdownDoc() {
@@ -204,18 +267,15 @@ export default function DropdownDoc() {
 
       <DocSection title="Triggered menu">
         <p className="text-[14px] text-muted-foreground">
-          The inline panels above are always visible and render as a plain
-          group. For a real popup menu — trigger button, positioning,
-          dismissal, typeahead, and close-on-select, built on Base UI&apos;s
-          Menu — compose <code>DropdownMenu</code>,{" "}
-          <code>DropdownTrigger</code>, and <code>DropdownContent</code>. Any
-          element can be the trigger via the <code>render</code> prop.
+          The inline panels above are always visible and render as a plain group. For a real popup
+          menu — trigger button, positioning, dismissal, typeahead, and close-on-select, built on
+          Base UI&apos;s Menu — compose <code>DropdownMenu</code>, <code>DropdownTrigger</code>, and{" "}
+          <code>DropdownContent</code>. Any element can be the trigger via the <code>render</code>{" "}
+          prop.
         </p>
         <ComponentPreview code={triggeredCode}>
           <DropdownMenu>
-            <DropdownTrigger
-              render={<Button variant="secondary">Open menu</Button>}
-            />
+            <DropdownTrigger render={<Button variant="secondary">Open menu</Button>} />
             <DropdownContent checkedIndex={view}>
               {items.map((item, i) => (
                 <MenuItem

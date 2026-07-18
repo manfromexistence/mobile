@@ -1,15 +1,15 @@
-import "@/styles/globals.css"
+import "@/styles/globals.css";
 
-import type { Metadata, Viewport } from "next"
-import Script from "next/script"
-import { NuqsAdapter } from "nuqs/adapters/next/app"
-import type { WebSite, WithContext } from "schema-dts"
-import { Providers } from "@/components/providers"
-import { JSON_LD_ID, personJsonLd } from "@/config/json-ld"
-import { META_THEME_COLORS, SITE_INFO, X_HANDLE } from "@/config/site"
-import { USER } from "@/features/portfolio/data/user"
-import { fontVariables } from "@/lib/fonts"
-import { JsonLdScript } from "@/lib/json-ld"
+import type { Metadata, Viewport } from "next";
+import Script from "next/script";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import type { WebSite, WithContext } from "schema-dts";
+import { Providers } from "@/components/providers";
+import { JSON_LD_ID, personJsonLd } from "@/config/json-ld";
+import { META_THEME_COLORS, SITE_INFO, X_HANDLE } from "@/config/site";
+import { USER } from "@/features/portfolio/data/user";
+import { fontVariables } from "@/lib/fonts";
+import { JsonLdScript } from "@/lib/json-ld";
 
 function getWebSiteJsonLd(): WithContext<WebSite> {
   return {
@@ -19,7 +19,7 @@ function getWebSiteJsonLd(): WithContext<WebSite> {
     name: SITE_INFO.name,
     url: SITE_INFO.url,
     author: personJsonLd,
-  }
+  };
 }
 
 // Thanks @shadcn-ui, @tailwindcss
@@ -37,7 +37,7 @@ const darkModeScript = `
       document.documentElement.classList.add('os-macos')
     }
   } catch (_) {}
-`
+`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_INFO.url),
@@ -103,27 +103,24 @@ export const metadata: Metadata = {
       sizes: "180x180",
     },
   },
-}
+};
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
   themeColor: META_THEME_COLORS.light,
-}
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en" className={fontVariables} suppressHydrationWarning>
       <head>
-        <Script
-          id="dark-mode-script"
-          dangerouslySetInnerHTML={{ __html: darkModeScript }}
-        />
+        <Script id="dark-mode-script" dangerouslySetInnerHTML={{ __html: darkModeScript }} />
         {/*
           Thanks @tailwindcss. We inject the script via the `<Script/>` tag again,
           since we found the regular `<script>` tag to not execute when rendering a not-found page.
@@ -148,5 +145,5 @@ export default function RootLayout({
         </Providers>
       </body>
     </html>
-  )
+  );
 }

@@ -3,10 +3,7 @@ import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-function Mention({
-  className,
-  ...props
-}: React.ComponentProps<typeof MentionPrimitive.Root>) {
+function Mention({ className, ...props }: React.ComponentProps<typeof MentionPrimitive.Root>) {
   return (
     <MentionPrimitive.Root
       data-slot="mention"

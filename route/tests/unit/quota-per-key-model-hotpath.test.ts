@@ -113,7 +113,13 @@ async function consumeViaHotPath(model: string, requests: number) {
 // ---------------------------------------------------------------------------
 test("hot-path: model cap blocks after N consumptions driven through scheduleQuotaShareConsumption", async () => {
   const pool = makePool();
-  setModelCap({ poolId: pool.id, apiKeyId: KEY_A, model: MODEL_M, capValue: CAP_N, capUnit: "requests" });
+  setModelCap({
+    poolId: pool.id,
+    apiKeyId: KEY_A,
+    model: MODEL_M,
+    capValue: CAP_N,
+    capUnit: "requests",
+  });
 
   // Drive CAP_N consumptions through the REAL non-streaming hot-path hook.
   await consumeViaHotPath(MODEL_M, CAP_N);
@@ -149,7 +155,13 @@ test("hot-path: model cap blocks after N consumptions driven through scheduleQuo
 // ---------------------------------------------------------------------------
 test("hot-path: enforce WITHOUT model never triggers model-cap block (fail-safe)", async () => {
   const pool = makePool();
-  setModelCap({ poolId: pool.id, apiKeyId: KEY_A, model: MODEL_M, capValue: 1, capUnit: "requests" });
+  setModelCap({
+    poolId: pool.id,
+    apiKeyId: KEY_A,
+    model: MODEL_M,
+    capValue: 1,
+    capUnit: "requests",
+  });
 
   // Consume via hot path WITH model so the bucket fills.
   await consumeViaHotPath(MODEL_M, 2);

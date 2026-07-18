@@ -49,7 +49,7 @@ test("cliRuntime enumerates qodercli.cmd under %APPDATA%\\npm on Windows", () =>
 
   assert.ok(
     candidates.includes(expected),
-    `expected getKnownToolPaths("qoder") to include ${expected}, got: ${candidates.join(", ")}`
+    `expected getKnownToolPaths("qoder") to include ${expected}, got: ${candidates.join(", ")}`,
   );
 });
 

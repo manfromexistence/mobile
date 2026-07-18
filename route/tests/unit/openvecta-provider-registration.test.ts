@@ -18,12 +18,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { APIKEY_PROVIDERS } = await import(
-  "../../src/shared/constants/providers.ts"
-);
-const { REGISTRY: providerRegistry } = await import(
-  "../../open-sse/config/providerRegistry.ts"
-);
+const { APIKEY_PROVIDERS } = await import("../../src/shared/constants/providers.ts");
+const { REGISTRY: providerRegistry } = await import("../../open-sse/config/providerRegistry.ts");
 const { NAMED_OPENAI_STYLE_PROVIDERS, isNamedOpenAIStyleProvider } = await import(
   "../../src/app/api/providers/[id]/models/discovery/providerSets.ts"
 );

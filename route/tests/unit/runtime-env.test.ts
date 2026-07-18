@@ -32,7 +32,7 @@ test("runtime env helpers normalize runtime ports and conflicting color flags", 
   assert.deepEqual(
     runtimeEnv.withRuntimePortEnv(
       { NODE_ENV: "test" },
-      { basePort: 20128, apiPort: 21128, dashboardPort: 22128 }
+      { basePort: 20128, apiPort: 21128, dashboardPort: 22128 },
     ),
     {
       NODE_ENV: "test",
@@ -40,12 +40,12 @@ test("runtime env helpers normalize runtime ports and conflicting color flags", 
       PORT: "22128",
       DASHBOARD_PORT: "22128",
       API_PORT: "21128",
-    }
+    },
   );
 
   assert.deepEqual(
     runtimeEnv.sanitizeColorEnv({ FORCE_COLOR: "1", NO_COLOR: "1", TERM: "xterm-256color" }),
-    { NO_COLOR: "1", TERM: "xterm-256color" }
+    { NO_COLOR: "1", TERM: "xterm-256color" },
   );
   assert.deepEqual(runtimeEnv.sanitizeColorEnv({ FORCE_COLOR: "1" }), { FORCE_COLOR: "1" });
 });

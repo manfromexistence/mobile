@@ -8,9 +8,7 @@ import { useComposedRefs } from "../lib";
 import { getElementRef } from "../lib/get-element-ref";
 
 interface PresenceProps {
-  children:
-    | React.ReactElement
-    | ((props: { present: boolean }) => React.ReactElement);
+  children: React.ReactElement | ((props: { present: boolean }) => React.ReactElement);
   present: boolean;
 }
 
@@ -26,18 +24,14 @@ const Presence: React.FC<PresenceProps> = (props) => {
 
   const ref = useComposedRefs(presence.ref, getElementRef(child));
   const forceMount = typeof children === "function";
-  return forceMount || presence.isPresent
-    ? React.cloneElement(child, { ref })
-    : null;
+  return forceMount || presence.isPresent ? React.cloneElement(child, { ref }) : null;
 };
 
 Presence.displayName = "Presence";
 
 function usePresence(present: boolean) {
   const [node, setNode] = React.useState<HTMLElement>();
-  const stylesRef = React.useRef<CSSStyleDeclaration>(
-    {} as unknown as CSSStyleDeclaration,
-  );
+  const stylesRef = React.useRef<CSSStyleDeclaration>({} as unknown as CSSStyleDeclaration);
   const prevPresentRef = React.useRef(present);
   const prevAnimationNameRef = React.useRef<string>("none");
   const initialState = present ? "mounted" : "unmounted";
@@ -60,8 +54,7 @@ function usePresence(present: boolean) {
 
   React.useEffect(() => {
     const currentAnimationName = getAnimationName(stylesRef.current);
-    prevAnimationNameRef.current =
-      state === "mounted" ? currentAnimationName : "none";
+    prevAnimationNameRef.current = state === "mounted" ? currentAnimationName : "none";
   }, [state]);
 
   useLayoutEffect(() => {
@@ -75,10 +68,7 @@ function usePresence(present: boolean) {
 
       if (present) {
         send("MOUNT");
-      } else if (
-        currentAnimationName === "none" ||
-        styles?.display === "none"
-      ) {
+      } else if (currentAnimationName === "none" || styles?.display === "none") {
         // If there is no exit animation or the element is hidden, animations won't run
         // so we unmount instantly
         send("UNMOUNT");
@@ -113,9 +103,7 @@ function usePresence(present: boolean) {
        */
       function onAnimationEnd(event: AnimationEvent) {
         const currentAnimationName = getAnimationName(stylesRef.current);
-        const isCurrentAnimation = currentAnimationName.includes(
-          event.animationName,
-        );
+        const isCurrentAnimation = currentAnimationName.includes(event.animationName);
         if (event.target === node && isCurrentAnimation) {
           // With React 18 concurrency this update is applied a frame after the
           // animation ends, creating a flash of visible content. By setting the

@@ -1,8 +1,4 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/registry/bases/radix/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/registry/bases/radix/ui/avatar";
 import { AvatarGroup } from "@/registry/bases/radix/ui/avatar-group";
 
 const avatars = [
@@ -53,9 +49,7 @@ export default function AvatarGroupDemo() {
         </AvatarGroup>
       </div>
       <div className="flex flex-col gap-3">
-        <h3 className="font-medium text-sm">
-          Avatar Group with overflow (max 4)
-        </h3>
+        <h3 className="font-medium text-sm">Avatar Group with overflow (max 4)</h3>
         <AvatarGroup max={4}>
           {avatars.map((avatar, index) => (
             <Avatar key={index}>

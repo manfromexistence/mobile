@@ -1,18 +1,9 @@
 {
   "name": "data-grid-demo",
   "type": "registry:example",
-  "dependencies": [
-    "@tanstack/react-table",
-    "@tanstack/react-virtual",
-    "lucide-react",
-    "sonner"
-  ],
-  "devDependencies": [
-    "@faker-js/faker"
-  ],
-  "registryDependencies": [
-    "data-grid"
-  ],
+  "dependencies": ["@tanstack/react-table", "@tanstack/react-virtual", "lucide-react", "sonner"],
+  "devDependencies": ["@faker-js/faker"],
+  "registryDependencies": ["data-grid"],
   "files": [
     {
       "path": "examples/data-grid-demo.tsx",

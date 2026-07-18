@@ -6,7 +6,6 @@ import { NavItem } from "@/components/ui/nav-item";
 import { componentList, systemList } from "@/lib/docs/components";
 import { cn } from "@/registry/default/lib/utils";
 
-
 interface SidebarProps {
   mobile?: boolean;
 }
@@ -18,13 +17,14 @@ export function Sidebar({ mobile }: SidebarProps) {
     <aside
       className={cn(
         "shrink-0 w-56 overflow-y-auto p-4 flex-col gap-4",
-        mobile
-          ? "w-full flex"
-          : "sticky top-0 h-screen xl-fade-flex"
+        mobile ? "w-full flex" : "sticky top-0 h-screen xl-fade-flex",
       )}
     >
       {/* Top-level navigation */}
-      <NavMenu activeSlug={pathname === "/" ? "/" : pathname === "/docs" ? "/docs" : null} aria-label="Main navigation">
+      <NavMenu
+        activeSlug={pathname === "/" ? "/" : pathname === "/docs" ? "/docs" : null}
+        aria-label="Main navigation"
+      >
         <NavItem index={0} href="/" label="Showcase" />
         <NavItem index={1} href="/docs" label="Introduction" />
       </NavMenu>
@@ -69,7 +69,6 @@ export function Sidebar({ mobile }: SidebarProps) {
           ))}
         </NavMenu>
       </div>
-
     </aside>
   );
 }

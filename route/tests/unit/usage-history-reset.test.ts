@@ -73,25 +73,33 @@ test("resetUsageHistory: 'all' wipes usage_history, daily_usage_summary, and hou
     const recentDateHour = `${recentIso.slice(0, 10)} ${recentIso.slice(11, 13)}:00:00`;
 
     function seed() {
-      db.prepare(
-        "INSERT INTO usage_history (provider, model, timestamp) VALUES (?, ?, ?)"
-      ).run("openai", "gpt-test", oldIso);
-      db.prepare(
-        "INSERT INTO usage_history (provider, model, timestamp) VALUES (?, ?, ?)"
-      ).run("openai", "gpt-test", recentIso);
+      db.prepare("INSERT INTO usage_history (provider, model, timestamp) VALUES (?, ?, ?)").run(
+        "openai",
+        "gpt-test",
+        oldIso,
+      );
+      db.prepare("INSERT INTO usage_history (provider, model, timestamp) VALUES (?, ?, ?)").run(
+        "openai",
+        "gpt-test",
+        recentIso,
+      );
+
+      db.prepare("INSERT INTO daily_usage_summary (provider, model, date) VALUES (?, ?, ?)").run(
+        "openai",
+        "gpt-test",
+        oldDate,
+      );
+      db.prepare("INSERT INTO daily_usage_summary (provider, model, date) VALUES (?, ?, ?)").run(
+        "openai",
+        "gpt-test",
+        recentDate,
+      );
 
       db.prepare(
-        "INSERT INTO daily_usage_summary (provider, model, date) VALUES (?, ?, ?)"
-      ).run("openai", "gpt-test", oldDate);
-      db.prepare(
-        "INSERT INTO daily_usage_summary (provider, model, date) VALUES (?, ?, ?)"
-      ).run("openai", "gpt-test", recentDate);
-
-      db.prepare(
-        "INSERT INTO hourly_usage_summary (provider, model, date_hour) VALUES (?, ?, ?)"
+        "INSERT INTO hourly_usage_summary (provider, model, date_hour) VALUES (?, ?, ?)",
       ).run("openai", "gpt-test", oldDateHour);
       db.prepare(
-        "INSERT INTO hourly_usage_summary (provider, model, date_hour) VALUES (?, ?, ?)"
+        "INSERT INTO hourly_usage_summary (provider, model, date_hour) VALUES (?, ?, ?)",
       ).run("openai", "gpt-test", recentDateHour);
     }
 
@@ -101,28 +109,32 @@ test("resetUsageHistory: 'all' wipes usage_history, daily_usage_summary, and hou
     assert.equal(
       countRows(db, "daily_usage_summary"),
       2,
-      "sanity: 2 daily_usage_summary rows seeded"
+      "sanity: 2 daily_usage_summary rows seeded",
     );
     assert.equal(
       countRows(db, "hourly_usage_summary"),
       2,
-      "sanity: 2 hourly_usage_summary rows seeded"
+      "sanity: 2 hourly_usage_summary rows seeded",
     );
 
     // 1) A period ("1d") deletes only the row older than the cutoff, keeps the recent one.
     const periodResult = await resetUsageHistory("1d");
 
     assert.equal(periodResult.errors, 0, "period reset should not report errors");
-    assert.equal(periodResult.deletedUsageHistory, 1, "should delete only the old usage_history row");
+    assert.equal(
+      periodResult.deletedUsageHistory,
+      1,
+      "should delete only the old usage_history row",
+    );
     assert.equal(
       periodResult.deletedDailySummary,
       1,
-      "should delete only the old daily_usage_summary row"
+      "should delete only the old daily_usage_summary row",
     );
     assert.equal(
       periodResult.deletedHourlySummary,
       1,
-      "should delete only the old hourly_usage_summary row"
+      "should delete only the old hourly_usage_summary row",
     );
     assert.equal(periodResult.deleted, 3, "total deleted should sum the three tables");
 
@@ -130,48 +142,56 @@ test("resetUsageHistory: 'all' wipes usage_history, daily_usage_summary, and hou
     assert.equal(
       countRows(db, "daily_usage_summary"),
       1,
-      "recent daily_usage_summary row should survive"
+      "recent daily_usage_summary row should survive",
     );
     assert.equal(
       countRows(db, "hourly_usage_summary"),
       1,
-      "recent hourly_usage_summary row should survive"
+      "recent hourly_usage_summary row should survive",
     );
 
-    const survivingTimestamp = db
-      .prepare("SELECT timestamp FROM usage_history")
-      .get() as { timestamp: string };
+    const survivingTimestamp = db.prepare("SELECT timestamp FROM usage_history").get() as {
+      timestamp: string;
+    };
     assert.equal(
       survivingTimestamp.timestamp,
       recentIso,
-      "the surviving usage_history row should be the recent one"
+      "the surviving usage_history row should be the recent one",
     );
 
     // 2) "all" wipes everything left (including the row the period reset kept).
     const allResult = await resetUsageHistory("all");
 
     assert.equal(allResult.errors, 0, "'all' reset should not report errors");
-    assert.equal(allResult.deletedUsageHistory, 1, "'all' should delete the remaining usage_history row");
+    assert.equal(
+      allResult.deletedUsageHistory,
+      1,
+      "'all' should delete the remaining usage_history row",
+    );
     assert.equal(
       allResult.deletedDailySummary,
       1,
-      "'all' should delete the remaining daily_usage_summary row"
+      "'all' should delete the remaining daily_usage_summary row",
     );
     assert.equal(
       allResult.deletedHourlySummary,
       1,
-      "'all' should delete the remaining hourly_usage_summary row"
+      "'all' should delete the remaining hourly_usage_summary row",
     );
 
     assert.equal(countRows(db, "usage_history"), 0, "'all' should empty usage_history");
     assert.equal(countRows(db, "daily_usage_summary"), 0, "'all' should empty daily_usage_summary");
-    assert.equal(countRows(db, "hourly_usage_summary"), 0, "'all' should empty hourly_usage_summary");
+    assert.equal(
+      countRows(db, "hourly_usage_summary"),
+      0,
+      "'all' should empty hourly_usage_summary",
+    );
 
     // 3) An invalid period throws instead of silently doing nothing / deleting everything.
     await assert.rejects(
       () => resetUsageHistory("bogus-period"),
       /Invalid reset period/,
-      "an invalid period should throw"
+      "an invalid period should throw",
     );
   } finally {
     teardown();

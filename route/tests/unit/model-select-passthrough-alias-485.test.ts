@@ -44,6 +44,6 @@ test("buildPassthroughAliasModels: tolerates empty / malformed maps", () => {
   assert.deepEqual(buildPassthroughAliasModels({}, "github"), []);
   assert.deepEqual(
     buildPassthroughAliasModels({ x: undefined as unknown as string }, "github"),
-    []
+    [],
   );
 });

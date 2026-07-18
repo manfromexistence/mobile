@@ -71,7 +71,7 @@ test("messages/count_tokens uses real provider count when Claude-compatible upst
           model: "anthropic/claude-opus-4.6",
           messages: [{ role: "user", content: "Count these tokens" }],
         }),
-      })
+      }),
     );
 
     assert.equal(response.status, 200);
@@ -99,7 +99,7 @@ test("messages/count_tokens falls back to estimate when model is missing", async
           { role: "assistant", content: [{ type: "text", text: "12345678" }] },
         ],
       }),
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -158,7 +158,7 @@ test("count_tokens estimate counts tool_use / tool_result / thinking blocks (not
           },
         ],
       }),
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -167,7 +167,7 @@ test("count_tokens estimate counts tool_use / tool_result / thinking blocks (not
   // Before the fix this was 0 (only `text` blocks were counted).
   assert.ok(
     body.input_tokens > 0,
-    `expected tool/thinking blocks to contribute tokens, got ${body.input_tokens}`
+    `expected tool/thinking blocks to contribute tokens, got ${body.input_tokens}`,
   );
 });
 
@@ -180,7 +180,7 @@ test("count_tokens estimate counts array-form system prompt blocks — #2337", a
         system: [{ type: "text", text: "You are a helpful coding assistant." }],
         messages: [{ role: "user", content: "hi" }],
       }),
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -205,7 +205,7 @@ test("messages/count_tokens falls back to estimate when real upstream count fail
           model: "anthropic/claude-opus-4.6",
           messages: [{ role: "user", content: "abcd" }],
         }),
-      })
+      }),
     );
 
     assert.equal(response.status, 200);

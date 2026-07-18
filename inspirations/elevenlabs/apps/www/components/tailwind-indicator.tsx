@@ -1,8 +1,8 @@
-const SHOW = true
+const SHOW = true;
 
 export function TailwindIndicator() {
   if (process.env.NODE_ENV === "production" || !SHOW) {
-    return null
+    return null;
   }
 
   return (
@@ -17,5 +17,5 @@ export function TailwindIndicator() {
       <div className="hidden xl:block 2xl:hidden">xl</div>
       <div className="hidden 2xl:block">2xl</div>
     </div>
-  )
+  );
 }

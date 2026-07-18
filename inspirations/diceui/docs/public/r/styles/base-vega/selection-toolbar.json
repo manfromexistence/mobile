@@ -21,8 +21,5 @@
     "@diceui/use-isomorphic-layout-effect",
     "@diceui/use-lazy-ref"
   ],
-  "dependencies": [
-    "@base-ui/react",
-    "@floating-ui/react-dom"
-  ]
+  "dependencies": ["@base-ui/react", "@floating-ui/react-dom"]
 }

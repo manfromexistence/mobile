@@ -41,7 +41,10 @@ test("#5109: concurrent proxy reachability checks share one TCP probe", async ()
     assert.equal(probeCount, 1, "concurrent requests must not fan out TCP health probes");
 
     releaseProbe(true);
-    assert.deepEqual(await Promise.all(checks), Array.from({ length: 50 }, () => true));
+    assert.deepEqual(
+      await Promise.all(checks),
+      Array.from({ length: 50 }, () => true),
+    );
     assert.equal(getCachedProxyHealth(proxyUrl), true);
   } finally {
     __setProxyHealthTcpCheckForTesting(null);
@@ -85,7 +88,7 @@ test("T14: runWithProxyContext fast-fails when proxy is unreachable", async () =
         executed = true;
         return "ok";
       }),
-    (err) => (err as { code?: string })?.code === "PROXY_UNREACHABLE"
+    (err) => (err as { code?: string })?.code === "PROXY_UNREACHABLE",
   );
 
   assert.equal(executed, false);

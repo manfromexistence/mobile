@@ -34,7 +34,7 @@ test("provider models helpers validate and resolve model metadata", () => {
   assert.equal(isValidModel("openai", "missing-model"), false);
   assert.equal(
     isValidModel("passthrough-provider", "anything-goes", new Set(["passthrough-provider"])),
-    true
+    true,
   );
 
   assert.equal(findModelName("openai", firstModel.id), firstModel.name);
@@ -57,7 +57,8 @@ test("provider models helpers resolve provider IDs through aliases", () => {
 test("getProviderModels returns models for both the alias and the raw provider id", () => {
   // Pick a provider whose alias differs from its id (e.g. "github" → "gh").
   const aliased = Object.entries(PROVIDER_ID_TO_ALIAS).find(([id, a]) => id !== a) as
-    [string, string] | undefined;
+    | [string, string]
+    | undefined;
   if (!aliased) return; // no aliased providers → trivially satisfied
 
   const [rawId, alias] = aliased;
@@ -68,7 +69,7 @@ test("getProviderModels returns models for both the alias and the raw provider i
   assert.deepEqual(
     byRawId,
     byAlias,
-    `getProviderModels("${rawId}") should return the same models as getProviderModels("${alias}")`
+    `getProviderModels("${rawId}") should return the same models as getProviderModels("${alias}")`,
   );
 });
 
@@ -157,7 +158,7 @@ test("xhigh effort support defaults to pass-through and opts out explicit false 
   assert.equal(supportsXHighEffort("unknown-provider", "vendor/claude-opus-4.6"), false);
   assert.equal(
     supportsXHighEffort("openrouter", "anthropic/claude-opus-4.6-thinking-xhigh"),
-    false
+    false,
   );
   assert.equal(supportsXHighEffort("deepseek", "deepseek-v4-pro"), true);
 });
@@ -165,39 +166,39 @@ test("xhigh effort support defaults to pass-through and opts out explicit false 
 test("max normalization follows xhigh opt-out behavior", () => {
   assert.equal(
     supportsXHighEffortForMaxNormalization("openai-compatible-free1", "gemini-3.1-pro-preview"),
-    true
+    true,
   );
   assert.equal(supportsXHighEffortForMaxNormalization("xiaomi-mimo", "mimo-v2.5-pro"), true);
   assert.equal(
     supportsXHighEffortForMaxNormalization("anthropic-compatible-cc-test", "claude-opus-4-6"),
-    false
+    false,
   );
   assert.equal(
     supportsXHighEffortForMaxNormalization("anthropic-compatible-cc-test", "claude-opus-4-7"),
-    true
+    true,
   );
   assert.equal(
     supportsXHighEffortForMaxNormalization("anthropic-compatible-test", "claude-opus-4-6"),
-    false
+    false,
   );
   assert.equal(
     supportsXHighEffortForMaxNormalization("anthropic-compatible-test", "claude-opus-4-7"),
-    true
+    true,
   );
   assert.equal(
     supportsXHighEffortForMaxNormalization("openrouter", "deepseek/deepseek-v4-pro"),
-    true
+    true,
   );
   assert.equal(
     supportsXHighEffortForMaxNormalization("openrouter", "anthropic/claude-opus-4.6"),
-    false
+    false,
   );
   assert.equal(
     supportsXHighEffortForMaxNormalization("openrouter", "anthropic/claude-opus-4.7"),
-    true
+    true,
   );
   assert.equal(
     supportsXHighEffortForMaxNormalization("bedrock", "anthropic.claude-opus-4-6"),
-    false
+    false,
   );
 });

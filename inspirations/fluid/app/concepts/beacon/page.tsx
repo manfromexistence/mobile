@@ -16,17 +16,8 @@ import {
   TableHead,
   TableCell,
 } from "@/registry/default/table";
-import {
-  TabsSubtle,
-  TabsSubtleItem,
-  TabsSubtlePanel,
-} from "@/registry/default/tabs-subtle";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-} from "@/registry/default/select";
+import { TabsSubtle, TabsSubtleItem, TabsSubtlePanel } from "@/registry/default/tabs-subtle";
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@/registry/default/select";
 import { InputGroup, InputField } from "@/registry/default/input-group";
 import { Dropdown, DropdownLabel, DropdownSeparator } from "@/registry/default/dropdown";
 import { MenuItem } from "@/registry/default/menu-item";
@@ -63,28 +54,142 @@ const PRIORITY: Record<PriorityKey, { label: string; color: BadgeColor }> = {
 };
 
 const ACTIVE: Issue[] = [
-  { key: "ENG-128", title: "Auth token refresh fails for ~4% of sessions", status: "progress", priority: "urgent", assignee: "DK" },
-  { key: "ENG-131", title: "Flaky CI on the e2e shard", status: "todo", priority: "high", assignee: "MR" },
-  { key: "ENG-124", title: "Virtualize the issues table for >1k rows", status: "review", priority: "medium", assignee: "AJ" },
-  { key: "ENG-140", title: "Dark-mode contrast on status pills", status: "todo", priority: "low", assignee: "SL" },
-  { key: "ENG-118", title: "Command palette: fuzzy match on labels", status: "progress", priority: "medium", assignee: "DK" },
-  { key: "ENG-142", title: "Webhook retries should be idempotent", status: "todo", priority: "high", assignee: "MR" },
-  { key: "ENG-109", title: "Migrate avatars to signed URLs", status: "review", priority: "low", assignee: "AJ" },
-  { key: "ENG-145", title: "Rate-limit the public search endpoint", status: "progress", priority: "high", assignee: "DK" },
-  { key: "ENG-133", title: "Empty states for the board columns", status: "todo", priority: "low", assignee: "SL" },
-  { key: "ENG-126", title: "Persist column widths across sessions", status: "review", priority: "medium", assignee: "AJ" },
-  { key: "ENG-147", title: "Audit log for permission changes", status: "todo", priority: "urgent", assignee: "MR" },
-  { key: "ENG-121", title: "Debounce the live filter input", status: "progress", priority: "low", assignee: "SL" },
-  { key: "ENG-138", title: "Keyboard shortcut to assign issues", status: "todo", priority: "medium", assignee: "DK" },
-  { key: "ENG-156", title: "Surface SLA breaches in the inbox", status: "review", priority: "high", assignee: "AJ" },
+  {
+    key: "ENG-128",
+    title: "Auth token refresh fails for ~4% of sessions",
+    status: "progress",
+    priority: "urgent",
+    assignee: "DK",
+  },
+  {
+    key: "ENG-131",
+    title: "Flaky CI on the e2e shard",
+    status: "todo",
+    priority: "high",
+    assignee: "MR",
+  },
+  {
+    key: "ENG-124",
+    title: "Virtualize the issues table for >1k rows",
+    status: "review",
+    priority: "medium",
+    assignee: "AJ",
+  },
+  {
+    key: "ENG-140",
+    title: "Dark-mode contrast on status pills",
+    status: "todo",
+    priority: "low",
+    assignee: "SL",
+  },
+  {
+    key: "ENG-118",
+    title: "Command palette: fuzzy match on labels",
+    status: "progress",
+    priority: "medium",
+    assignee: "DK",
+  },
+  {
+    key: "ENG-142",
+    title: "Webhook retries should be idempotent",
+    status: "todo",
+    priority: "high",
+    assignee: "MR",
+  },
+  {
+    key: "ENG-109",
+    title: "Migrate avatars to signed URLs",
+    status: "review",
+    priority: "low",
+    assignee: "AJ",
+  },
+  {
+    key: "ENG-145",
+    title: "Rate-limit the public search endpoint",
+    status: "progress",
+    priority: "high",
+    assignee: "DK",
+  },
+  {
+    key: "ENG-133",
+    title: "Empty states for the board columns",
+    status: "todo",
+    priority: "low",
+    assignee: "SL",
+  },
+  {
+    key: "ENG-126",
+    title: "Persist column widths across sessions",
+    status: "review",
+    priority: "medium",
+    assignee: "AJ",
+  },
+  {
+    key: "ENG-147",
+    title: "Audit log for permission changes",
+    status: "todo",
+    priority: "urgent",
+    assignee: "MR",
+  },
+  {
+    key: "ENG-121",
+    title: "Debounce the live filter input",
+    status: "progress",
+    priority: "low",
+    assignee: "SL",
+  },
+  {
+    key: "ENG-138",
+    title: "Keyboard shortcut to assign issues",
+    status: "todo",
+    priority: "medium",
+    assignee: "DK",
+  },
+  {
+    key: "ENG-156",
+    title: "Surface SLA breaches in the inbox",
+    status: "review",
+    priority: "high",
+    assignee: "AJ",
+  },
 ];
 
 const BACKLOG: Issue[] = [
-  { key: "ENG-150", title: "Offline draft sync for the composer", status: "todo", priority: "medium", assignee: "SL" },
-  { key: "ENG-151", title: "Per-team notification digests", status: "todo", priority: "low", assignee: "MR" },
-  { key: "ENG-152", title: "Docs polish for the public API", status: "todo", priority: "none", assignee: "AJ" },
-  { key: "ENG-153", title: "Investigate p99 latency on search", status: "todo", priority: "high", assignee: "DK" },
-  { key: "ENG-154", title: "Keyboard-only triage flow", status: "todo", priority: "medium", assignee: "SL" },
+  {
+    key: "ENG-150",
+    title: "Offline draft sync for the composer",
+    status: "todo",
+    priority: "medium",
+    assignee: "SL",
+  },
+  {
+    key: "ENG-151",
+    title: "Per-team notification digests",
+    status: "todo",
+    priority: "low",
+    assignee: "MR",
+  },
+  {
+    key: "ENG-152",
+    title: "Docs polish for the public API",
+    status: "todo",
+    priority: "none",
+    assignee: "AJ",
+  },
+  {
+    key: "ENG-153",
+    title: "Investigate p99 latency on search",
+    status: "todo",
+    priority: "high",
+    assignee: "DK",
+  },
+  {
+    key: "ENG-154",
+    title: "Keyboard-only triage flow",
+    status: "todo",
+    priority: "medium",
+    assignee: "SL",
+  },
 ];
 
 const ASSIGNEE_COLOR: Record<string, string> = {
@@ -174,9 +279,7 @@ function Board({ rows }: { rows: Issue[] }) {
               <Badge variant="dot" size="sm" color={STATUS[col.key].color}>
                 {col.label}
               </Badge>
-              <span className="text-[12px] text-muted-foreground tabular-nums">
-                {items.length}
-              </span>
+              <span className="text-[12px] text-muted-foreground tabular-nums">{items.length}</span>
             </div>
             {items.map((issue) => (
               <div
@@ -185,9 +288,7 @@ function Board({ rows }: { rows: Issue[] }) {
               >
                 <span className="text-[13px] text-foreground">{issue.title}</span>
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[11px] text-muted-foreground">
-                    {issue.key}
-                  </span>
+                  <span className="font-mono text-[11px] text-muted-foreground">{issue.key}</span>
                   <div className="flex items-center gap-2">
                     <Badge size="sm" color={PRIORITY[issue.priority].color}>
                       {PRIORITY[issue.priority].label}
@@ -299,9 +400,7 @@ function TriagePanel({
         </Button>
       </div>
 
-      {state === "analyzing" && (
-        <ThinkingIndicator className="!px-0" />
-      )}
+      {state === "analyzing" && <ThinkingIndicator className="!px-0" />}
 
       {state === "asking" && (
         <AskUserQuestions
@@ -364,9 +463,9 @@ export default function BeaconPage() {
           (priority === "all" || priority === "" || r.priority === priority) &&
           (query.trim() === "" ||
             r.title.toLowerCase().includes(query.toLowerCase()) ||
-            r.key.toLowerCase().includes(query.toLowerCase()))
+            r.key.toLowerCase().includes(query.toLowerCase())),
       ),
-    [priority, query]
+    [priority, query],
   );
 
   const activeRows = useMemo(() => filterRows(ACTIVE), [filterRows]);
@@ -430,11 +529,7 @@ export default function BeaconPage() {
         <div className="flex-1 overflow-y-auto">
           <div className="flex flex-col gap-4">
             {triage !== "idle" && (
-              <TriagePanel
-                state={triage}
-                onAdvance={setTriage}
-                onClose={() => setTriage("idle")}
-              />
+              <TriagePanel state={triage} onAdvance={setTriage} onClose={() => setTriage("idle")} />
             )}
 
             <TabsSubtlePanel index={0} selectedIndex={view} idPrefix="beacon-view">

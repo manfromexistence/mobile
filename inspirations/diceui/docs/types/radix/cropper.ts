@@ -26,11 +26,7 @@ export interface MediaSize {
 
 export type Shape = "rectangle" | "circle";
 
-export type ObjectFit =
-  | "contain"
-  | "cover"
-  | "horizontal-cover"
-  | "vertical-cover";
+export type ObjectFit = "contain" | "cover" | "horizontal-cover" | "vertical-cover";
 
 export interface CropperProps extends EmptyProps<"div">, CompositionProps {
   /**
@@ -192,9 +188,7 @@ export interface CropperImageProps extends EmptyProps<"img">, CompositionProps {
   snapPixels?: boolean;
 }
 
-export interface CropperVideoProps
-  extends EmptyProps<"video">,
-    CompositionProps {
+export interface CropperVideoProps extends EmptyProps<"video">, CompositionProps {
   /**
    * How the video should fit within the container.
    * Overrides the root objectFit prop if provided.

@@ -43,10 +43,7 @@ function makeVec(...values: number[]): Float32Array {
   return new Float32Array(values);
 }
 
-function insertMemory(
-  db: ReturnType<typeof core.getDbInstance>,
-  id: string,
-) {
+function insertMemory(db: ReturnType<typeof core.getDbInstance>, id: string) {
   db.prepare(
     `INSERT INTO memories (id, api_key_id, type, key, content, created_at)
      VALUES (?, 'key1', 'factual', ?, ?, datetime('now'))`,

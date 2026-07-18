@@ -9,16 +9,20 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { budgetToEffort, applyThinking, normalizeXaiReasoningEffort } =
-  await import("../../src/lib/providers/xai/thinking.ts");
-const { chatRequestToXaiResponses, xaiCompletedToChatJson } =
-  await import("../../src/lib/providers/xai/translators/openai-chat.ts");
+const { budgetToEffort, applyThinking, normalizeXaiReasoningEffort } = await import(
+  "../../src/lib/providers/xai/thinking.ts"
+);
+const { chatRequestToXaiResponses, xaiCompletedToChatJson } = await import(
+  "../../src/lib/providers/xai/translators/openai-chat.ts"
+);
 const { openaiResponsesRequestToXai, xaiCompletedToOpenaiResponses, xaiSseEventToOpenaiResponses } =
   await import("../../src/lib/providers/xai/translators/openai-responses.ts");
-const { claudeRequestToXaiResponses, xaiCompletedToClaudeJson } =
-  await import("../../src/lib/providers/xai/translators/claude.ts");
-const { geminiRequestToXaiResponses, xaiCompletedToGeminiJson } =
-  await import("../../src/lib/providers/xai/translators/gemini.ts");
+const { claudeRequestToXaiResponses, xaiCompletedToClaudeJson } = await import(
+  "../../src/lib/providers/xai/translators/claude.ts"
+);
+const { geminiRequestToXaiResponses, xaiCompletedToGeminiJson } = await import(
+  "../../src/lib/providers/xai/translators/gemini.ts"
+);
 
 // ─── budgetToEffort ──────────────────────────────────────────────────────────
 

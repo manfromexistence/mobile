@@ -1,24 +1,24 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 export type AvatarLightsVariants = {
-  lightOff: string
-  lightOn: string
-  darkOff: string
-  darkOn: string
-}
+  lightOff: string;
+  lightOn: string;
+  darkOff: string;
+  darkOn: string;
+};
 
 export function AvatarLights({
   className,
   variants,
   ...props
 }: Omit<React.ComponentProps<"div">, "children"> & {
-  variants: AvatarLightsVariants
+  variants: AvatarLightsVariants;
 }) {
   return (
     <div
       className={cn(
         "pointer-events-none relative size-30 rounded-full min-[24rem]:size-32 sm:size-40",
-        className
+        className,
       )}
       {...props}
     >
@@ -59,7 +59,7 @@ export function AvatarLights({
         aria-hidden
       />
     </div>
-  )
+  );
 }
 
 function AvatarLayer({ className, ...props }: React.ComponentProps<"div">) {
@@ -73,28 +73,20 @@ function AvatarLayer({ className, ...props }: React.ComponentProps<"div">) {
       // Ref: https://paco.me/writing/disable-theme-transitions
       className={cn(
         "absolute inset-0 opacity-0 transition-opacity! duration-1200 ease-[cubic-bezier(0.42,0,0.58,1)]",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }
 
-function AvatarImage({
-  className,
-  src,
-  alt,
-  ...props
-}: React.ComponentProps<"img">) {
+function AvatarImage({ className, src, alt, ...props }: React.ComponentProps<"img">) {
   return (
     <img
-      className={cn(
-        "size-full rounded-full object-cover select-none",
-        className
-      )}
+      className={cn("size-full rounded-full object-cover select-none", className)}
       src={src}
       alt={alt}
       {...props}
     />
-  )
+  );
 }

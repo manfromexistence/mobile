@@ -97,7 +97,16 @@ vi.mock("@/shared/components", () => ({
       ))}
     </select>
   ),
-  Badge: ({ children, variant }: { children: React.ReactNode; variant?: string; size?: string; icon?: string; dot?: boolean }) => (
+  Badge: ({
+    children,
+    variant,
+  }: {
+    children: React.ReactNode;
+    variant?: string;
+    size?: string;
+    icon?: string;
+    dot?: boolean;
+  }) => (
     <span data-testid="badge" data-variant={variant}>
       {children}
     </span>
@@ -105,36 +114,33 @@ vi.mock("@/shared/components", () => ({
 }));
 
 // exampleTemplates stub
-vi.mock(
-  "@/app/(dashboard)/dashboard/translator/exampleTemplates",
-  () => ({
-    getExampleTemplates: () => [
-      {
-        id: "simple-chat",
-        name: "Simple Chat",
-        icon: "chat",
-        description: "Simple chat template",
-        formats: {
-          openai: { model: "gpt-4o", messages: [{ role: "user", content: "Hello" }] },
-          claude: {
-            model: "claude-sonnet-4-20250514",
-            messages: [{ role: "user", content: "Hello" }],
-          },
+vi.mock("@/app/(dashboard)/dashboard/translator/exampleTemplates", () => ({
+  getExampleTemplates: () => [
+    {
+      id: "simple-chat",
+      name: "Simple Chat",
+      icon: "chat",
+      description: "Simple chat template",
+      formats: {
+        openai: { model: "gpt-4o", messages: [{ role: "user", content: "Hello" }] },
+        claude: {
+          model: "claude-sonnet-4-20250514",
+          messages: [{ role: "user", content: "Hello" }],
         },
       },
-    ],
-    FORMAT_META: {
-      openai: { label: "OpenAI", color: "blue", icon: "psychology" },
-      claude: { label: "Claude", color: "amber", icon: "auto_awesome" },
-      gemini: { label: "Gemini", color: "green", icon: "smart_toy" },
     },
-    FORMAT_OPTIONS: [
-      { value: "openai", label: "OpenAI" },
-      { value: "claude", label: "Claude" },
-      { value: "gemini", label: "Gemini" },
-    ],
-  }),
-);
+  ],
+  FORMAT_META: {
+    openai: { label: "OpenAI", color: "blue", icon: "psychology" },
+    claude: { label: "Claude", color: "amber", icon: "auto_awesome" },
+    gemini: { label: "Gemini", color: "green", icon: "smart_toy" },
+  },
+  FORMAT_OPTIONS: [
+    { value: "openai", label: "OpenAI" },
+    { value: "claude", label: "Claude" },
+    { value: "gemini", label: "Gemini" },
+  ],
+}));
 
 const cleanupCallbacks: Array<() => void> = [];
 
@@ -263,7 +269,9 @@ describe("RawJsonPanel", () => {
     });
 
     // Type valid JSON into the input Monaco editor
-    const editors = container.querySelectorAll<HTMLTextAreaElement>("[data-testid='monaco-editor']");
+    const editors = container.querySelectorAll<HTMLTextAreaElement>(
+      "[data-testid='monaco-editor']",
+    );
     const inputEditor = editors[0]; // first editor is input
     await act(async () => {
       const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
@@ -311,7 +319,9 @@ describe("RawJsonPanel", () => {
     });
 
     // Type valid JSON and trigger translate
-    const editors = container.querySelectorAll<HTMLTextAreaElement>("[data-testid='monaco-editor']");
+    const editors = container.querySelectorAll<HTMLTextAreaElement>(
+      "[data-testid='monaco-editor']",
+    );
     const inputEditor = editors[0];
     await act(async () => {
       const setter = Object.getOwnPropertyDescriptor(

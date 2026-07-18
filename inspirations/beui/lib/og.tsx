@@ -49,16 +49,8 @@ export function ogImage({
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           {/* biome-ignore lint/performance/noImgElement: satori OG render, not the DOM. */}
-          <img
-            src={LOGO_SRC}
-            width={56}
-            height={56}
-            style={{ borderRadius: 14 }}
-            alt=""
-          />
-          <span style={{ fontSize: 32, fontWeight: 700, letterSpacing: "-0.02em" }}>
-            beui
-          </span>
+          <img src={LOGO_SRC} width={56} height={56} style={{ borderRadius: 14 }} alt="" />
+          <span style={{ fontSize: 32, fontWeight: 700, letterSpacing: "-0.02em" }}>beui</span>
         </div>
         <div style={{ display: "flex", fontSize: 24, color: MUTED }}>{label}</div>
       </div>

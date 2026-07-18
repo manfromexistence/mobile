@@ -18,11 +18,7 @@ import {
 export default function MediaPlayerErrorDemo() {
   return (
     <MediaPlayer>
-      <MediaPlayerVideo
-        src="/assets/nonexistent-video.mp4"
-        playsInline
-        crossOrigin=""
-      />
+      <MediaPlayerVideo src="/assets/nonexistent-video.mp4" playsInline crossOrigin="" />
       <MediaPlayerError />
       <MediaPlayerControls className="flex-col items-start gap-2.5">
         <MediaPlayerControlsOverlay />

@@ -19,11 +19,7 @@ import {
 import { cn } from "@/lib/friday/utils";
 import { FilesPanel } from "@/features/dx/components/friday/files-panel";
 import type { FileSystemState } from "@/lib/friday/file-system";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/friday-ui/hover-card";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/friday-ui/hover-card";
 import {
   Tooltip,
   TooltipContent,
@@ -299,23 +295,31 @@ function FloatingWidget() {
                     <p className="text-[12.5px] font-medium text-foreground leading-tight">
                       Working tree clean
                     </p>
-                    <p className="text-[11px] text-muted-foreground">
-                      No uncommitted changes
-                    </p>
+                    <p className="text-[11px] text-muted-foreground">No uncommitted changes</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center">
                   <div className="rounded-md bg-surface-2 px-2 py-1.5">
-                    <p className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">0</p>
-                    <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Added</p>
+                    <p className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                      0
+                    </p>
+                    <p className="text-[9px] text-muted-foreground uppercase tracking-wider">
+                      Added
+                    </p>
                   </div>
                   <div className="rounded-md bg-surface-2 px-2 py-1.5">
-                    <p className="text-[11px] font-semibold text-amber-600 dark:text-amber-400">0</p>
-                    <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Modified</p>
+                    <p className="text-[11px] font-semibold text-amber-600 dark:text-amber-400">
+                      0
+                    </p>
+                    <p className="text-[9px] text-muted-foreground uppercase tracking-wider">
+                      Modified
+                    </p>
                   </div>
                   <div className="rounded-md bg-surface-2 px-2 py-1.5">
                     <p className="text-[11px] font-semibold text-rose-600 dark:text-rose-400">0</p>
-                    <p className="text-[9px] text-muted-foreground uppercase tracking-wider">Deleted</p>
+                    <p className="text-[9px] text-muted-foreground uppercase tracking-wider">
+                      Deleted
+                    </p>
                   </div>
                 </div>
               </div>
@@ -333,8 +337,12 @@ function FloatingWidget() {
                       <TerminalIcon className="h-3.5 w-3.5" />
                     </div>
                     <div>
-                      <p className="text-[12.5px] font-medium text-foreground leading-tight">Local server</p>
-                      <p className="text-[10.5px] text-muted-foreground font-mono">localhost:3000</p>
+                      <p className="text-[12.5px] font-medium text-foreground leading-tight">
+                        Local server
+                      </p>
+                      <p className="text-[10.5px] text-muted-foreground font-mono">
+                        localhost:3000
+                      </p>
                     </div>
                   </div>
                   <span className="flex items-center gap-1 text-[10px] text-emerald-600 dark:text-emerald-400">
@@ -370,14 +378,18 @@ function FloatingWidget() {
                   </div>
                   <div>
                     <p className="text-[12.5px] font-medium text-foreground leading-tight">main</p>
-                    <p className="text-[10.5px] text-muted-foreground">Active branch \u00B7 synced with origin</p>
+                    <p className="text-[10.5px] text-muted-foreground">
+                      Active branch \u00B7 synced with origin
+                    </p>
                   </div>
                 </div>
                 <div className="rounded-md border border-border bg-surface-2/60 p-2 space-y-1.5">
                   <div className="flex items-start gap-2">
                     <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/60" />
                     <div className="min-w-0 flex-1">
-                      <p className="text-[11.5px] text-foreground truncate">feat: add ALDII self-attention block</p>
+                      <p className="text-[11.5px] text-foreground truncate">
+                        feat: add ALDII self-attention block
+                      </p>
                       <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-muted-foreground">
                         <span className="font-mono">a3f9c12</span>
                         <span>\u00B7</span>
@@ -390,7 +402,9 @@ function FloatingWidget() {
                   <div className="flex items-start gap-2">
                     <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-border-strong" />
                     <div className="min-w-0 flex-1">
-                      <p className="text-[11.5px] text-foreground-muted truncate">fix: page-rank evaluation script</p>
+                      <p className="text-[11.5px] text-foreground-muted truncate">
+                        fix: page-rank evaluation script
+                      </p>
                       <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-muted-foreground">
                         <span className="font-mono">7d2b418</span>
                         <span>\u00B7</span>
@@ -401,7 +415,9 @@ function FloatingWidget() {
                   <div className="flex items-start gap-2">
                     <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-border-strong" />
                     <div className="min-w-0 flex-1">
-                      <p className="text-[11.5px] text-foreground-muted truncate">docs: update README with new metrics</p>
+                      <p className="text-[11.5px] text-foreground-muted truncate">
+                        docs: update README with new metrics
+                      </p>
                       <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-muted-foreground">
                         <span className="font-mono">1e8a04c</span>
                         <span>\u00B7</span>
@@ -466,7 +482,9 @@ function SourceItem({ source }: { source: (typeof SOURCES)[number] }) {
               <FileTextIcon className="h-4 w-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[12.5px] font-medium text-foreground leading-snug truncate">{source.name}</p>
+              <p className="text-[12.5px] font-medium text-foreground leading-snug truncate">
+                {source.name}
+              </p>
               <p className="text-[11px] text-muted-foreground mt-0.5">{source.topic}</p>
             </div>
           </div>
@@ -620,7 +638,11 @@ function TerminalView() {
         <TerminalIcon className="h-3.5 w-3.5" />
         <span>PowerShell 7.6.2</span>
         <div className="ml-auto flex items-center gap-1">
-          <IconBtn icon={<CopyIcon className="h-3.5 w-3.5" />} onClick={() => navigator.clipboard?.writeText("")} ariaLabel="Copy" />
+          <IconBtn
+            icon={<CopyIcon className="h-3.5 w-3.5" />}
+            onClick={() => navigator.clipboard?.writeText("")}
+            ariaLabel="Copy"
+          />
         </div>
       </div>
       <div className="p-4 text-foreground-muted flex-1 overflow-y-auto leading-relaxed custom-scrollbar">
@@ -665,9 +687,21 @@ function BrowserView() {
     >
       <div className="flex items-center gap-2 px-2 py-2 border-b border-border bg-surface-1">
         <div className="flex gap-0.5">
-          <IconBtn icon={<ChevronRightIcon className="h-3.5 w-3.5 rotate-180" />} onClick={() => {}} ariaLabel="Back" />
-          <IconBtn icon={<ChevronRightIcon className="h-3.5 w-3.5" />} onClick={() => {}} ariaLabel="Forward" />
-          <IconBtn icon={<CornerDownRightIcon className="h-3.5 w-3.5 -rotate-90" />} onClick={() => {}} ariaLabel="Refresh" />
+          <IconBtn
+            icon={<ChevronRightIcon className="h-3.5 w-3.5 rotate-180" />}
+            onClick={() => {}}
+            ariaLabel="Back"
+          />
+          <IconBtn
+            icon={<ChevronRightIcon className="h-3.5 w-3.5" />}
+            onClick={() => {}}
+            ariaLabel="Forward"
+          />
+          <IconBtn
+            icon={<CornerDownRightIcon className="h-3.5 w-3.5 -rotate-90" />}
+            onClick={() => {}}
+            ariaLabel="Refresh"
+          />
         </div>
         <div className="flex-1 bg-background rounded-md border border-border px-3 py-1 flex items-center shadow-sm">
           <input
@@ -701,7 +735,11 @@ function ChatsView() {
       <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-surface-1">
         <MessageSquareIcon className="h-3.5 w-3.5 text-muted-foreground" />
         <span className="text-xs text-muted-foreground flex-1">Recent chats</span>
-        <IconBtn icon={<PlusIcon className="h-3.5 w-3.5" />} onClick={() => {}} ariaLabel="New chat" />
+        <IconBtn
+          icon={<PlusIcon className="h-3.5 w-3.5" />}
+          onClick={() => {}}
+          ariaLabel="New chat"
+        />
       </div>
       <div className="p-2 space-y-0.5 flex-1 overflow-y-auto custom-scrollbar">
         {CHATS.map((c) => (
@@ -721,7 +759,9 @@ function ChatItem({ chat }: { chat: (typeof CHATS)[number] }) {
           className="flex flex-col gap-0.5 p-2.5 rounded-md hover:bg-surface-2 cursor-pointer transition-colors"
         >
           <div className="text-[13px] font-medium text-foreground truncate">{chat.title}</div>
-          <div className="text-[11px] text-muted-foreground line-clamp-2 leading-snug">{chat.preview}</div>
+          <div className="text-[11px] text-muted-foreground line-clamp-2 leading-snug">
+            {chat.preview}
+          </div>
         </motion.div>
       </HoverCardTrigger>
       <HoverCardContent side="left" sideOffset={8} className="w-64 p-0">
@@ -759,7 +799,11 @@ function ReviewView() {
       <div className="flex items-center gap-2 px-4 py-2 border-b border-border bg-surface-1">
         <PenToolIcon className="h-3.5 w-3.5 text-muted-foreground" />
         <span className="text-xs text-muted-foreground flex-1">Review</span>
-        <IconBtn icon={<PlusIcon className="h-3.5 w-3.5" />} onClick={() => {}} ariaLabel="Add review" />
+        <IconBtn
+          icon={<PlusIcon className="h-3.5 w-3.5" />}
+          onClick={() => {}}
+          ariaLabel="Add review"
+        />
       </div>
       <div className="p-2 space-y-1 flex-1 overflow-y-auto custom-scrollbar">
         {REVIEWS.map((r) => (

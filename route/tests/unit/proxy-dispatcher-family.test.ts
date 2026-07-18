@@ -45,7 +45,7 @@ describe("proxyDispatcher family directive", () => {
   it("throws (fail-closed) when family=ipv6 contradicts a v4 literal", () => {
     assert.throws(
       () => __resolveDispatcherFamilyForTest("http://203.0.113.7:8080?family=ipv6"),
-      /family/i
+      /family/i,
     );
   });
 });
@@ -154,12 +154,12 @@ describe("proxyDispatcher CONNECT tunneling (undici 8.6+ proxyTunnel)", () => {
       assert.equal(
         sawConnect,
         true,
-        "proxy must receive a CONNECT (tunnel), not a forwarded request"
+        "proxy must receive a CONNECT (tunnel), not a forwarded request",
       );
       assert.equal(
         sawForward,
         false,
-        "proxy must NOT receive a forwarded origin request (undici 8.6+ regression)"
+        "proxy must NOT receive a forwarded origin request (undici 8.6+ regression)",
       );
     } finally {
       proxy.close();

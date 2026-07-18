@@ -1,9 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "scrub-bar",
-  "registryDependencies": [
-    "progress"
-  ],
+  "registryDependencies": ["progress"],
   "files": [
     {
       "path": "components/ui/scrub-bar.tsx",

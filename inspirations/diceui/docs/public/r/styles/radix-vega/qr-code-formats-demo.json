@@ -1,10 +1,7 @@
 {
   "name": "qr-code-formats-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "button",
-    "qr-code"
-  ],
+  "registryDependencies": ["button", "qr-code"],
   "files": [
     {
       "path": "examples/qr-code-formats-demo.tsx",

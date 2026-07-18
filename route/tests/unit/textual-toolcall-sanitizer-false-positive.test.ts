@@ -66,12 +66,12 @@ describe("Bug #1 — containsTextualToolCallContent false positives (#3355)", ()
     assert.notStrictEqual(
       content,
       null,
-      "mid-sentence mention of [Tool call:] without Arguments: should not be stripped"
+      "mid-sentence mention of [Tool call:] without Arguments: should not be stripped",
     );
   });
 
   it("DOES null out content that is a real textual tool call (header + Arguments + JSON)", () => {
-    const realToolCall = "[Tool call: terminal]\nArguments: {\"command\":\"echo hi\"}";
+    const realToolCall = '[Tool call: terminal]\nArguments: {"command":"echo hi"}';
     const result = sanitizeOpenAIResponse(makeMsg(realToolCall));
     const choices = result.choices as { message: { content: unknown; tool_calls?: unknown[] } }[];
     const msg = choices[0]?.message;

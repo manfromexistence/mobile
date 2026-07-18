@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-import { cn } from "@/lib/utils"
-import { ScrollArea, ScrollBar } from "@/registry/elevenlabs-ui/ui/scroll-area"
+import { cn } from "@/lib/utils";
+import { ScrollArea, ScrollBar } from "@/registry/elevenlabs-ui/ui/scroll-area";
 
 const links = [
   {
@@ -35,13 +35,10 @@ const links = [
     name: "Tooltips",
     href: "/charts/tooltip#charts",
   },
-]
+];
 
-export function ChartsNav({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  const pathname = usePathname()
+export function ChartsNav({ className, ...props }: React.ComponentProps<"div">) {
+  const pathname = usePathname();
 
   return (
     <div className="relative overflow-hidden">
@@ -53,7 +50,7 @@ export function ChartsNav({
               key={link.href}
               data-active={link.href.startsWith(pathname)}
               className={cn(
-                "text-muted-foreground hover:text-primary data-[active=true]:text-primary flex h-7 shrink-0 items-center justify-center px-4 text-center text-base font-medium transition-colors"
+                "text-muted-foreground hover:text-primary data-[active=true]:text-primary flex h-7 shrink-0 items-center justify-center px-4 text-center text-base font-medium transition-colors",
               )}
             >
               {link.name}
@@ -63,5 +60,5 @@ export function ChartsNav({
         <ScrollBar orientation="horizontal" className="invisible" />
       </ScrollArea>
     </div>
-  )
+  );
 }

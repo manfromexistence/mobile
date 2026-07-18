@@ -1,12 +1,7 @@
 {
   "name": "cropper-video-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "cropper",
-    "button",
-    "label",
-    "select"
-  ],
+  "registryDependencies": ["cropper", "button", "label", "select"],
   "files": [
     {
       "path": "examples/cropper-video-demo.tsx",

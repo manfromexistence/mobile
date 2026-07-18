@@ -11,10 +11,7 @@
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import {
-  injectMemory,
-  systemMessageMustBeFirst,
-} from "../../src/lib/memory/injection.ts";
+import { injectMemory, systemMessageMustBeFirst } from "../../src/lib/memory/injection.ts";
 import type { ChatMessage, ChatRequest } from "../../src/lib/memory/injection.ts";
 import { MemoryType } from "../../src/lib/memory/types.ts";
 import type { Memory } from "../../src/lib/memory/types.ts";
@@ -61,7 +58,7 @@ describe("injectMemory system-must-be-first (#6135)", () => {
     // The system message must be first...
     assert.equal(
       out.messages.findIndex((m) => m.role === "system"),
-      0
+      0,
     );
     // ...and there must be NO system message at any index > 0.
     const strayIdx = out.messages.findIndex((m, i) => i > 0 && m.role === "system");
@@ -99,7 +96,7 @@ describe("injectMemory system-must-be-first (#6135)", () => {
     assert.ok(out.messages[0].content.includes("Memory context"));
     assert.equal(
       out.messages.findIndex((m, i) => i > 0 && m.role === "system"),
-      -1
+      -1,
     );
   });
 

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { motion } from "motion/react"
+import { motion } from "motion/react";
 
 export function TerminalScreen() {
   return (
@@ -35,5 +35,5 @@ export function TerminalScreen() {
         </div>
       </div>
     </motion.div>
-  )
+  );
 }

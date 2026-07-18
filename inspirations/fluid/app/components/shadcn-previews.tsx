@@ -57,19 +57,22 @@ function AccordionPreview() {
         <AccordionItem value="item-1">
           <AccordionTrigger className="py-2">What is Fluid Functionalism?</AccordionTrigger>
           <AccordionContent className="text-[13px] pt-1 pb-3">
-            A design philosophy where every animation serves a functional purpose — motion is information, not decoration.
+            A design philosophy where every animation serves a functional purpose — motion is
+            information, not decoration.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2">
           <AccordionTrigger className="py-2">How does proximity hover work?</AccordionTrigger>
           <AccordionContent className="text-[13px] pt-1 pb-3">
-            The closest item to your cursor is highlighted before you click, reducing targeting errors.
+            The closest item to your cursor is highlighted before you click, reducing targeting
+            errors.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-3">
           <AccordionTrigger className="py-2">Why spring physics?</AccordionTrigger>
           <AccordionContent className="text-[13px] pt-1 pb-3">
-            Springs respond naturally to interruption — if a user reverses mid-transition, the animation adapts.
+            Springs respond naturally to interruption — if a user reverses mid-transition, the
+            animation adapts.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-4">
@@ -103,9 +106,15 @@ function ButtonPreview() {
   return (
     <div className="flex flex-wrap items-center justify-center gap-2">
       <Button size="sm">Primary</Button>
-      <Button variant="secondary" size="sm">Secondary</Button>
-      <Button variant="outline" size="sm">Tertiary</Button>
-      <Button variant="ghost" size="sm">Ghost</Button>
+      <Button variant="secondary" size="sm">
+        Secondary
+      </Button>
+      <Button variant="outline" size="sm">
+        Tertiary
+      </Button>
+      <Button variant="ghost" size="sm">
+        Ghost
+      </Button>
     </div>
   );
 }
@@ -154,9 +163,7 @@ function DialogPreview() {
         <DialogContent className="shadcn-theme">
           <DialogHeader>
             <DialogTitle>Create teamspace</DialogTitle>
-            <DialogDescription>
-              Add a new teamspace to organize your projects.
-            </DialogDescription>
+            <DialogDescription>Add a new teamspace to organize your projects.</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <DialogClose asChild>
@@ -220,7 +227,9 @@ function InputGroupPreview() {
   return (
     <div className="w-full max-w-[320px] mx-auto space-y-3">
       <div className="space-y-1.5">
-        <Label htmlFor="shadcn-name" className="text-xs">Name</Label>
+        <Label htmlFor="shadcn-name" className="text-xs">
+          Name
+        </Label>
         <Input
           id="shadcn-name"
           placeholder="Your name"
@@ -229,7 +238,9 @@ function InputGroupPreview() {
         />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="shadcn-email" className="text-xs">Email</Label>
+        <Label htmlFor="shadcn-email" className="text-xs">
+          Email
+        </Label>
         <Input
           id="shadcn-email"
           placeholder="you@example.com"
@@ -238,7 +249,9 @@ function InputGroupPreview() {
         />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="shadcn-website" className="text-xs">Website</Label>
+        <Label htmlFor="shadcn-website" className="text-xs">
+          Website
+        </Label>
         <Input
           id="shadcn-website"
           placeholder="fluidfunctionalism.com"
@@ -324,11 +337,15 @@ function SwitchPreview() {
     <div className="flex flex-col gap-3 w-fit mx-auto">
       <div className="flex items-center gap-2">
         <Switch id="shadcn-sw-a" checked={a} onCheckedChange={setA} />
-        <Label htmlFor="shadcn-sw-a" className="text-sm">Notifications</Label>
+        <Label htmlFor="shadcn-sw-a" className="text-sm">
+          Notifications
+        </Label>
       </div>
       <div className="flex items-center gap-2">
         <Switch id="shadcn-sw-b" checked={b} onCheckedChange={setB} />
-        <Label htmlFor="shadcn-sw-b" className="text-sm">Sound effects</Label>
+        <Label htmlFor="shadcn-sw-b" className="text-sm">
+          Sound effects
+        </Label>
       </div>
     </div>
   );

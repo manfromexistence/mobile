@@ -20,9 +20,7 @@ const TMP = fs.mkdtempSync(path.join(os.tmpdir(), "omni-xiaomi-"));
 process.env.DATA_DIR = TMP;
 
 const core = await import("../../src/lib/db/core.ts");
-const { getMonthlyProviderTokensForConnection } = await import(
-  "../../src/lib/usage/usageStats.ts"
-);
+const { getMonthlyProviderTokensForConnection } = await import("../../src/lib/usage/usageStats.ts");
 const { __testing } = await import("../../open-sse/services/usage.ts");
 const { getXiaomiMimoUsage } = __testing;
 
@@ -33,12 +31,12 @@ function insertUsage(
   provider: string,
   tokensIn: number,
   tokensOut: number,
-  timestamp: string
+  timestamp: string,
 ) {
   const db = core.getDbInstance();
   db.prepare(
     `INSERT INTO usage_history (provider, connection_id, tokens_input, tokens_output, timestamp)
-     VALUES (?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?)`,
   ).run(provider, connectionId, tokensIn, tokensOut, timestamp);
 }
 
@@ -48,7 +46,7 @@ describe("xiaomi-mimo self-tracked quota", () => {
     const now = new Date();
     const thisMonth = now.toISOString();
     const lastMonth = new Date(
-      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 15)
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, 15),
     ).toISOString();
     // current month for conn-x: 1.0M + 0.5M (+ another 0.1M)
     insertUsage("conn-x", "xiaomi-mimo", 1_000_000, 500_000, thisMonth);
@@ -82,7 +80,16 @@ describe("xiaomi-mimo self-tracked quota", () => {
   it("getXiaomiMimoUsage returns a monthly quota against the 4.1B limit", async () => {
     const r = (await getXiaomiMimoUsage("conn-x")) as {
       plan?: string;
-      quotas?: Record<string, { used: number; total: number; remaining?: number; remainingPercentage?: number; resetAt: string | null }>;
+      quotas?: Record<
+        string,
+        {
+          used: number;
+          total: number;
+          remaining?: number;
+          remainingPercentage?: number;
+          resetAt: string | null;
+        }
+      >;
       message?: string;
     };
     assert.ok(r.quotas, `expected quotas, got message: ${r.message}`);

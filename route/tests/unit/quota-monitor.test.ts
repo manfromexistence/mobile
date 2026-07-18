@@ -126,13 +126,13 @@ test("startQuotaMonitor schedules the initial normal poll once per session", asy
       sessionId,
       "provider-normal",
       "conn-2",
-      createConnection({ quotaMonitorEnabled: true })
+      createConnection({ quotaMonitorEnabled: true }),
     );
     startQuotaMonitor(
       sessionId,
       "provider-normal",
       "conn-2",
-      createConnection({ quotaMonitorEnabled: true })
+      createConnection({ quotaMonitorEnabled: true }),
     );
 
     assert.equal(getActiveMonitorCount(), 1);
@@ -157,7 +157,7 @@ test("registerMonitorFetcher shares the same fetcher with quota preflight", asyn
   const result = await preflightQuota(
     provider,
     "conn-shared",
-    createConnection({ quotaPreflightEnabled: true })
+    createConnection({ quotaPreflightEnabled: true }),
   );
 
   assert.deepEqual(result, {
@@ -175,7 +175,7 @@ test("quota monitor keeps normal polling when no fetcher is registered", async (
       sessionId,
       "provider-missing-fetcher",
       "conn-3",
-      createConnection({ quotaMonitorEnabled: true })
+      createConnection({ quotaMonitorEnabled: true }),
     );
 
     assert.equal(scheduled[0].delay, 60_000);
@@ -207,7 +207,7 @@ test("quota monitor switches to critical polling and suppresses duplicate warnin
           sessionId,
           provider,
           "conn-4",
-          createConnection({ quotaMonitorEnabled: true })
+          createConnection({ quotaMonitorEnabled: true }),
         );
 
         assert.equal(scheduled[0].delay, 60_000);
@@ -249,11 +249,11 @@ test("quota monitor logs exhaustion and clears suppression state on stop", async
             sessionId,
             provider,
             "conn-5",
-            createConnection({ quotaMonitorEnabled: true })
+            createConnection({ quotaMonitorEnabled: true }),
           );
           await runNextTimer();
         });
-      }
+      },
     );
 
     assert.equal(warnings.length, 1);
@@ -278,11 +278,11 @@ test("quota monitor logs exhaustion and clears suppression state on stop", async
             sessionId,
             provider,
             "conn-5",
-            createConnection({ quotaMonitorEnabled: true })
+            createConnection({ quotaMonitorEnabled: true }),
           );
           await runNextTimer();
         });
-      }
+      },
     );
 
     assert.equal(warnings.length, 2);
@@ -304,7 +304,7 @@ test("quota monitor falls back to normal polling when the fetcher throws", async
       sessionId,
       provider,
       "conn-6",
-      createConnection({ quotaMonitorEnabled: true })
+      createConnection({ quotaMonitorEnabled: true }),
     );
 
     await runNextTimer();
@@ -336,7 +336,7 @@ test("quota monitor exposes runtime snapshot and restarts when the session accou
       sessionId,
       provider,
       "conn-7",
-      createConnection({ quotaMonitorEnabled: true })
+      createConnection({ quotaMonitorEnabled: true }),
     );
     await runNextTimer();
 
@@ -351,7 +351,7 @@ test("quota monitor exposes runtime snapshot and restarts when the session accou
       sessionId,
       provider,
       "conn-8",
-      createConnection({ quotaMonitorEnabled: true })
+      createConnection({ quotaMonitorEnabled: true }),
     );
 
     const restartedSnapshot = getQuotaMonitorSnapshot(sessionId);

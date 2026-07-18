@@ -57,23 +57,21 @@ test.after(async () => {
 // ── D1.1: Migration file ────────────────────────────────────────────────────
 
 test("migration 086 file exists and contains quota_pool_connections DDL", () => {
-  const migrationPath = path.resolve(
-    "src/lib/db/migrations/087_quota_pool_connections.sql"
-  );
+  const migrationPath = path.resolve("src/lib/db/migrations/087_quota_pool_connections.sql");
   assert.ok(fs.existsSync(migrationPath), `migration file not found: ${migrationPath}`);
 
   const sql = fs.readFileSync(migrationPath, "utf8");
   assert.ok(
     sql.includes("quota_pool_connections"),
-    "migration SQL should reference quota_pool_connections"
+    "migration SQL should reference quota_pool_connections",
   );
   assert.ok(
     sql.includes("INSERT OR IGNORE INTO quota_pool_connections"),
-    "migration SQL should contain the backfill INSERT"
+    "migration SQL should contain the backfill INSERT",
   );
   assert.ok(
     sql.includes("SELECT id, connection_id FROM quota_pools"),
-    "backfill SELECT should reference quota_pools columns"
+    "backfill SELECT should reference quota_pools columns",
   );
 });
 

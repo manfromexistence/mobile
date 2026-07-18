@@ -31,12 +31,9 @@ test("provider with no `website` but a registry baseUrl returns the origin", () 
   assert.equal(
     (WEB_COOKIE_PROVIDERS as Record<string, unknown>)["duckduckgo-web"],
     undefined,
-    "test premise: duckduckgo-web must be absent from WEB_COOKIE_PROVIDERS"
+    "test premise: duckduckgo-web must be absent from WEB_COOKIE_PROVIDERS",
   );
-  const link = resolveWebProviderHost(
-    "duckduckgo-web",
-    "https://duckduckgo.com/duckchat/v1/chat"
-  );
+  const link = resolveWebProviderHost("duckduckgo-web", "https://duckduckgo.com/duckchat/v1/chat");
   assert.ok(link);
   assert.equal(link.host, "duckduckgo.com");
   assert.equal(link.url, "https://duckduckgo.com");

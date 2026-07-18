@@ -57,7 +57,7 @@ test("tryAcquireMitmStartLock — first caller acquires, second is blocked while
   assert.equal(
     manager.tryAcquireMitmStartLock(),
     false,
-    "second acquire must fail while the lock is held"
+    "second acquire must fail while the lock is held",
   );
   manager.releaseMitmStartLock();
   assert.equal(manager.tryAcquireMitmStartLock(), true, "acquire must succeed again after release");
@@ -80,17 +80,17 @@ test("startMitm() source: guard is checked+acquired before any async work, and r
   const src = fs.readFileSync(managerPath, "utf8");
 
   const startMitmMatch = src.match(
-    /export async function startMitm\([\s\S]*?\nasync function startMitmInternal\(/
+    /export async function startMitm\([\s\S]*?\nasync function startMitmInternal\(/,
   );
   assert.ok(startMitmMatch, "startMitm() must delegate to a startMitmInternal() body");
   const startMitmSrc = startMitmMatch[0];
 
   const alreadyRunningIdx = startMitmSrc.indexOf(
-    'throw new Error("MITM proxy is already running")'
+    'throw new Error("MITM proxy is already running")',
   );
   const acquireIdx = startMitmSrc.indexOf("tryAcquireMitmStartLock()");
   const alreadyStartingIdx = startMitmSrc.indexOf(
-    'throw new Error("MITM server is already starting")'
+    'throw new Error("MITM server is already starting")',
   );
   const tryIdx = startMitmSrc.indexOf("try {");
   const finallyIdx = startMitmSrc.indexOf("releaseMitmStartLock();");
@@ -105,19 +105,19 @@ test("startMitm() source: guard is checked+acquired before any async work, and r
   // try { ...delegate to the real (async, side-effecting) body... } finally { release }.
   assert.ok(
     alreadyRunningIdx < acquireIdx,
-    "the already-running check must run before the start-lock is touched"
+    "the already-running check must run before the start-lock is touched",
   );
   assert.ok(
     acquireIdx < alreadyStartingIdx,
-    "the lock must be acquired before the already-starting error can be thrown"
+    "the lock must be acquired before the already-starting error can be thrown",
   );
   assert.ok(
     alreadyStartingIdx < tryIdx,
-    "the guard must reject BEFORE entering the try that runs the real (unsafe) body"
+    "the guard must reject BEFORE entering the try that runs the real (unsafe) body",
   );
   assert.ok(
     tryIdx < internalCallIdx && internalCallIdx < finallyIdx,
-    "startMitmInternal() must run inside the try, with release in the finally"
+    "startMitmInternal() must run inside the try, with release in the finally",
   );
 });
 

@@ -22,11 +22,9 @@ function hangingFetch(): typeof fetch {
           reject(new DOMException("Aborted", "AbortError"));
           return;
         }
-        signal.addEventListener(
-          "abort",
-          () => reject(new DOMException("Aborted", "AbortError")),
-          { once: true }
-        );
+        signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")), {
+          once: true,
+        });
       }
     })) as unknown as typeof fetch;
 }
@@ -38,7 +36,7 @@ function jsonFetch(map: Record<string, unknown>): typeof fetch {
       new Response(JSON.stringify(body), {
         status: 200,
         headers: { "content-type": "application/json" },
-      })
+      }),
     );
   }) as unknown as typeof fetch;
 }
@@ -67,7 +65,7 @@ describe("loadProviderPageData — never freezes the dashboard skeleton", () => 
         "/api/providers/expiration": { openai: "2030-01-01" },
         "/api/settings": { blockedProviders: ["openai"] },
       }),
-      1000
+      1000,
     );
 
     assert.deepEqual(data.connections, [{ id: "c1" }]);
@@ -78,7 +76,8 @@ describe("loadProviderPageData — never freezes the dashboard skeleton", () => 
   });
 
   test("a rejecting fetch degrades to defaults instead of throwing", async () => {
-    const rejectFetch = (() => Promise.reject(new Error("network down"))) as unknown as typeof fetch;
+    const rejectFetch = (() =>
+      Promise.reject(new Error("network down"))) as unknown as typeof fetch;
     const data = await loadProviderPageData(rejectFetch, 1000);
     assert.deepEqual(data.connections, []);
     assert.equal(data.settings, null);

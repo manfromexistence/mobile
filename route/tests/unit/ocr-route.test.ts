@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 
 const { POST, OPTIONS } = await import("../../src/app/api/v1/ocr/route.ts");
 const { handleOcr } = await import("../../open-sse/handlers/ocr.ts");
-const { OCR_PROVIDERS, getOcrProvider, parseOcrModel, getAllOcrModels } =
-  await import("../../open-sse/config/ocrRegistry.ts");
+const { OCR_PROVIDERS, getOcrProvider, parseOcrModel, getAllOcrModels } = await import(
+  "../../open-sse/config/ocrRegistry.ts"
+);
 const { v1OcrSchema } = await import("../../src/shared/validation/schemas/apiV1.ts");
 
 const originalFetch = globalThis.fetch;

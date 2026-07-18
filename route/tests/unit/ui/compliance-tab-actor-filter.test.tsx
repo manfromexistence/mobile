@@ -46,8 +46,9 @@ const containers: Array<{ root: ReturnType<typeof createRoot>; el: HTMLDivElemen
 
 function renderTab() {
   // Must set IS_REACT_ACT_ENVIRONMENT before each render.
-  (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT =
-    true;
+  (
+    globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+  ).IS_REACT_ACT_ENVIRONMENT = true;
   const el = document.createElement("div");
   document.body.appendChild(el);
   const root = createRoot(el);
@@ -110,7 +111,7 @@ describe("ComplianceTab — actor filter", { timeout: 30000 }, () => {
     const beforeCount = fetchCalls.length;
 
     const actorInput = el.querySelector(
-      'input[list="compliance-actors"]'
+      'input[list="compliance-actors"]',
     ) as HTMLInputElement | null;
     expect(actorInput).toBeTruthy();
 
@@ -119,7 +120,7 @@ describe("ComplianceTab — actor filter", { timeout: 30000 }, () => {
       if (actorInput) {
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
           window.HTMLInputElement.prototype,
-          "value"
+          "value",
         )?.set;
         nativeInputValueSetter?.call(actorInput, "admin");
         actorInput.dispatchEvent(new Event("input", { bubbles: true }));
@@ -130,7 +131,7 @@ describe("ComplianceTab — actor filter", { timeout: 30000 }, () => {
     // Wait for a new fetch triggered by the actor state change.
     await waitForCondition(
       () => fetchCalls.slice(beforeCount).some((url) => url.includes("actor=admin")),
-      5000
+      5000,
     );
 
     expect(fetchCalls.some((url) => url.includes("actor=admin"))).toBe(true);
@@ -142,7 +143,7 @@ describe("ComplianceTab — actor filter", { timeout: 30000 }, () => {
 
     // Find the clearFilters button (i18n stub returns key "clearFilters").
     const clearBtn = Array.from(el.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("clearFilters")
+      b.textContent?.includes("clearFilters"),
     );
     expect(clearBtn).toBeTruthy();
 

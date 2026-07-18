@@ -15,10 +15,6 @@
       "target": ""
     }
   ],
-  "registryDependencies": [
-    "@diceui/use-isomorphic-layout-effect"
-  ],
-  "dependencies": [
-    "@base-ui/react"
-  ]
+  "registryDependencies": ["@diceui/use-isomorphic-layout-effect"],
+  "dependencies": ["@base-ui/react"]
 }

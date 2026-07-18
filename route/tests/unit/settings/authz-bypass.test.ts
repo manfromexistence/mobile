@@ -104,15 +104,16 @@ test("AC-4: PATCH missing currentPassword for security-impacting key → 400 PAS
   process.env.INITIAL_PASSWORD = "initial-pass-ac4";
   // Bootstrap a password so the cold-boot exception does NOT fire.
   await settingsDb.updateSettings({ requireLogin: true });
-  const { ensurePersistentManagementPasswordHash } =
-    await import("../../../src/lib/auth/managementPassword.ts");
+  const { ensurePersistentManagementPasswordHash } = await import(
+    "../../../src/lib/auth/managementPassword.ts"
+  );
   await ensurePersistentManagementPasswordHash({ source: "test.bootstrap" });
 
   const response = await settingsRoute.PATCH(
     await makeManagementSessionRequest("http://localhost/api/settings", {
       method: "PATCH",
       body: { localOnlyManageScopeBypassEnabled: false },
-    })
+    }),
   );
 
   assert.equal(response.status, 400);
@@ -131,8 +132,9 @@ test("AC-5: PATCH wrong currentPassword for security-impacting key → 401 PASSW
   process.env.JWT_SECRET = "test-jwt-secret-authz-bypass";
   process.env.INITIAL_PASSWORD = "initial-pass-ac5";
   await settingsDb.updateSettings({ requireLogin: true });
-  const { ensurePersistentManagementPasswordHash } =
-    await import("../../../src/lib/auth/managementPassword.ts");
+  const { ensurePersistentManagementPasswordHash } = await import(
+    "../../../src/lib/auth/managementPassword.ts"
+  );
   await ensurePersistentManagementPasswordHash({ source: "test.bootstrap" });
 
   const response = await settingsRoute.PATCH(
@@ -142,7 +144,7 @@ test("AC-5: PATCH wrong currentPassword for security-impacting key → 401 PASSW
         localOnlyManageScopeBypassEnabled: false,
         currentPassword: "definitely-wrong",
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 401);
@@ -159,8 +161,9 @@ test("AC-6: PATCH with correct currentPassword + new prefix list → persists to
   process.env.JWT_SECRET = "test-jwt-secret-authz-bypass";
   process.env.INITIAL_PASSWORD = "initial-pass-ac6";
   await settingsDb.updateSettings({ requireLogin: true });
-  const { ensurePersistentManagementPasswordHash } =
-    await import("../../../src/lib/auth/managementPassword.ts");
+  const { ensurePersistentManagementPasswordHash } = await import(
+    "../../../src/lib/auth/managementPassword.ts"
+  );
   await ensurePersistentManagementPasswordHash({ source: "test.bootstrap" });
 
   const response = await settingsRoute.PATCH(
@@ -170,7 +173,7 @@ test("AC-6: PATCH with correct currentPassword + new prefix list → persists to
         localOnlyManageScopeBypassPrefixes: ["/api/mcp/"],
         currentPassword: "initial-pass-ac6",
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -184,8 +187,9 @@ test("AC-7: PATCH adds prefix → applyRuntimeSettings fires + getAuthzBypassSna
   process.env.JWT_SECRET = "test-jwt-secret-authz-bypass";
   process.env.INITIAL_PASSWORD = "initial-pass-ac7";
   await settingsDb.updateSettings({ requireLogin: true });
-  const { ensurePersistentManagementPasswordHash } =
-    await import("../../../src/lib/auth/managementPassword.ts");
+  const { ensurePersistentManagementPasswordHash } = await import(
+    "../../../src/lib/auth/managementPassword.ts"
+  );
   await ensurePersistentManagementPasswordHash({ source: "test.bootstrap" });
   // Prime the snapshot from the persisted defaults so we measure a real diff.
   const seeded = await settingsDb.getSettings();
@@ -203,7 +207,7 @@ test("AC-7: PATCH adds prefix → applyRuntimeSettings fires + getAuthzBypassSna
         localOnlyManageScopeBypassPrefixes: ["/api/mcp/", "/api/mcp/v2/"],
         currentPassword: "initial-pass-ac7",
       },
-    })
+    }),
   );
   const snapshotAfterPatch = runtime.getAuthzBypassSnapshot();
   const elapsedNs = process.hrtime.bigint() - t0;
@@ -219,7 +223,7 @@ test("AC-7: PATCH adds prefix → applyRuntimeSettings fires + getAuthzBypassSna
   const snapElapsedNs = process.hrtime.bigint() - tSnap0;
   assert.ok(
     snapElapsedNs < 50_000_000n,
-    `getAuthzBypassSnapshot x10k must complete in <50 ms (got ${Number(snapElapsedNs) / 1e6} ms)`
+    `getAuthzBypassSnapshot x10k must complete in <50 ms (got ${Number(snapElapsedNs) / 1e6} ms)`,
   );
   // Whole PATCH < 5 s sanity bound (bcrypt-bounded).
   assert.ok(elapsedNs < 5_000_000_000n);
@@ -234,8 +238,9 @@ test("AC-8: PATCH with /api/cli-tools/runtime/ in bypass list → 400 BYPASS_PRE
   process.env.JWT_SECRET = "test-jwt-secret-authz-bypass";
   process.env.INITIAL_PASSWORD = "initial-pass-ac8";
   await settingsDb.updateSettings({ requireLogin: true });
-  const { ensurePersistentManagementPasswordHash } =
-    await import("../../../src/lib/auth/managementPassword.ts");
+  const { ensurePersistentManagementPasswordHash } = await import(
+    "../../../src/lib/auth/managementPassword.ts"
+  );
   await ensurePersistentManagementPasswordHash({ source: "test.bootstrap" });
   // Prime snapshot from default DB state.
   const seeded = await settingsDb.getSettings();
@@ -249,7 +254,7 @@ test("AC-8: PATCH with /api/cli-tools/runtime/ in bypass list → 400 BYPASS_PRE
         localOnlyManageScopeBypassPrefixes: ["/api/mcp/", "/api/cli-tools/runtime/"],
         currentPassword: "initial-pass-ac8",
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 400);
@@ -258,7 +263,7 @@ test("AC-8: PATCH with /api/cli-tools/runtime/ in bypass list → 400 BYPASS_PRE
   };
   // zod path is the array path; the message embeds the BYPASS_PREFIX_NOT_ALLOWED code.
   const offending = body.error.details?.find((d) =>
-    d.message.includes("BYPASS_PREFIX_NOT_ALLOWED")
+    d.message.includes("BYPASS_PREFIX_NOT_ALLOWED"),
   );
   assert.ok(offending, `expected BYPASS_PREFIX_NOT_ALLOWED in details: ${JSON.stringify(body)}`);
 

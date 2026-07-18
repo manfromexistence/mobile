@@ -9,7 +9,5 @@
       "target": ""
     }
   ],
-  "registryDependencies": [
-    "separator"
-  ]
+  "registryDependencies": ["separator"]
 }

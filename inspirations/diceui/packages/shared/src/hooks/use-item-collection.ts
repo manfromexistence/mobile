@@ -15,9 +15,7 @@ function useItemCollection<TElement extends HTMLElement>({
     const collectionNode = ref.current;
     if (!collectionNode) return [];
 
-    const items = Array.from(
-      collectionNode.querySelectorAll(`[${attr}]`),
-    ) satisfies TElement[];
+    const items = Array.from(collectionNode.querySelectorAll(`[${attr}]`)) satisfies TElement[];
 
     if (items.length === 0) return [];
 
@@ -26,9 +24,7 @@ function useItemCollection<TElement extends HTMLElement>({
 
   const getEnabledItems = React.useCallback(() => {
     const items = getItems();
-    return items.filter(
-      (item) => item.getAttribute("aria-disabled") !== "true",
-    );
+    return items.filter((item) => item.getAttribute("aria-disabled") !== "true");
   }, [getItems]);
 
   return { getItems, getEnabledItems };

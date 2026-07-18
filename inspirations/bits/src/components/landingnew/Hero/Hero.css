@@ -51,7 +51,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
@@ -79,13 +79,13 @@
   font-size: 12px;
   font-weight: 600;
   color: #fff;
-  background: #A855F7;
+  background: #a855f7;
   padding: 4px 10px;
   border-radius: 6px;
 }
 
 .ln-hero-headline {
-  font-family: 'Geist Pixel Line', sans-serif;
+  font-family: "Geist Pixel Line", sans-serif;
   font-size: clamp(28px, 5.5vw, 68px);
   font-weight: 500;
   line-height: 1.1;
@@ -99,7 +99,7 @@
 }
 
 .ln-hero-description {
-  font-family: 'Geist', sans-serif;
+  font-family: "Geist", sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.6;
@@ -115,7 +115,7 @@
 }
 
 .ln-hero-btn {
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 14px;
   font-weight: 500;
   padding: 12px 24px;
@@ -125,9 +125,9 @@
 }
 
 .ln-hero-btn-primary {
-  background: #A855F7;
+  background: #a855f7;
   color: #fff;
-  border: 1px solid #A855F7;
+  border: 1px solid #a855f7;
 }
 
 .ln-hero-btn-primary:hover {
@@ -185,7 +185,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
   background: rgba(255, 255, 255, 0.01);
@@ -223,7 +223,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
   background: rgba(255, 255, 255, 0.01);
@@ -277,7 +277,7 @@
   display: block;
   width: 100%;
   text-align: left;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
   background: transparent;
@@ -306,27 +306,41 @@
   margin: 0;
   padding: 12px 8px;
   background: transparent;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 13px;
   line-height: 1.7;
-  color: #988BC7;
+  color: #988bc7;
   white-space: pre;
   overflow-x: auto;
   overflow-y: hidden;
 }
 
 /* Syntax token colors matching codeTheme */
-.c-kw { color: #fff; }
-.c-punc { color: #ccc; }
-.c-comp { color: #988BC7; }
-.c-tag { color: #FF79C6; }
-.c-attr { color: #fff; }
-.c-str { color: #DAD1F6; }
-.c-fn { color: #fdfdfd; }
+.c-kw {
+  color: #fff;
+}
+.c-punc {
+  color: #ccc;
+}
+.c-comp {
+  color: #988bc7;
+}
+.c-tag {
+  color: #ff79c6;
+}
+.c-attr {
+  color: #fff;
+}
+.c-str {
+  color: #dad1f6;
+}
+.c-fn {
+  color: #fdfdfd;
+}
 
 /* Interactive values */
 .ln-hero-code-value {
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 13px;
   border: none;
   padding: 0 4px;
@@ -339,7 +353,7 @@
 }
 
 .ln-hero-code-value--number {
-  color: #78D1E1;
+  color: #78d1e1;
   background: rgba(120, 209, 225, 0.08);
   cursor: ew-resize;
   touch-action: none;
@@ -364,7 +378,7 @@
 }
 
 .ln-hero-code-value--color {
-  color: #DAD1F6;
+  color: #dad1f6;
   background: rgba(218, 209, 246, 0.08);
   cursor: pointer;
   gap: 6px;
@@ -394,8 +408,8 @@
   top: calc(100% + 6px);
   left: 0;
   z-index: 60;
-  background: #1B1722;
-  border: 1px solid #2F293A;
+  background: #1b1722;
+  border: 1px solid #2f293a;
   border-radius: 10px;
   padding: 10px;
   width: 200px;
@@ -455,7 +469,7 @@
 }
 
 .ln-hero-code-hint {
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.2);
   padding: 0 16px 10px;

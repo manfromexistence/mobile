@@ -5,17 +5,19 @@ const sidebarVisibility = await import("../../src/shared/constants/sidebarVisibi
 
 function getToolsGroup() {
   const omniProxySection = sidebarVisibility.SIDEBAR_SECTIONS.find(
-    (section) => section.id === "omni-proxy"
+    (section) => section.id === "omni-proxy",
   );
   assert.ok(omniProxySection, "expected omni-proxy section to exist");
 
   const toolsGroup = omniProxySection.children.find(
-    (child): child is (typeof sidebarVisibility.SIDEBAR_SECTIONS)[number]["children"][number] & {
+    (
+      child,
+    ): child is (typeof sidebarVisibility.SIDEBAR_SECTIONS)[number]["children"][number] & {
       type: "group";
     } =>
       "type" in child &&
       (child as { type: string }).type === "group" &&
-      (child as { id: string }).id === "tools"
+      (child as { id: string }).id === "tools",
   );
   assert.ok(toolsGroup, "expected tools group to exist in omni-proxy section");
   return toolsGroup as {
@@ -40,7 +42,7 @@ test("TOOLS_GROUP items follow plan 14 order: cli-code → cli-agents → acp-ag
       "traffic-inspector",
       "discovery",
     ],
-    "TOOLS_GROUP items order must be cli-code, cli-agents, acp-agents, cloud-agents, agent-bridge, traffic-inspector, discovery"
+    "TOOLS_GROUP items order must be cli-code, cli-agents, acp-agents, cloud-agents, agent-bridge, traffic-inspector, discovery",
   );
 });
 
@@ -76,6 +78,6 @@ test("TOOLS_GROUP does NOT contain legacy cli-tools or agents entries", () => {
   assert.deepEqual(
     legacyIds,
     [],
-    "TOOLS_GROUP must not contain legacy 'cli-tools' or 'agents' entries"
+    "TOOLS_GROUP must not contain legacy 'cli-tools' or 'agents' entries",
   );
 });

@@ -17,21 +17,21 @@ export function formatPropValue(value, propName) {
 
   const type = typeof value;
 
-  if (type === 'string') {
+  if (type === "string") {
     return `"${value}"`;
   }
 
-  if (type === 'number') {
+  if (type === "number") {
     return `{${value}}`;
   }
 
-  if (type === 'boolean') {
-    return value ? '' : `{${value}}`; // true props can be just the prop name
+  if (type === "boolean") {
+    return value ? "" : `{${value}}`; // true props can be just the prop name
   }
 
-  if (type === 'function') {
+  if (type === "function") {
     // Check if it's a named function
-    if (value.name && value.name !== 'anonymous') {
+    if (value.name && value.name !== "anonymous") {
       return `{${value.name}}`;
     }
     return `{handle${propName.charAt(0).toUpperCase() + propName.slice(1)}}`;
@@ -41,7 +41,7 @@ export function formatPropValue(value, propName) {
     return `{${JSON.stringify(value)}}`;
   }
 
-  if (type === 'object') {
+  if (type === "object") {
     return `{${JSON.stringify(value)}}`;
   }
 
@@ -61,7 +61,7 @@ export function formatPropValue(value, propName) {
  */
 export function generatePropsString(props, defaultProps = {}, options = {}) {
   const { exclude = [], include = [], indent = 2 } = options;
-  const indentStr = ' '.repeat(indent);
+  const indentStr = " ".repeat(indent);
 
   const propsEntries = Object.entries(props).filter(([key, value]) => {
     // Always exclude certain internal props
@@ -82,7 +82,7 @@ export function generatePropsString(props, defaultProps = {}, options = {}) {
   });
 
   if (propsEntries.length === 0) {
-    return '';
+    return "";
   }
 
   return propsEntries
@@ -90,13 +90,13 @@ export function generatePropsString(props, defaultProps = {}, options = {}) {
       const formattedValue = formatPropValue(value, key);
 
       // For boolean true, just show the prop name
-      if (typeof value === 'boolean' && value === true) {
+      if (typeof value === "boolean" && value === true) {
         return `${indentStr}${key}`;
       }
 
       return `${indentStr}${key}=${formattedValue}`;
     })
-    .join('\n');
+    .join("\n");
 }
 
 /**
@@ -110,15 +110,21 @@ export function generatePropsString(props, defaultProps = {}, options = {}) {
  * @param {Object} options - Options for formatting
  * @returns {string} Updated usage code with current props
  */
-export function injectPropsIntoUsage(usageTemplate, componentName, props, defaultProps = {}, options = {}) {
-  const { exclude = ['className', 'key', 'ref'], include = [] } = options;
+export function injectPropsIntoUsage(
+  usageTemplate,
+  componentName,
+  props,
+  defaultProps = {},
+  options = {},
+) {
+  const { exclude = ["className", "key", "ref"], include = [] } = options;
 
   // Generate the props string
   const propsString = generatePropsString(props, defaultProps, { exclude, include, indent: 2 });
 
   // Find the component usage in the template and replace its props
   // This regex matches <ComponentName followed by props and closing />
-  const componentRegex = new RegExp(`(<${componentName})([^>]*)(\\s*/>)`, 's');
+  const componentRegex = new RegExp(`(<${componentName})([^>]*)(\\s*/>)`, "s");
 
   const match = usageTemplate.match(componentRegex);
 
@@ -145,8 +151,14 @@ export function injectPropsIntoUsage(usageTemplate, componentName, props, defaul
  * @param {Object} options - Additional options
  * @returns {string} Complete usage example code
  */
-export function createUsageExample(componentName, importPath, props, defaultProps = {}, options = {}) {
-  const { exclude = ['key', 'ref'], children = null, callbacks = {} } = options;
+export function createUsageExample(
+  componentName,
+  importPath,
+  props,
+  defaultProps = {},
+  options = {},
+) {
+  const { exclude = ["key", "ref"], children = null, callbacks = {} } = options;
 
   const propsString = generatePropsString(props, defaultProps, { exclude, indent: 2 });
 
@@ -155,13 +167,13 @@ export function createUsageExample(componentName, importPath, props, defaultProp
     .map(([name, body]) => {
       return `const ${name} = () => {\n  ${body}\n};`;
     })
-    .join('\n\n');
+    .join("\n\n");
 
-  const callbackSection = callbackDeclarations ? `\n${callbackDeclarations}\n` : '';
+  const callbackSection = callbackDeclarations ? `\n${callbackDeclarations}\n` : "";
 
   const componentJsx = children
-    ? `<${componentName}${propsString ? `\n${propsString}` : ''}>\n  ${children}\n</${componentName}>`
-    : `<${componentName}${propsString ? `\n${propsString}\n` : ' '}/>`;
+    ? `<${componentName}${propsString ? `\n${propsString}` : ""}>\n  ${children}\n</${componentName}>`
+    : `<${componentName}${propsString ? `\n${propsString}\n` : " "}/>`;
 
   return `import ${componentName} from "${importPath}";
 ${callbackSection}

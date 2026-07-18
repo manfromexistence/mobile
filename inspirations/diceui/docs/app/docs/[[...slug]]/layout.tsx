@@ -7,10 +7,7 @@ interface SlugLayoutProps {
   params: Promise<{ slug?: string[] }>;
 }
 
-export default async function SlugLayout({
-  children,
-  params,
-}: SlugLayoutProps) {
+export default async function SlugLayout({ children, params }: SlugLayoutProps) {
   const { slug } = await params;
   const base = slug?.[1] === "base" ? "base" : "radix";
   const tree = getCachedFilteredTree(docsOptions.tree, base);

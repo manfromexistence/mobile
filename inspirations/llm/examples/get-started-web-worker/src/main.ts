@@ -19,12 +19,11 @@ async function mainNonStreaming() {
   };
   const selectedModel = "Llama-3.1-8B-Instruct-q4f32_1-MLC";
 
-  const engine: webllm.MLCEngineInterface =
-    await webllm.CreateWebWorkerMLCEngine(
-      new Worker(new URL("./worker.ts", import.meta.url), { type: "module" }),
-      selectedModel,
-      { initProgressCallback: initProgressCallback },
-    );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateWebWorkerMLCEngine(
+    new Worker(new URL("./worker.ts", import.meta.url), { type: "module" }),
+    selectedModel,
+    { initProgressCallback: initProgressCallback },
+  );
 
   const request: webllm.ChatCompletionRequest = {
     messages: [
@@ -58,12 +57,11 @@ async function mainStreaming() {
   };
   const selectedModel = "Llama-3.1-8B-Instruct-q4f32_1-MLC";
 
-  const engine: webllm.MLCEngineInterface =
-    await webllm.CreateWebWorkerMLCEngine(
-      new Worker(new URL("./worker.ts", import.meta.url), { type: "module" }),
-      selectedModel,
-      { initProgressCallback: initProgressCallback },
-    );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateWebWorkerMLCEngine(
+    new Worker(new URL("./worker.ts", import.meta.url), { type: "module" }),
+    selectedModel,
+    { initProgressCallback: initProgressCallback },
+  );
 
   const request: webllm.ChatCompletionRequest = {
     stream: true,

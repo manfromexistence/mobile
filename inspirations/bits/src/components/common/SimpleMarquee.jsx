@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from "react";
 import {
   motion,
   useAnimationFrame,
@@ -6,8 +6,8 @@ import {
   useScroll,
   useSpring,
   useTransform,
-  useVelocity
-} from 'motion/react';
+  useVelocity,
+} from "motion/react";
 
 const wrap = (min, max, value) => {
   const range = max - min;
@@ -16,8 +16,8 @@ const wrap = (min, max, value) => {
 
 const SimpleMarquee = ({
   children,
-  className = '',
-  direction = 'right',
+  className = "",
+  direction = "right",
   baseVelocity = 5,
   slowdownOnHover = false,
   slowDownFactor = 0.3,
@@ -33,7 +33,7 @@ const SimpleMarquee = ({
   dragAwareDirection = false,
   dragAngle = 0,
   grabCursor = false,
-  easing
+  easing,
 }) => {
   const containerRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -47,7 +47,7 @@ const SimpleMarquee = ({
 
     const observer = new IntersectionObserver(([entry]) => setIsVisible(entry.isIntersecting), {
       threshold: 0,
-      rootMargin: '50px'
+      rootMargin: "50px",
     });
     observer.observe(el);
     return () => observer.disconnect();
@@ -55,8 +55,8 @@ const SimpleMarquee = ({
 
   const { scrollY } = useScroll({
     ...(scrollContainer && {
-      container: scrollContainer
-    })
+      container: scrollContainer,
+    }),
   });
 
   const scrollVelocity = useVelocity(scrollY);
@@ -66,18 +66,24 @@ const SimpleMarquee = ({
   const isDragging = useRef(false);
   const dragVelocity = useRef(0);
   const smoothHoverFactor = useSpring(hoverFactorValue, slowDownSpringConfig);
-  const velocityFactor = useTransform(useScrollVelocity ? smoothVelocity : defaultVelocity, [0, 1000], [0, 5], {
-    clamp: false
-  });
-  const isHorizontal = direction === 'left' || direction === 'right';
-  const actualBaseVelocity = direction === 'left' || direction === 'up' ? -baseVelocity : baseVelocity;
+  const velocityFactor = useTransform(
+    useScrollVelocity ? smoothVelocity : defaultVelocity,
+    [0, 1000],
+    [0, 5],
+    {
+      clamp: false,
+    },
+  );
+  const isHorizontal = direction === "left" || direction === "right";
+  const actualBaseVelocity =
+    direction === "left" || direction === "up" ? -baseVelocity : baseVelocity;
   const isHovered = useRef(false);
   const directionFactor = useRef(1);
-  const x = useTransform(baseX, v => {
+  const x = useTransform(baseX, (v) => {
     const wrappedValue = wrap(0, -100, v);
     return `${easing ? easing(wrappedValue / -100) * -100 : wrappedValue}%`;
   });
-  const y = useTransform(baseY, v => {
+  const y = useTransform(baseY, (v) => {
     const wrappedValue = wrap(0, -100, v);
     return `${easing ? easing(wrappedValue / -100) * -100 : wrappedValue}%`;
   });
@@ -108,7 +114,8 @@ const SimpleMarquee = ({
       hoverFactorValue.set(1);
     }
 
-    let moveBy = directionFactor.current * actualBaseVelocity * (delta / 1000) * smoothHoverFactor.get();
+    let moveBy =
+      directionFactor.current * actualBaseVelocity * (delta / 1000) * smoothHoverFactor.get();
 
     if (scrollAwareDirection && !isDragging.current) {
       if (velocityFactor.get() < 0) {
@@ -143,12 +150,12 @@ const SimpleMarquee = ({
 
   const lastPointerPosition = useRef({ x: 0, y: 0 });
 
-  const handlePointerDown = e => {
+  const handlePointerDown = (e) => {
     if (!draggable) return;
     e.currentTarget.setPointerCapture(e.pointerId);
 
     if (grabCursor) {
-      e.currentTarget.style.cursor = 'grabbing';
+      e.currentTarget.style.cursor = "grabbing";
     }
 
     isDragging.current = true;
@@ -157,7 +164,7 @@ const SimpleMarquee = ({
     dragVelocity.current = 0;
   };
 
-  const handlePointerMove = e => {
+  const handlePointerMove = (e) => {
     if (!draggable || !isDragging.current) return;
 
     const currentPosition = { x: e.clientX, y: e.clientY };
@@ -171,14 +178,14 @@ const SimpleMarquee = ({
     lastPointerPosition.current = currentPosition;
   };
 
-  const handlePointerUp = e => {
+  const handlePointerUp = (e) => {
     if (!draggable) return;
     e.currentTarget.releasePointerCapture(e.pointerId);
 
     isDragging.current = false;
   };
 
-  const baseClasses = `flex ${isHorizontal ? 'flex-row' : 'flex-col'} ${className}`;
+  const baseClasses = `flex ${isHorizontal ? "flex-row" : "flex-col"} ${className}`;
 
   return (
     <motion.div
@@ -191,10 +198,10 @@ const SimpleMarquee = ({
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
     >
-      {Array.from({ length: repeat }, (_, i) => i).map(i => (
+      {Array.from({ length: repeat }, (_, i) => i).map((i) => (
         <motion.div
           key={i}
-          className={`shrink-0 ${isHorizontal ? 'flex' : ''} ${draggable && grabCursor ? 'cursor-grab' : ''}`}
+          className={`shrink-0 ${isHorizontal ? "flex" : ""} ${draggable && grabCursor ? "cursor-grab" : ""}`}
           style={isHorizontal ? { x } : { y }}
           aria-hidden={i > 0}
         >

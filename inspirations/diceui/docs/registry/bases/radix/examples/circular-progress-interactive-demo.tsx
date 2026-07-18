@@ -58,13 +58,7 @@ export default function CircularProgressControlledDemo() {
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="flex items-center gap-6">
-        <CircularProgress
-          value={uploadProgress}
-          min={0}
-          max={100}
-          size={80}
-          thickness={6}
-        >
+        <CircularProgress value={uploadProgress} min={0} max={100} size={80} thickness={6}>
           <CircularProgressIndicator>
             <CircularProgressTrack />
             <CircularProgressRange />
@@ -74,18 +68,10 @@ export default function CircularProgressControlledDemo() {
         <div className="flex flex-col gap-2">
           <div className="font-medium text-sm">Upload Progress</div>
           <div className="text-muted-foreground text-xs">
-            Status:{" "}
-            {isUploading
-              ? "Uploading..."
-              : uploadProgress === 100
-                ? "Complete"
-                : "Ready"}
+            Status: {isUploading ? "Uploading..." : uploadProgress === 100 ? "Complete" : "Ready"}
           </div>
           <div className="text-muted-foreground text-xs">
-            Progress:{" "}
-            {uploadProgress === null
-              ? "Indeterminate"
-              : `${Math.round(uploadProgress)}%`}
+            Progress: {uploadProgress === null ? "Indeterminate" : `${Math.round(uploadProgress)}%`}
           </div>
         </div>
       </div>

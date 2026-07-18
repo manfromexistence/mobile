@@ -1,11 +1,7 @@
 import * as React from "react";
 import { composeEventHandlers } from "./compose-event-handlers";
 import { useComposedRefs } from "./compose-refs";
-import {
-  forwardRef,
-  type WithDisplayName,
-  type WithForwardedRef,
-} from "./forward-ref";
+import { forwardRef, type WithDisplayName, type WithForwardedRef } from "./forward-ref";
 import { Slot } from "./slot";
 import { VisuallyHiddenInput } from "./visually-hidden-input";
 
@@ -24,9 +20,7 @@ const LISTBOX_ERRORS = {
   [GROUP_LABEL_NAME]: `\`${GROUP_LABEL_NAME}\` must be within \`${GROUP_NAME}\``,
 } as const;
 
-type Value<Multiple extends boolean = false> = Multiple extends true
-  ? string[]
-  : string;
+type Value<Multiple extends boolean = false> = Multiple extends true ? string[] : string;
 
 interface ListboxState {
   selectedValues: Set<string>;
@@ -51,13 +45,9 @@ interface ListboxStore {
   onHighlightedValueChange: (value: string | null) => void;
 }
 
-function createSelectableStore(
-  defaultValue: string | null = null,
-): ListboxStore {
+function createSelectableStore(defaultValue: string | null = null): ListboxStore {
   const state: ListboxState = {
-    selectedValues: defaultValue
-      ? new Set<string>([defaultValue])
-      : new Set<string>(),
+    selectedValues: defaultValue ? new Set<string>([defaultValue]) : new Set<string>(),
     focusedValue: null,
     highlightedValue: null,
   };
@@ -76,11 +66,7 @@ function createSelectableStore(
       return state;
     },
 
-    onStateChange<K extends keyof ListboxState>(
-      key: K,
-      value: ListboxState[K],
-      silent = false,
-    ) {
+    onStateChange<K extends keyof ListboxState>(key: K, value: ListboxState[K], silent = false) {
       if (Object.is(state[key], value)) return;
 
       state[key] = value;
@@ -167,10 +153,7 @@ interface CollectionItem extends ItemData {
   ref: React.RefObject<ItemElement | null>;
 }
 
-type CollectionItemMap = Map<
-  React.RefObject<ItemElement | null>,
-  CollectionItem
->;
+type CollectionItemMap = Map<React.RefObject<ItemElement | null>, CollectionItem>;
 
 type CollectionGroupMap = Map<string, Set<React.RefObject<ItemElement | null>>>;
 
@@ -189,8 +172,7 @@ function useCollection() {
 
     return items.sort((a, b) => {
       if (!a?.ref.current || !b?.ref.current) return 0;
-      return a.ref.current.compareDocumentPosition(b.ref.current) &
-        Node.DOCUMENT_POSITION_FOLLOWING
+      return a.ref.current.compareDocumentPosition(b.ref.current) & Node.DOCUMENT_POSITION_FOLLOWING
         ? -1
         : 1;
     });
@@ -299,9 +281,7 @@ function calculateGridLayout(
     return { columnCount: 1, rowCount: items.length };
   }
 
-  const itemElements = items
-    .map((item) => item.ref.current)
-    .filter(Boolean) as ItemElement[];
+  const itemElements = items.map((item) => item.ref.current).filter(Boolean) as ItemElement[];
 
   if (itemElements.length <= 1) {
     return { columnCount: 1, rowCount: items.length };
@@ -337,10 +317,7 @@ function calculateGridLayout(
   return { columnCount, rowCount };
 }
 
-function dispatchDiscreteCustomEvent<E extends CustomEvent>(
-  target: EventTarget,
-  event: E,
-) {
+function dispatchDiscreteCustomEvent<E extends CustomEvent>(target: EventTarget, event: E) {
   if (target && "dispatchEvent" in target && target.dispatchEvent) {
     target.dispatchEvent(event);
   }
@@ -371,9 +348,7 @@ interface ListboxContextValue<Multiple extends boolean = false> {
   multiple: Multiple;
 }
 
-const ListboxContext = React.createContext<ListboxContextValue<boolean> | null>(
-  null,
-);
+const ListboxContext = React.createContext<ListboxContextValue<boolean> | null>(null);
 ListboxContext.displayName = ROOT_NAME;
 
 function useListboxContext(name: keyof typeof LISTBOX_ERRORS) {
@@ -419,9 +394,7 @@ function ListboxRootImpl<Multiple extends boolean = false>(
   } = props;
 
   const storeRef = useLazyRef<ListboxStore>(() => {
-    const store = createSelectableStore(
-      typeof defaultValue === "string" ? defaultValue : null,
-    );
+    const store = createSelectableStore(typeof defaultValue === "string" ? defaultValue : null);
 
     if (multiple && Array.isArray(defaultValue) && defaultValue.length) {
       for (const val of defaultValue) {
@@ -455,9 +428,7 @@ function ListboxRootImpl<Multiple extends boolean = false>(
   const isShiftTabRef = useLazyRef(() => false);
   const composedRef = useComposedRefs(collectionRef, forwardedRef);
 
-  const isFormControl = collectionRef.current
-    ? !!collectionRef.current.closest("form")
-    : true;
+  const isFormControl = collectionRef.current ? !!collectionRef.current.closest("form") : true;
 
   const onItemSelect = React.useCallback(
     (itemValue: string, isMultipleEvent = false) => {
@@ -469,13 +440,9 @@ function ListboxRootImpl<Multiple extends boolean = false>(
           bubbles: true,
         });
 
-        item.ref.current.addEventListener(
-          ITEM_SELECT_EVENT,
-          () => item.onSelect?.(itemValue),
-          {
-            once: true,
-          },
-        );
+        item.ref.current.addEventListener(ITEM_SELECT_EVENT, () => item.onSelect?.(itemValue), {
+          once: true,
+        });
 
         if (item.ref.current instanceof HTMLElement) {
           dispatchDiscreteCustomEvent(item.ref.current, itemSelectEvent);
@@ -484,9 +451,7 @@ function ListboxRootImpl<Multiple extends boolean = false>(
 
       if (multiple) {
         if (isMultipleEvent) {
-          const currentValues = new Set(
-            Array.isArray(value) ? value : value ? [value] : [],
-          );
+          const currentValues = new Set(Array.isArray(value) ? value : value ? [value] : []);
 
           if (currentValues.has(itemValue)) {
             currentValues.delete(itemValue);
@@ -573,8 +538,7 @@ function ListboxRootImpl<Multiple extends boolean = false>(
 
       const isRtl = dir === "rtl";
       const isVertical = orientation === "vertical" || orientation === "mixed";
-      const isHorizontal =
-        orientation === "horizontal" || orientation === "mixed";
+      const isHorizontal = orientation === "horizontal" || orientation === "mixed";
 
       const items = getItems().filter((item) => !item.disabled);
       const itemCount = items.length;
@@ -594,8 +558,7 @@ function ListboxRootImpl<Multiple extends boolean = false>(
         case "Home": {
           const minValue = getMinItemValue(items);
           if (minValue) {
-            const minItem =
-              items.find((item) => item.value === minValue) ?? null;
+            const minItem = items.find((item) => item.value === minValue) ?? null;
             if (minItem?.ref.current && !virtual) {
               minItem.ref.current?.focus();
               store.onStateChange("focusedValue", minValue);
@@ -610,8 +573,7 @@ function ListboxRootImpl<Multiple extends boolean = false>(
         case "End": {
           const maxValue = getMaxItemValue(items);
           if (maxValue) {
-            const maxItem =
-              items.find((item) => item.value === maxValue) ?? null;
+            const maxItem = items.find((item) => item.value === maxValue) ?? null;
             if (maxItem?.ref.current && !virtual) {
               maxItem.ref.current?.focus();
               store.onStateChange("focusedValue", maxValue);
@@ -625,19 +587,14 @@ function ListboxRootImpl<Multiple extends boolean = false>(
 
         case "ArrowUp":
           if (isVertical) {
-            if (
-              orientation === "mixed" &&
-              columnCount > 1 &&
-              currentIndex >= 0
-            ) {
+            if (orientation === "mixed" && columnCount > 1 && currentIndex >= 0) {
               const currentCol = currentIndex % columnCount;
               const targetIndex = currentIndex - columnCount;
 
               if (targetIndex >= 0) {
                 nextItem = items[targetIndex] ?? null;
               } else if (loop) {
-                const lastRowItemIndex =
-                  currentCol + (rowCount - 1) * columnCount;
+                const lastRowItemIndex = currentCol + (rowCount - 1) * columnCount;
                 const targetIndex = Math.min(lastRowItemIndex, itemCount - 1);
                 nextItem = items[targetIndex] ?? null;
               }
@@ -656,11 +613,7 @@ function ListboxRootImpl<Multiple extends boolean = false>(
 
         case "ArrowDown":
           if (isVertical) {
-            if (
-              orientation === "mixed" &&
-              columnCount > 1 &&
-              currentIndex >= 0
-            ) {
+            if (orientation === "mixed" && columnCount > 1 && currentIndex >= 0) {
               const currentCol = currentIndex % columnCount;
               const targetIndex = currentIndex + columnCount;
 
@@ -717,9 +670,7 @@ function ListboxRootImpl<Multiple extends boolean = false>(
             onItemSelect(focusedValue, isMultipleSelectionKey);
             setFocusedValue(focusedValue);
 
-            const focusedItem = items.find(
-              (item) => item.value === focusedValue,
-            );
+            const focusedItem = items.find((item) => item.value === focusedValue);
             if (focusedItem?.ref.current instanceof HTMLElement) {
               focusedItem.ref.current.scrollIntoView({
                 block: "nearest",
@@ -774,9 +725,7 @@ function ListboxRootImpl<Multiple extends boolean = false>(
         if (items.length === 0) return;
 
         if (focusedValue) {
-          const lastFocusedItem = items.find(
-            (item) => item.value === focusedValue,
-          );
+          const lastFocusedItem = items.find((item) => item.value === focusedValue);
 
           if (lastFocusedItem) {
             focusItemByValue(focusedValue);
@@ -797,10 +746,7 @@ function ListboxRootImpl<Multiple extends boolean = false>(
 
   const onBlur = React.useCallback(
     (event: React.FocusEvent<RootElement>) => {
-      if (
-        collectionRef.current &&
-        !collectionRef.current.contains(event.relatedTarget)
-      ) {
+      if (collectionRef.current && !collectionRef.current.contains(event.relatedTarget)) {
         store.onStateChange("focusedValue", null);
       }
     },
@@ -863,8 +809,7 @@ function ListboxRootImpl<Multiple extends boolean = false>(
 
 interface ListboxRootComponentProps extends WithDisplayName {
   <Multiple extends boolean = false>(
-    props: ListboxRootProps<Multiple> &
-      WithForwardedRef<typeof ListboxRootImpl>,
+    props: ListboxRootProps<Multiple> & WithForwardedRef<typeof ListboxRootImpl>,
   ): React.JSX.Element;
 }
 
@@ -876,8 +821,7 @@ interface ListboxGroupContextValue {
   labelId: string;
 }
 
-const ListboxGroupContext =
-  React.createContext<ListboxGroupContextValue | null>(null);
+const ListboxGroupContext = React.createContext<ListboxGroupContextValue | null>(null);
 ListboxGroupContext.displayName = GROUP_NAME;
 
 function useListboxGroupContext(name: keyof typeof LISTBOX_ERRORS) {
@@ -891,55 +835,43 @@ interface ListboxGroupProps extends React.ComponentPropsWithoutRef<"div"> {
   asChild?: boolean;
 }
 
-const ListboxGroup = React.forwardRef<HTMLDivElement, ListboxGroupProps>(
-  (props, forwardedRef) => {
-    const { asChild, ...groupProps } = props;
-    const id = React.useId();
-    const labelId = React.useId();
+const ListboxGroup = React.forwardRef<HTMLDivElement, ListboxGroupProps>((props, forwardedRef) => {
+  const { asChild, ...groupProps } = props;
+  const id = React.useId();
+  const labelId = React.useId();
 
-    const groupContextValue = React.useMemo(
-      () => ({ id, labelId }),
-      [id, labelId],
-    );
+  const groupContextValue = React.useMemo(() => ({ id, labelId }), [id, labelId]);
 
-    const GroupPrimitive = asChild ? Slot : "div";
+  const GroupPrimitive = asChild ? Slot : "div";
 
-    return (
-      <ListboxGroupContext.Provider value={groupContextValue}>
-        <GroupPrimitive
-          role="group"
-          id={id}
-          aria-labelledby={labelId}
-          {...groupProps}
-          ref={forwardedRef}
-        />
-      </ListboxGroupContext.Provider>
-    );
-  },
-);
+  return (
+    <ListboxGroupContext.Provider value={groupContextValue}>
+      <GroupPrimitive
+        role="group"
+        id={id}
+        aria-labelledby={labelId}
+        {...groupProps}
+        ref={forwardedRef}
+      />
+    </ListboxGroupContext.Provider>
+  );
+});
 ListboxGroup.displayName = GROUP_NAME;
 
 interface ListboxGroupLabelProps extends React.ComponentPropsWithoutRef<"div"> {
   asChild?: boolean;
 }
 
-const ListboxGroupLabel = React.forwardRef<
-  HTMLDivElement,
-  ListboxGroupLabelProps
->((props, forwardedRef) => {
-  const { asChild, ...labelProps } = props;
-  const groupContext = useListboxGroupContext(GROUP_LABEL_NAME);
+const ListboxGroupLabel = React.forwardRef<HTMLDivElement, ListboxGroupLabelProps>(
+  (props, forwardedRef) => {
+    const { asChild, ...labelProps } = props;
+    const groupContext = useListboxGroupContext(GROUP_LABEL_NAME);
 
-  const LabelPrimitive = asChild ? Slot : "div";
+    const LabelPrimitive = asChild ? Slot : "div";
 
-  return (
-    <LabelPrimitive
-      id={groupContext.labelId}
-      {...labelProps}
-      ref={forwardedRef}
-    />
-  );
-});
+    return <LabelPrimitive id={groupContext.labelId} {...labelProps} ref={forwardedRef} />;
+  },
+);
 ListboxGroupLabel.displayName = GROUP_LABEL_NAME;
 
 const ListboxItemContext = React.createContext<{
@@ -955,154 +887,129 @@ function useListboxItemContext(name: keyof typeof LISTBOX_ERRORS) {
   return context;
 }
 
-interface ListboxItemProps
-  extends Omit<React.ComponentPropsWithoutRef<"div">, "onSelect"> {
+interface ListboxItemProps extends Omit<React.ComponentPropsWithoutRef<"div">, "onSelect"> {
   value: string;
   disabled?: boolean;
   asChild?: boolean;
   onSelect?: (value: string) => void;
 }
 
-const ListboxItem = React.forwardRef<HTMLDivElement, ListboxItemProps>(
-  (props, forwardedRef) => {
-    const { asChild, value, disabled = false, onSelect, ...itemProps } = props;
-    const context = useListboxContext(ITEM_NAME);
-    const groupContext = React.useContext(ListboxGroupContext);
-    const itemRef = React.useRef<HTMLDivElement>(null);
-    const composedRef = useComposedRefs(itemRef, forwardedRef);
+const ListboxItem = React.forwardRef<HTMLDivElement, ListboxItemProps>((props, forwardedRef) => {
+  const { asChild, value, disabled = false, onSelect, ...itemProps } = props;
+  const context = useListboxContext(ITEM_NAME);
+  const groupContext = React.useContext(ListboxGroupContext);
+  const itemRef = React.useRef<HTMLDivElement>(null);
+  const composedRef = useComposedRefs(itemRef, forwardedRef);
 
-    const isSelected = useListboxState((state) =>
-      state.selectedValues.has(value),
-    );
-    const isHighlighted = useListboxState(
-      (state) => state.highlightedValue === value,
-    );
-    const isDisabled = disabled || context.disabled;
+  const isSelected = useListboxState((state) => state.selectedValues.has(value));
+  const isHighlighted = useListboxState((state) => state.highlightedValue === value);
+  const isDisabled = disabled || context.disabled;
 
-    useIsomorphicLayoutEffect(() => {
-      if (value === "") {
-        throw new Error(`${ITEM_NAME} value cannot be an empty string`);
-      }
+  useIsomorphicLayoutEffect(() => {
+    if (value === "") {
+      throw new Error(`${ITEM_NAME} value cannot be an empty string`);
+    }
 
-      return context.onItemRegister(
-        {
-          ref: itemRef,
-          value,
-          disabled: isDisabled,
-          onSelect,
-        },
-        groupContext?.id,
-      );
-    }, [value, isDisabled, context.onItemRegister, groupContext?.id, onSelect]);
-
-    const onBlur = React.useCallback(() => {
-      context.onItemBlur();
-    }, [context.onItemBlur]);
-
-    const onClick = React.useCallback(
-      (event: React.MouseEvent) => {
-        if (!isDisabled) {
-          const isMultipleSelectionKey =
-            context.multiple &&
-            (context.multiple === true || event.ctrlKey || event.metaKey);
-
-          context.onItemSelect(value, isMultipleSelectionKey);
-        }
+    return context.onItemRegister(
+      {
+        ref: itemRef,
+        value,
+        disabled: isDisabled,
+        onSelect,
       },
-      [context.onItemSelect, value, isDisabled, context.multiple],
+      groupContext?.id,
     );
+  }, [value, isDisabled, context.onItemRegister, groupContext?.id, onSelect]);
 
-    const onFocus = React.useCallback(() => {
+  const onBlur = React.useCallback(() => {
+    context.onItemBlur();
+  }, [context.onItemBlur]);
+
+  const onClick = React.useCallback(
+    (event: React.MouseEvent) => {
       if (!isDisabled) {
-        context.onItemFocus(value);
-        context.onItemHighlight(value);
-      }
-    }, [context.onItemFocus, context.onItemHighlight, isDisabled, value]);
+        const isMultipleSelectionKey =
+          context.multiple && (context.multiple === true || event.ctrlKey || event.metaKey);
 
-    const onKeyDown = React.useCallback(
-      (event: React.KeyboardEvent) => {
-        if (event.key === "Tab") {
-          if (!event.shiftKey) {
-            context.onItemBlur();
-          }
-          return;
+        context.onItemSelect(value, isMultipleSelectionKey);
+      }
+    },
+    [context.onItemSelect, value, isDisabled, context.multiple],
+  );
+
+  const onFocus = React.useCallback(() => {
+    if (!isDisabled) {
+      context.onItemFocus(value);
+      context.onItemHighlight(value);
+    }
+  }, [context.onItemFocus, context.onItemHighlight, isDisabled, value]);
+
+  const onKeyDown = React.useCallback(
+    (event: React.KeyboardEvent) => {
+      if (event.key === "Tab") {
+        if (!event.shiftKey) {
+          context.onItemBlur();
         }
-      },
-      [context.onItemBlur],
-    );
-
-    const onPointerLeave = React.useCallback(() => {
-      context.onItemHighlight(null);
-    }, [context.onItemHighlight]);
-
-    const onPointerMove = React.useCallback(() => {
-      if (!isDisabled) {
-        context.onItemHighlight(value);
+        return;
       }
-    }, [context.onItemHighlight, isDisabled, value]);
+    },
+    [context.onItemBlur],
+  );
 
-    const ItemPrimitive = asChild ? Slot : "div";
+  const onPointerLeave = React.useCallback(() => {
+    context.onItemHighlight(null);
+  }, [context.onItemHighlight]);
 
-    const itemContextValue = React.useMemo(
-      () => ({ isSelected }),
-      [isSelected],
-    );
+  const onPointerMove = React.useCallback(() => {
+    if (!isDisabled) {
+      context.onItemHighlight(value);
+    }
+  }, [context.onItemHighlight, isDisabled, value]);
 
-    return (
-      <ListboxItemContext.Provider value={itemContextValue}>
-        <ItemPrimitive
-          role="option"
-          aria-selected={isSelected}
-          data-selected={isSelected ? "" : undefined}
-          data-highlighted={isHighlighted ? "" : undefined}
-          data-disabled={isDisabled ? "" : undefined}
-          tabIndex={isDisabled ? undefined : -1}
-          {...itemProps}
-          ref={composedRef}
-          onClick={composeEventHandlers(itemProps.onClick, onClick)}
-          onFocus={composeEventHandlers(itemProps.onFocus, onFocus)}
-          onBlur={composeEventHandlers(itemProps.onBlur, onBlur)}
-          onKeyDown={composeEventHandlers(itemProps.onKeyDown, onKeyDown)}
-          onPointerLeave={composeEventHandlers(
-            itemProps.onPointerLeave,
-            onPointerLeave,
-          )}
-          onPointerMove={composeEventHandlers(
-            itemProps.onPointerMove,
-            onPointerMove,
-          )}
-        />
-      </ListboxItemContext.Provider>
-    );
-  },
-);
+  const ItemPrimitive = asChild ? Slot : "div";
+
+  const itemContextValue = React.useMemo(() => ({ isSelected }), [isSelected]);
+
+  return (
+    <ListboxItemContext.Provider value={itemContextValue}>
+      <ItemPrimitive
+        role="option"
+        aria-selected={isSelected}
+        data-selected={isSelected ? "" : undefined}
+        data-highlighted={isHighlighted ? "" : undefined}
+        data-disabled={isDisabled ? "" : undefined}
+        tabIndex={isDisabled ? undefined : -1}
+        {...itemProps}
+        ref={composedRef}
+        onClick={composeEventHandlers(itemProps.onClick, onClick)}
+        onFocus={composeEventHandlers(itemProps.onFocus, onFocus)}
+        onBlur={composeEventHandlers(itemProps.onBlur, onBlur)}
+        onKeyDown={composeEventHandlers(itemProps.onKeyDown, onKeyDown)}
+        onPointerLeave={composeEventHandlers(itemProps.onPointerLeave, onPointerLeave)}
+        onPointerMove={composeEventHandlers(itemProps.onPointerMove, onPointerMove)}
+      />
+    </ListboxItemContext.Provider>
+  );
+});
 ListboxItem.displayName = ITEM_NAME;
 
-interface ListboxItemIndicatorProps
-  extends React.ComponentPropsWithoutRef<"span"> {
+interface ListboxItemIndicatorProps extends React.ComponentPropsWithoutRef<"span"> {
   forceMount?: boolean;
   asChild?: boolean;
 }
 
-const ListboxItemIndicator = React.forwardRef<
-  HTMLSpanElement,
-  ListboxItemIndicatorProps
->((props, forwardedRef) => {
-  const { forceMount = false, asChild, ...indicatorProps } = props;
-  const itemContext = useListboxItemContext(ITEM_INDICATOR_NAME);
+const ListboxItemIndicator = React.forwardRef<HTMLSpanElement, ListboxItemIndicatorProps>(
+  (props, forwardedRef) => {
+    const { forceMount = false, asChild, ...indicatorProps } = props;
+    const itemContext = useListboxItemContext(ITEM_INDICATOR_NAME);
 
-  if (!forceMount && !itemContext.isSelected) return null;
+    if (!forceMount && !itemContext.isSelected) return null;
 
-  const IndicatorPrimitive = asChild ? Slot : "span";
+    const IndicatorPrimitive = asChild ? Slot : "span";
 
-  return (
-    <IndicatorPrimitive
-      aria-hidden="true"
-      {...indicatorProps}
-      ref={forwardedRef}
-    />
-  );
-});
+    return <IndicatorPrimitive aria-hidden="true" {...indicatorProps} ref={forwardedRef} />;
+  },
+);
 ListboxItemIndicator.displayName = ITEM_INDICATOR_NAME;
 
 const Root = ListboxRoot;

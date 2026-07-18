@@ -70,10 +70,9 @@ async function detectServer(): Promise<ServerInfo> {
   // Check local servers first
   for (const url of LOCAL_URLS) {
     try {
-      const response = await fetch(
-        `${url}/r/styles/${testStyleName}/${testItemName}.json`,
-        { signal: AbortSignal.timeout(1000) },
-      );
+      const response = await fetch(`${url}/r/styles/${testStyleName}/${testItemName}.json`, {
+        signal: AbortSignal.timeout(1000),
+      });
       if (response.ok) {
         return { url, local: true };
       }
@@ -104,9 +103,7 @@ async function testItem(item: RegistryItem, url: string): Promise<TestResult> {
     if (VERBOSE) {
       const data = await response.json();
       const depCount = (
-        data.registryDependencies?.filter((d: string) =>
-          d.startsWith("@diceui/"),
-        ) ?? []
+        data.registryDependencies?.filter((d: string) => d.startsWith("@diceui/")) ?? []
       ).length;
       return { success: true, deps: depCount };
     }
@@ -132,9 +129,7 @@ async function main(): Promise<void> {
   console.log(`✅ ${local ? "Local" : "Production"}: ${url}`);
 
   if (VERBOSE) {
-    console.log(
-      `📋 Loaded ${HOOKS.length} hooks + ${COMPONENTS.length} components from registry`,
-    );
+    console.log(`📋 Loaded ${HOOKS.length} hooks + ${COMPONENTS.length} components from registry`);
   }
   console.log();
 

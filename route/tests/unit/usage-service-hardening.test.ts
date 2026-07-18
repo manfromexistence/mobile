@@ -3,10 +3,12 @@ import assert from "node:assert/strict";
 
 const usageService = await import("../../open-sse/services/usage.ts");
 const { __testing } = usageService;
-const { getAntigravityLoadCodeAssistMetadata } =
-  await import("../../open-sse/services/antigravityHeaders.ts");
-const { getAntigravityFetchAvailableModelsUrls } =
-  await import("../../open-sse/config/antigravityUpstream.ts");
+const { getAntigravityLoadCodeAssistMetadata } = await import(
+  "../../open-sse/services/antigravityHeaders.ts"
+);
+const { getAntigravityFetchAvailableModelsUrls } = await import(
+  "../../open-sse/config/antigravityUpstream.ts"
+);
 
 const originalFetch = globalThis.fetch;
 const originalCreditsMode = process.env.ANTIGRAVITY_CREDITS;
@@ -46,7 +48,7 @@ test("usage service covers GitHub free-plan parsing, auth denial and unsupported
           completions: 4000,
         },
       }),
-      { status: 200 }
+      { status: 200 },
     );
   };
 
@@ -112,7 +114,7 @@ test("usage service covers GitHub paid snapshot edge cases, missing quota payloa
           },
         },
       }),
-      { status: 200 }
+      { status: 200 },
     );
 
   const paidUsage: any = await usageService.getUsageForProvider({
@@ -139,7 +141,7 @@ test("usage service covers GitHub paid snapshot edge cases, missing quota payloa
         provider: "github",
         accessToken: "",
       }),
-    /No GitHub access token available/i
+    /No GitHub access token available/i,
   );
 
   globalThis.fetch = async () => new Response("server down", { status: 500 });
@@ -149,7 +151,7 @@ test("usage service covers GitHub paid snapshot edge cases, missing quota payloa
         provider: "github",
         accessToken: "gho-broken",
       }),
-    /GitHub API error: server down/i
+    /GitHub API error: server down/i,
   );
 });
 
@@ -165,7 +167,7 @@ test("usage service covers Antigravity quota parsing, exclusions and forbidden a
           allowedTiers: [{ id: "tier_ultra", isDefault: true }],
           cloudaicompanionProject: "ag-project",
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -194,7 +196,7 @@ test("usage service covers Antigravity quota parsing, exclusions and forbidden a
             },
           },
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -221,7 +223,7 @@ test("usage service covers Antigravity quota parsing, exclusions and forbidden a
   assert.equal(loadCodeAssistCall?.init.headers["Client-Metadata"], undefined);
   assert.deepEqual(
     JSON.parse(loadCodeAssistCall?.init.body).metadata,
-    getAntigravityLoadCodeAssistMetadata()
+    getAntigravityLoadCodeAssistMetadata(),
   );
 
   globalThis.fetch = async (url) => {
@@ -248,7 +250,7 @@ test("usage service prefers Antigravity retrieveUserQuota over catalog quotaInfo
           allowedTiers: [{ id: "tier_pro", isDefault: true }],
           cloudaicompanionProject: "ag-project",
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -264,7 +266,7 @@ test("usage service prefers Antigravity retrieveUserQuota over catalog quotaInfo
             },
           },
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -279,7 +281,7 @@ test("usage service prefers Antigravity retrieveUserQuota over catalog quotaInfo
             },
           ],
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -306,7 +308,7 @@ test("usage service normalizes retired Antigravity quota bucket ids", async () =
           allowedTiers: [{ id: "tier_pro", isDefault: true }],
           cloudaicompanionProject: "ag-project",
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -320,7 +322,7 @@ test("usage service normalizes retired Antigravity quota bucket ids", async () =
             "gemini-3.5-flash-extra-low": { quotaInfo: { remainingFraction: 1 } },
           },
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -332,7 +334,7 @@ test("usage service normalizes retired Antigravity quota bucket ids", async () =
             { modelId: "gemini-3.5-flash-extra-low", remainingFraction: 0.25 },
           ],
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -365,7 +367,7 @@ test("usage service retries Antigravity fetchAvailableModels across the shared f
           allowedTiers: [{ id: "tier_business", isDefault: true }],
           cloudaicompanionProject: "ag-project",
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -385,7 +387,7 @@ test("usage service retries Antigravity fetchAvailableModels across the shared f
           },
         },
       }),
-      { status: 200 }
+      { status: 200 },
     );
   };
 
@@ -398,7 +400,7 @@ test("usage service retries Antigravity fetchAvailableModels across the shared f
   // ANTIGRAVITY_BASE_URLS order changed: daily first, then cloudcode-pa, then sandbox last
   assert.deepEqual(
     quotaCalls.map((call) => call.url),
-    expectedQuotaUrls
+    expectedQuotaUrls,
   );
   assert.match(quotaCalls[2].init.headers["User-Agent"], /^Antigravity\//);
   assert.equal(usage.plan, "Business");
@@ -424,7 +426,7 @@ test("usage service manual Antigravity refresh bypasses usage TTL caches", async
       probeCalls++;
       return new Response(
         `data: ${JSON.stringify({ remainingCredits: [{ creditType: "GOOGLE_ONE_AI", creditAmount: String(100 - probeCalls) }] })}\n\n`,
-        { status: 200, headers: { "Content-Type": "text/event-stream" } }
+        { status: 200, headers: { "Content-Type": "text/event-stream" } },
       );
     }
 
@@ -438,7 +440,7 @@ test("usage service manual Antigravity refresh bypasses usage TTL caches", async
             },
           },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -485,7 +487,7 @@ test("usage service covers Antigravity tier fallbacks and non-403 upstream failu
         JSON.stringify({
           currentTier: { displayName: "Standard" },
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     return new Response("upstream failed", { status: 500 });
@@ -512,7 +514,7 @@ test("usage service covers Claude OAuth success, legacy fallback and permissions
           },
           extra_usage: { queued: true },
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     throw new Error(`unexpected fetch: ${url}`);
@@ -539,7 +541,7 @@ test("usage service covers Claude OAuth success, legacy fallback and permissions
           organization_name: "Anthropic Org",
           plan: "team",
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     if (String(url).includes("/organizations/org_123/usage")) {
@@ -577,7 +579,7 @@ test("usage service covers Claude default-plan fallback, legacy org denial and f
         JSON.stringify({
           five_hour: { utilization: 45, resets_at: new Date(Date.now() + 60_000).toISOString() },
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     throw new Error(`unexpected fetch: ${url}`);
@@ -601,7 +603,7 @@ test("usage service covers Claude default-plan fallback, legacy org denial and f
           organization_name: "Denied Org",
           plan: "enterprise",
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     return new Response("forbidden", { status: 403 });
@@ -667,7 +669,7 @@ test("usage service covers Codex, Kiro and Kimi usage parsing and error branches
             },
           ],
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -688,7 +690,7 @@ test("usage service covers Codex, Kiro and Kimi usage parsing and error branches
             },
           ],
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -716,7 +718,7 @@ test("usage service covers Codex, Kiro and Kimi usage parsing and error branches
             resets_at: new Date(Date.now() + 600_000).toISOString(),
           },
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -836,7 +838,7 @@ test("usage service covers Codex auth failures, Kiro hard failures, Kimi no-quot
         accessToken: "kiro-broken",
         providerSpecificData: { profileArn: "arn:test:broken" },
       }),
-    /Failed to fetch Kiro usage: Kiro API error \(400\): bad request/
+    /Failed to fetch Kiro usage: Kiro API error \(400\): bad request/,
   );
 
   globalThis.fetch = async (url) => {
@@ -845,7 +847,7 @@ test("usage service covers Codex auth failures, Kiro hard failures, Kimi no-quot
         JSON.stringify({
           user: { membership: { level: "LEVEL_EXPERIMENTAL" } },
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     throw new Error(`unexpected fetch: ${url}`);
@@ -907,7 +909,7 @@ test("usage service covers Qwen, Qoder, GLM, Z.AI and GLMT branches", async () =
   });
   assert.equal(
     glmMissingKey.message,
-    "API key not available. Add a coding plan API key to view usage."
+    "API key not available. Add a coding plan API key to view usage.",
   );
 
   globalThis.fetch = async (url, init = {}) => {
@@ -952,7 +954,7 @@ test("usage service covers Qwen, Qoder, GLM, Z.AI and GLMT branches", async () =
             ],
           },
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -1000,7 +1002,7 @@ test("usage service covers Qwen, Qoder, GLM, Z.AI and GLMT branches", async () =
           limits: [{ type: "TOKENS_LIMIT", percentage: "64" }],
         },
       }),
-      { status: 200 }
+      { status: 200 },
     );
   };
   const glmCn: any = await usageService.getUsageForProvider({
@@ -1019,7 +1021,7 @@ test("usage service covers Qwen, Qoder, GLM, Z.AI and GLMT branches", async () =
         provider: "glm",
         apiKey: "glm-bad",
       }),
-    /Invalid API key/
+    /Invalid API key/,
   );
 });
 
@@ -1041,7 +1043,7 @@ test("GLM usage maps unit=6 one-week token limits to the weekly quota window", a
           ],
         },
       }),
-      { status: 200 }
+      { status: 200 },
     );
 
   const usage: any = await usageService.getUsageForProvider({
@@ -1093,7 +1095,7 @@ test("usage service covers MiniMax usage parsing, documented endpoint fallback a
             },
           ],
         }),
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -1105,7 +1107,7 @@ test("usage service covers MiniMax usage parsing, documented endpoint fallback a
             status_msg: "token plan api key invalid",
           },
         }),
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -1122,7 +1124,7 @@ test("usage service covers MiniMax usage parsing, documented endpoint fallback a
     [
       "https://www.minimax.io/v1/token_plan/remains",
       "https://api.minimax.io/v1/api/openplatform/coding_plan/remains",
-    ]
+    ],
   );
   assert.equal(usage.plan, "Lite");
   assert.equal(usage.quotas["session (5h)"].used, 400);
@@ -1162,7 +1164,7 @@ test("usage service treats MiniMax token-plan counts as used usage", async () =>
           },
         ],
       }),
-      { status: 200 }
+      { status: 200 },
     );
   };
 
@@ -1200,7 +1202,7 @@ test("usage helper branches cover reset parsing, GitHub quota math, and plan inf
       remainingPercentage: 25,
       resetAt: fixedDate.toISOString(),
       unlimited: false,
-    }
+    },
   );
   assert.deepEqual(__testing.formatGitHubQuotaSnapshot({ total: 10, used: 4 }), {
     used: 4,
@@ -1230,16 +1232,16 @@ test("usage helper branches cover reset parsing, GitHub quota math, and plan inf
   assert.equal(
     __testing.inferGitHubPlanName(
       { access_type_sku: "copilot_pro_plus" },
-      { used: 0, total: 0, resetAt: null, unlimited: false }
+      { used: 0, total: 0, resetAt: null, unlimited: false },
     ),
-    "Copilot Pro+"
+    "Copilot Pro+",
   );
   assert.equal(
     __testing.inferGitHubPlanName(
       { copilot_plan: "enterprise" },
-      { used: 0, total: 0, resetAt: null, unlimited: false }
+      { used: 0, total: 0, resetAt: null, unlimited: false },
     ),
-    "Copilot Enterprise"
+    "Copilot Enterprise",
   );
   assert.equal(
     __testing.inferGitHubPlanName(
@@ -1247,36 +1249,36 @@ test("usage helper branches cover reset parsing, GitHub quota math, and plan inf
         copilot_plan: "individual",
         monthly_quotas: { premium_interactions: 300 },
       },
-      { used: 10, total: 300, resetAt: null, unlimited: false }
+      { used: 10, total: 300, resetAt: null, unlimited: false },
     ),
-    "Copilot Pro"
+    "Copilot Pro",
   );
   assert.equal(
     __testing.inferGitHubPlanName(
       {
         monthly_quotas: { premium_interactions: 300 },
       },
-      { used: 10, total: 300, resetAt: null, unlimited: false }
+      { used: 10, total: 300, resetAt: null, unlimited: false },
     ),
-    "Copilot Business"
+    "Copilot Business",
   );
   assert.equal(
     __testing.inferGitHubPlanName(
       {
         monthly_quotas: { chat: 50 },
       },
-      null
+      null,
     ),
-    "Copilot Free"
+    "Copilot Free",
   );
   assert.equal(
     __testing.inferGitHubPlanName(
       {
         access_type_sku: "student_seat",
       },
-      null
+      null,
     ),
-    "Copilot Student"
+    "Copilot Student",
   );
   assert.equal(__testing.inferGitHubPlanName({}, null), "GitHub Copilot");
 });
@@ -1285,7 +1287,7 @@ test("usage helper branches cover Antigravity plan label fallbacks", () => {
   assert.equal(__testing.getAntigravityPlanLabel(null), "Free");
   assert.equal(
     __testing.getMiniMaxPlanLabel({}, [{ current_interval_total_count: 1500 }]),
-    "Starter"
+    "Starter",
   );
   assert.equal(__testing.getMiniMaxPlanLabel({}, [{ current_interval_total_count: 4500 }]), "Plus");
   assert.equal(__testing.getMiniMaxPlanLabel({}, [{ current_interval_total_count: 15000 }]), "Max");
@@ -1294,45 +1296,45 @@ test("usage helper branches cover Antigravity plan label fallbacks", () => {
       paidTier: { name: "Google One AI Premium" },
       currentTier: { id: "free-tier" },
     }),
-    "Pro"
+    "Pro",
   );
   assert.equal(
     __testing.getAntigravityPlanLabel({
       currentTier: { id: "tier_google_one_ai_pro" },
       allowedTiers: [{ id: "free-tier", isDefault: true }],
     }),
-    "Pro"
+    "Pro",
   );
   assert.equal(
     __testing.getAntigravityPlanLabel({
       allowedTiers: [{ id: "tier_pro", isDefault: true }],
     }),
-    "Pro"
+    "Pro",
   );
   assert.equal(
     __testing.getAntigravityPlanLabel({
       currentTier: { displayName: "Standard" },
     }),
-    "Business"
+    "Business",
   );
   assert.equal(
     __testing.getAntigravityPlanLabel({
       currentTier: { id: "tier_legacy" },
     }),
-    "Free"
+    "Free",
   );
   assert.equal(
     __testing.getAntigravityPlanLabel({
       currentTier: { name: "custom sky" },
     }),
-    "Custom sky"
+    "Custom sky",
   );
   assert.equal(
     __testing.getAntigravityPlanLabel(
       { currentTier: { name: "TIER_UNKNOWN_CUSTOM" } },
-      { allowedTiers: [{ id: "tier_pro", isDefault: true }] }
+      { allowedTiers: [{ id: "tier_pro", isDefault: true }] },
     ),
-    "Pro"
+    "Pro",
   );
 });
 
@@ -1364,7 +1366,7 @@ test("usage service covers NanoGPT PRO weekly token quota, FREE plan, auth denia
         },
         state: "active",
       }),
-      { status: 200 }
+      { status: 200 },
     );
   };
 
@@ -1393,7 +1395,7 @@ test("usage service covers NanoGPT PRO weekly token quota, FREE plan, auth denia
         limits: {},
         state: "cancelled",
       }),
-      { status: 200 }
+      { status: 200 },
     );
   };
 
@@ -1438,7 +1440,7 @@ test("usage service opencode happy path returns plan and three quota windows", a
           window_monthly: { used: 25.0, limit: 60.0, reset_at: null },
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const result: any = await usageService.getUsageForProvider({
@@ -1485,11 +1487,11 @@ test("usage service opencode catch-block uses sanitizeErrorMessage (no raw stack
   // and replaces absolute paths on the first line with <path>.
   assert.ok(
     !sanitized.includes("at /home"),
-    `sanitized message must not contain 'at /home', got: ${sanitized}`
+    `sanitized message must not contain 'at /home', got: ${sanitized}`,
   );
   assert.ok(
     !sanitized.includes(".ts:42"),
-    `sanitized message must not contain source line refs, got: ${sanitized}`
+    `sanitized message must not contain source line refs, got: ${sanitized}`,
   );
 
   // Confirm the formatted catch-block message would also be clean.
@@ -1497,6 +1499,6 @@ test("usage service opencode catch-block uses sanitizeErrorMessage (no raw stack
   assert.match(catchBlockOutput, /^OpenCode error:/);
   assert.ok(
     !catchBlockOutput.includes("at /"),
-    `catch-block message must not leak stack paths, got: ${catchBlockOutput}`
+    `catch-block message must not leak stack paths, got: ${catchBlockOutput}`,
   );
 });

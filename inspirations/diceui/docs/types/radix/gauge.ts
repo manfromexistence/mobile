@@ -100,8 +100,6 @@ export interface GaugeTrackProps extends EmptyProps<"path"> {}
 
 export interface GaugeRangeProps extends EmptyProps<"path"> {}
 
-export interface GaugeValueTextProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface GaugeValueTextProps extends EmptyProps<"div">, CompositionProps {}
 
 export interface GaugeLabelProps extends EmptyProps<"div">, CompositionProps {}

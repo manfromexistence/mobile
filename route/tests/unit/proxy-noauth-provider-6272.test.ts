@@ -33,7 +33,7 @@ test("#6272: resolveProxyForConnection('noauth', ...) honors a provider-level pr
   assert.equal(
     resolved?.proxy?.host,
     "127.0.0.1",
-    `expected the mimocode provider-level proxy to be honored, got level=${resolved?.level} proxy=${JSON.stringify(resolved?.proxy)}`
+    `expected the mimocode provider-level proxy to be honored, got level=${resolved?.level} proxy=${JSON.stringify(resolved?.proxy)}`,
   );
   assert.equal(resolved?.level, "provider");
   assert.equal(resolved?.levelId, "mimocode");

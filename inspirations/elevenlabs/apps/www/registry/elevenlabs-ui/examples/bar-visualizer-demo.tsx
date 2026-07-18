@@ -1,22 +1,19 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 
-import {
-  BarVisualizer,
-  type AgentState,
-} from "@/registry/elevenlabs-ui/ui/bar-visualizer"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
+import { BarVisualizer, type AgentState } from "@/registry/elevenlabs-ui/ui/bar-visualizer";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/registry/elevenlabs-ui/ui/card"
+} from "@/registry/elevenlabs-ui/ui/card";
 
 export default function BarVisualizerDemo() {
-  const [state, setState] = useState<AgentState>("listening")
+  const [state, setState] = useState<AgentState>("listening");
 
   return (
     <Card className="">
@@ -77,5 +74,5 @@ export default function BarVisualizerDemo() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

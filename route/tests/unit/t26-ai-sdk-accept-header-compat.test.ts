@@ -140,6 +140,6 @@ test("T26: sourceFormat=openai-responses applies spec default (stream=false when
   assert.equal(resolveStreamFlag(undefined, "text/event-stream", "openai-responses"), true);
   assert.equal(
     resolveStreamFlag(undefined, "application/json, text/event-stream", "openai-responses"),
-    true
+    true,
   );
 });

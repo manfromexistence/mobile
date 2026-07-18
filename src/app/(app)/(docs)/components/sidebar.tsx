@@ -2,42 +2,38 @@
  * This component is inspired by Devouring Details and Skiper UI.
  */
 
-"use client"
+"use client";
 
-import { motion } from "motion/react"
-import type { Route } from "next"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { memo, useEffect, useRef, useState } from "react"
-import { useHotkeys } from "react-hotkeys-hook"
-import { Button } from "@/components/base/ui/button"
-import { Kbd } from "@/components/ui/kbd"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
+import { motion } from "motion/react";
+import type { Route } from "next";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { memo, useEffect, useRef, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import { Button } from "@/components/base/ui/button";
+import { Kbd } from "@/components/ui/kbd";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
-import type { SidebarIconHandle } from "./sidebar-icon"
-import { SidebarIcon } from "./sidebar-icon"
+import type { SidebarIconHandle } from "./sidebar-icon";
+import { SidebarIcon } from "./sidebar-icon";
 
-const DEFAULT_SIDEBAR_OPEN = true
+const DEFAULT_SIDEBAR_OPEN = true;
 
 export function Sidebar({ children }: { children: React.ReactNode }) {
-  const [isOpen, setIsOpen] = useState(DEFAULT_SIDEBAR_OPEN)
+  const [isOpen, setIsOpen] = useState(DEFAULT_SIDEBAR_OPEN);
 
-  const sidebarIconref = useRef<SidebarIconHandle>(null)
+  const sidebarIconref = useRef<SidebarIconHandle>(null);
 
-  useHotkeys("s", () => setIsOpen((prev) => !prev))
+  useHotkeys("s", () => setIsOpen((prev) => !prev));
 
   useEffect(() => {
     if (isOpen) {
-      sidebarIconref.current?.startAnimation()
+      sidebarIconref.current?.startAnimation();
     } else {
-      sidebarIconref.current?.stopAnimation()
+      sidebarIconref.current?.stopAnimation();
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   return (
     <div
@@ -45,7 +41,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         "[--sidebar-width:--spacing(60)]",
         "[--sidebar-radius:var(--radius-xl)]",
         "[--sidebar-top:calc(var(--header-height)+(--spacing(12))+(--spacing(0.75)))]",
-        "sticky top-(--sidebar-top) isolate flex flex-col max-xl:hidden"
+        "sticky top-(--sidebar-top) isolate flex flex-col max-xl:hidden",
       )}
     >
       <Tooltip>
@@ -57,7 +53,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
                 "[--trigger-inset:--spacing(1.5)]",
                 "[--trigger-radius:calc(var(--sidebar-radius)-var(--trigger-inset)+1px)]",
                 "absolute top-(--trigger-inset) left-(--trigger-inset) z-10 size-7 rounded-(--trigger-radius) border-none",
-                "data-[sidebar-open=false]:inset-ring-1 data-[sidebar-open=false]:inset-ring-border"
+                "data-[sidebar-open=false]:inset-ring-1 data-[sidebar-open=false]:inset-ring-border",
               )}
               variant="ghost"
               size="icon-sm"
@@ -84,7 +80,7 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
           "flex flex-col rounded-(--sidebar-radius) border bg-background",
           "h-[calc(100svh-var(--sidebar-top)-var(--fade-bottom-height))] w-(--sidebar-width)",
           "-translate-x-[calc(var(--sidebar-width)-1px)] data-open:translate-x-0",
-          "transition-[translate] duration-350 ease-[cubic-bezier(0.24,0.88,0.28,0.92)]"
+          "transition-[translate] duration-350 ease-[cubic-bezier(0.24,0.88,0.28,0.92)]",
         )}
         tabIndex={isOpen ? 0 : -1}
         aria-hidden={!isOpen}
@@ -94,23 +90,23 @@ export function Sidebar({ children }: { children: React.ReactNode }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 type MenuItem<T extends string = string> = {
-  title: string
-  href: T
-}
+  title: string;
+  href: T;
+};
 
 export function SidebarContent({ items }: { items: MenuItem<Route>[] }) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
-  const itemActiveRef = useRef<HTMLAnchorElement | null>(null)
+  const itemActiveRef = useRef<HTMLAnchorElement | null>(null);
 
   // Scroll active item into view on mount
   useEffect(() => {
-    itemActiveRef.current?.scrollIntoView({ block: "center" })
-  }, [])
+    itemActiveRef.current?.scrollIntoView({ block: "center" });
+  }, []);
 
   return (
     <div
@@ -132,16 +128,16 @@ export function SidebarContent({ items }: { items: MenuItem<Route>[] }) {
         />
       ))}
     </div>
-  )
+  );
 }
 
-const MotionLink = motion.create(Link)
+const MotionLink = motion.create(Link);
 
 const lineVariants = {
   normal: { width: 24 },
   active: { width: 40 },
   hover: { width: 40 },
-}
+};
 
 const SidebarMenuItem = memo(function SidebarMenuItem({
   ref,
@@ -150,9 +146,9 @@ const SidebarMenuItem = memo(function SidebarMenuItem({
   isActive = false,
   isLast = false,
 }: MenuItem<Route> & {
-  ref?: React.Ref<HTMLAnchorElement>
-  isActive?: boolean
-  isLast?: boolean
+  ref?: React.Ref<HTMLAnchorElement>;
+  isActive?: boolean;
+  isLast?: boolean;
 }) {
   return (
     <>
@@ -182,5 +178,5 @@ const SidebarMenuItem = memo(function SidebarMenuItem({
         </>
       )}
     </>
-  )
-})
+  );
+});

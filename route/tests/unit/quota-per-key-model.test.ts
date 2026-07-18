@@ -84,7 +84,13 @@ function makePool() {
 // ---------------------------------------------------------------------------
 test("per-(key,model) cap — keyA blocked on model M after N requests", async () => {
   const pool = makePool();
-  setModelCap({ poolId: pool.id, apiKeyId: KEY_A, model: MODEL_M, capValue: CAP_N, capUnit: "requests" });
+  setModelCap({
+    poolId: pool.id,
+    apiKeyId: KEY_A,
+    model: MODEL_M,
+    capValue: CAP_N,
+    capUnit: "requests",
+  });
 
   // Simulate CAP_N prior consumptions
   for (let i = 0; i < CAP_N; i++) {
@@ -118,7 +124,13 @@ test("per-(key,model) cap — keyA blocked on model M after N requests", async (
 // ---------------------------------------------------------------------------
 test("per-(key,model) cap — keyA blocked on M, still allowed on M2 same pool", async () => {
   const pool = makePool();
-  setModelCap({ poolId: pool.id, apiKeyId: KEY_A, model: MODEL_M, capValue: 1, capUnit: "requests" });
+  setModelCap({
+    poolId: pool.id,
+    apiKeyId: KEY_A,
+    model: MODEL_M,
+    capValue: 1,
+    capUnit: "requests",
+  });
 
   // Consume the single request cap on model M
   await recordConsumption({
@@ -182,10 +194,11 @@ test("per-(key,model) cap — EPSILON cap value → ignored, request allowed", a
 
   // Insert a placeholder cap directly (Number.EPSILON > 0 passes DB CHECK constraint
   // but enforce.ts skips it: !(capValue > Number.EPSILON) → true for EPSILON).
-  core.getDbInstance()
+  core
+    .getDbInstance()
     .prepare(
       `INSERT INTO quota_allocation_model_caps (pool_id, api_key_id, model, cap_value, cap_unit)
-       VALUES (?, ?, ?, ?, ?)`
+       VALUES (?, ?, ?, ?, ?)`,
     )
     .run(pool.id, KEY_A, MODEL_M, Number.EPSILON, "requests");
 

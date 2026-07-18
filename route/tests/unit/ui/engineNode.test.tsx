@@ -28,8 +28,9 @@ vi.mock("@xyflow/react", async () => {
 
 // ── Import after mocks ─────────────────────────────────────────────────────
 
-const { EngineNode } =
-  await import("@/app/(dashboard)/dashboard/compression/studio/nodes/EngineNode");
+const { EngineNode } = await import(
+  "@/app/(dashboard)/dashboard/compression/studio/nodes/EngineNode"
+);
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 

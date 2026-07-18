@@ -1,7 +1,7 @@
-import './LandingLoader.css';
+import "./LandingLoader.css";
 
 const LandingLoader = ({ hiding }) => (
-  <div className={`ln-loader${hiding ? ' ln-loader--hide' : ''}`}>
+  <div className={`ln-loader${hiding ? " ln-loader--hide" : ""}`}>
     <svg
       className="ln-loader-logo"
       width="40"

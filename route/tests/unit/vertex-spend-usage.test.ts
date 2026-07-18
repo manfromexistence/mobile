@@ -28,12 +28,12 @@ function insertUsage(
   model: string,
   tokensIn: number,
   tokensOut: number,
-  success = 1
+  success = 1,
 ) {
   const db = core.getDbInstance();
   db.prepare(
     `INSERT INTO usage_history (provider, model, connection_id, tokens_input, tokens_output, success, timestamp)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
   ).run(provider, model, connectionId, tokensIn, tokensOut, success, new Date().toISOString());
 }
 
@@ -65,7 +65,7 @@ describe("vertex self-tracked spend", () => {
     assert.equal(
       requests,
       2,
-      "only the two successful vertex rows count (failed + vertex-partner + other-conn excluded)"
+      "only the two successful vertex rows count (failed + vertex-partner + other-conn excluded)",
     );
     assert.ok(Number.isFinite(costUsd) && costUsd >= 0, "cost is a finite, non-negative number");
   });

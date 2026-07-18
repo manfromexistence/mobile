@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Box,
   Flex,
@@ -9,75 +9,81 @@ import {
   Portal,
   Select,
   Text,
-  createListCollection
-} from '@chakra-ui/react';
-import { Grid as RVGrid, AutoSizer, WindowScroller } from 'react-virtualized';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-import { Link as RouterLink } from 'react-router-dom';
-import { FiSearch, FiTrash2, FiX } from 'react-icons/fi';
-import { RiHeartFill, RiHeartLine } from 'react-icons/ri';
-import { toast } from 'sonner';
-import { componentMetadata } from '../../constants/Information';
-import { fuzzyMatch } from '../../utils/fuzzy';
+  createListCollection,
+} from "@chakra-ui/react";
+import { Grid as RVGrid, AutoSizer, WindowScroller } from "react-virtualized";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { Link as RouterLink } from "react-router-dom";
+import { FiSearch, FiTrash2, FiX } from "react-icons/fi";
+import { RiHeartFill, RiHeartLine } from "react-icons/ri";
+import { toast } from "sonner";
+import { componentMetadata } from "../../constants/Information";
+import { fuzzyMatch } from "../../utils/fuzzy";
 import {
   getSavedComponents,
   isComponentSaved,
   removeSavedComponent,
-  toggleSavedComponent
-} from '../../utils/favorites';
+  toggleSavedComponent,
+} from "../../utils/favorites";
 // import { ArrowRightIcon } from 'lucide-react';
 // import Aurora from '../../content/Backgrounds/Aurora/Aurora';
-import { colors } from '../../constants/colors';
-import { NEW } from '../../constants/Categories';
+import { colors } from "../../constants/colors";
+import { NEW } from "../../constants/Categories";
 
 const CARD_RADIUS = 16;
 
 const FAV_BTN_STYLE = {
-  size: 'xs',
-  variant: 'unstyled',
-  borderRadius: '8px',
-  position: 'absolute',
-  top: '8px',
-  right: '8px',
+  size: "xs",
+  variant: "unstyled",
+  borderRadius: "8px",
+  position: "absolute",
+  top: "8px",
+  right: "8px",
   zIndex: 2,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  w: '28px',
-  h: '28px',
-  minW: 'unset',
-  bg: 'rgba(0,0,0,0.35)',
-  backdropFilter: 'blur(8px)',
-  border: '1px solid rgba(255,255,255,0.08)',
-  transition: 'all 0.2s ease',
-  _focus: { opacity: 1, pointerEvents: 'auto' },
-  _hover: { bg: 'rgba(0,0,0,0.55)', transform: 'scale(1.1)' }
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  w: "28px",
+  h: "28px",
+  minW: "unset",
+  bg: "rgba(0,0,0,0.35)",
+  backdropFilter: "blur(8px)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  transition: "all 0.2s ease",
+  _focus: { opacity: 1, pointerEvents: "auto" },
+  _hover: { bg: "rgba(0,0,0,0.55)", transform: "scale(1.1)" },
 };
 
 const PILL_BTN_STYLE = {
   px: 4,
-  h: '36px',
-  borderRadius: '10px',
-  cursor: 'pointer',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
-  transition: 'border-color 0.2s ease, background 0.2s ease',
-  color: '#fff',
-  fontSize: '13px',
+  h: "36px",
+  borderRadius: "10px",
+  cursor: "pointer",
+  border: "1px solid rgba(255, 255, 255, 0.08)",
+  transition: "border-color 0.2s ease, background 0.2s ease",
+  color: "#fff",
+  fontSize: "13px",
   fontWeight: 500,
-  bg: 'rgba(18, 15, 23, 0.45)',
-  backdropFilter: 'blur(32px) saturate(1.3)',
-  _hover: { borderColor: 'rgba(255,255,255,0.15)', background: 'rgba(18, 15, 23, 0.55)' }
+  bg: "rgba(18, 15, 23, 0.45)",
+  backdropFilter: "blur(32px) saturate(1.3)",
+  _hover: { borderColor: "rgba(255,255,255,0.15)", background: "rgba(18, 15, 23, 0.55)" },
 };
 
-const slug = str => (str || '').replace(/\s+/g, '-').toLowerCase();
-const fromPascal = str =>
-  (str || '')
-    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-    .replace(/_/g, ' ')
+const slug = (str) => (str || "").replace(/\s+/g, "-").toLowerCase();
+const fromPascal = (str) =>
+  (str || "")
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/_/g, " ")
     .trim();
 
-const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = false, sorting = 'none', title }) => {
+const ComponentList = ({
+  list,
+  hasDeleteButton = false,
+  hasFavoriteButton = false,
+  sorting = "none",
+  title,
+}) => {
   const scrollRef = useRef(null);
   const GAP_PX = 16;
   const [hoveredKey, setHoveredKey] = useState(null);
@@ -104,13 +110,15 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
 
   const items = useMemo(() => {
     if (!list) return [];
-    const entries = Array.isArray(list) ? list : Object.entries(list).map(([key, meta]) => ({ key, ...meta }));
+    const entries = Array.isArray(list)
+      ? list
+      : Object.entries(list).map(([key, meta]) => ({ key, ...meta }));
 
-    const mapToItem = entry => {
+    const mapToItem = (entry) => {
       const key = entry.key ?? entry?.id ?? null;
       const meta = entry.key ? entry : (componentMetadata?.[entry] ?? {});
       const fullKey = key || entry;
-      const [cat, comp] = (fullKey || '').split('/');
+      const [cat, comp] = (fullKey || "").split("/");
       const title = fromPascal(meta?.name ?? comp);
       return {
         key: fullKey,
@@ -118,22 +126,22 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
         componentKey: comp,
         categoryLabel: fromPascal(meta?.category ?? cat),
         title,
-        description: meta?.description ?? '',
-        videoUrl: meta?.videoUrl ?? '',
+        description: meta?.description ?? "",
+        videoUrl: meta?.videoUrl ?? "",
         tags: Array.isArray(meta?.tags) ? meta.tags : [],
         docsUrl: meta?.docsUrl,
-        isNew: NEW.includes(title)
+        isNew: NEW.includes(title),
       };
     };
 
     let arr = entries
-      .filter(e => {
-        const key = (e.key ?? e)?.toString?.() ?? '';
-        return key.includes('/') && (e.key ? true : !!componentMetadata[key]);
+      .filter((e) => {
+        const key = (e.key ?? e)?.toString?.() ?? "";
+        return key.includes("/") && (e.key ? true : !!componentMetadata[key]);
       })
       .map(mapToItem);
 
-    if (sorting === 'alphabetical') {
+    if (sorting === "alphabetical") {
       // New components are sorted to the top (in NEW list order), then the rest alphabetically.
       arr = arr.sort((a, b) => {
         const aNew = NEW.indexOf(a.title);
@@ -149,35 +157,38 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
 
   const categoriesList = useMemo(() => {
     const set = new Set();
-    items.forEach(i => i.categoryLabel && set.add(i.categoryLabel));
-    return ['All Components', ...Array.from(set).sort((a, b) => a.localeCompare(b))];
+    items.forEach((i) => i.categoryLabel && set.add(i.categoryLabel));
+    return ["All Components", ...Array.from(set).sort((a, b) => a.localeCompare(b))];
   }, [items]);
-  const categories = useMemo(() => createListCollection({ items: categoriesList }), [categoriesList]);
+  const categories = useMemo(
+    () => createListCollection({ items: categoriesList }),
+    [categoriesList],
+  );
 
   const [selectedCategory, setSelectedCategory] = useState(categories.items[0]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    setSelectedCategory(prev => (categories.items.includes(prev) ? prev : categories.items[0]));
+    setSelectedCategory((prev) => (categories.items.includes(prev) ? prev : categories.items[0]));
   }, [categories.items]);
 
   const [savedSet, setSavedSet] = useState(() => new Set(getSavedComponents()));
   useEffect(() => {
     const update = () => setSavedSet(new Set(getSavedComponents()));
-    const onStorage = e => {
-      if (!e || e.key === 'savedComponents') update();
+    const onStorage = (e) => {
+      if (!e || e.key === "savedComponents") update();
     };
-    window.addEventListener('favorites:updated', update);
-    window.addEventListener('storage', onStorage);
+    window.addEventListener("favorites:updated", update);
+    window.addEventListener("storage", onStorage);
     return () => {
-      window.removeEventListener('favorites:updated', update);
-      window.removeEventListener('storage', onStorage);
+      window.removeEventListener("favorites:updated", update);
+      window.removeEventListener("storage", onStorage);
     };
   }, []);
 
   const filtered = useMemo(() => {
     const term = search.trim();
-    const all = selectedCategory === 'All Components';
+    const all = selectedCategory === "All Components";
     return items.filter(({ title, categoryLabel }) => {
       const categoryOk = all || categoryLabel === selectedCategory;
       if (!term) return categoryOk;
@@ -193,7 +204,8 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
     return () => clearTimeout(id);
   }, [search]);
 
-  const showClear = !controlsDisabled && (hasCategoryFilter || (debouncedSearch?.trim()?.length ?? 0) > 0);
+  const showClear =
+    !controlsDisabled && (hasCategoryFilter || (debouncedSearch?.trim()?.length ?? 0) > 0);
 
   useGSAP(() => {
     const slot = clearSlotRef.current;
@@ -203,26 +215,26 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
 
     if (showClear) {
       const tl = gsap.timeline();
-      tl.to(slot, { width: 40, duration: 0.3, ease: 'power2.out' }).fromTo(
+      tl.to(slot, { width: 40, duration: 0.3, ease: "power2.out" }).fromTo(
         btn,
         { scale: 0.6, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.25, ease: 'power2.out', force3D: true },
-        '<0.05'
+        { scale: 1, opacity: 1, duration: 0.25, ease: "power2.out", force3D: true },
+        "<0.05",
       );
     } else {
       const tl = gsap.timeline();
-      tl.to(btn, { scale: 0, opacity: 0, duration: 0.15, ease: 'power2.in' }).to(
+      tl.to(btn, { scale: 0, opacity: 0, duration: 0.15, ease: "power2.in" }).to(
         slot,
-        { width: 0, duration: 0.25, ease: 'power2.inOut' },
-        '+=0'
+        { width: 0, duration: 0.25, ease: "power2.inOut" },
+        "+=0",
       );
     }
   }, [showClear]);
 
-  const getColumnsForWidth = useCallback(w => (w >= 700 ? 3 : w >= 480 ? 2 : 1), []);
+  const getColumnsForWidth = useCallback((w) => (w >= 700 ? 3 : w >= 480 ? 2 : 1), []);
 
   const clearFilters = () => {
-    setSearch('');
+    setSearch("");
     setSelectedCategory(categories.items[0]);
   };
 
@@ -278,9 +290,9 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
       <Flex
         className="page-transition-fade"
         mb={12}
-        alignItems={{ base: 'flex-start', md: 'center' }}
-        justifyContent={{ base: 'flex-start', md: 'space-between' }}
-        direction={{ base: 'column', md: 'row' }}
+        alignItems={{ base: "flex-start", md: "center" }}
+        justifyContent={{ base: "flex-start", md: "space-between" }}
+        direction={{ base: "column", md: "row" }}
         gap={4}
       >
         {title ? (
@@ -290,23 +302,23 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
         ) : null}
 
         <Flex
-          direction={{ base: 'column', md: 'row' }}
+          direction={{ base: "column", md: "row" }}
           alignItems="center"
           position="relative"
-          left={{ base: 0, md: '6px' }}
+          left={{ base: 0, md: "6px" }}
           justifyContent="flex-end"
           gap={{ base: 2, md: 0 }}
-          w={{ base: '100%', md: 'auto' }}
+          w={{ base: "100%", md: "auto" }}
           opacity={controlsDisabled ? 0.5 : 1}
         >
           <InputGroup
             startElement={<Icon as={FiSearch} color="rgba(255,255,255,0.4)" fontSize="14px" />}
-            w={{ base: '100%', md: '180px' }}
+            w={{ base: "100%", md: "180px" }}
             mr={{ base: 0, md: 2 }}
           >
             <Input
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Search..."
               h="36px"
               borderRadius="10px"
@@ -318,7 +330,7 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
               fontWeight={500}
               disabled={controlsDisabled}
               tabIndex={controlsDisabled ? -1 : 0}
-              onFocus={e => {
+              onFocus={(e) => {
                 if (controlsDisabled) {
                   try {
                     e.target.blur();
@@ -327,11 +339,15 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
                   }
                 }
               }}
-              pointerEvents={controlsDisabled ? 'none' : 'auto'}
-              _focus={{ borderColor: 'rgba(255,255,255,0.15)', boxShadow: 'none', outline: 'none' }}
-              _focusVisible={{ boxShadow: 'none', outline: 'none', borderColor: 'rgba(255,255,255,0.15)' }}
-              _hover={{ borderColor: 'rgba(255,255,255,0.15)' }}
-              _placeholder={{ color: 'rgba(255,255,255,0.3)', fontWeight: 500 }}
+              pointerEvents={controlsDisabled ? "none" : "auto"}
+              _focus={{ borderColor: "rgba(255,255,255,0.15)", boxShadow: "none", outline: "none" }}
+              _focusVisible={{
+                boxShadow: "none",
+                outline: "none",
+                borderColor: "rgba(255,255,255,0.15)",
+              }}
+              _hover={{ borderColor: "rgba(255,255,255,0.15)" }}
+              _placeholder={{ color: "rgba(255,255,255,0.3)", fontWeight: 500 }}
             />
           </InputGroup>
 
@@ -340,7 +356,7 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
             value={[selectedCategory]}
             onValueChange={({ value }) => setSelectedCategory(value[0])}
             size="sm"
-            width={{ base: '100%', md: '180px' }}
+            width={{ base: "100%", md: "180px" }}
             disabled={controlsDisabled}
           >
             <Select.HiddenSelect name="component-list-category-filter" />
@@ -353,16 +369,22 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
                 rounded="10px"
                 h="36px"
                 fontWeight={500}
-                cursor={controlsDisabled ? 'default' : 'pointer'}
+                cursor={controlsDisabled ? "default" : "pointer"}
                 transition="border-color 0.2s ease, background 0.2s ease"
                 _hover={
                   controlsDisabled
                     ? undefined
-                    : { borderColor: 'rgba(255,255,255,0.15)', background: 'rgba(18, 15, 23, 0.55)' }
+                    : {
+                        borderColor: "rgba(255,255,255,0.15)",
+                        background: "rgba(18, 15, 23, 0.55)",
+                      }
                 }
                 w="full"
               >
-                <Select.ValueText color={controlsDisabled ? 'rgba(255,255,255,0.3)' : '#fff'} pl={2}>
+                <Select.ValueText
+                  color={controlsDisabled ? "rgba(255,255,255,0.3)" : "#fff"}
+                  pl={2}
+                >
                   {selectedCategory}
                 </Select.ValueText>
                 <Select.IndicatorGroup>
@@ -377,12 +399,12 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
                   backdropFilter="blur(32px) saturate(1.3)"
                   border="1px solid rgba(255, 255, 255, 0.08)"
                   borderRadius="12px"
-                  w={{ base: '100%', md: '180px' }}
+                  w={{ base: "100%", md: "180px" }}
                   px={1.5}
                   py={1.5}
                   boxShadow="0 8px 32px rgba(0,0,0,0.4)"
                 >
-                  {categories.items.map(cat => (
+                  {categories.items.map((cat) => (
                     <Select.Item
                       key={cat}
                       item={cat}
@@ -391,7 +413,7 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
                       py={2}
                       fontSize="13px"
                       cursor="pointer"
-                      _highlighted={{ bg: 'rgba(255,255,255,0.06)' }}
+                      _highlighted={{ bg: "rgba(255,255,255,0.06)" }}
                     >
                       {cat}
                     </Select.Item>
@@ -404,10 +426,10 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
           <Box
             ref={clearSlotRef}
             marginLeft={1.5}
-            display={{ base: 'none', md: 'flex' }}
+            display={{ base: "none", md: "flex" }}
             alignItems="center"
             justifyContent="center"
-            style={{ width: 0, overflow: 'hidden' }}
+            style={{ width: 0, overflow: "hidden" }}
           >
             <IconButton
               ref={clearBtnRef}
@@ -423,12 +445,12 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
               border="1px solid rgba(255, 255, 255, 0.08)"
               backdropFilter="blur(32px) saturate(1.3)"
               opacity={0}
-              style={{ transformOrigin: '50% 50%' }}
-              pointerEvents={showClear ? 'auto' : 'none'}
+              style={{ transformOrigin: "50% 50%" }}
+              pointerEvents={showClear ? "auto" : "none"}
               tabIndex={showClear ? 0 : -1}
-              _hover={{ borderColor: 'rgba(255,255,255,0.15)', bg: 'rgba(18, 15, 23, 0.55)' }}
-              _focus={{ boxShadow: 'none', outline: 'none' }}
-              _focusVisible={{ boxShadow: 'none', outline: 'none' }}
+              _hover={{ borderColor: "rgba(255,255,255,0.15)", bg: "rgba(18, 15, 23, 0.55)" }}
+              _focus={{ boxShadow: "none", outline: "none" }}
+              _focusVisible={{ boxShadow: "none", outline: "none" }}
             >
               <Icon as={FiX} />
             </IconButton>
@@ -438,13 +460,15 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
 
       <Box mt={4}>
         {filtered.length === 0 ? (
-          <Box role="status" p={6} mt={'6em'} textAlign="center" position="relative">
+          <Box role="status" p={6} mt={"6em"} textAlign="center" position="relative">
             <Box position="relative">
               <Text color="#fff" fontWeight={500} fontSize="24px" mb={1}>
-                {items.length > 0 ? 'No results...' : 'Nothing here yet...'}
+                {items.length > 0 ? "No results..." : "Nothing here yet..."}
               </Text>
               <Text color={colors.textMuted} fontSize="16px" mb={8}>
-                {items.length > 0 ? 'Try adjusting your filters' : 'Tap the heart on any component to save it'}
+                {items.length > 0
+                  ? "Try adjusting your filters"
+                  : "Tap the heart on any component to save it"}
               </Text>
 
               <Flex gap={2} justify="center" wrap="wrap">
@@ -471,7 +495,7 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
           </Box>
         ) : (
           <>
-            <WindowScroller scrollElement={typeof window !== 'undefined' ? window : undefined}>
+            <WindowScroller scrollElement={typeof window !== "undefined" ? window : undefined}>
               {({ height, isScrolling, onChildScroll, scrollTop }) => (
                 <Box>
                   <AutoSizer disableHeight>
@@ -496,7 +520,7 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
                           ...style,
                           width: columnWidth,
                           paddingRight: isLastCol ? 0 : GAP_PX,
-                          paddingBottom: GAP_PX
+                          paddingBottom: GAP_PX,
                         };
                         return (
                           <div key={key} style={cellStyle}>
@@ -514,9 +538,14 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
                               textDecoration="none"
                               overflow="hidden"
                               transition="border-color 0.2s ease"
-                              _hover={{ textDecoration: 'none', borderColor: 'rgba(255,255,255,0.1)' }}
+                              _hover={{
+                                textDecoration: "none",
+                                borderColor: "rgba(255,255,255,0.1)",
+                              }}
                               onMouseEnter={() => setHoveredKey(item.key)}
-                              onMouseLeave={() => setHoveredKey(prev => (prev === item.key ? null : prev))}
+                              onMouseLeave={() =>
+                                setHoveredKey((prev) => (prev === item.key ? null : prev))
+                              }
                             >
                               <Box position="relative" borderRadius="0px" overflow="hidden">
                                 <LazyCardMedia
@@ -554,24 +583,31 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
                                     aria-label="Remove from favorites"
                                     {...FAV_BTN_STYLE}
                                     opacity={hoveredKey === item.key ? 1 : 0}
-                                    pointerEvents={hoveredKey === item.key ? 'auto' : 'none'}
+                                    pointerEvents={hoveredKey === item.key ? "auto" : "none"}
                                     color="rgba(255,255,255,0.85)"
-                                    _hover={{ bg: 'rgba(0,0,0,0.55)', transform: 'scale(1.1)', color: '#ef4444' }}
-                                    onClick={e => {
+                                    _hover={{
+                                      bg: "rgba(0,0,0,0.55)",
+                                      transform: "scale(1.1)",
+                                      color: "#ef4444",
+                                    }}
+                                    onClick={(e) => {
                                       e.preventDefault();
                                       e.stopPropagation();
                                       const { clientX, clientY } = e;
                                       const next = removeSavedComponent(item.key);
                                       setSavedSet(new Set(next));
 
-                                      if (e.currentTarget && typeof e.currentTarget.blur === 'function') {
+                                      if (
+                                        e.currentTarget &&
+                                        typeof e.currentTarget.blur === "function"
+                                      ) {
                                         e.currentTarget.blur();
                                       }
 
-                                      if (typeof window !== 'undefined') {
+                                      if (typeof window !== "undefined") {
                                         const schedule = window.requestAnimationFrame
                                           ? window.requestAnimationFrame
-                                          : fn => setTimeout(fn, 0);
+                                          : (fn) => setTimeout(fn, 0);
                                         schedule(() => setHoverToItemAtPoint(clientX, clientY));
                                       }
                                     }}
@@ -582,31 +618,39 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
 
                                 {!hasDeleteButton && hasFavoriteButton ? (
                                   <IconButton
-                                    aria-label={isSaved ? 'Remove from favorites' : 'Add to favorites'}
+                                    aria-label={
+                                      isSaved ? "Remove from favorites" : "Add to favorites"
+                                    }
                                     {...FAV_BTN_STYLE}
                                     opacity={isSaved || hoveredKey === item.key ? 1 : 0}
-                                    pointerEvents={hoveredKey === item.key ? 'auto' : 'none'}
-                                    color={isSaved ? '#A855F7' : 'rgba(255,255,255,0.85)'}
-                                    onClick={e => {
+                                    pointerEvents={hoveredKey === item.key ? "auto" : "none"}
+                                    color={isSaved ? "#A855F7" : "rgba(255,255,255,0.85)"}
+                                    onClick={(e) => {
                                       e.preventDefault();
                                       e.stopPropagation();
                                       const { saved, list: next } = toggleSavedComponent(item.key);
                                       setSavedSet(new Set(next));
-                                      toast?.[saved ? 'success' : 'error']?.(
+                                      toast?.[saved ? "success" : "error"]?.(
                                         <>
-                                          {saved ? 'Added' : 'Removed'}{' '}
+                                          {saved ? "Added" : "Removed"}{" "}
                                           <span style={{ color: colors.accent, fontWeight: 700 }}>
                                             &lt;{item.title} /&gt;
-                                          </span>{' '}
-                                          {saved ? 'to favorites' : 'from favorites'}
-                                        </>
+                                          </span>{" "}
+                                          {saved ? "to favorites" : "from favorites"}
+                                        </>,
                                       );
-                                      if (e.currentTarget && typeof e.currentTarget.blur === 'function') {
+                                      if (
+                                        e.currentTarget &&
+                                        typeof e.currentTarget.blur === "function"
+                                      ) {
                                         e.currentTarget.blur();
                                       }
                                     }}
                                   >
-                                    <Icon as={isSaved ? RiHeartFill : RiHeartLine} fontSize="13px" />
+                                    <Icon
+                                      as={isSaved ? RiHeartFill : RiHeartLine}
+                                      fontSize="13px"
+                                    />
                                   </IconButton>
                                 ) : null}
                               </Box>
@@ -620,7 +664,12 @@ const ComponentList = ({ list, hasDeleteButton = false, hasFavoriteButton = fals
                                 >
                                   {item.title}
                                 </Text>
-                                <Text color={colors.textMuted} fontWeight={400} fontSize="12px" mt={0.5}>
+                                <Text
+                                  color={colors.textMuted}
+                                  fontWeight={400}
+                                  fontSize="12px"
+                                  mt={0.5}
+                                >
                                   {item.categoryLabel}
                                 </Text>
                               </Box>
@@ -662,9 +711,9 @@ const LazyCardMedia = ({ videoUrl, playing }) => {
 
   const show = !!videoUrl;
 
-  const base = useMemo(() => (videoUrl ? videoUrl.replace(/\.(webm|mp4)$/i, '') : ''), [videoUrl]);
-  const webm = base ? `${base}.webm` : '';
-  const mp4 = base ? `${base}.mp4` : '';
+  const base = useMemo(() => (videoUrl ? videoUrl.replace(/\.(webm|mp4)$/i, "") : ""), [videoUrl]);
+  const webm = base ? `${base}.webm` : "";
+  const mp4 = base ? `${base}.mp4` : "";
 
   useEffect(() => {
     const v = videoRef.current;
@@ -674,7 +723,7 @@ const LazyCardMedia = ({ videoUrl, playing }) => {
       const tryPlay = () => {
         try {
           const p = v.play();
-          if (p && typeof p.then === 'function') {
+          if (p && typeof p.then === "function") {
             p.catch(() => {});
           }
         } catch (e) {
@@ -686,9 +735,9 @@ const LazyCardMedia = ({ videoUrl, playing }) => {
         tryPlay();
       } else {
         const onCanPlay = () => tryPlay();
-        v.addEventListener('canplay', onCanPlay, { once: true });
+        v.addEventListener("canplay", onCanPlay, { once: true });
         return () => {
-          v.removeEventListener('canplay', onCanPlay);
+          v.removeEventListener("canplay", onCanPlay);
         };
       }
     } else {
@@ -699,7 +748,7 @@ const LazyCardMedia = ({ videoUrl, playing }) => {
       }
     }
   }, [playing]);
-  const handleLoadedMetadata = e => {
+  const handleLoadedMetadata = (e) => {
     const v = e.target;
     v.currentTime = 0.1;
   };
@@ -715,12 +764,12 @@ const LazyCardMedia = ({ videoUrl, playing }) => {
           preload="metadata"
           onLoadedMetadata={handleLoadedMetadata}
           style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            display: 'block',
-            pointerEvents: 'none',
-            mixBlendMode: 'screen'
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            display: "block",
+            pointerEvents: "none",
+            mixBlendMode: "screen",
           }}
         >
           {/* Let the browser choose the best supported source */}

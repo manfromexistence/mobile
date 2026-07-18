@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   AudioPlayerButton,
@@ -8,29 +8,27 @@ import {
   AudioPlayerTime,
   exampleTracks,
   useAudioPlayer,
-} from "@/registry/elevenlabs-ui/ui/audio-player"
-import { Card } from "@/registry/elevenlabs-ui/ui/card"
+} from "@/registry/elevenlabs-ui/ui/audio-player";
+import { Card } from "@/registry/elevenlabs-ui/ui/card";
 
 export default function Page() {
   return (
     <AudioPlayerProvider>
       <MusicPlayerDemo />
     </AudioPlayerProvider>
-  )
+  );
 }
 
 const MusicPlayerDemo = () => {
-  const player = useAudioPlayer<{ name: string }>()
+  const player = useAudioPlayer<{ name: string }>();
 
-  const track = exampleTracks[9]
+  const track = exampleTracks[9];
 
   return (
     <Card className="w-full overflow-hidden p-4">
       <div className="space-y-4">
         <div>
-          <h3 className="text-base font-semibold">
-            {player.activeItem?.data?.name || track.name}
-          </h3>
+          <h3 className="text-base font-semibold">{player.activeItem?.data?.name || track.name}</h3>
         </div>
         <div className="flex items-center gap-3">
           <AudioPlayerButton
@@ -51,5 +49,5 @@ const MusicPlayerDemo = () => {
         </div>
       </div>
     </Card>
-  )
-}
+  );
+};

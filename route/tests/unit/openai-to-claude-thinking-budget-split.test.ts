@@ -24,7 +24,7 @@ test("host re-exports fitThinkingToMaxTokens from the leaf", () => {
   const host = readFileSync(HOST, "utf8");
   assert.match(
     host,
-    /export \{ fitThinkingToMaxTokens \} from "\.\/openai-to-claude\/thinkingBudget\.ts"/
+    /export \{ fitThinkingToMaxTokens \} from "\.\/openai-to-claude\/thinkingBudget\.ts"/,
   );
 });
 

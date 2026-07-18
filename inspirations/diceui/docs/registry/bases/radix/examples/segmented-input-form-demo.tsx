@@ -2,10 +2,7 @@
 
 import * as React from "react";
 import { Button } from "@/registry/bases/radix/ui/button";
-import {
-  SegmentedInput,
-  SegmentedInputItem,
-} from "@/registry/bases/radix/ui/segmented-input";
+import { SegmentedInput, SegmentedInputItem } from "@/registry/bases/radix/ui/segmented-input";
 
 export default function SegmentedInputFormDemo() {
   const [phoneNumber, setPhoneNumber] = React.useState({
@@ -29,10 +26,7 @@ export default function SegmentedInputFormDemo() {
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
         <label className="font-medium text-sm leading-none">Phone Number</label>
-        <SegmentedInput
-          className="w-full max-w-sm"
-          aria-label="Phone number input"
-        >
+        <SegmentedInput className="w-full max-w-sm" aria-label="Phone number input">
           <SegmentedInputItem
             placeholder="+1"
             value={phoneNumber.countryCode}

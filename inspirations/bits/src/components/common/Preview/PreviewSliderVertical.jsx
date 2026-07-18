@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import '../../../css/preview-slider.css';
+import { useCallback, useEffect, useRef, useState } from "react";
+import "../../../css/preview-slider.css";
 
 const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
 const stepDecimals = (step) => {
   const s = step.toString();
-  const dot = s.indexOf('.');
+  const dot = s.indexOf(".");
   return dot === -1 ? 0 : s.length - dot - 1;
 };
 const roundToStep = (val, step, min) => {
@@ -14,14 +14,14 @@ const roundToStep = (val, step, min) => {
 };
 
 const PreviewSliderVertical = ({
-  title = '',
+  title = "",
   min = 0,
   max = 100,
   step = 1,
   value = 0,
-  valueUnit = '',
+  valueUnit = "",
   isDisabled = false,
-  onChange
+  onChange,
 }) => {
   const trackRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -33,11 +33,11 @@ const PreviewSliderVertical = ({
   const isActive = isDragging || (isHoverDevice && isHovering);
 
   useEffect(() => {
-    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
     setIsHoverDevice(mq.matches);
     const handleChange = (e) => setIsHoverDevice(e.matches);
-    mq.addEventListener('change', handleChange);
-    return () => mq.removeEventListener('change', handleChange);
+    mq.addEventListener("change", handleChange);
+    return () => mq.removeEventListener("change", handleChange);
   }, []);
 
   const computeValue = useCallback(
@@ -49,7 +49,7 @@ const PreviewSliderVertical = ({
       const raw = min + ratio * range;
       return clamp(roundToStep(raw, step, min), min, max);
     },
-    [min, max, step, range, value]
+    [min, max, step, range, value],
   );
 
   const handlePointerDown = useCallback(
@@ -60,7 +60,7 @@ const PreviewSliderVertical = ({
       setIsDragging(true);
       onChange?.(computeValue(e.clientX));
     },
-    [computeValue, onChange, isDisabled]
+    [computeValue, onChange, isDisabled],
   );
 
   const handlePointerMove = useCallback(
@@ -68,7 +68,7 @@ const PreviewSliderVertical = ({
       if (!isDragging) return;
       onChange?.(computeValue(e.clientX));
     },
-    [isDragging, computeValue, onChange]
+    [isDragging, computeValue, onChange],
   );
 
   const handlePointerUp = useCallback(() => {
@@ -80,18 +80,18 @@ const PreviewSliderVertical = ({
       if (isDisabled) return;
       let next;
       switch (e.key) {
-        case 'ArrowRight':
-        case 'ArrowUp':
+        case "ArrowRight":
+        case "ArrowUp":
           next = value + step;
           break;
-        case 'ArrowLeft':
-        case 'ArrowDown':
+        case "ArrowLeft":
+        case "ArrowDown":
           next = value - step;
           break;
-        case 'Home':
+        case "Home":
           next = min;
           break;
-        case 'End':
+        case "End":
           next = max;
           break;
         default:
@@ -100,7 +100,7 @@ const PreviewSliderVertical = ({
       e.preventDefault();
       onChange?.(clamp(roundToStep(next, step, min), min, max));
     },
-    [value, step, min, max, onChange, isDisabled]
+    [value, step, min, max, onChange, isDisabled],
   );
 
   const ticks = 9;

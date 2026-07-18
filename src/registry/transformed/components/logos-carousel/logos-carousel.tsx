@@ -1,48 +1,42 @@
-"use client"
+"use client";
 
-import type { ReactNode } from "react"
-import { Children, memo, useEffect, useMemo, useRef, useState } from "react"
-import {
-  AnimatePresence,
-  motion,
-  useInView,
-  usePageInView,
-  useReducedMotion,
-} from "motion/react"
+import type { ReactNode } from "react";
+import { Children, memo, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useInView, usePageInView, useReducedMotion } from "motion/react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-const DEFAULT_COLUMN_COUNT = 4
+const DEFAULT_COLUMN_COUNT = 4;
 
 /** How long each logo stays visible before cycling to the next one (ms). */
-const CYCLE_INTERVAL = 1600
+const CYCLE_INTERVAL = 1600;
 
 /**
  * Delay between adjacent columns within a single wave (ms). Kept smaller than
  * the enter/exit duration so neighbouring transitions overlap into a ripple.
  */
-const STAGGER_DELAY = 125
+const STAGGER_DELAY = 125;
 
-const EASE_OUT_QUAD = [0.25, 0.46, 0.45, 0.94] as const
+const EASE_OUT_QUAD = [0.25, 0.46, 0.45, 0.94] as const;
 
 /** Direction the wave sweeps across the columns. */
-type WaveDirection = "ltr" | "rtl"
+type WaveDirection = "ltr" | "rtl";
 
 export type LogosCarouselProps = {
   /** Logo elements to cycle through. Each child is rendered as a single logo. */
-  children: ReactNode
+  children: ReactNode;
   /**
    * Number of columns to spread the logos across. Capped at the number of logos.
    * @defaultValue 4
    */
-  columnCount?: number
+  columnCount?: number;
   /**
    * Direction the ripple travels: left-to-right or right-to-left.
    * @defaultValue "ltr"
    */
-  direction?: WaveDirection
-  className?: string
-}
+  direction?: WaveDirection;
+  className?: string;
+};
 
 export function LogosCarousel({
   children,
@@ -52,41 +46,38 @@ export function LogosCarousel({
 }: LogosCarouselProps) {
   const columns = useMemo(
     () => distributeLogos(Children.toArray(children), columnCount),
-    [children, columnCount]
-  )
+    [children, columnCount],
+  );
 
-  const reduceMotion = useReducedMotion() ?? false
+  const reduceMotion = useReducedMotion() ?? false;
 
-  const containerRef = useRef<HTMLDivElement>(null)
-  const isPageInView = usePageInView()
-  const isInView = useInView(containerRef, { margin: "100px" })
-  const shouldPlay = !reduceMotion && isPageInView && isInView
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isPageInView = usePageInView();
+  const isInView = useInView(containerRef, { margin: "100px" });
+  const shouldPlay = !reduceMotion && isPageInView && isInView;
 
-  const [activeIndices, setActiveIndices] = useState<number[]>(() =>
-    columns.map(() => 0)
-  )
+  const [activeIndices, setActiveIndices] = useState<number[]>(() => columns.map(() => 0));
 
-  const columnsRef = useRef(columns)
+  const columnsRef = useRef(columns);
   useEffect(() => {
-    columnsRef.current = columns
-  })
+    columnsRef.current = columns;
+  });
 
   useEffect(() => {
-    if (!shouldPlay) return
+    if (!shouldPlay) return;
 
     const advanceWave = () => {
       setActiveIndices((prev) =>
         columnsRef.current.map(
-          (column, columnIndex) =>
-            ((prev[columnIndex] ?? 0) + 1) % column.length
-        )
-      )
-    }
+          (column, columnIndex) => ((prev[columnIndex] ?? 0) + 1) % column.length,
+        ),
+      );
+    };
 
-    const beatId = setInterval(advanceWave, CYCLE_INTERVAL)
+    const beatId = setInterval(advanceWave, CYCLE_INTERVAL);
 
-    return () => clearInterval(beatId)
-  }, [shouldPlay])
+    return () => clearInterval(beatId);
+  }, [shouldPlay]);
 
   return (
     <div
@@ -98,8 +89,7 @@ export function LogosCarousel({
       }}
     >
       {columns.map((columnLogos, columnIndex) => {
-        const waveIndex =
-          direction === "rtl" ? columns.length - 1 - columnIndex : columnIndex
+        const waveIndex = direction === "rtl" ? columns.length - 1 - columnIndex : columnIndex;
 
         return (
           <LogoColumn
@@ -110,19 +100,19 @@ export function LogosCarousel({
             activeIndex={(activeIndices[columnIndex] ?? 0) % columnLogos.length}
             reduceMotion={reduceMotion}
           />
-        )
+        );
       })}
     </div>
-  )
+  );
 }
 
 type LogoColumnProps = {
-  logos: ReactNode[]
-  columnIndex: number
-  waveIndex: number
-  activeIndex: number
-  reduceMotion: boolean
-}
+  logos: ReactNode[];
+  columnIndex: number;
+  waveIndex: number;
+  activeIndex: number;
+  reduceMotion: boolean;
+};
 
 const LogoColumn = memo(function LogoColumn({
   logos,
@@ -131,15 +121,13 @@ const LogoColumn = memo(function LogoColumn({
   activeIndex,
   reduceMotion,
 }: LogoColumnProps) {
-  const swapDelay = reduceMotion ? 0 : waveIndex * (STAGGER_DELAY / 1000)
+  const swapDelay = reduceMotion ? 0 : waveIndex * (STAGGER_DELAY / 1000);
 
   return (
     <motion.div
       data-slot="logos-carousel-column"
       className="relative"
-      initial={
-        reduceMotion ? false : { opacity: 0, transform: "translateY(60%)" }
-      }
+      initial={reduceMotion ? false : { opacity: 0, transform: "translateY(60%)" }}
       animate={{ opacity: 1, transform: "translateY(0%)" }}
       transition={
         reduceMotion
@@ -192,22 +180,16 @@ const LogoColumn = memo(function LogoColumn({
         </motion.div>
       </AnimatePresence>
     </motion.div>
-  )
-})
+  );
+});
 
-function distributeLogos(
-  logos: ReactNode[],
-  columnCount: number
-): ReactNode[][] {
-  const effectiveCount = Math.min(columnCount, logos.length)
-  const columns: ReactNode[][] = Array.from(
-    { length: effectiveCount },
-    () => []
-  )
+function distributeLogos(logos: ReactNode[], columnCount: number): ReactNode[][] {
+  const effectiveCount = Math.min(columnCount, logos.length);
+  const columns: ReactNode[][] = Array.from({ length: effectiveCount }, () => []);
 
   logos.forEach((logo, index) => {
-    columns[index % effectiveCount].push(logo)
-  })
+    columns[index % effectiveCount].push(logo);
+  });
 
-  return columns
+  return columns;
 }

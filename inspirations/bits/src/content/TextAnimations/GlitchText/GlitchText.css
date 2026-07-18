@@ -15,7 +15,7 @@
   position: absolute;
   top: 0;
   color: #fff;
-  background-color: #120F17;
+  background-color: #120f17;
   overflow: hidden;
   clip-path: inset(0 0 0 0);
 }
@@ -33,7 +33,7 @@
 
 .glitch.enable-on-hover::after,
 .glitch.enable-on-hover::before {
-  content: '';
+  content: "";
   opacity: 0;
   animation: none;
 }

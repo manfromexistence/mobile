@@ -1,12 +1,8 @@
 {
   "name": "media-player-hls-demo",
   "type": "registry:example",
-  "dependencies": [
-    "hls.js"
-  ],
-  "registryDependencies": [
-    "media-player"
-  ],
+  "dependencies": ["hls.js"],
+  "registryDependencies": ["media-player"],
   "files": [
     {
       "path": "examples/media-player-hls-demo.tsx",

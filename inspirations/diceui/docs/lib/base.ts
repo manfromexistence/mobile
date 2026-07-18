@@ -60,9 +60,7 @@ export function getHasBothBases({
   if (!componentName) return false;
 
   const otherBase = base === "radix" ? "base" : "radix";
-  const prefix = url.startsWith("/docs/components/")
-    ? "/docs/components/"
-    : "/docs/utilities/";
+  const prefix = url.startsWith("/docs/components/") ? "/docs/components/" : "/docs/utilities/";
 
   return pageUrls.has(`${prefix}${otherBase}/${componentName}`);
 }

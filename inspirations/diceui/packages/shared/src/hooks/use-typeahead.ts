@@ -12,8 +12,7 @@ function findNextItem<T extends { textValue: string }>(
 ) {
   if (!search) return undefined;
 
-  const isRepeated =
-    search.length > 1 && Array.from(search).every((char) => char === search[0]);
+  const isRepeated = search.length > 1 && Array.from(search).every((char) => char === search[0]);
   const normalizedSearch = isRepeated ? (search[0] ?? "") : search;
   const currentItemIndex = currentItem ? items.indexOf(currentItem) : -1;
   let wrappedItems = wrapArray(items, Math.max(currentItemIndex, 0));
@@ -25,9 +24,7 @@ function findNextItem<T extends { textValue: string }>(
 
   const nextItem = wrappedItems.find((item) => {
     if (!item?.textValue) return false;
-    return item.textValue
-      .toLowerCase()
-      .startsWith(normalizedSearch.toLowerCase());
+    return item.textValue.toLowerCase().startsWith(normalizedSearch.toLowerCase());
   });
 
   return nextItem !== currentItem ? nextItem : undefined;
@@ -39,11 +36,7 @@ interface UseTypeaheadProps {
   immediate?: boolean;
 }
 
-function useTypeahead({
-  onSearchChange,
-  enabled = true,
-  immediate = false,
-}: UseTypeaheadProps) {
+function useTypeahead({ onSearchChange, enabled = true, immediate = false }: UseTypeaheadProps) {
   const onSearchChangeCallback = useCallbackRef(onSearchChange);
   const searchRef = React.useRef("");
   const timerRef = React.useRef(0);

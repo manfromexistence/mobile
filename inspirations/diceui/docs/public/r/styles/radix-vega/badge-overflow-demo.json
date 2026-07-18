@@ -1,10 +1,7 @@
 {
   "name": "badge-overflow-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "badge",
-    "badge-overflow"
-  ],
+  "registryDependencies": ["badge", "badge-overflow"],
   "files": [
     {
       "path": "examples/badge-overflow-demo.tsx",

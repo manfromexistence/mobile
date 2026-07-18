@@ -5,10 +5,7 @@ import { visuallyHidden } from "../lib";
 type InputValue = string[] | string;
 
 interface VisuallyHiddenInputProps<T = InputValue>
-  extends Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    "value" | "checked" | "onReset"
-  > {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "checked" | "onReset"> {
   value?: T;
   checked?: boolean;
   control: HTMLElement | null;
@@ -16,9 +13,7 @@ interface VisuallyHiddenInputProps<T = InputValue>
   onReset?: (value: T) => void;
 }
 
-export function VisuallyHiddenInput<T = InputValue>(
-  props: VisuallyHiddenInputProps<T>,
-) {
+export function VisuallyHiddenInput<T = InputValue>(props: VisuallyHiddenInputProps<T>) {
   const {
     control,
     value,
@@ -30,8 +25,7 @@ export function VisuallyHiddenInput<T = InputValue>(
     ...inputProps
   } = props;
 
-  const isCheckInput =
-    type === "checkbox" || type === "radio" || type === "switch";
+  const isCheckInput = type === "checkbox" || type === "radio" || type === "switch";
   const inputRef = React.useRef<HTMLInputElement>(null);
   const prevValue = usePrevious(type === "hidden" ? value : checked);
   const controlSize = useSize(control);
@@ -71,9 +65,7 @@ export function VisuallyHiddenInput<T = InputValue>(
   const composedStyle = React.useMemo<React.CSSProperties>(() => {
     return {
       ...style,
-      ...(controlSize?.width !== undefined && controlSize?.height !== undefined
-        ? controlSize
-        : {}),
+      ...(controlSize?.width !== undefined && controlSize?.height !== undefined ? controlSize : {}),
       border: 0,
       clip: "rect(0 0 0 0)",
       clipPath: "inset(50%)",

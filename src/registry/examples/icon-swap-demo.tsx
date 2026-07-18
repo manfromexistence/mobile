@@ -1,26 +1,23 @@
-"use client"
+"use client";
 
-import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react"
-import { useState } from "react"
+import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
+import { useState } from "react";
 
-import { Button } from "@/components/ui/button"
-import {
-  IconSwap,
-  IconSwapItem,
-} from "@/registry/transformed/components/icon-swap"
+import { Button } from "@/components/ui/button";
+import { IconSwap, IconSwapItem } from "@/registry/transformed/components/icon-swap";
 
 const ICONS = {
   sun: SunIcon,
   moon: MoonIcon,
   monitor: MonitorIcon,
-} as const
+} as const;
 
-type IconKey = keyof typeof ICONS
+type IconKey = keyof typeof ICONS;
 
 export default function IconSwapDemo() {
-  const [icon, setIcon] = useState<IconKey>("sun")
+  const [icon, setIcon] = useState<IconKey>("sun");
 
-  const Icon = ICONS[icon]
+  const Icon = ICONS[icon];
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -51,5 +48,5 @@ export default function IconSwapDemo() {
         ))}
       </div>
     </div>
-  )
+  );
 }

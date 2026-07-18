@@ -49,7 +49,7 @@ test("#5015 isAccountQuotaExhausted hydrates exhausted state from a persisted sn
   assert.equal(
     quotaCache.isAccountQuotaExhausted(connectionId),
     true,
-    "exhausted state persisted in quota_snapshots must hydrate the empty cache"
+    "exhausted state persisted in quota_snapshots must hydrate the empty cache",
   );
 });
 
@@ -57,6 +57,6 @@ test("#5015 a connection with no snapshot is not reported exhausted", () => {
   assert.equal(
     quotaCache.isAccountQuotaExhausted("conn-unknown-5015"),
     false,
-    "no snapshot → no hydration → not exhausted"
+    "no snapshot → no hydration → not exhausted",
   );
 });

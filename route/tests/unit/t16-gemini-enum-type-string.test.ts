@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { cleanJSONSchemaForAntigravity } =
-  await import("../../open-sse/translator/helpers/geminiHelper.ts");
+const { cleanJSONSchemaForAntigravity } = await import(
+  "../../open-sse/translator/helpers/geminiHelper.ts"
+);
 
 test("T16: enum-only fields gain type:string after Gemini schema cleanup", () => {
   const schema = {

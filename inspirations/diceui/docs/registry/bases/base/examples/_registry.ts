@@ -198,12 +198,7 @@ export const examples: Registry["items"] = [
   {
     name: "file-upload-chat-input-demo",
     type: "registry:example",
-    dependencies: [
-      "lucide-react",
-      "sonner",
-      "uploadthing",
-      "@uploadthing/react",
-    ],
+    dependencies: ["lucide-react", "sonner", "uploadthing", "@uploadthing/react"],
     registryDependencies: ["button", "file-upload", "textarea"],
     files: [
       {
@@ -1110,12 +1105,7 @@ export const examples: Registry["items"] = [
   {
     name: "rating-form-demo",
     type: "registry:example",
-    dependencies: [
-      "@hookform/resolvers/zod",
-      "react-hook-form",
-      "zod",
-      "sonner",
-    ],
+    dependencies: ["@hookform/resolvers/zod", "react-hook-form", "zod", "sonner"],
     registryDependencies: ["rating", "button", "form"],
     files: [
       {

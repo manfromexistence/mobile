@@ -30,8 +30,9 @@ test("host imports the helpers back from the leaf", () => {
 });
 
 test("normalizeKiroToolSchema strips empty required arrays and additionalProperties", async () => {
-  const { normalizeKiroToolSchema } =
-    await import("../../open-sse/translator/request/openai-to-kiro/messageHelpers.ts");
+  const { normalizeKiroToolSchema } = await import(
+    "../../open-sse/translator/request/openai-to-kiro/messageHelpers.ts"
+  );
   const out = normalizeKiroToolSchema({
     type: "object",
     required: [],

@@ -1,12 +1,8 @@
 {
   "name": "circular-progress-colors-demo",
   "type": "registry:example",
-  "dependencies": [
-    "motion"
-  ],
-  "registryDependencies": [
-    "circular-progress"
-  ],
+  "dependencies": ["motion"],
+  "registryDependencies": ["circular-progress"],
   "files": [
     {
       "path": "examples/circular-progress-colors-demo.tsx",

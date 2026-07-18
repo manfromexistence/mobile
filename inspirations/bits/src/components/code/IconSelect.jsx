@@ -1,32 +1,32 @@
-import { useMemo } from 'react';
-import { Select, Flex, Text, Box, Portal, createListCollection } from '@chakra-ui/react';
-import { colors } from '../../constants/colors';
+import { useMemo } from "react";
+import { Select, Flex, Text, Box, Portal, createListCollection } from "@chakra-ui/react";
+import { colors } from "../../constants/colors";
 
 const TRIGGER_STYLE = {
-  cursor: 'pointer',
-  fontSize: '14px',
+  cursor: "pointer",
+  fontSize: "14px",
   h: 10,
   bg: colors.bgBody,
   border: `1px solid ${colors.borderSecondary}`,
-  rounded: '10px',
+  rounded: "10px",
   px: 3,
 };
 
 const CONTENT_STYLE = {
   bg: colors.bgBody,
   border: `1px solid ${colors.borderSecondary}`,
-  borderRadius: '10px',
+  borderRadius: "10px",
   px: 2,
   py: 2,
 };
 
 const ITEM_STYLE = {
-  fontSize: '14px',
-  borderRadius: '8px',
-  cursor: 'pointer',
+  fontSize: "14px",
+  borderRadius: "8px",
+  cursor: "pointer",
   py: 1.5,
-  display: 'flex',
-  alignItems: 'center',
+  display: "flex",
+  alignItems: "center",
   gap: 2,
   _highlighted: { bg: colors.bgHover },
 };
@@ -38,12 +38,12 @@ const IconSelect = ({
   iconMap,
   labelMap,
   colorMap,
-  width = '150px',
+  width = "150px",
   closeOnSelect = false,
 }) => {
   const collection = useMemo(
     () => createListCollection({ items: collectionItems }),
-    [collectionItems]
+    [collectionItems],
   );
 
   return (
@@ -61,8 +61,10 @@ const IconSelect = ({
           <Select.ValueText fontSize="13px" display="flex" alignItems="center" gap={2}>
             {value && (
               <>
-                <img src={iconMap[value]} alt={value} style={{ width: '16px', height: '16px' }} />
-                <span style={{ fontSize: '14px', fontWeight: 600, color: '#c9c9c9' }}>{labelMap[value]}</span>
+                <img src={iconMap[value]} alt={value} style={{ width: "16px", height: "16px" }} />
+                <span style={{ fontSize: "14px", fontWeight: 600, color: "#c9c9c9" }}>
+                  {labelMap[value]}
+                </span>
               </>
             )}
           </Select.ValueText>
@@ -75,15 +77,22 @@ const IconSelect = ({
       <Portal>
         <Select.Positioner>
           <Select.Content {...CONTENT_STYLE} w={width}>
-            {collection.items.map(item => (
+            {collection.items.map((item) => (
               <Select.Item key={item} item={item} {...ITEM_STYLE}>
                 <Flex align="center" gap={2}>
-                  <img src={iconMap[item]} alt={item} style={{ width: '20px', height: '20px' }} />
+                  <img src={iconMap[item]} alt={item} style={{ width: "20px", height: "20px" }} />
                   <Text fontSize="14px" fontWeight={600} color="#c9c9c9">
                     {labelMap[item]}
                   </Text>
                 </Flex>
-                <Select.ItemIndicator display="flex" alignItems="center" ml="auto" mr={1} pl={3} opacity={0.5}>
+                <Select.ItemIndicator
+                  display="flex"
+                  alignItems="center"
+                  ml="auto"
+                  mr={1}
+                  pl={3}
+                  opacity={0.5}
+                >
                   {colorMap && <Box boxSize={2} bg={colorMap[item]} borderRadius="full" />}
                 </Select.ItemIndicator>
               </Select.Item>

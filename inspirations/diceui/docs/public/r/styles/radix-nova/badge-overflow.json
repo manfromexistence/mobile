@@ -1,9 +1,7 @@
 {
   "name": "badge-overflow",
   "type": "registry:ui",
-  "dependencies": [
-    "radix-ui"
-  ],
+  "dependencies": ["radix-ui"],
   "files": [
     {
       "path": "ui/badge-overflow.tsx",

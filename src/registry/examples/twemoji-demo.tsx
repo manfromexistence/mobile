@@ -1,4 +1,4 @@
-import { Twemoji } from "@/registry/transformed/components/twemoji"
+import { Twemoji } from "@/registry/transformed/components/twemoji";
 
 export default function TwemojiDemo() {
   return (
@@ -13,5 +13,5 @@ export default function TwemojiDemo() {
         <Twemoji>Built with 💛 and ☕️</Twemoji>
       </p>
     </div>
-  )
+  );
 }

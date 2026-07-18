@@ -3,13 +3,8 @@
   "name": "badge",
   "title": "Badge",
   "description": "Compact label with solid and dot variants, Tailwind color palette, and three sizes.",
-  "dependencies": [
-    "class-variance-authority"
-  ],
-  "registryDependencies": [
-    "utils",
-    "https://www.fluidfunctionalism.com/r/shape-context.json"
-  ],
+  "dependencies": ["class-variance-authority"],
+  "registryDependencies": ["utils", "https://www.fluidfunctionalism.com/r/shape-context.json"],
   "files": [
     {
       "path": "registry/default/badge.tsx",

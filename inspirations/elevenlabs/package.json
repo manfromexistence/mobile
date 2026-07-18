@@ -8,10 +8,7 @@
     "name": "Louis Jordan",
     "url": "https://x.com/louisjoejordan"
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "build": "turbo run build",
     "build:registry": "pnpm --filter=www build:registry && pnpm lint:fix && pnpm format:write -- --loglevel silent",

@@ -32,12 +32,12 @@ describe("tokenRefresh helpers", () => {
       assert.equal(mod.getRefreshLeadMs("codex", { refreshLeadMs: -1 }), 5 * 60 * 1000);
       assert.equal(
         mod.getRefreshLeadMs("codex", { refreshLeadMs: "60000" as unknown as number }),
-        5 * 60 * 1000
+        5 * 60 * 1000,
       );
       assert.equal(mod.getRefreshLeadMs("codex", { refreshLeadMs: NaN }), 5 * 60 * 1000);
       assert.equal(
         mod.getRefreshLeadMs("unknown-provider", { refreshLeadMs: -5 }),
-        mod.TOKEN_EXPIRY_BUFFER_MS
+        mod.TOKEN_EXPIRY_BUFFER_MS,
       );
     });
   });

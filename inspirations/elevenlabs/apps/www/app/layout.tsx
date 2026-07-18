@@ -1,16 +1,16 @@
-import type { Metadata } from "next"
+import type { Metadata } from "next";
 
-import { META_THEME_COLORS, siteConfig } from "@/lib/config"
-import { fontVariables } from "@/lib/fonts"
-import { cn } from "@/lib/utils"
-import { LayoutProvider } from "@/hooks/use-layout"
-import { ActiveThemeProvider } from "@/components/active-theme"
-import { Analytics } from "@/components/analytics"
-import { TailwindIndicator } from "@/components/tailwind-indicator"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/registry/elevenlabs-ui/ui/sonner"
+import { META_THEME_COLORS, siteConfig } from "@/lib/config";
+import { fontVariables } from "@/lib/fonts";
+import { cn } from "@/lib/utils";
+import { LayoutProvider } from "@/hooks/use-layout";
+import { ActiveThemeProvider } from "@/components/active-theme";
+import { Analytics } from "@/components/analytics";
+import { TailwindIndicator } from "@/components/tailwind-indicator";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/registry/elevenlabs-ui/ui/sonner";
 
-import "@/styles/globals.css"
+import "@/styles/globals.css";
 
 export const metadata: Metadata = {
   title: {
@@ -56,12 +56,12 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: `${siteConfig.url}/site.webmanifest`,
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -85,7 +85,7 @@ export default function RootLayout({
       <body
         className={cn(
           "text-foreground group/body overscroll-none font-sans antialiased [--footer-height:calc(var(--spacing)*14)] [--header-height:calc(var(--spacing)*14)] xl:[--footer-height:calc(var(--spacing)*24)]",
-          fontVariables
+          fontVariables,
         )}
       >
         <ThemeProvider>
@@ -100,5 +100,5 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }

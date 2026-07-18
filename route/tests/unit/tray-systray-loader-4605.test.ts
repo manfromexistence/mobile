@@ -58,7 +58,7 @@ test("initSystrayUnix loads the injected SysTray ctor and builds the menu (#4605
   // Icon-path fix: the bundled icon.png must resolve to a non-empty base64 blob.
   assert.ok(
     typeof menu.icon === "string" && (menu.icon as string).length > 0,
-    "menu.icon must be a non-empty base64 string (icon.png path fix)"
+    "menu.icon must be a non-empty base64 string (icon.png path fix)",
   );
 
   const items = menu.items as Array<{ title: string }>;
@@ -66,11 +66,11 @@ test("initSystrayUnix loads the injected SysTray ctor and builds the menu (#4605
   assert.equal(items.length, 5, "menu should keep its 5 items");
   assert.ok(
     titles.includes("Show Logs"),
-    `the "Show Logs" item must be preserved, got: ${titles.join(", ")}`
+    `the "Show Logs" item must be preserved, got: ${titles.join(", ")}`,
   );
   assert.ok(
     titles.includes("Quit OmniRoute"),
-    `the Quit item must be present, got: ${titles.join(", ")}`
+    `the Quit item must be present, got: ${titles.join(", ")}`,
   );
 });
 

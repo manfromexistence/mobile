@@ -113,7 +113,7 @@ test("getNextFromDeck: last of previous cycle is not first of next cycle", () =>
   assert.equal(
     violations,
     0,
-    `Last of cycle matched first of next cycle ${violations}/${totalCycles} times`
+    `Last of cycle matched first of next cycle ${violations}/${totalCycles} times`,
   );
 });
 

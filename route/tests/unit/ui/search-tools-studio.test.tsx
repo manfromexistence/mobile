@@ -33,34 +33,43 @@ vi.mock("next/dynamic", () => ({
 }));
 
 // Mock sub-components
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/search-tools/components/SearchToolsTopBar",
-  () => ({
-    default: ({
-      activeTab,
-      onTabChange,
-      latencyMs,
-      costUsd,
-    }: {
-      activeTab: string;
-      onTabChange: (t: string) => void;
-      latencyMs?: number | null;
-      costUsd?: number | null;
-    }) =>
+vi.mock("../../../src/app/(dashboard)/dashboard/search-tools/components/SearchToolsTopBar", () => ({
+  default: ({
+    activeTab,
+    onTabChange,
+    latencyMs,
+    costUsd,
+  }: {
+    activeTab: string;
+    onTabChange: (t: string) => void;
+    latencyMs?: number | null;
+    costUsd?: number | null;
+  }) =>
+    React.createElement(
+      "div",
+      {
+        "data-testid": "search-tools-topbar",
+        "data-active-tab": activeTab,
+        "data-latency": latencyMs ?? "",
+        "data-cost": costUsd ?? "",
+      },
       React.createElement(
-        "div",
-        {
-          "data-testid": "search-tools-topbar",
-          "data-active-tab": activeTab,
-          "data-latency": latencyMs ?? "",
-          "data-cost": costUsd ?? "",
-        },
-        React.createElement("button", { onClick: () => onTabChange("search"), "data-testid": "tab-search" }, "Search"),
-        React.createElement("button", { onClick: () => onTabChange("scrape"), "data-testid": "tab-scrape" }, "Scrape"),
-        React.createElement("button", { onClick: () => onTabChange("compare"), "data-testid": "tab-compare" }, "Compare"),
+        "button",
+        { onClick: () => onTabChange("search"), "data-testid": "tab-search" },
+        "Search",
       ),
-  }),
-);
+      React.createElement(
+        "button",
+        { onClick: () => onTabChange("scrape"), "data-testid": "tab-scrape" },
+        "Scrape",
+      ),
+      React.createElement(
+        "button",
+        { onClick: () => onTabChange("compare"), "data-testid": "tab-compare" },
+        "Compare",
+      ),
+    ),
+}));
 
 vi.mock(
   "../../../src/app/(dashboard)/dashboard/search-tools/components/SearchToolsConfigPane",
@@ -75,33 +84,21 @@ vi.mock(
   }),
 );
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/search-tools/components/SearchConceptCard",
-  () => ({
-    default: () => React.createElement("div", { "data-testid": "search-concept-card" }),
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/search-tools/components/SearchConceptCard", () => ({
+  default: () => React.createElement("div", { "data-testid": "search-concept-card" }),
+}));
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/search-tools/components/tabs/SearchTab",
-  () => ({
-    default: () => React.createElement("div", { "data-testid": "search-tab-content" }),
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/search-tools/components/tabs/SearchTab", () => ({
+  default: () => React.createElement("div", { "data-testid": "search-tab-content" }),
+}));
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/search-tools/components/tabs/ScrapeTab",
-  () => ({
-    default: () => React.createElement("div", { "data-testid": "scrape-tab-content" }),
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/search-tools/components/tabs/ScrapeTab", () => ({
+  default: () => React.createElement("div", { "data-testid": "scrape-tab-content" }),
+}));
 
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/search-tools/components/tabs/CompareTab",
-  () => ({
-    default: () => React.createElement("div", { "data-testid": "compare-tab-content" }),
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/search-tools/components/tabs/CompareTab", () => ({
+  default: () => React.createElement("div", { "data-testid": "compare-tab-content" }),
+}));
 
 // Mock global fetch
 globalThis.fetch = vi.fn(() =>
@@ -136,7 +133,9 @@ async function waitFor(fn: () => boolean, ms = 2000): Promise<void> {
   const start = Date.now();
   while (!fn()) {
     if (Date.now() - start > ms) throw new Error("waitFor timed out");
-    await act(async () => { await new Promise((r) => setTimeout(r, 30)); });
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 30));
+    });
   }
 }
 
@@ -144,7 +143,9 @@ async function waitFor(fn: () => boolean, ms = 2000): Promise<void> {
 
 describe("SearchToolsClient (Studio)", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
     vi.clearAllMocks();
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({

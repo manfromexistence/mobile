@@ -1,14 +1,10 @@
-import { Markdown } from "@/components/markdown"
-import { Prose } from "@/components/ui/typography"
-import { HelloTitle } from "@/features/portfolio/components/hello-title"
-import {
-  Panel,
-  PanelContent,
-  PanelHeader,
-} from "@/features/portfolio/components/panel"
-import { USER } from "@/features/portfolio/data/user"
+import { Markdown } from "@/components/markdown";
+import { Prose } from "@/components/ui/typography";
+import { HelloTitle } from "@/features/portfolio/components/hello-title";
+import { Panel, PanelContent, PanelHeader } from "@/features/portfolio/components/panel";
+import { USER } from "@/features/portfolio/data/user";
 
-const ID = "hello"
+const ID = "hello";
 
 export function Hello() {
   return (
@@ -23,5 +19,5 @@ export function Hello() {
         </Prose>
       </PanelContent>
     </Panel>
-  )
+  );
 }

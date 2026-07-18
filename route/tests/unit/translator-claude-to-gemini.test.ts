@@ -1,17 +1,19 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { claudeToGeminiRequest } =
-  await import("../../open-sse/translator/request/claude-to-gemini.ts");
-const { DEFAULT_SAFETY_SETTINGS } =
-  await import("../../open-sse/translator/helpers/geminiHelper.ts");
+const { claudeToGeminiRequest } = await import(
+  "../../open-sse/translator/request/claude-to-gemini.ts"
+);
+const { DEFAULT_SAFETY_SETTINGS } = await import(
+  "../../open-sse/translator/helpers/geminiHelper.ts"
+);
 
 type UnknownRecord = Record<string, unknown>;
 
 function getFunctionDeclarationParameters(parameters: unknown) {
   assert.ok(
     parameters && typeof parameters === "object",
-    "expected function declaration parameters"
+    "expected function declaration parameters",
   );
   return parameters as UnknownRecord & {
     properties?: Record<string, UnknownRecord>;
@@ -72,7 +74,7 @@ test("Claude -> Gemini maps system, thinking, tool use, tool result and tools", 
       top_p: 0.8,
       thinking: { type: "enabled", budget_tokens: 512 },
     },
-    false
+    false,
   );
 
   assert.deepEqual(result.systemInstruction, {
@@ -113,7 +115,7 @@ test("Claude -> Gemini clamps maxOutputTokens to the model cap", () => {
       messages: [{ role: "user", content: [{ type: "text", text: "Hello" }] }],
       max_tokens: 999999,
     },
-    false
+    false,
   );
 
   // #3358 added the gemini-2.5-flash model spec (real cap 65536, not the old
@@ -128,7 +130,7 @@ test("Claude -> Gemini preserves requested maxOutputTokens when the model cap is
       messages: [{ role: "user", content: [{ type: "text", text: "Hello" }] }],
       max_tokens: 32000,
     },
-    false
+    false,
   );
 
   assert.equal(result.generationConfig.maxOutputTokens, 32000);
@@ -151,7 +153,7 @@ test("Claude -> Gemini converts text and base64 images to Gemini parts", () => {
         },
       ],
     },
-    false
+    false,
   );
 
   assert.deepEqual(result.contents, [
@@ -173,7 +175,7 @@ test("Claude -> Gemini injects a fallback thoughtSignature on tool-call batches 
         },
       ],
     },
-    false
+    false,
   );
 
   assert.equal(result.contents.length, 1);
@@ -214,12 +216,12 @@ test("Claude -> Gemini sanitizes long tool names and exposes a restore map", () 
         },
       ],
     },
-    false
+    false,
   );
 
   const sanitizedToolName = (result as any).tools[0].functionDeclarations[0].name as string;
   const parameters = getFunctionDeclarationParameters(
-    (result as any).tools[0].functionDeclarations[0].parameters
+    (result as any).tools[0].functionDeclarations[0].parameters,
   );
   assert.ok(longToolName.length > 64);
   assert.equal(sanitizedToolName.length, 64);
@@ -254,12 +256,12 @@ test("Claude -> Gemini maps output_config.effort to thinkingConfig when thinking
         messages: [{ role: "user", content: [{ type: "text", text: "hi" }] }],
         output_config: { effort },
       },
-      false
+      false,
     );
     assert.deepEqual(
       result.generationConfig.thinkingConfig,
       { thinkingBudget: expected, includeThoughts: true },
-      `effort ${effort} should map to budget ${expected}`
+      `effort ${effort} should map to budget ${expected}`,
     );
   }
 });
@@ -275,7 +277,7 @@ test("Claude -> Gemini clamps output_config.effort=high to gemini-2.5-flash cap 
       messages: [{ role: "user", content: [{ type: "text", text: "hi" }] }],
       output_config: { effort: "high" },
     },
-    false
+    false,
   );
   const budget = (result.generationConfig as any).thinkingConfig.thinkingBudget;
   assert.ok(budget <= 24576, `expected <= 24576 (real cap), got ${budget}`);
@@ -290,7 +292,7 @@ test("Claude -> Gemini prefers thinking.budget_tokens over output_config.effort"
       thinking: { type: "enabled", budget_tokens: 4096 },
       output_config: { effort: "high" },
     },
-    false
+    false,
   );
 
   assert.deepEqual(result.generationConfig.thinkingConfig, {
@@ -306,7 +308,7 @@ test("Claude -> Gemini skips thinkingConfig for output_config.effort=none", () =
       messages: [{ role: "user", content: [{ type: "text", text: "hi" }] }],
       output_config: { effort: "none" },
     },
-    false
+    false,
   );
 
   assert.equal((result.generationConfig as any).thinkingConfig, undefined);

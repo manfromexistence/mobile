@@ -43,7 +43,7 @@ async function seedConnection(provider: string) {
 
 async function listedIds(
   route: { GET: (request?: Request) => Promise<Response> },
-  pathname: string
+  pathname: string,
 ) {
   const response = await route.GET(new Request(`http://localhost${pathname}`));
   const body = (await response.json()) as { data?: Array<{ id: string }> };
@@ -67,7 +67,7 @@ test("image catalog GET uses the unified active-credential model list", async ()
 
   assert.deepEqual(
     ids.filter((id) => id.startsWith("codex/")),
-    ["codex/gpt-5.6-sol", "codex/gpt-5.6-terra", "codex/gpt-5.6-luna"]
+    ["codex/gpt-5.6-sol", "codex/gpt-5.6-terra", "codex/gpt-5.6-luna"],
   );
   assert.ok(!ids.includes("openai/gpt-image-2"));
 });
@@ -78,7 +78,7 @@ test("specialty catalog GET preserves unified catalog headers", async () => {
   const response = await imageRoute.GET(
     new Request("http://localhost/v1/images/generations", {
       headers: { "x-request-id": "specialty-catalog-test" },
-    })
+    }),
   );
   await response.json();
 

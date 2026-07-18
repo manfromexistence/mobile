@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { stripEmptyTextBlocks, openaiToClaudeRequest, normalizeContentToString } =
-  await import("../../open-sse/translator/request/openai-to-claude.ts");
+const { stripEmptyTextBlocks, openaiToClaudeRequest, normalizeContentToString } = await import(
+  "../../open-sse/translator/request/openai-to-claude.ts"
+);
 
 test("stripEmptyTextBlocks removes empty text recursively inside tool_result content", () => {
   const input = [
@@ -68,7 +69,7 @@ test("openaiToClaudeRequest applies strip to tool message array content", () => 
 
   const translated = openaiToClaudeRequest("claude-sonnet-4", request, false);
   const toolMessage = translated.messages.find(
-    (m) => Array.isArray(m.content) && m.content.some((b) => b.type === "tool_result")
+    (m) => Array.isArray(m.content) && m.content.some((b) => b.type === "tool_result"),
   );
   assert.ok(toolMessage, "expected a translated tool_result user message");
   const toolResult = toolMessage.content.find((b) => b.type === "tool_result");

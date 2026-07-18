@@ -1,9 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "response-demo",
-  "registryDependencies": [
-    "https://ui.elevenlabs.io/r/response.json"
-  ],
+  "registryDependencies": ["https://ui.elevenlabs.io/r/response.json"],
   "files": [
     {
       "path": "examples/response-demo.tsx",

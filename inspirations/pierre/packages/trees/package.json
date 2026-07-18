@@ -2,30 +2,15 @@
   "name": "@pierre/trees",
   "version": "1.0.0-beta.5",
   "license": "apache-2.0",
-  "files": [
-    "dist",
-    "LICENSE.md",
-    "NOTICE.md",
-    "README.md"
-  ],
+  "files": ["dist", "LICENSE.md", "NOTICE.md", "README.md"],
   "type": "module",
-  "sideEffects": [
-    "./dist/components/web-components.js"
-  ],
+  "sideEffects": ["./dist/components/web-components.js"],
   "typesVersions": {
     "*": {
-      "*": [
-        "dist/*"
-      ],
-      "react": [
-        "dist/react/index.d.ts"
-      ],
-      "ssr": [
-        "dist/ssr/index.d.ts"
-      ],
-      "web-components": [
-        "dist/web-components.d.ts"
-      ]
+      "*": ["dist/*"],
+      "react": ["dist/react/index.d.ts"],
+      "ssr": ["dist/ssr/index.d.ts"],
+      "web-components": ["dist/web-components.d.ts"]
     }
   },
   "exports": {

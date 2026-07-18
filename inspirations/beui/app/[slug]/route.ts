@@ -7,10 +7,7 @@ export function generateStaticParams() {
   return allShadcnTargets().map((component) => ({ slug: `${component.slug}.json` }));
 }
 
-export async function GET(
-  _req: Request,
-  ctx: { params: Promise<{ slug: string }> },
-) {
+export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }> }) {
   const { slug } = await ctx.params;
   if (!slug.endsWith(".json")) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
@@ -28,7 +25,7 @@ export async function GET(
       "cache-control": "public, max-age=300, s-maxage=3600",
       "access-control-allow-origin": "*",
       "access-control-allow-methods": "GET, OPTIONS",
-      "link": `</registry.json>; rel="collection"; type="application/json", </r/${componentSlug}.json>; rel="alternate"; type="application/json"`,
+      link: `</registry.json>; rel="collection"; type="application/json", </r/${componentSlug}.json>; rel="alternate"; type="application/json"`,
     },
   });
 }

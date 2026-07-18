@@ -1,46 +1,41 @@
-"use client"
+"use client";
 
-import { motion, useMotionValue, useSpring, useTransform } from "motion/react"
+import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 
 export type FluidGradientTextProps = {
   /** Text content rendered inside the SVG. */
-  text: string
+  text: string;
   /**
    * SVG viewBox width used to scale the gradient and text layout.
    * @default 1200
    * */
-  svgViewBoxWidth?: number
+  svgViewBoxWidth?: number;
   /**
    * SVG viewBox height used as the base text size.
    * @default 300
    * */
-  svgViewBoxHeight?: number
-}
+  svgViewBoxHeight?: number;
+};
 
 export function FluidGradientText({
   text,
   svgViewBoxWidth = 1200,
   svgViewBoxHeight = 300,
 }: FluidGradientTextProps) {
-  const gradientX1Raw = useMotionValue(0.5)
-  const gradientX1 = useSpring(
-    useTransform(gradientX1Raw, [0, 1], [0, svgViewBoxWidth]),
-    {
-      stiffness: 150,
-      damping: 25,
-    }
-  )
+  const gradientX1Raw = useMotionValue(0.5);
+  const gradientX1 = useSpring(useTransform(gradientX1Raw, [0, 1], [0, svgViewBoxWidth]), {
+    stiffness: 150,
+    damping: 25,
+  });
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    const containerRect = event.currentTarget.getBoundingClientRect()
-    gradientX1Raw.set(
-      (event.clientX - containerRect.left) / containerRect.width
-    )
-  }
+    const containerRect = event.currentTarget.getBoundingClientRect();
+    gradientX1Raw.set((event.clientX - containerRect.left) / containerRect.width);
+  };
 
   const handleMouseLeave = () => {
-    gradientX1Raw.set(0.5)
-  }
+    gradientX1Raw.set(0.5);
+  };
 
   return (
     <div
@@ -86,5 +81,5 @@ export function FluidGradientText({
         </defs>
       </svg>
     </div>
-  )
+  );
 }

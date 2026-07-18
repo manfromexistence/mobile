@@ -47,7 +47,7 @@ describe("KiroAuthModal", () => {
     });
 
     const googleButton = Array.from(container.querySelectorAll("button")).find((button) =>
-      button.textContent?.includes("Google Account")
+      button.textContent?.includes("Google Account"),
     );
 
     expect(googleButton).toBeTruthy();
@@ -82,7 +82,7 @@ describe("KiroAuthModal", () => {
       });
 
       const apiKeyButton = Array.from(container.querySelectorAll("button")).find(
-        (button) => button.querySelector("h3")?.textContent === "API Key"
+        (button) => button.querySelector("h3")?.textContent === "API Key",
       );
 
       await act(async () => {
@@ -91,7 +91,7 @@ describe("KiroAuthModal", () => {
 
       const apiKeyInput = container.querySelector("input") as HTMLInputElement;
       const saveButton = Array.from(container.querySelectorAll("button")).find((button) =>
-        button.textContent?.includes("Validate and Save API Key")
+        button.textContent?.includes("Validate and Save API Key"),
       );
 
       await act(async () => {

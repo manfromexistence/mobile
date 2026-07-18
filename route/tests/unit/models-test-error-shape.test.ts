@@ -35,7 +35,7 @@ function post(body: unknown, rawText?: string) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: rawText !== undefined ? rawText : JSON.stringify(body),
-    })
+    }),
   );
 }
 

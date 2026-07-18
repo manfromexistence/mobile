@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useTheme } from "next-themes"
-import type { SVGProps } from "react"
-import { useEffect, useState } from "react"
+import { useTheme } from "next-themes";
+import type { SVGProps } from "react";
+import { useEffect, useState } from "react";
 
 const VercelThemed = (props: SVGProps<SVGSVGElement>) => {
-  const { resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
-  const isDark = mounted && resolvedTheme === "dark"
+  const isDark = mounted && resolvedTheme === "dark";
 
   return (
     <svg
@@ -23,7 +23,7 @@ const VercelThemed = (props: SVGProps<SVGSVGElement>) => {
     >
       <path d="m128 0 128 221.705H0z" />
     </svg>
-  )
-}
+  );
+};
 
-export { VercelThemed }
+export { VercelThemed };

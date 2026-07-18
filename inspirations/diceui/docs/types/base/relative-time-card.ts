@@ -3,14 +3,8 @@ import type * as React from "react";
 
 export interface RelativeTimeCardProps
   extends PreviewCardPrimitive.Root.Props,
-    Omit<
-      PreviewCardPrimitive.Trigger.Props,
-      keyof React.ComponentProps<"button">
-    >,
-    Pick<
-      PreviewCardPrimitive.Positioner.Props,
-      "align" | "side" | "alignOffset" | "sideOffset"
-    > {
+    Omit<PreviewCardPrimitive.Trigger.Props, keyof React.ComponentProps<"button">>,
+    Pick<PreviewCardPrimitive.Positioner.Props, "align" | "side" | "alignOffset" | "sideOffset"> {
   /**
    * The date to display. Can be a Date object, string, or number.
    *

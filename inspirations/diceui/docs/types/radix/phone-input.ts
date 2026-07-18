@@ -1,7 +1,4 @@
-import type {
-  Popover,
-  PopoverTrigger,
-} from "@/registry/bases/radix/ui/popover";
+import type { Popover, PopoverTrigger } from "@/registry/bases/radix/ui/popover";
 import type { CompositionProps, EmptyProps } from "@/types";
 
 export interface Country {

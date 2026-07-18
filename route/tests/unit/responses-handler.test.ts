@@ -54,7 +54,7 @@ function toPlainHeaders(headers: HeadersInit | undefined): Record<string, string
   if (!headers) return {};
   if (headers instanceof Headers) return Object.fromEntries(headers.entries());
   return Object.fromEntries(
-    Object.entries(headers).map(([key, value]) => [key, value == null ? "" : String(value)])
+    Object.entries(headers).map(([key, value]) => [key, value == null ? "" : String(value)]),
   );
 }
 
@@ -88,7 +88,7 @@ function buildOpenAISseResponse(text = "hello") {
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 }
 
@@ -279,7 +279,7 @@ test("handleResponsesCore transforms Command Code executor SSE through Responses
           `data: ${JSON.stringify({ type: "finish", finishReason: "stop" })}`,
           "",
         ].join("\n"),
-        { status: 200, headers: { "Content-Type": "application/x-ndjson" } }
+        { status: 200, headers: { "Content-Type": "application/x-ndjson" } },
       );
     },
   });
@@ -339,7 +339,7 @@ test("handleResponsesCore rejects invalid Responses API input that cannot be tra
         connectionId: null,
       }),
     (error) =>
-      error instanceof Error && error.message.includes("file_search tool type is not supported")
+      error instanceof Error && error.message.includes("file_search tool type is not supported"),
   );
 });
 

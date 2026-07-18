@@ -1,14 +1,8 @@
 {
   "name": "file-upload-direct-upload-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react",
-    "sonner"
-  ],
-  "registryDependencies": [
-    "button",
-    "file-upload"
-  ],
+  "dependencies": ["lucide-react", "sonner"],
+  "registryDependencies": ["button", "file-upload"],
   "files": [
     {
       "path": "examples/file-upload-direct-upload-demo.tsx",

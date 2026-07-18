@@ -1,22 +1,22 @@
-import { format } from "date-fns"
-import type { ImageProps } from "next/image"
-import Image from "next/image"
-import Link from "next/link"
+import { format } from "date-fns";
+import type { ImageProps } from "next/image";
+import Image from "next/image";
+import Link from "next/link";
 
-import type { Doc } from "@/features/doc/types/document"
+import type { Doc } from "@/features/doc/types/document";
 
-type HeadingTypes = "h2" | "h3" | "h4"
+type HeadingTypes = "h2" | "h3" | "h4";
 
 export function PostItem({
   post,
   headingAs,
   imageLoading = "lazy",
 }: {
-  post: Doc
-  headingAs?: HeadingTypes
-  imageLoading?: ImageProps["loading"]
+  post: Doc;
+  headingAs?: HeadingTypes;
+  imageLoading?: ImageProps["loading"];
 }) {
-  const Heading = headingAs ?? "h2"
+  const Heading = headingAs ?? "h2";
 
   return (
     <div className="group/post relative flex h-full flex-col gap-2 p-2 transition-[background-color] ease-out hover:bg-accent-muted">
@@ -45,9 +45,7 @@ export function PostItem({
 
           {(post.metadata.new || post.metadata.updated) && (
             <span className="pointer-events-none ml-2 inline-block size-2 -translate-y-px rounded-full bg-info">
-              <span className="sr-only">
-                {post.metadata.new ? "New" : "Updated"}
-              </span>
+              <span className="sr-only">{post.metadata.new ? "New" : "Updated"}</span>
             </span>
           )}
         </Heading>
@@ -62,5 +60,5 @@ export function PostItem({
         </dl>
       </div>
     </div>
-  )
+  );
 }

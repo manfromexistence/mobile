@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { ConversationProvider } from "@elevenlabs/react"
+import { ConversationProvider } from "@elevenlabs/react";
 
-import { ConversationBar } from "@/registry/elevenlabs-ui/ui/conversation-bar"
+import { ConversationBar } from "@/registry/elevenlabs-ui/ui/conversation-bar";
 
 const DEFAULT_AGENT = {
   agentId: process.env.NEXT_PUBLIC_ELEVENLABS_AGENT_ID!,
-}
+};
 
 export default function ConversationBarDemo() {
   return (
@@ -17,5 +17,5 @@ export default function ConversationBarDemo() {
         </div>
       </div>
     </ConversationProvider>
-  )
+  );
 }

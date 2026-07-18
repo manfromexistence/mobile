@@ -1,27 +1,27 @@
-import { useMemo } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box, Flex } from '@chakra-ui/react';
+import { useMemo } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box, Flex } from "@chakra-ui/react";
 
-import OpenInStudioButton from '../../components/common/Preview/OpenInStudioButton';
-import CodeExample from '../../components/code/CodeExample';
+import OpenInStudioButton from "../../components/common/Preview/OpenInStudioButton";
+import CodeExample from "../../components/code/CodeExample";
 
-import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '../../components/code/Dependencies';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
-import Customize from '../../components/common/Preview/Customize';
-import useForceRerender from '../../hooks/useForceRerender';
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
-import BackgroundContent from '../../components/common/Preview/BackgroundContent';
-import PreviewInput from '@/components/common/Preview/PreviewInput';
+import PropTable from "../../components/common/Preview/PropTable";
+import Dependencies from "../../components/code/Dependencies";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
+import Customize from "../../components/common/Preview/Customize";
+import useForceRerender from "../../hooks/useForceRerender";
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
+import BackgroundContent from "../../components/common/Preview/BackgroundContent";
+import PreviewInput from "@/components/common/Preview/PreviewInput";
 
-import Particles from '../../content/Backgrounds/Particles/Particles';
-import { particles } from '../../constants/code/Backgrounds/particlesCode';
+import Particles from "../../content/Backgrounds/Particles/Particles";
+import { particles } from "../../constants/code/Backgrounds/particlesCode";
 
 const DEFAULT_PROPS = {
-  colors: '#ffffff',
+  colors: "#ffffff",
   particleCount: 200,
   particleSpread: 10,
   speed: 0.1,
@@ -29,7 +29,7 @@ const DEFAULT_PROPS = {
   moveParticlesOnHover: true,
   alphaParticles: false,
   disableRotation: false,
-  pixelRatio: 1
+  pixelRatio: 1,
 };
 
 const ParticlesDemo = () => {
@@ -43,7 +43,7 @@ const ParticlesDemo = () => {
     moveParticlesOnHover,
     alphaParticles,
     disableRotation,
-    pixelRatio
+    pixelRatio,
   } = props;
 
   const [key, forceRerender] = useForceRerender();
@@ -51,79 +51,81 @@ const ParticlesDemo = () => {
   const propData = useMemo(
     () => [
       {
-        name: 'particleCount',
-        type: 'number',
-        default: '200',
-        description: 'The number of particles to generate.'
+        name: "particleCount",
+        type: "number",
+        default: "200",
+        description: "The number of particles to generate.",
       },
       {
-        name: 'particleSpread',
-        type: 'number',
-        default: '10',
-        description: 'Controls how far particles are spread from the center.'
+        name: "particleSpread",
+        type: "number",
+        default: "10",
+        description: "Controls how far particles are spread from the center.",
       },
       {
-        name: 'speed',
-        type: 'number',
-        default: '0.1',
-        description: 'Speed factor controlling the animation pace.'
+        name: "speed",
+        type: "number",
+        default: "0.1",
+        description: "Speed factor controlling the animation pace.",
       },
       {
-        name: 'particleColors',
-        type: 'string[]',
+        name: "particleColors",
+        type: "string[]",
         default: "['#ffffff']",
-        description: 'An array of hex color strings used to color the particles.'
+        description: "An array of hex color strings used to color the particles.",
       },
       {
-        name: 'moveParticlesOnHover',
-        type: 'boolean',
-        default: 'false',
-        description: 'Determines if particles should move in response to mouse hover.'
+        name: "moveParticlesOnHover",
+        type: "boolean",
+        default: "false",
+        description: "Determines if particles should move in response to mouse hover.",
       },
       {
-        name: 'particleHoverFactor',
-        type: 'number',
-        default: '1',
-        description: 'Multiplier for the particle movement when hovering.'
+        name: "particleHoverFactor",
+        type: "number",
+        default: "1",
+        description: "Multiplier for the particle movement when hovering.",
       },
       {
-        name: 'alphaParticles',
-        type: 'boolean',
-        default: 'false',
-        description: 'If true, particles are rendered with varying transparency; otherwise, as solid circles.'
+        name: "alphaParticles",
+        type: "boolean",
+        default: "false",
+        description:
+          "If true, particles are rendered with varying transparency; otherwise, as solid circles.",
       },
       {
-        name: 'particleBaseSize',
-        type: 'number',
-        default: '100',
-        description: 'The base size of the particles.'
+        name: "particleBaseSize",
+        type: "number",
+        default: "100",
+        description: "The base size of the particles.",
       },
       {
-        name: 'sizeRandomness',
-        type: 'number',
-        default: '1',
-        description: 'Controls the variation in particle sizes (0 means all particles have the same size).'
+        name: "sizeRandomness",
+        type: "number",
+        default: "1",
+        description:
+          "Controls the variation in particle sizes (0 means all particles have the same size).",
       },
       {
-        name: 'cameraDistance',
-        type: 'number',
-        default: '20',
-        description: 'Distance from the camera to the particle system.'
+        name: "cameraDistance",
+        type: "number",
+        default: "20",
+        description: "Distance from the camera to the particle system.",
       },
       {
-        name: 'disableRotation',
-        type: 'boolean',
-        default: 'false',
-        description: 'If true, stops the particle system from rotating.'
+        name: "disableRotation",
+        type: "boolean",
+        default: "false",
+        description: "If true, stops the particle system from rotating.",
       },
       {
-        name: 'pixelRatio',
-        type: 'number',
-        default: '1',
-        description: 'Sets the pixel ratio for sharper rendering on high-DPI screens.'
-      }
+        name: "pixelRatio",
+        type: "number",
+        default: "1",
+        description: "Sets the pixel ratio for sharper rendering on high-DPI screens.",
+      },
     ],
-    []
+    [],
   );
 
   return (
@@ -132,7 +134,7 @@ const ParticlesDemo = () => {
       defaultProps={DEFAULT_PROPS}
       resetProps={resetProps}
       hasChanges={hasChanges}
-      demoOnlyProps={['colors']}
+      demoOnlyProps={["colors"]}
       computedProps={{ particleColors: [colors] }}
     >
       <TabsLayout>
@@ -152,7 +154,10 @@ const ParticlesDemo = () => {
             />
 
             {/* For Demo Purposes Only */}
-            <BackgroundContent pillText="New Background" headline="Particles that mimick the dance of the cosmos" />
+            <BackgroundContent
+              pillText="New Background"
+              headline="Particles that mimick the dance of the cosmos"
+            />
           </Box>
 
           <Flex justify="flex-end" mt={2} mb={-2}>
@@ -166,26 +171,33 @@ const ParticlesDemo = () => {
                 moveParticlesOnHover,
                 alphaParticles,
                 particleBaseSize,
-                disableRotation
+                disableRotation,
               }}
               defaultProps={{
                 particleCount: 200,
                 particleSpread: 10,
                 speed: 0.1,
-                particleColors: ['#ffffff', '#ffffff', '#ffffff'],
+                particleColors: ["#ffffff", "#ffffff", "#ffffff"],
                 moveParticlesOnHover: false,
                 particleHoverFactor: 1,
                 alphaParticles: false,
                 particleBaseSize: 100,
                 sizeRandomness: 1,
                 cameraDistance: 20,
-                disableRotation: false
+                disableRotation: false,
               }}
             />
           </Flex>
 
           <Customize>
-            <PreviewColorPickerCustom title="Color" color={colors} onChange={val => { updateProp('colors', val); forceRerender(); }} />
+            <PreviewColorPickerCustom
+              title="Color"
+              color={colors}
+              onChange={(val) => {
+                updateProp("colors", val);
+                forceRerender();
+              }}
+            />
 
             <PreviewSlider
               title="Count"
@@ -193,7 +205,7 @@ const ParticlesDemo = () => {
               max={1000}
               step={100}
               value={particleCount}
-              onChange={val => updateProp('particleCount', val)}
+              onChange={(val) => updateProp("particleCount", val)}
             />
 
             <PreviewSlider
@@ -202,7 +214,7 @@ const ParticlesDemo = () => {
               max={100}
               step={10}
               value={particleSpread}
-              onChange={val => updateProp('particleSpread', val)}
+              onChange={(val) => updateProp("particleSpread", val)}
             />
 
             <PreviewSlider
@@ -211,7 +223,7 @@ const ParticlesDemo = () => {
               max={2}
               step={0.1}
               value={speed}
-              onChange={val => updateProp('speed', val)}
+              onChange={(val) => updateProp("speed", val)}
             />
 
             <PreviewSlider
@@ -220,37 +232,37 @@ const ParticlesDemo = () => {
               max={1000}
               step={100}
               value={particleBaseSize}
-              onChange={val => updateProp('particleBaseSize', val)}
+              onChange={(val) => updateProp("particleBaseSize", val)}
             />
 
             <PreviewSwitch
               title="Mouse Interaction"
               isChecked={moveParticlesOnHover}
-              onChange={checked => updateProp('moveParticlesOnHover', checked)}
+              onChange={(checked) => updateProp("moveParticlesOnHover", checked)}
             />
 
             <PreviewSwitch
               title="Particle Transparency"
               isChecked={alphaParticles}
-              onChange={checked => updateProp('alphaParticles', checked)}
+              onChange={(checked) => updateProp("alphaParticles", checked)}
             />
 
             <PreviewSwitch
               title="Disable Rotation"
               isChecked={disableRotation}
-              onChange={checked => updateProp('disableRotation', checked)}
+              onChange={(checked) => updateProp("disableRotation", checked)}
             />
 
             <PreviewInput
               title="Pixel Ratio"
               width={150}
               value={pixelRatio}
-              onChange={val => updateProp('pixelRatio', val)}
+              onChange={(val) => updateProp("pixelRatio", val)}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['ogl']} />
+          <Dependencies dependencyList={["ogl"]} />
         </PreviewTab>
 
         <CodeTab>

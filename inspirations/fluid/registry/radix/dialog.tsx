@@ -54,8 +54,7 @@ function Dialog({
 const DialogTrigger = DialogPrimitive.Trigger;
 const DialogClose = DialogPrimitive.Close;
 
-interface DialogContentProps
-  extends ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+interface DialogContentProps extends ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
   size?: "sm" | "lg";
   /** Portal target. When set, the overlay and panel render inside this element
    *  (positioned `absolute`) instead of covering the viewport (`fixed`). Pair
@@ -90,7 +89,7 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
           <motion.div
             className={cn(
               container ? "absolute" : "fixed",
-              "inset-0 z-50 bg-black/40 dark:bg-black/80"
+              "inset-0 z-50 bg-black/40 dark:bg-black/80",
             )}
             initial={{ opacity: 0 }}
             animate={{ opacity: open ? 1 : 0 }}
@@ -107,7 +106,7 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
               size === "sm" && "max-w-[400px]",
               size === "lg" && "max-w-[540px]",
               shape.container,
-              className
+              className,
             )}
             initial={{ opacity: 0, scale: 0.97, x: "-50%", y: "-50%" }}
             animate={{
@@ -122,11 +121,7 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
             <SurfaceProvider value={dialogLevel}>
               {children}
               <DialogPrimitive.Close asChild>
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  className="absolute right-3 top-3"
-                >
+                <Button variant="ghost" size="icon-sm" className="absolute right-3 top-3">
                   <XIcon />
                   <span className="sr-only">Close</span>
                 </Button>
@@ -136,26 +131,16 @@ const DialogContent = forwardRef<HTMLDivElement, DialogContentProps>(
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     );
-  }
+  },
 );
 DialogContent.displayName = "DialogContent";
 
 function DialogHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn("flex flex-col gap-1.5 mb-4", className)}
-      {...props}
-    />
-  );
+  return <div className={cn("flex flex-col gap-1.5 mb-4", className)} {...props} />;
 }
 
 function DialogFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn("flex justify-end gap-2 mt-6", className)}
-      {...props}
-    />
-  );
+  return <div className={cn("flex justify-end gap-2 mt-6", className)} {...props} />;
 }
 
 const DialogTitle = forwardRef<

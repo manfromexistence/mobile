@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/GridMotion/GridMotion.jsx?raw';
-import css from '@content/Backgrounds/GridMotion/GridMotion.css?raw';
-import tailwind from '@tailwind/Backgrounds/GridMotion/GridMotion.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/GridMotion/GridMotion.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/GridMotion/GridMotion.tsx?raw';
+import code from "@content/Backgrounds/GridMotion/GridMotion.jsx?raw";
+import css from "@content/Backgrounds/GridMotion/GridMotion.css?raw";
+import tailwind from "@tailwind/Backgrounds/GridMotion/GridMotion.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/GridMotion/GridMotion.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/GridMotion/GridMotion.tsx?raw";
 
 export const gridMotion = {
   dependencies: `gsap`,
@@ -42,5 +42,5 @@ const items = [
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

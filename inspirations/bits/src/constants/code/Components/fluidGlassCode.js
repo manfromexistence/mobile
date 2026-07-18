@@ -1,7 +1,7 @@
-import code from '@content/Components/FluidGlass/FluidGlass.jsx?raw';
-import tailwind from '@tailwind/Components/FluidGlass/FluidGlass.jsx?raw';
-import tsCode from '@ts-default/Components/FluidGlass/FluidGlass.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/FluidGlass/FluidGlass.tsx?raw';
+import code from "@content/Components/FluidGlass/FluidGlass.jsx?raw";
+import tailwind from "@tailwind/Components/FluidGlass/FluidGlass.jsx?raw";
+import tsCode from "@ts-default/Components/FluidGlass/FluidGlass.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/FluidGlass/FluidGlass.tsx?raw";
 
 export const fluidGlass = {
   dependencies: `three @react-three/fiber @react-three/drei maath`,
@@ -32,5 +32,5 @@ import FluidGlass from './FluidGlass'
   code,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

@@ -29,7 +29,7 @@ test("T44: Antigravity preserves thoughtSignature for functionCall turns", async
       },
     },
     true,
-    { projectId: "test-project" }
+    { projectId: "test-project" },
   );
 
   const parts = transformed.request.contents[0].parts;
@@ -37,17 +37,17 @@ test("T44: Antigravity preserves thoughtSignature for functionCall turns", async
   assert.equal(
     parts.some((part) => part.thought === true),
     false,
-    "thought text should still be stripped before sending to Antigravity"
+    "thought text should still be stripped before sending to Antigravity",
   );
   assert.equal(
     parts.some((part) => part.thoughtSignature === "sig_123"),
     true,
-    "tool-call turns must keep thoughtSignature for Gemini 3+ compatibility"
+    "tool-call turns must keep thoughtSignature for Gemini 3+ compatibility",
   );
   assert.equal(
     parts.some((part) => part.functionCall?.name === "default_api:memos_load_user_memory"),
     true,
-    "functionCall must still be present"
+    "functionCall must still be present",
   );
 });
 
@@ -66,7 +66,7 @@ test("T44: Antigravity still strips standalone thoughtSignature without tool cal
       },
     },
     true,
-    { projectId: "test-project" }
+    { projectId: "test-project" },
   );
 
   assert.deepEqual(transformed.request.contents[0].parts, [{ text: "plain text" }]);
@@ -97,13 +97,13 @@ test("T44: Antigravity preserves skip_thought_signature_validator bypass sentine
       },
     },
     true,
-    { projectId: "test-project" }
+    { projectId: "test-project" },
   );
 
   const parts = transformed.request.contents[0].parts;
   assert.equal(
     parts.some((part) => part.thoughtSignature === "skip_thought_signature_validator"),
     true,
-    "executor MUST NOT scrub the skip_thought_signature_validator bypass sentinel"
+    "executor MUST NOT scrub the skip_thought_signature_validator bypass sentinel",
   );
 });

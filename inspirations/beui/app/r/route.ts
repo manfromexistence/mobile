@@ -10,7 +10,7 @@ export async function GET() {
       "cache-control": "public, max-age=300, s-maxage=3600",
       "access-control-allow-origin": "*",
       "access-control-allow-methods": "GET, OPTIONS",
-      "link": '</llms.txt>; rel="describedby"; type="text/plain"',
+      link: '</llms.txt>; rel="describedby"; type="text/plain"',
     },
   });
 }

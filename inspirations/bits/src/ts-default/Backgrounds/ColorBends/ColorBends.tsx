@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-import './ColorBends.css';
+import React, { useEffect, useRef } from "react";
+import * as THREE from "three";
+import "./ColorBends.css";
 
 type ColorBendsProps = {
   className?: string;
@@ -142,7 +142,7 @@ export default function ColorBends({
   noise = 0.15,
   iterations = 1,
   intensity = 1.5,
-  bandWidth = 6
+  bandWidth = 6,
 }: ColorBendsProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -182,10 +182,10 @@ export default function ColorBends({
         uNoise: { value: noise },
         uIterations: { value: iterations },
         uIntensity: { value: intensity },
-        uBandWidth: { value: bandWidth }
+        uBandWidth: { value: bandWidth },
       },
       premultipliedAlpha: true,
-      transparent: true
+      transparent: true,
     });
     materialRef.current = material;
 
@@ -194,16 +194,16 @@ export default function ColorBends({
 
     const renderer = new THREE.WebGLRenderer({
       antialias: false,
-      powerPreference: 'high-performance',
-      alpha: true
+      powerPreference: "high-performance",
+      alpha: true,
     });
     rendererRef.current = renderer;
     (renderer as any).outputColorSpace = (THREE as any).SRGBColorSpace;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setClearColor(0x000000, transparent ? 0 : 1);
-    renderer.domElement.style.width = '100%';
-    renderer.domElement.style.height = '100%';
-    renderer.domElement.style.display = 'block';
+    renderer.domElement.style.width = "100%";
+    renderer.domElement.style.height = "100%";
+    renderer.domElement.style.display = "block";
     container.appendChild(renderer.domElement);
 
     const clock = new THREE.Clock();
@@ -217,12 +217,12 @@ export default function ColorBends({
 
     handleResize();
 
-    if ('ResizeObserver' in window) {
+    if ("ResizeObserver" in window) {
       const ro = new ResizeObserver(handleResize);
       ro.observe(container);
       resizeObserverRef.current = ro;
     } else {
-      (window as Window).addEventListener('resize', handleResize);
+      (window as Window).addEventListener("resize", handleResize);
     }
 
     const loop = () => {
@@ -249,7 +249,7 @@ export default function ColorBends({
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
       if (resizeObserverRef.current) resizeObserverRef.current.disconnect();
-      else (window as Window).removeEventListener('resize', handleResize);
+      else (window as Window).removeEventListener("resize", handleResize);
       geometry.dispose();
       material.dispose();
       renderer.dispose();
@@ -279,7 +279,7 @@ export default function ColorBends({
     material.uniforms.uBandWidth.value = bandWidth;
 
     const toVec3 = (hex: string) => {
-      const h = hex.replace('#', '').trim();
+      const h = hex.replace("#", "").trim();
       const v =
         h.length === 3
           ? [parseInt(h[0] + h[0], 16), parseInt(h[1] + h[1], 16), parseInt(h[2] + h[2], 16)]
@@ -311,7 +311,7 @@ export default function ColorBends({
     intensity,
     bandWidth,
     colors,
-    transparent
+    transparent,
   ]);
 
   useEffect(() => {
@@ -326,9 +326,9 @@ export default function ColorBends({
       pointerTargetRef.current.set(x, y);
     };
 
-    container.addEventListener('pointermove', handlePointerMove);
+    container.addEventListener("pointermove", handlePointerMove);
     return () => {
-      container.removeEventListener('pointermove', handlePointerMove);
+      container.removeEventListener("pointermove", handlePointerMove);
     };
   }, []);
 

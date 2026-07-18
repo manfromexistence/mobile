@@ -35,7 +35,7 @@ test("fetchRemoteImage blocks private image hosts before fetch", async () => {
         },
         guard: "public-only",
       }),
-    /Blocked private or local provider URL/
+    /Blocked private or local provider URL/,
   );
 
   assert.equal(called, false);
@@ -53,6 +53,6 @@ test("fetchRemoteImage blocks redirects to private image hosts", async () => {
         guard: "public-only",
         lookup: publicLookup,
       }),
-    /Blocked private or local provider URL/
+    /Blocked private or local provider URL/,
   );
 });

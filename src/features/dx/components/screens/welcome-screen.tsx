@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Code,
@@ -13,32 +13,32 @@ import {
   ThumbsUp,
   Video,
   Zap,
-} from "lucide-react"
-import { motion } from "motion/react"
-import { useEffect, useRef, useState } from "react"
-import ReactMarkdown from "react-markdown"
-import { Friday } from "@/components/friday"
-import { HelloGlow } from "@/components/hello-glow"
-import { PixelCircle } from "@/components/pixel-circle"
-import { ThemePicker } from "@/components/theme-picker"
-import { ThemeSwitcher } from "@/components/theme-switcher"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Slider } from "@/components/ui/slider"
-import { AnimationControls } from "@/features/portfolio/components/eyes/animation-controls"
-import { EyesStage } from "@/features/portfolio/components/eyes/eyes-stage"
-import { SpidermanWavesMode } from "@/features/portfolio/components/eyes/spiderman-waves"
-import { cn } from "@/lib/utils"
+} from "lucide-react";
+import { motion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import { Friday } from "@/components/friday";
+import { HelloGlow } from "@/components/hello-glow";
+import { PixelCircle } from "@/components/pixel-circle";
+import { ThemePicker } from "@/components/theme-picker";
+import { ThemeSwitcher } from "@/components/theme-switcher";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Slider } from "@/components/ui/slider";
+import { AnimationControls } from "@/features/portfolio/components/eyes/animation-controls";
+import { EyesStage } from "@/features/portfolio/components/eyes/eyes-stage";
+import { SpidermanWavesMode } from "@/features/portfolio/components/eyes/spiderman-waves";
+import { cn } from "@/lib/utils";
 
 const PALETTES = [
   ["#002b00", "#005e00", "#00a800", "#4dff4d", "#ffffff"],
   ["#330000", "#800000", "#e60000", "#ff6600", "#ffcc00", "#ffffff"],
   ["#1a0033", "#4d0099", "#9900cc", "#e600e6", "#ff99ff", "#ffffff"],
   ["#33001a", "#99004d", "#e60073", "#ff4d94", "#ffb3d1", "#ffffff"],
-]
+];
 
 const featureCards = [
   {
@@ -51,8 +51,7 @@ const featureCards = [
   {
     id: "code",
     title: "Code, Reasoning, and Chat",
-    description:
-      "Build chatbots, agents, and code with Gemini 3 Pro and Gemini 3 Flash.",
+    description: "Build chatbots, agents, and code with Gemini 3 Pro and Gemini 3 Flash.",
     icon: Code,
     category: "development",
   },
@@ -66,16 +65,14 @@ const featureCards = [
   {
     id: "video",
     title: "Video Generation",
-    description:
-      "Generate videos with Veo models, our state of the art video generation models.",
+    description: "Generate videos with Veo models, our state of the art video generation models.",
     icon: Video,
     category: "creative",
   },
   {
     id: "speech",
     title: "Text to Speech",
-    description:
-      "Convert text to speech with lifelike realism using Gemini TTS.",
+    description: "Convert text to speech with lifelike realism using Gemini TTS.",
     icon: Mic,
     category: "audio",
   },
@@ -86,7 +83,7 @@ const featureCards = [
     icon: Zap,
     category: "interactive",
   },
-]
+];
 
 function ControlSlider({
   label,
@@ -96,12 +93,12 @@ function ControlSlider({
   step,
   onChange,
 }: {
-  label: string
-  value: number
-  min: number
-  max: number
-  step: number
-  onChange: (val: number) => void
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  onChange: (val: number) => void;
 }) {
   return (
     <div className="space-y-3">
@@ -120,43 +117,43 @@ function ControlSlider({
         className="w-full"
       />
     </div>
-  )
+  );
 }
 
 interface Message {
-  role: string
-  content: string
-  id: string
+  role: string;
+  content: string;
+  id: string;
 }
 
 interface WelcomeScreenProps {
-  sidebarExpanded?: boolean
+  sidebarExpanded?: boolean;
 }
 
 export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
-  const sidebarWidth = sidebarExpanded ? 360 : 56
+  const sidebarWidth = sidebarExpanded ? 360 : 56;
 
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [speed, setSpeed] = useState(3)
-  const [resolution, setResolution] = useState(12)
-  const [circleSize, setCircleSize] = useState(96)
-  const [overlap, setOverlap] = useState(32)
-  const [noiseAmount, setNoiseAmount] = useState(0.15)
-  const [messages, _setMessages] = useState<Message[]>([])
-  const [isLoading, _setIsLoading] = useState(false)
-  const [gunshotMode, setGunshotMode] = useState(false)
-  const [spidermanMode, setSpidermanMode] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [speed, setSpeed] = useState(3);
+  const [resolution, setResolution] = useState(12);
+  const [circleSize, setCircleSize] = useState(96);
+  const [overlap, setOverlap] = useState(32);
+  const [noiseAmount, setNoiseAmount] = useState(0.15);
+  const [messages, _setMessages] = useState<Message[]>([]);
+  const [isLoading, _setIsLoading] = useState(false);
+  const [gunshotMode, setGunshotMode] = useState(false);
+  const [spidermanMode, setSpidermanMode] = useState(false);
 
-  const hasMessages = messages.length > 0
+  const hasMessages = messages.length > 0;
 
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to latest message
   useEffect(() => {
     if (hasMessages) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, [hasMessages])
+  }, [hasMessages]);
 
   return (
     <>
@@ -174,12 +171,7 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
       >
         {/* Scrollable Content Area */}
         <ScrollArea className="flex-1">
-          <div
-            className={cn(
-              "h-full",
-              hasMessages ? "flex flex-col" : "p-8 space-y-8"
-            )}
-          >
+          <div className={cn("h-full", hasMessages ? "flex flex-col" : "p-8 space-y-8")}>
             {/* Welcome Content - Hidden when there are messages */}
             {!hasMessages && (
               <>
@@ -246,10 +238,7 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
                           delay: PALETTES.indexOf(palette) * 0.1 + 0.3,
                         }}
                         style={{
-                          marginLeft:
-                            PALETTES.indexOf(palette) === 0
-                              ? 0
-                              : `-${overlap}px`,
+                          marginLeft: PALETTES.indexOf(palette) === 0 ? 0 : `-${overlap}px`,
                           zIndex: PALETTES.length - PALETTES.indexOf(palette),
                         }}
                         className="relative rounded-full overflow-hidden border-[3px] border-background shadow-2xl"
@@ -349,12 +338,8 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
                 <div className="flex items-center justify-center">
                   <HelloGlow className="w-full max-w-2xl rounded-xl">
                     <div className="text-center space-y-4 py-24">
-                      <h2 className="text-4xl font-bold text-foreground">
-                        Premium Animations
-                      </h2>
-                      <p className="text-muted-foreground">
-                        Experience the HelloGlow effect
-                      </p>
+                      <h2 className="text-4xl font-bold text-foreground">Premium Animations</h2>
+                      <p className="text-muted-foreground">Experience the HelloGlow effect</p>
                     </div>
                   </HelloGlow>
                 </div>
@@ -362,7 +347,7 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
                 {/* Feature Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
                   {featureCards.map((card, index) => {
-                    const Icon = card.icon
+                    const Icon = card.icon;
                     return (
                       <motion.div
                         key={card.id}
@@ -388,7 +373,7 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
                           </CardContent>
                         </Card>
                       </motion.div>
-                    )
+                    );
                   })}
                 </div>
               </>
@@ -404,7 +389,7 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
                     animate={{ opacity: 1, y: 0 }}
                     className={cn(
                       "flex w-full gap-3",
-                      message.role === "user" ? "justify-end" : "justify-start"
+                      message.role === "user" ? "justify-end" : "justify-start",
                     )}
                   >
                     {message.role === "user" ? (
@@ -433,9 +418,7 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
                                 variant="ghost"
                                 size="sm"
                                 className="h-7 px-2 gap-1.5 hover:bg-accent"
-                                onClick={() =>
-                                  navigator.clipboard.writeText(message.content)
-                                }
+                                onClick={() => navigator.clipboard.writeText(message.content)}
                                 title="Copy response"
                               >
                                 <Copy className="h-3 w-3" />
@@ -461,10 +444,7 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
                               </Button>
                               <span className="text-xs text-muted-foreground ml-auto">
                                 Response time:{" "}
-                                {(
-                                  Math.floor(Math.random() * 20 + 5) / 10
-                                ).toFixed(1)}
-                                s
+                                {(Math.floor(Math.random() * 20 + 5) / 10).toFixed(1)}s
                               </span>
                             </div>
                           )}
@@ -497,5 +477,5 @@ export function WelcomeScreen({ sidebarExpanded = false }: WelcomeScreenProps) {
         </ScrollArea>
       </motion.div>
     </>
-  )
+  );
 }

@@ -95,11 +95,12 @@ const INITIAL_VALUE: Record<string, unknown> = {
 
 describe("EngineConfigForm", () => {
   it("renders a checkbox for the boolean field", async () => {
-    const { EngineConfigForm } =
-      await import("../../../src/shared/components/compression/EngineConfigForm");
+    const { EngineConfigForm } = await import(
+      "../../../src/shared/components/compression/EngineConfigForm"
+    );
     const onChange = vi.fn();
     const container = mount(
-      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />
+      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />,
     );
 
     // Label text appears
@@ -113,11 +114,12 @@ describe("EngineConfigForm", () => {
   });
 
   it("renders a number input with min/max for the number field", async () => {
-    const { EngineConfigForm } =
-      await import("../../../src/shared/components/compression/EngineConfigForm");
+    const { EngineConfigForm } = await import(
+      "../../../src/shared/components/compression/EngineConfigForm"
+    );
     const onChange = vi.fn();
     const container = mount(
-      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />
+      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />,
     );
 
     expect(container.textContent).toContain("Max Tokens");
@@ -128,11 +130,12 @@ describe("EngineConfigForm", () => {
   });
 
   it("renders a text input for the string field", async () => {
-    const { EngineConfigForm } =
-      await import("../../../src/shared/components/compression/EngineConfigForm");
+    const { EngineConfigForm } = await import(
+      "../../../src/shared/components/compression/EngineConfigForm"
+    );
     const onChange = vi.fn();
     const container = mount(
-      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />
+      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />,
     );
 
     expect(container.textContent).toContain("Prefix");
@@ -142,11 +145,12 @@ describe("EngineConfigForm", () => {
   });
 
   it("renders a select with 2 options for the select field", async () => {
-    const { EngineConfigForm } =
-      await import("../../../src/shared/components/compression/EngineConfigForm");
+    const { EngineConfigForm } = await import(
+      "../../../src/shared/components/compression/EngineConfigForm"
+    );
     const onChange = vi.fn();
     const container = mount(
-      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />
+      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />,
     );
 
     expect(container.textContent).toContain("Strategy");
@@ -159,11 +163,12 @@ describe("EngineConfigForm", () => {
   });
 
   it("renders 2 checkboxes for the multiselect field", async () => {
-    const { EngineConfigForm } =
-      await import("../../../src/shared/components/compression/EngineConfigForm");
+    const { EngineConfigForm } = await import(
+      "../../../src/shared/components/compression/EngineConfigForm"
+    );
     const onChange = vi.fn();
     const container = mount(
-      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />
+      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />,
     );
 
     expect(container.textContent).toContain("Techniques");
@@ -175,11 +180,12 @@ describe("EngineConfigForm", () => {
   });
 
   it("calls onChange with flipped boolean when checkbox is toggled", async () => {
-    const { EngineConfigForm } =
-      await import("../../../src/shared/components/compression/EngineConfigForm");
+    const { EngineConfigForm } = await import(
+      "../../../src/shared/components/compression/EngineConfigForm"
+    );
     const onChange = vi.fn();
     const container = mount(
-      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />
+      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />,
     );
 
     // The first checkbox is the boolean field
@@ -197,11 +203,12 @@ describe("EngineConfigForm", () => {
   });
 
   it("calls onChange with new number when number input changes", async () => {
-    const { EngineConfigForm } =
-      await import("../../../src/shared/components/compression/EngineConfigForm");
+    const { EngineConfigForm } = await import(
+      "../../../src/shared/components/compression/EngineConfigForm"
+    );
     const onChange = vi.fn();
     const container = mount(
-      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />
+      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />,
     );
 
     const numInput = container.querySelector("input[type='number']") as HTMLInputElement;
@@ -209,7 +216,7 @@ describe("EngineConfigForm", () => {
 
     const nativeSetter = Object.getOwnPropertyDescriptor(
       window.HTMLInputElement.prototype,
-      "value"
+      "value",
     )?.set;
 
     act(() => {
@@ -221,16 +228,17 @@ describe("EngineConfigForm", () => {
   });
 
   it("calls onChange with updated array when a multiselect option is checked", async () => {
-    const { EngineConfigForm } =
-      await import("../../../src/shared/components/compression/EngineConfigForm");
+    const { EngineConfigForm } = await import(
+      "../../../src/shared/components/compression/EngineConfigForm"
+    );
     const onChange = vi.fn();
     const container = mount(
-      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />
+      <EngineConfigForm schema={SCHEMA} value={INITIAL_VALUE} onChange={onChange} />,
     );
 
     // The multiselect checkboxes are the 2nd and 3rd checkboxes
     const allCheckboxes = Array.from(
-      container.querySelectorAll("input[type='checkbox']")
+      container.querySelectorAll("input[type='checkbox']"),
     ) as HTMLInputElement[];
     // Index 0 = boolean field, index 1 = "strip-comments", index 2 = "minify"
     const stripCommentsCheckbox = allCheckboxes[1];

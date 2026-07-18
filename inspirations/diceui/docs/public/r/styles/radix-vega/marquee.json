@@ -1,9 +1,7 @@
 {
   "name": "marquee",
   "type": "registry:ui",
-  "dependencies": [
-    "radix-ui"
-  ],
+  "dependencies": ["radix-ui"],
   "cssVars": {
     "theme": {
       "--animate-marquee-left": "marquee-left var(--marquee-duration) linear var(--marquee-loop-count)",

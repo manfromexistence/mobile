@@ -2,10 +2,7 @@
 
 import { Moon, Send, Sparkles, Sun } from "lucide-react";
 import { useState } from "react";
-import {
-  type ActionSwapItem,
-  ActionSwapRollButton,
-} from "@/components/motion/action-swap-roll";
+import { type ActionSwapItem, ActionSwapRollButton } from "@/components/motion/action-swap-roll";
 
 const TEXT_ITEMS: ActionSwapItem[] = [
   { id: "idle", label: "Save" },

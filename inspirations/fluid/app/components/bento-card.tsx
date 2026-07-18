@@ -22,7 +22,15 @@ interface BentoCardProps {
   children: ReactNode;
 }
 
-export function BentoCard({ slug, name, isNew, gridSize = "small", className: extraClassName, style, children }: BentoCardProps) {
+export function BentoCard({
+  slug,
+  name,
+  isNew,
+  gridSize = "small",
+  className: extraClassName,
+  style,
+  children,
+}: BentoCardProps) {
   // No click-to-focus wiring here. Previously a mousedown on empty space
   // inside the card routed focus to the preview's first interactive element
   // (so the user could keyboard-drive the demo afterwards). In practice it
@@ -47,9 +55,7 @@ export function BentoCard({ slug, name, isNew, gridSize = "small", className: ex
       )}
       style={style}
     >
-      <div className="flex-1 min-h-0 flex items-center justify-center px-6 py-16">
-        {children}
-      </div>
+      <div className="flex-1 min-h-0 flex items-center justify-center px-6 py-16">{children}</div>
 
       {slug ? (
         <Link

@@ -55,14 +55,14 @@ test("QuotaDimensionSchema parses valid dimension", () => {
 test("QuotaDimensionSchema rejects limit <= 0", () => {
   assert.equal(
     QuotaDimensionSchema.safeParse({ unit: "tokens", window: "daily", limit: 0 }).success,
-    false
+    false,
   );
 });
 
 test("QuotaDimensionSchema rejects negative limit", () => {
   assert.equal(
     QuotaDimensionSchema.safeParse({ unit: "tokens", window: "daily", limit: -1 }).success,
-    false
+    false,
   );
 });
 
@@ -74,14 +74,14 @@ test("PoolAllocationSchema parses valid allocation", () => {
 test("PoolAllocationSchema rejects weight > 100", () => {
   assert.equal(
     PoolAllocationSchema.safeParse({ apiKeyId: "k", weight: 101, policy: "soft" }).success,
-    false
+    false,
   );
 });
 
 test("PoolAllocationSchema rejects empty apiKeyId", () => {
   assert.equal(
     PoolAllocationSchema.safeParse({ apiKeyId: "", weight: 50, policy: "hard" }).success,
-    false
+    false,
   );
 });
 
@@ -126,7 +126,7 @@ test("ProviderPlanSchema rejects empty dimensions array", () => {
       dimensions: [],
       source: "manual",
     }).success,
-    false
+    false,
   );
 });
 
@@ -181,7 +181,7 @@ test("WINDOW_MS covers all 5 windows", () => {
 test("dimensionKeyToString produces stable colon-separated string", () => {
   assert.equal(
     dimensionKeyToString({ poolId: "pool-abc", unit: "percent", window: "5h" }),
-    "pool-abc:percent:5h"
+    "pool-abc:percent:5h",
   );
 });
 

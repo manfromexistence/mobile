@@ -44,7 +44,7 @@ function makeTarget(
   executionKey: string,
   connectionId: string,
   weight = 100,
-  modelStr = "anthropic/claude-sonnet-4-5"
+  modelStr = "anthropic/claude-sonnet-4-5",
 ): ResolvedComboTarget {
   return {
     kind: "model",
@@ -122,7 +122,7 @@ describe("gating: per-model bucket saturation", () => {
     // Saturated target stays available as a fallback (deprioritized, not dropped).
     assert.ok(
       result.orderedTargets.some((t) => t.executionKey === "ek-sat"),
-      "saturated target must still appear in the fallback list"
+      "saturated target must still appear in the fallback list",
     );
   });
 
@@ -154,12 +154,12 @@ describe("gating: per-model bucket saturation", () => {
       targets,
       "combo-other-model",
       "anthropic/claude-sonnet-4-5",
-      NOW
+      NOW,
     );
     assert.equal(
       result.target?.executionKey,
       "ek-x",
-      "must not be gated by an unrelated model window"
+      "must not be gated by an unrelated model window",
     );
   });
 
@@ -185,7 +185,7 @@ describe("gating: per-model bucket saturation", () => {
       targets,
       "combo-nodata",
       "anthropic/claude-sonnet-4-5",
-      NOW
+      NOW,
     );
     assert.ok(result.target !== null);
     assert.equal(result.orderedTargets.length, 2);
@@ -217,7 +217,7 @@ describe("DRR: deficit round robin", () => {
         [t1, t2],
         "combo-weighted",
         "anthropic/claude-sonnet-4-5",
-        NOW
+        NOW,
       );
       if (r.target) counts[r.target.executionKey]++;
       // Simulate the request settling (as a real caller's finally handler would),
@@ -226,12 +226,12 @@ describe("DRR: deficit round robin", () => {
     }
     assert.ok(
       counts["ek-heavy"] > counts["ek-light"],
-      `heavy (${counts["ek-heavy"]}) should be selected more than light (${counts["ek-light"]})`
+      `heavy (${counts["ek-heavy"]}) should be selected more than light (${counts["ek-light"]})`,
     );
     // Roughly 2:1 — heavy should be at least ~1.5x light over 30 rounds.
     assert.ok(
       counts["ek-heavy"] >= counts["ek-light"] * 1.5,
-      `heavy/light ratio should be ~2:1, got ${counts["ek-heavy"]}:${counts["ek-light"]}`
+      `heavy/light ratio should be ~2:1, got ${counts["ek-heavy"]}:${counts["ek-light"]}`,
     );
   });
 
@@ -268,12 +268,12 @@ describe("P2C in-flight", () => {
       [t1, t2],
       "combo-p2c",
       "anthropic/claude-sonnet-4-5",
-      NOW
+      NOW,
     );
     assert.equal(
       result.target?.executionKey,
       "ek-free",
-      "the target with the lower in-flight load must win the P2C tie-break"
+      "the target with the lower in-flight load must win the P2C tie-break",
     );
   });
 
@@ -301,7 +301,7 @@ describe("P2C in-flight", () => {
     assert.equal(
       getInflight("conn-ttl", NOW + DEFAULT_LEASE_MS + 1),
       0,
-      "the slot must auto-expire after the lease, preventing a permanent leak"
+      "the slot must auto-expire after the lease, preventing a permanent leak",
     );
     // The returned callback must remain referenced to satisfy the contract.
     assert.equal(typeof result.decrementInflight, "function");
@@ -337,17 +337,17 @@ describe("gating: per-connection maxConcurrent", () => {
       "combo-cap-lowest",
       "anthropic/claude-sonnet-4-5",
       NOW,
-      { maxConcurrentByConnection }
+      { maxConcurrentByConnection },
     );
     assert.equal(
       gated.target?.executionKey,
       "ek-roomy",
-      "the below-cap connection must win even though it has MORE absolute in-flight load"
+      "the below-cap connection must win even though it has MORE absolute in-flight load",
     );
     // The at-cap connection is NOT dropped — it stays as a last-resort fallback.
     assert.ok(
       gated.orderedTargets.some((t) => t.executionKey === "ek-tight"),
-      "the capped connection must still appear in the fallback list (never hard-blocked)"
+      "the capped connection must still appear in the fallback list (never hard-blocked)",
     );
   });
 
@@ -362,7 +362,7 @@ describe("gating: per-connection maxConcurrent", () => {
       "combo-below",
       "anthropic/claude-sonnet-4-5",
       NOW,
-      { maxConcurrentByConnection }
+      { maxConcurrentByConnection },
     );
     assert.equal(result.target?.executionKey, "ek-a", "below-cap connection must remain selected");
   });
@@ -381,7 +381,7 @@ describe("gating: per-connection maxConcurrent", () => {
       "combo-allcap",
       "anthropic/claude-sonnet-4-5",
       NOW,
-      { maxConcurrentByConnection }
+      { maxConcurrentByConnection },
     );
     assert.ok(result.target !== null, "must never hard-block: a target is still returned");
     assert.equal(result.orderedTargets.length, 2, "both targets remain dispatchable");
@@ -409,12 +409,12 @@ describe("gating: per-connection maxConcurrent", () => {
       "combo-cap-vs-load",
       "anthropic/claude-sonnet-4-5",
       NOW,
-      { maxConcurrentByConnection }
+      { maxConcurrentByConnection },
     );
     assert.equal(
       result.target?.executionKey,
       "ek-free",
-      "concurrency gating must demote the at-cap target even though it has lower absolute load and higher DRR weight"
+      "concurrency gating must demote the at-cap target even though it has lower absolute load and higher DRR weight",
     );
   });
 
@@ -437,7 +437,7 @@ describe("gating: per-connection maxConcurrent", () => {
       "combo-nolimit",
       "anthropic/claude-sonnet-4-5",
       NOW,
-      { maxConcurrentByConnection }
+      { maxConcurrentByConnection },
     );
     assert.ok(result.target !== null);
     assert.equal(result.orderedTargets.length, 2, "no connection gated when cap is null");
@@ -451,7 +451,7 @@ describe("gating: per-connection maxConcurrent", () => {
       "combo-zero",
       "anthropic/claude-sonnet-4-5",
       NOW,
-      { maxConcurrentByConnection: new Map<string, number | null>([["conn-zero", 0]]) }
+      { maxConcurrentByConnection: new Map<string, number | null>([["conn-zero", 0]]) },
     );
     assert.equal(zeroResult.target?.executionKey, "ek-zero", "0 cap means no limit, not block");
   });
@@ -465,7 +465,7 @@ describe("gating: per-connection maxConcurrent", () => {
       targets,
       "combo-compat",
       "anthropic/claude-sonnet-4-5",
-      NOW
+      NOW,
     );
     assert.equal(result.target?.executionKey, "ek-x");
     assert.equal(result.orderedTargets.length, 1);
@@ -479,14 +479,14 @@ describe("activation: qtSd/ combos use strategy 'quota-share'", () => {
     assert.equal(
       QUOTA_SHARE_STRATEGY,
       "quota-share",
-      "quotaCombos must mint qtSd/ combos with the 'quota-share' strategy"
+      "quotaCombos must mint qtSd/ combos with the 'quota-share' strategy",
     );
   });
 
   test("'quota-share' is registered as an INTERNAL routing strategy", () => {
     assert.ok(
       (INTERNAL_ROUTING_STRATEGY_VALUES as readonly string[]).includes("quota-share"),
-      "'quota-share' must be in the internal (non-UI) routing strategy list"
+      "'quota-share' must be in the internal (non-UI) routing strategy list",
     );
   });
 });

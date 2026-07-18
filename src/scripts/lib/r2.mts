@@ -1,7 +1,7 @@
-import { existsSync } from "node:fs"
-import { readdir, readFile } from "node:fs/promises"
-import path from "node:path"
-import { S3Client } from "bun"
+import { existsSync } from "node:fs";
+import { readdir, readFile } from "node:fs/promises";
+import path from "node:path";
+import { S3Client } from "bun";
 
 const CONTENT_TYPES: Record<string, string> = {
   ".webp": "image/webp",
@@ -11,14 +11,13 @@ const CONTENT_TYPES: Record<string, string> = {
   ".gif": "image/gif",
   ".avif": "image/avif",
   ".svg": "image/svg+xml",
-}
+};
 
-const DEFAULT_CONTENT_TYPE = "application/octet-stream"
+const DEFAULT_CONTENT_TYPE = "application/octet-stream";
 
 // Create an S3 client for Cloudflare R2 from environment variables.
 export function getR2ClientFromEnv() {
-  const { R2_S3_API, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET } =
-    process.env
+  const { R2_S3_API, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET } = process.env;
 
   const missing = (
     [
@@ -29,10 +28,10 @@ export function getR2ClientFromEnv() {
     ] as const
   )
     .filter(([, value]) => !value)
-    .map(([key]) => key)
+    .map(([key]) => key);
 
   if (missing.length > 0) {
-    throw new Error(`Missing required env vars: ${missing.join(", ")}`)
+    throw new Error(`Missing required env vars: ${missing.join(", ")}`);
   }
 
   return new S3Client({
@@ -40,18 +39,18 @@ export function getR2ClientFromEnv() {
     accessKeyId: R2_ACCESS_KEY_ID,
     secretAccessKey: R2_SECRET_ACCESS_KEY,
     bucket: R2_BUCKET,
-  })
+  });
 }
 
 export type SyncDirToR2Options = {
-  client: S3Client
+  client: S3Client;
   // Local directory whose files will be uploaded.
-  dir: string
+  dir: string;
   // Optional key prefix (folder) inside the bucket.
-  prefix?: string
+  prefix?: string;
   // Restrict to these lowercased extensions (with dot). Uploads everything when omitted.
-  extensions?: string[]
-}
+  extensions?: string[];
+};
 
 // Recursively upload a directory tree to R2, mirroring its folder structure.
 // Additive: existing remote files are overwritten, never deleted. Returns uploaded keys.
@@ -62,37 +61,35 @@ export async function syncDirToR2({
   extensions,
 }: SyncDirToR2Options): Promise<string[]> {
   if (!existsSync(dir)) {
-    throw new Error(`Directory not found: ${dir}`)
+    throw new Error(`Directory not found: ${dir}`);
   }
 
-  const entries = await readdir(dir, { withFileTypes: true, recursive: true })
-  const normalizedPrefix = prefix.replace(/^\/+|\/+$/g, "")
-  const uploadedKeys: string[] = []
+  const entries = await readdir(dir, { withFileTypes: true, recursive: true });
+  const normalizedPrefix = prefix.replace(/^\/+|\/+$/g, "");
+  const uploadedKeys: string[] = [];
 
   for (const entry of entries) {
-    if (!entry.isFile()) continue
+    if (!entry.isFile()) continue;
 
-    const absPath = path.join(entry.parentPath, entry.name)
-    const segments = path.relative(dir, absPath).split(path.sep)
+    const absPath = path.join(entry.parentPath, entry.name);
+    const segments = path.relative(dir, absPath).split(path.sep);
 
     // Skip dotfiles and anything inside a dot-directory.
-    if (segments.some((segment) => segment.startsWith("."))) continue
+    if (segments.some((segment) => segment.startsWith("."))) continue;
 
-    const ext = path.extname(entry.name).toLowerCase()
-    if (extensions && !extensions.includes(ext)) continue
+    const ext = path.extname(entry.name).toLowerCase();
+    if (extensions && !extensions.includes(ext)) continue;
 
     // R2 keys are always slash-delimited.
-    const objectPath = segments.join("/")
-    const key = normalizedPrefix
-      ? `${normalizedPrefix}/${objectPath}`
-      : objectPath
-    const contentType = CONTENT_TYPES[ext] ?? DEFAULT_CONTENT_TYPE
+    const objectPath = segments.join("/");
+    const key = normalizedPrefix ? `${normalizedPrefix}/${objectPath}` : objectPath;
+    const contentType = CONTENT_TYPES[ext] ?? DEFAULT_CONTENT_TYPE;
 
-    const buffer = await readFile(absPath)
-    await client.write(key, buffer, { type: contentType })
+    const buffer = await readFile(absPath);
+    await client.write(key, buffer, { type: contentType });
 
-    uploadedKeys.push(key)
+    uploadedKeys.push(key);
   }
 
-  return uploadedKeys
+  return uploadedKeys;
 }

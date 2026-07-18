@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { antigravityToOpenAIRequest } =
-  await import("../../open-sse/translator/request/antigravity-to-openai.ts");
+const { antigravityToOpenAIRequest } = await import(
+  "../../open-sse/translator/request/antigravity-to-openai.ts"
+);
 
 test("Antigravity -> OpenAI maps generation config, system instructions, contents and tools", () => {
   const result = antigravityToOpenAIRequest(
@@ -59,7 +60,7 @@ test("Antigravity -> OpenAI maps generation config, system instructions, content
         ],
       },
     },
-    false
+    false,
   );
 
   assert.equal(result.max_tokens, 32000);
@@ -111,7 +112,7 @@ test("Antigravity -> OpenAI extracts string system instructions and text-only me
         contents: [{ role: "user", parts: [{ text: "Hello" }] }],
       },
     },
-    true
+    true,
   );
 
   assert.equal(result.stream, true);
@@ -146,7 +147,7 @@ test("Antigravity -> OpenAI strips a lone function response with no matching fun
         ],
       },
     },
-    false
+    false,
   );
 
   assert.deepEqual(result.messages, []);
@@ -162,14 +163,20 @@ test("Antigravity -> OpenAI keeps co-located function call and text but strips t
             role: "model",
             parts: [
               { text: "Let me look that up." },
-              { functionResponse: { id: "call_9", name: "lookup", response: { result: { ok: true } } } },
+              {
+                functionResponse: {
+                  id: "call_9",
+                  name: "lookup",
+                  response: { result: { ok: true } },
+                },
+              },
               { functionCall: { id: "call_10", name: "lookup", args: { q: "weather" } } },
             ],
           },
         ],
       },
     },
-    false
+    false,
   );
 
   // The accompanying assistant message (text + tool_call) survives, but the co-located
@@ -205,7 +212,7 @@ test("Antigravity -> OpenAI drops empty thoughtSignature text instead of emittin
         ],
       },
     },
-    false
+    false,
   );
 
   const assistantMsg = result.messages.find((m) => m.role === "assistant");
@@ -246,7 +253,7 @@ test("Antigravity -> OpenAI lowers schema types recursively", () => {
         ],
       },
     },
-    false
+    false,
   );
 
   assert.deepEqual((result.tools[0].function as any).parameters, {
@@ -295,7 +302,7 @@ test("Antigravity -> OpenAI strips enumDescriptions from tool schema (top-level 
         ],
       },
     },
-    false
+    false,
   );
 
   const parameters = (result.tools[0].function as any).parameters;
@@ -346,7 +353,7 @@ test("Antigravity -> OpenAI preserves the required array on Draft 2020-12 tool s
         ],
       },
     },
-    false
+    false,
   );
 
   const params = (result.tools[0].function as any).parameters;
@@ -382,7 +389,7 @@ test("Antigravity -> OpenAI drops required entries that no longer exist in prope
         ],
       },
     },
-    false
+    false,
   );
 
   const params = (result.tools[0].function as any).parameters;

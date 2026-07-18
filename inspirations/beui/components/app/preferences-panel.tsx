@@ -5,10 +5,7 @@ import { Check, Copy, X } from "lucide-react";
 import { Drawer } from "@/components/motion/drawer";
 import { cn } from "@/lib/utils";
 import { THEME_LIST, themeExportCss } from "@/lib/themes";
-import {
-  type IconSet,
-  usePreferences,
-} from "@/components/app/preferences-provider";
+import { type IconSet, usePreferences } from "@/components/app/preferences-provider";
 
 const ICON_SETS: { id: IconSet | string; name: string; soon?: boolean }[] = [
   { id: "lucide", name: "Lucide" },
@@ -17,14 +14,8 @@ const ICON_SETS: { id: IconSet | string; name: string; soon?: boolean }[] = [
 ];
 
 export function PreferencesPanel() {
-  const {
-    colorTheme,
-    setColorTheme,
-    iconSet,
-    setIconSet,
-    panelOpen,
-    setPanelOpen,
-  } = usePreferences();
+  const { colorTheme, setColorTheme, iconSet, setIconSet, panelOpen, setPanelOpen } =
+    usePreferences();
   const [copied, setCopied] = useState(false);
 
   const copyTheme = async () => {
@@ -54,9 +45,7 @@ export function PreferencesPanel() {
       </div>
 
       <section>
-        <p className="font-pixel text-xs font-medium uppercase text-muted-foreground">
-          Theme
-        </p>
+        <p className="font-pixel text-xs font-medium uppercase text-muted-foreground">Theme</p>
         <div className="mt-3 flex flex-wrap items-center gap-2.5">
           {THEME_LIST.map((t) => {
             const active = colorTheme === t.id;
@@ -84,19 +73,13 @@ export function PreferencesPanel() {
           onClick={copyTheme}
           className="mt-4 inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-card/70"
         >
-          {copied ? (
-            <Check className="h-3.5 w-3.5" />
-          ) : (
-            <Copy className="h-3.5 w-3.5" />
-          )}
+          {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
           {copied ? "Copied CSS" : "Copy theme CSS"}
         </button>
       </section>
 
       <section>
-        <p className="font-pixel text-xs font-medium uppercase text-muted-foreground">
-          Icons
-        </p>
+        <p className="font-pixel text-xs font-medium uppercase text-muted-foreground">Icons</p>
         <div className="mt-3 flex flex-col gap-2">
           {ICON_SETS.map((s) => {
             const active = iconSet === s.id;
@@ -127,9 +110,7 @@ export function PreferencesPanel() {
             );
           })}
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">
-          Preferences reset on refresh.
-        </p>
+        <p className="mt-3 text-xs text-muted-foreground">Preferences reset on refresh.</p>
       </section>
     </Drawer>
   );

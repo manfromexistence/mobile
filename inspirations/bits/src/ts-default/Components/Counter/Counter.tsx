@@ -1,10 +1,10 @@
-import { MotionValue, motion, useSpring, useTransform } from 'motion/react';
-import type React from 'react';
-import { useEffect } from 'react';
+import { MotionValue, motion, useSpring, useTransform } from "motion/react";
+import type React from "react";
+import { useEffect } from "react";
 
-import './Counter.css';
+import "./Counter.css";
 
-type PlaceValue = number | '.';
+type PlaceValue = number | ".";
 
 interface NumberProps {
   mv: MotionValue<number>;
@@ -13,7 +13,7 @@ interface NumberProps {
 }
 
 function Number({ mv, number, height }: NumberProps) {
-  const y = useTransform(mv, latest => {
+  const y = useTransform(mv, (latest) => {
     const placeValue = latest % 10;
     const offset = (10 + number - placeValue) % 10;
     let memo = offset * height;
@@ -49,9 +49,9 @@ interface DigitProps {
 }
 
 function Digit({ place, value, height, digitStyle }: DigitProps) {
-  if (place === '.') {
+  if (place === ".") {
     return (
-      <span className="counter-digit" style={{ height, ...digitStyle, width: 'fit-content' }}>
+      <span className="counter-digit" style={{ height, ...digitStyle, width: "fit-content" }}>
         .
       </span>
     );
@@ -88,7 +88,7 @@ interface CounterProps {
   borderRadius?: number;
   horizontalPadding?: number;
   textColor?: string;
-  fontWeight?: React.CSSProperties['fontWeight'];
+  fontWeight?: React.CSSProperties["fontWeight"];
   containerStyle?: React.CSSProperties;
   counterStyle?: React.CSSProperties;
   digitStyle?: React.CSSProperties;
@@ -104,29 +104,33 @@ export default function Counter({
   fontSize = 100,
   padding = 0,
   places = [...value.toString()].map((ch, i, a) => {
-    if (ch === '.') {
-      return '.';
+    if (ch === ".") {
+      return ".";
     }
-    const dotIndex = a.indexOf('.');
+    const dotIndex = a.indexOf(".");
     const isInteger = dotIndex === -1;
 
-    const exponent = isInteger ? a.length - i - 1 : i < dotIndex ? dotIndex - i - 1 : -(i - dotIndex);
+    const exponent = isInteger
+      ? a.length - i - 1
+      : i < dotIndex
+        ? dotIndex - i - 1
+        : -(i - dotIndex);
 
     return 10 ** exponent;
   }),
   gap = 8,
   borderRadius = 4,
   horizontalPadding = 8,
-  textColor = 'inherit',
-  fontWeight = 'inherit',
+  textColor = "inherit",
+  fontWeight = "inherit",
   containerStyle,
   counterStyle,
   digitStyle,
   gradientHeight = 16,
-  gradientFrom = 'black',
-  gradientTo = 'transparent',
+  gradientFrom = "black",
+  gradientTo = "transparent",
   topGradientStyle,
-  bottomGradientStyle
+  bottomGradientStyle,
 }: CounterProps) {
   const height = fontSize + padding;
 
@@ -138,29 +142,32 @@ export default function Counter({
     paddingRight: horizontalPadding,
     color: textColor,
     fontWeight,
-    direction: "ltr"
+    direction: "ltr",
   };
 
   const defaultTopGradientStyle: React.CSSProperties = {
     height: gradientHeight,
-    background: `linear-gradient(to bottom, ${gradientFrom}, ${gradientTo})`
+    background: `linear-gradient(to bottom, ${gradientFrom}, ${gradientTo})`,
   };
 
   const defaultBottomGradientStyle: React.CSSProperties = {
     height: gradientHeight,
-    background: `linear-gradient(to top, ${gradientFrom}, ${gradientTo})`
+    background: `linear-gradient(to top, ${gradientFrom}, ${gradientTo})`,
   };
 
   return (
     <span className="counter-container" style={containerStyle}>
       <span className="counter-counter" style={{ ...defaultCounterStyle, ...counterStyle }}>
-        {places.map(place => (
+        {places.map((place) => (
           <Digit key={place} place={place} value={value} height={height} digitStyle={digitStyle} />
         ))}
       </span>
       <span className="gradient-container">
         <span className="top-gradient" style={topGradientStyle ?? defaultTopGradientStyle} />
-        <span className="bottom-gradient" style={bottomGradientStyle ?? defaultBottomGradientStyle} />
+        <span
+          className="bottom-gradient"
+          style={bottomGradientStyle ?? defaultBottomGradientStyle}
+        />
       </span>
     </span>
   );

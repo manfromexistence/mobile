@@ -1,9 +1,7 @@
 {
   "name": "listbox-horizontal-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "listbox"
-  ],
+  "registryDependencies": ["listbox"],
   "files": [
     {
       "path": "examples/listbox-horizontal-demo.tsx",

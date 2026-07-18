@@ -109,9 +109,7 @@ test("resolveModelABI requires both state creators and batch kernels for hybrid 
 
 test("resolveModelABI rejects kv_state_kind none in chat pipeline", () => {
   const resolve = (LLMChatPipeline as AnyObj).resolveModelABI;
-  expect(() => resolve("none", makeAvailability())).toThrow(
-    /kv_state_kind=`none`/,
-  );
+  expect(() => resolve("none", makeAvailability())).toThrow(/kv_state_kind=`none`/);
 });
 
 test("batch kv_cache invoke path does not require rnnState", () => {
@@ -223,18 +221,8 @@ test("embedAndForward begins and ends forward for all active states", async () =
 
   const out = await pipeline.embedAndForward([[101]], 1);
   expect(out).toBe(logits);
-  expect(pipeline.fKVCacheBeginForward).toHaveBeenNthCalledWith(
-    1,
-    kvState,
-    [0],
-    [1],
-  );
-  expect(pipeline.fKVCacheBeginForward).toHaveBeenNthCalledWith(
-    2,
-    rnnState,
-    [0],
-    [1],
-  );
+  expect(pipeline.fKVCacheBeginForward).toHaveBeenNthCalledWith(1, kvState, [0], [1]);
+  expect(pipeline.fKVCacheBeginForward).toHaveBeenNthCalledWith(2, rnnState, [0], [1]);
   expect(pipeline.fKVCacheEndForward).toHaveBeenNthCalledWith(1, rnnState);
   expect(pipeline.fKVCacheEndForward).toHaveBeenNthCalledWith(2, kvState);
 });

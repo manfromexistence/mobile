@@ -1,4 +1,4 @@
-import { LogosCarousel } from "@/registry/components/logos-carousel"
+import { LogosCarousel } from "@/registry/components/logos-carousel";
 
 export default function SocialProof01() {
   return (
@@ -34,7 +34,7 @@ export default function SocialProof01() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 const COMPANY_LIST = [
@@ -166,4 +166,4 @@ const COMPANY_LIST = [
       </svg>
     ),
   },
-]
+];

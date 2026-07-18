@@ -11,8 +11,9 @@ const core = await import("../../src/lib/db/core.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 const combosDb = await import("../../src/lib/db/combos.ts");
 const serviceModelsDb = await import("../../src/lib/db/serviceModels.ts");
-const providerModelsRoute =
-  await import("../../src/app/api/v1/providers/[provider]/models/route.ts");
+const providerModelsRoute = await import(
+  "../../src/app/api/v1/providers/[provider]/models/route.ts"
+);
 
 interface SeedConnectionOverrides {
   authType?: string;
@@ -80,7 +81,7 @@ test("provider models route returns only selected provider models with unprefixe
     new Request("http://localhost/api/v1/providers/openai/models"),
     {
       params: Promise.resolve({ provider: "openai" }),
-    }
+    },
   );
 
   const body = (await response.json()) as ProviderModelsResponse;
@@ -90,11 +91,11 @@ test("provider models route returns only selected provider models with unprefixe
   assert.ok(ids.length > 0);
   assert.equal(
     ids.some((id: string) => id.includes("/")),
-    false
+    false,
   );
   assert.equal(
     body.data.some((model) => String(model.owned_by) !== "openai"),
-    false
+    false,
   );
   assert.equal(ids.includes("team-router"), false);
 });
@@ -111,7 +112,7 @@ test("provider models route accepts provider alias in path", async () => {
     new Request("http://localhost/api/v1/providers/cc/models"),
     {
       params: Promise.resolve({ provider: "cc" }),
-    }
+    },
   );
 
   const body = (await response.json()) as ProviderModelsResponse;
@@ -121,18 +122,20 @@ test("provider models route accepts provider alias in path", async () => {
   assert.ok(ids.includes("claude-sonnet-4-6"));
   assert.equal(
     ids.some((id: string) => id.startsWith("cc/") || id.startsWith("claude/")),
-    false
+    false,
   );
 });
 
 test("provider models route supports service provider 9router", async () => {
-  serviceModelsDb.saveServiceModels("9router", [{ id: "gpt-4o-mini", name: "Local9R Test", available: true }]);
+  serviceModelsDb.saveServiceModels("9router", [
+    { id: "gpt-4o-mini", name: "Local9R Test", available: true },
+  ]);
 
   const response = await providerModelsRoute.GET(
     new Request("http://localhost/api/v1/providers/9router/models"),
     {
       params: Promise.resolve({ provider: "9router" }),
-    }
+    },
   );
 
   const body = (await response.json()) as ProviderModelsResponse;
@@ -140,17 +143,22 @@ test("provider models route supports service provider 9router", async () => {
 
   assert.equal(response.status, 200);
   assert.ok(ids.includes("gpt-4o-mini"));
-  assert.equal(ids.some((id: string) => id.includes("/")), false);
+  assert.equal(
+    ids.some((id: string) => id.includes("/")),
+    false,
+  );
 });
 
 test("provider models route supports service provider cliproxyapi", async () => {
-  serviceModelsDb.saveServiceModels("cliproxyapi", [{ id: "llama-3", name: "Clip Test", available: true }]);
+  serviceModelsDb.saveServiceModels("cliproxyapi", [
+    { id: "llama-3", name: "Clip Test", available: true },
+  ]);
 
   const response = await providerModelsRoute.GET(
     new Request("http://localhost/api/v1/providers/cliproxyapi/models"),
     {
       params: Promise.resolve({ provider: "cliproxyapi" }),
-    }
+    },
   );
 
   const body = (await response.json()) as ProviderModelsResponse;
@@ -158,7 +166,10 @@ test("provider models route supports service provider cliproxyapi", async () => 
 
   assert.equal(response.status, 200);
   assert.ok(ids.includes("llama-3"));
-  assert.equal(ids.some((id: string) => id.includes("/")), false);
+  assert.equal(
+    ids.some((id: string) => id.includes("/")),
+    false,
+  );
 });
 
 test("provider models route returns 400 for unknown provider", async () => {
@@ -166,7 +177,7 @@ test("provider models route returns 400 for unknown provider", async () => {
     new Request("http://localhost/api/v1/providers/nope/models"),
     {
       params: Promise.resolve({ provider: "nope" }),
-    }
+    },
   );
 
   const body = (await response.json()) as ProviderModelsResponse;

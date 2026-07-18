@@ -49,7 +49,7 @@ describe("memory settings helpers", () => {
         memoryRetentionDays: 21,
         memoryStrategy: "hybrid",
         skillsEnabled: true,
-      }
+      },
     );
   });
 
@@ -70,7 +70,7 @@ describe("memory settings helpers", () => {
         persistAcrossModels: false,
         retentionDays: 10,
         scope: "apiKey",
-      }
+      },
     );
   });
 });

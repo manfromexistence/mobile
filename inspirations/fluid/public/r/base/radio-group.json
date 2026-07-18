@@ -3,10 +3,7 @@
   "name": "radio-group",
   "title": "Radio Group (Base UI)",
   "description": "Animated radio group with proximity hover, spring-animated selection dot. Base UI flavor.",
-  "dependencies": [
-    "framer-motion",
-    "@base-ui/react"
-  ],
+  "dependencies": ["framer-motion", "@base-ui/react"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

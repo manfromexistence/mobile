@@ -57,11 +57,7 @@ export function InstallCommand({
       )}
     >
       <div className="flex items-center gap-2 border-b border-border px-3 py-1.5">
-        <Tabs
-          value={pm}
-          onValueChange={(v) => setPm(v as PM)}
-          variant="segment"
-        >
+        <Tabs value={pm} onValueChange={(v) => setPm(v as PM)} variant="segment">
           <TabsList className="gap-0.5 rounded-none bg-transparent p-0">
             {PMS.map((p) => (
               <TabsTrigger
@@ -76,11 +72,7 @@ export function InstallCommand({
           </TabsList>
         </Tabs>
         <div className="ml-auto shrink-0">
-          <CopyButton
-            text={copyValue}
-            eventName="copy_install_command"
-            eventLabel={currentSlug}
-          />
+          <CopyButton text={copyValue} eventName="copy_install_command" eventLabel={currentSlug} />
         </div>
       </div>
 
@@ -92,12 +84,13 @@ export function InstallCommand({
           </span>
           {PM_COMMANDS[pm].split(" ")[1] && (
             <span className="text-[#6f42c1] dark:text-[#d2a8ff]">
-              {" "}{PM_COMMANDS[pm].split(" ")[1]}
+              {" "}
+              {PM_COMMANDS[pm].split(" ")[1]}
             </span>
           )}
           <span className="text-[#24292f] dark:text-[#e6edf3]">{" shadcn "}</span>
           <span className="text-[#0550ae] dark:text-[#79c0ff]">add</span>
-          <span className="text-[#24292f]/70 dark:text-[#e6edf3]/60">{" "}{REGISTRY_NAMESPACE}/</span>
+          <span className="text-[#24292f]/70 dark:text-[#e6edf3]/60"> {REGISTRY_NAMESPACE}/</span>
           <ActionSwapCascadeText
             value={currentSlug}
             className="font-medium text-[#0a3069] dark:text-[#a5d6ff]"

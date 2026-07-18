@@ -84,8 +84,9 @@ describe("resolveSpawnArgs", () => {
 
   it("CLIPROXY_DEFAULT_PORT is 8317", async () => {
     // Verify the exported constant directly
-    const { CLIPROXY_DEFAULT_PORT } =
-      await import("../../../../src/lib/services/installers/cliproxy.ts");
+    const { CLIPROXY_DEFAULT_PORT } = await import(
+      "../../../../src/lib/services/installers/cliproxy.ts"
+    );
     assert.equal(CLIPROXY_DEFAULT_PORT, 8317);
   });
 });

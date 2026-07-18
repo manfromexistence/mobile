@@ -7,7 +7,7 @@ test("claude-code handler — happy path forwards to /v1/messages", async () => 
   const r = await runHandler(
     new ClaudeCodeHandler(),
     { model: "claude-3.5-sonnet", messages: [] },
-    "claude-opus-4.5"
+    "claude-opus-4.5",
   );
   assert.ok(r.fetchCalled);
   assert.equal(r.status, 200);

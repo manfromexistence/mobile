@@ -11,24 +11,14 @@ export async function GET(request: Request) {
   const component = componentSlug
     ? allComponents().find((item) => item.slug === componentSlug)
     : undefined;
-  const category =
-    component?.category ?? (categorySlug ? findCategory(categorySlug) : undefined);
+  const category = component?.category ?? (categorySlug ? findCategory(categorySlug) : undefined);
   const title = component?.name ?? (category ? `${category.name} components` : "beUI");
   const description =
     component?.description ??
     category?.description ??
     "The motion toolkit for React & Next.js. Built on Framer Motion and Tailwind.";
-  const label = component
-    ? "Component"
-    : category
-      ? category.name
-      : "Motion components";
-  const command = component
-    ? `npx shadcn add @beui/${component.slug}`
-    : "npx shadcn add @beui/...";
+  const label = component ? "Component" : category ? category.name : "Motion components";
+  const command = component ? `npx shadcn add @beui/${component.slug}` : "npx shadcn add @beui/...";
 
-  return new ImageResponse(
-    ogImage({ title, description, label, command }),
-    OG_SIZE,
-  );
+  return new ImageResponse(ogImage({ title, description, label, command }), OG_SIZE);
 }

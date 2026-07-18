@@ -63,10 +63,7 @@ function useStore<T>(selector: (state: StoreState) => T): T {
     throw new Error(`\`useQRCode\` must be used within \`${ROOT_NAME}\``);
   }
 
-  const getSnapshot = React.useCallback(
-    () => selector(store.getState()),
-    [store, selector],
-  );
+  const getSnapshot = React.useCallback(() => selector(store.getState()), [store, selector]);
 
   return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
@@ -191,11 +188,7 @@ function QRCode(props: QRCodeProps) {
       if (!value || !targetGenerationKey) return;
 
       const currentState = store.getState();
-      if (
-        currentState.isGenerating ||
-        currentState.generationKey === targetGenerationKey
-      )
-        return;
+      if (currentState.isGenerating || currentState.generationKey === targetGenerationKey) return;
 
       store.setStates({
         isGenerating: true,
@@ -235,9 +228,7 @@ function QRCode(props: QRCodeProps) {
         onGenerated?.();
       } catch (error) {
         const parsedError =
-          error instanceof Error
-            ? error
-            : new Error("Failed to generate QR code");
+          error instanceof Error ? error : new Error("Failed to generate QR code");
         store.setStates({
           error: parsedError,
           isGenerating: false,
@@ -340,10 +331,7 @@ function QRCodeSvg(props: QRCodeSvgProps) {
     <SvgPrimitive
       data-slot="qr-code-svg"
       {...svgProps}
-      className={cn(
-        "relative max-h-(--qr-code-size) max-w-(--qr-code-size)",
-        className,
-      )}
+      className={cn("relative max-h-(--qr-code-size) max-w-(--qr-code-size)", className)}
       style={{ width: context.size, height: context.size, ...style }}
       dangerouslySetInnerHTML={{ __html: svgString }}
     />
@@ -372,10 +360,7 @@ function QRCodeImage(props: QRCodeImageProps) {
       alt={alt}
       width={context.size}
       height={context.size}
-      className={cn(
-        "relative max-h-(--qr-code-size) max-w-(--qr-code-size)",
-        className,
-      )}
+      className={cn("relative max-h-(--qr-code-size) max-w-(--qr-code-size)", className)}
     />
   );
 }

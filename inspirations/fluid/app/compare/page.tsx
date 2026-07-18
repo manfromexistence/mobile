@@ -61,14 +61,12 @@ function ComparePageInner() {
 
   const componentMap = new Map(componentList.map((c) => [c.slug, c]));
 
-  const slides = SLIDE_ORDER
-    .map((slug) => {
-      const c = componentMap.get(slug);
-      if (!c) return null;
-      if (!previewMap[slug] || !shadcnPreviewMap[slug]) return null;
-      return { slug, name: c.name, isNew: c.isNew };
-    })
-    .filter((s): s is NonNullable<typeof s> => s != null);
+  const slides = SLIDE_ORDER.map((slug) => {
+    const c = componentMap.get(slug);
+    if (!c) return null;
+    if (!previewMap[slug] || !shadcnPreviewMap[slug]) return null;
+    return { slug, name: c.name, isNew: c.isNew };
+  }).filter((s): s is NonNullable<typeof s> => s != null);
 
   const paramSlug = searchParams.get("c");
   const paramIndex = slides.findIndex((s) => s.slug === paramSlug);
@@ -87,7 +85,7 @@ function ComparePageInner() {
       const slug = slides[index].slug;
       router.replace(`/compare?c=${slug}`, { scroll: false });
     },
-    [slides, router]
+    [slides, router],
   );
 
   const goToRef = useRef(goTo);
@@ -113,10 +111,11 @@ function ComparePageInner() {
         role === "radiogroup" ||
         role === "listbox" ||
         role === "menu"
-      ) return;
+      )
+        return;
 
       const closest = (e.target as HTMLElement).closest(
-        "[role=slider],[role=tablist],[role=radiogroup],[role=listbox],[role=menu],[role=menubar]"
+        "[role=slider],[role=tablist],[role=radiogroup],[role=listbox],[role=menu],[role=menubar]",
       );
       if (closest) return;
 
@@ -149,20 +148,32 @@ function ComparePageInner() {
             >
               Shadcn VS Fluid Functionalism
             </h1>
-            <p className="text-[14px] text-muted-foreground">
-              Hover the difference, side by side
-            </p>
+            <p className="text-[14px] text-muted-foreground">Hover the difference, side by side</p>
             <div className="flex items-center gap-2 mt-2">
               <Link href="/docs">
-                <Button variant="primary" size="sm">Learn more</Button>
+                <Button variant="primary" size="sm">
+                  Learn more
+                </Button>
               </Link>
               <Link href="/demo">
-                <Button variant="tertiary" size="sm">See demo</Button>
+                <Button variant="tertiary" size="sm">
+                  See demo
+                </Button>
               </Link>
             </div>
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            <Tooltip content={prevSlide ? <span>{prevSlide.name} &ensp;<kbd className="font-mono opacity-50">&larr;</kbd></span> : "No previous"}>
+            <Tooltip
+              content={
+                prevSlide ? (
+                  <span>
+                    {prevSlide.name} &ensp;<kbd className="font-mono opacity-50">&larr;</kbd>
+                  </span>
+                ) : (
+                  "No previous"
+                )
+              }
+            >
               <Button
                 variant="ghost"
                 size="icon"
@@ -173,7 +184,17 @@ function ComparePageInner() {
                 <ArrowRight className="rotate-180" />
               </Button>
             </Tooltip>
-            <Tooltip content={nextSlide ? <span>{nextSlide.name} &ensp;<kbd className="font-mono opacity-50">&rarr;</kbd></span> : "No next"}>
+            <Tooltip
+              content={
+                nextSlide ? (
+                  <span>
+                    {nextSlide.name} &ensp;<kbd className="font-mono opacity-50">&rarr;</kbd>
+                  </span>
+                ) : (
+                  "No next"
+                )
+              }
+            >
               <Button
                 variant="ghost"
                 size="icon"

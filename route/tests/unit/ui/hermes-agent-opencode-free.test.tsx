@@ -23,8 +23,9 @@ vi.mock("@/shared/components", () => ({
   },
 }));
 
-const { default: HermesAgentToolCard } =
-  await import("@/app/(dashboard)/dashboard/cli-code/components/HermesAgentToolCard");
+const { default: HermesAgentToolCard } = await import(
+  "@/app/(dashboard)/dashboard/cli-code/components/HermesAgentToolCard"
+);
 
 const containers: HTMLElement[] = [];
 
@@ -43,7 +44,7 @@ function renderCard() {
         apiKeys={[{ id: "key-1" }]}
         activeProviders={[]}
         batchStatus={null}
-      />
+      />,
     );
   });
 

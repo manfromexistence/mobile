@@ -18,7 +18,10 @@ vi.mock("next/link", () => ({
 
 // ── Fixtures ──────────────────────────────────────────────────────────────────
 
-function makeSearchProvider(id: string, status: SearchProviderCatalogItem["status"] = "configured"): SearchProviderCatalogItem {
+function makeSearchProvider(
+  id: string,
+  status: SearchProviderCatalogItem["status"] = "configured",
+): SearchProviderCatalogItem {
   return {
     id,
     name: id.charAt(0).toUpperCase() + id.slice(1),
@@ -31,7 +34,10 @@ function makeSearchProvider(id: string, status: SearchProviderCatalogItem["statu
   };
 }
 
-function makeFetchProvider(id: string, status: SearchProviderCatalogItem["status"] = "configured"): SearchProviderCatalogItem {
+function makeFetchProvider(
+  id: string,
+  status: SearchProviderCatalogItem["status"] = "configured",
+): SearchProviderCatalogItem {
   return {
     id,
     name: id.charAt(0).toUpperCase() + id.slice(1),
@@ -45,12 +51,24 @@ function makeFetchProvider(id: string, status: SearchProviderCatalogItem["status
 }
 
 const SEARCH_PROVIDERS: SearchProviderCatalogItem[] = [
-  "serper", "bing", "google", "brave", "tavily", "exa",
-  "you", "kagi", "searxng", "duckduckgo", "perplexity", "jina-search",
+  "serper",
+  "bing",
+  "google",
+  "brave",
+  "tavily",
+  "exa",
+  "you",
+  "kagi",
+  "searxng",
+  "duckduckgo",
+  "perplexity",
+  "jina-search",
 ].map((id) => makeSearchProvider(id));
 
 const FETCH_PROVIDERS: SearchProviderCatalogItem[] = [
-  "firecrawl", "jina-reader", "tavily-search",
+  "firecrawl",
+  "jina-reader",
+  "tavily-search",
 ].map((id) => makeFetchProvider(id));
 
 const ALL_PROVIDERS = [...SEARCH_PROVIDERS, ...FETCH_PROVIDERS];
@@ -65,7 +83,9 @@ const { default: ProviderCatalog } = await import(
 
 const containers: Array<{ root: ReturnType<typeof createRoot>; el: HTMLDivElement }> = [];
 
-function renderCatalog(fetchResp: { providers: SearchProviderCatalogItem[] } = { providers: ALL_PROVIDERS }): HTMLDivElement {
+function renderCatalog(
+  fetchResp: { providers: SearchProviderCatalogItem[] } = { providers: ALL_PROVIDERS },
+): HTMLDivElement {
   globalThis.fetch = vi.fn(() =>
     Promise.resolve({
       ok: true,
@@ -97,7 +117,9 @@ async function waitForCatalog(el: HTMLDivElement): Promise<void> {
 
 describe("ProviderCatalog", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {

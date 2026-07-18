@@ -27,7 +27,7 @@ test("#6426 body.model rewritten to resolved backend model aligns with header va
   assert.equal(
     translatedResponse.model,
     resolvedModel,
-    "body.model must equal the resolved backend model that is in X-OmniRoute-Model header"
+    "body.model must equal the resolved backend model that is in X-OmniRoute-Model header",
   );
 });
 

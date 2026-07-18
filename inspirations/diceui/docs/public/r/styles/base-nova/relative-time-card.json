@@ -9,10 +9,6 @@
       "target": ""
     }
   ],
-  "registryDependencies": [
-    "hover-card"
-  ],
-  "dependencies": [
-    "@base-ui/react"
-  ]
+  "registryDependencies": ["hover-card"],
+  "dependencies": ["@base-ui/react"]
 }

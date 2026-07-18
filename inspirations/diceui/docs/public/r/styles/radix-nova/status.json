@@ -1,9 +1,7 @@
 {
   "name": "status",
   "type": "registry:ui",
-  "dependencies": [
-    "radix-ui"
-  ],
+  "dependencies": ["radix-ui"],
   "files": [
     {
       "path": "ui/status.tsx",

@@ -11,9 +11,7 @@ export default function ScrollerNavigationDemo() {
       {Array.from({ length: 10 }).map((_, index) => (
         <div key={index} className="flex flex-col rounded-md bg-accent p-4">
           <div className="font-medium text-lg">Card {index + 1}</div>
-          <span className="text-muted-foreground text-sm">
-            Use the navigation arrows to scroll
-          </span>
+          <span className="text-muted-foreground text-sm">Use the navigation arrows to scroll</span>
         </div>
       ))}
     </Scroller>

@@ -90,7 +90,7 @@ test("#3578 every MCP-server source file is covered by package.json files", () =
   // Sanity: the closure must actually include the file the bug report hit.
   assert.ok(
     closure.includes("src/lib/combos/steps.ts"),
-    "closure should include the file from the bug report (#3578)"
+    "closure should include the file from the bug report (#3578)",
   );
 
   const uncovered = closure.filter((f) => !isCoveredByFiles(f, filesEntries));
@@ -98,7 +98,7 @@ test("#3578 every MCP-server source file is covered by package.json files", () =
     uncovered,
     [],
     `These MCP-reachable source files are not in package.json "files" and would 404 a published --mcp:\n` +
-      uncovered.map((f) => "  - " + f).join("\n")
+      uncovered.map((f) => "  - " + f).join("\n"),
   );
 });
 
@@ -136,12 +136,12 @@ test("#3578/#3821 npm pack ships the MCP closure but no test files", () => {
     missing,
     [],
     `MCP-reachable source files are missing from the published tarball (would 404 --mcp):\n` +
-      missing.map((f) => "  - " + f).join("\n")
+      missing.map((f) => "  - " + f).join("\n"),
   );
   // Spot-check the file from the original bug report.
   assert.ok(
     packedSet.has("src/lib/combos/steps.ts"),
-    "src/lib/combos/steps.ts (the #3578 bug file) must be in the tarball"
+    "src/lib/combos/steps.ts (the #3578 bug file) must be in the tarball",
   );
 
   // Direction 2 — over-inclusion: no co-located test / spec file is published.
@@ -150,6 +150,6 @@ test("#3578/#3821 npm pack ships the MCP closure but no test files", () => {
     shippedTests,
     [],
     `These test files leaked into the npm tarball — tighten package.json "files" negations:\n` +
-      shippedTests.map((f) => "  - " + f).join("\n")
+      shippedTests.map((f) => "  - " + f).join("\n"),
   );
 });

@@ -48,7 +48,7 @@ function insertMemoryRow({
   db.prepare(
     `INSERT INTO memories (
       id, api_key_id, session_id, type, key, content, metadata, created_at, updated_at, expires_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(id, apiKeyId, sessionId, type, key, content, metadata, createdAt, updatedAt, expiresAt);
 }
 
@@ -177,17 +177,17 @@ test("listMemories filters by api key, type and session while preserving newest-
 
   assert.deepEqual(
     allForKeyA.data.map((memory) => memory.id),
-    ["mem-2", "mem-1"]
+    ["mem-2", "mem-1"],
   );
   assert.equal(allForKeyA.total, 2);
   assert.deepEqual(
     onlySessionA.data.map((memory) => memory.id),
-    ["mem-2", "mem-1"]
+    ["mem-2", "mem-1"],
   );
   assert.equal(onlySessionA.total, 2);
   assert.deepEqual(
     onlyEpisodic.data.map((memory) => memory.id),
-    ["mem-2"]
+    ["mem-2"],
   );
   assert.equal(onlyEpisodic.total, 1);
 });
@@ -220,12 +220,12 @@ test("listMemories supports limit and offset pagination even when only offset is
 
   assert.deepEqual(
     paged.data.map((memory) => memory.id),
-    ["page-2"]
+    ["page-2"],
   );
   assert.equal(paged.total, 3);
   assert.deepEqual(
     offsetOnly.data.map((memory) => memory.id),
-    ["page-2", "page-1"]
+    ["page-2", "page-1"],
   );
   assert.equal(offsetOnly.total, 3);
 });
@@ -263,7 +263,7 @@ test("listMemories applies query filtering before pagination and type stats", as
 
   assert.deepEqual(
     filtered.data.map((memory) => memory.id),
-    ["search-3", "search-1"]
+    ["search-3", "search-1"],
   );
   assert.equal(filtered.total, 2);
   assert.deepEqual(filtered.byType, { factual: 1, semantic: 1 });
@@ -295,7 +295,7 @@ test("listMemories supports page-based pagination (page 1)", async () => {
   const page1 = await store.listMemories({ apiKeyId: "key-a", page: 1, limit: 2 });
   assert.deepEqual(
     page1.data.map((m) => m.id),
-    ["pg-3", "pg-2"]
+    ["pg-3", "pg-2"],
   );
   assert.equal(page1.total, 3);
 });
@@ -326,7 +326,7 @@ test("listMemories supports page-based pagination (page 2 returns remainder)", a
   const page2 = await store.listMemories({ apiKeyId: "key-a", page: 2, limit: 2 });
   assert.deepEqual(
     page2.data.map((m) => m.id),
-    ["pg-1"]
+    ["pg-1"],
   );
   assert.equal(page2.total, 3);
 });
@@ -364,7 +364,7 @@ test("listMemories page parameter defaults to page 1 when omitted with limit", a
   const defaultPage = await store.listMemories({ apiKeyId: "key-a", limit: 1 });
   assert.deepEqual(
     defaultPage.data.map((m) => m.id),
-    ["pg-2"]
+    ["pg-2"],
   );
   assert.equal(defaultPage.total, 2);
 });

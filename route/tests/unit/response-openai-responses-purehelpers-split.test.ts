@@ -39,22 +39,23 @@ test("host imports helpers back and re-exports normalizeUpstreamFailure", () => 
   assert.match(src, /from "\.\/openai-responses\/pureHelpers\.ts"/);
   assert.match(
     src,
-    /export \{ normalizeUpstreamFailure \} from "\.\/openai-responses\/pureHelpers\.ts"/
+    /export \{ normalizeUpstreamFailure \} from "\.\/openai-responses\/pureHelpers\.ts"/,
   );
 });
 
 test("normalizeUpstreamFailure preserves upstream error semantics", async () => {
-  const { normalizeUpstreamFailure } =
-    await import("../../open-sse/translator/response/openai-responses/pureHelpers.ts");
+  const { normalizeUpstreamFailure } = await import(
+    "../../open-sse/translator/response/openai-responses/pureHelpers.ts"
+  );
   assert.equal(
     normalizeUpstreamFailure({ error: { code: "rate_limit_exceeded", message: "slow down" } })
       .status,
-    429
+    429,
   );
   assert.equal(
     normalizeUpstreamFailure({ error: { code: "context_length_exceeded", message: "too big" } })
       .status,
-    400
+    400,
   );
   assert.equal(normalizeUpstreamFailure({ message: "boom" }).status, 502);
 });

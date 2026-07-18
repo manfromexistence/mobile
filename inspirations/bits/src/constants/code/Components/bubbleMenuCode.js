@@ -1,8 +1,8 @@
-import code from '@content/Components/BubbleMenu/BubbleMenu.jsx?raw';
-import css from '@content/Components/BubbleMenu/BubbleMenu.css?raw';
-import tailwind from '@tailwind/Components/BubbleMenu/BubbleMenu.jsx?raw';
-import tsCode from '@ts-default/Components/BubbleMenu/BubbleMenu.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/BubbleMenu/BubbleMenu.tsx?raw';
+import code from "@content/Components/BubbleMenu/BubbleMenu.jsx?raw";
+import css from "@content/Components/BubbleMenu/BubbleMenu.css?raw";
+import tailwind from "@tailwind/Components/BubbleMenu/BubbleMenu.jsx?raw";
+import tsCode from "@ts-default/Components/BubbleMenu/BubbleMenu.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/BubbleMenu/BubbleMenu.tsx?raw";
 
 export const bubbleMenu = {
   dependencies: `gsap`,
@@ -61,5 +61,5 @@ const items = [
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

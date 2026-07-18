@@ -41,8 +41,8 @@ vi.stubGlobal(
     Promise.resolve({
       ok: true,
       json: () => Promise.resolve([]),
-    } as unknown as Response)
-  )
+    } as unknown as Response),
+  ),
 );
 
 const cleanupCallbacks: Array<() => void> = [];

@@ -12,10 +12,7 @@ import {
 
 export default function EditableAutosizeDemo() {
   return (
-    <Editable
-      defaultValue="Adjust the size of the input with the text inside."
-      autosize
-    >
+    <Editable defaultValue="Adjust the size of the input with the text inside." autosize>
       <EditableLabel>Autosize editable</EditableLabel>
       <EditableArea>
         <EditablePreview className="whitespace-pre-wrap" />

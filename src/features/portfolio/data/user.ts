@@ -1,4 +1,4 @@
-import type { User } from "@/features/portfolio/types/user"
+import type { User } from "@/features/portfolio/types/user";
 
 export const USER: User = {
   firstName: "Chánh Đại",
@@ -45,8 +45,7 @@ Creator of [chanhdai.com](https://github.com/ncdai/chanhdai.com) (2k stars), [Re
     darkOff: "https://assets.chanhdai.com/images/avatar-dark-off.webp",
     darkOn: "https://assets.chanhdai.com/images/avatar-dark-on.webp",
   },
-  ogImage:
-    "https://assets.chanhdai.com/images/screenshot-og-image-dark.png?t=1778602757",
+  ogImage: "https://assets.chanhdai.com/images/screenshot-og-image-dark.png?t=1778602757",
   namePronunciationUrl: "https://assets.chanhdai.com/audio/chanhdai.mp3",
   timeZone: "Asia/Ho_Chi_Minh",
   keywords: [
@@ -62,4 +61,4 @@ Creator of [chanhdai.com](https://github.com/ncdai/chanhdai.com) (2k stars), [Re
     "chánh đại",
   ],
   dateCreated: "2023-10-20", // YYYY-MM-DD
-}
+};

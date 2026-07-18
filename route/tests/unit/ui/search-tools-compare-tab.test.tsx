@@ -91,7 +91,9 @@ function renderCompare(providers: SearchProviderCatalogItem[] = FOUR_PROVIDERS):
 
 describe("CompareTab", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
     globalThis.fetch = mockFetchForProviders();
   });
 
@@ -209,7 +211,9 @@ describe("CompareTab", () => {
 
     const el = renderCompare(FOUR_PROVIDERS);
     const input = el.querySelector("[data-testid='compare-query-input']") as HTMLInputElement;
-    const serperBtn = el.querySelector("[data-testid='provider-toggle-serper']") as HTMLButtonElement;
+    const serperBtn = el.querySelector(
+      "[data-testid='provider-toggle-serper']",
+    ) as HTMLButtonElement;
     const bingBtn = el.querySelector("[data-testid='provider-toggle-bing']") as HTMLButtonElement;
 
     act(() => {
@@ -247,7 +251,9 @@ describe("CompareTab", () => {
 
     const el = renderCompare(FOUR_PROVIDERS);
     const input = el.querySelector("[data-testid='compare-query-input']") as HTMLInputElement;
-    const serperBtn = el.querySelector("[data-testid='provider-toggle-serper']") as HTMLButtonElement;
+    const serperBtn = el.querySelector(
+      "[data-testid='provider-toggle-serper']",
+    ) as HTMLButtonElement;
     const bingBtn = el.querySelector("[data-testid='provider-toggle-bing']") as HTMLButtonElement;
 
     act(() => {

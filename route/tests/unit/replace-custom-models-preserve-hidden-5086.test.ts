@@ -56,11 +56,11 @@ test("an eye-hidden override survives replaceCustomModels when the new list omit
   assert.equal(
     getModelIsHidden(PROVIDER, "ghost"),
     true,
-    "ghost must stay hidden after replaceCustomModels omits it"
+    "ghost must stay hidden after replaceCustomModels omits it",
   );
   const overrides = getModelCompatOverrides(PROVIDER).map((o) => o.id);
   assert.ok(
     overrides.includes("ghost"),
-    "the compat override for ghost must still exist after the sync"
+    "the compat override for ghost must still exist after the sync",
   );
 });

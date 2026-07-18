@@ -2,9 +2,7 @@
   "name": "stat",
   "type": "registry:ui",
   "dependencies": [],
-  "registryDependencies": [
-    "separator"
-  ],
+  "registryDependencies": ["separator"],
   "files": [
     {
       "path": "ui/stat.tsx",

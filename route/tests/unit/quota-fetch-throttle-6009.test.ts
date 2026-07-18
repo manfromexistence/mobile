@@ -68,17 +68,20 @@ test("#6009 env resolver clamps to sane bounds and defaults", () => {
   assert.equal(resolveQuotaFetchMinIntervalMs({ OMNIROUTE_QUOTA_FETCH_MIN_INTERVAL_MS: "0" }), 0);
   assert.equal(
     resolveQuotaFetchMinIntervalMs({ OMNIROUTE_QUOTA_FETCH_MIN_INTERVAL_MS: "1000" }),
-    1000
+    1000,
   );
   // garbage / negative → default
   assert.equal(
     resolveQuotaFetchMinIntervalMs({ OMNIROUTE_QUOTA_FETCH_MIN_INTERVAL_MS: "abc" }),
-    250
+    250,
   );
-  assert.equal(resolveQuotaFetchMinIntervalMs({ OMNIROUTE_QUOTA_FETCH_MIN_INTERVAL_MS: "-5" }), 250);
+  assert.equal(
+    resolveQuotaFetchMinIntervalMs({ OMNIROUTE_QUOTA_FETCH_MIN_INTERVAL_MS: "-5" }),
+    250,
+  );
   // absurdly high → clamped to max 5000
   assert.equal(
     resolveQuotaFetchMinIntervalMs({ OMNIROUTE_QUOTA_FETCH_MIN_INTERVAL_MS: "999999" }),
-    5000
+    5000,
   );
 });

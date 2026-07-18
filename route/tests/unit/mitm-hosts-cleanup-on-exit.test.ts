@@ -75,31 +75,35 @@ test("handleExitCleanup: with a cached sudo password, best-effort reverts manage
   assert.deepEqual(
     removeDNSEntryCalls,
     ["s3cr3t-session-password"],
-    "must revert the legacy Antigravity DNS entries with the cached password"
+    "must revert the legacy Antigravity DNS entries with the cached password",
   );
   assert.equal(removeDNSEntriesCalls.length, 1, "must revert the managed host set exactly once");
   assert.deepEqual(
     removeDNSEntriesCalls[0].hosts,
     managedHosts,
-    "must pass collectManagedHosts() output through to removeDNSEntries"
+    "must pass collectManagedHosts() output through to removeDNSEntries",
   );
   assert.equal(
     removeDNSEntriesCalls[0].sudoPassword,
     "s3cr3t-session-password",
-    "must forward the cached sudo password to removeDNSEntries"
+    "must forward the cached sudo password to removeDNSEntries",
   );
 
   const status = await manager.getMitmStatus();
   assert.equal(
     status.orphanedStateDetected,
     false,
-    "a successful hosts revert must not flag orphaned state"
+    "a successful hosts revert must not flag orphaned state",
   );
 });
 
 test("handleExitCleanup: with NO cached password, falls back to orphaned-state flag and skips DNS removal", async () => {
   manager.clearCachedPassword();
-  assert.equal(manager.getCachedPassword(), null, "precondition: no password cached in this session");
+  assert.equal(
+    manager.getCachedPassword(),
+    null,
+    "precondition: no password cached in this session",
+  );
 
   let removeDNSEntryCalled = false;
   let removeDNSEntriesCalled = false;
@@ -117,18 +121,18 @@ test("handleExitCleanup: with NO cached password, falls back to orphaned-state f
   assert.equal(
     removeDNSEntryCalled,
     false,
-    "must NOT attempt privileged DNS removal without a cached password"
+    "must NOT attempt privileged DNS removal without a cached password",
   );
   assert.equal(
     removeDNSEntriesCalled,
     false,
-    "must NOT attempt privileged DNS removal without a cached password"
+    "must NOT attempt privileged DNS removal without a cached password",
   );
 
   const status = await manager.getMitmStatus();
   assert.equal(
     status.orphanedStateDetected,
     true,
-    "must fall back to the orphaned-state flag for a manual Repair when no password is cached"
+    "must fall back to the orphaned-state flag for a manual Repair when no password is cached",
   );
 });

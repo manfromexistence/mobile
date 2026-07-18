@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/PixelBlast/PixelBlast.jsx?raw';
-import css from '@content/Backgrounds/PixelBlast/PixelBlast.css?raw';
-import tailwind from '@tailwind/Backgrounds/PixelBlast/PixelBlast.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/PixelBlast/PixelBlast.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/PixelBlast/PixelBlast.tsx?raw';
+import code from "@content/Backgrounds/PixelBlast/PixelBlast.jsx?raw";
+import css from "@content/Backgrounds/PixelBlast/PixelBlast.css?raw";
+import tailwind from "@tailwind/Backgrounds/PixelBlast/PixelBlast.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/PixelBlast/PixelBlast.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/PixelBlast/PixelBlast.tsx?raw";
 
 export const pixelBlast = {
   dependencies: `three postprocessing`,
@@ -35,5 +35,5 @@ import PixelBlast from './PixelBlast';
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

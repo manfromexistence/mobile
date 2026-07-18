@@ -1,12 +1,9 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { ScrollArea, ScrollBar } from "@/registry/elevenlabs-ui/ui/scroll-area"
+import { cn } from "@/lib/utils";
+import { ScrollArea, ScrollBar } from "@/registry/elevenlabs-ui/ui/scroll-area";
 
-export function ExamplesNav({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function ExamplesNav({ className, ...props }: React.ComponentProps<"div">) {
   // const pathname = usePathname()
 
   return (
@@ -16,5 +13,5 @@ export function ExamplesNav({
         <ScrollBar orientation="horizontal" className="invisible" />
       </ScrollArea>
     </div>
-  )
+  );
 }

@@ -7,10 +7,7 @@ import {
 
 export default function CompareSliderDemo() {
   return (
-    <CompareSlider
-      defaultValue={50}
-      className="h-[400px] overflow-hidden rounded-lg border"
-    >
+    <CompareSlider defaultValue={50} className="h-[400px] overflow-hidden rounded-lg border">
       <CompareSliderBefore>
         {/* biome-ignore lint/performance/noImgElement: Demo image for comparison slider */}
         <img

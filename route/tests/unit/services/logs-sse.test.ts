@@ -38,7 +38,7 @@ function makeRequest(searchParams: Record<string, string> = {}): {
  */
 async function drainEvents(
   resp: Response,
-  opts: { maxEvents?: number; abort?: AbortController } = {}
+  opts: { maxEvents?: number; abort?: AbortController } = {},
 ): Promise<Array<{ event: string; data: unknown }>> {
   const { maxEvents = 50, abort } = opts;
   const events: Array<{ event: string; data: unknown }> = [];

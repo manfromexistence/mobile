@@ -1,11 +1,6 @@
 "use client";
 
-import type {
-  ColumnPinningState,
-  Row,
-  TableMeta,
-  VisibilityState,
-} from "@tanstack/react-table";
+import type { ColumnPinningState, Row, TableMeta, VisibilityState } from "@tanstack/react-table";
 import type { VirtualItem } from "@tanstack/react-virtual";
 import * as React from "react";
 import { DataGridCell } from "@/components/data-grid/data-grid-cell";
@@ -18,11 +13,7 @@ import {
   getRowHeightValue,
 } from "@/lib/data-grid";
 import { cn } from "@/lib/utils";
-import type {
-  CellPosition,
-  Direction,
-  RowHeightValue,
-} from "@/types/data-grid";
+import type { CellPosition, Direction, RowHeightValue } from "@/types/data-grid";
 
 interface DataGridRowProps<TData> extends React.ComponentProps<"div"> {
   row: Row<TData>;
@@ -227,14 +218,11 @@ function DataGridRowImpl<TData>({
         const columnId = cell.column.id;
 
         const isCellFocused =
-          focusedCell?.rowIndex === virtualRowIndex &&
-          focusedCell?.columnId === columnId;
+          focusedCell?.rowIndex === virtualRowIndex && focusedCell?.columnId === columnId;
         const isCellEditing =
-          editingCell?.rowIndex === virtualRowIndex &&
-          editingCell?.columnId === columnId;
+          editingCell?.rowIndex === virtualRowIndex && editingCell?.columnId === columnId;
         const isCellSelected =
-          cellSelectionKeys?.has(getCellKey(virtualRowIndex, columnId)) ??
-          false;
+          cellSelectionKeys?.has(getCellKey(virtualRowIndex, columnId)) ?? false;
 
         const isSearchMatch = searchMatchColumns?.has(columnId) ?? false;
         const isActiveSearchMatch = activeSearchMatch?.columnId === columnId;

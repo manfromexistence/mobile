@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
-import { Renderer, Program, Mesh, Triangle, Transform, Vec3, Camera } from 'ogl';
+import { useEffect, useRef } from "react";
+import { Renderer, Program, Mesh, Triangle, Transform, Vec3, Camera } from "ogl";
 
 function parseHexColor(hex) {
-  const c = hex.replace('#', '');
+  const c = hex.replace("#", "");
   const r = parseInt(c.substring(0, 2), 16) / 255;
   const g = parseInt(c.substring(2, 4), 16) / 255;
   const b = parseInt(c.substring(4, 6), 16) / 255;
@@ -94,7 +94,7 @@ void main() {
 `;
 
 const MetaBalls = ({
-  color = '#ffffff',
+  color = "#ffffff",
   speed = 0.3,
   enableMouseInteraction = true,
   hoverSmoothness = 0.05,
@@ -102,8 +102,8 @@ const MetaBalls = ({
   ballCount = 15,
   clumpFactor = 1,
   cursorBallSize = 3,
-  cursorBallColor = '#ffffff',
-  enableTransparency = false
+  cursorBallColor = "#ffffff",
+  enableTransparency = false,
 }) => {
   const containerRef = useRef(null);
 
@@ -123,7 +123,7 @@ const MetaBalls = ({
       top: 1,
       bottom: -1,
       near: 0.1,
-      far: 10
+      far: 10,
     });
     camera.position.z = 1;
 
@@ -150,8 +150,8 @@ const MetaBalls = ({
         iCursorBallSize: { value: cursorBallSize },
         iMetaBalls: { value: metaBallsUniform },
         iClumpFactor: { value: clumpFactor },
-        enableTransparency: { value: enableTransparency }
-      }
+        enableTransparency: { value: enableTransparency },
+      },
     });
 
     const mesh = new Mesh(gl, { geometry, program });
@@ -183,11 +183,11 @@ const MetaBalls = ({
       const width = container.clientWidth;
       const height = container.clientHeight;
       renderer.setSize(width * dpr, height * dpr);
-      gl.canvas.style.width = width + 'px';
-      gl.canvas.style.height = height + 'px';
+      gl.canvas.style.width = width + "px";
+      gl.canvas.style.height = height + "px";
       program.uniforms.iResolution.value.set(gl.canvas.width, gl.canvas.height, 0);
     }
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
     resize();
 
     function onPointerMove(e) {
@@ -206,9 +206,9 @@ const MetaBalls = ({
       if (!enableMouseInteraction) return;
       pointerInside = false;
     }
-    container.addEventListener('pointermove', onPointerMove);
-    container.addEventListener('pointerenter', onPointerEnter);
-    container.addEventListener('pointerleave', onPointerLeave);
+    container.addEventListener("pointermove", onPointerMove);
+    container.addEventListener("pointerenter", onPointerEnter);
+    container.addEventListener("pointerleave", onPointerLeave);
 
     const startTime = performance.now();
     let animationFrameId;
@@ -250,12 +250,12 @@ const MetaBalls = ({
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', resize);
-      container.removeEventListener('pointermove', onPointerMove);
-      container.removeEventListener('pointerenter', onPointerEnter);
-      container.removeEventListener('pointerleave', onPointerLeave);
+      window.removeEventListener("resize", resize);
+      container.removeEventListener("pointermove", onPointerMove);
+      container.removeEventListener("pointerenter", onPointerEnter);
+      container.removeEventListener("pointerleave", onPointerLeave);
       container.removeChild(gl.canvas);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, [
     color,
@@ -267,7 +267,7 @@ const MetaBalls = ({
     ballCount,
     clumpFactor,
     cursorBallSize,
-    enableTransparency
+    enableTransparency,
   ]);
 
   return <div ref={containerRef} className="w-full h-full relative" />;

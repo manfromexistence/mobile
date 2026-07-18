@@ -1,26 +1,26 @@
-import { Metadata } from "next"
-import Link from "next/link"
+import { Metadata } from "next";
+import Link from "next/link";
 
-import { Announcement } from "@/components/announcement"
-import { CardsDemo } from "@/components/cards"
-import { ExamplesNav } from "@/components/examples-nav"
+import { Announcement } from "@/components/announcement";
+import { CardsDemo } from "@/components/cards";
+import { ExamplesNav } from "@/components/examples-nav";
 import {
   PageActions,
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from "@/components/page-header"
-import { PageNav } from "@/components/page-nav"
-import { ThemeSelector } from "@/components/theme-selector"
-import Speaker01 from "@/registry/elevenlabs-ui/blocks/speaker-01/page"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
+} from "@/components/page-header";
+import { PageNav } from "@/components/page-nav";
+import { ThemeSelector } from "@/components/theme-selector";
+import Speaker01 from "@/registry/elevenlabs-ui/blocks/speaker-01/page";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
 
-const title = "ElevenLabs UI"
+const title = "ElevenLabs UI";
 const description =
-  "A collection of Open Source agent and audio components that you can customize and extend."
+  "A collection of Open Source agent and audio components that you can customize and extend.";
 
-export const dynamic = "force-static"
-export const revalidate = false
+export const dynamic = "force-static";
+export const revalidate = false;
 
 export const metadata: Metadata = {
   title,
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     images: [
       {
         url: `/og?title=${encodeURIComponent(
-          title
+          title,
         )}&description=${encodeURIComponent(description)}`,
       },
     ],
@@ -39,12 +39,12 @@ export const metadata: Metadata = {
     images: [
       {
         url: `/og?title=${encodeURIComponent(
-          title
+          title,
         )}&description=${encodeURIComponent(description)}`,
       },
     ],
   },
-}
+};
 
 export default function IndexPage() {
   return (
@@ -64,9 +64,7 @@ export default function IndexPage() {
               <span className="font-waldenburg-ht leading-[0.95] font-bold tracking-[-0.03em]">
                 ElevenLabs
               </span>
-              <span className="font-waldenburg font-normal tracking-[-0.02em] opacity-90">
-                UI
-              </span>
+              <span className="font-waldenburg font-normal tracking-[-0.02em] opacity-90">UI</span>
             </span>
           </PageHeaderHeading>
           <PageHeaderDescription>{description}</PageHeaderDescription>
@@ -95,5 +93,5 @@ export default function IndexPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

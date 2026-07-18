@@ -3,7 +3,7 @@ const MethodSelector = ({ methods, selected, onSelect }) => (
     {methods.map(({ key, icon, label }) => (
       <div
         key={key}
-        className={`installation-method ${selected === key ? 'method-active' : ''}`}
+        className={`installation-method ${selected === key ? "method-active" : ""}`}
         onClick={() => onSelect(key)}
       >
         {icon}

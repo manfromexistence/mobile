@@ -66,48 +66,34 @@
       {
         "from": "../.build/electron-standalone",
         "to": "app",
-        "filter": [
-          "**/*",
-          "node_modules/**/*"
-        ]
+        "filter": ["**/*", "node_modules/**/*"]
       },
       {
         "from": "../.build/electron-standalone/node_modules",
         "to": "app/node_modules",
-        "filter": [
-          "**/*"
-        ]
+        "filter": ["**/*"]
       },
       {
         "from": "assets",
         "to": "assets",
-        "filter": [
-          "icon.png",
-          "tray-icon.png"
-        ]
+        "filter": ["icon.png", "tray-icon.png"]
       }
     ],
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64"
-          ]
+          "arch": ["x64"]
         },
         {
           "target": "portable",
-          "arch": [
-            "x64"
-          ]
+          "arch": ["x64"]
         }
       ],
       "icon": "assets/icon.ico"
     },
     "mac": {
-      "target": [
-        "dmg"
-      ],
+      "target": ["dmg"],
       "icon": "assets/icon.icns",
       "category": "public.app-category.productivity"
     },
@@ -115,17 +101,11 @@
       "target": [
         {
           "target": "AppImage",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
+          "arch": ["x64", "arm64"]
         },
         {
           "target": "deb",
-          "arch": [
-            "x64",
-            "arm64"
-          ]
+          "arch": ["x64", "arm64"]
         }
       ],
       "icon": "assets/icons",

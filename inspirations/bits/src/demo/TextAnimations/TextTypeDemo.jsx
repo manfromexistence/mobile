@@ -1,33 +1,33 @@
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box } from '@chakra-ui/react';
-import { useMemo } from 'react';
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box } from "@chakra-ui/react";
+import { useMemo } from "react";
 
-import Customize from '../../components/common/Preview/Customize';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import PreviewSelect from '../../components/common/Preview/PreviewSelect';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import CodeExample from '../../components/code/CodeExample';
+import Customize from "../../components/common/Preview/Customize";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import PreviewSelect from "../../components/common/Preview/PreviewSelect";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import CodeExample from "../../components/code/CodeExample";
 
-import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '../../components/code/Dependencies';
-import useForceRerender from '../../hooks/useForceRerender';
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
+import PropTable from "../../components/common/Preview/PropTable";
+import Dependencies from "../../components/code/Dependencies";
+import useForceRerender from "../../hooks/useForceRerender";
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
 
-import TextType from '../../content/TextAnimations/TextType/TextType';
-import { textType } from '../../constants/code/TextAnimations/textTypeCode';
+import TextType from "../../content/TextAnimations/TextType/TextType";
+import { textType } from "../../constants/code/TextAnimations/textTypeCode";
 
 const DEFAULT_PROPS = {
-  texts: ['Welcome to React Bits! Good to see you!', 'Build some amazing experiences!'],
+  texts: ["Welcome to React Bits! Good to see you!", "Build some amazing experiences!"],
   typingSpeed: 75,
   pauseDuration: 1500,
   deletingSpeed: 50,
   showCursor: true,
-  cursorCharacter: '_',
+  cursorCharacter: "_",
   variableSpeedEnabled: false,
   variableSpeedMin: 60,
   variableSpeedMax: 120,
-  cursorBlinkDuration: 0.5
+  cursorBlinkDuration: 0.5,
 };
 
 const TextTypeDemo = () => {
@@ -43,133 +43,138 @@ const TextTypeDemo = () => {
     variableSpeedEnabled,
     variableSpeedMin,
     variableSpeedMax,
-    cursorBlinkDuration
+    cursorBlinkDuration,
   } = props;
 
   const cursorOptions = [
-    { value: '_', label: 'Underscore (_)' },
-    { value: '|', label: 'Pipe (|)' },
-    { value: '▎', label: 'Block (▎)' },
-    { value: '●', label: 'Dot (●)' },
-    { value: '█', label: 'Full Block (█)' }
+    { value: "_", label: "Underscore (_)" },
+    { value: "|", label: "Pipe (|)" },
+    { value: "▎", label: "Block (▎)" },
+    { value: "●", label: "Dot (●)" },
+    { value: "█", label: "Full Block (█)" },
   ];
 
   const propData = useMemo(
     () => [
       {
-        name: 'text',
-        type: 'string | string[]',
-        default: '-',
-        description: 'Text or array of texts to type out'
+        name: "text",
+        type: "string | string[]",
+        default: "-",
+        description: "Text or array of texts to type out",
       },
       {
-        name: 'as',
-        type: 'ElementType',
-        default: 'div',
-        description: 'HTML tag to render the component as'
+        name: "as",
+        type: "ElementType",
+        default: "div",
+        description: "HTML tag to render the component as",
       },
       {
-        name: 'typingSpeed',
-        type: 'number',
-        default: '50',
-        description: 'Speed of typing in milliseconds'
+        name: "typingSpeed",
+        type: "number",
+        default: "50",
+        description: "Speed of typing in milliseconds",
       },
       {
-        name: 'initialDelay',
-        type: 'number',
-        default: '0',
-        description: 'Initial delay before typing starts'
+        name: "initialDelay",
+        type: "number",
+        default: "0",
+        description: "Initial delay before typing starts",
       },
       {
-        name: 'pauseDuration',
-        type: 'number',
-        default: '2000',
-        description: 'Time to wait between typing and deleting'
+        name: "pauseDuration",
+        type: "number",
+        default: "2000",
+        description: "Time to wait between typing and deleting",
       },
       {
-        name: 'deletingSpeed',
-        type: 'number',
-        default: '30',
-        description: 'Speed of deleting characters'
+        name: "deletingSpeed",
+        type: "number",
+        default: "30",
+        description: "Speed of deleting characters",
       },
       {
-        name: 'loop',
-        type: 'boolean',
-        default: 'true',
-        description: 'Whether to loop through texts array'
+        name: "loop",
+        type: "boolean",
+        default: "true",
+        description: "Whether to loop through texts array",
       },
       {
-        name: 'className',
-        type: 'string',
+        name: "className",
+        type: "string",
         default: "''",
-        description: 'Optional class name for styling'
+        description: "Optional class name for styling",
       },
       {
-        name: 'showCursor',
-        type: 'boolean',
-        default: 'true',
-        description: 'Whether to show the cursor'
+        name: "showCursor",
+        type: "boolean",
+        default: "true",
+        description: "Whether to show the cursor",
       },
       {
-        name: 'hideCursorWhileTyping',
-        type: 'boolean',
-        default: 'false',
-        description: 'Hide cursor while typing'
+        name: "hideCursorWhileTyping",
+        type: "boolean",
+        default: "false",
+        description: "Hide cursor while typing",
       },
       {
-        name: 'cursorCharacter',
-        type: 'string | React.ReactNode',
-        default: '|',
-        description: 'Character or React node to use as cursor'
+        name: "cursorCharacter",
+        type: "string | React.ReactNode",
+        default: "|",
+        description: "Character or React node to use as cursor",
       },
       {
-        name: 'cursorBlinkDuration',
-        type: 'number',
-        default: '0.5',
-        description: 'Animation duration for cursor blinking'
+        name: "cursorBlinkDuration",
+        type: "number",
+        default: "0.5",
+        description: "Animation duration for cursor blinking",
       },
       {
-        name: 'cursorClassName',
-        type: 'string',
+        name: "cursorClassName",
+        type: "string",
         default: "''",
-        description: 'Optional class name for cursor styling'
+        description: "Optional class name for cursor styling",
       },
       {
-        name: 'textColors',
-        type: 'string[]',
-        default: '[]',
-        description: 'Array of colors for each sentence'
+        name: "textColors",
+        type: "string[]",
+        default: "[]",
+        description: "Array of colors for each sentence",
       },
       {
-        name: 'variableSpeed',
-        type: '{min: number, max: number}',
-        default: 'undefined',
-        description: 'Random typing speed within range for human-like feel'
+        name: "variableSpeed",
+        type: "{min: number, max: number}",
+        default: "undefined",
+        description: "Random typing speed within range for human-like feel",
       },
       {
-        name: 'onSentenceComplete',
-        type: '(sentence: string, index: number) => void',
-        default: 'undefined',
-        description: 'Callback fired after each sentence is finished'
+        name: "onSentenceComplete",
+        type: "(sentence: string, index: number) => void",
+        default: "undefined",
+        description: "Callback fired after each sentence is finished",
       },
       {
-        name: 'startOnVisible',
-        type: 'boolean',
-        default: 'false',
-        description: 'Start typing when component is visible in viewport'
+        name: "startOnVisible",
+        type: "boolean",
+        default: "false",
+        description: "Start typing when component is visible in viewport",
       },
       {
-        name: 'reverseMode',
-        type: 'boolean',
-        default: 'false',
-        description: 'Type backwards (right to left)'
-      }
+        name: "reverseMode",
+        type: "boolean",
+        default: "false",
+        description: "Type backwards (right to left)",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box
@@ -190,7 +195,9 @@ const TextTypeDemo = () => {
               showCursor={showCursor}
               cursorCharacter={cursorCharacter}
               cursorBlinkDuration={cursorBlinkDuration}
-              variableSpeed={variableSpeedEnabled ? { min: variableSpeedMin, max: variableSpeedMax } : undefined}
+              variableSpeed={
+                variableSpeedEnabled ? { min: variableSpeedMin, max: variableSpeedMax } : undefined
+              }
               className="custom-text-type"
             />
           </Box>
@@ -201,8 +208,8 @@ const TextTypeDemo = () => {
               options={cursorOptions}
               value={cursorCharacter}
               width={150}
-              onChange={value => {
-                updateProp('cursorCharacter', value);
+              onChange={(value) => {
+                updateProp("cursorCharacter", value);
                 forceRerender();
               }}
             />
@@ -215,8 +222,8 @@ const TextTypeDemo = () => {
               value={typingSpeed}
               valueUnit="ms"
               width={200}
-              onChange={value => {
-                updateProp('typingSpeed', value);
+              onChange={(value) => {
+                updateProp("typingSpeed", value);
                 forceRerender();
               }}
             />
@@ -229,8 +236,8 @@ const TextTypeDemo = () => {
               value={pauseDuration}
               valueUnit="ms"
               width={200}
-              onChange={value => {
-                updateProp('pauseDuration', value);
+              onChange={(value) => {
+                updateProp("pauseDuration", value);
                 forceRerender();
               }}
             />
@@ -243,8 +250,8 @@ const TextTypeDemo = () => {
               value={deletingSpeed}
               valueUnit="ms"
               width={200}
-              onChange={value => {
-                updateProp('deletingSpeed', value);
+              onChange={(value) => {
+                updateProp("deletingSpeed", value);
                 forceRerender();
               }}
             />
@@ -257,8 +264,8 @@ const TextTypeDemo = () => {
               value={cursorBlinkDuration}
               valueUnit="s"
               width={200}
-              onChange={value => {
-                updateProp('cursorBlinkDuration', value);
+              onChange={(value) => {
+                updateProp("cursorBlinkDuration", value);
                 forceRerender();
               }}
             />
@@ -266,8 +273,8 @@ const TextTypeDemo = () => {
             <PreviewSwitch
               title="Show Cursor"
               isChecked={showCursor}
-              onChange={checked => {
-                updateProp('showCursor', checked);
+              onChange={(checked) => {
+                updateProp("showCursor", checked);
                 forceRerender();
               }}
             />
@@ -275,8 +282,8 @@ const TextTypeDemo = () => {
             <PreviewSwitch
               title="Variable Speed"
               isChecked={variableSpeedEnabled}
-              onChange={checked => {
-                updateProp('variableSpeedEnabled', checked);
+              onChange={(checked) => {
+                updateProp("variableSpeedEnabled", checked);
                 forceRerender();
               }}
             />
@@ -290,8 +297,8 @@ const TextTypeDemo = () => {
               value={variableSpeedMin}
               valueUnit="ms"
               width={200}
-              onChange={value => {
-                updateProp('variableSpeedMin', value);
+              onChange={(value) => {
+                updateProp("variableSpeedMin", value);
                 forceRerender();
               }}
             />
@@ -305,15 +312,15 @@ const TextTypeDemo = () => {
               value={variableSpeedMax}
               valueUnit="ms"
               width={200}
-              onChange={value => {
-                updateProp('variableSpeedMax', value);
+              onChange={(value) => {
+                updateProp("variableSpeedMax", value);
                 forceRerender();
               }}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['gsap']} />
+          <Dependencies dependencyList={["gsap"]} />
         </PreviewTab>
 
         <CodeTab>

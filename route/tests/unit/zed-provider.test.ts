@@ -95,7 +95,7 @@ describe("zed private key verifier encode/decode round-trip", () => {
     assert.throws(() => decodeZedPrivateKeyVerifier(""), /Missing Zed private key verifier/);
     assert.throws(
       () => decodeZedPrivateKeyVerifier("not-a-zed-verifier"),
-      /Missing Zed private key verifier/
+      /Missing Zed private key verifier/,
     );
   });
 });
@@ -110,7 +110,7 @@ describe("RSA encrypt/decrypt round-trip (native-app callback token decryption)"
     const plaintextToken = "zed_access_token_abc123";
     const encrypted = crypto.publicEncrypt(
       { key: publicKey, padding: crypto.constants.RSA_PKCS1_OAEP_PADDING, oaepHash: "sha256" },
-      Buffer.from(plaintextToken, "utf8")
+      Buffer.from(plaintextToken, "utf8"),
     );
     const verifier = encodeZedPrivateKeyVerifier(privateKey);
     const decrypted = decryptZedAccessToken(encrypted.toString("base64url"), verifier);
@@ -126,7 +126,7 @@ describe("RSA encrypt/decrypt round-trip (native-app callback token decryption)"
     const plaintextToken = "zed_access_token_pkcs1";
     const encrypted = crypto.publicEncrypt(
       { key: publicKey, padding: crypto.constants.RSA_PKCS1_PADDING },
-      Buffer.from(plaintextToken, "utf8")
+      Buffer.from(plaintextToken, "utf8"),
     );
     const verifier = encodeZedPrivateKeyVerifier(privateKey);
     const decrypted = decryptZedAccessToken(encrypted.toString("base64url"), verifier);
@@ -148,7 +148,7 @@ describe("RSA encrypt/decrypt round-trip (native-app callback token decryption)"
     const verifier = encodeZedPrivateKeyVerifier(privateKey);
     assert.throws(
       () => decryptZedAccessToken(Buffer.alloc(0).toString("base64url"), verifier),
-      /Failed to decrypt Zed access token/
+      /Failed to decrypt Zed access token/,
     );
   });
 });
@@ -156,7 +156,7 @@ describe("RSA encrypt/decrypt round-trip (native-app callback token decryption)"
 describe("parseZedCallbackPayload", () => {
   test("parses a native-app callback URL (127.0.0.1:<port>/?user_id=...&access_token=...)", () => {
     const parsed = parseZedCallbackPayload(
-      "http://127.0.0.1:58443/?user_id=user_123&access_token=ZW5jcnlwdGVk"
+      "http://127.0.0.1:58443/?user_id=user_123&access_token=ZW5jcnlwdGVk",
     );
     assert.equal(parsed.userId, "user_123");
     assert.equal(parsed.encryptedAccessToken, "ZW5jcnlwdGVk");
@@ -181,7 +181,7 @@ describe("parseZedCallbackPayload", () => {
   test("rejects a payload missing user_id or access_token", () => {
     assert.throws(
       () => parseZedCallbackPayload("http://127.0.0.1:1/?user_id=only"),
-      /must include user_id and access_token/
+      /must include user_id and access_token/,
     );
   });
 });
@@ -217,7 +217,7 @@ describe("resolveZedOrganizationId", () => {
           { id: "org-team", is_personal: false },
           { id: "org-personal", is_personal: true },
         ],
-      }
+      },
     );
     assert.equal(orgId, "org-personal");
   });
@@ -227,7 +227,7 @@ describe("resolveZedOrganizationId", () => {
       { providerSpecificData: {} },
       {
         organizations: [{ id: "org-first" }, { id: "org-second" }],
-      }
+      },
     );
     assert.equal(orgId, "org-first");
   });
@@ -341,7 +341,7 @@ describe("ZedHostedExecutor.resolveModel + zedLlmFetch (mocked upstream)", () =>
               { id: "gpt-5.5", provider: "openai", display_name: "GPT-5.5" },
             ],
           }),
-          { status: 200, headers: { "Content-Type": "application/json" } }
+          { status: 200, headers: { "Content-Type": "application/json" } },
         );
       }
       throw new Error(`Unexpected fetch: ${url}`);
@@ -352,7 +352,7 @@ describe("ZedHostedExecutor.resolveModel + zedLlmFetch (mocked upstream)", () =>
       "claude-sonnet-5",
       credentials as ZedCredentials,
       undefined,
-      undefined
+      undefined,
     );
     assert.equal(result.provider, "Anthropic");
     assert.ok(calls.some((u) => u.includes("/client/llm_tokens")));
@@ -376,7 +376,7 @@ describe("ZedHostedExecutor.resolveModel + zedLlmFetch (mocked upstream)", () =>
       "gemini-3.1-pro",
       credentials as ZedCredentials,
       undefined,
-      { warn: (_tag: string, msg: string) => warnCalls.push(msg) } as ExecutorLog
+      { warn: (_tag: string, msg: string) => warnCalls.push(msg) } as ExecutorLog,
     );
     assert.equal(result.provider, "Google");
     assert.ok(warnCalls.length > 0);
@@ -392,7 +392,7 @@ describe("ZedHostedExecutor.parseError", () => {
     const response = new Response(null, { status: 402 });
     const result = executor.parseError(
       response,
-      JSON.stringify({ code: "trial_blocked", message: "trial exhausted" })
+      JSON.stringify({ code: "trial_blocked", message: "trial exhausted" }),
     );
     assert.equal(result.status, 402);
     assert.match(result.message, /trial\/billing access/);
@@ -402,7 +402,7 @@ describe("ZedHostedExecutor.parseError", () => {
     const response = new Response(null, { status: 400 });
     const result = executor.parseError(
       response,
-      JSON.stringify({ code: "bad_request", message: "oops" })
+      JSON.stringify({ code: "bad_request", message: "oops" }),
     );
     assert.equal(result.message, "Zed bad_request: oops");
   });

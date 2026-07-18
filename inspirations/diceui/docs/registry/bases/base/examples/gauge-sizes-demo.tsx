@@ -76,11 +76,7 @@ function AnimatedGauge({ config, index }: AnimatedGaugeProps) {
         ease: [0.21, 1.11, 0.81, 0.99],
       }}
     >
-      <Gauge
-        value={displayValue}
-        size={config.size}
-        thickness={config.thickness}
-      >
+      <Gauge value={displayValue} size={config.size} thickness={config.thickness}>
         <GaugeIndicator>
           <GaugeTrack />
           <GaugeRange />

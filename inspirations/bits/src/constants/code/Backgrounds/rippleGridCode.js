@@ -1,7 +1,7 @@
-import code from '@content/Backgrounds/RippleGrid/RippleGrid.jsx?raw';
-import tailwind from '@tailwind/Backgrounds/RippleGrid/RippleGrid.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/RippleGrid/RippleGrid.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/RippleGrid/RippleGrid.tsx?raw';
+import code from "@content/Backgrounds/RippleGrid/RippleGrid.jsx?raw";
+import tailwind from "@tailwind/Backgrounds/RippleGrid/RippleGrid.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/RippleGrid/RippleGrid.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/RippleGrid/RippleGrid.tsx?raw";
 
 export const rippleGrid = {
   dependencies: `ogl`,
@@ -22,5 +22,5 @@ export const rippleGrid = {
   code,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

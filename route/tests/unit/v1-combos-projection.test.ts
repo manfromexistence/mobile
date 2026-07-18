@@ -6,8 +6,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { projectCombo, projectComboStep } =
-  await import("../../src/app/api/v1/combos/projectCombo.ts");
+const { projectCombo, projectComboStep } = await import(
+  "../../src/app/api/v1/combos/projectCombo.ts"
+);
 
 test("#2300 projectComboStep keeps model + providerId, drops connectionId/weight/label", () => {
   const out = projectComboStep({

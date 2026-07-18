@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import { useEffect, useRef } from "react";
+import * as THREE from "three";
 
 const vertexShader = `
 void main() {
@@ -86,8 +86,8 @@ interface MagicRingsProps {
 }
 
 export default function MagicRings({
-  color = '#fc42ff',
-  colorTwo = '#42fcff',
+  color = "#fc42ff",
+  colorTwo = "#42fcff",
   speed = 1,
   ringCount = 6,
   attenuation = 10,
@@ -117,10 +117,27 @@ export default function MagicRings({
   const burstRef = useRef(0);
 
   propsRef.current = {
-    color, colorTwo, speed, ringCount, attenuation, lineThickness,
-    baseRadius, radiusStep, scaleRate, opacity, blur, noiseAmount,
-    rotation, ringGap, fadeIn, fadeOut, followMouse, mouseInfluence,
-    hoverScale, parallax, clickBurst,
+    color,
+    colorTwo,
+    speed,
+    ringCount,
+    attenuation,
+    lineThickness,
+    baseRadius,
+    radiusStep,
+    scaleRate,
+    opacity,
+    blur,
+    noiseAmount,
+    rotation,
+    ringGap,
+    fadeIn,
+    fadeOut,
+    followMouse,
+    mouseInfluence,
+    hoverScale,
+    parallax,
+    clickBurst,
   };
 
   useEffect(() => {
@@ -171,7 +188,12 @@ export default function MagicRings({
       uBurst: { value: 0 },
     };
 
-    const material = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms, transparent: true });
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms,
+      transparent: true,
+    });
     const quad = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), material);
     scene.add(quad);
 
@@ -184,7 +206,7 @@ export default function MagicRings({
       uniforms.uResolution.value.set(w * dpr, h * dpr);
     };
     resize();
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
 
     const ro = new ResizeObserver(resize);
     ro.observe(mount);
@@ -194,18 +216,22 @@ export default function MagicRings({
       mouseRef.current[0] = (e.clientX - rect.left) / rect.width - 0.5;
       mouseRef.current[1] = -((e.clientY - rect.top) / rect.height - 0.5);
     };
-    const onMouseEnter = () => { isHoveredRef.current = true; };
+    const onMouseEnter = () => {
+      isHoveredRef.current = true;
+    };
     const onMouseLeave = () => {
       isHoveredRef.current = false;
       mouseRef.current[0] = 0;
       mouseRef.current[1] = 0;
     };
-    const onClick = () => { burstRef.current = 1; };
+    const onClick = () => {
+      burstRef.current = 1;
+    };
 
-    mount.addEventListener('mousemove', onMouseMove);
-    mount.addEventListener('mouseenter', onMouseEnter);
-    mount.addEventListener('mouseleave', onMouseLeave);
-    mount.addEventListener('click', onClick);
+    mount.addEventListener("mousemove", onMouseMove);
+    mount.addEventListener("mouseenter", onMouseEnter);
+    mount.addEventListener("mouseleave", onMouseLeave);
+    mount.addEventListener("click", onClick);
 
     let frameId: number;
     const animate = (t: number) => {
@@ -246,17 +272,23 @@ export default function MagicRings({
 
     return () => {
       cancelAnimationFrame(frameId);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener("resize", resize);
       ro.disconnect();
-      mount.removeEventListener('mousemove', onMouseMove);
-      mount.removeEventListener('mouseenter', onMouseEnter);
-      mount.removeEventListener('mouseleave', onMouseLeave);
-      mount.removeEventListener('click', onClick);
+      mount.removeEventListener("mousemove", onMouseMove);
+      mount.removeEventListener("mouseenter", onMouseEnter);
+      mount.removeEventListener("mouseleave", onMouseLeave);
+      mount.removeEventListener("click", onClick);
       mount.removeChild(renderer.domElement);
       renderer.dispose();
       material.dispose();
     };
   }, []);
 
-  return <div ref={mountRef} className="w-full h-full" style={blur > 0 ? { filter: `blur(${blur}px)` } : undefined} />;
+  return (
+    <div
+      ref={mountRef}
+      className="w-full h-full"
+      style={blur > 0 ? { filter: `blur(${blur}px)` } : undefined}
+    />
+  );
 }

@@ -30,16 +30,12 @@ function base64ForByteLength(byteLength: number): string {
 
 describe("isValidSRI", () => {
   test("accepts valid sha256 SRI", () => {
-    expect(
-      isValidSRI("sha256-MV9b23bQeMQ7isAGTkoBZGErH853yGk0W/yUx1iU7dM="),
-    ).toBe(true);
+    expect(isValidSRI("sha256-MV9b23bQeMQ7isAGTkoBZGErH853yGk0W/yUx1iU7dM=")).toBe(true);
   });
 
   test("accepts valid sha384 SRI", () => {
     expect(
-      isValidSRI(
-        "sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC",
-      ),
+      isValidSRI("sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC"),
     ).toBe(true);
   });
 
@@ -112,8 +108,7 @@ describe("verifyIntegrity", () => {
   // SHA-256 of empty string = 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
   test("produces correct SHA-256 for known empty-string hash", async () => {
     const emptyBuffer = new ArrayBuffer(0);
-    const knownEmptySHA256 =
-      "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=";
+    const knownEmptySHA256 = "sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=";
     await expect(
       verifyIntegrity(emptyBuffer, knownEmptySHA256, "https://example.com/e"),
     ).resolves.toBeUndefined();
@@ -122,8 +117,7 @@ describe("verifyIntegrity", () => {
   // SHA-256 of "abc" = ungWv48Bz+pBQUDeXa4iI7ADYaOWF3qctBD/YfIAFa0=
   test("produces correct SHA-256 for known 'abc' hash", async () => {
     const abcBuffer = new TextEncoder().encode("abc").buffer;
-    const knownAbcSHA256 =
-      "sha256-ungWv48Bz+pBQUDeXa4iI7ADYaOWF3qctBD/YfIAFa0=";
+    const knownAbcSHA256 = "sha256-ungWv48Bz+pBQUDeXa4iI7ADYaOWF3qctBD/YfIAFa0=";
     await expect(
       verifyIntegrity(abcBuffer, knownAbcSHA256, "https://example.com/abc"),
     ).resolves.toBeUndefined();
@@ -132,12 +126,7 @@ describe("verifyIntegrity", () => {
   test("throws IntegrityError on hash mismatch", async () => {
     const wrongSRI = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
     await expect(
-      verifyIntegrity(
-        testBuffer,
-        wrongSRI,
-        "https://example.com/config.json",
-        "error",
-      ),
+      verifyIntegrity(testBuffer, wrongSRI, "https://example.com/config.json", "error"),
     ).rejects.toThrow(IntegrityError);
   });
 
@@ -145,12 +134,7 @@ describe("verifyIntegrity", () => {
     expect.assertions(5);
     const wrongSRI = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
     try {
-      await verifyIntegrity(
-        testBuffer,
-        wrongSRI,
-        "https://example.com/config.json",
-        "error",
-      );
+      await verifyIntegrity(testBuffer, wrongSRI, "https://example.com/config.json", "error");
     } catch (err) {
       expect(err).toBeInstanceOf(IntegrityError);
       const integrityErr = err as IntegrityError;
@@ -165,12 +149,7 @@ describe("verifyIntegrity", () => {
     expect.assertions(1);
     const wrongSRI = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
     try {
-      await verifyIntegrity(
-        testBuffer,
-        wrongSRI,
-        "https://example.com/file",
-        "error",
-      );
+      await verifyIntegrity(testBuffer, wrongSRI, "https://example.com/file", "error");
     } catch (err) {
       expect((err as Error).name).toBe("IntegrityError");
     }
@@ -179,31 +158,22 @@ describe("verifyIntegrity", () => {
   test("default onFailure throws on mismatch", async () => {
     // When onFailure is not specified, it should default to "error" and throw
     const wrongSRI = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-    await expect(
-      verifyIntegrity(testBuffer, wrongSRI, "https://example.com/file"),
-    ).rejects.toThrow(IntegrityError);
+    await expect(verifyIntegrity(testBuffer, wrongSRI, "https://example.com/file")).rejects.toThrow(
+      IntegrityError,
+    );
   });
 
   test("warns instead of throwing when onFailure is 'warn'", async () => {
     const wrongSRI = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
     const logModule = await import("loglevel");
-    const logWarnSpy = jest
-      .spyOn(logModule.default, "warn")
-      .mockImplementation(() => {});
+    const logWarnSpy = jest.spyOn(logModule.default, "warn").mockImplementation(() => {});
 
     await expect(
-      verifyIntegrity(
-        testBuffer,
-        wrongSRI,
-        "https://example.com/model.wasm",
-        "warn",
-      ),
+      verifyIntegrity(testBuffer, wrongSRI, "https://example.com/model.wasm", "warn"),
     ).resolves.toBeUndefined();
 
-    expect(logWarnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("Integrity check failed"),
-    );
+    expect(logWarnSpy).toHaveBeenCalledWith(expect.stringContaining("Integrity check failed"));
 
     logWarnSpy.mockRestore();
   });
@@ -212,16 +182,9 @@ describe("verifyIntegrity", () => {
     const wrongSRI = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
 
     const logModule = await import("loglevel");
-    const logWarnSpy = jest
-      .spyOn(logModule.default, "warn")
-      .mockImplementation(() => {});
+    const logWarnSpy = jest.spyOn(logModule.default, "warn").mockImplementation(() => {});
 
-    await verifyIntegrity(
-      testBuffer,
-      wrongSRI,
-      "https://example.com/model.wasm",
-      "warn",
-    );
+    await verifyIntegrity(testBuffer, wrongSRI, "https://example.com/model.wasm", "warn");
 
     const warnMessage = logWarnSpy.mock.calls[0][0] as string;
     expect(warnMessage).toContain("https://example.com/model.wasm");
@@ -240,11 +203,7 @@ describe("verifyIntegrity", () => {
   test("throws on algorithm/hash decoded-length mismatch", async () => {
     const sha512Hash = base64ForByteLength(64);
     await expect(
-      verifyIntegrity(
-        testBuffer,
-        `sha256-${sha512Hash}`,
-        "https://example.com/file",
-      ),
+      verifyIntegrity(testBuffer, `sha256-${sha512Hash}`, "https://example.com/file"),
     ).rejects.toThrow("Invalid SRI hash format");
   });
 
@@ -283,19 +242,11 @@ describe("verifyIntegrity", () => {
 
   test("rejects when data is modified after hash computation", async () => {
     const originalData = new Uint8Array([1, 2, 3, 4, 5]);
-    const sri = await computeSRI(
-      String.fromCharCode(...originalData),
-      "SHA-256",
-    );
+    const sri = await computeSRI(String.fromCharCode(...originalData), "SHA-256");
 
     const modifiedData = new Uint8Array([1, 2, 3, 4, 6]);
     await expect(
-      verifyIntegrity(
-        modifiedData.buffer,
-        sri,
-        "https://example.com/tampered",
-        "error",
-      ),
+      verifyIntegrity(modifiedData.buffer, sri, "https://example.com/tampered", "error"),
     ).rejects.toThrow(IntegrityError);
   });
 

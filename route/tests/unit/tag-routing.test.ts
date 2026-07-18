@@ -10,8 +10,9 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const core = await import("../../src/lib/db/core.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 const { handleComboChat } = await import("../../open-sse/services/combo.ts");
-const { getConnectionRoutingTags, matchesRoutingTags, resolveRequestRoutingTags } =
-  await import("../../src/domain/tagRouter.ts");
+const { getConnectionRoutingTags, matchesRoutingTags, resolveRequestRoutingTags } = await import(
+  "../../src/domain/tagRouter.ts"
+);
 
 function createLog() {
   return {
@@ -30,7 +31,7 @@ function okResponse(content: string) {
     {
       status: 200,
       headers: { "content-type": "application/json" },
-    }
+    },
   );
 }
 

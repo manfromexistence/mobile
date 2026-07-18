@@ -1,9 +1,7 @@
 {
   "name": "time-picker-placeholder-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "time-picker"
-  ],
+  "registryDependencies": ["time-picker"],
   "files": [
     {
       "path": "examples/time-picker-placeholder-demo.tsx",

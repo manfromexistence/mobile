@@ -26,7 +26,7 @@ test("checkFallbackError ignores body reset text when upstream retry hints are d
     "gemini-3-flash-agent",
     "antigravity",
     null,
-    antigravityProfile(false)
+    antigravityProfile(false),
   );
 
   assert.equal(result.shouldFallback, true);
@@ -43,7 +43,7 @@ test("checkFallbackError honors body reset text when upstream retry hints are en
     "gemini-3-flash-agent",
     "antigravity",
     null,
-    antigravityProfile(true)
+    antigravityProfile(true),
   );
 
   assert.equal(result.shouldFallback, true);

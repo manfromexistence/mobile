@@ -17,7 +17,7 @@ test("responses previous_response_id policy defaults to auto", () => {
 test("auto strips previous_response_id for stateless Responses upstreams", () => {
   const result = applyResponsesPreviousResponseIdPolicy(
     { model: "gpt-5.5", previous_response_id: "resp_prev_123", input: [] },
-    { mode: "auto", sourceFormat: "openai-responses", targetFormat: "openai-responses" }
+    { mode: "auto", sourceFormat: "openai-responses", targetFormat: "openai-responses" },
   );
 
   assert.equal(result.stripped, true);
@@ -32,7 +32,7 @@ test("auto preserves previous_response_id when Responses storage is explicitly e
       sourceFormat: "openai-responses",
       targetFormat: "openai-responses",
       credentials: { providerSpecificData: { openaiStoreEnabled: true } },
-    }
+    },
   );
 
   assert.equal(result.stripped, false);
@@ -46,7 +46,7 @@ test("strip and preserve modes override auto detection", () => {
       sourceFormat: "openai",
       targetFormat: "openai",
     }),
-    true
+    true,
   );
   assert.equal(
     shouldStripPreviousResponseId({
@@ -54,7 +54,7 @@ test("strip and preserve modes override auto detection", () => {
       sourceFormat: "openai-responses",
       targetFormat: "openai-responses",
     }),
-    false
+    false,
   );
 });
 

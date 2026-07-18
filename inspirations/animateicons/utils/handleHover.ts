@@ -9,17 +9,14 @@ import type { IconHandle } from "@/types/icon";
  * Used throughout the AnimateIcons gallery - wherever a button, card,
  * or link houses an animated icon and needs to play it on hover.
  */
-const handleHover = <T extends IconHandle>(
-	e: React.MouseEvent,
-	ref: React.RefObject<T | null>,
-) => {
-	if (e.type === "mouseenter") {
-		ref.current?.startAnimation();
-	}
+const handleHover = <T extends IconHandle>(e: React.MouseEvent, ref: React.RefObject<T | null>) => {
+  if (e.type === "mouseenter") {
+    ref.current?.startAnimation();
+  }
 
-	if (e.type === "mouseleave") {
-		ref.current?.stopAnimation();
-	}
+  if (e.type === "mouseleave") {
+    ref.current?.stopAnimation();
+  }
 };
 
 export default handleHover;

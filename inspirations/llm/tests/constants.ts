@@ -17,8 +17,7 @@ export const llama3_1ChatConfig: ChatConfig = {
     strip_space_in_decode: false,
   },
   conv_template: {
-    system_template:
-      "<|start_header_id|>system<|end_header_id|>\n\n{system_message}<|eot_id|>",
+    system_template: "<|start_header_id|>system<|end_header_id|>\n\n{system_message}<|eot_id|>",
     system_message: "You are a helpful, respectful and honest assistant.",
     system_prefix_token_ids: [128000],
     add_role_after_system_message: true,

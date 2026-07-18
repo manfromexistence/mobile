@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/Prism/Prism.jsx?raw';
-import css from '@content/Backgrounds/Prism/Prism.css?raw';
-import tailwind from '@tailwind/Backgrounds/Prism/Prism.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/Prism/Prism.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/Prism/Prism.tsx?raw';
+import code from "@content/Backgrounds/Prism/Prism.jsx?raw";
+import css from "@content/Backgrounds/Prism/Prism.css?raw";
+import tailwind from "@tailwind/Backgrounds/Prism/Prism.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/Prism/Prism.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/Prism/Prism.tsx?raw";
 
 export const prism = {
   dependencies: `ogl`,
@@ -25,5 +25,5 @@ export const prism = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

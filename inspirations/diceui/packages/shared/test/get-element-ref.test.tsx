@@ -5,9 +5,7 @@ import { getElementRef } from "../src/lib/get-element-ref";
 describe("getElementRef", () => {
   it("returns undefined for non-React elements", () => {
     expect(getElementRef({} as React.ReactElement)).toBeUndefined();
-    expect(
-      getElementRef(null as unknown as React.ReactElement),
-    ).toBeUndefined();
+    expect(getElementRef(null as unknown as React.ReactElement)).toBeUndefined();
   });
 
   it("gets ref from element props", () => {

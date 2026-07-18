@@ -77,9 +77,7 @@ function Stack(props: StackProps) {
   const [isInteracting, setIsInteracting] = React.useState(false);
   const [dimensions, setDimensions] = React.useState<ItemDimension[]>([]);
 
-  const childrenArray = React.Children.toArray(children).filter(
-    React.isValidElement,
-  );
+  const childrenArray = React.Children.toArray(children).filter(React.isValidElement);
   const childrenCount = childrenArray.length;
 
   const effectiveExpandedItemCount = expandedItemCount ?? childrenCount;
@@ -203,33 +201,30 @@ function Stack(props: StackProps) {
   );
 }
 
-const stackItemWrapperVariants = cva(
-  "absolute w-full transition-all duration-300 ease-out",
-  {
-    variants: {
-      side: {
-        top: [
-          "top-0 left-0 origin-top",
-          "translate-y-[calc(var(--translate)*-1)] scale-[var(--item-scale)]",
-          "after:absolute after:top-full after:left-0 after:w-full after:content-['']",
-        ],
-        bottom: [
-          "bottom-0 left-0 origin-bottom",
-          "translate-y-[var(--translate)] scale-[var(--item-scale)]",
-          "after:absolute after:bottom-full after:left-0 after:w-full after:content-['']",
-        ],
-      },
-      isExpanded: {
-        true: "after:h-[calc(var(--gap)+1px)]",
-        false: "",
-      },
-      isVisible: {
-        true: "",
-        false: "pointer-events-none",
-      },
+const stackItemWrapperVariants = cva("absolute w-full transition-all duration-300 ease-out", {
+  variants: {
+    side: {
+      top: [
+        "top-0 left-0 origin-top",
+        "translate-y-[calc(var(--translate)*-1)] scale-[var(--item-scale)]",
+        "after:absolute after:top-full after:left-0 after:w-full after:content-['']",
+      ],
+      bottom: [
+        "bottom-0 left-0 origin-bottom",
+        "translate-y-[var(--translate)] scale-[var(--item-scale)]",
+        "after:absolute after:bottom-full after:left-0 after:w-full after:content-['']",
+      ],
+    },
+    isExpanded: {
+      true: "after:h-[calc(var(--gap)+1px)]",
+      false: "",
+    },
+    isVisible: {
+      true: "",
+      false: "pointer-events-none",
     },
   },
-);
+});
 
 type StackItemWrapperElement = React.ComponentRef<typeof StackItemWrapper>;
 
@@ -284,9 +279,7 @@ function StackItemWrapper(props: StackItemWrapperProps) {
   }, [dimensions, index]);
 
   const itemScale = isExpanded ? 1 : 1 - index * scale;
-  const translateValue = isExpanded
-    ? index * gap + itemsSizeBefore
-    : index * offset;
+  const translateValue = isExpanded ? index * gap + itemsSizeBefore : index * offset;
   const zIndex = childrenCount - index;
 
   const opacity = !isVisible ? 0 : isExpanded ? 1 : 1 - index * 0.15;
@@ -299,9 +292,7 @@ function StackItemWrapper(props: StackItemWrapperProps) {
       data-front={isFront}
       data-visible={isVisible}
       data-expanded={isExpanded}
-      className={cn(
-        stackItemWrapperVariants({ side, isExpanded, isVisible, className }),
-      )}
+      className={cn(stackItemWrapperVariants({ side, isExpanded, isVisible, className }))}
       style={
         {
           "--translate": `${translateValue}px`,

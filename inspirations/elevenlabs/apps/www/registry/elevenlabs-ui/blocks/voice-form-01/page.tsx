@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { useCallback, useEffect, useRef, useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useCallback, useEffect, useRef, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
-import { cn } from "@/lib/utils"
-import { voiceToFormAction } from "@/registry/elevenlabs-ui/blocks/voice-form-01/actions/voice-to-form"
+import { cn } from "@/lib/utils";
+import { voiceToFormAction } from "@/registry/elevenlabs-ui/blocks/voice-form-01/actions/voice-to-form";
 import {
   exampleFormSchema,
   ExampleFormValues,
-} from "@/registry/elevenlabs-ui/blocks/voice-form-01/schema"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
+} from "@/registry/elevenlabs-ui/blocks/voice-form-01/schema";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/registry/elevenlabs-ui/ui/card"
+} from "@/registry/elevenlabs-ui/ui/card";
 import {
   Form,
   FormControl,
@@ -25,9 +25,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/registry/elevenlabs-ui/ui/form"
-import { Input } from "@/registry/elevenlabs-ui/ui/input"
-import { VoiceButton } from "@/registry/elevenlabs-ui/ui/voice-button"
+} from "@/registry/elevenlabs-ui/ui/form";
+import { Input } from "@/registry/elevenlabs-ui/ui/input";
+import { VoiceButton } from "@/registry/elevenlabs-ui/ui/voice-button";
 
 const AUDIO_CONSTRAINTS: MediaStreamConstraints = {
   audio: {
@@ -35,28 +35,28 @@ const AUDIO_CONSTRAINTS: MediaStreamConstraints = {
     noiseSuppression: true,
     autoGainControl: true,
   },
-}
+};
 
-const SUPPORTED_MIME_TYPES = ["audio/webm;codecs=opus", "audio/webm"] as const
+const SUPPORTED_MIME_TYPES = ["audio/webm;codecs=opus", "audio/webm"] as const;
 
 function getMimeType(): string {
   for (const type of SUPPORTED_MIME_TYPES) {
     if (MediaRecorder.isTypeSupported(type)) {
-      return type
+      return type;
     }
   }
-  return "audio/webm"
+  return "audio/webm";
 }
 
 export default function Page() {
-  const [isRecording, setIsRecording] = useState(false)
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState(false)
+  const [isRecording, setIsRecording] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const audioChunksRef = useRef<Blob[]>([])
-  const streamRef = useRef<MediaStream | null>(null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
 
   const form = useForm<ExampleFormValues>({
     resolver: zodResolver(exampleFormSchema),
@@ -65,104 +65,103 @@ export default function Page() {
       lastName: "",
     },
     mode: "onChange",
-  })
+  });
 
   const cleanupStream = useCallback(() => {
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach((track) => track.stop())
-      streamRef.current = null
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
     }
-  }, [])
+  }, []);
 
   const processAudio = useCallback(
     async (audioBlob: Blob) => {
-      setIsProcessing(true)
-      setError("")
-      setSuccess(false)
+      setIsProcessing(true);
+      setError("");
+      setSuccess(false);
 
       try {
         const audioFile = new File([audioBlob], "audio.webm", {
           type: audioBlob.type,
-        })
+        });
 
-        const result = await voiceToFormAction(audioFile)
+        const result = await voiceToFormAction(audioFile);
 
         if (result.data && Object.keys(result.data).length > 0) {
           Object.entries(result.data).forEach(([key, value]) => {
             if (value) {
               form.setValue(key as keyof ExampleFormValues, value as string, {
                 shouldValidate: true,
-              })
+              });
             }
-          })
-          setSuccess(true)
-          setTimeout(() => setSuccess(false), 2000)
+          });
+          setSuccess(true);
+          setTimeout(() => setSuccess(false), 2000);
         }
       } catch (err) {
-        console.error("Voice input error:", err)
-        setError(err instanceof Error ? err.message : "Failed to process audio")
+        console.error("Voice input error:", err);
+        setError(err instanceof Error ? err.message : "Failed to process audio");
       } finally {
-        setIsProcessing(false)
+        setIsProcessing(false);
       }
     },
-    [form]
-  )
+    [form],
+  );
 
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current?.state !== "inactive") {
-      mediaRecorderRef.current?.stop()
+      mediaRecorderRef.current?.stop();
     }
-    cleanupStream()
-    setIsRecording(false)
-  }, [cleanupStream])
+    cleanupStream();
+    setIsRecording(false);
+  }, [cleanupStream]);
 
   const startRecording = useCallback(async () => {
     try {
-      setError("")
-      audioChunksRef.current = []
+      setError("");
+      audioChunksRef.current = [];
 
-      const stream =
-        await navigator.mediaDevices.getUserMedia(AUDIO_CONSTRAINTS)
-      streamRef.current = stream
+      const stream = await navigator.mediaDevices.getUserMedia(AUDIO_CONSTRAINTS);
+      streamRef.current = stream;
 
-      const mimeType = getMimeType()
-      const mediaRecorder = new MediaRecorder(stream, { mimeType })
-      mediaRecorderRef.current = mediaRecorder
+      const mimeType = getMimeType();
+      const mediaRecorder = new MediaRecorder(stream, { mimeType });
+      mediaRecorderRef.current = mediaRecorder;
 
       mediaRecorder.ondataavailable = (event: BlobEvent) => {
         if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data)
+          audioChunksRef.current.push(event.data);
         }
-      }
+      };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType })
-        processAudio(audioBlob)
-      }
+        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
+        processAudio(audioBlob);
+      };
 
-      mediaRecorder.start()
-      setIsRecording(true)
+      mediaRecorder.start();
+      setIsRecording(true);
     } catch (err) {
-      setError("Microphone permission denied")
-      console.error("Microphone error:", err)
+      setError("Microphone permission denied");
+      console.error("Microphone error:", err);
     }
-  }, [processAudio])
+  }, [processAudio]);
 
   const handleVoiceToggle = useCallback(() => {
     if (isRecording) {
-      stopRecording()
+      stopRecording();
     } else {
-      startRecording()
+      startRecording();
     }
-  }, [isRecording, startRecording, stopRecording])
+  }, [isRecording, startRecording, stopRecording]);
 
   useEffect(() => {
-    return cleanupStream
-  }, [cleanupStream])
+    return cleanupStream;
+  }, [cleanupStream]);
 
   const onSubmit = (data: ExampleFormValues) => {
-    console.log("Form submitted:", data)
-  }
+    console.log("Form submitted:", data);
+  };
 
   const voiceState = isProcessing
     ? "processing"
@@ -172,7 +171,7 @@ export default function Page() {
         ? "success"
         : error
           ? "error"
-          : "idle"
+          : "idle";
 
   return (
     <div className="mx-auto w-full">
@@ -194,10 +193,7 @@ export default function Page() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <FormField
                     control={form.control}
@@ -232,5 +228,5 @@ export default function Page() {
         </div>
       </Card>
     </div>
-  )
+  );
 }

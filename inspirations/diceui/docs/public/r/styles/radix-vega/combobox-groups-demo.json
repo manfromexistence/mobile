@@ -1,12 +1,8 @@
 {
   "name": "combobox-groups-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "combobox"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["combobox"],
   "files": [
     {
       "path": "examples/combobox-groups-demo.tsx",

@@ -18,7 +18,7 @@ test("loaded driver is one of the known kinds", async () => {
   const r = await loadSqliteRuntime();
   assert.ok(
     ["better-sqlite3", "node-sqlite", "sql-js"].includes(r.driver.kind),
-    `kind="${r.driver.kind}" must be known`
+    `kind="${r.driver.kind}" must be known`,
   );
 });
 

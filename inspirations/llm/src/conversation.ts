@@ -1,9 +1,4 @@
-import {
-  ChatConfig,
-  ConvTemplateConfig,
-  MessagePlaceholders,
-  Role,
-} from "./config";
+import { ChatConfig, ConvTemplateConfig, MessagePlaceholders, Role } from "./config";
 import {
   ChatCompletionContentPart,
   ChatCompletionContentPartImage,
@@ -34,9 +29,8 @@ export class Conversation {
   /** Each message is a tuple of (Role, role_name_str, message), where message can be either a
    *  string or an array of contentPart for possible image input.
    */
-  public messages: Array<
-    [Role, string, string | Array<ChatCompletionContentPart> | undefined]
-  > = [];
+  public messages: Array<[Role, string, string | Array<ChatCompletionContentPart> | undefined]> =
+    [];
   readonly config: ConvTemplateConfig;
 
   /** Whether the Conversation object is for text completion with no conversation-style formatting */
@@ -111,10 +105,7 @@ export class Conversation {
       }
 
       // 2. Message from `appendEmptyThinkingReplyHeader()`, message is an empty thinking block.
-      if (
-        this.isLastMessageEmptyThinkingReplyHeader &&
-        i === this.messages.length - 1
-      ) {
+      if (this.isLastMessageEmptyThinkingReplyHeader && i === this.messages.length - 1) {
         // TODO(Charlie): content_sep or empty_sep? For Qwen3, both are "\n".
         const content_sep =
           this.config.role_content_sep || this.config.role_content_sep == ""
@@ -159,10 +150,7 @@ export class Conversation {
           textContentPart,
         );
         if (this.use_function_calling && this.function_string !== "") {
-          message_str = message_str?.replace(
-            MessagePlaceholders.function,
-            this.function_string,
-          );
+          message_str = message_str?.replace(MessagePlaceholders.function, this.function_string);
         }
         message_str = message_str?.replace(MessagePlaceholders.function, "");
       }
@@ -170,11 +158,7 @@ export class Conversation {
       if (message_str == undefined) {
         message_str = textContentPart;
       }
-      if (
-        this.config.add_role_after_system_message === false &&
-        system_prompt != "" &&
-        i == 0
-      ) {
+      if (this.config.add_role_after_system_message === false && system_prompt != "" && i == 0) {
         role_prefix = "";
       } else {
         // Add ": " if there is no such field. If "", do not add sep
@@ -188,11 +172,7 @@ export class Conversation {
       // 4. Combine everything together
       if (imageContentParts.length === 0) {
         // If no image, just a single string to represent this message
-        ret.push(
-          role_prefix +
-            message_str +
-            this.config.seps[i % this.config.seps.length],
-        );
+        ret.push(role_prefix + message_str + this.config.seps[i % this.config.seps.length]);
       } else {
         // Per-model image layout
         const curMessageList: Array<string | ImageURL> = [role_prefix];
@@ -205,9 +185,7 @@ export class Conversation {
             curMessageList.push(curImage);
           }
         });
-        curMessageList.push(
-          message_str + this.config.seps[i % this.config.seps.length],
-        );
+        curMessageList.push(message_str + this.config.seps[i % this.config.seps.length]);
         ret.push(curMessageList);
       }
     }
@@ -236,9 +214,7 @@ export class Conversation {
    *
    * @returns The prompt array.
    */
-  getPromptArray(
-    config?: ChatConfig,
-  ): Array<string | Array<string | ImageURL>> {
+  getPromptArray(config?: ChatConfig): Array<string | Array<string | ImageURL>> {
     if (this.isTextCompletion) {
       throw new TextCompletionConversationError("getPromptArray");
     }
@@ -307,10 +283,7 @@ export class Conversation {
     if (this.isTextCompletion) {
       throw new TextCompletionConversationError("appendMessage");
     }
-    if (
-      this.messages.length != 0 &&
-      this.messages[this.messages.length - 1][2] == undefined
-    ) {
+    if (this.messages.length != 0 && this.messages[this.messages.length - 1][2] == undefined) {
       throw Error("Have unfinished reply");
     }
     if (!(role in this.config.roles)) {
@@ -332,9 +305,7 @@ export class Conversation {
 
   appendEmptyThinkingReplyHeader(role: Role, emptyThinkingBlockStr: string) {
     if (this.isTextCompletion) {
-      throw new TextCompletionConversationError(
-        "appendEmptyThinkingReplyHeader",
-      );
+      throw new TextCompletionConversationError("appendEmptyThinkingReplyHeader");
     }
     this.isLastMessageEmptyThinkingReplyHeader = true;
     this.messages.push([role, this.config.roles[role], emptyThinkingBlockStr]);
@@ -365,10 +336,7 @@ export function getConversation(
   conv_config?: Partial<ConvTemplateConfig>,
   isTextCompletion = false,
 ): Conversation {
-  return new Conversation(
-    { ...conv_template, ...conv_config },
-    isTextCompletion,
-  );
+  return new Conversation({ ...conv_template, ...conv_config }, isTextCompletion);
 }
 
 /**
@@ -379,10 +347,7 @@ export function getConversation(
  * @returns True if `convA` equals to `convB`
  * @note We assume convA and convB has the same `this.config`.
  */
-export function compareConversationObject(
-  convA: Conversation,
-  convB: Conversation,
-): boolean {
+export function compareConversationObject(convA: Conversation, convB: Conversation): boolean {
   // NOTE: Update this function whenever a new state is introduced to `Conversation`.
   // Check the easy ones first
   if (
@@ -433,10 +398,7 @@ export function compareConversationObject(
             if (entryA_k.text !== entryB_k.text) {
               return false;
             }
-          } else if (
-            entryA_k.type === "image_url" &&
-            entryB_k.type === "image_url"
-          ) {
+          } else if (entryA_k.type === "image_url" && entryB_k.type === "image_url") {
             // Case 3.2: both are image_url
             if (
               entryA_k.image_url.url !== entryB_k.image_url.url ||
@@ -472,10 +434,7 @@ export function getConversationFromChatCompletionRequest(
   includeLastMsg = false,
 ): Conversation {
   // 0. Instantiate a new Conversation object
-  const conversation = getConversation(
-    config.conv_template,
-    config.conv_config,
-  );
+  const conversation = getConversation(config.conv_template, config.conv_config);
 
   // 1. Populate function-calling-related fields
   // TODO: either remove these or support gorilla-like function calling models.
@@ -489,9 +448,7 @@ export function getConversationFromChatCompletionRequest(
   const input = request.messages;
   const lastId = input.length - 1;
   if (input[lastId].role !== "user" && input[lastId].role !== "tool") {
-    throw new MessageOrderError(
-      "The last message should be from the `user` or `tool`.",
-    );
+    throw new MessageOrderError("The last message should be from the `user` or `tool`.");
   }
   const iterEnd = includeLastMsg ? input.length : input.length - 1;
   for (let i = 0; i < iterEnd; i++) {
@@ -532,22 +489,15 @@ export function getFunctionCallUsage(request: ChatCompletionRequest): string {
   ) {
     return "";
   }
-  if (
-    typeof request.tool_choice == "string" &&
-    request.tool_choice !== "auto"
-  ) {
+  if (typeof request.tool_choice == "string" && request.tool_choice !== "auto") {
     throw new InvalidToolChoiceError(request.tool_choice);
   }
-  if (
-    typeof request.tool_choice !== "string" &&
-    request.tool_choice?.type !== "function"
-  ) {
+  if (typeof request.tool_choice !== "string" && request.tool_choice?.type !== "function") {
     throw new UnsupportedToolChoiceTypeError();
   }
 
   const singleFunctionToCall =
-    typeof request.tool_choice !== "string" &&
-    request.tool_choice?.function?.name;
+    typeof request.tool_choice !== "string" && request.tool_choice?.function?.name;
   if (singleFunctionToCall) {
     for (const f of request.tools) {
       if (singleFunctionToCall == f.function.name) {

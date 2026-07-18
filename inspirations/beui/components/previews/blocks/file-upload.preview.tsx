@@ -44,9 +44,7 @@ const variants: { id: FileUploadVariant; label: string }[] = [
 export function FileUploadPreview() {
   const [items, setItems] = useState(initialItems);
   const [variant, setVariant] = useState<FileUploadVariant>("centered");
-  const timersRef = useRef<Map<string, ReturnType<typeof setInterval>>>(
-    new Map(),
-  );
+  const timersRef = useRef<Map<string, ReturnType<typeof setInterval>>>(new Map());
 
   const stopUpload = useCallback((id: string) => {
     const timer = timersRef.current.get(id);
@@ -67,10 +65,7 @@ export function FileUploadPreview() {
             return current;
           }
 
-          const nextProgress = Math.min(
-            100,
-            (target.progress ?? 0) + 7 + Math.random() * 12,
-          );
+          const nextProgress = Math.min(100, (target.progress ?? 0) + 7 + Math.random() * 12);
 
           if (nextProgress >= 100) {
             stopUpload(id);
@@ -109,12 +104,10 @@ export function FileUploadPreview() {
       <div className="w-full max-w-md rounded-[2rem] border border-border bg-background p-3">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
           <div>
-            <p className="text-sm font-semibold text-foreground">
-              Upload package
-            </p>
+            <p className="text-sm font-semibold text-foreground">Upload package</p>
             <p className="text-xs text-muted-foreground">
-              {items.filter((item) => item.status === "success").length} of{" "}
-              {items.length} files ready
+              {items.filter((item) => item.status === "success").length} of {items.length} files
+              ready
             </p>
           </div>
 

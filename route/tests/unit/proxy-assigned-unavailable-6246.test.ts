@@ -35,7 +35,7 @@ async function resetStorage() {
 function setGlobalProxyEnabled(enabled: boolean) {
   const db = core.getDbInstance();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'proxyEnabled', ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'proxyEnabled', ?)",
   ).run(JSON.stringify(enabled));
 }
 
@@ -69,7 +69,7 @@ test("BLOCKS: an account proxy assigned but marked inactive (the IP-leak case)",
   assert.equal(
     proxiesDb.hasBlockingProxyAssignment(connId),
     true,
-    "a dead assigned proxy must block, not fall back to a direct egress"
+    "a dead assigned proxy must block, not fall back to a direct egress",
   );
 });
 
@@ -79,7 +79,7 @@ test("ALLOWS DIRECT: a connection with no proxy assignment at all", async () => 
   assert.equal(
     proxiesDb.hasBlockingProxyAssignment(connId),
     false,
-    "no assignment = user never configured a proxy = direct is legitimate"
+    "no assignment = user never configured a proxy = direct is legitimate",
   );
 });
 
@@ -97,7 +97,7 @@ test("NOT BLOCKING: an assigned proxy that is still ALIVE", async () => {
   assert.equal(
     proxiesDb.hasBlockingProxyAssignment(connId),
     false,
-    "an alive assigned proxy resolves normally; nothing to block"
+    "an alive assigned proxy resolves normally; nothing to block",
   );
 });
 
@@ -117,7 +117,7 @@ test("EXPLICIT DIRECT: global proxyEnabled=false is a deliberate choice, not a l
   assert.equal(
     proxiesDb.hasBlockingProxyAssignment(connId),
     false,
-    "operator turned proxying off globally — direct is intended, do not block"
+    "operator turned proxying off globally — direct is intended, do not block",
   );
 });
 
@@ -136,6 +136,6 @@ test("BLOCKS: a dead GLOBAL proxy assignment blocks any connection", async () =>
   assert.equal(
     proxiesDb.hasBlockingProxyAssignment(connId),
     true,
-    "a dead global proxy assignment must block, not leak direct"
+    "a dead global proxy assignment must block, not leak direct",
   );
 });

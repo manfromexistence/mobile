@@ -14,28 +14,23 @@
 import { cn } from "@/lib/utils";
 
 type Props = React.HTMLAttributes<HTMLElement> & {
-	/** Drops the top border. Useful for the first section under the AnimateIcons hero. */
-	noBorder?: boolean;
+  /** Drops the top border. Useful for the first section under the AnimateIcons hero. */
+  noBorder?: boolean;
 };
 
-const Section: React.FC<Props> = ({
-	className,
-	noBorder = false,
-	children,
-	...props
-}) => {
-	return (
-		<section
-			className={cn(
-				"relative py-18 lg:py-24",
-				!noBorder && "border-divider/50 border-t",
-				className,
-			)}
-			{...props}
-		>
-			<div className="mx-auto max-w-6xl px-4">{children}</div>
-		</section>
-	);
+const Section: React.FC<Props> = ({ className, noBorder = false, children, ...props }) => {
+  return (
+    <section
+      className={cn(
+        "relative py-18 lg:py-24",
+        !noBorder && "border-divider/50 border-t",
+        className,
+      )}
+      {...props}
+    >
+      <div className="mx-auto max-w-6xl px-4">{children}</div>
+    </section>
+  );
 };
 
 export default Section;

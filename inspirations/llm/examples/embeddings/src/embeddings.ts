@@ -4,10 +4,7 @@ import type { EmbeddingsInterface } from "@langchain/core/embeddings";
 import type { Document } from "@langchain/core/documents";
 import { formatDocumentsAsString } from "langchain/util/document";
 import { PromptTemplate } from "@langchain/core/prompts";
-import {
-  RunnableSequence,
-  RunnablePassthrough,
-} from "@langchain/core/runnables";
+import { RunnableSequence, RunnablePassthrough } from "@langchain/core/runnables";
 
 function setLabel(id: string, text: string) {
   const label = document.getElementById(id);
@@ -56,8 +53,7 @@ const documents_og = ["The Data Cloud!", "Mexico City of Course!"];
 const queries_og = ["what is snowflake?", "Where can I get the best tacos?"];
 const documents: string[] = [];
 const queries: string[] = [];
-const query_prefix =
-  "Represent this sentence for searching relevant passages: ";
+const query_prefix = "Represent this sentence for searching relevant passages: ";
 // Process according to Snowflake model
 documents_og.forEach(function (item, index) {
   documents[index] = `[CLS] ${item} [SEP]`;
@@ -75,13 +71,10 @@ async function webllmAPI() {
   // size, the more memory it consumes.
   // const selectedModel = "snowflake-arctic-embed-m-q0f32-MLC-b32";
   const selectedModel = "snowflake-arctic-embed-m-q0f32-MLC-b4";
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    {
-      initProgressCallback: initProgressCallback,
-      logLevel: "INFO", // specify the log level
-    },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+    logLevel: "INFO", // specify the log level
+  });
 
   const docReply = await engine.embeddings.create({ input: documents });
   console.log(docReply);
@@ -115,13 +108,10 @@ async function langchainAPI() {
   // size, the more memory it consumes.
   // const selectedModel = "snowflake-arctic-embed-m-q0f32-MLC-b32";
   const selectedModel = "snowflake-arctic-embed-m-q0f32-MLC-b4";
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    {
-      initProgressCallback: initProgressCallback,
-      logLevel: "INFO", // specify the log level
-    },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+    logLevel: "INFO", // specify the log level
+  });
 
   const vectorStore = await MemoryVectorStore.fromExistingIndex(
     new WebLLMEmbeddings(engine, selectedModel),
@@ -136,18 +126,12 @@ async function langchainAPI() {
   };
   await vectorStore.addDocuments([document0, document1]);
 
-  const similaritySearchResults0 = await vectorStore.similaritySearch(
-    queries[0],
-    1,
-  );
+  const similaritySearchResults0 = await vectorStore.similaritySearch(queries[0], 1);
   for (const doc of similaritySearchResults0) {
     console.log(`* ${doc.pageContent}`);
   }
 
-  const similaritySearchResults1 = await vectorStore.similaritySearch(
-    queries[1],
-    1,
-  );
+  const similaritySearchResults1 = await vectorStore.similaritySearch(queries[1], 1);
   for (const doc of similaritySearchResults1) {
     console.log(`* ${doc.pageContent}`);
   }
@@ -190,9 +174,7 @@ async function simpleRAG() {
     prompt,
   ]);
 
-  const formattedPrompt = (
-    await chain.invoke("What is the powerhouse of the cell?")
-  ).toString();
+  const formattedPrompt = (await chain.invoke("What is the powerhouse of the cell?")).toString();
   const reply = await engine.chat.completions.create({
     messages: [{ role: "user", content: formattedPrompt }],
     model: llmModelId,

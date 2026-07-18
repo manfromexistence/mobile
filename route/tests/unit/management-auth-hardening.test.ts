@@ -5,7 +5,7 @@ import fs from "node:fs";
 test("Codex apply-local auth route requires management authentication before local writes", () => {
   const content = fs.readFileSync(
     "src/app/api/providers/[id]/codex-auth/apply-local/route.ts",
-    "utf8"
+    "utf8",
   );
 
   assert.ok(content.includes('from "@/lib/api/requireManagementAuth"'));
@@ -13,7 +13,7 @@ test("Codex apply-local auth route requires management authentication before loc
   assert.ok(content.includes("if (authError) return authError;"));
   assert.ok(
     content.indexOf("requireManagementAuth(request)") <
-      content.indexOf("ensureCliConfigWriteAllowed()")
+      content.indexOf("ensureCliConfigWriteAllowed()"),
   );
 });
 
@@ -24,10 +24,10 @@ test("admin concurrency route requires management authentication before read or 
   assert.ok(content.includes("const authError = await requireManagementAuth(request);"));
   assert.ok(content.includes("if (authError) return authError;"));
   assert.ok(
-    content.indexOf("requireManagementAuth(request)") < content.indexOf("getAllRateLimitStatus()")
+    content.indexOf("requireManagementAuth(request)") < content.indexOf("getAllRateLimitStatus()"),
   );
   assert.ok(
-    content.indexOf("requireManagementAuth(request)") < content.indexOf("resetAllSemaphores()")
+    content.indexOf("requireManagementAuth(request)") < content.indexOf("resetAllSemaphores()"),
   );
 });
 
@@ -40,7 +40,7 @@ test("compression analytics route requires management authentication before retu
   assert.ok(content.includes("if (authError) return authError;"));
   assert.ok(
     content.indexOf("requireManagementAuth(req)") <
-      content.indexOf("getCompressionAnalyticsSummary(")
+      content.indexOf("getCompressionAnalyticsSummary("),
   );
 });
 
@@ -57,7 +57,7 @@ test("administrative pricing and routing routes require management authenticatio
     assert.ok(content.includes('from "@/lib/api/requireManagementAuth"'), routePath);
     assert.ok(
       content.includes("const authError = await requireManagementAuth(request);"),
-      routePath
+      routePath,
     );
     assert.ok(content.includes("if (authError) return authError;"), routePath);
   }
@@ -71,7 +71,7 @@ test("memory management routes require management authentication", () => {
     assert.ok(content.includes('from "@/lib/api/requireManagementAuth"'), routePath);
     assert.ok(
       content.includes("const authError = await requireManagementAuth(request);"),
-      routePath
+      routePath,
     );
     assert.ok(content.includes("if (authError) return authError;"), routePath);
   }
@@ -88,12 +88,12 @@ test("provider validation routes require management authentication before readin
     assert.ok(content.includes('from "@/lib/api/requireManagementAuth"'), routePath);
     assert.ok(
       content.includes("const authError = await requireManagementAuth(request);"),
-      routePath
+      routePath,
     );
     assert.ok(content.includes("if (authError) return authError;"), routePath);
     assert.ok(
       content.indexOf("requireManagementAuth(request)") < content.indexOf("request.json()"),
-      `${routePath} should authenticate before parsing submitted provider credentials`
+      `${routePath} should authenticate before parsing submitted provider credentials`,
     );
   }
 });
@@ -113,15 +113,15 @@ test("provider param-filters route requires management authentication on GET/PUT
     const nextHandlerStart = content.indexOf("export async function", handlerStart + 1);
     const handlerBody = content.slice(
       handlerStart,
-      nextHandlerStart === -1 ? content.length : nextHandlerStart
+      nextHandlerStart === -1 ? content.length : nextHandlerStart,
     );
     assert.ok(
       handlerBody.includes("const authError = await requireManagementAuth(request);"),
-      `${routePath} ${handler} handler must call requireManagementAuth(request)`
+      `${routePath} ${handler} handler must call requireManagementAuth(request)`,
     );
     assert.ok(
       handlerBody.includes("if (authError) return authError;"),
-      `${routePath} ${handler} handler must short-circuit on authError`
+      `${routePath} ${handler} handler must short-circuit on authError`,
     );
   }
 });
@@ -137,12 +137,12 @@ test("Antigravity CLI (agy) credential import routes require management authenti
     assert.ok(content.includes('from "@/lib/api/requireManagementAuth"'), routePath);
     assert.ok(
       content.includes("const authError = await requireManagementAuth(request);"),
-      routePath
+      routePath,
     );
     assert.ok(content.includes("if (authError) return authError;"), routePath);
     assert.ok(
       content.indexOf("requireManagementAuth(request)") < content.indexOf("request.json()"),
-      `${routePath} should authenticate before parsing the submitted token`
+      `${routePath} should authenticate before parsing the submitted token`,
     );
   }
   // Routes that read non-JSON bodies (local file / uploaded ZIP) — auth still comes first.
@@ -155,7 +155,7 @@ test("Antigravity CLI (agy) credential import routes require management authenti
     assert.ok(content.includes('from "@/lib/api/requireManagementAuth"'), routePath);
     assert.ok(
       content.includes("const authError = await requireManagementAuth(request);"),
-      routePath
+      routePath,
     );
     assert.ok(content.includes("if (authError) return authError;"), routePath);
   }
@@ -174,7 +174,7 @@ test("usage analytics and request log routes require management authentication",
     assert.ok(content.includes('from "@/lib/api/requireManagementAuth"'), routePath);
     assert.ok(
       content.includes("const authError = await requireManagementAuth(request);"),
-      routePath
+      routePath,
     );
     assert.ok(content.includes("if (authError) return authError;"), routePath);
   }
@@ -198,12 +198,12 @@ test("middleware hook registry routes require management authentication before s
     assert.ok(content.includes('from "@/lib/api/requireManagementAuth"'), routePath);
     assert.ok(
       content.includes("const authError = await requireManagementAuth(request);"),
-      routePath
+      routePath,
     );
     assert.ok(content.includes("if (authError) return authError;"), routePath);
     assert.ok(
       content.indexOf("requireManagementAuth(request)") < content.indexOf("registerHook(saved"),
-      `${routePath} must authenticate before calling registerHook (RCE surface)`
+      `${routePath} must authenticate before calling registerHook (RCE surface)`,
     );
   }
 });
@@ -229,7 +229,7 @@ test("MCP transport and inspection routes require management authentication", ()
     assert.ok(content.includes('from "@/lib/api/requireManagementAuth"'), routePath);
     assert.ok(
       content.includes("const authError = await requireManagementAuth(request);"),
-      routePath
+      routePath,
     );
     assert.ok(content.includes("if (authError) return authError;"), routePath);
   }
@@ -279,7 +279,7 @@ test("management routes sanitize error.message before returning it to clients", 
     const hasSanitizer = sanitizerHints.some((hint) => content.includes(hint));
     assert.ok(
       hasSanitizer,
-      `${routePath} must route error.message through sanitizeErrorMessage() or buildErrorBody() — Hard Rule #12`
+      `${routePath} must route error.message through sanitizeErrorMessage() or buildErrorBody() — Hard Rule #12`,
     );
   }
 });

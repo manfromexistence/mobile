@@ -1,35 +1,33 @@
-"use client"
+"use client";
 
-import { createContext, useContext, useEffect, useRef, useState } from "react"
-import { Collapsible as CollapsibleRoot } from "@/components/ui/collapsible"
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { Collapsible as CollapsibleRoot } from "@/components/ui/collapsible";
 import type {
   ChevronDownIconHandle,
   ChevronDownIconProps,
-} from "@/features/portfolio/components/animated-icons/chevron-down-icon"
-import { ChevronDownIcon } from "@/features/portfolio/components/animated-icons/chevron-down-icon"
+} from "@/features/portfolio/components/animated-icons/chevron-down-icon";
+import { ChevronDownIcon } from "@/features/portfolio/components/animated-icons/chevron-down-icon";
 import type {
   ChevronsUpDownIconHandle,
   ChevronsUpDownIconProps,
-} from "@/registry/components/chevrons-up-down-icon"
-import { ChevronsUpDownIcon } from "@/registry/components/chevrons-up-down-icon"
+} from "@/registry/components/chevrons-up-down-icon";
+import { ChevronsUpDownIcon } from "@/registry/components/chevrons-up-down-icon";
 
 type CollapsibleContextType = {
-  open: boolean
-}
+  open: boolean;
+};
 
-const CollapsibleContext = createContext<CollapsibleContextType | null>(null)
+const CollapsibleContext = createContext<CollapsibleContextType | null>(null);
 
 const useCollapsible = () => {
-  const context = useContext(CollapsibleContext)
+  const context = useContext(CollapsibleContext);
 
   if (!context) {
-    throw new Error(
-      "Collapsible components must be used within a CollapsibleWithContext"
-    )
+    throw new Error("Collapsible components must be used within a CollapsibleWithContext");
   }
 
-  return context
-}
+  return context;
+};
 
 function CollapsibleWithContext({
   defaultOpen,
@@ -37,8 +35,8 @@ function CollapsibleWithContext({
   onOpenChange,
   ...props
 }: React.ComponentProps<typeof CollapsibleRoot>) {
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen ?? false)
-  const open = controlledOpen ?? uncontrolledOpen
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen ?? false);
+  const open = controlledOpen ?? uncontrolledOpen;
 
   return (
     <CollapsibleContext.Provider value={{ open }}>
@@ -46,45 +44,43 @@ function CollapsibleWithContext({
         open={open}
         onOpenChange={(open, event) => {
           if (controlledOpen === undefined) {
-            setUncontrolledOpen(open)
+            setUncontrolledOpen(open);
           }
-          onOpenChange?.(open, event)
+          onOpenChange?.(open, event);
         }}
         {...props}
       />
     </CollapsibleContext.Provider>
-  )
+  );
 }
 
 function useCollapsibleAnimation<
   T extends { startAnimation: () => void; stopAnimation: () => void },
 >(ref: React.RefObject<T | null>) {
-  const { open } = useCollapsible()
+  const { open } = useCollapsible();
 
   useEffect(() => {
-    const controls = ref.current
-    if (!controls) return
+    const controls = ref.current;
+    if (!controls) return;
 
     if (open) {
-      controls.startAnimation()
+      controls.startAnimation();
     } else {
-      controls.stopAnimation()
+      controls.stopAnimation();
     }
-  }, [open, ref])
+  }, [open, ref]);
 }
 
-function CollapsibleChevronsUpDownIcon(
-  props: Omit<ChevronsUpDownIconProps, "ref">
-) {
-  const ref = useRef<ChevronsUpDownIconHandle>(null)
-  useCollapsibleAnimation(ref)
-  return <ChevronsUpDownIcon ref={ref} {...props} />
+function CollapsibleChevronsUpDownIcon(props: Omit<ChevronsUpDownIconProps, "ref">) {
+  const ref = useRef<ChevronsUpDownIconHandle>(null);
+  useCollapsibleAnimation(ref);
+  return <ChevronsUpDownIcon ref={ref} {...props} />;
 }
 
 function CollapsibleChevronDownIcon(props: Omit<ChevronDownIconProps, "ref">) {
-  const ref = useRef<ChevronDownIconHandle>(null)
-  useCollapsibleAnimation(ref)
-  return <ChevronDownIcon ref={ref} {...props} />
+  const ref = useRef<ChevronDownIconHandle>(null);
+  useCollapsibleAnimation(ref);
+  return <ChevronDownIcon ref={ref} {...props} />;
 }
 
 export {
@@ -93,4 +89,4 @@ export {
   CollapsibleWithContext as Collapsible,
   useCollapsible,
   useCollapsibleAnimation,
-}
+};

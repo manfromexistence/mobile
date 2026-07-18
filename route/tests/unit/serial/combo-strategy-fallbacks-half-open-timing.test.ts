@@ -21,7 +21,9 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-combo-fallbacks-half-open-"));
+const TEST_DATA_DIR = fs.mkdtempSync(
+  path.join(os.tmpdir(), "omniroute-combo-fallbacks-half-open-"),
+);
 const ORIGINAL_DATA_DIR = process.env.DATA_DIR;
 process.env.DATA_DIR = TEST_DATA_DIR;
 
@@ -29,10 +31,12 @@ const { handleComboChat } = await import("../../../open-sse/services/combo.ts");
 const core = await import("../../../src/lib/db/core.ts");
 const settingsDb = await import("../../../src/lib/db/settings.ts");
 const { resetAllComboMetrics } = await import("../../../open-sse/services/comboMetrics.ts");
-const { resetAllCircuitBreakers, getCircuitBreaker } =
-  await import("../../../src/shared/utils/circuitBreaker.ts");
-const { resetAll: resetAllSemaphores } =
-  await import("../../../open-sse/services/rateLimitSemaphore.ts");
+const { resetAllCircuitBreakers, getCircuitBreaker } = await import(
+  "../../../src/shared/utils/circuitBreaker.ts"
+);
+const { resetAll: resetAllSemaphores } = await import(
+  "../../../open-sse/services/rateLimitSemaphore.ts"
+);
 const { _resetAllDecks } = await import("../../../src/shared/utils/shuffleDeck.ts");
 const { clearSessions } = await import("../../../open-sse/services/sessionManager.ts");
 
@@ -159,6 +163,6 @@ test("combo skips a provider while its breaker is OPEN and attempts it again aft
   assert.deepEqual(
     callsAfterExpiry,
     ["openai/gpt-4o-mini"],
-    "HALF_OPEN provider must be probed again"
+    "HALF_OPEN provider must be probed again",
   );
 });

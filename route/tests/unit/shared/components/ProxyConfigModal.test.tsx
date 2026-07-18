@@ -9,7 +9,7 @@ vi.mock("next-intl", () => ({
     if (!values) return key;
     return Object.entries(values).reduce(
       (message, [name, value]) => message.replace(`{${name}}`, String(value)),
-      key
+      key,
     );
   },
 }));
@@ -90,7 +90,7 @@ async function renderProxyConfigModal(props?: Partial<React.ComponentProps<any>>
         levelLabel="Claude"
         onSaved={vi.fn()}
         {...props}
-      />
+      />,
     );
   });
   await waitForModalToLoad(container);
@@ -106,7 +106,7 @@ async function waitForModalToLoad(container: HTMLElement) {
 
 function getInput(container: HTMLElement, placeholder: string) {
   const input = Array.from(container.querySelectorAll("input")).find(
-    (item) => item.getAttribute("placeholder") === placeholder
+    (item) => item.getAttribute("placeholder") === placeholder,
   );
   expect(input).toBeTruthy();
   return input as HTMLInputElement;
@@ -119,7 +119,7 @@ async function clickButton(container: HTMLElement, text: string) {
   const button =
     buttons.find((item) => getText(item) === expected) ||
     buttons.find(
-      (item) => getText(item).endsWith(expected) && !getText(item).includes("savedproxy")
+      (item) => getText(item).endsWith(expected) && !getText(item).includes("savedproxy"),
     ) ||
     buttons.find((item) => getText(item).includes(expected));
   expect(button).toBeTruthy();
@@ -202,7 +202,7 @@ describe("ProxyConfigModal custom registry saves", () => {
     await waitForCall((call) => call.method === "POST" && call.url === "/api/settings/proxies");
 
     const createCall = fetchCalls.find(
-      (call) => call.method === "POST" && call.url === "/api/settings/proxies"
+      (call) => call.method === "POST" && call.url === "/api/settings/proxies",
     );
     expect(createCall?.body).toMatchObject({
       name: "Custom Provider Proxy (Claude)",
@@ -218,18 +218,18 @@ describe("ProxyConfigModal custom registry saves", () => {
     });
 
     expect(
-      fetchCalls.some((call) => call.method === "PUT" && call.url === "/api/settings/proxy")
+      fetchCalls.some((call) => call.method === "PUT" && call.url === "/api/settings/proxy"),
     ).toBe(false);
     expect(
       fetchCalls.some(
-        (call) => call.method === "PUT" && call.url === "/api/settings/proxies/assignments"
-      )
+        (call) => call.method === "PUT" && call.url === "/api/settings/proxies/assignments",
+      ),
     ).toBe(false);
     expect(
       fetchCalls.some(
         (call) =>
-          call.method === "DELETE" && call.url === "/api/settings/proxy?level=provider&id=claude"
-      )
+          call.method === "DELETE" && call.url === "/api/settings/proxy?level=provider&id=claude",
+      ),
     ).toBe(false);
   });
 
@@ -293,11 +293,11 @@ describe("ProxyConfigModal custom registry saves", () => {
     await waitForCall((call) => call.method === "PATCH" && call.url === "/api/settings/proxies");
 
     expect(
-      fetchCalls.some((call) => call.method === "POST" && call.url === "/api/settings/proxies")
+      fetchCalls.some((call) => call.method === "POST" && call.url === "/api/settings/proxies"),
     ).toBe(false);
 
     const updateCall = fetchCalls.find(
-      (call) => call.method === "PATCH" && call.url === "/api/settings/proxies"
+      (call) => call.method === "PATCH" && call.url === "/api/settings/proxies",
     );
     expect(updateCall?.body).toMatchObject({
       id: "custom-proxy-1",
@@ -312,14 +312,14 @@ describe("ProxyConfigModal custom registry saves", () => {
     expect(updateCall?.body).not.toHaveProperty("password");
     expect(
       fetchCalls.some(
-        (call) => call.method === "PUT" && call.url === "/api/settings/proxies/assignments"
-      )
+        (call) => call.method === "PUT" && call.url === "/api/settings/proxies/assignments",
+      ),
     ).toBe(false);
     expect(
       fetchCalls.some(
         (call) =>
-          call.method === "DELETE" && call.url === "/api/settings/proxy?level=provider&id=claude"
-      )
+          call.method === "DELETE" && call.url === "/api/settings/proxy?level=provider&id=claude",
+      ),
     ).toBe(false);
   });
 
@@ -371,7 +371,7 @@ describe("ProxyConfigModal custom registry saves", () => {
     await waitForCall((call) => call.method === "POST" && call.url === "/api/settings/proxies");
 
     expect(
-      fetchCalls.some((call) => call.method === "PATCH" && call.url === "/api/settings/proxies")
+      fetchCalls.some((call) => call.method === "PATCH" && call.url === "/api/settings/proxies"),
     ).toBe(false);
     expect(
       fetchCalls.some(
@@ -379,13 +379,13 @@ describe("ProxyConfigModal custom registry saves", () => {
           call.method === "POST" &&
           call.url === "/api/settings/proxies" &&
           call.body.assignment?.scope === "provider" &&
-          call.body.assignment?.scopeId === "claude"
-      )
+          call.body.assignment?.scopeId === "claude",
+      ),
     ).toBe(true);
     expect(
       fetchCalls.some(
-        (call) => call.method === "PUT" && call.url === "/api/settings/proxies/assignments"
-      )
+        (call) => call.method === "PUT" && call.url === "/api/settings/proxies/assignments",
+      ),
     ).toBe(false);
   });
 });
@@ -432,7 +432,10 @@ describe("ProxyConfigModal test connection (saved proxy)", () => {
       }
       if (url.startsWith("/api/settings/proxies/assignments?") && url.includes("scope=provider")) {
         return {
-          body: { items: [{ proxyId: "socks5-1", scope: "provider", scopeId: "claude" }], total: 1 },
+          body: {
+            items: [{ proxyId: "socks5-1", scope: "provider", scopeId: "claude" }],
+            total: 1,
+          },
         };
       }
       if (method === "POST" && url === "/api/settings/proxy/test") {
@@ -446,7 +449,7 @@ describe("ProxyConfigModal test connection (saved proxy)", () => {
     await waitForCall((call) => call.method === "POST" && call.url === "/api/settings/proxy/test");
 
     const testCall = fetchCalls.find(
-      (call) => call.method === "POST" && call.url === "/api/settings/proxy/test"
+      (call) => call.method === "POST" && call.url === "/api/settings/proxy/test",
     );
     expect(testCall).toBeTruthy();
     expect(testCall?.body?.proxyId).toBe("socks5-1");

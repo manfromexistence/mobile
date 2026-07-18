@@ -86,12 +86,12 @@ test("every local import of every npm-shipped wrapper survives the prune (allowl
     const srcPath = path.join(ROOT, wrapper.src);
     assert.ok(fs.existsSync(srcPath), `EXTRA_MODULE_ENTRIES src missing on disk: ${wrapper.src}`);
     const missing = localImports(srcPath).filter(
-      (f) => !APP_STAGING_ALLOWED_EXACT_PATHS.includes(f)
+      (f) => !APP_STAGING_ALLOWED_EXACT_PATHS.includes(f),
     );
     assert.deepEqual(
       missing,
       [],
-      `${wrapper.dest}: add to APP_STAGING_ALLOWED_EXACT_PATHS: ${missing.join(", ")}`
+      `${wrapper.dest}: add to APP_STAGING_ALLOWED_EXACT_PATHS: ${missing.join(", ")}`,
     );
   }
 });
@@ -99,12 +99,12 @@ test("every local import of every npm-shipped wrapper survives the prune (allowl
 test("every local import of every npm-shipped wrapper is enforced by check:pack-artifact", () => {
   for (const wrapper of npmShippedWrappers()) {
     const missing = localImports(path.join(ROOT, wrapper.src)).filter(
-      (f) => !PACK_ARTIFACT_REQUIRED_PATHS.includes(`dist/${f}`)
+      (f) => !PACK_ARTIFACT_REQUIRED_PATHS.includes(`dist/${f}`),
     );
     assert.deepEqual(
       missing,
       [],
-      `${wrapper.dest}: add dist/<file> to PACK_ARTIFACT_REQUIRED_PATHS: ${missing.join(", ")}`
+      `${wrapper.dest}: add dist/<file> to PACK_ARTIFACT_REQUIRED_PATHS: ${missing.join(", ")}`,
     );
   }
 });
@@ -115,7 +115,7 @@ test("dynamic import() closure is covered (server-ws boots dist/server.js)", () 
   const imports = localImports(path.join(ROOT, serverWs.src));
   assert.ok(
     imports.includes("server.js"),
-    `dynamic import extraction broken — server.js not among: ${imports.join(", ")}`
+    `dynamic import extraction broken — server.js not among: ${imports.join(", ")}`,
   );
 });
 
@@ -125,12 +125,12 @@ test("every bin/omniroute.mjs local import is enforced by check:pack-artifact", 
   // PACK_ARTIFACT_REQUIRED_PATHS makes its absence loud. Derive the requirement from
   // the entrypoint's own imports.
   const missing = localImports(BIN_ENTRY).filter(
-    (f) => !PACK_ARTIFACT_REQUIRED_PATHS.includes(`bin/${f}`)
+    (f) => !PACK_ARTIFACT_REQUIRED_PATHS.includes(`bin/${f}`),
   );
   assert.deepEqual(
     missing,
     [],
-    `add bin/<file> to PACK_ARTIFACT_REQUIRED_PATHS: ${missing.join(", ")}`
+    `add bin/<file> to PACK_ARTIFACT_REQUIRED_PATHS: ${missing.join(", ")}`,
   );
 });
 
@@ -146,7 +146,7 @@ test("no npm-shipped wrapper uses a parent-relative (../) import — it escapes 
     assert.deepEqual(
       escaping,
       [],
-      `${wrapper.src} has package-escaping imports: ${escaping.join(", ")} — extract to a sibling module instead`
+      `${wrapper.src} has package-escaping imports: ${escaping.join(", ")} — extract to a sibling module instead`,
     );
   }
 });

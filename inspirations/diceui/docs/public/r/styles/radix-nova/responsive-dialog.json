@@ -1,9 +1,7 @@
 {
   "name": "responsive-dialog",
   "type": "registry:ui",
-  "dependencies": [
-    "vaul"
-  ],
+  "dependencies": ["vaul"],
   "registryDependencies": [
     "dialog",
     "drawer",

@@ -102,14 +102,12 @@ test("#4264 synced OpenRouter vision model surfaces capabilities.vision in /v1/m
   ]);
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   assert.equal(response.status, 200);
   const body = (await response.json()) as any;
 
-  const visionModel = body.data.find((m: any) =>
-    String(m.id).endsWith("nex-agi/nex-n2-pro:free")
-  );
+  const visionModel = body.data.find((m: any) => String(m.id).endsWith("nex-agi/nex-n2-pro:free"));
   assert.ok(visionModel, `expected the synced vision model in the catalog`);
   // RED before the fix: synced models carried no capabilities at all.
   assert.equal(visionModel.capabilities?.vision, true);
@@ -118,6 +116,6 @@ test("#4264 synced OpenRouter vision model surfaces capabilities.vision in /v1/m
   assert.ok(textModel, `expected the synced text-only model in the catalog`);
   assert.ok(
     !textModel.capabilities || textModel.capabilities.vision !== true,
-    `text-only model must not be marked vision-capable`
+    `text-only model must not be marked vision-capable`,
   );
 });

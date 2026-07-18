@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  AlertTriangle,
-  Check,
-  Circle,
-  Info,
-  LoaderCircle,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { AlertTriangle, Check, Circle, Info, LoaderCircle, X, type LucideIcon } from "lucide-react";
 import {
   AnimatePresence,
   motion,
@@ -20,20 +12,11 @@ import type { ReactNode } from "react";
 import { EASE_OUT } from "@/lib/ease";
 import { cn } from "@/lib/utils";
 
-export type AnimatedBadgeStatus =
-  | "neutral"
-  | "info"
-  | "success"
-  | "warning"
-  | "danger"
-  | "loading";
+export type AnimatedBadgeStatus = "neutral" | "info" | "success" | "warning" | "danger" | "loading";
 
 export type AnimatedBadgeSize = "sm" | "md";
 
-export interface AnimatedBadgeProps extends Omit<
-  HTMLMotionProps<"span">,
-  "children"
-> {
+export interface AnimatedBadgeProps extends Omit<HTMLMotionProps<"span">, "children"> {
   status?: AnimatedBadgeStatus;
   size?: AnimatedBadgeSize;
   children?: ReactNode;
@@ -138,9 +121,7 @@ export function AnimatedBadge({
   const Icon = ICONS[status];
   const resolvedContentKey =
     contentKey ??
-    (typeof children === "string" || typeof children === "number"
-      ? children
-      : status);
+    (typeof children === "string" || typeof children === "number" ? children : status);
 
   return (
     <motion.span

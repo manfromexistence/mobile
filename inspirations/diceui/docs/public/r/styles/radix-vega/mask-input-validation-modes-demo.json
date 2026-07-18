@@ -1,12 +1,7 @@
 {
   "name": "mask-input-validation-modes-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "badge",
-    "card",
-    "label",
-    "mask-input"
-  ],
+  "registryDependencies": ["badge", "card", "label", "mask-input"],
   "files": [
     {
       "path": "examples/mask-input-validation-modes-demo.tsx",

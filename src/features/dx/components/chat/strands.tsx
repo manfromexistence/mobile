@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { Renderer, Program, Mesh, Color, Triangle, RenderTarget } from 'ogl';
-import { useEffect, useRef } from 'react';
+import * as React from "react";
+import { Renderer, Program, Mesh, Color, Triangle, RenderTarget } from "ogl";
+import { useEffect, useRef } from "react";
 
 const MAX_STRANDS = 12;
 const MAX_COLORS = 8;
@@ -171,7 +171,7 @@ void main() {
 `;
 
 const buildPalette = (colors: string[] | undefined) => {
-  const filled = colors && colors.length ? colors : ['#ffffff'];
+  const filled = colors && colors.length ? colors : ["#ffffff"];
   const padded = [];
   for (let i = 0; i < MAX_COLORS; i++) {
     const hex = filled[i] ?? filled[filled.length - 1];
@@ -182,30 +182,30 @@ const buildPalette = (colors: string[] | undefined) => {
 };
 
 interface StrandsProps {
-  colors?: string[]
-  count?: number
-  speed?: number
-  amplitude?: number
-  waviness?: number
-  thickness?: number
-  glow?: number
-  taper?: number
-  spread?: number
-  hueShift?: number
-  intensity?: number
-  saturation?: number
-  opacity?: number
-  scale?: number
-  glass?: boolean
-  refraction?: number
-  dispersion?: number
-  glassSize?: number
-  className?: string
-  style?: React.CSSProperties
+  colors?: string[];
+  count?: number;
+  speed?: number;
+  amplitude?: number;
+  waviness?: number;
+  thickness?: number;
+  glow?: number;
+  taper?: number;
+  spread?: number;
+  hueShift?: number;
+  intensity?: number;
+  saturation?: number;
+  opacity?: number;
+  scale?: number;
+  glass?: boolean;
+  refraction?: number;
+  dispersion?: number;
+  glassSize?: number;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 export default function Strands({
-  colors = ['#FF4242', '#7C3AED', '#06B6D4', '#EAB308'],
+  colors = ["#FF4242", "#7C3AED", "#06B6D4", "#EAB308"],
   count = 3,
   speed = 0.5,
   amplitude = 1,
@@ -223,7 +223,7 @@ export default function Strands({
   refraction = 1,
   dispersion = 1,
   glassSize = 1,
-  className = '',
+  className = "",
   style,
 }: StrandsProps) {
   const propsRef = useRef<StrandsProps>({} as StrandsProps);
@@ -245,7 +245,7 @@ export default function Strands({
     glass,
     refraction,
     dispersion,
-    glassSize
+    glassSize,
   };
 
   const ctnDom = useRef<HTMLDivElement | null>(null);
@@ -257,13 +257,13 @@ export default function Strands({
     const renderer = new Renderer({
       alpha: true,
       premultipliedAlpha: true,
-      antialias: true
+      antialias: true,
     });
     const gl = renderer.gl;
     gl.clearColor(0, 0, 0, 0);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-    gl.canvas.style.backgroundColor = 'transparent';
+    gl.canvas.style.backgroundColor = "transparent";
 
     const geometry = new Triangle(gl);
     if (geometry.attributes.uv) {
@@ -290,15 +290,15 @@ export default function Strands({
         uIntensity: { value: intensity },
         uOpacity: { value: opacity },
         uScale: { value: scale },
-        uSaturation: { value: saturation }
-      }
+        uSaturation: { value: saturation },
+      },
     });
 
     const mesh = new Mesh(gl, { geometry, program });
 
     const renderTarget = new RenderTarget(gl, {
       width: ctn.offsetWidth,
-      height: ctn.offsetHeight
+      height: ctn.offsetHeight,
     });
 
     const glassProgram = new Program(gl, {
@@ -309,8 +309,8 @@ export default function Strands({
         uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
         uRadius: { value: 0.46 * glassSize },
         uRefraction: { value: refraction },
-        uDispersion: { value: dispersion }
-      }
+        uDispersion: { value: dispersion },
+      },
     });
     const glassMesh = new Mesh(gl, { geometry, program: glassProgram });
 
@@ -325,7 +325,7 @@ export default function Strands({
       renderTarget.setSize(width, height);
       glassProgram.uniforms.uResolution.value = [width, height];
     }
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
     resize();
 
     let animateId = 0;
@@ -363,14 +363,20 @@ export default function Strands({
 
     return () => {
       cancelAnimationFrame(animateId);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener("resize", resize);
       if (ctn && gl.canvas.parentNode === ctn) {
         ctn.removeChild(gl.canvas);
       }
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <div ref={ctnDom} className={`absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-max h-[400px] flex items-center justify-center rounded-full border hover:bg-primary-foreground/10 ${className}`} style={style} />;
+  return (
+    <div
+      ref={ctnDom}
+      className={`absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-max h-[400px] flex items-center justify-center rounded-full border hover:bg-primary-foreground/10 ${className}`}
+      style={style}
+    />
+  );
 }

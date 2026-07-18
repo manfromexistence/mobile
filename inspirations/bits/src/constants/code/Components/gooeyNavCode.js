@@ -1,8 +1,8 @@
-import code from '@content/Components/GooeyNav/GooeyNav.jsx?raw';
-import css from '@content/Components/GooeyNav/GooeyNav.css?raw';
-import tailwind from '@tailwind/Components/GooeyNav/GooeyNav.jsx?raw';
-import tsCode from '@ts-default/Components/GooeyNav/GooeyNav.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/GooeyNav/GooeyNav.tsx?raw';
+import code from "@content/Components/GooeyNav/GooeyNav.jsx?raw";
+import css from "@content/Components/GooeyNav/GooeyNav.css?raw";
+import tailwind from "@tailwind/Components/GooeyNav/GooeyNav.jsx?raw";
+import tsCode from "@ts-default/Components/GooeyNav/GooeyNav.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/GooeyNav/GooeyNav.tsx?raw";
 
 export const gooeyNav = {
   usage: `import GooeyNav from './GooeyNav'
@@ -30,5 +30,5 @@ const items = [
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

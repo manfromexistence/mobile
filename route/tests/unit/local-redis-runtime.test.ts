@@ -38,7 +38,7 @@ test("runRedisRuntimeCommand trims command output", async () => {
     async () => ({
       stdout: " stopped \n",
       stderr: " warning \n",
-    })
+    }),
   );
 
   assert.deepEqual(result, { stdout: "stopped", stderr: "warning" });

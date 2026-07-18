@@ -50,10 +50,7 @@ export default function TimePickerFormDemo() {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex w-[280px] flex-col gap-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-[280px] flex-col gap-4">
         <FormField
           control={form.control}
           name="appointmentTime"
@@ -80,9 +77,7 @@ export default function TimePickerFormDemo() {
                   </TimePickerContent>
                 </TimePicker>
               </FormControl>
-              <FormDescription>
-                Select your preferred appointment time.
-              </FormDescription>
+              <FormDescription>Select your preferred appointment time.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

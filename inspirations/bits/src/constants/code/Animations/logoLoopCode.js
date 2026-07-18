@@ -1,8 +1,8 @@
-import code from '@content/Animations/LogoLoop/LogoLoop.jsx?raw';
-import css from '@content/Animations/LogoLoop/LogoLoop.css?raw';
-import tailwind from '@tailwind/Animations/LogoLoop/LogoLoop.jsx?raw';
-import tsCode from '@ts-default/Animations/LogoLoop/LogoLoop.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/LogoLoop/LogoLoop.tsx?raw';
+import code from "@content/Animations/LogoLoop/LogoLoop.jsx?raw";
+import css from "@content/Animations/LogoLoop/LogoLoop.css?raw";
+import tailwind from "@tailwind/Animations/LogoLoop/LogoLoop.jsx?raw";
+import tsCode from "@ts-default/Animations/LogoLoop/LogoLoop.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/LogoLoop/LogoLoop.tsx?raw";
 
 export const logoLoop = {
   usage: `import LogoLoop from './LogoLoop';
@@ -56,5 +56,5 @@ function App() {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

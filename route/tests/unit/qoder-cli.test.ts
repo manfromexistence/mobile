@@ -31,7 +31,7 @@ function withStubQoderCli(fn: () => void | Promise<void>) {
       "esac",
       "exit 0",
     ].join("\n"),
-    { mode: 0o755 }
+    { mode: 0o755 },
   );
   process.env.CLI_QODER_BIN = stub;
   const restore = () => {
@@ -44,7 +44,7 @@ function withStubQoderCli(fn: () => void | Promise<void>) {
 
 function withEnv(
   overrides: Record<string, string | undefined | null>,
-  fn: () => void | Promise<void>
+  fn: () => void | Promise<void>,
 ) {
   const previous = new Map<string, string | undefined>();
   for (const [key, value] of Object.entries(overrides)) {
@@ -79,7 +79,7 @@ test("qoder cli env helpers honor explicit command and workspace overrides", asy
     () => {
       assert.equal(qoderCli.getQoderCliCommand(), "custom-qoder");
       assert.equal(qoderCli.getQoderCliWorkspace(), "/tmp/qoder-workspace");
-    }
+    },
   );
 
   await withEnv(
@@ -91,7 +91,7 @@ test("qoder cli env helpers honor explicit command and workspace overrides", asy
     () => {
       assert.equal(qoderCli.getQoderCliCommand(), "qodercli");
       assert.equal(qoderCli.getQoderCliWorkspace(), "/tmp/fallback-workspace");
-    }
+    },
   );
 });
 
@@ -169,7 +169,7 @@ test("buildQoderPrompt flattens mixed content, tool calls, tool results and JSON
 
   assert.match(
     prompt,
-    /Caller-side tools are available externally: lookup_weather, anthropic_tool/
+    /Caller-side tools are available externally: lookup_weather, anthropic_tool/,
   );
   assert.match(prompt, /Return only valid JSON matching this schema/);
   assert.match(prompt, /SYSTEM:\nTop level system/);
@@ -195,7 +195,7 @@ test("qoder cli payload helpers normalize envelope text and completion payload s
     qoderCli.extractTextFromQoderEnvelope({
       message: { content: "hello" },
     }),
-    "hello"
+    "hello",
   );
   assert.equal(
     qoderCli.extractTextFromQoderEnvelope({
@@ -205,7 +205,7 @@ test("qoder cli payload helpers normalize envelope text and completion payload s
         { text: " there" },
       ],
     }),
-    "hi there"
+    "hi there",
   );
   assert.equal(qoderCli.extractTextFromQoderEnvelope(null), "");
 
@@ -344,18 +344,18 @@ test("runQoderCli drives the stub binary and returns its JSON envelope", async (
 test("parseQoderCliResult extracts text, flags errors and tolerates banner noise", () => {
   assert.deepEqual(
     qoderCli.parseQoderCliResult('{"type":"result","is_error":false,"result":"pong"}'),
-    { text: "pong", isError: false, errorMessage: "" }
+    { text: "pong", isError: false, errorMessage: "" },
   );
 
   const errored = qoderCli.parseQoderCliResult(
-    '{"type":"result","is_error":true,"result":"Not logged in"}'
+    '{"type":"result","is_error":true,"result":"Not logged in"}',
   );
   assert.equal(errored.isError, true);
   assert.equal(errored.errorMessage, "Not logged in");
 
   // Leading banner/log lines before the JSON envelope must still parse.
   const noisy = qoderCli.parseQoderCliResult(
-    'starting qodercli...\nwarming up\n{"type":"result","is_error":false,"result":"hi"}'
+    'starting qodercli...\nwarming up\n{"type":"result","is_error":false,"result":"hi"}',
   );
   assert.equal(noisy.text, "hi");
   assert.equal(noisy.isError, false);
@@ -408,7 +408,7 @@ test("runQoderCli preserves multi-byte UTF-8 output (Chinese) via stream setEnco
   fs.writeFileSync(
     stub,
     '#!/bin/sh\ncat >/dev/null\nprintf \'{"type":"result","is_error":false,"result":"你好世界，测试"}\\n\'\nexit 0\n',
-    { mode: 0o755 }
+    { mode: 0o755 },
   );
   process.env.CLI_QODER_BIN = stub;
   try {
@@ -429,7 +429,7 @@ test("runQoderCli preserves multi-byte UTF-8 output (Chinese) via stream setEnco
 
 test("parseQoderCliModelNames extracts display names, dropping header/noise", () => {
   const names = qoderCli.parseQoderCliModelNames(
-    "MODEL\nAuto\nGLM-5.2\nKimi-K2.7-Code\n\nDeepSeek-V4-Pro\n"
+    "MODEL\nAuto\nGLM-5.2\nKimi-K2.7-Code\n\nDeepSeek-V4-Pro\n",
   );
   assert.deepEqual(names, ["Auto", "GLM-5.2", "Kimi-K2.7-Code", "DeepSeek-V4-Pro"]);
   // Auth/error lines must not be mistaken for model names.
@@ -470,7 +470,7 @@ test("runQoderCli resolves the request against live --list-models and passes the
       'printf \'{"type":"result","is_error":false,"result":"%s"}\\n\' "$model"',
       "exit 0",
     ].join("\n"),
-    { mode: 0o755 }
+    { mode: 0o755 },
   );
   process.env.CLI_QODER_BIN = stub;
   try {

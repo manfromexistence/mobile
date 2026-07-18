@@ -1,8 +1,8 @@
-import code from '@content/Components/GlassSurface/GlassSurface.jsx?raw';
-import css from '@content/Components/GlassSurface/GlassSurface.css?raw';
-import tailwind from '@tailwind/Components/GlassSurface/GlassSurface.jsx?raw';
-import tsCode from '@ts-default/Components/GlassSurface/GlassSurface.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/GlassSurface/GlassSurface.tsx?raw';
+import code from "@content/Components/GlassSurface/GlassSurface.jsx?raw";
+import css from "@content/Components/GlassSurface/GlassSurface.css?raw";
+import tailwind from "@tailwind/Components/GlassSurface/GlassSurface.jsx?raw";
+import tsCode from "@ts-default/Components/GlassSurface/GlassSurface.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/GlassSurface/GlassSurface.tsx?raw";
 
 export const glassSurface = {
   usage: `import GlassSurface from './GlassSurface'
@@ -34,5 +34,5 @@ export const glassSurface = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

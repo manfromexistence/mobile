@@ -1,8 +1,8 @@
-import code from '@content/TextAnimations/ScrambledText/ScrambledText.jsx?raw';
-import css from '@content/TextAnimations/ScrambledText/ScrambledText.css?raw';
-import tailwind from '@tailwind/TextAnimations/ScrambledText/ScrambledText.jsx?raw';
-import tsCode from '@ts-default/TextAnimations/ScrambledText/ScrambledText.tsx?raw';
-import tsTailwind from '@ts-tailwind/TextAnimations/ScrambledText/ScrambledText.tsx?raw';
+import code from "@content/TextAnimations/ScrambledText/ScrambledText.jsx?raw";
+import css from "@content/TextAnimations/ScrambledText/ScrambledText.css?raw";
+import tailwind from "@tailwind/TextAnimations/ScrambledText/ScrambledText.jsx?raw";
+import tsCode from "@ts-default/TextAnimations/ScrambledText/ScrambledText.tsx?raw";
+import tsTailwind from "@ts-tailwind/TextAnimations/ScrambledText/ScrambledText.tsx?raw";
 
 export const scrambledTextCode = {
   dependencies: `gsap`,
@@ -26,5 +26,5 @@ import ScrambledText from './ScrambledText';
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

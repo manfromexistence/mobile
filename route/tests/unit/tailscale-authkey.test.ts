@@ -20,7 +20,7 @@ test("#1263: omits --auth-key when no key is provided", () => {
   assert.equal(
     args.some((a) => a.startsWith("--auth-key")),
     false,
-    "no auth-key arg when key is absent"
+    "no auth-key arg when key is absent",
   );
 });
 
@@ -29,7 +29,7 @@ test("#1263: omits --hostname when no hostname is provided", () => {
   assert.equal(
     args.some((a) => a.startsWith("--hostname")),
     false,
-    "no hostname arg when hostname is absent"
+    "no hostname arg when hostname is absent",
   );
   assert.ok(args.includes("--auth-key=tskey-auth-abc123"));
 });

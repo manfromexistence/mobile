@@ -57,9 +57,7 @@ export default function ComboboxGroupsDemo() {
                 </ComboboxItem>
               ))}
             </ComboboxGroup>
-            {index < Object.entries(groupedTricks).length - 1 && (
-              <ComboboxSeparator />
-            )}
+            {index < Object.entries(groupedTricks).length - 1 && <ComboboxSeparator />}
           </React.Fragment>
         ))}
       </ComboboxContent>

@@ -181,6 +181,6 @@ export const computeBoundingBox = (shapes, padding = 0) => {
     x: minX - padding,
     y: minY - padding,
     w: maxX - minX + padding * 2,
-    h: maxY - minY + padding * 2
+    h: maxY - minY + padding * 2,
   };
 };

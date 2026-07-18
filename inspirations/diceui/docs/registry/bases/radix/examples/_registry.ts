@@ -556,12 +556,7 @@ export const examples: Registry["items"] = [
   {
     name: "data-grid-demo",
     type: "registry:example",
-    dependencies: [
-      "@tanstack/react-table",
-      "@tanstack/react-virtual",
-      "lucide-react",
-      "sonner",
-    ],
+    dependencies: ["@tanstack/react-table", "@tanstack/react-virtual", "lucide-react", "sonner"],
     devDependencies: ["@faker-js/faker"],
     registryDependencies: ["data-grid"],
     files: [
@@ -653,12 +648,7 @@ export const examples: Registry["items"] = [
   {
     name: "file-upload-chat-input-demo",
     type: "registry:example",
-    dependencies: [
-      "lucide-react",
-      "sonner",
-      "uploadthing",
-      "@uploadthing/react",
-    ],
+    dependencies: ["lucide-react", "sonner", "uploadthing", "@uploadthing/react"],
     registryDependencies: ["button", "file-upload", "textarea"],
     files: [
       {
@@ -1193,13 +1183,7 @@ export const examples: Registry["items"] = [
     name: "media-player-demo",
     type: "registry:example",
     dependencies: ["lucide-react", "media-chrome"],
-    registryDependencies: [
-      "button",
-      "media-player",
-      "select",
-      "slider",
-      "tooltip",
-    ],
+    registryDependencies: ["button", "media-player", "select", "slider", "tooltip"],
     files: [
       {
         path: "examples/media-player-demo.tsx",
@@ -1211,13 +1195,7 @@ export const examples: Registry["items"] = [
     name: "media-player-audio-demo",
     type: "registry:example",
     dependencies: ["lucide-react", "media-chrome"],
-    registryDependencies: [
-      "button",
-      "media-player",
-      "select",
-      "slider",
-      "tooltip",
-    ],
+    registryDependencies: ["button", "media-player", "select", "slider", "tooltip"],
     files: [
       {
         path: "examples/media-player-audio-demo.tsx",
@@ -1241,13 +1219,7 @@ export const examples: Registry["items"] = [
     name: "media-player-hls-demo",
     type: "registry:example",
     dependencies: ["lucide-react", "media-chrome", "@mux/mux-video-react"],
-    registryDependencies: [
-      "button",
-      "media-player",
-      "select",
-      "slider",
-      "tooltip",
-    ],
+    registryDependencies: ["button", "media-player", "select", "slider", "tooltip"],
     files: [
       {
         path: "examples/media-player-hls-demo.tsx",
@@ -1436,12 +1408,7 @@ export const examples: Registry["items"] = [
   {
     name: "rating-form-demo",
     type: "registry:example",
-    dependencies: [
-      "@hookform/resolvers/zod",
-      "react-hook-form",
-      "zod",
-      "sonner",
-    ],
+    dependencies: ["@hookform/resolvers/zod", "react-hook-form", "zod", "sonner"],
     registryDependencies: ["rating", "button", "form"],
     files: [
       {

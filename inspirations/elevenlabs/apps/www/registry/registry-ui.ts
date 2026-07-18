@@ -1,15 +1,10 @@
-import { type Registry } from "shadcn/schema"
+import { type Registry } from "shadcn/schema";
 
 export const ui: Registry["items"] = [
   {
     name: "orb",
     type: "registry:ui",
-    dependencies: [
-      "@react-three/drei",
-      "@react-three/fiber",
-      "three",
-      "@types/three",
-    ],
+    dependencies: ["@react-three/drei", "@react-three/fiber", "three", "@types/three"],
     files: [
       {
         path: "ui/orb.tsx",
@@ -137,10 +132,7 @@ export const ui: Registry["items"] = [
   {
     name: "voice-button",
     type: "registry:ui",
-    registryDependencies: [
-      "button",
-      "https://ui.elevenlabs.io/r/live-waveform.json",
-    ],
+    registryDependencies: ["button", "https://ui.elevenlabs.io/r/live-waveform.json"],
     files: [
       {
         path: "ui/voice-button.tsx",
@@ -185,10 +177,7 @@ export const ui: Registry["items"] = [
   {
     name: "transcript-viewer",
     type: "registry:ui",
-    registryDependencies: [
-      "button",
-      "https://ui.elevenlabs.io/r/scrub-bar.json",
-    ],
+    registryDependencies: ["button", "https://ui.elevenlabs.io/r/scrub-bar.json"],
     devDependencies: ["@elevenlabs/elevenlabs-js"],
     files: [
       {
@@ -212,11 +201,7 @@ export const ui: Registry["items"] = [
     name: "speech-input",
     type: "registry:ui",
     dependencies: ["motion", "lucide-react"],
-    registryDependencies: [
-      "button",
-      "skeleton",
-      "https://ui.elevenlabs.io/r/use-scribe.json",
-    ],
+    registryDependencies: ["button", "skeleton", "https://ui.elevenlabs.io/r/use-scribe.json"],
     files: [
       {
         path: "ui/speech-input.tsx",
@@ -224,4 +209,4 @@ export const ui: Registry["items"] = [
       },
     ],
   },
-]
+];

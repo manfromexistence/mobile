@@ -1,15 +1,15 @@
 // Thanks @shadcn for the inspiration and some code references in this file.
 
-import { promises as fs } from "node:fs"
-import path from "node:path"
-import { availableParallelism } from "os"
-import prettier from "prettier"
-import { rimraf } from "rimraf"
-import { type Registry, registrySchema } from "shadcn/schema"
-import { transformIcons } from "shadcn/utils"
-import { Project, ScriptKind } from "ts-morph"
+import { promises as fs } from "node:fs";
+import path from "node:path";
+import { availableParallelism } from "os";
+import prettier from "prettier";
+import { rimraf } from "rimraf";
+import { type Registry, registrySchema } from "shadcn/schema";
+import { transformIcons } from "shadcn/utils";
+import { Project, ScriptKind } from "ts-morph";
 
-import { getAllBlocks } from "@/lib/blocks"
+import { getAllBlocks } from "@/lib/blocks";
 
 /**
  * build-registry.mts is the single registry pipeline.
@@ -25,22 +25,19 @@ import { getAllBlocks } from "@/lib/blocks"
  * - public/r/*
  */
 
-const REGISTRY_PATH = path.join(process.cwd(), "src/registry")
+const REGISTRY_PATH = path.join(process.cwd(), "src/registry");
 
-const COMPONENTS_PATH = path.join(process.cwd(), "src/registry/components")
-const TRANSFORMED_COMPONENTS_PATH = path.join(
-  process.cwd(),
-  "src/registry/transformed/components"
-)
+const COMPONENTS_PATH = path.join(process.cwd(), "src/registry/components");
+const TRANSFORMED_COMPONENTS_PATH = path.join(process.cwd(), "src/registry/transformed/components");
 
-const CPU_COUNT = availableParallelism()
-const COPY_CONCURRENCY = Math.max(4, Math.min(CPU_COUNT, 8))
+const CPU_COUNT = availableParallelism();
+const COPY_CONCURRENCY = Math.max(4, Math.min(CPU_COUNT, 8));
 
-let prettierConfigPromise: Promise<prettier.Options | null> | null = null
+let prettierConfigPromise: Promise<prettier.Options | null> | null = null;
 
 const iconProject = new Project({
   compilerOptions: {},
-})
+});
 
 /**
  * Build registry.json, src/registry/__index__.tsx
@@ -54,16 +51,16 @@ export async function buildRegistry(registry: Registry) {
 
 import * as React from "react"
 
-export const Index: Record<string, any> = {`
+export const Index: Record<string, any> = {`;
   for (const item of registry.items) {
     if (!Array.isArray(item.files) || !item.files?.length) {
-      continue
+      continue;
     }
 
-    const componentFilePath = item.files[0].path
+    const componentFilePath = item.files[0].path;
     const componentPath = componentFilePath.startsWith("src/")
       ? componentFilePath.replace("src/", "@/")
-      : `@/registry/${componentFilePath}`
+      : `@/registry/${componentFilePath}`;
 
     index += `
   "${item.name}": {
@@ -71,14 +68,12 @@ export const Index: Record<string, any> = {`
     description: "${item.description ?? ""}",
     type: "${item.type}",
     files: [${item.files.map((file) => {
-      const filePath = file.path.startsWith("src/")
-        ? file.path
-        : `src/registry/${file.path}`
+      const filePath = file.path.startsWith("src/") ? file.path : `src/registry/${file.path}`;
       return `{
       path: "${filePath}",
       type: "${file.type}",
       target: "${file.target ?? ""}",
-    }`
+    }`;
     })}],
     component: React.lazy(async () => {
       const mod = await import("${componentPath}")
@@ -87,11 +82,11 @@ export const Index: Record<string, any> = {`
     }),
     categories: ${JSON.stringify(item.categories)},
     meta: ${JSON.stringify(item.meta)},
-  },`
+  },`;
   }
 
   index += `
-}`
+}`;
 
   // Build registry.json
   const registryJSON = JSON.stringify(
@@ -108,109 +103,105 @@ export const Index: Record<string, any> = {`
             files:
               item.files?.map((file) => {
                 if (file.path.startsWith("src/")) {
-                  return file
+                  return file;
                 }
 
                 return {
                   ...file,
                   path: `src/registry/${file.path}`,
-                }
+                };
               }) ?? [],
-          }
+          };
         }),
     },
     null,
-    2
-  )
+    2,
+  );
 
   // Build registry.json
-  console.log("📦 Building registry.json...")
-  await rimraf(path.join(process.cwd(), "registry.json"))
-  await fs.writeFile(
-    path.join(process.cwd(), "registry.json"),
-    registryJSON,
-    "utf8"
-  )
+  console.log("📦 Building registry.json...");
+  await rimraf(path.join(process.cwd(), "registry.json"));
+  await fs.writeFile(path.join(process.cwd(), "registry.json"), registryJSON, "utf8");
 
   // Build src/registry/__index__.tsx
-  console.log("\n📦 Building src/registry/__index__.tsx...")
-  await rimraf(path.join(REGISTRY_PATH, "__index__.tsx"))
-  await fs.writeFile(path.join(REGISTRY_PATH, "__index__.tsx"), index, "utf8")
+  console.log("\n📦 Building src/registry/__index__.tsx...");
+  await rimraf(path.join(REGISTRY_PATH, "__index__.tsx"));
+  await fs.writeFile(path.join(REGISTRY_PATH, "__index__.tsx"), index, "utf8");
 }
 
 async function buildBlocksIndex() {
-  const blocks = await getAllBlocks(["registry:block"])
+  const blocks = await getAllBlocks(["registry:block"]);
 
   const payload = blocks.map((block) => ({
     name: block.name,
     description: block.description,
     categories: block.categories,
-  }))
+  }));
 
   // Build src/registry/__blocks__.json
-  await rimraf(path.join(REGISTRY_PATH, "__blocks__.json"))
-  const blocksJsonPath = path.join(REGISTRY_PATH, "__blocks__.json")
-  await fs.writeFile(blocksJsonPath, JSON.stringify(payload, null, 2))
+  await rimraf(path.join(REGISTRY_PATH, "__blocks__.json"));
+  const blocksJsonPath = path.join(REGISTRY_PATH, "__blocks__.json");
+  await fs.writeFile(blocksJsonPath, JSON.stringify(payload, null, 2));
 }
 
 async function runWithConcurrency<T, R>(
   items: T[],
   limit: number,
-  worker: (item: T, index: number) => Promise<R>
+  worker: (item: T, index: number) => Promise<R>,
 ) {
-  const results = new Array<R>(items.length)
-  let currentIndex = 0
+  const results = new Array<R>(items.length);
+  let currentIndex = 0;
 
   await Promise.all(
     Array.from({ length: Math.min(limit, items.length) }, async () => {
       while (true) {
-        const index = currentIndex++
+        const index = currentIndex++;
         if (index >= items.length) {
-          return
+          return;
         }
 
-        results[index] = await worker(items[index], index)
+        results[index] = await worker(items[index], index);
       }
-    })
-  )
+    }),
+  );
 
-  return results
+  return results;
 }
 
 async function readDirectoryEntries(dirPath: string) {
   try {
-    return await fs.readdir(dirPath, { withFileTypes: true })
+    return await fs.readdir(dirPath, { withFileTypes: true });
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      return []
+      return [];
     }
 
-    throw error
+    throw error;
   }
 }
 
 async function readFileIfExists(filePath: string) {
   try {
-    return await fs.readFile(filePath, "utf8")
+    return await fs.readFile(filePath, "utf8");
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      return null
+      return null;
     }
 
-    throw error
+    throw error;
   }
 }
 
 async function writeIfChanged(filePath: string, content: string) {
-  const existingContent = await readFileIfExists(filePath)
+  const existingContent = await readFileIfExists(filePath);
   if (existingContent === content) {
-    return false
+    return false;
   }
 
-  await fs.mkdir(path.dirname(filePath), { recursive: true })
-  await fs.writeFile(filePath, content)
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
+  await fs.writeFile(filePath, content);
 
-  return true
+  return true;
 }
 
 async function syncDirectory({
@@ -218,118 +209,107 @@ async function syncDirectory({
   toDir,
   transformContent,
 }: {
-  fromDir: string
-  toDir: string
-  transformContent?: (
-    content: string,
-    filePath: string,
-    targetPath: string
-  ) => Promise<string>
+  fromDir: string;
+  toDir: string;
+  transformContent?: (content: string, filePath: string, targetPath: string) => Promise<string>;
 }): Promise<string[]> {
-  await fs.mkdir(toDir, { recursive: true })
+  await fs.mkdir(toDir, { recursive: true });
 
   const [sourceEntries, targetEntries] = await Promise.all([
     fs.readdir(fromDir, { withFileTypes: true }),
     readDirectoryEntries(toDir),
-  ])
+  ]);
 
-  const targetEntriesByName = new Map(
-    targetEntries.map((entry) => [entry.name, entry])
-  )
-  const sourceNames = new Set(sourceEntries.map((entry) => entry.name))
+  const targetEntriesByName = new Map(targetEntries.map((entry) => [entry.name, entry]));
+  const sourceNames = new Set(sourceEntries.map((entry) => entry.name));
 
   await Promise.all(
     targetEntries.map(async (entry) => {
       if (!sourceNames.has(entry.name)) {
-        await rimraf(path.join(toDir, entry.name))
+        await rimraf(path.join(toDir, entry.name));
       }
-    })
-  )
+    }),
+  );
 
   const changedPaths: string[][] = await runWithConcurrency(
     sourceEntries,
     COPY_CONCURRENCY,
     async (entry) => {
-      const sourcePath = path.join(fromDir, entry.name)
-      const targetPath = path.join(toDir, entry.name)
-      const existingTargetEntry = targetEntriesByName.get(entry.name)
+      const sourcePath = path.join(fromDir, entry.name);
+      const targetPath = path.join(toDir, entry.name);
+      const existingTargetEntry = targetEntriesByName.get(entry.name);
 
       if (entry.isDirectory()) {
         if (existingTargetEntry && !existingTargetEntry.isDirectory()) {
-          await rimraf(targetPath)
+          await rimraf(targetPath);
         }
 
         return await syncDirectory({
           fromDir: sourcePath,
           toDir: targetPath,
           transformContent,
-        })
+        });
       }
 
       if (existingTargetEntry?.isDirectory()) {
-        await rimraf(targetPath)
+        await rimraf(targetPath);
       }
 
-      let content = await fs.readFile(sourcePath, "utf8")
+      let content = await fs.readFile(sourcePath, "utf8");
 
       if (transformContent) {
-        content = await transformContent(content, sourcePath, targetPath)
+        content = await transformContent(content, sourcePath, targetPath);
       }
 
-      return (await writeIfChanged(targetPath, content)) ? [targetPath] : []
-    }
-  )
+      return (await writeIfChanged(targetPath, content)) ? [targetPath] : [];
+    },
+  );
 
-  return changedPaths.flat()
+  return changedPaths.flat();
 }
 
 function rewriteRegistryComponentsImportsToTransformed(content: string) {
-  return content.replaceAll(
-    `@/registry/components/`,
-    `@/registry/transformed/components/`
-  )
+  return content.replaceAll(`@/registry/components/`, `@/registry/transformed/components/`);
 }
 
 async function applyIconTransform(content: string, filename: string) {
   if (!content.includes("IconPlaceholder")) {
-    return content
+    return content;
   }
 
   const sourceFile = iconProject.createSourceFile(filename, content, {
     scriptKind: ScriptKind.TSX,
     overwrite: true,
-  })
+  });
 
-  type TransformIconsConfig = Parameters<typeof transformIcons>[0]["config"]
+  type TransformIconsConfig = Parameters<typeof transformIcons>[0]["config"];
   type IconTransformInput = {
-    filename: string
-    raw: string
-    sourceFile: typeof sourceFile
-    config: TransformIconsConfig
-  }
-  const config = { iconLibrary: "lucide" } as TransformIconsConfig
+    filename: string;
+    raw: string;
+    sourceFile: typeof sourceFile;
+    config: TransformIconsConfig;
+  };
+  const config = { iconLibrary: "lucide" } as TransformIconsConfig;
 
   await (transformIcons as (opts: IconTransformInput) => Promise<unknown>)({
     filename,
     raw: content,
     sourceFile,
     config,
-  })
+  });
 
-  return sourceFile.getText()
+  return sourceFile.getText();
 }
 
 async function formatGeneratedSource(content: string, filePath: string) {
-  prettierConfigPromise ??= prettier.resolveConfig(
-    path.join(process.cwd(), "package.json")
-  )
+  prettierConfigPromise ??= prettier.resolveConfig(path.join(process.cwd(), "package.json"));
 
-  const prettierConfig = (await prettierConfigPromise) ?? {}
+  const prettierConfig = (await prettierConfigPromise) ?? {};
 
   return prettier.format(content, {
     ...prettierConfig,
     filepath: filePath,
-  })
+  });
 }
 
 /**
@@ -343,55 +323,48 @@ async function copyComponentsToTransformed() {
     fromDir: COMPONENTS_PATH,
     toDir: TRANSFORMED_COMPONENTS_PATH,
     transformContent: async (content, filePath, targetPath) => {
-      let nextContent = rewriteRegistryComponentsImportsToTransformed(content)
+      let nextContent = rewriteRegistryComponentsImportsToTransformed(content);
 
       if (filePath.endsWith(".tsx")) {
-        nextContent = await applyIconTransform(
-          nextContent,
-          path.basename(filePath)
-        )
+        nextContent = await applyIconTransform(nextContent, path.basename(filePath));
       }
 
       if (targetPath.endsWith(".ts") || targetPath.endsWith(".tsx")) {
-        return formatGeneratedSource(nextContent, targetPath)
+        return formatGeneratedSource(nextContent, targetPath);
       }
 
-      return nextContent
+      return nextContent;
     },
-  })
+  });
 
-  await rimraf(path.join(TRANSFORMED_COMPONENTS_PATH, "_registry.ts"))
+  await rimraf(path.join(TRANSFORMED_COMPONENTS_PATH, "_registry.ts"));
 
-  console.log(
-    "   ✅ src/registry/components → src/registry/transformed/components"
-  )
+  console.log("   ✅ src/registry/components → src/registry/transformed/components");
 }
 
 try {
-  const totalStart = performance.now()
+  const totalStart = performance.now();
 
-  const { registry } = await import("@/registry/index")
+  const { registry } = await import("@/registry/index");
 
-  const result = registrySchema.safeParse(registry)
+  const result = registrySchema.safeParse(registry);
 
   if (!result.success) {
-    console.error(result.error)
-    process.exit(1)
+    console.error(result.error);
+    process.exit(1);
   }
 
-  await buildRegistry(result.data)
+  await buildRegistry(result.data);
 
-  console.log("\n🗂️ Building src/registry/__blocks__.json...")
-  await buildBlocksIndex()
+  console.log("\n🗂️ Building src/registry/__blocks__.json...");
+  await buildBlocksIndex();
 
-  console.log(
-    "\n📋 Copying compiled components to src/registry/transformed/components..."
-  )
-  await copyComponentsToTransformed()
+  console.log("\n📋 Copying compiled components to src/registry/transformed/components...");
+  await copyComponentsToTransformed();
 
-  const elapsed = ((performance.now() - totalStart) / 1000).toFixed(2)
-  console.log(`\n✅ Build complete in ${elapsed}s!`)
+  const elapsed = ((performance.now() - totalStart) / 1000).toFixed(2);
+  console.log(`\n✅ Build complete in ${elapsed}s!`);
 } catch (error) {
-  console.error(error)
-  process.exit(1)
+  console.error(error);
+  process.exit(1);
 }

@@ -41,7 +41,7 @@ function withStubQoderCli(fn: () => void | Promise<void>) {
       "esac",
       "exit 0",
     ].join("\n"),
-    { mode: 0o755 }
+    { mode: 0o755 },
   );
   process.env.CLI_QODER_BIN = stub;
   const restore = () => {
@@ -96,7 +96,7 @@ test("QoderExecutor: buildUrl uses the live qoder.com API base", () => {
   const executor = new QoderExecutor();
   assert.equal(
     executor.buildUrl("qoder-rome-30ba3b", false),
-    "https://api.qoder.com/v1/chat/completions"
+    "https://api.qoder.com/v1/chat/completions",
   );
 });
 
@@ -294,7 +294,7 @@ test("QoderExecutor: non-stream calls target DashScope for non-PAT tokens and ma
           },
         ],
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   };
 

@@ -10,10 +10,12 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const coreDb = await import("../../src/lib/db/core.ts");
 const { skillRegistry } = await import("../../src/lib/skills/registry.ts");
 const { skillExecutor } = await import("../../src/lib/skills/executor.ts");
-const { interceptToolCalls, extractToolCalls, handleToolCallExecution } =
-  await import("../../src/lib/skills/interception.ts");
-const { OMNIROUTE_WEB_SEARCH_FALLBACK_TOOL_NAME } =
-  await import("../../open-sse/services/webSearchFallback.ts");
+const { interceptToolCalls, extractToolCalls, handleToolCallExecution } = await import(
+  "../../src/lib/skills/interception.ts"
+);
+const { OMNIROUTE_WEB_SEARCH_FALLBACK_TOOL_NAME } = await import(
+  "../../open-sse/services/webSearchFallback.ts"
+);
 
 function resetRuntime() {
   skillRegistry["registeredSkills"].clear();
@@ -84,7 +86,7 @@ test("extractToolCalls supports OpenAI, Anthropic and Gemini shapes", () => {
         },
       ],
     },
-    "gpt-4.1"
+    "gpt-4.1",
   );
   const openaiChoices = extractToolCalls(
     {
@@ -101,7 +103,7 @@ test("extractToolCalls supports OpenAI, Anthropic and Gemini shapes", () => {
         },
       ],
     },
-    "openai-compatible-model"
+    "openai-compatible-model",
   );
   const anthropic = extractToolCalls(
     {
@@ -110,13 +112,13 @@ test("extractToolCalls supports OpenAI, Anthropic and Gemini shapes", () => {
         { type: "tool_use", id: "claude-1", name: "lookup@1.0.0", input: { id: "abc" } },
       ],
     },
-    "claude-sonnet"
+    "claude-sonnet",
   );
   const gemini = extractToolCalls(
     {
       functionCalls: [{ name: "lookup@1.0.0", args: { id: "gemini" } }],
     },
-    "gemini-2.5-pro"
+    "gemini-2.5-pro",
   );
   const responses = extractToolCalls(
     {
@@ -130,7 +132,7 @@ test("extractToolCalls supports OpenAI, Anthropic and Gemini shapes", () => {
         },
       ],
     },
-    "openai"
+    "openai",
   );
 
   assert.deepEqual(openaiRoot, [
@@ -174,7 +176,7 @@ test("interceptToolCalls returns outputs, execution errors and missing-skill err
       { id: "error-call", name: "broken@1.0.0", arguments: {} },
       { id: "missing-call", name: "missing", arguments: {} },
     ],
-    executionContext
+    executionContext,
   );
 
   assert.deepEqual(results, [
@@ -201,7 +203,7 @@ test("handleToolCallExecution appends OpenAI tool results and leaves empty respo
       ],
     },
     "gpt-4o-mini",
-    executionContext
+    executionContext,
   );
 
   assert.deepEqual(openaiResponse.tool_results, [
@@ -222,7 +224,7 @@ test("handleToolCallExecution returns Anthropic skill results as text", async ()
       content: [{ type: "tool_use", id: "tool-1", name: "lookup@1.0.0", input: { id: "77" } }],
     },
     "claude-3-7-sonnet",
-    executionContext
+    executionContext,
   );
 
   assert.deepEqual(anthropicResponse.content, [
@@ -233,7 +235,7 @@ test("handleToolCallExecution returns Anthropic skill results as text", async ()
   ]);
   assert.equal(
     anthropicResponse.content.some((b: { type: string }) => b.type === "tool_result"),
-    false
+    false,
   );
   assert.equal(anthropicResponse.stop_reason, "end_turn");
   assert.equal(anthropicResponse.stop_sequence, null);
@@ -253,7 +255,7 @@ test("handleToolCallExecution appends Responses API function_call_output items",
       ],
     },
     "openai",
-    executionContext
+    executionContext,
   );
 
   assert.deepEqual(responsesResult.output, [
@@ -283,7 +285,7 @@ test("handleToolCallExecution forwards unregistered client-native tool_use untou
   assert.equal(result, original);
   assert.equal(
     (result.content as Array<{ type: string }>).some((b) => b.type === "tool_result"),
-    false
+    false,
   );
 });
 
@@ -297,7 +299,7 @@ test("handleToolCallExecution intercepts a registered skill alongside an unregis
       ],
     },
     "claude-3-7-sonnet",
-    executionContext
+    executionContext,
   );
 
   assert.deepEqual(mixed.content, [
@@ -307,7 +309,10 @@ test("handleToolCallExecution intercepts a registered skill alongside an unregis
     },
     { type: "tool_use", id: "tool-native", name: "Bash", input: { command: "ls" } },
   ]);
-  assert.equal(mixed.content.some((b: { type: string }) => b.type === "tool_result"), false);
+  assert.equal(
+    mixed.content.some((b: { type: string }) => b.type === "tool_result"),
+    false,
+  );
   assert.equal(mixed.stop_reason, "tool_use");
 });
 
@@ -328,7 +333,7 @@ test("handleToolCallExecution loads registry from DB on cold cache (covers loadF
       ],
     },
     "claude-3-7-sonnet",
-    executionContext
+    executionContext,
   );
 
   assert.deepEqual(result.content, [
@@ -337,7 +342,10 @@ test("handleToolCallExecution loads registry from DB on cold cache (covers loadF
       text: '[Skill result: lookup@1.0.0]\n{"record":"resolved:cold"}',
     },
   ]);
-  assert.equal(result.content.some((b: { type: string }) => b.type === "tool_result"), false);
+  assert.equal(
+    result.content.some((b: { type: string }) => b.type === "tool_result"),
+    false,
+  );
   assert.equal(result.stop_reason, "end_turn");
   assert.equal(result.stop_sequence, null);
 });

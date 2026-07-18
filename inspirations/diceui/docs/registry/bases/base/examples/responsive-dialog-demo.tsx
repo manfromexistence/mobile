@@ -14,9 +14,7 @@ import {
 export default function ResponsiveDialogDemo() {
   return (
     <ResponsiveDialog>
-      <ResponsiveDialogTrigger
-        render={<Button variant="outline">Edit Profile</Button>}
-      />
+      <ResponsiveDialogTrigger render={<Button variant="outline">Edit Profile</Button>} />
       <ResponsiveDialogContent>
         <ResponsiveDialogHeader>
           <ResponsiveDialogTitle>Edit profile</ResponsiveDialogTitle>
@@ -29,21 +27,13 @@ export default function ResponsiveDialogDemo() {
             <Label htmlFor="name" className="text-right">
               Name
             </Label>
-            <Input
-              id="name"
-              defaultValue="Pedro Duarte"
-              className="col-span-3"
-            />
+            <Input id="name" defaultValue="Pedro Duarte" className="col-span-3" />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
               Username
             </Label>
-            <Input
-              id="username"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
+            <Input id="username" defaultValue="@peduarte" className="col-span-3" />
           </div>
         </div>
         <ResponsiveDialogFooter>

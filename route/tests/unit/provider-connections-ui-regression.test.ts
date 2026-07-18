@@ -24,11 +24,11 @@ describe("provider connections UI regression", () => {
   it("keeps English provider count messages available for the provider detail header", () => {
     assert.equal(
       enMessages.providers?.selectedCount,
-      "{count, plural, one {# selected} other {# selected}}"
+      "{count, plural, one {# selected} other {# selected}}",
     );
     assert.equal(
       enMessages.providers?.accountsCount,
-      "{count, plural, one {# account} other {# accounts}}"
+      "{count, plural, one {# account} other {# accounts}}",
     );
   });
 
@@ -36,15 +36,15 @@ describe("provider connections UI regression", () => {
     assert.match(providerPageSrc, /function\s+providerCountText\s*\(/);
     assert.match(
       providerPageSrc,
-      /providerCountText\([\s\S]*"selectedCount"[\s\S]*"\{count\} selected"/
+      /providerCountText\([\s\S]*"selectedCount"[\s\S]*"\{count\} selected"/,
     );
     assert.match(
       providerPageSrc,
-      /providerCountText\([\s\S]*"accountsCount"[\s\S]*"\{count\} account"[\s\S]*"\{count\} accounts"/
+      /providerCountText\([\s\S]*"accountsCount"[\s\S]*"\{count\} account"[\s\S]*"\{count\} accounts"/,
     );
     assert.doesNotMatch(
       providerPageSrc,
-      /\?\s*t\("selectedCount",\s*\{\s*count:\s*selectedIds\.size\s*\}\)\s*:\s*t\("accountsCount",\s*\{\s*count:\s*connections\.length\s*\}\)/
+      /\?\s*t\("selectedCount",\s*\{\s*count:\s*selectedIds\.size\s*\}\)\s*:\s*t\("accountsCount",\s*\{\s*count:\s*connections\.length\s*\}\)/,
     );
   });
 
@@ -52,18 +52,18 @@ describe("provider connections UI regression", () => {
     // Whitespace-tolerant: Prettier may format these aria-labels across multiple lines.
     assert.match(
       providerPageSrc,
-      /aria-label=\{\s*proxyEnabled\s*\?\s*t\("proxyEnabledTitle"\)\s*:\s*t\("proxyDisabledTitle"\)\s*\}/
+      /aria-label=\{\s*proxyEnabled\s*\?\s*t\("proxyEnabledTitle"\)\s*:\s*t\("proxyDisabledTitle"\)\s*\}/,
     );
     assert.match(
       providerPageSrc,
-      /aria-label=\{\s*perKeyProxyEnabled\s*\?\s*t\("perKeyProxyEnabledTitle"\)\s*:\s*t\("perKeyProxyDisabledTitle"\)\s*\}/
+      /aria-label=\{\s*perKeyProxyEnabled\s*\?\s*t\("perKeyProxyEnabledTitle"\)\s*:\s*t\("perKeyProxyDisabledTitle"\)\s*\}/,
     );
     assert.ok(providerPageSrc.includes('<span className="sr-only">{t("proxyOn")}</span>'));
     assert.ok(providerPageSrc.includes('<span className="sr-only">{t("perKeyProxyOff")}</span>'));
     assert.doesNotMatch(providerPageSrc, /\{proxyEnabled \? t\("proxyOn"\) : t\("proxyOff"\)\}/);
     assert.doesNotMatch(
       providerPageSrc,
-      /\{perKeyProxyEnabled \? t\("perKeyProxyOn"\) : t\("perKeyProxyOff"\)\}/
+      /\{perKeyProxyEnabled \? t\("perKeyProxyOn"\) : t\("perKeyProxyOff"\)\}/,
     );
   });
 });

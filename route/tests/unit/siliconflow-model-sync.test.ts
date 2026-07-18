@@ -11,8 +11,9 @@ const core = await import("../../src/lib/db/core.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 const modelsDb = await import("../../src/lib/db/models.ts");
 const syncModelsRoute = await import("../../src/app/api/providers/[id]/sync-models/route.ts");
-const { buildModelSyncInternalHeaders } =
-  await import("../../src/shared/services/modelSyncScheduler.ts");
+const { buildModelSyncInternalHeaders } = await import(
+  "../../src/shared/services/modelSyncScheduler.ts"
+);
 
 const originalFetch = globalThis.fetch;
 
@@ -43,7 +44,7 @@ async function callSyncRoute(connectionId: string) {
       method: "POST",
       headers: buildModelSyncInternalHeaders(),
     }),
-    { params: Promise.resolve({ id: connectionId }) }
+    { params: Promise.resolve({ id: connectionId }) },
   );
 }
 
@@ -86,11 +87,11 @@ test("sync-models rejects local catalog fallback and preserves existing SiliconF
 
   const syncedModels = await modelsDb.getSyncedAvailableModelsForConnection(
     "siliconflow",
-    connection.id
+    connection.id,
   );
   assert.deepEqual(
     syncedModels.map((model) => ({ id: model.id, name: model.name })),
-    [{ id: "remote-existing", name: "Remote Existing" }]
+    [{ id: "remote-existing", name: "Remote Existing" }],
   );
 });
 
@@ -122,13 +123,13 @@ test("sync-models persists SiliconFlow models from API discovery", async () => {
 
   const syncedModels = await modelsDb.getSyncedAvailableModelsForConnection(
     "siliconflow",
-    connection.id
+    connection.id,
   );
   assert.deepEqual(
     syncedModels.map((model) => ({ id: model.id, name: model.name })),
     [
       { id: "remote-a", name: "Remote A" },
       { id: "remote-b", name: "Remote B" },
-    ]
+    ],
   );
 });

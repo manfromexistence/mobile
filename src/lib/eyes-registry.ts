@@ -1,4 +1,4 @@
-import type { Animation } from "./eyes-types"
+import type { Animation } from "./eyes-types";
 
 const animations: Animation[] = [
   {
@@ -445,20 +445,20 @@ const animations: Animation[] = [
       },
     ],
   },
-]
+];
 
 export function getAllAnimations(): Animation[] {
-  return [...animations]
+  return [...animations];
 }
 
 export function getAnimation(name: string): Animation | undefined {
-  return animations.find((a) => a.name === name)
+  return animations.find((a) => a.name === name);
 }
 
 export function getAnimationsByTrigger(trigger: string): Animation[] {
-  return animations.filter((a) => a.trigger === trigger)
+  return animations.filter((a) => a.trigger === trigger);
 }
 
 export function getAnimationByKey(key: string): Animation | undefined {
-  return animations.find((a) => a.key === key)
+  return animations.find((a) => a.key === key);
 }

@@ -1,18 +1,18 @@
-const fs = require("fs")
-const f = "src/features/dx/components/dx-chat.tsx"
-let content = fs.readFileSync(f, "utf8")
+const fs = require("fs");
+const f = "src/features/dx/components/dx-chat.tsx";
+let content = fs.readFileSync(f, "utf8");
 
 if (!content.includes("PopoverContent")) {
   content = content.replace(
     "import { Button }",
-    'import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";\nimport { Button }'
-  )
+    'import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";\nimport { Button }',
+  );
 }
 
-const startMarker = "{/* Top Right Actions */}"
-const endMarker = "{/* Chat Scroll Area */}"
-const startIdx = content.indexOf(startMarker)
-const endIdx = content.indexOf(endMarker)
+const startMarker = "{/* Top Right Actions */}";
+const endMarker = "{/* Chat Scroll Area */}";
+const startIdx = content.indexOf(startMarker);
+const endIdx = content.indexOf(endMarker);
 
 if (startIdx !== -1 && endIdx !== -1) {
   const replacement = `{/* Settings Pop-up */}
@@ -35,8 +35,8 @@ if (startIdx !== -1 && endIdx !== -1) {
           </Popover>
         </div>
 
-        `
-  content = content.slice(0, startIdx) + replacement + content.slice(endIdx)
-  fs.writeFileSync(f, content)
-  console.log("Successfully updated popover in dx-chat.tsx")
+        `;
+  content = content.slice(0, startIdx) + replacement + content.slice(endIdx);
+  fs.writeFileSync(f, content);
+  console.log("Successfully updated popover in dx-chat.tsx");
 }

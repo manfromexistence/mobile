@@ -103,7 +103,7 @@ for (const { provider, liveUrl } of LIVE_CASES) {
     try {
       const response = await modelsRoute.GET(
         new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-        { params: { id: connection.id } }
+        { params: { id: connection.id } },
       );
       assert.equal(response.status, 200);
       const body = (await response.json()) as ModelsBody;
@@ -113,7 +113,7 @@ for (const { provider, liveUrl } of LIVE_CASES) {
       const ids = body.models.map((m) => m.id);
       assert.ok(
         ids.includes(`${provider}-live-a`) && ids.includes(`${provider}-live-b`),
-        `live models missing from catalog: ${ids.join(",")}`
+        `live models missing from catalog: ${ids.join(",")}`,
       );
     } finally {
       globalThis.fetch = originalFetch;
@@ -136,7 +136,7 @@ test("sweep: live-discovery providers fall back to the local seed when upstream 
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as ModelsBody;

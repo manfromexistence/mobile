@@ -41,9 +41,7 @@ export function DataAttributesTable({ data, slot }: DataAttributesTableProps) {
                   <code className="font-mono text-foreground/80">
                     {attribute.value.map((item, index) => (
                       <span key={item}>
-                        {index + 1 !== attribute.value.length
-                          ? `"${item}" | `
-                          : `"${item}"`}
+                        {index + 1 !== attribute.value.length ? `"${item}" | ` : `"${item}"`}
                       </span>
                     ))}
                   </code>

@@ -22,16 +22,16 @@ const repoRoot = join(here, "..", "..");
 const wizard = readFileSync(
   join(
     repoRoot,
-    "src/app/(dashboard)/dashboard/providers/components/onboarding/ProviderOnboardingWizard.tsx"
+    "src/app/(dashboard)/dashboard/providers/components/onboarding/ProviderOnboardingWizard.tsx",
   ),
-  "utf8"
+  "utf8",
 );
 
 test("#6145: provider-details link routes through buildProviderDetailsHref (id-based helper)", () => {
   assert.match(
     wizard,
     /buildProviderDetailsHref\(connection\)/,
-    "the details link must be built by the tested buildProviderDetailsHref helper (routes by connection.id)"
+    "the details link must be built by the tested buildProviderDetailsHref helper (routes by connection.id)",
   );
 });
 
@@ -39,6 +39,6 @@ test("#6145: provider-details link must NOT use connection.provider (404s for co
   assert.doesNotMatch(
     wizard,
     /href=\{`\/dashboard\/providers\/\$\{connection\.provider\}`\}/,
-    "connection.provider is the slug/type, not the node id — it 404s"
+    "connection.provider is the slug/type, not the node id — it 404s",
   );
 });

@@ -58,21 +58,18 @@ vi.mock("@/shared/components", () => ({
 }));
 
 // exampleTemplates stub
-vi.mock(
-  "@/app/(dashboard)/dashboard/translator/exampleTemplates",
-  () => ({
-    FORMAT_META: {
-      openai: { label: "OpenAI", color: "blue", icon: "psychology" },
-      claude: { label: "Claude", color: "amber", icon: "auto_awesome" },
-      gemini: { label: "Gemini", color: "green", icon: "smart_toy" },
-    },
-    FORMAT_OPTIONS: [
-      { value: "openai", label: "OpenAI" },
-      { value: "claude", label: "Claude" },
-    ],
-    getExampleTemplates: () => [],
-  }),
-);
+vi.mock("@/app/(dashboard)/dashboard/translator/exampleTemplates", () => ({
+  FORMAT_META: {
+    openai: { label: "OpenAI", color: "blue", icon: "psychology" },
+    claude: { label: "Claude", color: "amber", icon: "auto_awesome" },
+    gemini: { label: "Gemini", color: "green", icon: "smart_toy" },
+  },
+  FORMAT_OPTIONS: [
+    { value: "openai", label: "OpenAI" },
+    { value: "claude", label: "Claude" },
+  ],
+  getExampleTemplates: () => [],
+}));
 
 const cleanupCallbacks: Array<() => void> = [];
 
@@ -291,7 +288,9 @@ describe("PipelineView", () => {
 
     // Render with forceOpen=true — ensures open + hasOpened are set on mount.
     await act(async () => {
-      root.render(<PipelineView defaultOpen={false} forceOpen={true} pipelineSteps={SAMPLE_STEPS} />);
+      root.render(
+        <PipelineView defaultOpen={false} forceOpen={true} pipelineSteps={SAMPLE_STEPS} />,
+      );
     });
 
     const pipelineContainer = container.querySelector("[data-pipeline-container='true']");

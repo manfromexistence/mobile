@@ -39,12 +39,12 @@ test("#2822 opencode-go/qwen3.7-max deve ter supportsVision !== true", () => {
   assert.notEqual(
     model.supportsVision,
     true,
-    "opencode-go/qwen3.7-max não suporta visão — supportsVision deve ser false ou ausente"
+    "opencode-go/qwen3.7-max não suporta visão — supportsVision deve ser false ou ausente",
   );
   assert.strictEqual(
     model.supportsVision,
     false,
-    "opencode-go/qwen3.7-max deve ter supportsVision: false explícito para bloquear seleção em combo com imagens"
+    "opencode-go/qwen3.7-max deve ter supportsVision: false explícito para bloquear seleção em combo com imagens",
   );
 });
 
@@ -54,12 +54,12 @@ test("#2822 opencode-go/qwen3.6-plus deve ter supportsVision !== true", () => {
   assert.notEqual(
     model.supportsVision,
     true,
-    "opencode-go/qwen3.6-plus não suporta visão — supportsVision deve ser false ou ausente"
+    "opencode-go/qwen3.6-plus não suporta visão — supportsVision deve ser false ou ausente",
   );
   assert.strictEqual(
     model.supportsVision,
     false,
-    "opencode-go/qwen3.6-plus deve ter supportsVision: false explícito para bloquear seleção em combo com imagens"
+    "opencode-go/qwen3.6-plus deve ter supportsVision: false explícito para bloquear seleção em combo com imagens",
   );
 });
 
@@ -73,7 +73,7 @@ test("#6998 opencode/minimax-m3-free não deve mais estar registrado (deslistado
   assert.equal(
     model,
     undefined,
-    "opencode/minimax-m3-free foi deslistado do free tier da OpenCode Zen (#6998)"
+    "opencode/minimax-m3-free foi deslistado do free tier da OpenCode Zen (#6998)",
   );
 });
 
@@ -83,12 +83,12 @@ test("#2822 opencode-go/qwen3.5-plus deve ter supportsVision !== true", () => {
   assert.notEqual(
     model.supportsVision,
     true,
-    "opencode-go/qwen3.5-plus não suporta visão — supportsVision deve ser false ou ausente"
+    "opencode-go/qwen3.5-plus não suporta visão — supportsVision deve ser false ou ausente",
   );
   assert.strictEqual(
     model.supportsVision,
     false,
-    "opencode-go/qwen3.5-plus deve ter supportsVision: false explícito para bloquear seleção em combo com imagens"
+    "opencode-go/qwen3.5-plus deve ter supportsVision: false explícito para bloquear seleção em combo com imagens",
   );
 });
 
@@ -100,12 +100,12 @@ test("#2822 opencode-zen/qwen3.5-plus deve ter supportsVision !== true", () => {
   assert.notEqual(
     model.supportsVision,
     true,
-    "opencode-zen/qwen3.5-plus não suporta visão — supportsVision deve ser false ou ausente"
+    "opencode-zen/qwen3.5-plus não suporta visão — supportsVision deve ser false ou ausente",
   );
   assert.strictEqual(
     model.supportsVision,
     false,
-    "opencode-zen/qwen3.5-plus deve ter supportsVision: false explícito para bloquear seleção em combo com imagens"
+    "opencode-zen/qwen3.5-plus deve ter supportsVision: false explícito para bloquear seleção em combo com imagens",
   );
 });
 
@@ -115,11 +115,11 @@ test("#2822 opencode-zen/qwen3.6-plus deve ter supportsVision !== true", () => {
   assert.notEqual(
     model.supportsVision,
     true,
-    "opencode-zen/qwen3.6-plus não suporta visão — supportsVision deve ser false ou ausente"
+    "opencode-zen/qwen3.6-plus não suporta visão — supportsVision deve ser false ou ausente",
   );
   assert.strictEqual(
     model.supportsVision,
     false,
-    "opencode-zen/qwen3.6-plus deve ter supportsVision: false explícito para bloquear seleção em combo com imagens"
+    "opencode-zen/qwen3.6-plus deve ter supportsVision: false explícito para bloquear seleção em combo com imagens",
   );
 });

@@ -45,9 +45,7 @@ export default function MaskInputDemo() {
           value={input.phone}
           onValueChange={onValueChange("phone")}
         />
-        <p className="text-muted-foreground text-sm">
-          Enter your phone number with area code
-        </p>
+        <p className="text-muted-foreground text-sm">Enter your phone number with area code</p>
       </div>
       <div className="flex flex-col gap-2">
         <Label htmlFor={`${id}-date`}>Birth date</Label>
@@ -93,9 +91,7 @@ export default function MaskInputDemo() {
           value={input.creditCard}
           onValueChange={onValueChange("creditCard")}
         />
-        <p className="text-muted-foreground text-sm">
-          Enter your credit card number
-        </p>
+        <p className="text-muted-foreground text-sm">Enter your credit card number</p>
       </div>
       <div className="flex flex-col gap-2">
         <Label htmlFor={`${id}-percentage`}>Percentage</Label>

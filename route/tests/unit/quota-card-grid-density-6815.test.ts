@@ -36,7 +36,7 @@ import ts from "typescript";
 
 const COMPONENT_PATH = path.resolve(
   import.meta.dirname,
-  "../../src/app/(dashboard)/dashboard/usage/components/ProviderLimits/QuotaCardGrid.tsx"
+  "../../src/app/(dashboard)/dashboard/usage/components/ProviderLimits/QuotaCardGrid.tsx",
 );
 
 /**
@@ -52,7 +52,7 @@ function extractDivClassNames(sourcePath: string): string[] {
     sourceText,
     ts.ScriptTarget.Latest,
     true,
-    ts.ScriptKind.TSX
+    ts.ScriptKind.TSX,
   );
   const classNames: string[] = [];
 
@@ -178,13 +178,13 @@ test("QuotaCardGrid (#6815) — per-group card grid renders multiple columns on 
   const cardGridClassName = classNames.find((c) => /\bgrid\b/.test(c) && /grid-cols-/.test(c));
   assert.ok(
     cardGridClassName,
-    "expected to find a grid-based per-group card grid className (not a single-column flex stack)"
+    "expected to find a grid-based per-group card grid className (not a single-column flex stack)",
   );
 
   const columnsOnWideContainer = estimateColumnsAtWidth(cardGridClassName!, 1200);
   assert.ok(
     columnsOnWideContainer > 1,
     `expected the per-group card grid to render more than 1 column at 1200px, got ${columnsOnWideContainer} ` +
-      `from className="${cardGridClassName}" — this is the #6815 density regression`
+      `from className="${cardGridClassName}" — this is the #6815 density regression`,
   );
 });

@@ -12,7 +12,7 @@ test("qualifyPlaygroundModel prefixes a vendor-namespaced model with providerId 
   assert.equal(qualifyPlaygroundModel("moonshotai/kimi-k2.6", "nim"), "nim/moonshotai/kimi-k2.6");
   assert.equal(
     qualifyPlaygroundModel("nvidia/zyphra/zamba2-7b-instruct", "nim"),
-    "nim/nvidia/zyphra/zamba2-7b-instruct"
+    "nim/nvidia/zyphra/zamba2-7b-instruct",
   );
 });
 
@@ -21,7 +21,10 @@ test("qualifyPlaygroundModel prefixes a bare model", () => {
 });
 
 test("qualifyPlaygroundModel does not double-prefix an already-qualified model", () => {
-  assert.equal(qualifyPlaygroundModel("nim/moonshotai/kimi-k2.6", "nim"), "nim/moonshotai/kimi-k2.6");
+  assert.equal(
+    qualifyPlaygroundModel("nim/moonshotai/kimi-k2.6", "nim"),
+    "nim/moonshotai/kimi-k2.6",
+  );
   assert.equal(qualifyPlaygroundModel("nim", "nim"), "nim");
 });
 

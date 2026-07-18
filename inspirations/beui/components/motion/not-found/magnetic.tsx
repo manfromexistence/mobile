@@ -2,12 +2,7 @@
 
 import { Magnetic } from "@/components/motion/magnetic";
 import { cn } from "@/lib/utils";
-import {
-  NOT_FOUND_DEFAULTS,
-  NotFoundActions,
-  NotFoundStage,
-  type NotFoundProps,
-} from "./shared";
+import { NOT_FOUND_DEFAULTS, NotFoundActions, NotFoundStage, type NotFoundProps } from "./shared";
 
 export function NotFoundMagnetic({
   className,

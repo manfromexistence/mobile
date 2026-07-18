@@ -40,7 +40,7 @@ test.after(() => {
 
 test("#4164 /v1/models advertises every built-in auto/* combo", async () => {
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   assert.equal(response.status, 200);
   const body = (await response.json()) as { data: Array<{ id: string; owned_by?: string }> };
@@ -61,7 +61,7 @@ test("#4164 /v1/models advertises every built-in auto/* combo", async () => {
 
 test("#4164 auto/* combos appear at the top of the list", async () => {
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as { data: Array<{ id: string }> };
   const expected = Object.keys(builtinCatalog.AUTO_TEMPLATE_VARIANTS);
@@ -77,7 +77,7 @@ test("#4164 no duplicate auto/* ids even if a persisted combo shadows one", asyn
   // Defensive: even if a DB combo were named like an auto/* id, the listing must
   // not emit the id twice.
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as { data: Array<{ id: string }> };
   const autoIds = body.data.map((m) => m.id).filter((id) => id.startsWith("auto/"));
@@ -90,7 +90,7 @@ test("#4189 every auto/* entry exposes token limits + baseline capabilities", as
   // OpenAI-compatible clients that build their picker from /v1/models get a context
   // window before the first request. Without the fix these fields are absent.
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   assert.equal(response.status, 200);
   const body = (await response.json()) as {
@@ -110,19 +110,23 @@ test("#4189 every auto/* entry exposes token limits + baseline capabilities", as
     assert.equal(
       typeof entry.context_length,
       "number",
-      `${entry.id} must expose a numeric context_length`
+      `${entry.id} must expose a numeric context_length`,
     );
     assert.ok((entry.context_length ?? 0) > 0, `${entry.id} context_length must be positive`);
-    assert.equal(typeof entry.max_input_tokens, "number", `${entry.id} must expose max_input_tokens`);
+    assert.equal(
+      typeof entry.max_input_tokens,
+      "number",
+      `${entry.id} must expose max_input_tokens`,
+    );
     assert.equal(
       typeof entry.max_output_tokens,
       "number",
-      `${entry.id} must expose max_output_tokens`
+      `${entry.id} must expose max_output_tokens`,
     );
     assert.ok((entry.max_output_tokens ?? 0) > 0, `${entry.id} max_output_tokens must be positive`);
     assert.ok(
       entry.capabilities && typeof entry.capabilities === "object",
-      `${entry.id} must expose a capabilities map`
+      `${entry.id} must expose a capabilities map`,
     );
   }
 });

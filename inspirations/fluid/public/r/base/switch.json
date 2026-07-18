@@ -3,10 +3,7 @@
   "name": "switch",
   "title": "Switch (Base UI)",
   "description": "Animated toggle switch with spring-based thumb animation and fluid font-weight label transitions. Base UI flavor.",
-  "dependencies": [
-    "framer-motion",
-    "@base-ui/react"
-  ],
+  "dependencies": ["framer-motion", "@base-ui/react"],
   "registryDependencies": [
     "utils",
     "https://www.fluidfunctionalism.com/r/springs.json",

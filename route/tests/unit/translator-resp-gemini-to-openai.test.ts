@@ -1,10 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { geminiToOpenAIResponse } =
-  await import("../../open-sse/translator/response/gemini-to-openai.ts");
-const { translateNonStreamingResponse } =
-  await import("../../open-sse/handlers/responseTranslator.ts");
+const { geminiToOpenAIResponse } = await import(
+  "../../open-sse/translator/response/gemini-to-openai.ts"
+);
+const { translateNonStreamingResponse } = await import(
+  "../../open-sse/handlers/responseTranslator.ts"
+);
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 
 function createStreamingState() {
@@ -34,7 +36,7 @@ test("Gemini non-stream: single candidate text maps to one OpenAI choice", () =>
       },
     },
     FORMATS.GEMINI,
-    FORMATS.OPENAI
+    FORMATS.OPENAI,
   );
 
   assert.equal((result as any).object, "chat.completion");
@@ -87,7 +89,7 @@ test("Gemini non-stream: multiple candidates keep multimodal content, reasoning 
       },
     },
     FORMATS.GEMINI,
-    (FORMATS as any).OPENAI
+    (FORMATS as any).OPENAI,
   );
 
   assert.equal((result as any).choices.length, 2);
@@ -96,12 +98,12 @@ test("Gemini non-stream: multiple candidates keep multimodal content, reasoning 
   assert.equal((result as any).choices[0].message.content[0].text, "Answer:");
   assert.equal(
     ((result as any).choices[0].message as any).content[1].image_url.url,
-    "data:image/png;base64,abc123"
+    "data:image/png;base64,abc123",
   );
   assert.equal((result as any).choices[0].message.tool_calls[0].function.name, "read_file");
   assert.equal(
     ((result as any).choices[0].message as any).tool_calls[0].function.arguments,
-    JSON.stringify({ path: "/tmp/a" })
+    JSON.stringify({ path: "/tmp/a" }),
   );
   assert.equal((result as any).choices[0].message.tool_calls[0].id, "native-read-1");
   assert.equal(((result as any).choices[1].message as any).content, "Second option");
@@ -121,7 +123,7 @@ test("Gemini non-stream: promptFeedback-only block becomes content_filter", () =
       promptFeedback: { blockReason: "SAFETY" },
     },
     FORMATS.GEMINI,
-    (FORMATS as any).OPENAI
+    (FORMATS as any).OPENAI,
   );
 
   assert.equal((result as any).object, "chat.completion");
@@ -157,7 +159,7 @@ test("Gemini non-stream: restores sanitized tool names from the request map", ()
     },
     FORMATS.GEMINI,
     FORMATS.OPENAI,
-    new Map([[sanitizedToolName, originalToolName]])
+    new Map([[sanitizedToolName, originalToolName]]),
   );
 
   assert.equal((result as any).choices[0].message.tool_calls[0].function.name, originalToolName);
@@ -187,7 +189,7 @@ test("Gemini non-stream: restores Antigravity _ide-cloaked tool names from the r
     },
     FORMATS.ANTIGRAVITY,
     FORMATS.OPENAI,
-    new Map([["read_project_file_ide", "read_project_file"]])
+    new Map([["read_project_file_ide", "read_project_file"]]),
   );
 
   assert.equal((result as any).choices[0].message.tool_calls[0].function.name, "read_project_file");
@@ -207,7 +209,7 @@ test("Gemini stream: first text chunk emits assistant role then content delta", 
         },
       ],
     },
-    state
+    state,
   );
 
   assert.equal(result.length, 2);
@@ -224,7 +226,7 @@ test("Gemini stream: subsequent text chunks append content without re-emitting r
       modelVersion: "gemini-2.5-pro",
       candidates: [{ content: { parts: [{ text: "Hel" }] } }],
     },
-    state
+    state,
   );
 
   const result = geminiToOpenAIResponse(
@@ -233,7 +235,7 @@ test("Gemini stream: subsequent text chunks append content without re-emitting r
       modelVersion: "gemini-2.5-pro",
       candidates: [{ content: { parts: [{ text: "lo" }] } }],
     },
-    state
+    state,
   );
 
   assert.equal(result.length, 1);
@@ -281,18 +283,18 @@ test("Gemini stream: reasoning, tool call, image and MAX_TOKENS finish are conve
         cachedContentTokenCount: 1,
       },
     },
-    state
+    state,
   );
 
   assert.equal(result[1].choices[0].delta.reasoning_content, "Need a plan.");
   assert.equal(result[2].choices[0].delta.tool_calls[0].id, "native-call-1");
   assert.equal(
     result[2].choices[0].delta.tool_calls[0].function.name,
-    "mcp__filesystem__read_multiple_files_with_validation_and_metadata_bundle_v2"
+    "mcp__filesystem__read_multiple_files_with_validation_and_metadata_bundle_v2",
   );
   assert.equal(
     result[2].choices[0].delta.tool_calls[0].function.arguments,
-    JSON.stringify({ city: "Sao Paulo" })
+    JSON.stringify({ city: "Sao Paulo" }),
   );
   assert.equal(result[3].choices[0].delta.images[0].image_url.url, "data:image/png;base64,imgdata");
   assert.equal(result[4].choices[0].finish_reason, "length");
@@ -303,8 +305,9 @@ test("Gemini stream: reasoning, tool call, image and MAX_TOKENS finish are conve
 });
 
 test("Gemini stream: stores thoughtSignature when signature-only part precedes functionCall", async () => {
-  const { resolveGeminiThoughtSignature } =
-    await import("../../open-sse/services/geminiThoughtSignatureStore.ts");
+  const { resolveGeminiThoughtSignature } = await import(
+    "../../open-sse/services/geminiThoughtSignatureStore.ts"
+  );
   const state = {
     ...createStreamingState(),
     signatureNamespace: "conn-antigravity-1",
@@ -331,7 +334,7 @@ test("Gemini stream: stores thoughtSignature when signature-only part precedes f
         },
       ],
     },
-    state
+    state,
   );
 
   const toolCall = result.find((event: any) => event.choices?.[0]?.delta?.tool_calls)?.choices[0]
@@ -360,7 +363,7 @@ test("Gemini stream: converts textual Tool call block to structured tool_calls",
         },
       ],
     },
-    state
+    state,
   );
 
   const toolCall = result.find((event: any) => event.choices?.[0]?.delta?.tool_calls)?.choices[0]
@@ -372,11 +375,11 @@ test("Gemini stream: converts textual Tool call block to structured tool_calls",
     JSON.stringify({
       command:
         "sqlite3 ~/.omniroute/storage.sqlite \"SELECT name FROM sqlite_master WHERE type='table';\"",
-    })
+    }),
   );
   assert.equal(
     result.some((event: any) => event.choices?.[0]?.delta?.content?.includes("[Tool call:")),
-    false
+    false,
   );
   assert.equal(result.at(-1).choices[0].finish_reason, "tool_calls");
 });
@@ -407,17 +410,17 @@ test("Gemini stream: routes textual reasoning tags to reasoning_content before t
         },
       ],
     },
-    state
+    state,
   );
 
   assert.equal(
     result.some((event: any) => event.choices?.[0]?.delta?.content?.includes("<thought")),
-    false
+    false,
   );
   assert.equal(
     result.find((event: any) => event.choices?.[0]?.delta?.reasoning_content)?.choices[0].delta
       .reasoning_content,
-    "Need to inspect first."
+    "Need to inspect first.",
   );
   const toolCall = result.find((event: any) => event.choices?.[0]?.delta?.tool_calls)?.choices[0]
     .delta.tool_calls[0];
@@ -434,11 +437,11 @@ test("Gemini stream: keeps textual reasoning hidden across split chunks", () => 
       modelVersion: "gemini-3.5-flash-high",
       candidates: [{ content: { parts: [{ text: "§54§ <tho" }] } }],
     },
-    state
+    state,
   );
   assert.equal(
     first.some((event: any) => event.choices?.[0]?.delta?.content),
-    false
+    false,
   );
 
   const second = geminiToOpenAIResponse(
@@ -447,13 +450,13 @@ test("Gemini stream: keeps textual reasoning hidden across split chunks", () => 
       modelVersion: "gemini-3.5-flash-high",
       candidates: [{ content: { parts: [{ text: "ught\nNeed to inspect" }] } }],
     },
-    state
+    state,
   );
   assert.equal(
     (second ?? []).some((event: any) =>
-      event.choices?.[0]?.delta?.content?.includes("Need to inspect")
+      event.choices?.[0]?.delta?.content?.includes("Need to inspect"),
     ),
-    false
+    false,
   );
 
   const third = geminiToOpenAIResponse(
@@ -462,11 +465,11 @@ test("Gemini stream: keeps textual reasoning hidden across split chunks", () => 
       modelVersion: "gemini-3.5-flash-high",
       candidates: [{ content: { parts: [{ text: " more</tho" }] } }],
     },
-    state
+    state,
   );
   assert.equal(
     (third ?? []).some((event: any) => event.choices?.[0]?.delta?.content?.includes("more")),
-    false
+    false,
   );
 
   const fourth = geminiToOpenAIResponse(
@@ -475,21 +478,21 @@ test("Gemini stream: keeps textual reasoning hidden across split chunks", () => 
       modelVersion: "gemini-3.5-flash-high",
       candidates: [{ content: { parts: [{ text: "ught>Visible answer" }] } }],
     },
-    state
+    state,
   );
   assert.equal(
     fourth.some(
-      (event: any) => event.choices?.[0]?.delta?.reasoning_content === "Need to inspect more"
+      (event: any) => event.choices?.[0]?.delta?.reasoning_content === "Need to inspect more",
     ),
-    true
+    true,
   );
   assert.equal(
     fourth.some((event: any) => event.choices?.[0]?.delta?.content?.includes("ught>")),
-    false
+    false,
   );
   assert.equal(
     fourth.find((event: any) => event.choices?.[0]?.delta?.content)?.choices[0].delta.content,
-    "Visible answer"
+    "Visible answer",
   );
 });
 
@@ -512,7 +515,7 @@ test("Gemini stream: converts prefixed textual Tool call block with zero-width c
         },
       ],
     },
-    state
+    state,
   );
 
   const toolCall = result.find((event: any) => event.choices?.[0]?.delta?.tool_calls)?.choices[0]
@@ -523,11 +526,11 @@ test("Gemini stream: converts prefixed textual Tool call block with zero-width c
     toolCall.function.arguments,
     JSON.stringify({
       command: "sqlite3 ~/.omniroute/storage.sqlite",
-    })
+    }),
   );
   assert.equal(
     result.some((event: any) => event.choices?.[0]?.delta?.content?.includes("[Tool call:")),
-    false
+    false,
   );
   assert.equal(result.at(-1).choices[0].finish_reason, "tool_calls");
 });
@@ -554,7 +557,7 @@ test("Gemini stream: tool calls without native IDs keep deterministic fallback s
         },
       ],
     },
-    state
+    state,
   );
 
   const toolCall = result[1].choices[0].delta.tool_calls[0];
@@ -571,7 +574,7 @@ test("Gemini stream: safety block without candidates emits role chunk then conte
       modelVersion: "gemini-2.5-flash",
       promptFeedback: { blockReason: "SAFETY" },
     },
-    state
+    state,
   );
 
   assert.equal(result.length, 2);
@@ -594,7 +597,7 @@ test("Gemini stream: grounding metadata (citations) are extracted", () => {
         },
       ],
     },
-    state
+    state,
   );
 
   assert.equal(result[1].choices[0].delta.content, "Today is sunny.");
@@ -631,7 +634,7 @@ test("Gemini stream: unwraps native functionCall args when emitted as JSON strin
         },
       ],
     },
-    state
+    state,
   );
 
   const toolCall = result.find((event: any) => event.choices?.[0]?.delta?.tool_calls)?.choices[0]
@@ -639,7 +642,7 @@ test("Gemini stream: unwraps native functionCall args when emitted as JSON strin
   assert.equal(toolCall.function.name, "terminal");
   assert.equal(
     toolCall.function.arguments,
-    JSON.stringify({ command: 'ssh test-vps "systemctl cat omniroute.service"' })
+    JSON.stringify({ command: 'ssh test-vps "systemctl cat omniroute.service"' }),
   );
 });
 
@@ -654,7 +657,7 @@ test("Gemini stream: converts JSON-string encoded textual Tool call arguments", 
           content: {
             parts: [
               {
-                text: '[Tool call: terminal]\nArguments: "{\\\"command\\\":\\\"ssh test-vps \\\\\\\"systemctl cat omniroute.service\\\\\\\"\\\"}"',
+                text: '[Tool call: terminal]\nArguments: "{\\"command\\":\\"ssh test-vps \\\\\\"systemctl cat omniroute.service\\\\\\"\\"}"',
               },
             ],
           },
@@ -662,7 +665,7 @@ test("Gemini stream: converts JSON-string encoded textual Tool call arguments", 
         },
       ],
     },
-    state
+    state,
   );
 
   const toolCall = result.find((event: any) => event.choices?.[0]?.delta?.tool_calls)?.choices[0]
@@ -671,11 +674,11 @@ test("Gemini stream: converts JSON-string encoded textual Tool call arguments", 
   assert.equal(toolCall.function.name, "terminal");
   assert.equal(
     toolCall.function.arguments,
-    JSON.stringify({ command: 'ssh test-vps "systemctl cat omniroute.service"' })
+    JSON.stringify({ command: 'ssh test-vps "systemctl cat omniroute.service"' }),
   );
   assert.equal(
     result.some((event: any) => event.choices?.[0]?.delta?.content?.includes("[Tool call:")),
-    false
+    false,
   );
   assert.equal(result.at(-1).choices[0].finish_reason, "tool_calls");
 });
@@ -699,16 +702,16 @@ test("Gemini stream: suppresses malformed textual Tool call marker", () => {
         },
       ],
     },
-    state
+    state,
   );
 
   assert.equal(
     result.some((event: any) => event.choices?.[0]?.delta?.content?.includes("[Tool call:")),
-    false
+    false,
   );
   assert.equal(
     result.some((event: any) => event.choices?.[0]?.delta?.tool_calls),
-    false
+    false,
   );
   assert.equal(result.at(-1).choices[0].finish_reason, "stop");
 });
@@ -757,7 +760,7 @@ test("Gemini stream: handles textual Tool call block split across chunks", () =>
   assert.equal(leakedContent, "");
 
   const toolCalls = [...res1, ...res2].flatMap(
-    (event) => event.choices?.[0]?.delta?.tool_calls || []
+    (event) => event.choices?.[0]?.delta?.tool_calls || [],
   );
   assert.equal(toolCalls.length, 1);
   assert.equal(toolCalls[0].function.name, "terminal");
@@ -808,7 +811,7 @@ test("Gemini stream: does not swallow false positive textual tool call in backti
   assert.equal(leakedContent, "Как исправить: `[Tool call: terminal]` не будут проходить.");
 
   const toolCalls = [...res1, ...res2].flatMap(
-    (event) => event.choices?.[0]?.delta?.tool_calls || []
+    (event) => event.choices?.[0]?.delta?.tool_calls || [],
   );
   assert.equal(toolCalls.length, 0);
 });
@@ -862,7 +865,7 @@ test("Gemini stream: flushes left part before textual tool call candidate and fl
         content: {
           parts: [
             {
-              text: "[Tool call: terminal]\nArguments: {}\` не будут проходить.",
+              text: "[Tool call: terminal]\nArguments: {}` не будут проходить.",
             },
           ],
         },
@@ -877,7 +880,7 @@ test("Gemini stream: flushes left part before textual tool call candidate and fl
 
   const res2 = geminiToOpenAIResponse(chunk2, state) || [];
   const content2 = res2.map((event) => event.choices?.[0]?.delta?.content || "").join("");
-  assert.equal(content2, "[Tool call: terminal]\nArguments: {}\` не будут проходить.");
+  assert.equal(content2, "[Tool call: terminal]\nArguments: {}` не будут проходить.");
 });
 
 test("Gemini stream: splits mid-stream partial candidate but preserves tool call if complete", () => {
@@ -946,7 +949,7 @@ test("Gemini stream: index mismatch regression test with zero-width characters i
         },
       ],
     },
-    state
+    state,
   );
 
   const leakedContent = result
@@ -1137,11 +1140,11 @@ test("Gemini stream: open textual reasoning is flushed before a signed native to
         modelVersion: "gemini-3-flash-agent",
         candidates: [{ content: { parts: [{ text: "<thinking>deep reasoning here" }] } }],
       },
-      state
+      state,
     ) || [];
   assert.ok(
     !r1.some((e: any) => e.choices?.[0]?.delta?.reasoning_content),
-    "reasoning is still buffered (awaiting close tag) — nothing emitted yet"
+    "reasoning is still buffered (awaiting close tag) — nothing emitted yet",
   );
 
   // chunk 2: signed native functionCall while the reasoning wrapper is still open.
@@ -1163,7 +1166,7 @@ test("Gemini stream: open textual reasoning is flushed before a signed native to
           },
         ],
       },
-      state
+      state,
     ) || [];
 
   const reasoningIdx = r2.findIndex((e: any) => e.choices?.[0]?.delta?.reasoning_content);
@@ -1171,10 +1174,13 @@ test("Gemini stream: open textual reasoning is flushed before a signed native to
   assert.equal(
     r2[reasoningIdx]?.choices[0].delta.reasoning_content,
     "deep reasoning here",
-    "buffered textual reasoning must be flushed, not dropped, when a tool call arrives"
+    "buffered textual reasoning must be flushed, not dropped, when a tool call arrives",
   );
   assert.equal(r2[toolIdx]?.choices[0].delta.tool_calls[0].id, "call-flush-1");
-  assert.ok(reasoningIdx >= 0 && toolIdx > reasoningIdx, "reasoning is emitted before the tool call");
+  assert.ok(
+    reasoningIdx >= 0 && toolIdx > reasoningIdx,
+    "reasoning is emitted before the tool call",
+  );
 });
 
 // #3821-review LEDGER-15 — a reasoning-only chunk interrupting a partially-buffered
@@ -1192,7 +1198,7 @@ test("Gemini stream: partial textual tool call survives a reasoning-only chunk",
         { content: { parts: [{ text: '[Tool call: terminal]\nArguments: {"command":"ls' }] } },
       ],
     },
-    state
+    state,
   );
 
   // chunk 2: a reasoning-only chunk fully consumed as reasoning_content.
@@ -1203,17 +1209,17 @@ test("Gemini stream: partial textual tool call survives a reasoning-only chunk",
         modelVersion: "gemini-3.5-flash-low",
         candidates: [{ content: { parts: [{ text: "<thinking>pondering</thinking>" }] } }],
       },
-      state
+      state,
     ) || [];
   assert.equal(
     r2.find((e: any) => e.choices?.[0]?.delta?.reasoning_content)?.choices[0].delta
       .reasoning_content,
-    "pondering"
+    "pondering",
   );
   assert.ok(
     typeof state.textualToolCallBuffer === "string" &&
       state.textualToolCallBuffer.includes("[Tool call: terminal]"),
-    "the partial tool-call buffer must survive the reasoning-only chunk"
+    "the partial tool-call buffer must survive the reasoning-only chunk",
   );
 
   // chunk 3: completes the tool-call text + finishReason → resolves to a structured call.
@@ -1224,7 +1230,7 @@ test("Gemini stream: partial textual tool call survives a reasoning-only chunk",
         modelVersion: "gemini-3.5-flash-low",
         candidates: [{ content: { parts: [{ text: '"}' }] }, finishReason: "STOP" }],
       },
-      state
+      state,
     ) || [];
   const toolCall = r3.find((e: any) => e.choices?.[0]?.delta?.tool_calls)?.choices[0].delta
     .tool_calls[0];

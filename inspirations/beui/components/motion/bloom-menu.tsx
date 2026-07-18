@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  Bell,
-  FileText,
-  FolderClosed,
-  LayoutGrid,
-  Link,
-  Plus,
-  Table,
-  X,
-} from "lucide-react";
+import { Bell, FileText, FolderClosed, LayoutGrid, Link, Plus, Table, X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { type ComponentType, useEffect, useId, useRef, useState } from "react";
 import { EASE_OUT } from "@/lib/ease";
@@ -40,11 +31,7 @@ export interface BloomMenuProps {
   className?: string;
 }
 
-export function BloomMenu({
-  items = ITEMS,
-  onSelect,
-  className,
-}: BloomMenuProps) {
+export function BloomMenu({ items = ITEMS, onSelect, className }: BloomMenuProps) {
   const [open, setOpen] = useState(false);
   const reduce = useReducedMotion();
   const layoutId = useId();
@@ -56,8 +43,7 @@ export function BloomMenu({
       if (e.key === "Escape") setOpen(false);
     };
     const onPointer = (e: PointerEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node))
-        setOpen(false);
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
     window.addEventListener("keydown", onKey);
     window.addEventListener("pointerdown", onPointer);
@@ -103,9 +89,7 @@ export function BloomMenu({
               >
                 {/* header */}
                 <div className="flex items-center justify-between border-b border-border px-4 py-3">
-                  <span className="text-sm font-medium text-muted-foreground">
-                    Create
-                  </span>
+                  <span className="text-sm font-medium text-muted-foreground">Create</span>
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
@@ -121,9 +105,7 @@ export function BloomMenu({
                   // Iris reveal: start as a small box at the grid center and open
                   // outward to all four corners, so the menu grows from the middle
                   // in every direction instead of wiping top-down.
-                  initial={
-                    reduce ? false : { clipPath: "inset(45% 34% 45% 34%)" }
-                  }
+                  initial={reduce ? false : { clipPath: "inset(45% 34% 45% 34%)" }}
                   animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
                   transition={{
                     delay: reduce ? 0 : 0.08,
@@ -140,10 +122,7 @@ export function BloomMenu({
                     const rows = Math.ceil(items.length / cols);
                     const col = i % cols;
                     const row = Math.floor(i / cols);
-                    const dist = Math.hypot(
-                      col - (cols - 1) / 2,
-                      row - (rows - 1) / 2,
-                    );
+                    const dist = Math.hypot(col - (cols - 1) / 2, row - (rows - 1) / 2);
                     return (
                       <button
                         key={item.label}
@@ -152,34 +131,34 @@ export function BloomMenu({
                           onSelect?.(item.label);
                           setOpen(false);
                         }}
-                      // Static cell with hairline borders (no animated fill) so
-                      // the grid lines never flicker as items stagger in. Only the
-                      // inner content animates.
-                      className={cn(
-                        "flex items-center justify-center px-3 py-6 text-muted-foreground transition-colors hover:text-foreground",
-                        i % 3 !== 2 && "border-r border-border",
-                        i < 3 && "border-b border-border",
-                      )}
-                    >
-                      <motion.span
-                        initial={
-                          reduce
-                            ? { opacity: 0 }
-                            : { opacity: 0, scale: 0.85, filter: "blur(6px)" }
-                        }
-                        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                        transition={{
-                          delay: reduce ? 0 : 0.1 + dist * 0.07,
-                          type: "spring",
-                          stiffness: 440,
-                          damping: 34,
-                        }}
-                        className="flex flex-col items-center gap-2"
+                        // Static cell with hairline borders (no animated fill) so
+                        // the grid lines never flicker as items stagger in. Only the
+                        // inner content animates.
+                        className={cn(
+                          "flex items-center justify-center px-3 py-6 text-muted-foreground transition-colors hover:text-foreground",
+                          i % 3 !== 2 && "border-r border-border",
+                          i < 3 && "border-b border-border",
+                        )}
                       >
-                        <item.icon className="h-5 w-5" />
-                        <span className="text-sm font-medium">{item.label}</span>
-                      </motion.span>
-                    </button>
+                        <motion.span
+                          initial={
+                            reduce
+                              ? { opacity: 0 }
+                              : { opacity: 0, scale: 0.85, filter: "blur(6px)" }
+                          }
+                          animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                          transition={{
+                            delay: reduce ? 0 : 0.1 + dist * 0.07,
+                            type: "spring",
+                            stiffness: 440,
+                            damping: 34,
+                          }}
+                          className="flex flex-col items-center gap-2"
+                        >
+                          <item.icon className="h-5 w-5" />
+                          <span className="text-sm font-medium">{item.label}</span>
+                        </motion.span>
+                      </button>
                     );
                   })}
                 </motion.div>
@@ -200,10 +179,7 @@ export function BloomMenu({
             >
               {/* own `layout` counter-scales the label so it stays crisp while the
                   button box morphs, instead of stretching with it */}
-              <motion.span
-                layout
-                className="inline-flex items-center gap-2 whitespace-nowrap"
-              >
+              <motion.span layout className="inline-flex items-center gap-2 whitespace-nowrap">
                 Create
                 <Plus className="h-4 w-4" />
               </motion.span>

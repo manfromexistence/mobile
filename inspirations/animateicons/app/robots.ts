@@ -9,8 +9,8 @@ import type { MetadataRoute } from "next";
  * allowed; this simply opens the door to AI agents as well.
  */
 export default function robots(): MetadataRoute.Robots {
-	return {
-		rules: [{ userAgent: "*", allow: "/" }],
-		sitemap: "https://animateicons.in/sitemap.xml",
-	};
+  return {
+    rules: [{ userAgent: "*", allow: "/" }],
+    sitemap: "https://animateicons.in/sitemap.xml",
+  };
 }

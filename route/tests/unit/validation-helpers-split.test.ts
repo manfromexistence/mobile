@@ -28,18 +28,21 @@ test("host preserves its public surface (dispatcher + claude-code validator + re
 test("re-exported guards are the same function objects as transport's", () => {
   assert.equal(
     (HOST as Record<string, unknown>).isRetryableProxyTarget,
-    transport.isRetryableProxyTarget
+    transport.isRetryableProxyTarget,
   );
   assert.equal(
     (HOST as Record<string, unknown>).isSecurityBlockError,
-    transport.isSecurityBlockError
+    transport.isSecurityBlockError,
   );
 });
 
 test("urlHelpers: normalizeBaseUrl trims + strips trailing slash; addModelsSuffix swaps endpoints", () => {
   assert.equal(urls.normalizeBaseUrl("  https://api.x.com/v1/  "), "https://api.x.com/v1");
   assert.equal(urls.normalizeBaseUrl(123 as unknown as string), ""); // non-string guard (#2463)
-  assert.equal(urls.addModelsSuffix("https://api.x.com/v1/chat/completions"), "https://api.x.com/v1/models");
+  assert.equal(
+    urls.addModelsSuffix("https://api.x.com/v1/chat/completions"),
+    "https://api.x.com/v1/models",
+  );
   assert.equal(urls.addModelsSuffix("https://api.x.com/v1/models"), "https://api.x.com/v1/models");
 });
 

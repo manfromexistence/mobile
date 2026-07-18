@@ -46,9 +46,7 @@ export interface SortableProps<TData> extends DndContextProps {
    * onMove={(event) => onCustomMove({activeIndex: event.activeIndex, overIndex: event.overIndex})}
    * ```
    */
-  onMove?: (
-    event: DragEndEvent & { activeIndex: number; overIndex: number },
-  ) => void;
+  onMove?: (event: DragEndEvent & { activeIndex: number; overIndex: number }) => void;
 
   /**
    * The array of modifiers that will be used to modify the behavior of the sortable component.
@@ -151,9 +149,7 @@ export interface SortableProps<TData> extends DndContextProps {
   flatCursor?: boolean;
 }
 
-export interface SortableContentProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface SortableContentProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The strategy to use for sorting the items.
    *
@@ -201,15 +197,10 @@ export interface SortableItemProps extends EmptyProps<"div">, CompositionProps {
   asHandle?: boolean;
 }
 
-export interface SortableItemHandleProps
-  extends EmptyProps<"button">,
-    CompositionProps {}
+export interface SortableItemHandleProps extends EmptyProps<"button">, CompositionProps {}
 
 export interface SortableOverlayProps
-  extends Omit<
-    React.ComponentProps<typeof DragOverlay>,
-    keyof React.ComponentProps<"div">
-  > {
+  extends Omit<React.ComponentProps<typeof DragOverlay>, keyof React.ComponentProps<"div">> {
   /**
    * The container to render the overlay in.
    *
@@ -235,7 +226,5 @@ export interface SortableOverlayProps
    * children={(params) => <div className="size-full">{params.value}</div>}
    * ```
    */
-  children?:
-    | React.ReactNode
-    | ((params: { value: UniqueIdentifier }) => React.ReactNode);
+  children?: React.ReactNode | ((params: { value: UniqueIdentifier }) => React.ReactNode);
 }

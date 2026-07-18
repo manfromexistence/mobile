@@ -20,7 +20,7 @@ test("openai registry tags gpt-5.5-pro and gpt-5.4-pro as openai-responses", () 
     assert.equal(
       entry.targetFormat,
       "openai-responses",
-      `${id} is responses-only upstream and must carry targetFormat: "openai-responses"`
+      `${id} is responses-only upstream and must carry targetFormat: "openai-responses"`,
     );
   }
 });
@@ -30,7 +30,7 @@ test("openai chat models stay untagged (default /chat/completions path)", () => 
     assert.equal(
       getModelTargetFormat("openai", id),
       null,
-      `${id} is a chat model and must not be re-routed`
+      `${id} is a chat model and must not be re-routed`,
     );
   }
 });
@@ -42,7 +42,7 @@ test("dynamically-synced OpenAI *-pro ids resolve to openai-responses", () => {
     assert.equal(
       getModelTargetFormat("openai", id),
       "openai-responses",
-      `${id} should hit the -pro responses-only heuristic`
+      `${id} should hit the -pro responses-only heuristic`,
     );
   }
 });
@@ -70,23 +70,14 @@ test("resolveChatCoreTargetFormat picks openai-responses for openai pro models",
 
 test("DefaultExecutor routes openai responses-only models to /v1/responses", () => {
   const executor = new DefaultExecutor("openai");
-  assert.equal(
-    executor.buildUrl("gpt-5.5-pro", false),
-    "https://api.openai.com/v1/responses"
-  );
+  assert.equal(executor.buildUrl("gpt-5.5-pro", false), "https://api.openai.com/v1/responses");
   assert.equal(executor.buildUrl("o1-pro", true), "https://api.openai.com/v1/responses");
 });
 
 test("DefaultExecutor keeps openai chat models on /v1/chat/completions", () => {
   const executor = new DefaultExecutor("openai");
-  assert.equal(
-    executor.buildUrl("gpt-4o", false),
-    "https://api.openai.com/v1/chat/completions"
-  );
-  assert.equal(
-    executor.buildUrl("gpt-5.5", true),
-    "https://api.openai.com/v1/chat/completions"
-  );
+  assert.equal(executor.buildUrl("gpt-4o", false), "https://api.openai.com/v1/chat/completions");
+  assert.equal(executor.buildUrl("gpt-5.5", true), "https://api.openai.com/v1/chat/completions");
 });
 
 test("DefaultExecutor honors a custom openai base URL for both endpoints", () => {
@@ -94,10 +85,10 @@ test("DefaultExecutor honors a custom openai base URL for both endpoints", () =>
   const credentials = { providerSpecificData: { baseUrl: "https://gw.example.com/v1" } };
   assert.equal(
     executor.buildUrl("gpt-5.5-pro", false, 0, credentials),
-    "https://gw.example.com/v1/responses"
+    "https://gw.example.com/v1/responses",
   );
   assert.equal(
     executor.buildUrl("gpt-4o", false, 0, credentials),
-    "https://gw.example.com/v1/chat/completions"
+    "https://gw.example.com/v1/chat/completions",
   );
 });

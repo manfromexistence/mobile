@@ -29,7 +29,9 @@ const core = await import("../../src/lib/db/core.ts");
 const settingsDb = await import("../../src/lib/db/settings.ts");
 const { resetAllComboMetrics } = await import("../../open-sse/services/comboMetrics.ts");
 const { resetAllCircuitBreakers } = await import("../../src/shared/utils/circuitBreaker.ts");
-const { resetAll: resetAllSemaphores } = await import("../../open-sse/services/rateLimitSemaphore.ts");
+const { resetAll: resetAllSemaphores } = await import(
+  "../../open-sse/services/rateLimitSemaphore.ts"
+);
 const { _resetAllDecks } = await import("../../src/shared/utils/shuffleDeck.ts");
 const { clearSessions } = await import("../../open-sse/services/sessionManager.ts");
 
@@ -115,7 +117,9 @@ test("#6427 priority combo falls back when the first target's 200 body carries a
           error: { message: "Insufficient credits balance", type: "insufficient_quota" },
         });
       }
-      return jsonResponse({ choices: [{ message: { role: "assistant", content: "real answer" } }] });
+      return jsonResponse({
+        choices: [{ message: { role: "assistant", content: "real answer" } }],
+      });
     },
     isModelAvailable: async () => true,
     log: createLog(),
@@ -127,10 +131,14 @@ test("#6427 priority combo falls back when the first target's 200 body carries a
   assert.deepEqual(
     calls,
     ["deadprovider/exhausted-model", "healthyprovider/backup-model"],
-    "combo must fail over past the masked-200 target instead of returning it"
+    "combo must fail over past the masked-200 target instead of returning it",
   );
   const bodyText = await result.clone().text();
-  assert.match(bodyText, /real answer/, "the returned body must be the fallback target's real answer");
+  assert.match(
+    bodyText,
+    /real answer/,
+    "the returned body must be the fallback target's real answer",
+  );
 });
 
 test("#6427 priority combo falls back when the first target's 200 body carries a known exhaustion phrase (no structured error)", async () => {
@@ -154,7 +162,9 @@ test("#6427 priority combo falls back when the first target's 200 body carries a
           message: "Quota exceeded for this account",
         });
       }
-      return jsonResponse({ choices: [{ message: { role: "assistant", content: "real answer" } }] });
+      return jsonResponse({
+        choices: [{ message: { role: "assistant", content: "real answer" } }],
+      });
     },
     isModelAvailable: async () => true,
     log: createLog(),
@@ -166,7 +176,7 @@ test("#6427 priority combo falls back when the first target's 200 body carries a
   assert.deepEqual(
     calls,
     ["deadprovider/exhausted-model", "healthyprovider/backup-model"],
-    "combo must fail over past the masked-200 target instead of returning it"
+    "combo must fail over past the masked-200 target instead of returning it",
   );
 });
 
@@ -204,7 +214,7 @@ test("#6427 control: a normal 200 completion that merely mentions 'quota' in ass
   assert.deepEqual(
     calls,
     ["healthyprovider/primary-model"],
-    "a legitimate completion mentioning 'quota'/'credits' in prose must NOT trigger a false-positive fallback"
+    "a legitimate completion mentioning 'quota'/'credits' in prose must NOT trigger a false-positive fallback",
   );
   const bodyText = await result.clone().text();
   assert.match(bodyText, /quota exceeded/i, "the real assistant prose must be returned unchanged");

@@ -14,11 +14,8 @@ import assert from "node:assert/strict";
 const { convertGeminiToInternal } = await import(
   "../../src/app/api/v1beta/models/[...path]/convertGeminiToInternal.ts"
 );
-const {
-  openAIChunkToGeminiChunk,
-  transformOpenAISSEToGeminiSSE,
-  convertOpenAIResponseToGemini,
-} = await import("../../open-sse/translator/response/openai-to-gemini-sse.ts");
+const { openAIChunkToGeminiChunk, transformOpenAISSEToGeminiSSE, convertOpenAIResponseToGemini } =
+  await import("../../open-sse/translator/response/openai-to-gemini-sse.ts");
 
 // ---------------------------------------------------------------------------
 // 1. Request converter
@@ -85,10 +82,7 @@ test("request: prior functionCall part → assistant tool_calls", () => {
   assert.equal(assistantMsg.tool_calls.length, 1);
   assert.equal(assistantMsg.tool_calls[0].type, "function");
   assert.equal(assistantMsg.tool_calls[0].function.name, "get_weather");
-  assert.deepEqual(
-    JSON.parse(assistantMsg.tool_calls[0].function.arguments),
-    { city: "Paris" }
-  );
+  assert.deepEqual(JSON.parse(assistantMsg.tool_calls[0].function.arguments), { city: "Paris" });
 });
 
 test("request: functionResponse part → tool role message", () => {
@@ -159,7 +153,7 @@ test("non-stream: message.tool_calls → parts[].functionCall {name,args}", asyn
 
   const geminiResp = await convertOpenAIResponseToGemini(
     makeJsonResponse(openaiResponse),
-    "gemini/gemini-pro"
+    "gemini/gemini-pro",
   );
   const body = (await geminiResp.json()) as {
     candidates: Array<{
@@ -205,7 +199,7 @@ test("stream (unit): fragmented tool_calls accumulate into one functionCall", ()
       ],
     },
     "gemini/gemini-pro",
-    state
+    state,
   );
   assert.equal(c1, null, "intermediate tool-call chunk emits nothing");
 
@@ -213,11 +207,14 @@ test("stream (unit): fragmented tool_calls accumulate into one functionCall", ()
   const c2 = openAIChunkToGeminiChunk(
     {
       choices: [
-        { delta: { tool_calls: [{ index: 0, function: { arguments: 'ty":"Paris"}' } }] }, finish_reason: null },
+        {
+          delta: { tool_calls: [{ index: 0, function: { arguments: 'ty":"Paris"}' } }] },
+          finish_reason: null,
+        },
       ],
     },
     "gemini/gemini-pro",
-    state
+    state,
   );
   assert.equal(c2, null, "second fragment still emits nothing");
 
@@ -225,7 +222,7 @@ test("stream (unit): fragmented tool_calls accumulate into one functionCall", ()
   const c3 = openAIChunkToGeminiChunk(
     { choices: [{ delta: {}, finish_reason: "tool_calls" }] },
     "gemini/gemini-pro",
-    state
+    state,
   );
   assert.ok(c3, "final chunk should emit");
   const parts = c3!.candidates[0].content.parts as Array<Record<string, unknown>>;
@@ -253,7 +250,7 @@ test("stream (e2e): SSE with fragmented tool_calls → Gemini functionCall", asy
         controller.close();
       },
     }),
-    { status: 200, headers: { "Content-Type": "text/event-stream" } }
+    { status: 200, headers: { "Content-Type": "text/event-stream" } },
   );
 
   const geminiResp = transformOpenAISSEToGeminiSSE(upstream, "gemini/gemini-pro");

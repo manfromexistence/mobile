@@ -40,10 +40,7 @@ import {
 } from "./message";
 import log from "loglevel";
 import { MLCEngine } from "./engine";
-import {
-  UnknownMessageKindError,
-  WorkerEngineModelNotLoadedError,
-} from "./error";
+import { UnknownMessageKindError, WorkerEngineModelNotLoadedError } from "./error";
 import { areArraysEqual } from "./utils";
 import { getModelIdToUse } from "./support";
 
@@ -102,16 +99,11 @@ export class WebWorkerMLCEngineHandler {
     postMessage(msg);
   }
 
-  setLogitProcessorRegistry(
-    logitProcessorRegistry?: Map<string, LogitProcessor>,
-  ) {
+  setLogitProcessorRegistry(logitProcessorRegistry?: Map<string, LogitProcessor>) {
     this.engine.setLogitProcessorRegistry(logitProcessorRegistry);
   }
 
-  async handleTask<T extends MessageContent>(
-    uuid: string,
-    task: () => Promise<T>,
-  ) {
+  async handleTask<T extends MessageContent>(uuid: string, task: () => Promise<T>) {
     try {
       const res = await task();
       const msg: WorkerResponse = {
@@ -131,11 +123,7 @@ export class WebWorkerMLCEngineHandler {
     }
   }
 
-  onmessage(
-    event: any,
-    onComplete?: (value: any) => void,
-    onError?: () => void,
-  ) {
+  onmessage(event: any, onComplete?: (value: any) => void, onError?: () => void) {
     let msg: WorkerRequest;
     if (event instanceof MessageEvent) {
       msg = event.data as WorkerRequest;
@@ -186,13 +174,12 @@ export class WebWorkerMLCEngineHandler {
           // Also ensures params.selectedModelId will match what this.engine selects
           await this.reloadIfUnmatched(params.modelId, params.chatOpts);
           // Register new async generator for this new request of the model
-          const curGenerator = (await this.engine.chatCompletion(
-            params.request,
-          )) as AsyncGenerator<ChatCompletionChunk, void, void>;
-          this.loadedModelIdToAsyncGenerator.set(
-            params.selectedModelId,
-            curGenerator,
-          );
+          const curGenerator = (await this.engine.chatCompletion(params.request)) as AsyncGenerator<
+            ChatCompletionChunk,
+            void,
+            void
+          >;
+          this.loadedModelIdToAsyncGenerator.set(params.selectedModelId, curGenerator);
           onComplete?.(null);
           return null;
         });
@@ -217,13 +204,12 @@ export class WebWorkerMLCEngineHandler {
           // Also ensures params.selectedModelId will match what this.engine selects
           await this.reloadIfUnmatched(params.modelId, params.chatOpts);
           // Register new async generator for this new request of the model
-          const curGenerator = (await this.engine.completion(
-            params.request,
-          )) as AsyncGenerator<Completion, void, void>;
-          this.loadedModelIdToAsyncGenerator.set(
-            params.selectedModelId,
-            curGenerator,
-          );
+          const curGenerator = (await this.engine.completion(params.request)) as AsyncGenerator<
+            Completion,
+            void,
+            void
+          >;
+          this.loadedModelIdToAsyncGenerator.set(params.selectedModelId, curGenerator);
           onComplete?.(null);
           return null;
         });
@@ -235,13 +221,9 @@ export class WebWorkerMLCEngineHandler {
         // For any subsequent request, we return whatever `next()` yields
         this.handleTask(msg.uuid, async () => {
           const params = msg.content as CompletionStreamNextChunkParams;
-          const curGenerator = this.loadedModelIdToAsyncGenerator.get(
-            params.selectedModelId,
-          );
+          const curGenerator = this.loadedModelIdToAsyncGenerator.get(params.selectedModelId);
           if (curGenerator === undefined) {
-            throw Error(
-              "InternalError: Chunk generator in worker should be instantiated by now.",
-            );
+            throw Error("InternalError: Chunk generator in worker should be instantiated by now.");
           }
           // Yield the next chunk
           const { value } = await curGenerator.next();
@@ -361,10 +343,7 @@ export class WebWorkerMLCEngineHandler {
    * to possibly killed service worker), we reload here.
    * For more, see https://github.com/mlc-ai/web-llm/pull/533
    */
-  async reloadIfUnmatched(
-    expectedModelId: string[],
-    expectedChatOpts?: ChatOptions[],
-  ) {
+  async reloadIfUnmatched(expectedModelId: string[], expectedChatOpts?: ChatOptions[]) {
     // TODO: should we also check expectedChatOpts here?
     if (!areArraysEqual(this.modelId, expectedModelId)) {
       log.warn(
@@ -493,14 +472,9 @@ export class WebWorkerMLCEngine implements MLCEngineInterface {
     this.worker.postMessage(msg);
   }
 
-  protected getPromise<T extends MessageContent>(
-    msg: WorkerRequest,
-  ): Promise<T> {
+  protected getPromise<T extends MessageContent>(msg: WorkerRequest): Promise<T> {
     const uuid = msg.uuid;
-    const executor = (
-      resolve: (arg: T) => void,
-      reject: (arg: any) => void,
-    ) => {
+    const executor = (resolve: (arg: T) => void, reject: (arg: any) => void) => {
       const cb = (msg: WorkerResponse) => {
         if (msg.kind == "return") {
           resolve(msg.content as T);
@@ -519,10 +493,7 @@ export class WebWorkerMLCEngine implements MLCEngineInterface {
     return promise;
   }
 
-  async reload(
-    modelId: string | string[],
-    chatOpts?: ChatOptions | ChatOptions[],
-  ): Promise<void> {
+  async reload(modelId: string | string[], chatOpts?: ChatOptions | ChatOptions[]): Promise<void> {
     // Always convert modelId and chatOpts to lists internally for ease of manipulation
     if (!Array.isArray(modelId)) {
       modelId = [modelId];
@@ -665,9 +636,7 @@ export class WebWorkerMLCEngine implements MLCEngineInterface {
     }
   }
 
-  async chatCompletion(
-    request: ChatCompletionRequestNonStreaming,
-  ): Promise<ChatCompletion>;
+  async chatCompletion(request: ChatCompletionRequestNonStreaming): Promise<ChatCompletion>;
   async chatCompletion(
     request: ChatCompletionRequestStreaming,
   ): Promise<AsyncIterable<ChatCompletionChunk>>;
@@ -704,11 +673,7 @@ export class WebWorkerMLCEngine implements MLCEngineInterface {
       await this.getPromise<null>(msg);
 
       // Then return an async chunk generator that resides on the client side
-      return this.asyncGenerate(selectedModelId) as AsyncGenerator<
-        ChatCompletionChunk,
-        void,
-        void
-      >;
+      return this.asyncGenerate(selectedModelId) as AsyncGenerator<ChatCompletionChunk, void, void>;
     }
 
     // Non streaming case is more straightforward
@@ -724,12 +689,8 @@ export class WebWorkerMLCEngine implements MLCEngineInterface {
     return await this.getPromise<ChatCompletion>(msg);
   }
 
-  async completion(
-    request: CompletionCreateParamsNonStreaming,
-  ): Promise<Completion>;
-  async completion(
-    request: CompletionCreateParamsStreaming,
-  ): Promise<AsyncIterable<Completion>>;
+  async completion(request: CompletionCreateParamsNonStreaming): Promise<Completion>;
+  async completion(request: CompletionCreateParamsStreaming): Promise<AsyncIterable<Completion>>;
   async completion(
     request: CompletionCreateParamsBase,
   ): Promise<AsyncIterable<Completion> | Completion>;
@@ -763,11 +724,7 @@ export class WebWorkerMLCEngine implements MLCEngineInterface {
       await this.getPromise<null>(msg);
 
       // Then return an async chunk generator that resides on the client side
-      return this.asyncGenerate(selectedModelId) as AsyncGenerator<
-        Completion,
-        void,
-        void
-      >;
+      return this.asyncGenerate(selectedModelId) as AsyncGenerator<Completion, void, void>;
     }
 
     // Non streaming case is more straightforward
@@ -783,9 +740,7 @@ export class WebWorkerMLCEngine implements MLCEngineInterface {
     return await this.getPromise<Completion>(msg);
   }
 
-  async embedding(
-    request: EmbeddingCreateParams,
-  ): Promise<CreateEmbeddingResponse> {
+  async embedding(request: EmbeddingCreateParams): Promise<CreateEmbeddingResponse> {
     if (this.modelId === undefined) {
       throw new WorkerEngineModelNotLoadedError(this.constructor.name);
     }

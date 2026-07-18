@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { translateNonStreamingResponse } =
-  await import("../../open-sse/handlers/responseTranslator.ts");
+const { translateNonStreamingResponse } = await import(
+  "../../open-sse/handlers/responseTranslator.ts"
+);
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 
 test("T19: picks the last non-empty message content from Responses output", () => {
@@ -31,7 +32,7 @@ test("T19: picks the last non-empty message content from Responses output", () =
   const translated = translateNonStreamingResponse(
     responseBody,
     FORMATS.OPENAI_RESPONSES,
-    FORMATS.OPENAI
+    FORMATS.OPENAI,
   );
 
   assert.equal((translated as any).choices[0].message.content, "Resposta final");
@@ -58,7 +59,7 @@ test("T19: falls back to last message block when all message texts are empty", (
   const translated = translateNonStreamingResponse(
     responseBody,
     FORMATS.OPENAI_RESPONSES,
-    FORMATS.OPENAI
+    FORMATS.OPENAI,
   );
 
   assert.equal((translated as any).choices[0].message.content, "");

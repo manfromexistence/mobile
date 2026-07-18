@@ -55,9 +55,7 @@ export default function FileUploadFormDemo() {
           <code>
             {JSON.stringify(
               data.files.map((file) =>
-                file.name.length > 25
-                  ? `${file.name.slice(0, 25)}...`
-                  : file.name,
+                file.name.length > 25 ? `${file.name.slice(0, 25)}...` : file.name,
               ),
               null,
               2,
@@ -96,12 +94,7 @@ export default function FileUploadFormDemo() {
                     Drag and drop or
                     <FileUploadTrigger
                       render={(props) => (
-                        <Button
-                          variant="link"
-                          size="sm"
-                          className="p-0"
-                          {...props}
-                        >
+                        <Button variant="link" size="sm" className="p-0" {...props}>
                           choose files
                         </Button>
                       )}
@@ -115,12 +108,7 @@ export default function FileUploadFormDemo() {
                         <FileUploadItemMetadata />
                         <FileUploadItemDelete
                           render={(props) => (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="size-7"
-                              {...props}
-                            >
+                            <Button variant="ghost" size="icon" className="size-7" {...props}>
                               <X />
                               <span className="sr-only">Delete</span>
                             </Button>
@@ -131,9 +119,7 @@ export default function FileUploadFormDemo() {
                   </FileUploadList>
                 </FileUpload>
               </FormControl>
-              <FormDescription>
-                Upload up to 2 images up to 5MB each.
-              </FormDescription>
+              <FormDescription>Upload up to 2 images up to 5MB each.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

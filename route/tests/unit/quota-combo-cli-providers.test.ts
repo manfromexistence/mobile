@@ -67,7 +67,7 @@ test("syncQuotaCombos generates qtSd/ combos for a CLI provider (codex) via REGI
   const all = await combosDb.getCombos();
   const { QUOTA_MODEL_PREFIX: PREFIX } = await import("../../src/lib/quota/quotaModelNaming.ts");
   const quotaCombos = all.filter(
-    (c) => typeof c.name === "string" && (c.name as string).startsWith(PREFIX)
+    (c) => typeof c.name === "string" && (c.name as string).startsWith(PREFIX),
   );
   assert.ok(quotaCombos.length > 0, "codex pool must produce qtSd/ combos (was 0 before fix)");
 

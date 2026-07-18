@@ -29,7 +29,7 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const source = fs.readFileSync(
   path.resolve(here, "../../scripts/dev/standalone-server-ws.mjs"),
-  "utf8"
+  "utf8",
 );
 
 test("standalone-server-ws.mjs imports getMainServerTimeoutConfig", () => {
@@ -41,7 +41,7 @@ test("standalone-server-ws.mjs imports getMainServerTimeoutConfig", () => {
     source,
     /import\s*\{\s*getMainServerTimeoutConfig\s*\}\s*from\s*["']\.\/main-server-timeouts\.mjs["']/,
     "expected the production server wrapper to import getMainServerTimeoutConfig " +
-      "from its shipped sibling module (./main-server-timeouts.mjs)"
+      "from its shipped sibling module (./main-server-timeouts.mjs)",
   );
 });
 
@@ -49,12 +49,12 @@ test("standalone-server-ws.mjs applies keepAliveTimeout/headersTimeout to the wr
   assert.match(
     source,
     /server\.keepAliveTimeout\s*=\s*\w*[Tt]imeouts?\.keepAliveTimeoutMs/,
-    "expected the wrapped server object to have keepAliveTimeout set from getMainServerTimeoutConfig()"
+    "expected the wrapped server object to have keepAliveTimeout set from getMainServerTimeoutConfig()",
   );
   assert.match(
     source,
     /server\.headersTimeout\s*=\s*\w*[Tt]imeouts?\.headersTimeoutMs/,
-    "expected the wrapped server object to have headersTimeout set from getMainServerTimeoutConfig()"
+    "expected the wrapped server object to have headersTimeout set from getMainServerTimeoutConfig()",
   );
 });
 
@@ -68,10 +68,10 @@ test("keepAliveTimeout/headersTimeout are applied inside createServerWithRespons
   assert.ok(returnIdx !== -1, "expected the wrapped server to be returned");
   assert.ok(
     keepAliveIdx > factoryIdx,
-    "timeout wiring must happen inside createServerWithResponsesWs"
+    "timeout wiring must happen inside createServerWithResponsesWs",
   );
   assert.ok(
     keepAliveIdx < returnIdx,
-    "timeout wiring must happen before the server object is returned to the caller"
+    "timeout wiring must happen before the server object is returned to the caller",
   );
 });

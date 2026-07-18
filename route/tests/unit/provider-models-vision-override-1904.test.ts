@@ -20,7 +20,7 @@ import path from "node:path";
 // (what the /v1/models catalog calls) honours the explicit override.
 
 const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-provider-model-vision-override-1904-")
+  path.join(os.tmpdir(), "omniroute-provider-model-vision-override-1904-"),
 );
 process.env.DATA_DIR = TEST_DATA_DIR;
 
@@ -61,7 +61,7 @@ test("POST with supportsVision:true persists the flag on the custom model row", 
       apiFormat: "chat-completions",
       supportedEndpoints: ["chat"],
       supportsVision: true,
-    })
+    }),
   );
   const postBody = (await postRes.json()) as { model?: { supportsVision?: boolean } };
   assert.equal(postRes.status, 200);
@@ -69,7 +69,7 @@ test("POST with supportsVision:true persists the flag on the custom model row", 
 
   const models = await modelsDb.getCustomModels("openai-compatible-demo");
   const row = (models as Array<{ id?: string; supportsVision?: boolean }>).find(
-    (m) => m.id === "qwen-vl-custom"
+    (m) => m.id === "qwen-vl-custom",
   );
   assert.ok(row, "model row should exist");
   assert.equal(row!.supportsVision, true);
@@ -79,7 +79,7 @@ test("PUT with supportsVision:true persists a manual override and PUT null clear
   await modelsDb.addCustomModel(
     "openai-compatible-demo",
     "custom-local-model",
-    "Custom Local Model"
+    "Custom Local Model",
   );
 
   const putRes = await providerModelsRoute.PUT(
@@ -87,14 +87,14 @@ test("PUT with supportsVision:true persists a manual override and PUT null clear
       provider: "openai-compatible-demo",
       modelId: "custom-local-model",
       supportsVision: true,
-    })
+    }),
   );
   const putBody = (await putRes.json()) as { model?: { supportsVision?: boolean } };
   assert.equal(putRes.status, 200);
   assert.equal(putBody.model?.supportsVision, true);
 
   const getRes = await providerModelsRoute.GET(
-    new Request("http://localhost/api/provider-models?provider=openai-compatible-demo")
+    new Request("http://localhost/api/provider-models?provider=openai-compatible-demo"),
   );
   const getBody = (await getRes.json()) as {
     models: Array<{ id?: string; supportsVision?: boolean }>;
@@ -109,7 +109,7 @@ test("PUT with supportsVision:true persists a manual override and PUT null clear
       provider: "openai-compatible-demo",
       modelId: "custom-local-model",
       supportsVision: null,
-    })
+    }),
   );
   const clearBody = (await clearRes.json()) as { model?: { supportsVision?: boolean } };
   assert.equal(clearRes.status, 200);
@@ -119,7 +119,7 @@ test("PUT with supportsVision:true persists a manual override and PUT null clear
 test("getCustomVisionCapabilityFields honours an explicit supportsVision:true override", () => {
   const fields = catalogVision.getCustomVisionCapabilityFields(
     { supportsVision: true },
-    "openai-compatible-demo/qwen-not-heuristic-matched"
+    "openai-compatible-demo/qwen-not-heuristic-matched",
   );
   assert.ok(fields, "explicit override should produce vision capability fields");
   assert.deepEqual(fields!.capabilities, { vision: true });
@@ -128,7 +128,7 @@ test("getCustomVisionCapabilityFields honours an explicit supportsVision:true ov
 test("getCustomVisionCapabilityFields honours an explicit supportsVision:false override even for a vision-like id", () => {
   const fields = catalogVision.getCustomVisionCapabilityFields(
     { supportsVision: false },
-    "openai-compatible-demo/gpt-4-vision-preview"
+    "openai-compatible-demo/gpt-4-vision-preview",
   );
   assert.equal(fields, null);
 });
@@ -143,7 +143,7 @@ test("without an explicit flag, the UI has no field wired to persist supportsVis
       modelId: "plain-model",
       apiFormat: "chat-completions",
       supportedEndpoints: ["chat"],
-    })
+    }),
   );
   const postBody = (await postRes.json()) as { model?: { supportsVision?: boolean } };
   assert.equal(postRes.status, 200);

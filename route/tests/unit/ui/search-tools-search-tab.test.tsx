@@ -13,7 +13,9 @@ vi.mock("next-intl", () => ({
 vi.mock("next/dynamic", () => ({
   default: (loader: () => Promise<{ default: React.ComponentType<Record<string, unknown>> }>) => {
     return function DynamicComponent(props: Record<string, unknown>) {
-      const [Comp, setComp] = React.useState<React.ComponentType<Record<string, unknown>> | null>(null);
+      const [Comp, setComp] = React.useState<React.ComponentType<Record<string, unknown>> | null>(
+        null,
+      );
       React.useEffect(() => {
         loader().then((m) => setComp(() => m.default));
       }, []);
@@ -29,16 +31,14 @@ vi.mock("next/link", () => ({
 }));
 
 // Mock SearchHistory (no-op)
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/search-tools/components/SearchHistory",
-  () => ({ default: () => React.createElement("div", { "data-testid": "search-history" }) }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/search-tools/components/SearchHistory", () => ({
+  default: () => React.createElement("div", { "data-testid": "search-history" }),
+}));
 
 // Mock RerankPanel (no-op)
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/search-tools/components/RerankPanel",
-  () => ({ default: () => React.createElement("div", { "data-testid": "rerank-panel" }) }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/search-tools/components/RerankPanel", () => ({
+  default: () => React.createElement("div", { "data-testid": "rerank-panel" }),
+}));
 
 // Mock Monaco Editor (to avoid heavy dep in tests)
 vi.mock("@/shared/components/MonacoEditor", () => ({
@@ -48,13 +48,26 @@ vi.mock("@/shared/components/MonacoEditor", () => ({
 vi.mock("@/shared/components", () => ({
   Badge: ({ children, ...props }: { children: React.ReactNode }) =>
     React.createElement("span", props, children),
-  Select: ({ value, onChange, options }: { value: string; onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void; options: { value: string; label: string }[] }) =>
+  Select: ({
+    value,
+    onChange,
+    options,
+  }: {
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    options: { value: string; label: string }[];
+  }) =>
     React.createElement(
       "select",
       { value, onChange },
       options.map((o) => React.createElement("option", { key: o.value, value: o.value }, o.label)),
     ),
-  Button: ({ children, onClick, disabled, ...props }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean }) =>
+  Button: ({
+    children,
+    onClick,
+    disabled,
+    ...props
+  }: { children: React.ReactNode; onClick?: () => void; disabled?: boolean }) =>
     React.createElement("button", { onClick, disabled, ...props }, children),
 }));
 
@@ -70,9 +83,7 @@ const MOCK_RESPONSE = {
   id: "search-1",
   provider: "serper",
   query: "AI trends",
-  results: [
-    { title: "AI Trends 2026", url: "https://example.com", snippet: "Latest AI trends" },
-  ],
+  results: [{ title: "AI Trends 2026", url: "https://example.com", snippet: "Latest AI trends" }],
   cached: false,
   usage: { queries_used: 1, search_cost_usd: 0.001 },
   metrics: { response_time_ms: 200, upstream_latency_ms: 180, total_results_available: null },
@@ -95,14 +106,22 @@ interface SearchTabTestProps {
   providers?: typeof ACTIVE_PROVIDERS;
 }
 
-function renderSearchTab({ providers = ACTIVE_PROVIDERS }: SearchTabTestProps = {}): HTMLDivElement {
+function renderSearchTab({
+  providers = ACTIVE_PROVIDERS,
+}: SearchTabTestProps = {}): HTMLDivElement {
   const el = document.createElement("div");
   document.body.appendChild(el);
   const root = createRoot(el);
   act(() => {
     root.render(
       React.createElement(SearchTab, {
-        configState: { provider: "auto", searchType: "web", fetchFormat: "markdown", fullPage: false, rerankModel: "" },
+        configState: {
+          provider: "auto",
+          searchType: "web",
+          fetchFormat: "markdown",
+          fullPage: false,
+          rerankModel: "",
+        },
         providers,
       }),
     );
@@ -141,7 +160,9 @@ function renderResultsPanel(props: {
 
 describe("SearchTab", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {
@@ -226,9 +247,7 @@ describe("SearchTab", () => {
 
     // The search button should be disabled when no providers
     const buttons = el.querySelectorAll("button");
-    const searchBtn = [...buttons].find(
-      (b) => b.textContent?.trim() === "search" || b.disabled,
-    );
+    const searchBtn = [...buttons].find((b) => b.textContent?.trim() === "search" || b.disabled);
     // At least one button should be disabled when no providers
     const hasDisabled = [...buttons].some((b) => b.disabled);
     expect(hasDisabled).toBe(true);
@@ -237,7 +256,9 @@ describe("SearchTab", () => {
 
 describe("ResultsPanel empty states", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {

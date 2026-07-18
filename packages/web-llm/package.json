@@ -12,18 +12,12 @@
     "format": "prettier --write \"./src/\" \"./examples/\" \"./tests/\"",
     "prepare": "husky"
   },
-  "files": [
-    "lib"
-  ],
+  "files": ["lib"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mlc-ai/web-llm"
   },
-  "keywords": [
-    "llm",
-    "large language model",
-    "machine learning"
-  ],
+  "keywords": ["llm", "large language model", "machine learning"],
   "license": "Apache-2.0",
   "homepage": "https://github.com/mlc-ai/web-llm",
   "devDependencies": {

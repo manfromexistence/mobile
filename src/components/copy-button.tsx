@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import type { Event } from "@/lib/events"
-import { trackEvent } from "@/lib/events"
-import type { CopyButtonProps } from "@/registry/transformed/components/copy-button"
-import { CopyButton as CopyButtonPrimitive } from "@/registry/transformed/components/copy-button"
+import type { Event } from "@/lib/events";
+import { trackEvent } from "@/lib/events";
+import type { CopyButtonProps } from "@/registry/transformed/components/copy-button";
+import { CopyButton as CopyButtonPrimitive } from "@/registry/transformed/components/copy-button";
 
 export function CopyButton({
   size = "icon-sm",
   event,
   ...props
 }: CopyButtonProps & {
-  event?: Event["name"]
+  event?: Event["name"];
 }) {
   return (
     <CopyButtonPrimitive
@@ -23,10 +23,10 @@ export function CopyButton({
             properties: {
               code: copiedValue,
             },
-          })
+          });
         }
       }}
       {...props}
     />
-  )
+  );
 }

@@ -19,18 +19,18 @@ const src = fs.readFileSync(RATE_LIMITER_SRC, "utf8");
 test("#2357 REDIS_URL no longer falls back to localhost:6379 silently", () => {
   assert.ok(
     !src.includes('process.env.REDIS_URL || "redis://localhost:6379"'),
-    "rateLimiter must not default REDIS_URL to localhost"
+    "rateLimiter must not default REDIS_URL to localhost",
   );
   assert.ok(
     src.includes('const REDIS_URL = process.env.REDIS_URL?.trim() || "";'),
-    "rateLimiter must only use Redis when REDIS_URL is explicitly configured"
+    "rateLimiter must only use Redis when REDIS_URL is explicitly configured",
   );
 });
 
 test("#2357 getRedisClient is strict when REDIS_URL is not set", () => {
   assert.ok(
     src.includes('throw new Error("Redis is not configured");'),
-    "getRedisClient must throw when Redis is not configured"
+    "getRedisClient must throw when Redis is not configured",
   );
 });
 
@@ -38,6 +38,6 @@ test("#2357 checkRateLimit falls back when REDIS_URL is unset", () => {
   assert.ok(
     src.includes("if (!isRedisConfigured())") &&
       src.includes("return checkInMemoryRateLimit(FALLBACK_MEMORY_STORE, keyId, rules);"),
-    "checkRateLimit must route to the in-memory fallback when Redis is disabled"
+    "checkRateLimit must route to the in-memory fallback when Redis is disabled",
   );
 });

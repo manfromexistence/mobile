@@ -1,6 +1,12 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion, type HTMLMotionProps, type Variants } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  type HTMLMotionProps,
+  type Variants,
+} from "motion/react";
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { EASE_OUT, EASE_OUT_CSS, SPRING_PRESS, SPRING_SWAP } from "@/lib/ease";
 import { cn } from "@/lib/utils";
@@ -19,10 +25,8 @@ export type ActionSwapAnimation = "blur" | "roll" | "cascade";
 /** Animations with a single-element variant set (cascade animates per letter). */
 type CoreAnimation = "blur" | "roll";
 
-export interface ActionSwapButtonProps extends Omit<
-  HTMLMotionProps<"button">,
-  "children" | "onChange"
-> {
+export interface ActionSwapButtonProps
+  extends Omit<HTMLMotionProps<"button">, "children" | "onChange"> {
   items: ActionSwapItem[];
   value?: string;
   defaultValue?: string;
@@ -175,22 +179,20 @@ export function ActionSwapText({
   // and reduced motion fall back to the closest single-element animation.
   const label = typeof children === "string" ? children : null;
   const cascade = animation === "cascade" && label !== null && !reduce;
-  const coreAnimation: CoreAnimation =
-    animation === "cascade" ? "roll" : animation;
+  const coreAnimation: CoreAnimation = animation === "cascade" ? "roll" : animation;
 
   return (
     <span
-      className={cn("relative inline-block overflow-hidden whitespace-nowrap align-bottom", className)}
+      className={cn(
+        "relative inline-block overflow-hidden whitespace-nowrap align-bottom",
+        className,
+      )}
       style={{
         width,
         transition: reduce ? undefined : `width 220ms ${EASE_OUT_CSS}`,
       }}
     >
-      <span
-        ref={measureRef}
-        aria-hidden
-        className="invisible inline-block whitespace-nowrap"
-      >
+      <span ref={measureRef} aria-hidden className="invisible inline-block whitespace-nowrap">
         {children}
       </span>
       {cascade ? (
@@ -246,11 +248,12 @@ export function ActionSwapIcon({
 }: ActionSwapIconProps) {
   const reduce = useReducedMotion();
   // Icons are single elements — cascade maps to its closest motion, roll.
-  const coreAnimation: CoreAnimation =
-    animation === "cascade" ? "roll" : animation;
+  const coreAnimation: CoreAnimation = animation === "cascade" ? "roll" : animation;
 
   return (
-    <span className={cn("relative inline-grid shrink-0 place-items-center overflow-hidden", className)}>
+    <span
+      className={cn("relative inline-grid shrink-0 place-items-center overflow-hidden", className)}
+    >
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
           key={`${animation}-${value}`}
@@ -286,14 +289,19 @@ export function ActionSwapButton({
   const reduce = useReducedMotion();
   const [internalValue, setInternalValue] = useState(defaultValue ?? items[0]?.id);
   const currentValue = value ?? internalValue;
-  const activeIndex = Math.max(0, items.findIndex((item) => item.id === currentValue));
+  const activeIndex = Math.max(
+    0,
+    items.findIndex((item) => item.id === currentValue),
+  );
   const activeItem = items[activeIndex] ?? items[0];
   const hasIcon = items.some((item) => item.icon);
   const nextItem = cycle && items.length > 0 ? items[(activeIndex + 1) % items.length] : undefined;
 
   if (!activeItem) return null;
 
-  const accessibleLabel = activeItem.ariaLabel ?? (iconOnly && typeof activeItem.label === "string" ? activeItem.label : undefined);
+  const accessibleLabel =
+    activeItem.ariaLabel ??
+    (iconOnly && typeof activeItem.label === "string" ? activeItem.label : undefined);
 
   return (
     <motion.button

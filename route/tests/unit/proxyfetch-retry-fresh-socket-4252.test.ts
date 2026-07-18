@@ -20,10 +20,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { proxyFetch } from "../../open-sse/utils/proxyFetch.ts";
-import {
-  getDefaultDispatcher,
-  getRetryDispatcher,
-} from "../../open-sse/utils/proxyDispatcher.ts";
+import { getDefaultDispatcher, getRetryDispatcher } from "../../open-sse/utils/proxyDispatcher.ts";
 
 function undErrSocket(): Error {
   const err = new Error("fetch failed") as Error & { code?: string };
@@ -51,7 +48,7 @@ test("#4252 a transient socket failure retries on a FRESH (no-keep-alive) dispat
   const res = await proxyFetch(
     "https://integrate.api.nvidia.com/v1/chat/completions",
     { method: "POST" },
-    { undiciFetch: mockUndici, nativeFetch: mockNative }
+    { undiciFetch: mockUndici, nativeFetch: mockNative },
   );
 
   assert.equal(undiciCalls, 2, "undici must retry once (initial fail + retry)");
@@ -64,16 +61,16 @@ test("#4252 a transient socket failure retries on a FRESH (no-keep-alive) dispat
   assert.equal(
     dispatchersUsed[0],
     getDefaultDispatcher(),
-    "first attempt must use the pooled default dispatcher"
+    "first attempt must use the pooled default dispatcher",
   );
   assert.equal(
     dispatchersUsed[1],
     getRetryDispatcher(),
-    "retry must use the fresh no-keep-alive retry dispatcher"
+    "retry must use the fresh no-keep-alive retry dispatcher",
   );
   assert.notEqual(
     dispatchersUsed[0],
     dispatchersUsed[1],
-    "retry must NOT reuse the same pooled dispatcher (would grab another stale socket)"
+    "retry must NOT reuse the same pooled dispatcher (would grab another stale socket)",
   );
 });

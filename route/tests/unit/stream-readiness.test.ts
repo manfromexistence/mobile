@@ -39,8 +39,8 @@ function delayedClaudeStartStream(): ReadableStream<Uint8Array> {
             })}`,
             "",
             "",
-          ].join("\n")
-        )
+          ].join("\n"),
+        ),
       );
 
       await new Promise((resolve) => setTimeout(resolve, 30));
@@ -55,8 +55,8 @@ function delayedClaudeStartStream(): ReadableStream<Uint8Array> {
             })}`,
             "",
             "",
-          ].join("\n")
-        )
+          ].join("\n"),
+        ),
       );
       controller.close();
     },
@@ -81,8 +81,8 @@ function delayedOpenAIResponsesStartStream(): ReadableStream<Uint8Array> {
             })}`,
             "",
             "",
-          ].join("\n")
-        )
+          ].join("\n"),
+        ),
       );
 
       await new Promise((resolve) => setTimeout(resolve, 30));
@@ -93,8 +93,8 @@ function delayedOpenAIResponsesStartStream(): ReadableStream<Uint8Array> {
             `data: ${JSON.stringify({ type: "response.output_text.delta", delta: "slow hello" })}`,
             "",
             "",
-          ].join("\n")
-        )
+          ].join("\n"),
+        ),
       );
       controller.close();
     },
@@ -110,8 +110,8 @@ function delayedChatCompletionStartStream(): ReadableStream<Uint8Array> {
             id: "chatcmpl-glm",
             object: "chat.completion.chunk",
             choices: [{ index: 0, delta: { role: "assistant" } }],
-          })}\n\n`
-        )
+          })}\n\n`,
+        ),
       );
 
       await new Promise((resolve) => setTimeout(resolve, 30));
@@ -121,8 +121,8 @@ function delayedChatCompletionStartStream(): ReadableStream<Uint8Array> {
             id: "chatcmpl-glm",
             object: "chat.completion.chunk",
             choices: [{ index: 0, delta: { content: "slow chat hello" } }],
-          })}\n\n`
-        )
+          })}\n\n`,
+        ),
       );
       controller.close();
     },
@@ -136,8 +136,8 @@ function delayedGeminiStartStream(): ReadableStream<Uint8Array> {
         encoder.encode(
           `data: ${JSON.stringify({
             candidates: [{ content: { parts: [] } }],
-          })}\n\n`
-        )
+          })}\n\n`,
+        ),
       );
 
       await new Promise((resolve) => setTimeout(resolve, 30));
@@ -145,8 +145,8 @@ function delayedGeminiStartStream(): ReadableStream<Uint8Array> {
         encoder.encode(
           `data: ${JSON.stringify({
             candidates: [{ content: { parts: [{ text: "slow gemini hello" }] } }],
-          })}\n\n`
-        )
+          })}\n\n`,
+        ),
       );
       controller.close();
     },
@@ -157,12 +157,12 @@ function delayedUnknownStructuredStartStream(): ReadableStream<Uint8Array> {
   return new ReadableStream<Uint8Array>({
     async start(controller) {
       controller.enqueue(
-        encoder.encode('event: provider.lifecycle\ndata: {"phase":"started"}\n\n')
+        encoder.encode('event: provider.lifecycle\ndata: {"phase":"started"}\n\n'),
       );
 
       await new Promise((resolve) => setTimeout(resolve, 30));
       controller.enqueue(
-        encoder.encode('event: provider.delta\ndata: {"text":"slow unknown hello"}\n\n')
+        encoder.encode('event: provider.delta\ndata: {"text":"slow unknown hello"}\n\n'),
       );
       controller.close();
     },
@@ -187,58 +187,58 @@ test("hasUsefulStreamContent ignores keepalives and lifecycle-only chunks", () =
   assert.equal(hasUsefulStreamContent("event: ping\ndata: {}\n\n"), false);
   assert.equal(
     hasUsefulStreamContent(`data: ${JSON.stringify({ type: "response.created" })}\n\n`),
-    false
+    false,
   );
   assert.equal(
     hasUsefulStreamContent(
-      `data: ${JSON.stringify({ choices: [{ delta: { role: "assistant" }, index: 0 }] })}\n\n`
+      `data: ${JSON.stringify({ choices: [{ delta: { role: "assistant" }, index: 0 }] })}\n\n`,
     ),
-    false
+    false,
   );
 });
 
 test("hasUsefulStreamContent detects text, reasoning, and tool deltas", () => {
   assert.equal(
     hasUsefulStreamContent(
-      `data: ${JSON.stringify({ choices: [{ delta: { content: "hello" }, index: 0 }] })}\n\n`
+      `data: ${JSON.stringify({ choices: [{ delta: { content: "hello" }, index: 0 }] })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasUsefulStreamContent(
-      `data: ${JSON.stringify({ choices: [{ delta: { content: " " }, index: 0 }] })}\n\n`
+      `data: ${JSON.stringify({ choices: [{ delta: { content: " " }, index: 0 }] })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasUsefulStreamContent(
-      `data: ${JSON.stringify({ choices: [{ delta: { reasoning_content: "thinking" }, index: 0 }] })}\n\n`
+      `data: ${JSON.stringify({ choices: [{ delta: { reasoning_content: "thinking" }, index: 0 }] })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasUsefulStreamContent(
-      `data: ${JSON.stringify({ choices: [{ delta: { tool_calls: [{ function: { name: "read" } }] }, index: 0 }] })}\n\n`
+      `data: ${JSON.stringify({ choices: [{ delta: { tool_calls: [{ function: { name: "read" } }] }, index: 0 }] })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasUsefulStreamContent(
-      `data: ${JSON.stringify({ type: "content_block_delta", delta: { text: "hello" } })}\n\n`
+      `data: ${JSON.stringify({ type: "content_block_delta", delta: { text: "hello" } })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasUsefulStreamContent(
-      `data: ${JSON.stringify({ type: "response.output_text.delta", delta: "hello" })}\n\n`
+      `data: ${JSON.stringify({ type: "response.output_text.delta", delta: "hello" })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasUsefulStreamContent(
-      `data: ${JSON.stringify({ response: { candidates: [{ content: { parts: [{ text: "hello" }] } }] } })}\n\n`
+      `data: ${JSON.stringify({ response: { candidates: [{ content: { parts: [{ text: "hello" }] } }] } })}\n\n`,
     ),
-    true
+    true,
   );
 });
 
@@ -247,7 +247,7 @@ test("hasStreamReadinessSignal accepts any non-ping structured SSE event", () =>
   assert.equal(hasStreamReadinessSignal("event: ping\ndata: {}\n\n"), false);
   assert.equal(
     hasStreamReadinessSignal(`data: ${JSON.stringify({ type: "response.created" })}\n\n`),
-    true
+    true,
   );
   assert.equal(
     hasStreamReadinessSignal(
@@ -259,9 +259,9 @@ test("hasStreamReadinessSignal accepts any non-ping structured SSE event", () =>
           role: "assistant",
           model: "claude-sonnet-4-6",
         },
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasStreamReadinessSignal(
@@ -272,27 +272,27 @@ test("hasStreamReadinessSignal accepts any non-ping structured SSE event", () =>
           role: "assistant",
           model: "claude-sonnet-4-6",
         },
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasStreamReadinessSignal(
       `event: content_block_start\ndata: ${JSON.stringify({
         index: 0,
         content_block: { type: "text", text: "" },
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasStreamReadinessSignal('event: provider.lifecycle\ndata: {"phase":"started"}\n\n'),
-    true
+    true,
   );
   assert.equal(hasStreamReadinessSignal('event: ping\ndata: {"phase":"started"}\n\n'), false);
   assert.equal(
     hasStreamReadinessSignal('event: ping\ndata: {"type":"response.created"}\n\n'),
-    false
+    false,
   );
 });
 
@@ -300,7 +300,7 @@ test("hasStreamReadinessSignal accepts Responses lifecycle events without schema
   assert.equal(hasStreamReadinessSignal(`data: ${JSON.stringify({})}\n\n`), false);
   assert.equal(
     hasStreamReadinessSignal(`data: ${JSON.stringify({ type: "response.created" })}\n\n`),
-    true
+    true,
   );
   assert.equal(
     hasStreamReadinessSignal(
@@ -312,25 +312,25 @@ test("hasStreamReadinessSignal accepts Responses lifecycle events without schema
           created_at: 1_735_000_000,
           status: "in_progress",
         },
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasStreamReadinessSignal(
       `event: response.in_progress\ndata: ${JSON.stringify({
         response: { id: "resp_1", status: "in_progress" },
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasStreamReadinessSignal(
       `event: response.output_item.added\ndata: ${JSON.stringify({
         item: { id: "msg_1", type: "message", content: [{ type: "output_text", text: "" }] },
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
 });
 
@@ -341,9 +341,9 @@ test("hasStreamReadinessSignal accepts chat completion structural chunks without
         id: "chatcmpl-glm",
         object: "chat.completion.chunk",
         choices: [{ index: 0, delta: { role: "assistant" } }],
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasStreamReadinessSignal(
@@ -351,9 +351,9 @@ test("hasStreamReadinessSignal accepts chat completion structural chunks without
         id: "chatcmpl-glm",
         object: "chat.completion.chunk",
         choices: [{ index: 0, delta: { tool_calls: [{ index: 0, id: "call_1" }] } }],
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasStreamReadinessSignal(
@@ -361,24 +361,24 @@ test("hasStreamReadinessSignal accepts chat completion structural chunks without
         id: "chatcmpl-glm",
         object: "chat.completion.chunk",
         choices: [{ index: 0, delta: { function_call: { name: "read_file" } } }],
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasStreamReadinessSignal(
-      `data: ${JSON.stringify({ object: "chat.completion.chunk", choices: [] })}\n\n`
+      `data: ${JSON.stringify({ object: "chat.completion.chunk", choices: [] })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasStreamReadinessSignal(
       `data: ${JSON.stringify({
         object: "chat.completion.chunk",
         choices: [{ index: 0, delta: {} }],
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
   // #3612: index-only tool_call chunk (first chunk in OpenAI streaming — no id yet)
   // MUST be treated as a readiness signal (tool-call has started)
@@ -387,18 +387,18 @@ test("hasStreamReadinessSignal accepts chat completion structural chunks without
       `data: ${JSON.stringify({
         object: "chat.completion.chunk",
         choices: [{ index: 0, delta: { tool_calls: [{ index: 0 }] } }],
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasStreamReadinessSignal(
       `data: ${JSON.stringify({
         object: "chat.completion.chunk",
         choices: [{ index: 0, delta: { function_call: {} } }],
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
   // #3612: chunk with valid choices but NO object/type field (some OA-compatible backends
   // omit object) — must be accepted as a readiness signal when delta.role is present
@@ -407,9 +407,9 @@ test("hasStreamReadinessSignal accepts chat completion structural chunks without
       `data: ${JSON.stringify({
         id: "chatcmpl-xyz",
         choices: [{ index: 0, delta: { role: "assistant" } }],
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
   // Stream readiness is a zombie filter now, not a provider-specific schema gate.
   assert.equal(
@@ -417,9 +417,9 @@ test("hasStreamReadinessSignal accepts chat completion structural chunks without
       `data: ${JSON.stringify({
         object: "chat.completion",
         choices: [{ index: 0, delta: { role: "assistant" } }],
-      })}\n\n`
+      })}\n\n`,
     ),
-    true
+    true,
   );
 });
 
@@ -438,7 +438,7 @@ test("ensureStreamReadiness preserves buffered chunks when stream starts", async
       `data: ${JSON.stringify({ choices: [{ delta: { content: "hello" }, index: 0 }] })}\n\n`,
       `data: ${JSON.stringify({ choices: [{ delta: { content: " world" }, index: 0 }] })}\n\n`,
     ]),
-    { status: 200, headers: { "Content-Type": "text/event-stream" } }
+    { status: 200, headers: { "Content-Type": "text/event-stream" } },
   );
 
   const result = await ensureStreamReadiness(response, { timeoutMs: 100 });
@@ -458,9 +458,9 @@ test("ensureStreamReadiness honors configured timeouts above 2000ms", async () =
           text: "slow first byte",
         })}\n\n`,
       ],
-      2_100
+      2_100,
     ),
-    { status: 200, headers: { "Content-Type": "text/event-stream" } }
+    { status: 200, headers: { "Content-Type": "text/event-stream" } },
   );
 
   const result = await ensureStreamReadiness(response, { timeoutMs: 3_000 });
@@ -585,7 +585,7 @@ test("ensureStreamReadiness accepts a final event without a trailing blank line"
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 
   const result = await ensureStreamReadiness(response, { timeoutMs: 100 });
@@ -599,14 +599,14 @@ test("ensureStreamReadiness accepts a final event without a trailing blank line"
 test("hasUsefulStreamContent detects thinking[] and reasoning_details (#2520)", () => {
   assert.equal(
     hasUsefulStreamContent(
-      `data: ${JSON.stringify({ choices: [{ delta: { content: [{ type: "thinking", thinking: [{ text: "reasoning..." }] }] }, index: 0 }] })}\n\n`
+      `data: ${JSON.stringify({ choices: [{ delta: { content: [{ type: "thinking", thinking: [{ text: "reasoning..." }] }] }, index: 0 }] })}\n\n`,
     ),
-    true
+    true,
   );
   assert.equal(
     hasUsefulStreamContent(
-      `data: ${JSON.stringify({ choices: [{ delta: { reasoning_details: [{ type: "reasoning.text", text: "deliberating" }] }, index: 0 }] })}\n\n`
+      `data: ${JSON.stringify({ choices: [{ delta: { reasoning_details: [{ type: "reasoning.text", text: "deliberating" }] }, index: 0 }] })}\n\n`,
     ),
-    true
+    true,
   );
 });

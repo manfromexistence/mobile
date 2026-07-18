@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 
 export function VoiceBar({ delay, height }: { delay: string; height: number }) {
   return (
@@ -17,5 +17,5 @@ export function VoiceBar({ delay, height }: { delay: string; height: number }) {
         delay: parseFloat(delay) * 0.01,
       }}
     />
-  )
+  );
 }

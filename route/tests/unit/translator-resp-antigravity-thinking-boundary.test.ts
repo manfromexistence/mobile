@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { geminiToOpenAIResponse } =
-  await import("../../open-sse/translator/response/gemini-to-openai.ts");
+const { geminiToOpenAIResponse } = await import(
+  "../../open-sse/translator/response/gemini-to-openai.ts"
+);
 
 function createStreamingState() {
   return {
@@ -20,7 +21,7 @@ test("Antigravity stream preserves prompt-format thinking tags as content", () =
         candidates: [{ content: { parts: [{ text: "<thinking>\n[metacognition" }] } }],
       },
     },
-    state
+    state,
   );
   const second = geminiToOpenAIResponse(
     {
@@ -30,17 +31,17 @@ test("Antigravity stream preserves prompt-format thinking tags as content", () =
         candidates: [{ content: { parts: [{ text: "]\n\nVisible answer" }] } }],
       },
     },
-    state
+    state,
   );
 
   const deltas = [...first, ...second].map((event: any) => event.choices?.[0]?.delta || {});
   assert.deepEqual(
     deltas.filter((delta: any) => delta.content).map((delta: any) => delta.content),
-    ["<thinking>\n[metacognition", "]\n\nVisible answer"]
+    ["<thinking>\n[metacognition", "]\n\nVisible answer"],
   );
   assert.equal(
     deltas.some((delta: any) => delta.reasoning_content !== undefined),
-    false
+    false,
   );
 });
 
@@ -60,16 +61,16 @@ test("Antigravity stream keeps native Gemini thought parts as reasoning_content"
         ],
       },
     },
-    createStreamingState()
+    createStreamingState(),
   );
 
   assert.equal(
     result.find((event: any) => event.choices?.[0]?.delta?.reasoning_content)?.choices[0].delta
       .reasoning_content,
-    "Native plan"
+    "Native plan",
   );
   assert.equal(
     result.find((event: any) => event.choices?.[0]?.delta?.content)?.choices[0].delta.content,
-    "Visible answer"
+    "Visible answer",
   );
 });

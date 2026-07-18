@@ -26,11 +26,11 @@ test("bypassProxyPatch is present in the NVIDIA validation path (#3226 documente
     readFileSync("src/lib/providers/validation/headers.ts", "utf8");
   assert.ok(
     validationLayer.includes("bypassProxyPatch"),
-    "expected bypassProxyPatch in the validation layer (validation/headers.ts) — the documented NVIDIA exception"
+    "expected bypassProxyPatch in the validation layer (validation/headers.ts) — the documented NVIDIA exception",
   );
   assert.ok(
     validationLayer.includes("directHttpsRequest"),
-    "expected directHttpsRequest helper in the validation layer"
+    "expected directHttpsRequest helper in the validation layer",
   );
 });
 
@@ -41,12 +41,12 @@ test("bypassProxyPatch is absent from the chat hot path (scope guard — #3226)"
   const chatHelpers = readFileSync("src/sse/handlers/chatHelpers.ts", "utf8");
   assert.ok(
     !chatHelpers.includes("bypassProxyPatch"),
-    "chatHelpers.ts must not bypass the proxy patch — only NVIDIA validation may do this (#3226)"
+    "chatHelpers.ts must not bypass the proxy patch — only NVIDIA validation may do this (#3226)",
   );
 
   const chatCore = readFileSync("open-sse/handlers/chatCore.ts", "utf8");
   assert.ok(
     !chatCore.includes("bypassProxyPatch"),
-    "chatCore.ts must not bypass the proxy patch — only NVIDIA validation may do this (#3226)"
+    "chatCore.ts must not bypass the proxy patch — only NVIDIA validation may do this (#3226)",
   );
 });

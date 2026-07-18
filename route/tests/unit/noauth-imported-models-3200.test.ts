@@ -50,11 +50,11 @@ test("#3200 imported model on a noAuth provider (theoldllm) appears in /api/v1/m
     "theoldllm",
     "my-imported-model-3200",
     "My Imported Model",
-    "imported"
+    "imported",
   );
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as { data: Array<{ id: string }> };
   const ids = new Set(body.data.map((m) => m.id));
@@ -62,7 +62,7 @@ test("#3200 imported model on a noAuth provider (theoldllm) appears in /api/v1/m
   assert.equal(response.status, 200);
   assert.ok(
     ids.has("tllm/my-imported-model-3200"),
-    "imported model on noAuth provider must appear under its alias prefix"
+    "imported model on noAuth provider must appear under its alias prefix",
   );
 });
 
@@ -74,7 +74,7 @@ test("#3200 custom/imported models on auth providers still appear (no regression
   await modelsDb.addCustomModel("kiro", "custom-kiro-3200", "Custom Kiro");
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as { data: Array<{ id: string }> };
   const ids = new Set(body.data.map((m) => m.id));
@@ -84,7 +84,7 @@ test("#3200 custom/imported models on auth providers still appear (no regression
   assert.equal(
     ids.has("kiro/custom-kiro-3200"),
     false,
-    "auth-provider custom model must stay gated behind an eligible connection"
+    "auth-provider custom model must stay gated behind an eligible connection",
   );
 });
 
@@ -94,11 +94,11 @@ test("#3200 imported models on noAuth providers are hidden when the provider is 
     "theoldllm",
     "my-imported-model-disabled",
     "Hidden Imported Model",
-    "imported"
+    "imported",
   );
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as { data: Array<{ id: string }> };
   const ids = new Set(body.data.map((m) => m.id));
@@ -107,6 +107,6 @@ test("#3200 imported models on noAuth providers are hidden when the provider is 
   assert.equal(
     ids.has("tllm/my-imported-model-disabled"),
     false,
-    "imported noAuth provider models must stay hidden while the provider is disabled"
+    "imported noAuth provider models must stay hidden while the provider is disabled",
   );
 });

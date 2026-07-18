@@ -14,57 +14,45 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const HOOK_SRC = fs.readFileSync(
   path.resolve(
     __dirname,
-    "../../../src/app/(dashboard)/dashboard/tools/traffic-inspector/hooks/useSessionRecorder.ts"
+    "../../../src/app/(dashboard)/dashboard/tools/traffic-inspector/hooks/useSessionRecorder.ts",
   ),
-  "utf8"
+  "utf8",
 );
 
 describe("useSessionRecorder R5-5 source assertions", () => {
   it("opens a WebSocket during start() for traffic capture", () => {
     assert.ok(
       HOOK_SRC.includes("new WebSocket(wsUrl)"),
-      "should open a WebSocket connection inside start()"
+      "should open a WebSocket connection inside start()",
     );
   });
 
   it("POSTs to /sessions/{id}/requests on new WS event", () => {
-    assert.ok(
-      HOOK_SRC.includes("/requests"),
-      "should POST to sessions/{id}/requests endpoint"
-    );
-    assert.ok(
-      HOOK_SRC.includes(`method: "POST"`),
-      "should use POST method"
-    );
-    assert.ok(
-      HOOK_SRC.includes("payload"),
-      "should send payload in body"
-    );
+    assert.ok(HOOK_SRC.includes("/requests"), "should POST to sessions/{id}/requests endpoint");
+    assert.ok(HOOK_SRC.includes(`method: "POST"`), "should use POST method");
+    assert.ok(HOOK_SRC.includes("payload"), "should send payload in body");
   });
 
   it("buffers events and flushes in batches", () => {
     assert.ok(
       HOOK_SRC.includes("SNAPSHOT_FLUSH_BATCH"),
-      "should define SNAPSHOT_FLUSH_BATCH constant"
+      "should define SNAPSHOT_FLUSH_BATCH constant",
     );
     assert.ok(
       HOOK_SRC.includes("SNAPSHOT_FLUSH_MS"),
-      "should define SNAPSHOT_FLUSH_MS constant for debounce"
+      "should define SNAPSHOT_FLUSH_MS constant for debounce",
     );
-    assert.ok(
-      HOOK_SRC.includes("pendingSnapshotsRef"),
-      "should use a pendingSnapshotsRef buffer"
-    );
+    assert.ok(HOOK_SRC.includes("pendingSnapshotsRef"), "should use a pendingSnapshotsRef buffer");
   });
 
   it("stops WS and flushes on stop()", () => {
     assert.ok(
       HOOK_SRC.includes("stopRecordingWs()"),
-      "stop() should call stopRecordingWs to clean up the WS"
+      "stop() should call stopRecordingWs to clean up the WS",
     );
     assert.ok(
       HOOK_SRC.includes("await flushSnapshots(sid)"),
-      "stop() should await a final flush before sending PATCH"
+      "stop() should await a final flush before sending PATCH",
     );
   });
 
@@ -73,15 +61,12 @@ describe("useSessionRecorder R5-5 source assertions", () => {
     const fetchBlock = HOOK_SRC.slice(HOOK_SRC.indexOf("flushSnapshots"));
     assert.ok(
       fetchBlock.includes("} catch {"),
-      "POST fetch should be wrapped in try/catch to handle failures gracefully"
+      "POST fetch should be wrapped in try/catch to handle failures gracefully",
     );
   });
 
   it("only pushes 'new' event type to snapshots", () => {
-    assert.ok(
-      HOOK_SRC.includes(`event.type !== "new"`),
-      "should early-return for non-new events"
-    );
+    assert.ok(HOOK_SRC.includes(`event.type !== "new"`), "should early-return for non-new events");
   });
 });
 
@@ -93,8 +78,12 @@ describe("useSessionRecorder snapshot flush logic (unit)", () => {
     let immediateFlushCalled = false;
     let scheduleFlushCalled = false;
 
-    const flushSnapshots = () => { immediateFlushCalled = true; };
-    const scheduleFlush = () => { scheduleFlushCalled = true; };
+    const flushSnapshots = () => {
+      immediateFlushCalled = true;
+    };
+    const scheduleFlush = () => {
+      scheduleFlushCalled = true;
+    };
 
     // Below threshold
     pendingSnapshots.push(JSON.stringify({ id: "req-1" }));

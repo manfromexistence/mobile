@@ -27,7 +27,7 @@ describe("StatsTab — C3 lazy bundle split", () => {
 
   it("calls dynamic() at module level with import('./StatsCharts')", () => {
     assert.ok(
-      statsTabSrc.includes("dynamic(() => import(\"./StatsCharts\")"),
+      statsTabSrc.includes('dynamic(() => import("./StatsCharts")'),
       "StatsTab must call dynamic(() => import('./StatsCharts')) at module level",
     );
   });
@@ -42,14 +42,14 @@ describe("StatsTab — C3 lazy bundle split", () => {
   it("does NOT statically import any name from recharts", () => {
     // A static import of recharts would look like: import ... from "recharts"
     assert.ok(
-      !statsTabSrc.includes("from \"recharts\""),
+      !statsTabSrc.includes('from "recharts"'),
       "StatsTab must not contain a static import from recharts",
     );
   });
 
   it("does NOT contain a useEffect that imports recharts", () => {
     assert.ok(
-      !statsTabSrc.includes("import(\"recharts\")"),
+      !statsTabSrc.includes('import("recharts")'),
       "StatsTab must not dynamically import recharts via useEffect",
     );
   });
@@ -65,7 +65,7 @@ describe("StatsTab — C3 lazy bundle split", () => {
 describe("StatsCharts — recharts imports live here", () => {
   it("imports recharts components statically", () => {
     assert.ok(
-      statsChartsSrc.includes("from \"recharts\""),
+      statsChartsSrc.includes('from "recharts"'),
       "StatsCharts must statically import from recharts",
     );
   });

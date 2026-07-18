@@ -1,4 +1,4 @@
-import { FluidGradientText } from "@/registry/transformed/components/fluid-gradient-text"
+import { FluidGradientText } from "@/registry/transformed/components/fluid-gradient-text";
 
 export default function FluidGradientTextDemo() {
   return (
@@ -14,5 +14,5 @@ export default function FluidGradientTextDemo() {
 
       <FluidGradientText text="shadcn" />
     </div>
-  )
+  );
 }

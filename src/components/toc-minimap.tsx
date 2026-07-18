@@ -1,31 +1,27 @@
-"use client"
+"use client";
 
-import type { TOCItemType } from "fumadocs-core/toc"
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card"
-import { trackEvent } from "@/lib/events"
-import { useSound } from "@/lib/soundcn/hooks/use-sound"
-import { uMiniMapOpenSound } from "@/lib/soundcn/u-mini-map-open"
-import { cn } from "@/lib/utils"
+import type { TOCItemType } from "fumadocs-core/toc";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { trackEvent } from "@/lib/events";
+import { useSound } from "@/lib/soundcn/hooks/use-sound";
+import { uMiniMapOpenSound } from "@/lib/soundcn/u-mini-map-open";
+import { cn } from "@/lib/utils";
 
-import { AnchorProvider, useActiveAnchor, useItems } from "./toc"
+import { AnchorProvider, useActiveAnchor, useItems } from "./toc";
 
 export function TOCMinimap({
   items,
   options,
   className,
 }: {
-  items: TOCItemType[]
-  options?: IntersectionObserverInit
-  className?: string
+  items: TOCItemType[];
+  options?: IntersectionObserverInit;
+  className?: string;
 }) {
-  const [play] = useSound(uMiniMapOpenSound, { volume: 0.3 })
+  const [play] = useSound(uMiniMapOpenSound, { volume: 0.3 });
 
   if (!items.length) {
-    return null
+    return null;
   }
 
   return (
@@ -34,8 +30,8 @@ export function TOCMinimap({
         <HoverCard
           onOpenChange={(open) => {
             if (open) {
-              play()
-              trackEvent({ name: "toc_minimap_hover" })
+              play();
+              trackEvent({ name: "toc_minimap_hover" });
             }
           }}
         >
@@ -64,16 +60,16 @@ export function TOCMinimap({
         </HoverCard>
       </TOCMinimapContainer>
     </AnchorProvider>
-  )
+  );
 }
 
 function TOCMinimapContainer(props: React.ComponentProps<"div">) {
-  const activeAnchor = useActiveAnchor()
-  return <div data-active-anchor={activeAnchor} {...props} />
+  const activeAnchor = useActiveAnchor();
+  return <div data-active-anchor={activeAnchor} {...props} />;
 }
 
 function Minimap() {
-  const items = useItems()
+  const items = useItems();
 
   return (
     <>
@@ -86,36 +82,36 @@ function Minimap() {
             "pointer-events-none h-0.5 w-6 shrink-0 rounded-xs bg-ring/50 transition-[background-color] duration-200 ease-out",
             "data-[depth=3]:ml-2 data-[depth=3]:w-4",
             "data-[depth=4]:ml-4 data-[depth=4]:w-2",
-            "data-active:bg-foreground"
+            "data-active:bg-foreground",
           )}
           aria-hidden
         />
       ))}
     </>
-  )
+  );
 }
 
 function scrollToHeading(url: string) {
-  history.pushState(null, "", url)
+  history.pushState(null, "", url);
   document.getElementById(url.replace("#", ""))?.scrollIntoView({
     behavior: "smooth",
-  })
+  });
 }
 
 function handleItemClick(e: React.MouseEvent<HTMLAnchorElement>) {
-  e.preventDefault()
-  const url = e.currentTarget.getAttribute("href") ?? ""
-  const title = e.currentTarget.textContent ?? ""
-  const depth = Number(e.currentTarget.getAttribute("data-depth"))
+  e.preventDefault();
+  const url = e.currentTarget.getAttribute("href") ?? "";
+  const title = e.currentTarget.textContent ?? "";
+  const depth = Number(e.currentTarget.getAttribute("data-depth"));
   trackEvent({
     name: "toc_minimap_item_click",
     properties: { url, title, depth },
-  })
-  scrollToHeading(url)
+  });
+  scrollToHeading(url);
 }
 
 function TOCList() {
-  const items = useItems()
+  const items = useItems();
 
   return (
     <ul className="flex size-full flex-col px-6 py-4 text-sm">
@@ -128,7 +124,7 @@ function TOCList() {
             className={cn(
               "line-clamp-2 w-full transition-[color] duration-200",
               "text-muted-foreground hover:text-foreground data-active:text-foreground",
-              "data-[depth=3]:pl-4 data-[depth=4]:pl-8"
+              "data-[depth=3]:pl-4 data-[depth=4]:pl-8",
             )}
             onClick={handleItemClick}
           >
@@ -137,5 +133,5 @@ function TOCList() {
         </li>
       ))}
     </ul>
-  )
+  );
 }

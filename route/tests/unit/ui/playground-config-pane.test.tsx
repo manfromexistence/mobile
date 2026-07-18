@@ -35,13 +35,18 @@ function makeConfig() {
 
 function renderPane(
   configState: ReturnType<typeof makeConfig>,
-  setConfigState: (s: ReturnType<typeof makeConfig>) => void
+  setConfigState: (s: ReturnType<typeof makeConfig>) => void,
 ): HTMLDivElement {
   const el = document.createElement("div");
   document.body.appendChild(el);
   const root = createRoot(el);
   act(() => {
-    root.render(<StudioConfigPane configState={configState} setConfigState={setConfigState as (s: typeof configState) => void} />);
+    root.render(
+      <StudioConfigPane
+        configState={configState}
+        setConfigState={setConfigState as (s: typeof configState) => void}
+      />,
+    );
   });
   containers.push({ root, el });
   return el;
@@ -51,8 +56,9 @@ function renderPane(
 
 describe("StudioConfigPane", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean })
-      .IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {
@@ -93,8 +99,8 @@ describe("StudioConfigPane", () => {
     const el = renderPane(config, setConfigState);
 
     const inputs = el.querySelectorAll("input[type='text']");
-    const modelInput = Array.from(inputs).find(
-      (inp) => (inp as HTMLInputElement).placeholder?.includes("gpt-4o")
+    const modelInput = Array.from(inputs).find((inp) =>
+      (inp as HTMLInputElement).placeholder?.includes("gpt-4o"),
     ) as HTMLInputElement | undefined;
 
     expect(modelInput).toBeTruthy();
@@ -103,7 +109,7 @@ describe("StudioConfigPane", () => {
         // React 19 requires nativeInputValueSetter for synthetic event simulation
         const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
           window.HTMLInputElement.prototype,
-          "value"
+          "value",
         )?.set;
         nativeInputValueSetter?.call(modelInput, "anthropic/claude-3");
         modelInput.dispatchEvent(new Event("input", { bubbles: true }));
@@ -118,7 +124,9 @@ describe("StudioConfigPane", () => {
     const config = makeConfig();
     const el = renderPane(config, vi.fn());
 
-    const collapseBtn = el.querySelector("button[aria-label='Collapse config pane']") as HTMLButtonElement | null;
+    const collapseBtn = el.querySelector(
+      "button[aria-label='Collapse config pane']",
+    ) as HTMLButtonElement | null;
     expect(collapseBtn).toBeTruthy();
 
     act(() => {
@@ -134,7 +142,7 @@ describe("StudioConfigPane", () => {
     const el = renderPane(config, vi.fn());
 
     const collapseBtn = el.querySelector(
-      "button[aria-label='Collapse config pane']"
+      "button[aria-label='Collapse config pane']",
     ) as HTMLButtonElement | null;
     act(() => {
       collapseBtn?.click();
@@ -142,7 +150,7 @@ describe("StudioConfigPane", () => {
 
     // Now find the expand button
     const expandBtn = el.querySelector(
-      "button[aria-label='Expand config pane']"
+      "button[aria-label='Expand config pane']",
     ) as HTMLButtonElement | null;
     expect(expandBtn).toBeTruthy();
 
@@ -174,7 +182,7 @@ describe("StudioConfigPane", () => {
       // Use nativeInputValueSetter for React 19 synthetic event simulation
       const nativeRangeValueSetter = Object.getOwnPropertyDescriptor(
         window.HTMLInputElement.prototype,
-        "value"
+        "value",
       )?.set;
       nativeRangeValueSetter?.call(slider, "0.5");
       slider.dispatchEvent(new Event("input", { bubbles: true }));
@@ -190,8 +198,8 @@ describe("StudioConfigPane", () => {
     // Multiple <select> elements may exist (PresetPicker also renders one).
     // The endpoint select is the one with our 13 endpoint values.
     const selects = Array.from(el.querySelectorAll<HTMLSelectElement>("select"));
-    const endpointSelect = selects.find(
-      (s) => Array.from(s.options).some((o) => o.value === "chat.completions")
+    const endpointSelect = selects.find((s) =>
+      Array.from(s.options).some((o) => o.value === "chat.completions"),
     );
     expect(endpointSelect).toBeTruthy();
     expect(endpointSelect?.options.length).toBe(13);

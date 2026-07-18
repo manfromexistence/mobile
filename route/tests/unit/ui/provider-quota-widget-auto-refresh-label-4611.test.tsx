@@ -36,7 +36,7 @@ describe("AutoRefreshButtonLabel (#4611)", () => {
           lastRefreshAllAt={Date.now()}
           refreshingAll={true}
           tr={tr}
-        />
+        />,
       );
     });
     expect(container.textContent).toBe("Refreshing");
@@ -50,7 +50,7 @@ describe("AutoRefreshButtonLabel (#4611)", () => {
           lastRefreshAllAt={Date.now()}
           refreshingAll={false}
           tr={tr}
-        />
+        />,
       );
     });
     expect(container.textContent).toBe("Refresh All");
@@ -64,7 +64,7 @@ describe("AutoRefreshButtonLabel (#4611)", () => {
           lastRefreshAllAt={Date.now()}
           refreshingAll={false}
           tr={tr}
-        />
+        />,
       );
     });
     expect(container.textContent).toContain("Auto-refreshing");

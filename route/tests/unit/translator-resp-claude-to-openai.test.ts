@@ -1,10 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { claudeToOpenAIResponse } =
-  await import("../../open-sse/translator/response/claude-to-openai.ts");
-const { translateNonStreamingResponse } =
-  await import("../../open-sse/handlers/responseTranslator.ts");
+const { claudeToOpenAIResponse } = await import(
+  "../../open-sse/translator/response/claude-to-openai.ts"
+);
+const { translateNonStreamingResponse } = await import(
+  "../../open-sse/handlers/responseTranslator.ts"
+);
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 
 function createState() {
@@ -37,7 +39,7 @@ test("Claude non-stream: text, thinking and tool_use become OpenAI assistant mes
     },
     FORMATS.CLAUDE,
     FORMATS.OPENAI,
-    new Map([["proxy_read_file", "read_file"]])
+    new Map([["proxy_read_file", "read_file"]]),
   );
 
   assert.equal((result as any).id, "chatcmpl-msg_123");
@@ -48,7 +50,7 @@ test("Claude non-stream: text, thinking and tool_use become OpenAI assistant mes
   assert.equal((result as any).choices[0].message.tool_calls[0].function.name, "read_file");
   (assert as any).equal(
     (result as any).choices[0].message.tool_calls[0].function.arguments,
-    JSON.stringify({ path: "/tmp/a" })
+    JSON.stringify({ path: "/tmp/a" }),
   );
   assert.equal((result as any).choices[0].finish_reason, "tool_calls");
   assert.deepEqual((result as any).usage, {
@@ -68,7 +70,7 @@ test("Claude non-stream: end_turn becomes stop and empty text is preserved", () 
       usage: { input_tokens: 2, output_tokens: 1 },
     },
     FORMATS.CLAUDE,
-    (FORMATS as any).OPENAI
+    (FORMATS as any).OPENAI,
   );
 
   assert.equal(((result as any).choices[0] as any).message.content, "");
@@ -82,7 +84,7 @@ test("Claude stream: message_start emits initial assistant role chunk", () => {
       type: "message_start",
       message: { id: "msg1", model: "claude-3-7-sonnet" },
     },
-    createState()
+    createState(),
   );
 
   assert.equal(result.length, 1);
@@ -94,11 +96,11 @@ test("Claude stream: text deltas stream as content", () => {
   const state = createState();
   claudeToOpenAIResponse(
     { type: "message_start", message: { id: "msg1", model: "claude-3-7-sonnet" } },
-    state
+    state,
   );
   claudeToOpenAIResponse(
     { type: "content_block_start", index: 0, content_block: { type: "text" } },
-    state
+    state,
   );
 
   const result = claudeToOpenAIResponse(
@@ -107,7 +109,7 @@ test("Claude stream: text deltas stream as content", () => {
       index: 0,
       delta: { type: "text_delta", text: "Hello" },
     },
-    state
+    state,
   );
 
   assert.equal(result[0].choices[0].delta.content, "Hello");
@@ -117,7 +119,7 @@ test("Claude stream: thinking blocks emit reasoning_content chunks", () => {
   const state = createState();
   claudeToOpenAIResponse(
     { type: "message_start", message: { id: "msg1", model: "claude-3-7-sonnet" } },
-    state
+    state,
   );
 
   const started = claudeToOpenAIResponse(
@@ -126,7 +128,7 @@ test("Claude stream: thinking blocks emit reasoning_content chunks", () => {
       index: 1,
       content_block: { type: "thinking" },
     },
-    state
+    state,
   );
   const delta = claudeToOpenAIResponse(
     {
@@ -134,7 +136,7 @@ test("Claude stream: thinking blocks emit reasoning_content chunks", () => {
       index: 1,
       delta: { type: "thinking_delta", thinking: "I should inspect the file." },
     },
-    state
+    state,
   );
 
   assert.equal(started[0].choices[0].delta.reasoning_content, "");
@@ -145,7 +147,7 @@ test("Claude stream: tool_use start reverses prefixed tool names and streams arg
   const state = createState();
   claudeToOpenAIResponse(
     { type: "message_start", message: { id: "msg1", model: "claude-3-7-sonnet" } },
-    state
+    state,
   );
 
   const started = claudeToOpenAIResponse(
@@ -154,7 +156,7 @@ test("Claude stream: tool_use start reverses prefixed tool names and streams arg
       index: 2,
       content_block: { type: "tool_use", id: "tool1", name: "proxy_read_file" },
     },
-    state
+    state,
   );
   const delta1 = claudeToOpenAIResponse(
     {
@@ -162,7 +164,7 @@ test("Claude stream: tool_use start reverses prefixed tool names and streams arg
       index: 2,
       delta: { type: "input_json_delta", partial_json: '{"path":' },
     },
-    state
+    state,
   );
   const delta2 = claudeToOpenAIResponse(
     {
@@ -170,7 +172,7 @@ test("Claude stream: tool_use start reverses prefixed tool names and streams arg
       index: 2,
       delta: { type: "input_json_delta", partial_json: '"/tmp/a"}' },
     },
-    state
+    state,
   );
 
   assert.equal(started[0].choices[0].delta.tool_calls[0].id, "tool1");
@@ -183,7 +185,7 @@ test("Claude stream: message_delta maps stop reason and usage including cache to
   const state = createState();
   claudeToOpenAIResponse(
     { type: "message_start", message: { id: "msg1", model: "claude-3-7-sonnet" } },
-    state
+    state,
   );
 
   const result = claudeToOpenAIResponse(
@@ -197,7 +199,7 @@ test("Claude stream: message_delta maps stop reason and usage including cache to
         cache_creation_input_tokens: 1,
       },
     },
-    state
+    state,
   );
 
   assert.equal(result[0].choices[0].finish_reason, "tool_calls");
@@ -215,7 +217,7 @@ test("Claude stream: #2215 — short prompt with large cache_creation does not i
   const state = createState();
   claudeToOpenAIResponse(
     { type: "message_start", message: { id: "msg1", model: "claude-sonnet-4-6" } },
-    state
+    state,
   );
 
   // Reproduces the scenario in the bug report: user sends "hi" with a long
@@ -235,7 +237,7 @@ test("Claude stream: #2215 — short prompt with large cache_creation does not i
         cache_creation_input_tokens: 2000,
       },
     },
-    state
+    state,
   );
 
   assert.equal(result[0].usage.prompt_tokens, 8);
@@ -251,7 +253,7 @@ test("Claude stream: #2215 — cache_read alone is billable input (cache hit pat
   const state = createState();
   claudeToOpenAIResponse(
     { type: "message_start", message: { id: "msg1", model: "claude-sonnet-4-6" } },
-    state
+    state,
   );
 
   // Second turn: user sends another "hi". This time the system prompt is in
@@ -269,7 +271,7 @@ test("Claude stream: #2215 — cache_read alone is billable input (cache hit pat
         cache_creation_input_tokens: 0,
       },
     },
-    state
+    state,
   );
 
   assert.equal(result[0].usage.prompt_tokens, 2008);
@@ -281,7 +283,7 @@ test("Claude stream: #2215 — no cache fields means no prompt_tokens_details", 
   const state = createState();
   claudeToOpenAIResponse(
     { type: "message_start", message: { id: "msg1", model: "claude-sonnet-4-6" } },
-    state
+    state,
   );
 
   const result = claudeToOpenAIResponse(
@@ -293,7 +295,7 @@ test("Claude stream: #2215 — no cache fields means no prompt_tokens_details", 
         output_tokens: 20,
       },
     },
-    state
+    state,
   );
 
   assert.equal(result[0].usage.prompt_tokens, 50);
@@ -306,7 +308,7 @@ test("Claude stream: message_stop falls back to tool_calls when tool use already
   const state = createState();
   claudeToOpenAIResponse(
     { type: "message_start", message: { id: "msg1", model: "claude-3-7-sonnet" } },
-    state
+    state,
   );
   claudeToOpenAIResponse(
     {
@@ -314,7 +316,7 @@ test("Claude stream: message_stop falls back to tool_calls when tool use already
       index: 2,
       content_block: { type: "tool_use", id: "tool1", name: "proxy_read_file" },
     },
-    state
+    state,
   );
 
   const result = claudeToOpenAIResponse({ type: "message_stop" }, state);

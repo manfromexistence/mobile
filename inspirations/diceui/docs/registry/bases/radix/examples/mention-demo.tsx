@@ -53,9 +53,7 @@ export default function MentionDemo() {
               className="relative flex w-full cursor-default select-none flex-col rounded-sm px-2 py-1.5 text-sm outline-hidden data-disabled:pointer-events-none data-highlighted:bg-zinc-100 data-highlighted:text-zinc-900 data-disabled:opacity-50 dark:data-highlighted:bg-zinc-800 dark:data-highlighted:text-zinc-50"
             >
               <span className="text-sm">{user.name}</span>
-              <span className="text-muted-foreground text-xs">
-                {user.email}
-              </span>
+              <span className="text-muted-foreground text-xs">{user.email}</span>
             </Mention.MentionItem>
           ))}
         </Mention.MentionContent>

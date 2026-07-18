@@ -48,11 +48,11 @@ function insertMemory(
   apiKeyId: string,
   content: string,
   key: string = `key-${id}`,
-  createdAt?: string
+  createdAt?: string,
 ) {
   db.prepare(
     `INSERT INTO memories (id, api_key_id, session_id, type, key, content, metadata, created_at, updated_at, expires_at)
-     VALUES (?, ?, ?, 'factual', ?, ?, '{}', ?, ?, NULL)`
+     VALUES (?, ?, ?, 'factual', ?, ?, '{}', ?, ?, NULL)`,
   ).run(
     id,
     apiKeyId,
@@ -60,7 +60,7 @@ function insertMemory(
     key,
     content,
     createdAt ?? new Date().toISOString(),
-    new Date().toISOString()
+    new Date().toISOString(),
   );
 }
 
@@ -116,9 +116,30 @@ test("retrieveMemories: strategy=exact returns memories chronologically", async 
   // Use recent dates (within last 30 days) so retention filter does not remove them
   const now = Date.now();
   const base = new Date(now - 3 * 24 * 60 * 60 * 1000); // 3 days ago
-  insertMemory(db, "e1", "api-exact", "First memory", "first", new Date(base.getTime() + 3000).toISOString());
-  insertMemory(db, "e2", "api-exact", "Second memory", "second", new Date(base.getTime() + 2000).toISOString());
-  insertMemory(db, "e3", "api-exact", "Third memory", "third", new Date(base.getTime() + 1000).toISOString());
+  insertMemory(
+    db,
+    "e1",
+    "api-exact",
+    "First memory",
+    "first",
+    new Date(base.getTime() + 3000).toISOString(),
+  );
+  insertMemory(
+    db,
+    "e2",
+    "api-exact",
+    "Second memory",
+    "second",
+    new Date(base.getTime() + 2000).toISOString(),
+  );
+  insertMemory(
+    db,
+    "e3",
+    "api-exact",
+    "Third memory",
+    "third",
+    new Date(base.getTime() + 1000).toISOString(),
+  );
 
   const { retrieveMemories } = await import("../../src/lib/memory/retrieval.ts");
 
@@ -169,7 +190,7 @@ test("retrieveMemories: respects maxTokens budget (does not exceed)", async () =
   const estimatedTokens = result.reduce((sum, m) => sum + Math.ceil(m.content.length / 4), 0);
   assert.ok(
     estimatedTokens <= 60 || result.length === 1,
-    `total tokens ${estimatedTokens} should be within budget (60) or exactly 1 item`
+    `total tokens ${estimatedTokens} should be within budget (60) or exactly 1 item`,
   );
 });
 
@@ -181,7 +202,10 @@ test("retrieveMemories: returns only memories for the given apiKeyId", async () 
 
   const { retrieveMemories } = await import("../../src/lib/memory/retrieval.ts");
 
-  const result = await retrieveMemories("api-key1", { retrievalStrategy: "exact", maxTokens: 2000 });
+  const result = await retrieveMemories("api-key1", {
+    retrievalStrategy: "exact",
+    maxTokens: 2000,
+  });
   for (const m of result) {
     assert.equal(m.apiKeyId, "api-key1", "should only return memories for api-key1");
   }

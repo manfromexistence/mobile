@@ -17,7 +17,7 @@ test("searchProviders exposes the search validators + the per-provider config ma
   assert.ok(cfg && typeof cfg === "object");
   assert.ok(
     Object.keys(cfg).length > 0,
-    "SEARCH_VALIDATOR_CONFIGS must carry the provider configs"
+    "SEARCH_VALIDATOR_CONFIGS must carry the provider configs",
   );
 });
 

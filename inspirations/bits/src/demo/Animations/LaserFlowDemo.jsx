@@ -1,27 +1,27 @@
-import { useRef, useMemo } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box, Flex, Image } from '@chakra-ui/react';
+import { useRef, useMemo } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box, Flex, Image } from "@chakra-ui/react";
 
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
-import Customize from '../../components/common/Preview/Customize';
-import PreviewSelect from '../../components/common/Preview/PreviewSelect';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
-import CodeExample from '../../components/code/CodeExample';
-import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '../../components/code/Dependencies';
-import RefreshButton from '@/components/common/Preview/RefreshButton';
-import useForceRerender from '@/hooks/useForceRerender';
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
+import Customize from "../../components/common/Preview/Customize";
+import PreviewSelect from "../../components/common/Preview/PreviewSelect";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
+import CodeExample from "../../components/code/CodeExample";
+import PropTable from "../../components/common/Preview/PropTable";
+import Dependencies from "../../components/code/Dependencies";
+import RefreshButton from "@/components/common/Preview/RefreshButton";
+import useForceRerender from "@/hooks/useForceRerender";
 
-import OpenInStudioButton from '../../components/common/Preview/OpenInStudioButton';
+import OpenInStudioButton from "../../components/common/Preview/OpenInStudioButton";
 
-import LaserFlow from '@/content/Animations/LaserFlow/LaserFlow';
-import { laserFlow } from '@/constants/code/Animations/laserFlowCode';
+import LaserFlow from "@/content/Animations/LaserFlow/LaserFlow";
+import { laserFlow } from "@/constants/code/Animations/laserFlowCode";
 
 const DEFAULT_PROPS = {
-  selectedExample: 'box',
-  color: '#CF9EFF',
+  selectedExample: "box",
+  color: "#CF9EFF",
   horizontalSizing: 0.5,
   verticalSizing: 2.0,
   wispDensity: 1,
@@ -33,7 +33,7 @@ const DEFAULT_PROPS = {
   fogScale: 0.3,
   fogFallSpeed: 0.6,
   decay: 1.1,
-  falloffStart: 1.2
+  falloffStart: 1.2,
 };
 
 const LaserFlowDemo = () => {
@@ -55,71 +55,116 @@ const LaserFlowDemo = () => {
     fogScale,
     fogFallSpeed,
     decay,
-    falloffStart
+    falloffStart,
   } = props;
 
   const exampleOptions = [
-    { label: 'Box', value: 'box' },
-    { label: 'Basic', value: 'basic' }
+    { label: "Box", value: "box" },
+    { label: "Basic", value: "basic" },
   ];
 
   const propData = useMemo(
     () => [
       {
-        name: 'horizontalBeamOffset',
-        type: 'number',
-        default: '0.1',
-        description: 'Horizontal offset of the beam (0–1 of canvas width).'
+        name: "horizontalBeamOffset",
+        type: "number",
+        default: "0.1",
+        description: "Horizontal offset of the beam (0–1 of canvas width).",
       },
       {
-        name: 'verticalBeamOffset',
-        type: 'number',
-        default: '0.0',
-        description: 'Vertical offset of the beam (0–1 of canvas height).'
+        name: "verticalBeamOffset",
+        type: "number",
+        default: "0.0",
+        description: "Vertical offset of the beam (0–1 of canvas height).",
       },
       {
-        name: 'horizontalSizing',
-        type: 'number',
-        default: '0.5',
-        description: 'Horizontal sizing factor of the beam footprint.'
+        name: "horizontalSizing",
+        type: "number",
+        default: "0.5",
+        description: "Horizontal sizing factor of the beam footprint.",
       },
       {
-        name: 'verticalSizing',
-        type: 'number',
-        default: '2.0',
-        description: 'Vertical sizing factor of the beam footprint.'
-      },
-      { name: 'wispDensity', type: 'number', default: '1', description: 'Density of micro-streak wisps.' },
-      { name: 'wispSpeed', type: 'number', default: '15.0', description: 'Speed of wisp motion.' },
-      { name: 'wispIntensity', type: 'number', default: '5.0', description: 'Brightness of wisps.' },
-      { name: 'flowSpeed', type: 'number', default: '0.35', description: 'Speed of the beam’s flow modulation.' },
-      { name: 'flowStrength', type: 'number', default: '0.25', description: 'Strength of the beam’s flow modulation.' },
-      { name: 'fogIntensity', type: 'number', default: '0.45', description: 'Overall volumetric fog intensity.' },
-      { name: 'fogScale', type: 'number', default: '0.3', description: 'Spatial scale for the fog noise.' },
-      { name: 'fogFallSpeed', type: 'number', default: '0.6', description: 'Drift speed for the fog field.' },
-      {
-        name: 'mouseTiltStrength',
-        type: 'number',
-        default: '0.01',
-        description: 'How much mouse x tilts the fog volume.'
-      },
-      { name: 'mouseSmoothTime', type: 'number', default: '0.0', description: 'Pointer smoothing time (seconds).' },
-      { name: 'decay', type: 'number', default: '1.1', description: 'Beam decay shaping for sampling envelope.' },
-      {
-        name: 'falloffStart',
-        type: 'number',
-        default: '1.2',
-        description: 'Falloff start radius used in inverse-square blending.'
+        name: "verticalSizing",
+        type: "number",
+        default: "2.0",
+        description: "Vertical sizing factor of the beam footprint.",
       },
       {
-        name: 'dpr',
-        type: 'number',
-        default: 'auto',
-        description: 'Device pixel ratio override (defaults to window.devicePixelRatio).'
+        name: "wispDensity",
+        type: "number",
+        default: "1",
+        description: "Density of micro-streak wisps.",
       },
-      { name: 'color', type: 'string', default: '#FF79C6', description: 'Beam color (hex).' }
+      { name: "wispSpeed", type: "number", default: "15.0", description: "Speed of wisp motion." },
+      {
+        name: "wispIntensity",
+        type: "number",
+        default: "5.0",
+        description: "Brightness of wisps.",
+      },
+      {
+        name: "flowSpeed",
+        type: "number",
+        default: "0.35",
+        description: "Speed of the beam’s flow modulation.",
+      },
+      {
+        name: "flowStrength",
+        type: "number",
+        default: "0.25",
+        description: "Strength of the beam’s flow modulation.",
+      },
+      {
+        name: "fogIntensity",
+        type: "number",
+        default: "0.45",
+        description: "Overall volumetric fog intensity.",
+      },
+      {
+        name: "fogScale",
+        type: "number",
+        default: "0.3",
+        description: "Spatial scale for the fog noise.",
+      },
+      {
+        name: "fogFallSpeed",
+        type: "number",
+        default: "0.6",
+        description: "Drift speed for the fog field.",
+      },
+      {
+        name: "mouseTiltStrength",
+        type: "number",
+        default: "0.01",
+        description: "How much mouse x tilts the fog volume.",
+      },
+      {
+        name: "mouseSmoothTime",
+        type: "number",
+        default: "0.0",
+        description: "Pointer smoothing time (seconds).",
+      },
+      {
+        name: "decay",
+        type: "number",
+        default: "1.1",
+        description: "Beam decay shaping for sampling envelope.",
+      },
+      {
+        name: "falloffStart",
+        type: "number",
+        default: "1.2",
+        description: "Falloff start radius used in inverse-square blending.",
+      },
+      {
+        name: "dpr",
+        type: "number",
+        default: "auto",
+        description: "Device pixel ratio override (defaults to window.devicePixelRatio).",
+      },
+      { name: "color", type: "string", default: "#FF79C6", description: "Beam color (hex)." },
     ],
-    []
+    [],
   );
 
   return (
@@ -128,7 +173,7 @@ const LaserFlowDemo = () => {
       defaultProps={DEFAULT_PROPS}
       resetProps={resetProps}
       hasChanges={hasChanges}
-      demoOnlyProps={['selectedExample']}
+      demoOnlyProps={["selectedExample"]}
     >
       <TabsLayout>
         <PreviewTab>
@@ -139,27 +184,27 @@ const LaserFlowDemo = () => {
             h={500}
             p={0}
             overflow="hidden"
-            onMouseMove={e => {
+            onMouseMove={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               const x = e.clientX - rect.left;
               const y = e.clientY - rect.top;
               const el = revealImgRef.current;
               if (el) {
-                el.style.setProperty('--mx', `${x}px`);
-                el.style.setProperty('--my', `${y + rect.height * 0.5}px`);
+                el.style.setProperty("--mx", `${x}px`);
+                el.style.setProperty("--my", `${y + rect.height * 0.5}px`);
               }
             }}
             onMouseLeave={() => {
               const el = revealImgRef.current;
               if (el) {
-                el.style.setProperty('--mx', `-9999px`);
-                el.style.setProperty('--my', `-9999px`);
+                el.style.setProperty("--mx", `-9999px`);
+                el.style.setProperty("--my", `-9999px`);
               }
             }}
           >
             <LaserFlow
-              horizontalBeamOffset={selectedExample === 'box' ? 0.1 : 0.0}
-              verticalBeamOffset={selectedExample === 'box' ? -0.2 : -0.5}
+              horizontalBeamOffset={selectedExample === "box" ? 0.1 : 0.0}
+              verticalBeamOffset={selectedExample === "box" ? -0.2 : -0.5}
               horizontalSizing={horizontalSizing}
               verticalSizing={verticalSizing}
               wispDensity={wispDensity}
@@ -177,7 +222,7 @@ const LaserFlowDemo = () => {
               className={`laser-flow-demo-${selectedExample}`}
             />
 
-            {selectedExample === 'box' && (
+            {selectedExample === "box" && (
               <>
                 <Box
                   className="demo-container-dots"
@@ -208,14 +253,14 @@ const LaserFlowDemo = () => {
                   opacity={0.3}
                   pointerEvents="none"
                   style={{
-                    ['--mx']: '-9999px',
-                    ['--my']: '-9999px',
+                    ["--mx"]: "-9999px",
+                    ["--my"]: "-9999px",
                     WebkitMaskImage:
-                      'radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,1) 0px, rgba(255,255,255,0.95) 60px, rgba(255,255,255,0.6) 120px, rgba(255,255,255,0.25) 180px, rgba(255,255,255,0) 240px)',
+                      "radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,1) 0px, rgba(255,255,255,0.95) 60px, rgba(255,255,255,0.6) 120px, rgba(255,255,255,0.25) 180px, rgba(255,255,255,0) 240px)",
                     maskImage:
-                      'radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,1) 0px, rgba(255,255,255,0.95) 60px, rgba(255,255,255,0.6) 120px, rgba(255,255,255,0.25) 180px, rgba(255,255,255,0) 240px)',
-                    WebkitMaskRepeat: 'no-repeat',
-                    maskRepeat: 'no-repeat'
+                      "radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,1) 0px, rgba(255,255,255,0.95) 60px, rgba(255,255,255,0.6) 120px, rgba(255,255,255,0.25) 180px, rgba(255,255,255,0) 240px)",
+                    WebkitMaskRepeat: "no-repeat",
+                    maskRepeat: "no-repeat",
                   }}
                 />
               </>
@@ -238,7 +283,7 @@ const LaserFlowDemo = () => {
                 wispSpeed,
                 wispIntensity,
                 flowStrength,
-                decay
+                decay,
               }}
               defaultProps={DEFAULT_PROPS}
             />
@@ -249,10 +294,14 @@ const LaserFlowDemo = () => {
               title="Demo Example"
               options={exampleOptions}
               value={selectedExample}
-              onChange={v => updateProp('selectedExample', v)}
+              onChange={(v) => updateProp("selectedExample", v)}
               width={120}
             />
-            <PreviewColorPickerCustom title="Color" color={color} onChange={val => updateProp('color', val)} />
+            <PreviewColorPickerCustom
+              title="Color"
+              color={color}
+              onChange={(val) => updateProp("color", val)}
+            />
 
             <PreviewSlider
               title="Horizontal Sizing"
@@ -260,7 +309,7 @@ const LaserFlowDemo = () => {
               max={2}
               step={0.01}
               value={horizontalSizing}
-              onChange={v => updateProp('horizontalSizing', v)}
+              onChange={(v) => updateProp("horizontalSizing", v)}
             />
             <PreviewSlider
               title="Vertical Sizing"
@@ -268,7 +317,7 @@ const LaserFlowDemo = () => {
               max={5}
               step={0.1}
               value={verticalSizing}
-              onChange={v => updateProp('verticalSizing', v)}
+              onChange={(v) => updateProp("verticalSizing", v)}
             />
             <PreviewSlider
               title="Wisp Density"
@@ -276,7 +325,7 @@ const LaserFlowDemo = () => {
               max={5}
               step={0.1}
               value={wispDensity}
-              onChange={v => updateProp('wispDensity', v)}
+              onChange={(v) => updateProp("wispDensity", v)}
             />
             <PreviewSlider
               title="Wisp Speed"
@@ -284,7 +333,7 @@ const LaserFlowDemo = () => {
               max={50}
               step={0.5}
               value={wispSpeed}
-              onChange={v => updateProp('wispSpeed', v)}
+              onChange={(v) => updateProp("wispSpeed", v)}
             />
             <PreviewSlider
               title="Wisp Intensity"
@@ -292,7 +341,7 @@ const LaserFlowDemo = () => {
               max={20}
               step={0.1}
               value={wispIntensity}
-              onChange={v => updateProp('wispIntensity', v)}
+              onChange={(v) => updateProp("wispIntensity", v)}
             />
             <PreviewSlider
               title="Flow Speed"
@@ -300,7 +349,7 @@ const LaserFlowDemo = () => {
               max={2}
               step={0.01}
               value={flowSpeed}
-              onChange={v => updateProp('flowSpeed', v)}
+              onChange={(v) => updateProp("flowSpeed", v)}
             />
             <PreviewSlider
               title="Flow Strength"
@@ -308,7 +357,7 @@ const LaserFlowDemo = () => {
               max={1}
               step={0.01}
               value={flowStrength}
-              onChange={v => updateProp('flowStrength', v)}
+              onChange={(v) => updateProp("flowStrength", v)}
             />
             <PreviewSlider
               title="Fog Intensity"
@@ -316,7 +365,7 @@ const LaserFlowDemo = () => {
               max={1}
               step={0.01}
               value={fogIntensity}
-              onChange={v => updateProp('fogIntensity', v)}
+              onChange={(v) => updateProp("fogIntensity", v)}
             />
             <PreviewSlider
               title="Fog Scale"
@@ -324,7 +373,7 @@ const LaserFlowDemo = () => {
               max={1}
               step={0.01}
               value={fogScale}
-              onChange={v => updateProp('fogScale', v)}
+              onChange={(v) => updateProp("fogScale", v)}
             />
             <PreviewSlider
               title="Fog Fall Speed"
@@ -332,7 +381,7 @@ const LaserFlowDemo = () => {
               max={2}
               step={0.01}
               value={fogFallSpeed}
-              onChange={v => updateProp('fogFallSpeed', v)}
+              onChange={(v) => updateProp("fogFallSpeed", v)}
             />
             <PreviewSlider
               title="Decay"
@@ -340,7 +389,7 @@ const LaserFlowDemo = () => {
               max={3}
               step={0.01}
               value={decay}
-              onChange={v => updateProp('decay', v)}
+              onChange={(v) => updateProp("decay", v)}
             />
             <PreviewSlider
               title="Falloff Start"
@@ -348,12 +397,12 @@ const LaserFlowDemo = () => {
               max={3}
               step={0.01}
               value={falloffStart}
-              onChange={v => updateProp('falloffStart', v)}
+              onChange={(v) => updateProp("falloffStart", v)}
             />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={['three']} />
+          <Dependencies dependencyList={["three"]} />
         </PreviewTab>
 
         <CodeTab>

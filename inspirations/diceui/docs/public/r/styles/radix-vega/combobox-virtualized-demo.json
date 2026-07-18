@@ -1,13 +1,8 @@
 {
   "name": "combobox-virtualized-demo",
   "type": "registry:example",
-  "dependencies": [
-    "@tanstack/react-virtual",
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "combobox"
-  ],
+  "dependencies": ["@tanstack/react-virtual", "lucide-react"],
+  "registryDependencies": ["combobox"],
   "files": [
     {
       "path": "examples/combobox-virtualized-demo.tsx",

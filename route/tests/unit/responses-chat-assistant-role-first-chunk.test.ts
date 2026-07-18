@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiResponsesToOpenAIResponse } =
-  await import("../../open-sse/translator/response/openai-responses.ts");
+const { openaiResponsesToOpenAIResponse } = await import(
+  "../../open-sse/translator/response/openai-responses.ts"
+);
 
 /**
  * Regression: Responses → Chat Completions streaming must announce the assistant
@@ -29,21 +30,21 @@ test("Responses->Chat: first tool_call chunk announces role=assistant", () => {
         arguments: "",
       },
     },
-    state
+    state,
   );
 
   assert.ok(first, "should emit a chunk for output_item.added");
   assert.equal(
     first.choices[0].delta.role,
     "assistant",
-    "first emitted delta must carry role=assistant"
+    "first emitted delta must carry role=assistant",
   );
   assert.equal(first.choices[0].delta.tool_calls[0].function.name, "get_weather");
 
   // Subsequent argument deltas must NOT repeat the role announcement.
   const next = openaiResponsesToOpenAIResponse(
     { type: "response.function_call_arguments.delta", delta: '{"x":1}' },
-    state
+    state,
   );
   assert.ok(next, "should emit a chunk for arguments.delta");
   assert.equal(next.choices[0].delta.role, undefined, "only the first delta announces the role");
@@ -54,7 +55,7 @@ test("Responses->Chat: first text chunk announces role=assistant", () => {
 
   const first = openaiResponsesToOpenAIResponse(
     { type: "response.output_text.delta", delta: "Olá" },
-    state
+    state,
   );
 
   assert.ok(first, "should emit a chunk for output_text.delta");
@@ -63,7 +64,7 @@ test("Responses->Chat: first text chunk announces role=assistant", () => {
 
   const next = openaiResponsesToOpenAIResponse(
     { type: "response.output_text.delta", delta: " mundo" },
-    state
+    state,
   );
   assert.equal(next.choices[0].delta.role, undefined);
   assert.equal(next.choices[0].delta.content, " mundo");

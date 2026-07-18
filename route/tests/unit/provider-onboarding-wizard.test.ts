@@ -1,10 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const catalog =
-  await import("../../src/app/(dashboard)/dashboard/providers/components/onboarding/providerOnboardingCatalog.ts");
-const api =
-  await import("../../src/app/(dashboard)/dashboard/providers/components/onboarding/providerOnboardingApi.ts");
+const catalog = await import(
+  "../../src/app/(dashboard)/dashboard/providers/components/onboarding/providerOnboardingCatalog.ts"
+);
+const api = await import(
+  "../../src/app/(dashboard)/dashboard/providers/components/onboarding/providerOnboardingApi.ts"
+);
 
 test("provider onboarding catalog exposes API-key and OAuth providers for the wizard", () => {
   const apiKeyOptions = catalog.getWizardApiKeyProviderOptions();
@@ -53,11 +55,11 @@ test("provider onboarding option filter matches id, name, alias, and description
 
   assert.deepEqual(
     catalog.filterWizardProviderOptions(options, "router").map((option) => option.id),
-    ["openrouter"]
+    ["openrouter"],
   );
   assert.deepEqual(
     catalog.filterWizardProviderOptions(options, "coding").map((option) => option.id),
-    ["claude"]
+    ["claude"],
   );
   assert.equal(catalog.filterWizardProviderOptions(options, "   ").length, 2);
 });
@@ -73,7 +75,7 @@ test("provider onboarding builds providerSpecificData without empty fields", () 
     {
       baseUrl: "https://gateway.example/v1",
       cx: "cx-123",
-    }
+    },
   );
   assert.equal(catalog.buildProviderSpecificData({}), null);
 });
@@ -89,7 +91,7 @@ test("provider onboarding API sends validate, create, and test requests with exp
     if (String(url) === "/api/providers") {
       return Response.json(
         { connection: { id: "conn-1", provider: "openai", name: "OpenAI Primary" } },
-        { status: 201 }
+        { status: 201 },
       );
     }
     if (String(url) === "/api/providers/conn-1/test") {
@@ -154,7 +156,7 @@ test("provider onboarding validation rejects HTTP 200 responses with valid false
   try {
     await assert.rejects(
       () => api.validateOnboardingApiKey({ provider: "openai", apiKey: "bad-key" }),
-      /Invalid API key/
+      /Invalid API key/,
     );
     assert.equal(createCalled, false);
   } finally {
@@ -171,7 +173,7 @@ test("#5692 onboarding validation treats unsupported providers as non-blocking (
       // failure — otherwise the connection is never created (#5692).
       return Response.json(
         { error: "Provider validation not supported", unsupported: true },
-        { status: 400 }
+        { status: 400 },
       );
     }
     return Response.json({ error: "unexpected" }, { status: 500 });
@@ -212,7 +214,7 @@ test("provider onboarding validates API payloads before sending requests", async
           apiKey: "sk-test",
           baseUrl: "not-a-url",
         }),
-      /Provider credentials are not valid/
+      /Provider credentials are not valid/,
     );
     await assert.rejects(
       () =>
@@ -220,7 +222,7 @@ test("provider onboarding validates API payloads before sending requests", async
           provider: "openai",
           name: "OpenAI Primary",
         }),
-      /Provider connection data is invalid/
+      /Provider connection data is invalid/,
     );
     assert.equal(fetchCalled, false);
   } finally {
@@ -254,7 +256,7 @@ test("provider onboarding can create compatible connections without an API key",
     calls.push({ url: String(url), init });
     return Response.json(
       { connection: { id: "conn-custom", provider: "openai-compatible-local" } },
-      { status: 201 }
+      { status: 201 },
     );
   };
 
@@ -294,7 +296,7 @@ test("provider onboarding API builds compatible provider node request bodies", (
       chatPath: "",
       apiType: "responses",
       modelsPath: "/models",
-    }
+    },
   );
 
   assert.deepEqual(
@@ -311,7 +313,7 @@ test("provider onboarding API builds compatible provider node request bodies", (
       type: "anthropic-compatible",
       chatPath: "/v1/messages?beta=true",
       compatMode: "cc",
-    }
+    },
   );
 });
 
@@ -325,6 +327,6 @@ test("provider onboarding validates compatible provider node request bodies", ()
         baseUrl: "https://gateway.example/v1",
         chatPath: "chat/completions",
       }),
-    /Compatible provider data is invalid/
+    /Compatible provider data is invalid/,
   );
 });

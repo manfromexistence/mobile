@@ -13,11 +13,7 @@ import {
   ComboboxItem,
   ComboboxTrigger,
 } from "@/registry/bases/radix/ui/combobox";
-import {
-  TagsInput,
-  TagsInputInput,
-  TagsInputItem,
-} from "@/registry/bases/radix/ui/tags-input";
+import { TagsInput, TagsInputInput, TagsInputItem } from "@/registry/bases/radix/ui/tags-input";
 
 const tricks = [
   "Kickflip",

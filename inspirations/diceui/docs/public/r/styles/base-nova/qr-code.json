@@ -15,14 +15,7 @@
       "target": ""
     }
   ],
-  "registryDependencies": [
-    "@diceui/use-lazy-ref"
-  ],
-  "dependencies": [
-    "@base-ui/react",
-    "qrcode"
-  ],
-  "devDependencies": [
-    "@types/qrcode"
-  ]
+  "registryDependencies": ["@diceui/use-lazy-ref"],
+  "dependencies": ["@base-ui/react", "qrcode"],
+  "devDependencies": ["@types/qrcode"]
 }

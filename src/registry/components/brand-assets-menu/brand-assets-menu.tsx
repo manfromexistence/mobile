@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useTiks } from "@rexa-developer/tiks/react"
-import { toast } from "sonner"
+import { useTiks } from "@rexa-developer/tiks/react";
+import { toast } from "sonner";
 
 import {
   ContextMenu,
@@ -9,17 +9,17 @@ import {
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu"
-import { IconPlaceholder } from "@/registry/icons/icon-placeholder"
+} from "@/components/ui/context-menu";
+import { IconPlaceholder } from "@/registry/icons/icon-placeholder";
 
 export type BrandAssetsMenuProps = {
-  logomark: React.ReactElement
-  logomarkSVG: string
-  logotypeSVG: string
-  brandGuidelinesURL: string
-  brandAssetsURL: string
-  children: React.ReactElement
-}
+  logomark: React.ReactElement;
+  logomarkSVG: string;
+  logotypeSVG: string;
+  brandGuidelinesURL: string;
+  brandAssetsURL: string;
+  children: React.ReactElement;
+};
 
 export function BrandAssetsMenu({
   logomark,
@@ -29,7 +29,7 @@ export function BrandAssetsMenu({
   brandAssetsURL,
   children,
 }: BrandAssetsMenuProps) {
-  const { success } = useTiks()
+  const { success } = useTiks();
 
   return (
     <ContextMenu>
@@ -38,9 +38,9 @@ export function BrandAssetsMenu({
       <ContextMenuContent className="w-fit">
         <ContextMenuItem
           onClick={() => {
-            copyText(logomarkSVG)
-            toast.success("Logomark as SVG copied")
-            success()
+            copyText(logomarkSVG);
+            toast.success("Logomark as SVG copied");
+            success();
           }}
         >
           {logomark}
@@ -49,9 +49,9 @@ export function BrandAssetsMenu({
 
         <ContextMenuItem
           onClick={() => {
-            copyText(logotypeSVG)
-            toast.success("Logotype as SVG copied")
-            success()
+            copyText(logotypeSVG);
+            toast.success("Logotype as SVG copied");
+            success();
           }}
         >
           <IconPlaceholder
@@ -67,11 +67,7 @@ export function BrandAssetsMenu({
         <ContextMenuSeparator />
 
         <ContextMenuItem asChild>
-          <a
-            href={brandGuidelinesURL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={brandGuidelinesURL} target="_blank" rel="noopener noreferrer">
             <IconPlaceholder
               lucide="SquareDashedIcon"
               tabler="IconShape"
@@ -84,12 +80,7 @@ export function BrandAssetsMenu({
         </ContextMenuItem>
 
         <ContextMenuItem asChild>
-          <a
-            href={brandAssetsURL}
-            target="_blank"
-            rel="noopener noreferrer"
-            download
-          >
+          <a href={brandAssetsURL} target="_blank" rel="noopener noreferrer" download>
             <IconPlaceholder
               lucide="DownloadIcon"
               tabler="IconDownload"
@@ -102,14 +93,14 @@ export function BrandAssetsMenu({
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
-  )
+  );
 }
 
 const copyText = async (text: string) => {
   try {
-    await navigator.clipboard.writeText(text)
-    return true
+    await navigator.clipboard.writeText(text);
+    return true;
   } catch {
-    return false
+    return false;
   }
-}
+};

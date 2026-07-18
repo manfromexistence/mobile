@@ -50,7 +50,7 @@ test("bypass mode accepts basic-valid client signatures and falls back on invali
 
   assert.equal(
     resolveGeminiThoughtSignature("call-1", BASIC_VALID_SIGNATURE),
-    BASIC_VALID_SIGNATURE
+    BASIC_VALID_SIGNATURE,
   );
   assert.equal(resolveGeminiThoughtSignature("call-1", INVALID_SIGNATURE), "stored-signature");
   assert.equal(resolveGeminiThoughtSignature("call-1"), "stored-signature");
@@ -62,7 +62,7 @@ test("bypass-strict mode requires the full protobuf structure before accepting a
 
   assert.equal(
     resolveGeminiThoughtSignature("call-1", STRICT_VALID_SIGNATURE),
-    STRICT_VALID_SIGNATURE
+    STRICT_VALID_SIGNATURE,
   );
   assert.equal(resolveGeminiThoughtSignature("call-1", BASIC_VALID_SIGNATURE), "stored-signature");
   assert.equal(resolveGeminiThoughtSignature("call-1", INVALID_SIGNATURE), "stored-signature");
@@ -84,7 +84,7 @@ test("enabled mode keeps ignoring client signatures after sqlite recovery", () =
 
   assert.equal(
     resolveGeminiThoughtSignature("db-call-2", STRICT_VALID_SIGNATURE),
-    "stored-db-signature"
+    "stored-db-signature",
   );
 });
 

@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  Direction as DirectionPrimitive,
-  Slot as SlotPrimitive,
-} from "radix-ui";
+import { Direction as DirectionPrimitive, Slot as SlotPrimitive } from "radix-ui";
 import * as React from "react";
 import { useComposedRefs } from "@/lib/compose-refs";
 import { cn } from "@/lib/utils";
@@ -31,11 +28,7 @@ function clamp(value: number, [min, max]: [number, number]) {
   return Math.min(max, Math.max(min, value));
 }
 
-function getNextSortedValues(
-  prevValues: number[] = [],
-  nextValue: number,
-  atIndex: number,
-) {
+function getNextSortedValues(prevValues: number[] = [], nextValue: number, atIndex: number) {
   const nextValues = [...prevValues];
   nextValues[atIndex] = nextValue;
   return nextValues.sort((a, b) => a - b);
@@ -48,10 +41,7 @@ function getStepsBetweenValues(values: number[]) {
   });
 }
 
-function hasMinStepsBetweenValues(
-  values: number[],
-  minStepsBetweenValues: number,
-) {
+function hasMinStepsBetweenValues(values: number[], minStepsBetweenValues: number) {
   if (minStepsBetweenValues > 0) {
     const stepsBetweenValues = getStepsBetweenValues(values);
     const actualMinStepsBetweenValues =
@@ -107,16 +97,8 @@ interface Store {
   notify: () => void;
   addThumb: (index: number, thumbData: ThumbData) => void;
   removeThumb: (index: number) => void;
-  updateValue: (
-    value: number,
-    atIndex: number,
-    options?: { commit?: boolean },
-  ) => void;
-  getValueFromPointer: (
-    clientX: number,
-    clientY: number,
-    rect: DOMRect,
-  ) => number;
+  updateValue: (value: number, atIndex: number, options?: { commit?: boolean }) => void;
+  getValueFromPointer: (clientX: number, clientY: number, rect: DOMRect) => number;
   getAngleFromValue: (value: number) => number;
   getPositionFromAngle: (angle: number) => { x: number; y: number };
 }
@@ -134,10 +116,7 @@ function useStoreContext(consumerName: string) {
 function useStore<T>(selector: (state: StoreState) => T): T {
   const store = useStoreContext("useStore");
 
-  const getSnapshot = React.useCallback(
-    () => selector(store.getState()),
-    [store, selector],
-  );
+  const getSnapshot = React.useCallback(() => selector(store.getState()), [store, selector]);
 
   return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
@@ -266,24 +245,14 @@ function AngleSlider(props: AngleSliderProps) {
       updateValue: (value, atIndex, { commit = false } = {}) => {
         const { min, max, step, minStepsBetweenThumbs } = stateRef.current;
         const decimalCount = getDecimalCount(step);
-        const snapToStep = roundValue(
-          Math.round((value - min) / step) * step + min,
-          decimalCount,
-        );
+        const snapToStep = roundValue(Math.round((value - min) / step) * step + min, decimalCount);
         const nextValue = clamp(snapToStep, [min, max]);
 
-        const nextValues = getNextSortedValues(
-          stateRef.current.values,
-          nextValue,
-          atIndex,
-        );
+        const nextValues = getNextSortedValues(stateRef.current.values, nextValue, atIndex);
 
-        if (
-          hasMinStepsBetweenValues(nextValues, minStepsBetweenThumbs * step)
-        ) {
+        if (hasMinStepsBetweenValues(nextValues, minStepsBetweenThumbs * step)) {
           stateRef.current.valueIndexToChange = nextValues.indexOf(nextValue);
-          const hasChanged =
-            String(nextValues) !== String(stateRef.current.values);
+          const hasChanged = String(nextValues) !== String(stateRef.current.values);
 
           if (hasChanged) {
             stateRef.current.values = nextValues;
@@ -395,9 +364,7 @@ function AngleSlider(props: AngleSliderProps) {
 
   const dir = DirectionPrimitive.useDirection(dirProp);
 
-  const [sliderElement, setSliderElement] = React.useState<RootElement | null>(
-    null,
-  );
+  const [sliderElement, setSliderElement] = React.useState<RootElement | null>(null);
   const composedRef = useComposedRefs(ref, setSliderElement);
   const valuesBeforeSlideStartRef = React.useRef(value ?? defaultValue);
 
@@ -436,8 +403,7 @@ function AngleSlider(props: AngleSliderProps) {
     if (disabled) return;
 
     const state = store.getState();
-    const prevValue =
-      valuesBeforeSlideStartRef.current[state.valueIndexToChange];
+    const prevValue = valuesBeforeSlideStartRef.current[state.valueIndexToChange];
     const nextValue = state.values[state.valueIndexToChange];
     const hasChanged = nextValue !== prevValue;
 
@@ -465,14 +431,11 @@ function AngleSlider(props: AngleSliderProps) {
         event.preventDefault();
 
         const isPageKey = PAGE_KEYS.includes(event.key);
-        const isSkipKey =
-          isPageKey || (event.shiftKey && ARROW_KEYS.includes(event.key));
+        const isSkipKey = isPageKey || (event.shiftKey && ARROW_KEYS.includes(event.key));
         const multiplier = isSkipKey ? 10 : 1;
 
         let direction = 0;
-        const isDecreaseKey = ["ArrowLeft", "ArrowUp", "PageUp"].includes(
-          event.key,
-        );
+        const isDecreaseKey = ["ArrowLeft", "ArrowUp", "PageUp"].includes(event.key);
         direction = isDecreaseKey ? -1 : 1;
         if (inverted) direction *= -1;
 
@@ -498,20 +461,14 @@ function AngleSlider(props: AngleSliderProps) {
         valuesBeforeSlideStartRef.current = store.getState().values;
 
         const thumbs = Array.from(store.getState().thumbs.values());
-        const clickedThumb = thumbs.find((thumb) =>
-          thumb.element.contains(target),
-        );
+        const clickedThumb = thumbs.find((thumb) => thumb.element.contains(target));
 
         if (clickedThumb) {
           clickedThumb.element.focus();
           store.setState("valueIndexToChange", clickedThumb.index);
         } else if (sliderElement) {
           const rect = sliderElement.getBoundingClientRect();
-          const pointerValue = store.getValueFromPointer(
-            event.clientX,
-            event.clientY,
-            rect,
-          );
+          const pointerValue = store.getValueFromPointer(event.clientX, event.clientY, rect);
           onSliderStart(pointerValue);
         }
       }
@@ -527,11 +484,7 @@ function AngleSlider(props: AngleSliderProps) {
       const target = event.target as HTMLElement;
       if (target.hasPointerCapture(event.pointerId) && sliderElement) {
         const rect = sliderElement.getBoundingClientRect();
-        const pointerValue = store.getValueFromPointer(
-          event.clientX,
-          event.clientY,
-          rect,
-        );
+        const pointerValue = store.getValueFromPointer(event.clientX, event.clientY, rect);
         onSliderMove(pointerValue);
       }
     },
@@ -563,11 +516,7 @@ function AngleSlider(props: AngleSliderProps) {
           dir={dir}
           {...rootProps}
           ref={composedRef}
-          className={cn(
-            "relative touch-none select-none",
-            disabled && "opacity-50",
-            className,
-          )}
+          className={cn("relative touch-none select-none", disabled && "opacity-50", className)}
           style={{
             width: `${size * 2 + 40}px`,
             height: `${size * 2 + 40}px`,
@@ -667,9 +616,7 @@ function AngleSliderRange(props: React.ComponentProps<"path">) {
 
   const rangeStart = values.length <= 1 ? min : (sortedValues[0] ?? min);
   const rangeEnd =
-    values.length <= 1
-      ? (sortedValues[0] ?? min)
-      : (sortedValues[sortedValues.length - 1] ?? max);
+    values.length <= 1 ? (sortedValues[0] ?? min) : (sortedValues[sortedValues.length - 1] ?? max);
 
   const rangeStartPercent = (rangeStart - min) / (max - min);
   const rangeEndPercent = (rangeEnd - min) / (max - min);
@@ -724,14 +671,10 @@ function AngleSliderThumb(props: AngleSliderThumbProps) {
   const size = useStore((state) => state.size);
 
   const thumbId = React.useId();
-  const [thumbElement, setThumbElement] = React.useState<ThumbElement | null>(
-    null,
-  );
+  const [thumbElement, setThumbElement] = React.useState<ThumbElement | null>(null);
   const composedRef = useComposedRefs(ref, setThumbElement);
 
-  const isFormControl = thumbElement
-    ? context.form || !!thumbElement.closest("form")
-    : true;
+  const isFormControl = thumbElement ? context.form || !!thumbElement.closest("form") : true;
 
   const index = indexProp ?? 0;
   const value = values[index];
@@ -804,11 +747,7 @@ function AngleSliderThumb(props: AngleSliderThumbProps) {
         <VisuallyHiddenInput
           key={index}
           control={thumbElement}
-          name={
-            context.name
-              ? context.name + (values.length > 1 ? "[]" : "")
-              : undefined
-          }
+          name={context.name ? context.name + (values.length > 1 ? "[]" : "") : undefined}
           form={context.form}
           value={value.toString()}
           type="number"
@@ -828,15 +767,7 @@ interface AngleSliderValueProps extends DivProps {
 }
 
 function AngleSliderValue(props: AngleSliderValueProps) {
-  const {
-    unit = "°",
-    formatValue,
-    className,
-    style,
-    asChild,
-    children,
-    ...valueProps
-  } = props;
+  const { unit = "°", formatValue, className, style, asChild, children, ...valueProps } = props;
 
   const values = useStore((state) => state.values);
   const size = useStore((state) => state.size);

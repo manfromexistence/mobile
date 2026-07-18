@@ -68,7 +68,7 @@ function setupFetchMock() {
           totalOutputTokens: 0,
           appliedStyleCounts: {},
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     if (url.includes("/api/settings/compression")) {
@@ -84,7 +84,7 @@ function setupFetchMock() {
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     }
     if (url.includes("/api/compression/rules")) {
@@ -102,8 +102,9 @@ function setupFetchMock() {
 describe("CompressionSettingsPage", () => {
   it("mounts without throwing and renders content", { timeout: 15000 }, async () => {
     setupFetchMock();
-    const { default: CompressionSettingsPage } =
-      await import("../../../src/app/(dashboard)/dashboard/context/settings/page");
+    const { default: CompressionSettingsPage } = await import(
+      "../../../src/app/(dashboard)/dashboard/context/settings/page"
+    );
 
     let container!: HTMLElement;
     await act(async () => {
@@ -124,8 +125,9 @@ describe("CompressionSettingsPage", () => {
   it("does not crash when fetch calls fail (fail-soft)", async () => {
     vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("Network error"));
 
-    const { default: CompressionSettingsPage } =
-      await import("../../../src/app/(dashboard)/dashboard/context/settings/page");
+    const { default: CompressionSettingsPage } = await import(
+      "../../../src/app/(dashboard)/dashboard/context/settings/page"
+    );
 
     let container!: HTMLElement;
     await act(async () => {

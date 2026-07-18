@@ -1,19 +1,15 @@
-import { visit } from "unist-util-visit"
-import { addQueryParams } from "@/lib/utils/url"
-import type { UnistNode, UnistTree } from "@/types/unist"
+import { visit } from "unist-util-visit";
+import { addQueryParams } from "@/lib/utils/url";
+import type { UnistNode, UnistTree } from "@/types/unist";
 
 export function rehypeAddQueryParams(params: Record<string, string>) {
   return (tree: any) => {
     visit(tree, (node: any) => {
-      if (
-        node.type !== "element" ||
-        node?.tagName !== "a" ||
-        !node?.properties?.href
-      ) {
-        return
+      if (node.type !== "element" || node?.tagName !== "a" || !node?.properties?.href) {
+        return;
       }
 
-      const href = node.properties?.href as string | undefined
+      const href = node.properties?.href as string | undefined;
 
       if (
         !href ||
@@ -22,10 +18,10 @@ export function rehypeAddQueryParams(params: Record<string, string>) {
         href.startsWith("tel:") ||
         href.startsWith("#")
       ) {
-        return
+        return;
       }
 
-      node.properties.href = addQueryParams(href, params)
-    })
-  }
+      node.properties.href = addQueryParams(href, params);
+    });
+  };
 }

@@ -6,15 +6,8 @@ import * as React from "react";
 import { Icons } from "@/components/icons";
 import { siteConfig } from "@/config/site";
 import { Button } from "@/registry/bases/radix/ui/button";
-import {
-  ButtonGroup,
-  ButtonGroupSeparator,
-} from "@/registry/bases/radix/ui/button-group";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/registry/bases/radix/ui/popover";
+import { ButtonGroup, ButtonGroupSeparator } from "@/registry/bases/radix/ui/button-group";
+import { Popover, PopoverContent, PopoverTrigger } from "@/registry/bases/radix/ui/popover";
 
 const markdownCache = new Map<string, string>();
 
@@ -80,9 +73,7 @@ interface PageMenuProps {
 function PageMenu({ markdownUrl, githubUrl }: PageMenuProps) {
   const items = React.useMemo(() => {
     const fullMarkdownUrl =
-      typeof window !== "undefined"
-        ? new URL(markdownUrl, window.location.origin)
-        : "loading";
+      typeof window !== "undefined" ? new URL(markdownUrl, window.location.origin) : "loading";
     const q = `Read ${fullMarkdownUrl}, I want to ask questions about it.`;
 
     return [

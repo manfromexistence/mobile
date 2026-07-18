@@ -27,9 +27,7 @@ function useCollection<TElement extends HTMLElement, TData = {}>({
   grouped = false,
 }: CollectionOptions = {}) {
   const collectionRef = React.useRef<TElement | null>(null);
-  const itemMap = React.useRef<CollectionItemMap<TElement, TData>>(
-    new Map(),
-  ).current;
+  const itemMap = React.useRef<CollectionItemMap<TElement, TData>>(new Map()).current;
   const groupMapRef = React.useRef<CollectionGroupMap<TElement>>(new Map());
   const groupMap = grouped ? groupMapRef.current : null;
 

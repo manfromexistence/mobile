@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-const providerLimitUtils =
-  await import("../../src/app/(dashboard)/dashboard/usage/components/ProviderLimits/utils.tsx");
+const providerLimitUtils = await import(
+  "../../src/app/(dashboard)/dashboard/usage/components/ProviderLimits/utils.tsx"
+);
 const providerConstants = await import("../../src/shared/constants/providers.ts");
 const settingsSchemas = await import("../../src/shared/validation/settingsSchemas.ts");
 
@@ -136,7 +137,7 @@ test("Codex quota rows use stable OpenAI Codex order with banked reset credits l
       "gpt_5_3_codex_spark_session",
       "gpt_5_3_codex_spark_weekly",
       "banked_reset_credits",
-    ]
+    ],
   );
   assert.equal(providerLimitUtils.formatQuotaLabel(parsed[2].name), "GPT-5.3-Codex-Spark Session");
   assert.equal(providerLimitUtils.formatQuotaLabel(parsed[4].name), "Banked Reset Credits");
@@ -180,7 +181,7 @@ test("Codex banked reset credits parse as an integer reset-credit counter", () =
   });
 
   const resetCredits = (parsed as ParsedQuota[]).find(
-    (quota) => quota.name === "banked_reset_credits"
+    (quota) => quota.name === "banked_reset_credits",
   );
   assert.ok(resetCredits);
   assert.equal(resetCredits.isResetCredits, true);
@@ -250,7 +251,7 @@ test("GLM quota rows are ordered by session, weekly, then monthly", () => {
 
   assert.deepEqual(
     parsed.map((quota) => quota.name),
-    ["session", "weekly", "mcp_monthly"]
+    ["session", "weekly", "mcp_monthly"],
   );
 });
 
@@ -270,7 +271,7 @@ test("hidden provider models are filtered from per-model quota rows", () => {
 
   assert.deepEqual(
     visible.map((quota) => quota.modelKey || quota.name),
-    ["gemini-3.5-pro", "credits"]
+    ["gemini-3.5-pro", "credits"],
   );
 });
 
@@ -285,7 +286,7 @@ test("hidden quota filtering keeps non-model provider quota rows", () => {
 
   assert.deepEqual(
     providerLimitUtils.filterHiddenModelQuotas("antigravity", quotas, hidden),
-    quotas
+    quotas,
   );
 });
 

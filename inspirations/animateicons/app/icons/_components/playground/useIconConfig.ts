@@ -17,31 +17,25 @@
 import { useCallback, useState } from "react";
 
 export type IconConfig = {
-	size: number;
-	color: string;
-	duration: number;
+  size: number;
+  color: string;
+  duration: number;
 };
 
 const DEFAULT: IconConfig = {
-	size: 64,
-	color: "#ffffff",
-	duration: 1,
+  size: 64,
+  color: "#ffffff",
+  duration: 1,
 };
 
 export const useIconConfig = (initial: Partial<IconConfig> = {}) => {
-	const [config, setConfig] = useState<IconConfig>({ ...DEFAULT, ...initial });
+  const [config, setConfig] = useState<IconConfig>({ ...DEFAULT, ...initial });
 
-	const update = useCallback(
-		<K extends keyof IconConfig>(key: K, value: IconConfig[K]) => {
-			setConfig((prev) => ({ ...prev, [key]: value }));
-		},
-		[],
-	);
+  const update = useCallback(<K extends keyof IconConfig>(key: K, value: IconConfig[K]) => {
+    setConfig((prev) => ({ ...prev, [key]: value }));
+  }, []);
 
-	const reset = useCallback(
-		() => setConfig({ ...DEFAULT, ...initial }),
-		[initial],
-	);
+  const reset = useCallback(() => setConfig({ ...DEFAULT, ...initial }), [initial]);
 
-	return { config, update, reset };
+  return { config, update, reset };
 };

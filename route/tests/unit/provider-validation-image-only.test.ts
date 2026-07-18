@@ -89,7 +89,7 @@ for (const provider of Object.keys(imageOnlyProviders)) {
       assert.equal(
         result.error,
         expectedValidationError(status),
-        `${provider} should surface validation failure`
+        `${provider} should surface validation failure`,
       );
       assert.equal(fetchCalled, true, `${provider} should call its validation endpoint`);
     });

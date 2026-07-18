@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 
 const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-provider-model-token-limits-")
+  path.join(os.tmpdir(), "omniroute-provider-model-token-limits-"),
 );
 process.env.DATA_DIR = TEST_DATA_DIR;
 
@@ -47,7 +47,7 @@ test("POST persists max_input_tokens / max_output_tokens as inputTokenLimit / ou
       modelName: "Custom Long Context",
       max_input_tokens: 200000,
       max_output_tokens: 16384,
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -69,7 +69,7 @@ test("POST omits token limits when they are not provided", async () => {
       provider: "openai-compatible-demo",
       modelId: "custom-no-limits",
       modelName: "Custom No Limits",
-    })
+    }),
   );
   const body = (await response.json()) as any;
 

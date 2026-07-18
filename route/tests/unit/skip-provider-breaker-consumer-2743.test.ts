@@ -63,7 +63,7 @@ test("predicate: plain 503 (no skip hint) DOES record a provider-breaker failure
       sameProviderNext: false,
       skipProviderBreaker: false,
     }),
-    true
+    true,
   );
 });
 
@@ -75,7 +75,7 @@ test("predicate: skipProviderBreaker:true suppresses the provider-breaker failur
       sameProviderNext: false,
       skipProviderBreaker: true,
     }),
-    false
+    false,
   );
 });
 
@@ -87,7 +87,7 @@ test("predicate: skipProviderBreaker undefined behaves like false (records)", ()
       sameProviderNext: false,
       // skipProviderBreaker omitted on purpose
     }),
-    true
+    true,
   );
 });
 
@@ -99,7 +99,7 @@ test("predicate: stream-readiness failure never records (even on a 5xx)", () => 
       sameProviderNext: false,
       skipProviderBreaker: false,
     }),
-    false
+    false,
   );
 });
 
@@ -111,7 +111,7 @@ test("predicate: same-provider-next suppresses (a different model may still succ
       sameProviderNext: true,
       skipProviderBreaker: false,
     }),
-    false
+    false,
   );
 });
 
@@ -123,7 +123,7 @@ test("predicate: a non-provider-failure code (e.g. 404) never records", () => {
       sameProviderNext: false,
       skipProviderBreaker: false,
     }),
-    false
+    false,
   );
 });
 
@@ -149,7 +149,7 @@ function runConsumerGate(opts: {
     0,
     null,
     opts.provider,
-    opts.headers ?? null
+    opts.headers ?? null,
   );
   const shouldRecord = shouldRecordProviderBreakerFailure({
     isStreamReadinessFailure: opts.isStreamReadinessFailure ?? false,
@@ -181,7 +181,7 @@ test("consumer (positive skip): 503 + connection_cooldown hint → breaker stays
   assert.equal(
     isProviderInCooldown(provider),
     false,
-    "provider circuit breaker must remain CLOSED for a supervisor cooldown signal"
+    "provider circuit breaker must remain CLOSED for a supervisor cooldown signal",
   );
   const state = getProviderBreakerState(provider);
   assert.equal(state?.failureCount ?? 0, 0, "breaker failure count must not be incremented");
@@ -201,7 +201,7 @@ test("consumer (positive skip): five consecutive cooldown-hint 503s keep the bre
   assert.equal(
     isProviderInCooldown(provider),
     false,
-    "repeated supervisor cooldown signals must never trip the whole-provider breaker"
+    "repeated supervisor cooldown signals must never trip the whole-provider breaker",
   );
 });
 
@@ -221,7 +221,7 @@ test("consumer (negative control): plain 503 WITHOUT the hint trips the breaker"
   assert.equal(
     isProviderInCooldown(provider),
     true,
-    "provider circuit breaker must OPEN for a real upstream outage"
+    "provider circuit breaker must OPEN for a real upstream outage",
   );
   const state = getProviderBreakerState(provider);
   assert.ok((state?.failureCount ?? 0) >= 1, "breaker failure count must be incremented");
@@ -244,6 +244,6 @@ test("consumer (negative control): same-provider-next still suppresses recording
   assert.equal(
     isProviderInCooldown(provider),
     false,
-    "breaker must stay CLOSED for same-provider-next"
+    "breaker must stay CLOSED for same-provider-next",
   );
 });

@@ -1,16 +1,8 @@
 {
   "name": "color-picker-form-demo",
   "type": "registry:example",
-  "dependencies": [
-    "@hookform/resolvers/zod",
-    "react-hook-form",
-    "zod"
-  ],
-  "registryDependencies": [
-    "color-picker",
-    "button",
-    "form"
-  ],
+  "dependencies": ["@hookform/resolvers/zod", "react-hook-form", "zod"],
+  "registryDependencies": ["color-picker", "button", "form"],
   "files": [
     {
       "path": "examples/color-picker-form-demo.tsx",

@@ -27,9 +27,7 @@
     "@diceui/use-isomorphic-layout-effect",
     "@diceui/use-lazy-ref"
   ],
-  "dependencies": [
-    "@base-ui/react"
-  ],
+  "dependencies": ["@base-ui/react"],
   "css": {
     "@utility scrollbar-none": {
       "scrollbar-width": "none",

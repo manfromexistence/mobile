@@ -218,11 +218,11 @@ test("TRANSLATE mode drops commentary-phase text before translateResponse (#6952
 
   assert.ok(
     !output.includes(COMMENTARY_TEXT),
-    "commentary-phase prose must not reach the translated client stream"
+    "commentary-phase prose must not reach the translated client stream",
   );
   assert.ok(
     !output.includes(COMMENTARY_ARGS_JSON),
-    "commentary-phase narrated tool-call JSON must not reach the translated client stream"
+    "commentary-phase narrated tool-call JSON must not reach the translated client stream",
   );
 
   // The final prose must appear exactly once — not once from commentary
@@ -231,15 +231,12 @@ test("TRANSLATE mode drops commentary-phase text before translateResponse (#6952
   assert.equal(
     finalTextOccurrences,
     1,
-    `expected prose exactly once in the translated stream, got ${finalTextOccurrences}`
+    `expected prose exactly once in the translated stream, got ${finalTextOccurrences}`,
   );
 
   // The real tool call must still be forwarded (arguments are JSON-escaped inside
   // an `input_json_delta` SSE frame, so match on the unescaped path fragment).
-  assert.ok(
-    output.includes("/tmp/real.txt"),
-    "the real function_call arguments must be forwarded"
-  );
+  assert.ok(output.includes("/tmp/real.txt"), "the real function_call arguments must be forwarded");
   assert.ok(output.includes(TOOL_NAME), "the real function_call name must be forwarded");
 });
 
@@ -251,7 +248,7 @@ test("TRANSLATE mode passes commentary through when dropping is disabled (gate/r
 
   assert.ok(
     output.includes(COMMENTARY_TEXT),
-    "with the flag disabled, commentary text must still pass through untouched"
+    "with the flag disabled, commentary text must still pass through untouched",
   );
   assert.ok(output.includes(FINAL_TEXT), "the final answer text must still be forwarded");
 });

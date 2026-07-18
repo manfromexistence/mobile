@@ -56,7 +56,7 @@ test("v1 ws handshake succeeds without credentials when wsAuth is disabled", asy
   const response = await wsRoute.GET(
     new Request("http://localhost/api/v1/ws?handshake=1", {
       headers: { origin: "http://localhost" },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -83,7 +83,7 @@ test("v1 ws handshake accepts valid API key query credentials when wsAuth is ena
   const key = await apiKeysDb.createApiKey("ws client", "machine-ws-route");
 
   const response = await wsRoute.GET(
-    new Request(`http://localhost/api/v1/ws?handshake=1&api_key=${encodeURIComponent(key.key)}`)
+    new Request(`http://localhost/api/v1/ws?handshake=1&api_key=${encodeURIComponent(key.key)}`),
   );
 
   assert.equal(response.status, 200);

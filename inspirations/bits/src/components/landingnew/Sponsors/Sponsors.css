@@ -6,7 +6,7 @@
   position: relative;
   width: 100%;
   padding: 80px 0 100px;
-  background: #120F17;
+  background: #120f17;
   z-index: 4;
 }
 
@@ -19,7 +19,7 @@
 /* ─── Title ─── */
 
 .ln-sp-title {
-  font-family: 'Geist Pixel Line', sans-serif;
+  font-family: "Geist Pixel Line", sans-serif;
   font-size: clamp(28px, 4vw, 42px);
   font-weight: 500;
   line-height: 1.1;
@@ -44,7 +44,7 @@
   gap: 6px;
   padding: 5px 12px;
   border-radius: 8px;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.02em;
@@ -97,9 +97,7 @@
   background: rgba(18, 15, 23, 0.45);
   backdrop-filter: blur(32px) saturate(1.3);
   -webkit-backdrop-filter: blur(32px) saturate(1.3);
-  box-shadow:
-    0 4px 32px rgba(0, 0, 0, 0.25),
-    inset 0 0.5px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.25), inset 0 0.5px 0 rgba(255, 255, 255, 0.06);
   text-decoration: none;
   overflow: hidden;
   transition: border-color 0.3s ease, transform 0.3s ease;
@@ -133,7 +131,7 @@
 }
 
 .ln-sp-card-visual--diamond::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(ellipse at 50% 100%, rgba(168, 85, 247, 0.08) 0%, transparent 65%);
@@ -173,7 +171,7 @@
 }
 
 .ln-sp-card-name {
-  font-family: 'Geist', sans-serif;
+  font-family: "Geist", sans-serif;
   font-size: 14px;
   font-weight: 500;
   color: #fff;
@@ -208,7 +206,7 @@
 }
 
 .ln-sp-empty-label {
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.15);
   letter-spacing: 0.02em;
@@ -231,7 +229,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: 'Geist Mono', monospace;
+  font-family: "Geist Mono", monospace;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.35);
   text-decoration: none;

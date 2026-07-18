@@ -27,7 +27,7 @@ test("#6773: nvidia registry entry sets passthroughModels", () => {
       "(z-ai/, minimaxai/, deepseek-ai/, qwen/, mistralai/, stepfun-ai/, " +
       "moonshotai/, openai/, nvidia/) — it should set passthroughModels: true " +
       "like modelscope/synthetic/kilo-gateway, so a single stale model 404 " +
-      "does not cool down the whole connection for all other models"
+      "does not cool down the whole connection for all other models",
   );
 });
 
@@ -36,7 +36,7 @@ test("#6773: hasPerModelQuota('nvidia') is true, so a 404 on one nvidia model is
     accountFallback.hasPerModelQuota("nvidia", "z-ai/glm-5.2"),
     true,
     "expected nvidia to use per-model lockout (like gemini/github/codex/compatible " +
-      "providers) so a 404 on one model doesn't cool down the other nvidia models"
+      "providers) so a 404 on one model doesn't cool down the other nvidia models",
   );
 });
 
@@ -54,13 +54,13 @@ test("#6773: checkFallbackError + lockModelIfPerModelQuota scope a single-model 
     "nvidia",
     null,
     null,
-    null
+    null,
   );
   assert.equal(result.shouldFallback, true, "404 triggers a connection-level fallback/cooldown");
   assert.ok(
     (result.cooldownMs ?? 0) > 0,
     "the connection-level cooldown is non-zero, so it also blocks the other nvidia models" +
-      " unless it gets scoped to just this model below"
+      " unless it gets scoped to just this model below",
   );
 
   const locked = accountFallback.lockModelIfPerModelQuota(
@@ -68,12 +68,12 @@ test("#6773: checkFallbackError + lockModelIfPerModelQuota scope a single-model 
     "conn-6773",
     "z-ai/glm-5.2",
     "unknown",
-    result.cooldownMs ?? 30_000
+    result.cooldownMs ?? 30_000,
   );
   assert.equal(
     locked,
     true,
     "expected the 404 to be scoped to just this one model (per-model lockout), " +
-      "not the whole connection"
+      "not the whole connection",
   );
 });

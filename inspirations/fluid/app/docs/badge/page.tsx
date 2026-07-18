@@ -82,11 +82,21 @@ export default function BadgeDoc() {
       <DocSection title="Dot">
         <ComponentPreview code={dotCode}>
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="dot" color="violet">Fiction</Badge>
-            <Badge variant="dot" color="amber">Science</Badge>
-            <Badge variant="dot" color="green">Philosophy</Badge>
-            <Badge variant="dot" color="blue">History</Badge>
-            <Badge variant="dot" color="rose">Poetry</Badge>
+            <Badge variant="dot" color="violet">
+              Fiction
+            </Badge>
+            <Badge variant="dot" color="amber">
+              Science
+            </Badge>
+            <Badge variant="dot" color="green">
+              Philosophy
+            </Badge>
+            <Badge variant="dot" color="blue">
+              History
+            </Badge>
+            <Badge variant="dot" color="rose">
+              Poetry
+            </Badge>
           </div>
         </ComponentPreview>
       </DocSection>
@@ -94,9 +104,15 @@ export default function BadgeDoc() {
       <DocSection title="Sizes">
         <ComponentPreview code={sizesCode}>
           <div className="flex flex-wrap items-center gap-2">
-            <Badge size="sm" color="blue">Small</Badge>
-            <Badge size="md" color="blue">Medium</Badge>
-            <Badge size="lg" color="blue">Large</Badge>
+            <Badge size="sm" color="blue">
+              Small
+            </Badge>
+            <Badge size="md" color="blue">
+              Medium
+            </Badge>
+            <Badge size="lg" color="blue">
+              Large
+            </Badge>
           </div>
         </ComponentPreview>
       </DocSection>

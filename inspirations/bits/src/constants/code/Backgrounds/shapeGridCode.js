@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/ShapeGrid/ShapeGrid.jsx?raw';
-import css from '@content/Backgrounds/ShapeGrid/ShapeGrid.css?raw';
-import tailwind from '@tailwind/Backgrounds/ShapeGrid/ShapeGrid.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/ShapeGrid/ShapeGrid.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/ShapeGrid/ShapeGrid.tsx?raw';
+import code from "@content/Backgrounds/ShapeGrid/ShapeGrid.jsx?raw";
+import css from "@content/Backgrounds/ShapeGrid/ShapeGrid.css?raw";
+import tailwind from "@tailwind/Backgrounds/ShapeGrid/ShapeGrid.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/ShapeGrid/ShapeGrid.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/ShapeGrid/ShapeGrid.tsx?raw";
 
 export const shapeGrid = {
   usage: `import ShapeGrid from './ShapeGrid';
@@ -20,5 +20,5 @@ hoverTrailAmount={5} // number of trailing hovered shapes (0 = no trail)
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

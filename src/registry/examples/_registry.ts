@@ -1,5 +1,5 @@
-import type { Registry } from "shadcn/schema"
-import { getRegistryItemUrl } from "@/lib/utils/registry"
+import type { Registry } from "shadcn/schema";
+import { getRegistryItemUrl } from "@/lib/utils/registry";
 
 export const examples: Registry["items"] = [
   {
@@ -142,10 +142,7 @@ export const examples: Registry["items"] = [
   {
     name: "slide-to-unlock-demo",
     type: "registry:example",
-    registryDependencies: [
-      getRegistryItemUrl("slide-to-unlock"),
-      getRegistryItemUrl("use-sound"),
-    ],
+    registryDependencies: [getRegistryItemUrl("slide-to-unlock"), getRegistryItemUrl("use-sound")],
     files: [
       {
         path: "examples/slide-to-unlock-demo.tsx",
@@ -244,11 +241,7 @@ export const examples: Registry["items"] = [
   {
     name: "scroll-fade-effect-demo-03",
     type: "registry:example",
-    registryDependencies: [
-      getRegistryItemUrl("scroll-fade-effect"),
-      "scroll-area",
-      "separator",
-    ],
+    registryDependencies: [getRegistryItemUrl("scroll-fade-effect"), "scroll-area", "separator"],
     files: [
       {
         path: "examples/scroll-fade-effect-demo-03.tsx",
@@ -259,10 +252,7 @@ export const examples: Registry["items"] = [
   {
     name: "scroll-fade-effect-demo-04",
     type: "registry:example",
-    registryDependencies: [
-      getRegistryItemUrl("scroll-fade-effect"),
-      "scroll-area",
-    ],
+    registryDependencies: [getRegistryItemUrl("scroll-fade-effect"), "scroll-area"],
     files: [
       {
         path: "examples/scroll-fade-effect-demo-04.tsx",
@@ -354,10 +344,7 @@ export const examples: Registry["items"] = [
   {
     name: "middle-truncation-demo",
     type: "registry:example",
-    registryDependencies: [
-      "resizable",
-      getRegistryItemUrl("middle-truncation"),
-    ],
+    registryDependencies: ["resizable", getRegistryItemUrl("middle-truncation")],
     files: [
       {
         path: "examples/middle-truncation-demo.tsx",
@@ -616,4 +603,4 @@ export const examples: Registry["items"] = [
       },
     ],
   },
-]
+];

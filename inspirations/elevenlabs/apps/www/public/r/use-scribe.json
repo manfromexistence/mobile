@@ -1,9 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "use-scribe",
-  "dependencies": [
-    "@elevenlabs/client"
-  ],
+  "dependencies": ["@elevenlabs/client"],
   "files": [
     {
       "path": "hooks/use-scribe.ts",

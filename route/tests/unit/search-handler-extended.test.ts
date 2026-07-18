@@ -36,7 +36,7 @@ test("handleSearch builds Serper web requests and normalizes organic results", a
         ],
         searchParameters: { totalResults: 20 },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -92,7 +92,7 @@ test("handleSearch builds Brave news requests and normalizes favicon metadata", 
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -141,7 +141,7 @@ test("handleSearch builds Perplexity requests, forwards filters, and enforces ma
           { title: "Two", url: "https://two.example.com", snippet: "Second" },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -199,7 +199,7 @@ test("handleSearch builds Exa requests with include/exclude domains and preserve
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -255,7 +255,7 @@ test("handleSearch builds Tavily requests with topic and raw content normalizati
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -309,7 +309,7 @@ test("handleSearch builds Google PSE requests with key/cx query params and norma
         ],
         searchInformation: { totalResults: "42" },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -361,7 +361,7 @@ test("handleSearch builds Linkup requests and normalizes searchResults payload",
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -415,7 +415,7 @@ test("handleSearch builds SearchAPI requests and normalizes organic results", as
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -441,7 +441,7 @@ test("handleSearch builds SearchAPI requests and normalizes organic results", as
     assert.equal(result.data.results[0].metadata.author, "SearchAPI Source");
     assert.equal(
       result.data.results[0].metadata.image_url,
-      "https://searchapi.example.com/thumb.png"
+      "https://searchapi.example.com/thumb.png",
     );
     assert.equal(result.data.metrics.total_results_available, 18);
   } finally {
@@ -477,7 +477,7 @@ test("handleSearch builds You.com requests with livecrawl and normalizes unified
         },
         metadata: { search_uuid: "uuid-1", latency: 0.5 },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -538,7 +538,7 @@ test("handleSearch builds SearXNG requests with custom baseUrl and no apiKey", a
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -652,7 +652,7 @@ test("handleSearch fails over to the alternate provider on retriable upstream er
           totalCount: 1,
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -729,7 +729,7 @@ test("handleSearch builds Ollama POST request with bearer auth", async () => {
           { title: "Ollama result", url: "https://ollama.example.com", content: "Test content" },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -772,7 +772,7 @@ test("handleSearch normalizes Ollama response fields and full_text content", asy
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -794,11 +794,11 @@ test("handleSearch normalizes Ollama response fields and full_text content", asy
     assert.equal(result.data.results[0].url, "https://ollama.com/blog/web-search");
     assert.equal(
       result.data.results[0].snippet,
-      "Ollama now supports native web search capabilities"
+      "Ollama now supports native web search capabilities",
     );
     assert.equal(
       result.data.results[0].content.text,
-      "Ollama now supports native web search capabilities"
+      "Ollama now supports native web search capabilities",
     );
     assert.equal(result.data.results[0].content.format, "text");
     assert.equal(result.data.results[0].position, 1);
@@ -914,7 +914,7 @@ test("handleSearch searches with Z.AI Coding Plan via MCP", async () => {
         {
           status: 200,
           headers: { "content-type": "application/json", "mcp-session-id": "session-abc-123" },
-        }
+        },
       );
     }
 
@@ -934,7 +934,7 @@ test("handleSearch searches with Z.AI Coding Plan via MCP", async () => {
           },
           id: body.id,
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -960,7 +960,7 @@ test("handleSearch searches with Z.AI Coding Plan via MCP", async () => {
     assert.equal(result.data.results[0].url, "https://docs.z.ai/search");
     assert.equal(
       result.data.results[0].snippet,
-      "Z.AI now supports web search capabilities via Coding Plan"
+      "Z.AI now supports web search capabilities via Coding Plan",
     );
     assert.equal(result.data.results[0].display_url, "docs.z.ai/search");
     assert.equal(result.data.results[0].favicon_url, "https://docs.z.ai/favicon.ico");
@@ -994,7 +994,7 @@ test("handleSearch handles Z.AI Coding Plan empty MCP results", async () => {
         {
           status: 200,
           headers: { "content-type": "application/json", "mcp-session-id": "session-empty" },
-        }
+        },
       );
     }
 
@@ -1011,7 +1011,7 @@ test("handleSearch handles Z.AI Coding Plan empty MCP results", async () => {
           },
           id: body.id,
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -1081,7 +1081,7 @@ test("handleSearch handles Z.AI Coding Plan non-array MCP result", async () => {
         {
           status: 200,
           headers: { "content-type": "application/json", "mcp-session-id": "session-nonarray" },
-        }
+        },
       );
     }
 
@@ -1098,7 +1098,7 @@ test("handleSearch handles Z.AI Coding Plan non-array MCP result", async () => {
           },
           id: body.id,
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 

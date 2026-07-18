@@ -75,9 +75,7 @@ export function Drawer({
             transition={reduce ? { duration: 0.2, ease: EASE_OUT } : SPRING_PANEL}
             className={cn(
               "absolute inset-y-0 flex w-80 max-w-[85vw] flex-col bg-background shadow-2xl",
-              side === "right"
-                ? "right-0 border-l border-border"
-                : "left-0 border-r border-border",
+              side === "right" ? "right-0 border-l border-border" : "left-0 border-r border-border",
               className,
             )}
           >

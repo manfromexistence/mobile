@@ -23,7 +23,7 @@ test("handleAudioSpeech routes MiniMax format to T2A v2 with hex output", async 
         data: { audio: HEX_AUDIO },
         base_resp: { status_code: 0, status_msg: "success" },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -50,7 +50,7 @@ test("handleAudioSpeech routes MiniMax format to T2A v2 with hex output", async 
     assert.deepEqual(
       Array.from(buf),
       [0xde, 0xad, 0xbe, 0xef, 0xca, 0xfe, 0x12, 0x34],
-      "hex audio should be decoded to bytes"
+      "hex audio should be decoded to bytes",
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -62,7 +62,7 @@ test("handleAudioSpeech surfaces MiniMax base_resp error", async () => {
   globalThis.fetch = async () =>
     new Response(
       JSON.stringify({ base_resp: { status_code: 2013, status_msg: "invalid voice" } }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   try {
     const response = await handleAudioSpeech({
@@ -85,7 +85,7 @@ test("handleAudioSpeech rejects invalid hex audio from MiniMax", async () => {
         data: { audio: "zzznot-hex" },
         base_resp: { status_code: 0, status_msg: "" },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   try {
     const response = await handleAudioSpeech({

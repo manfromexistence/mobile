@@ -1,8 +1,8 @@
-import code from '@content/TextAnimations/GradientText/GradientText.jsx?raw';
-import css from '@content/TextAnimations/GradientText/GradientText.css?raw';
-import tailwind from '@tailwind/TextAnimations/GradientText/GradientText.jsx?raw';
-import tsCode from '@ts-default/TextAnimations/GradientText/GradientText.tsx?raw';
-import tsTailwind from '@ts-tailwind/TextAnimations/GradientText/GradientText.tsx?raw';
+import code from "@content/TextAnimations/GradientText/GradientText.jsx?raw";
+import css from "@content/TextAnimations/GradientText/GradientText.css?raw";
+import tailwind from "@tailwind/TextAnimations/GradientText/GradientText.jsx?raw";
+import tsCode from "@ts-default/TextAnimations/GradientText/GradientText.tsx?raw";
+import tsTailwind from "@ts-tailwind/TextAnimations/GradientText/GradientText.tsx?raw";
 
 export const gradientText = {
   usage: `import GradientText from './GradientText'
@@ -21,5 +21,5 @@ export const gradientText = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

@@ -46,9 +46,7 @@ export default function ComboboxDemo() {
                   <Check className="h-4 w-4" />
                 </Combobox.ComboboxItemIndicator>
               </span>
-              <Combobox.ComboboxItemText>
-                {trick.label}
-              </Combobox.ComboboxItemText>
+              <Combobox.ComboboxItemText>{trick.label}</Combobox.ComboboxItemText>
             </Combobox.ComboboxItem>
           ))}
         </Combobox.ComboboxContent>

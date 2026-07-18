@@ -8,13 +8,7 @@ const Combobox = (({
   className,
   ...props
 }: React.ComponentProps<typeof ComboboxPrimitive.Root>) => {
-  return (
-    <ComboboxPrimitive.Root
-      data-slot="combobox"
-      className={cn(className)}
-      {...props}
-    />
-  );
+  return <ComboboxPrimitive.Root data-slot="combobox" className={cn(className)} {...props} />;
 }) as ComboboxPrimitive.ComboboxRootComponentProps;
 
 function ComboboxLabel({
@@ -124,9 +118,7 @@ function ComboboxBadgeItem({
       )}
       {...props}
     >
-      <span className="truncate text-[13px] text-secondary-foreground">
-        {children}
-      </span>
+      <span className="truncate text-[13px] text-secondary-foreground">{children}</span>
       <ComboboxPrimitive.BadgeItemDelete
         data-slot="combobox-badge-item-delete"
         className="shrink-0 rounded p-0.5 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring data-highlighted:bg-destructive"
@@ -208,10 +200,7 @@ function ComboboxGroupLabel({
   return (
     <ComboboxPrimitive.GroupLabel
       data-slot="combobox-group-label"
-      className={cn(
-        "px-2 py-1.5 font-semibold text-muted-foreground text-xs",
-        className,
-      )}
+      className={cn("px-2 py-1.5 font-semibold text-muted-foreground text-xs", className)}
       {...props}
     />
   );

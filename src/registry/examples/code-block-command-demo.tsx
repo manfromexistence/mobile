@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { CodeBlockCommand } from "@/registry/transformed/components/code-block-command"
+import { CodeBlockCommand } from "@/registry/transformed/components/code-block-command";
 
 export default function CodeBlockCommandDemo() {
   return (
@@ -12,5 +12,5 @@ export default function CodeBlockCommandDemo() {
         bun="bunx --bun shadcn add button"
       />
     </div>
-  )
+  );
 }

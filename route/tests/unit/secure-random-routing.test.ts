@@ -75,7 +75,7 @@ test("routing-selection RNG uses the crypto-secure helper, not Math.random (Code
     const src = readFileSync(join(repoRoot, rel), "utf8");
     assert.ok(
       !/Math\.random\s*\(/.test(src),
-      `${rel} must not call Math.random() in a routing/selection context — use secureRandom* (js/insecure-randomness #665)`
+      `${rel} must not call Math.random() in a routing/selection context — use secureRandom* (js/insecure-randomness #665)`,
     );
     assert.match(src, /secureRandom(Int|Float)/, `${rel} should use the secureRandom helper`);
   }

@@ -67,9 +67,7 @@ vi.mock("@/shared/components", async () => {
   return { RequestLoggerV2, ConfirmModal };
 });
 
-const { default: LogsPage } = await import(
-  "../../../src/app/(dashboard)/dashboard/logs/page.tsx"
-);
+const { default: LogsPage } = await import("../../../src/app/(dashboard)/dashboard/logs/page.tsx");
 
 // Stands in for the App Router segment root: router.replace() re-renders the
 // whole page tree, which is exactly what re-evaluates LogsPage's initialId.
@@ -142,7 +140,7 @@ beforeEach(() => {
         return Response.json({ nodes: [] });
       }
       return Response.json({});
-    })
+    }),
   );
   vi.useFakeTimers();
   container = document.createElement("div");

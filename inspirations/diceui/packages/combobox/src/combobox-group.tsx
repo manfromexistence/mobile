@@ -13,8 +13,7 @@ interface ComboboxGroupContextValue {
 const [ComboboxGroupProvider, useComboboxGroupContext] =
   createContext<ComboboxGroupContextValue>(GROUP_NAME);
 
-interface ComboboxGroupProps
-  extends React.ComponentPropsWithoutRef<typeof Primitive.div> {
+interface ComboboxGroupProps extends React.ComponentPropsWithoutRef<typeof Primitive.div> {
   /**
    * Whether to render the group even if it's not visible during filtering.
    * @default false
@@ -30,9 +29,7 @@ const ComboboxGroup = React.forwardRef<HTMLDivElement, ComboboxGroupProps>(
     const context = useComboboxContext(GROUP_NAME);
 
     const isVisible =
-      forceMount ||
-      !context.filterStore.search ||
-      context.filterStore.groups?.has(id);
+      forceMount || !context.filterStore.search || context.filterStore.groups?.has(id);
 
     if (!isVisible) return null;
 

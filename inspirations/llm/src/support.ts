@@ -29,10 +29,7 @@ import {
  *
  * @returns Arrays of (tokenID, prob) pairs, ranked from highest prob to least.
  */
-export function getTopProbs(
-  num_top_probs: number,
-  p_prob: Float32Array,
-): Array<[number, number]> {
+export function getTopProbs(num_top_probs: number, p_prob: Float32Array): Array<[number, number]> {
   if (num_top_probs == 0) return [];
   // Initialize to dummy values
   const top_probs: Array<[number, number]> = [];
@@ -139,9 +136,7 @@ export function getToolCallFromOutputMessage(
 export function getToolCallFromOutputMessage(
   outputMessage: string,
   isStreaming: boolean,
-):
-  | Array<ChatCompletionMessageToolCall>
-  | Array<ChatCompletionChunk.Choice.Delta.ToolCall> {
+): Array<ChatCompletionMessageToolCall> | Array<ChatCompletionChunk.Choice.Delta.ToolCall> {
   // 1. Parse outputMessage to JSON object
   let toolCallsObject;
   try {
@@ -161,10 +156,7 @@ export function getToolCallFromOutputMessage(
   for (let id = 0; id < numToolCalls; id++) {
     const curToolCall = toolCallsObject[id];
     if (curToolCall.name === undefined || curToolCall.arguments === undefined) {
-      throw new ToolCallOutputMissingFieldsError(
-        ["name", "arguments"],
-        curToolCall,
-      );
+      throw new ToolCallOutputMissingFieldsError(["name", "arguments"], curToolCall);
     }
     tool_calls.push({
       name: curToolCall.name,
@@ -174,8 +166,7 @@ export function getToolCallFromOutputMessage(
 
   // 4. Return based on whether it is streaming or not
   if (isStreaming) {
-    const tool_calls_result: Array<ChatCompletionChunk.Choice.Delta.ToolCall> =
-      [];
+    const tool_calls_result: Array<ChatCompletionChunk.Choice.Delta.ToolCall> = [];
     for (let id = 0; id < numToolCalls; id++) {
       const curToolCall = tool_calls[id];
       tool_calls_result.push({
@@ -205,13 +196,8 @@ export function getToolCallFromOutputMessage(
   }
 }
 
-export function findModelRecord(
-  modelId: string,
-  appConfig: AppConfig,
-): ModelRecord {
-  const matchedItem = appConfig.model_list.find(
-    (item) => item.model_id == modelId,
-  );
+export function findModelRecord(modelId: string, appConfig: AppConfig): ModelRecord {
+  const matchedItem = appConfig.model_list.find((item) => item.model_id == modelId);
   if (matchedItem !== undefined) return matchedItem;
   throw new ModelNotFoundError(modelId);
 }
@@ -236,11 +222,7 @@ export function getModelIdToUse(
   if (requestModel) {
     // If specified model
     if (loadedModelIds.indexOf(requestModel) === -1) {
-      throw new SpecifiedModelNotFoundError(
-        loadedModelIds,
-        requestModel,
-        requestName,
-      );
+      throw new SpecifiedModelNotFoundError(loadedModelIds, requestModel, requestName);
     } else {
       selectedModelId = requestModel;
     }
@@ -293,14 +275,9 @@ export function getChunkedPrefillInputData(
   let curChunkLen = 0;
   for (let i = 0; i < inputData.length; i++) {
     let curData: Array<number> | ImageURL = inputData[i];
-    const curDataLen = Array.isArray(curData)
-      ? curData.length
-      : getImageEmbedSize(curData);
+    const curDataLen = Array.isArray(curData) ? curData.length : getImageEmbedSize(curData);
     if (!Array.isArray(curData) && curDataLen > prefillChunkSize) {
-      throw new PrefillChunkSizeSmallerThanImageError(
-        prefillChunkSize,
-        curDataLen,
-      );
+      throw new PrefillChunkSizeSmallerThanImageError(prefillChunkSize, curDataLen);
     }
     // 1. curData can fit into this chunk
     if (curChunkLen + curDataLen <= prefillChunkSize) {
@@ -320,10 +297,7 @@ export function getChunkedPrefillInputData(
       // 2.1. Token data, which itself needs to be chunked. Keep
       // chunking and finalizing until finished
       while (curData.length > 0) {
-        const curDataToChunkLen = Math.min(
-          curData.length,
-          prefillChunkSize - curChunkLen,
-        );
+        const curDataToChunkLen = Math.min(curData.length, prefillChunkSize - curChunkLen);
         curChunk.push(curData.slice(0, curDataToChunkLen));
         curChunkLen += curDataToChunkLen;
         curData = curData.slice(curDataToChunkLen);
@@ -436,9 +410,7 @@ export async function getImageDataFromURL(url: string): Promise<ImageData> {
  * is RGBA, so we skip every fourth element of the data. The order goes by rows from the
  * top-left pixel to the bottom-right, in RGB order.
  */
-export function getRGBArrayFromImageData(
-  imageData: ImageData,
-): Uint8ClampedArray {
+export function getRGBArrayFromImageData(imageData: ImageData): Uint8ClampedArray {
   const newData = new Uint8ClampedArray(imageData.width * imageData.height * 3);
   for (let i = 0, offset = 0; i < imageData.data.length; i += 4) {
     newData[offset++] = imageData.data[i];

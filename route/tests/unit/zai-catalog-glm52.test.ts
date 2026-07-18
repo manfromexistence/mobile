@@ -42,7 +42,7 @@ test("zai provider does NOT advertise effort-tier aliases (DefaultExecutor canno
   for (const alias of ["glm-5.2-high", "glm-5.2-max"]) {
     assert.ok(
       !ids.includes(alias),
-      `zai must not list ${alias}: it is a GlmExecutor-only alias and would reach z.ai as an unknown model ID`
+      `zai must not list ${alias}: it is a GlmExecutor-only alias and would reach z.ai as an unknown model ID`,
     );
   }
 });

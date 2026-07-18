@@ -1,11 +1,11 @@
-import { useQueryState, parseAsJson, parseAsString } from 'nuqs';
-import { useCallback, useMemo } from 'react';
-import { BACKGROUNDS, getBackgroundById, getDefaultProps } from '../backgrounds';
+import { useQueryState, parseAsJson, parseAsString } from "nuqs";
+import { useCallback, useMemo } from "react";
+import { BACKGROUNDS, getBackgroundById, getDefaultProps } from "../backgrounds";
 
 export function useBackgroundState() {
-  const [backgroundId, setBackgroundId] = useQueryState('bg', parseAsString.withDefault('silk'));
+  const [backgroundId, setBackgroundId] = useQueryState("bg", parseAsString.withDefault("silk"));
 
-  const [customProps, setCustomProps] = useQueryState('props', parseAsJson().withDefault({}));
+  const [customProps, setCustomProps] = useQueryState("props", parseAsJson().withDefault({}));
 
   const background = useMemo(() => {
     return getBackgroundById(backgroundId) || BACKGROUNDS[0];
@@ -18,7 +18,7 @@ export function useBackgroundState() {
 
   const updateProp = useCallback(
     (name, value) => {
-      setCustomProps(prev => {
+      setCustomProps((prev) => {
         const next = { ...prev, [name]: value };
         const defaults = getDefaultProps(background);
         if (JSON.stringify(value) === JSON.stringify(defaults[name])) {
@@ -27,7 +27,7 @@ export function useBackgroundState() {
         return Object.keys(next).length > 0 ? next : null;
       });
     },
-    [background, setCustomProps]
+    [background, setCustomProps],
   );
 
   const resetProps = useCallback(() => {
@@ -35,11 +35,11 @@ export function useBackgroundState() {
   }, [setCustomProps]);
 
   const changeBackground = useCallback(
-    id => {
+    (id) => {
       setBackgroundId(id);
       setCustomProps(null);
     },
-    [setBackgroundId, setCustomProps]
+    [setBackgroundId, setCustomProps],
   );
 
   const getShareUrl = useCallback(() => {
@@ -53,6 +53,6 @@ export function useBackgroundState() {
     updateProp,
     resetProps,
     changeBackground,
-    getShareUrl
+    getShareUrl,
   };
 }

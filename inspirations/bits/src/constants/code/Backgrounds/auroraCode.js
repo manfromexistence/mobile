@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/Aurora/Aurora.jsx?raw';
-import css from '@content/Backgrounds/Aurora/Aurora.css?raw';
-import tailwind from '@tailwind/Backgrounds/Aurora/Aurora.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/Aurora/Aurora.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/Aurora/Aurora.tsx?raw';
+import code from "@content/Backgrounds/Aurora/Aurora.jsx?raw";
+import css from "@content/Backgrounds/Aurora/Aurora.css?raw";
+import tailwind from "@tailwind/Backgrounds/Aurora/Aurora.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/Aurora/Aurora.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/Aurora/Aurora.tsx?raw";
 
 export const aurora = {
   dependencies: `ogl`,
@@ -18,5 +18,5 @@ export const aurora = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

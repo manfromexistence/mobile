@@ -6,10 +6,7 @@ function compareNodePosition(a: Node, b: Node) {
   ) {
     return -1;
   }
-  if (
-    position & Node.DOCUMENT_POSITION_PRECEDING ||
-    position & Node.DOCUMENT_POSITION_CONTAINS
-  ) {
+  if (position & Node.DOCUMENT_POSITION_PRECEDING || position & Node.DOCUMENT_POSITION_CONTAINS) {
     return 1;
   }
   return 0;

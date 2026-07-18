@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/Iridescence/Iridescence.jsx?raw';
-import css from '@content/Backgrounds/Iridescence/Iridescence.css?raw';
-import tailwind from '@tailwind/Backgrounds/Iridescence/Iridescence.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/Iridescence/Iridescence.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/Iridescence/Iridescence.tsx?raw';
+import code from "@content/Backgrounds/Iridescence/Iridescence.jsx?raw";
+import css from "@content/Backgrounds/Iridescence/Iridescence.css?raw";
+import tailwind from "@tailwind/Backgrounds/Iridescence/Iridescence.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/Iridescence/Iridescence.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/Iridescence/Iridescence.tsx?raw";
 
 export const iridescence = {
   dependencies: `ogl`,
@@ -18,7 +18,7 @@ export const iridescence = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };
 
 export const iridescenceMock = {
@@ -29,5 +29,5 @@ export const iridescenceMock = {
   mouseReact={false}
   amplitude={0.1}
   speed={1.0}
-/>`
+/>`,
 };

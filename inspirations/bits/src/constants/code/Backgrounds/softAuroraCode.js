@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/SoftAurora/SoftAurora.jsx?raw';
-import css from '@content/Backgrounds/SoftAurora/SoftAurora.css?raw';
-import tailwind from '@tailwind/Backgrounds/SoftAurora/SoftAurora.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/SoftAurora/SoftAurora.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/SoftAurora/SoftAurora.tsx?raw';
+import code from "@content/Backgrounds/SoftAurora/SoftAurora.jsx?raw";
+import css from "@content/Backgrounds/SoftAurora/SoftAurora.css?raw";
+import tailwind from "@tailwind/Backgrounds/SoftAurora/SoftAurora.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/SoftAurora/SoftAurora.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/SoftAurora/SoftAurora.tsx?raw";
 
 export const softAurora = {
   dependencies: `ogl`,
@@ -28,5 +28,5 @@ export const softAurora = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

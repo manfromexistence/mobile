@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { PauseIcon, PlayIcon } from "lucide-react"
+import { useEffect, useState } from "react";
+import { PauseIcon, PlayIcon } from "lucide-react";
 
 import {
   TranscriptViewerAudio,
@@ -10,21 +10,21 @@ import {
   TranscriptViewerScrubBar,
   TranscriptViewerWords,
   type CharacterAlignmentResponseModel,
-} from "@/registry/elevenlabs-ui/ui/transcript-viewer"
+} from "@/registry/elevenlabs-ui/ui/transcript-viewer";
 
-import { Skeleton } from "../ui/skeleton"
+import { Skeleton } from "../ui/skeleton";
 
 const TranscriptViewerDemo = () => {
-  const audioSrc = "/sounds/transcript-viewer/transcript-viewer-audio.mp3"
-  const [alignment, setAlignment] = useState<
-    CharacterAlignmentResponseModel | undefined
-  >(undefined)
+  const audioSrc = "/sounds/transcript-viewer/transcript-viewer-audio.mp3";
+  const [alignment, setAlignment] = useState<CharacterAlignmentResponseModel | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
     fetch("/sounds/transcript-viewer/transcript-viewer-alignment.json")
       .then((res) => res.json())
-      .then((data) => setAlignment(data))
-  }, [])
+      .then((data) => setAlignment(data));
+  }, []);
 
   return (
     <div className="flex w-full flex-col gap-4">
@@ -81,6 +81,6 @@ const TranscriptViewerDemo = () => {
         </TranscriptViewerPlayPauseButton>
       </TranscriptViewerContainer>
     </div>
-  )
-}
-export default TranscriptViewerDemo
+  );
+};
+export default TranscriptViewerDemo;

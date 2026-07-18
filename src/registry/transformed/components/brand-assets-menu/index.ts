@@ -1,1 +1,1 @@
-export * from "./brand-assets-menu"
+export * from "./brand-assets-menu";

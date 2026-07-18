@@ -104,18 +104,14 @@ export interface AngleSliderTrackProps extends EmptyProps<"svg"> {}
 
 export interface AngleSliderRangeProps extends EmptyProps<"path"> {}
 
-export interface AngleSliderThumbProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface AngleSliderThumbProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The index of the thumb.
    */
   index?: number;
 }
 
-export interface AngleSliderValueProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface AngleSliderValueProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The unit to display after the value(s).
    *

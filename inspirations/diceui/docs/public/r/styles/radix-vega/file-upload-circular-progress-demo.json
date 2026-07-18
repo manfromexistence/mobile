@@ -1,13 +1,8 @@
 {
   "name": "file-upload-circular-progress-demo",
   "type": "registry:example",
-  "dependencies": [
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "button",
-    "file-upload"
-  ],
+  "dependencies": ["lucide-react"],
+  "registryDependencies": ["button", "file-upload"],
   "files": [
     {
       "path": "examples/file-upload-circular-progress-demo.tsx",

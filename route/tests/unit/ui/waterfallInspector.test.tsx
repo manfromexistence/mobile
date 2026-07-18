@@ -6,8 +6,9 @@ import type { CompressionRunModel } from "@/app/(dashboard)/dashboard/compressio
 
 // ── Import ─────────────────────────────────────────────────────────────────
 
-const { WaterfallInspector } =
-  await import("@/app/(dashboard)/dashboard/compression/studio/WaterfallInspector");
+const { WaterfallInspector } = await import(
+  "@/app/(dashboard)/dashboard/compression/studio/WaterfallInspector"
+);
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 

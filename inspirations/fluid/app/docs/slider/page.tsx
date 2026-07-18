@@ -49,7 +49,6 @@ const formatCode = `import { Slider } from "./components";
   label="Opacity"
 />`;
 
-
 // ---------------------------------------------------------------------------
 // Code snippets — SliderComfortable
 // ---------------------------------------------------------------------------
@@ -112,8 +111,7 @@ const sliderProps: PropDef[] = [
   {
     name: "value",
     type: "number | [number, number]",
-    description:
-      "Current value. Pass an array to enable range mode with two thumbs.",
+    description: "Current value. Pass an array to enable range mode with two thumbs.",
   },
   {
     name: "onChange",
@@ -154,8 +152,7 @@ const sliderProps: PropDef[] = [
     name: "valuePosition",
     type: '"left" | "right" | "top" | "bottom" | "tooltip"',
     default: '"left"',
-    description:
-      'Position of the value label. "tooltip" shows above the thumb during interaction.',
+    description: 'Position of the value label. "tooltip" shows above the thumb during interaction.',
   },
   {
     name: "formatValue",
@@ -166,8 +163,7 @@ const sliderProps: PropDef[] = [
   {
     name: "label",
     type: "string",
-    description:
-      "Accessible label for the slider, also shown as prefix in the value display.",
+    description: "Accessible label for the slider, also shown as prefix in the value display.",
   },
   {
     name: "disabled",
@@ -211,13 +207,13 @@ const comfortableProps: PropDef[] = [
     name: "step",
     type: "number",
     default: "1",
-    description: "Step increment for snapping. In pips mode, also determines the number of dots rendered.",
+    description:
+      "Step increment for snapping. In pips mode, also determines the number of dots rendered.",
   },
   {
     name: "label",
     type: "string",
-    description:
-      "Label shown on the left side. Transitions from muted to foreground on hover.",
+    description: "Label shown on the left side. Transitions from muted to foreground on hover.",
   },
   {
     name: "formatValue",
@@ -274,10 +270,7 @@ export default function SliderDoc() {
       <DocSection title="Range">
         <ComponentPreview code={rangeCode}>
           <div className="w-72">
-            <Slider
-              value={range}
-              onChange={(v) => setRange(v as [number, number])}
-            />
+            <Slider value={range} onChange={(v) => setRange(v as [number, number])} />
           </div>
         </ComponentPreview>
       </DocSection>
@@ -285,12 +278,7 @@ export default function SliderDoc() {
       <DocSection title="Steps">
         <ComponentPreview code={stepsCode}>
           <div className="w-72">
-            <Slider
-              value={stepped}
-              onChange={(v) => setStepped(v as number)}
-              step={25}
-              showSteps
-            />
+            <Slider value={stepped} onChange={(v) => setStepped(v as number)} step={25} showSteps />
             <Slider
               value={stepped10}
               onChange={(v) => setStepped10(v as number)}

@@ -42,7 +42,7 @@ test("resolveBaseUrl: returns fallback when credentials have no baseUrl", () => 
   const executor = new TestExecutor();
   const result = executor.publicResolveBaseUrl(
     { apiKey: "key-1" },
-    "https://fallback.example/v1/chat/completions"
+    "https://fallback.example/v1/chat/completions",
   );
   assert.equal(result, "https://fallback.example/v1/chat/completions");
 });
@@ -68,7 +68,7 @@ test("resolveBaseUrl: credentials.baseUrl takes precedence over fallback", () =>
       apiKey: "key-1",
       providerSpecificData: { baseUrl: "https://cred.example/v1" },
     },
-    "https://fallback.example/v1"
+    "https://fallback.example/v1",
   );
   assert.equal(result, "https://cred.example/v1");
 });

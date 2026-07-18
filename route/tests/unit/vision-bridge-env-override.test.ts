@@ -20,8 +20,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { resolveProviderApiKey, resolveVisionBridgeBaseUrl } =
-  await import("../../src/lib/guardrails/visionBridgeHelpers.ts");
+const { resolveProviderApiKey, resolveVisionBridgeBaseUrl } = await import(
+  "../../src/lib/guardrails/visionBridgeHelpers.ts"
+);
 
 const ENV_KEYS = [
   "VISION_BRIDGE_API_KEY",
@@ -95,7 +96,7 @@ test("#2232 — OpenAI and Anthropic models still default to api.openai.com", ()
   assert.equal(resolveVisionBridgeBaseUrl("openai/gpt-4o"), "https://api.openai.com/v1");
   assert.equal(
     resolveVisionBridgeBaseUrl("anthropic/claude-sonnet-4-5"),
-    "https://api.openai.com/v1" // anthropic goes through a different code path
+    "https://api.openai.com/v1", // anthropic goes through a different code path
     // but if passed here, should not self-loop
   );
 });
@@ -112,7 +113,7 @@ test("#2232 — VISION_BRIDGE_BASE_URL env var takes precedence over self-loop a
   process.env.VISION_BRIDGE_BASE_URL = "https://custom-proxy.example.com/v1";
   assert.equal(
     resolveVisionBridgeBaseUrl("kr/claude-sonnet-4-5"),
-    "https://custom-proxy.example.com/v1"
+    "https://custom-proxy.example.com/v1",
   );
 });
 
@@ -140,7 +141,7 @@ test("#2232 — explicit apiKey wins over VISION_BRIDGE_API_KEY", () => {
   process.env.VISION_BRIDGE_API_KEY = "stub-vision-bridge-key";
   assert.equal(
     resolveProviderApiKey("gemini/gemini-2.0-flash", "stub-explicit-key"),
-    "stub-explicit-key"
+    "stub-explicit-key",
   );
 });
 

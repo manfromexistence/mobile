@@ -65,7 +65,11 @@ const fieldProps: PropDef[] = [
   { name: "label", type: "string", description: "Label text above the input." },
   { name: "index", type: "number", description: "Position index within the group." },
   { name: "value", type: "string", description: "Controlled input value." },
-  { name: "onChange", type: "(value: string) => void", description: "Called when the input value changes." },
+  {
+    name: "onChange",
+    type: "(value: string) => void",
+    description: "Called when the input value changes.",
+  },
   { name: "placeholder", type: "string", description: "Placeholder text." },
   { name: "icon", type: "IconComponent", description: "Leading icon inside the input." },
   { name: "error", type: "string", description: "Error message shown below the input." },

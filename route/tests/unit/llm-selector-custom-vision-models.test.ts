@@ -37,7 +37,7 @@ test("custom vision helper is exported from the catalog module", () => {
   assert.equal(
     typeof getCustomVisionCapabilityFields,
     "function",
-    "expected getCustomVisionCapabilityFields to be exported from src/app/api/v1/models/catalog.ts"
+    "expected getCustomVisionCapabilityFields to be exported from src/app/api/v1/models/catalog.ts",
   );
 });
 

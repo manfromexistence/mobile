@@ -1,8 +1,8 @@
-import code from '@content/Components/Dock/Dock.jsx?raw';
-import css from '@content/Components/Dock/Dock.css?raw';
-import tailwind from '@tailwind/Components/Dock/Dock.jsx?raw';
-import tsCode from '@ts-default/Components/Dock/Dock.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/Dock/Dock.tsx?raw';
+import code from "@content/Components/Dock/Dock.jsx?raw";
+import css from "@content/Components/Dock/Dock.css?raw";
+import tailwind from "@tailwind/Components/Dock/Dock.jsx?raw";
+import tsCode from "@ts-default/Components/Dock/Dock.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/Dock/Dock.tsx?raw";
 
 export const dock = {
   dependencies: `motion`,
@@ -25,5 +25,5 @@ export const dock = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

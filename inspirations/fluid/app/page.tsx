@@ -27,10 +27,14 @@ export default function Page() {
             </p>
             <div className="flex items-center gap-2 mt-2">
               <Link href="/docs" className="outline-none" tabIndex={-1}>
-                <Button variant="primary" size="sm">Learn more</Button>
+                <Button variant="primary" size="sm">
+                  Learn more
+                </Button>
               </Link>
               <Link href="/demo" className="outline-none" tabIndex={-1}>
-                <Button variant="tertiary" size="sm">See demo</Button>
+                <Button variant="tertiary" size="sm">
+                  See demo
+                </Button>
               </Link>
             </div>
           </div>
@@ -38,8 +42,19 @@ export default function Page() {
             <Button variant="ghost" size="icon" disabled aria-label="No previous page">
               <ArrowRight className="rotate-180" />
             </Button>
-            <Tooltip content={<span>Introduction &ensp;<kbd className="font-mono opacity-50">&rarr;</kbd></span>}>
-              <Link href="/docs" aria-label="Next: Introduction" className="outline-none" tabIndex={-1}>
+            <Tooltip
+              content={
+                <span>
+                  Introduction &ensp;<kbd className="font-mono opacity-50">&rarr;</kbd>
+                </span>
+              }
+            >
+              <Link
+                href="/docs"
+                aria-label="Next: Introduction"
+                className="outline-none"
+                tabIndex={-1}
+              >
                 <Button variant="ghost" size="icon">
                   <ArrowRight />
                 </Button>

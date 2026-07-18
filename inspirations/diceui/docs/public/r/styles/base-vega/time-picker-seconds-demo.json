@@ -1,10 +1,7 @@
 {
   "name": "time-picker-seconds-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "time-picker",
-    "label"
-  ],
+  "registryDependencies": ["time-picker", "label"],
   "files": [
     {
       "path": "examples/time-picker-seconds-demo.tsx",

@@ -2,8 +2,9 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 const tokenizedRequest = await import("../../src/app/api/v1/vscode/[token]/tokenizedRequest.ts");
-const rawTokenizedRequest =
-  await import("../../src/app/api/v1/vscode/raw/[token]/tokenizedRequest.ts");
+const rawTokenizedRequest = await import(
+  "../../src/app/api/v1/vscode/raw/[token]/tokenizedRequest.ts"
+);
 
 test("vscode tokenized request helper infers grouped path token", () => {
   const request = new Request("http://localhost/api/v1/vscode/sk-grouped/models");

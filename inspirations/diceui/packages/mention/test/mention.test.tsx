@@ -181,9 +181,7 @@ describe("Mention", () => {
 
   test("handles custom filtering", async () => {
     const customFilter = (options: string[], term: string) =>
-      options.filter((option) =>
-        option.toLowerCase().includes(term.toLowerCase()),
-      );
+      options.filter((option) => option.toLowerCase().includes(term.toLowerCase()));
 
     renderMention({ onFilter: customFilter });
     const input = screen.getByPlaceholderText(placeholder);

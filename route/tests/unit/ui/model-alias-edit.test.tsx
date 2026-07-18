@@ -16,10 +16,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string, values?: Record<string, unknown>) => {
     if (values) {
-      return Object.entries(values).reduce(
-        (acc, [k, v]) => acc.replace(`{${k}}`, String(v)),
-        key
-      );
+      return Object.entries(values).reduce((acc, [k, v]) => acc.replace(`{${k}}`, String(v)), key);
     }
     return key;
   },
@@ -32,7 +29,7 @@ vi.mock("@/shared/components", () => ({
 
 vi.mock(
   "../../../src/app/(dashboard)/dashboard/providers/[id]/components/ModelCompatPopover",
-  () => ({ default: () => null })
+  () => ({ default: () => null }),
 );
 
 vi.mock("@/shared/utils/modelCatalogSearch", () => ({
@@ -50,10 +47,7 @@ const { default: ModelRow } = await import(
 
 const t = (key: string, values?: Record<string, unknown>) => {
   if (values) {
-    return Object.entries(values).reduce(
-      (acc, [k, v]) => acc.replace(`{${k}}`, String(v)),
-      key
-    );
+    return Object.entries(values).reduce((acc, [k, v]) => acc.replace(`{${k}}`, String(v)), key);
   }
   return key;
 };
@@ -81,7 +75,7 @@ function mountPassthrough(props: Record<string, unknown> = {}) {
         saveModelCompatFlags={noopSync}
         getUpstreamHeadersRecord={() => ({})}
         {...(props as any)}
-      />
+      />,
     );
   });
   containers.push({ root, el });
@@ -107,7 +101,7 @@ function mountModelRow(props: Record<string, unknown> = {}) {
         saveModelCompatFlags={noopSync}
         getUpstreamHeadersRecord={() => ({})}
         {...(props as any)}
-      />
+      />,
     );
   });
   containers.push({ root, el });
@@ -154,10 +148,8 @@ describe("PassthroughModelRow — inline alias edit", () => {
     const input = el.querySelector("input") as HTMLInputElement;
     expect(input).toBeTruthy();
 
-    const setter = Object.getOwnPropertyDescriptor(
-      window.HTMLInputElement.prototype,
-      "value"
-    )!.set!;
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")!
+      .set!;
     act(() => {
       setter.call(input, "new-alias");
       input.dispatchEvent(new Event("input", { bubbles: true }));
@@ -177,10 +169,8 @@ describe("PassthroughModelRow — inline alias edit", () => {
     });
 
     const input = el.querySelector("input") as HTMLInputElement;
-    const setter = Object.getOwnPropertyDescriptor(
-      window.HTMLInputElement.prototype,
-      "value"
-    )!.set!;
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")!
+      .set!;
     act(() => {
       setter.call(input, "something-else");
       input.dispatchEvent(new Event("input", { bubbles: true }));
@@ -234,10 +224,8 @@ describe("ModelRow — inline alias edit", () => {
     });
 
     const input = el.querySelector("input[type=text]") as HTMLInputElement;
-    const setter = Object.getOwnPropertyDescriptor(
-      window.HTMLInputElement.prototype,
-      "value"
-    )!.set!;
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")!
+      .set!;
     act(() => {
       setter.call(input, "new-alias");
       input.dispatchEvent(new Event("input", { bubbles: true }));
@@ -257,10 +245,8 @@ describe("ModelRow — inline alias edit", () => {
     });
 
     const input = el.querySelector("input[type=text]") as HTMLInputElement;
-    const setter = Object.getOwnPropertyDescriptor(
-      window.HTMLInputElement.prototype,
-      "value"
-    )!.set!;
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")!
+      .set!;
     act(() => {
       setter.call(input, "something-else");
       input.dispatchEvent(new Event("input", { bubbles: true }));

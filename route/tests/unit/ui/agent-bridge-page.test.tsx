@@ -81,12 +81,20 @@ describe("RiskNoticeBanner", () => {
     while (cleanupCallbacks.length > 0) cleanupCallbacks.pop()?.();
     document.body.innerHTML = "";
     vi.clearAllMocks();
-    try { localStorage.clear(); } catch { /* ignore */ }
+    try {
+      localStorage.clear();
+    } catch {
+      /* ignore */
+    }
   });
 
   it("renders risk notice banner when not dismissed", async () => {
     // Ensure not dismissed
-    try { localStorage.removeItem("omniroute-agentbridge-risk-dismissed"); } catch { /* ignore */ }
+    try {
+      localStorage.removeItem("omniroute-agentbridge-risk-dismissed");
+    } catch {
+      /* ignore */
+    }
 
     const { RiskNoticeBanner } = await import(
       "../../../src/app/(dashboard)/dashboard/tools/agent-bridge/components/RiskNoticeBanner"
@@ -106,7 +114,9 @@ describe("RiskNoticeBanner", () => {
   it("does not render risk banner when already dismissed", async () => {
     try {
       localStorage.setItem("omniroute-agentbridge-risk-dismissed", "true");
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
 
     const { RiskNoticeBanner } = await import(
       "../../../src/app/(dashboard)/dashboard/tools/agent-bridge/components/RiskNoticeBanner"
@@ -122,7 +132,11 @@ describe("RiskNoticeBanner", () => {
   });
 
   it("dismisses banner on close click", async () => {
-    try { localStorage.removeItem("omniroute-agentbridge-risk-dismissed"); } catch { /* ignore */ }
+    try {
+      localStorage.removeItem("omniroute-agentbridge-risk-dismissed");
+    } catch {
+      /* ignore */
+    }
 
     const { RiskNoticeBanner } = await import(
       "../../../src/app/(dashboard)/dashboard/tools/agent-bridge/components/RiskNoticeBanner"
@@ -135,7 +149,7 @@ describe("RiskNoticeBanner", () => {
     });
 
     // Click dismiss
-    const closeBtn = container.querySelector('button[aria-label]');
+    const closeBtn = container.querySelector("button[aria-label]");
     await act(async () => {
       closeBtn?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     });
@@ -170,7 +184,7 @@ describe("BypassListEditor", () => {
         React.createElement(BypassListEditor, {
           patterns: [],
           onSave: vi.fn(),
-        })
+        }),
       );
     });
 
@@ -190,7 +204,7 @@ describe("BypassListEditor", () => {
         React.createElement(BypassListEditor, {
           patterns: ["*.internal.corp"],
           onSave: vi.fn(),
-        })
+        }),
       );
     });
 

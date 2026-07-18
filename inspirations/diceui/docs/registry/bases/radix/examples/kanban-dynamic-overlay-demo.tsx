@@ -89,11 +89,7 @@ export default function KanbanDynamicOverlayDemo() {
   });
 
   return (
-    <Kanban
-      value={columns}
-      onValueChange={setColumns}
-      getItemValue={(item) => item.id}
-    >
+    <Kanban value={columns} onValueChange={setColumns} getItemValue={(item) => item.id}>
       <KanbanBoard className="grid auto-rows-fr grid-cols-3">
         {Object.entries(columns).map(([columnValue, tasks]) => (
           <TaskColumn key={columnValue} value={columnValue} tasks={tasks} />
@@ -120,8 +116,7 @@ export default function KanbanDynamicOverlayDemo() {
   );
 }
 
-interface TaskCardProps
-  extends Omit<React.ComponentProps<typeof KanbanItem>, "value"> {
+interface TaskCardProps extends Omit<React.ComponentProps<typeof KanbanItem>, "value"> {
   task: Task;
 }
 
@@ -131,9 +126,7 @@ function TaskCard({ task, ...props }: TaskCardProps) {
       <div className="rounded-md border bg-card p-3 shadow-xs">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2">
-            <span className="line-clamp-1 font-medium text-sm">
-              {task.title}
-            </span>
+            <span className="line-clamp-1 font-medium text-sm">{task.title}</span>
             <Badge
               variant={
                 task.priority === "high"
@@ -154,9 +147,7 @@ function TaskCard({ task, ...props }: TaskCardProps) {
                 <span className="line-clamp-1">{task.assignee}</span>
               </div>
             )}
-            {task.dueDate && (
-              <time className="text-[10px] tabular-nums">{task.dueDate}</time>
-            )}
+            {task.dueDate && <time className="text-[10px] tabular-nums">{task.dueDate}</time>}
           </div>
         </div>
       </div>
@@ -164,8 +155,7 @@ function TaskCard({ task, ...props }: TaskCardProps) {
   );
 }
 
-interface TaskColumnProps
-  extends Omit<React.ComponentProps<typeof KanbanColumn>, "children"> {
+interface TaskColumnProps extends Omit<React.ComponentProps<typeof KanbanColumn>, "children"> {
   tasks: Task[];
 }
 

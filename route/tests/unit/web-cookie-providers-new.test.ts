@@ -53,7 +53,7 @@ function mockHuggingChatConversationDetail(rootId = HUGGINGCHAT_ROOT_ID) {
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -272,7 +272,7 @@ test("HuggingChat: sends current web data payload with the root parent id", asyn
       {
         status: 200,
         headers: { "Content-Type": "text/plain; charset=utf-8" },
-      }
+      },
     );
   };
 
@@ -324,7 +324,7 @@ test("HuggingChat: carries create response Set-Cookie into message send", async 
       {
         status: 200,
         headers: { "Content-Type": "text/plain; charset=utf-8" },
-      }
+      },
     );
   };
 
@@ -368,7 +368,7 @@ test("HuggingChat: default model is a current concrete catalog model", async () 
       {
         status: 200,
         headers: { "Content-Type": "text/plain; charset=utf-8" },
-      }
+      },
     );
   };
 

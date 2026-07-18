@@ -18,10 +18,7 @@ test("generateRequestToken matches the rie() wire format (#3491)", () => {
   const [tsSeg, hashSeg, randSeg] = token.split("-");
   // First segment decodes (base36) to a timestamp within a few seconds of now.
   const decodedTs = parseInt(tsSeg, 36);
-  assert.ok(
-    Math.abs(Date.now() - decodedTs) < 10_000,
-    `decoded ts ${decodedTs} should be ~now`,
-  );
+  assert.ok(Math.abs(Date.now() - decodedTs) < 10_000, `decoded ts ${decodedTs} should be ~now`);
   // Hash segment is non-empty base36.
   assert.ok(hashSeg.length > 0);
   // Random suffix is exactly 8 hex chars (crypto.randomUUID slice).

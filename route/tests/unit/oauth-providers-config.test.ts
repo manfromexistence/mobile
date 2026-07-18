@@ -144,7 +144,14 @@ const REQUIRED_FIELDS_BY_PROVIDER = {
   windsurf: ["authorizeUrl", "apiServerUrl", "exchangePath", "inferenceUrl"],
   "devin-cli": ["authorizeUrl", "apiServerUrl", "exchangePath", "inferenceUrl"],
   trae: ["apiEndpoint", "chatEndpoint", "webUrl"],
-  "zed-hosted": ["webBaseUrl", "cloudBaseUrl", "llmBaseUrl", "userInfoUrl", "llmTokenUrl", "modelsUrl"],
+  "zed-hosted": [
+    "webBaseUrl",
+    "cloudBaseUrl",
+    "llmBaseUrl",
+    "userInfoUrl",
+    "llmTokenUrl",
+    "modelsUrl",
+  ],
 };
 
 function getByPath(object, path) {
@@ -234,7 +241,7 @@ test("OAuth constants include all provider ids and use a sane timeout", () => {
   for (const providerId of registryIds) {
     assert.ok(
       constantIds.includes(providerId),
-      `Expected oauth constants to include provider id ${providerId}`
+      `Expected oauth constants to include provider id ${providerId}`,
     );
   }
 });
@@ -255,7 +262,7 @@ test("every registered OAuth provider has a valid config object, flow type and t
     const mapped = provider.mapTokens({});
     assert.ok(
       mapped && typeof mapped === "object",
-      `${providerId} mapTokens must return an object`
+      `${providerId} mapTokens must return an object`,
     );
   }
 });
@@ -285,7 +292,7 @@ test("every required provider config field is present when the provider is enabl
       } else if (typeof value === "object") {
         assert.ok(
           value && Object.keys(value).length > 0,
-          `${providerId}.${field} must not be empty`
+          `${providerId}.${field} must not be empty`,
         );
       }
     }
@@ -321,13 +328,13 @@ test("browser-based providers expose buildAuthUrl and return provider-specific a
   const codeChallenge = "challenge-456";
 
   const claudeUrl = new URL(
-    PROVIDERS.claude.buildAuthUrl(CLAUDE_CONFIG, redirectUri, state, codeChallenge)
+    PROVIDERS.claude.buildAuthUrl(CLAUDE_CONFIG, redirectUri, state, codeChallenge),
   );
   const codexUrl = new URL(
-    PROVIDERS.codex.buildAuthUrl(CODEX_CONFIG, redirectUri, state, codeChallenge)
+    PROVIDERS.codex.buildAuthUrl(CODEX_CONFIG, redirectUri, state, codeChallenge),
   );
   const antigravityUrl = new URL(
-    PROVIDERS.antigravity.buildAuthUrl(ANTIGRAVITY_CONFIG, redirectUri, state)
+    PROVIDERS.antigravity.buildAuthUrl(ANTIGRAVITY_CONFIG, redirectUri, state),
   );
   const clineUrl = new URL(PROVIDERS.cline.buildAuthUrl(CLINE_CONFIG, redirectUri));
 
@@ -351,7 +358,10 @@ test("zed-hosted buildAuthUrl returns {authUrl, codeVerifier, redirectUri} carry
 
 test("generateAuthData honors an object-returning buildAuthUrl (zed-hosted) without breaking string-returning providers", async () => {
   const oauthHelpers = await import("../../src/lib/oauth/providers.ts");
-  const zedAuthData = oauthHelpers.generateAuthData("zed-hosted", "http://localhost:20128/callback");
+  const zedAuthData = oauthHelpers.generateAuthData(
+    "zed-hosted",
+    "http://localhost:20128/callback",
+  );
   assert.equal(zedAuthData.flowType, "authorization_code");
   assert.ok(zedAuthData.authUrl.startsWith("https://zed.dev/native_app_signin?"));
   assert.ok(zedAuthData.codeVerifier.startsWith("zed-rsa-pkcs1:"));
@@ -369,13 +379,13 @@ test("gitlab-duo buildAuthUrl returns null (not throw) when client_id is unconfi
     { ...GITLAB_DUO_CONFIG, clientId: "" },
     browserUrl,
     "state-x",
-    "challenge-y"
+    "challenge-y",
   );
   assert.equal(unconfigured, null);
 
   // Configured: returns a real authorize URL carrying the client_id + PKCE challenge.
   const configured = new URL(
-    PROVIDERS["gitlab-duo"].buildAuthUrl(GITLAB_DUO_CONFIG, browserUrl, "state-x", "challenge-y")
+    PROVIDERS["gitlab-duo"].buildAuthUrl(GITLAB_DUO_CONFIG, browserUrl, "state-x", "challenge-y"),
   );
   assert.equal(configured.searchParams.get("client_id"), GITLAB_DUO_CONFIG.clientId);
   assert.equal(configured.searchParams.get("code_challenge"), "challenge-y");
@@ -391,7 +401,7 @@ test("custom Google OAuth callbacks preserve the requested callback path and que
   const redirectUri = resolveBrowserOAuthRedirectUri(
     "antigravity",
     "http://127.0.0.1:20128/auth/callback?source=popup",
-    { ...publicBaseEnv, NEXT_PUBLIC_BASE_URL: "https://omniroute.example.com/base" }
+    { ...publicBaseEnv, NEXT_PUBLIC_BASE_URL: "https://omniroute.example.com/base" },
   );
 
   assert.equal(redirectUri, "https://omniroute.example.com/base/auth/callback?source=popup");
@@ -401,7 +411,7 @@ test("custom Google OAuth credentials switch IPv6 loopback callbacks to public b
   const redirectUri = resolveBrowserOAuthRedirectUri(
     "antigravity",
     "http://[::1]:20128/callback",
-    publicBaseEnv
+    publicBaseEnv,
   );
 
   assert.equal(redirectUri, "https://omniroute.example.com/callback");
@@ -411,7 +421,7 @@ test("custom Google OAuth callbacks default root loopback paths to callback path
   const redirectUri = resolveBrowserOAuthRedirectUri(
     "antigravity",
     "http://127.0.0.1:20128",
-    publicBaseEnv
+    publicBaseEnv,
   );
 
   assert.equal(redirectUri, "https://omniroute.example.com/callback");
@@ -424,7 +434,7 @@ test("Google OAuth callbacks stay on loopback when custom credentials are incomp
     {
       NEXT_PUBLIC_BASE_URL: "https://omniroute.example.com",
       ANTIGRAVITY_OAUTH_CLIENT_ID: "custom-antigravity.apps.googleusercontent.com",
-    }
+    },
   );
 
   assert.equal(redirectUri, "http://127.0.0.1:20128/callback");
@@ -436,7 +446,7 @@ test("Google OAuth callbacks stay on localhost when no custom credentials are co
     "http://localhost:20128/callback",
     {
       NEXT_PUBLIC_BASE_URL: "https://omniroute.example.com",
-    }
+    },
   );
 
   assert.equal(redirectUri, "http://localhost:20128/callback");
@@ -474,7 +484,7 @@ test("Qoder remains a safe special case when browser OAuth is disabled", () => {
   if (!QODER_CONFIG.enabled) {
     assert.equal(
       PROVIDERS.qoder.buildAuthUrl(QODER_CONFIG, "http://localhost/callback", "state"),
-      null
+      null,
     );
     return;
   }
@@ -482,7 +492,7 @@ test("Qoder remains a safe special case when browser OAuth is disabled", () => {
   const authUrl = PROVIDERS.qoder.buildAuthUrl(
     QODER_CONFIG,
     "http://localhost/callback",
-    "state-123"
+    "state-123",
   );
   assert.equal(typeof authUrl, "string");
   assert.ok(authUrl.startsWith("https://"));
@@ -514,7 +524,7 @@ test("Codex parses id_token metadata and prefers a team workspace when the JWT o
       id_token: idToken,
       expires_in: 3600,
     },
-    extra
+    extra,
   );
 
   assert.equal(extra.authInfo.chatgpt_account_id, "personal-workspace");
@@ -532,7 +542,7 @@ test("Cline decodes embedded callback payloads without using the network", async
       firstName: "Cline",
       lastName: "Bot",
       expiresAt: "2030-01-01T00:00:00.000Z",
-    })
+    }),
   ).toString("base64");
 
   const tokens = await PROVIDERS.cline.exchangeToken(CLINE_CONFIG, encodedCode, "http://localhost");
@@ -555,7 +565,7 @@ test("Antigravity runs mocked browser OAuth exchanges and post-exchange enrichme
       assert.equal(init.headers["X-Goog-Api-Client"], undefined);
       assert.deepEqual(
         JSON.parse(String(init.body)).metadata,
-        getAntigravityLoadCodeAssistMetadata()
+        getAntigravityLoadCodeAssistMetadata(),
       );
       assert.equal(JSON.parse(String(init.body)).cloudaicompanionProject, undefined);
       return jsonResponse({
@@ -570,7 +580,7 @@ test("Antigravity runs mocked browser OAuth exchanges and post-exchange enrichme
       assert.equal(init.headers["X-Goog-Api-Client"], undefined);
       assert.deepEqual(
         JSON.parse(String(init.body)).metadata,
-        getAntigravityLoadCodeAssistMetadata()
+        getAntigravityLoadCodeAssistMetadata(),
       );
       assert.equal(JSON.parse(String(init.body)).tier_id, "tier-default");
       assert.equal(JSON.parse(String(init.body)).cloudaicompanionProject, undefined);
@@ -584,7 +594,7 @@ test("Antigravity runs mocked browser OAuth exchanges and post-exchange enrichme
   const antigravityTokens = await PROVIDERS.antigravity.exchangeToken(
     ANTIGRAVITY_CONFIG,
     "code-2",
-    "http://localhost/callback"
+    "http://localhost/callback",
   );
   const antigravityExtra = await PROVIDERS.antigravity.postExchange(antigravityTokens);
   const antigravityMapped = PROVIDERS.antigravity.mapTokens(antigravityTokens, antigravityExtra);
@@ -636,12 +646,12 @@ test("Qoder enabled mode exchanges tokens and loads profile metadata through moc
     const authUrl = PROVIDERS.qoder.buildAuthUrl(
       qoderConfig,
       "http://localhost/callback",
-      "state-123"
+      "state-123",
     );
     const tokens = await PROVIDERS.qoder.exchangeToken(
       qoderConfig,
       "browser-code",
-      "http://localhost/callback"
+      "http://localhost/callback",
     );
     const extra = await PROVIDERS.qoder.postExchange(tokens);
     const mapped = PROVIDERS.qoder.mapTokens(tokens, extra);
@@ -719,7 +729,7 @@ test("Qwen and Kimi Coding execute mocked device-code flows and token mapping", 
   const kimiDevice = await PROVIDERS["kimi-coding"].requestDeviceCode(KIMI_CODING_CONFIG);
   const kimiPoll = await PROVIDERS["kimi-coding"].pollToken(
     KIMI_CODING_CONFIG,
-    kimiDevice.device_code
+    kimiDevice.device_code,
   );
   const kimiMapped = PROVIDERS["kimi-coding"].mapTokens(kimiPoll.data);
 
@@ -730,7 +740,7 @@ test("Qwen and Kimi Coding execute mocked device-code flows and token mapping", 
   assert.equal(kimiMapped.tokenType, "Bearer");
   assert.equal(
     kimiDevice.verification_uri_complete,
-    "https://www.kimi.com/code/authorize_device?user_code=KIMI123"
+    "https://www.kimi.com/code/authorize_device?user_code=KIMI123",
   );
 });
 
@@ -800,7 +810,7 @@ test("Kiro and KiloCode execute mocked device-code flows across their custom end
     KIRO_CONFIG,
     kiroDevice.device_code,
     undefined,
-    kiroDevice
+    kiroDevice,
   );
   const kiroMapped = PROVIDERS.kiro.mapTokens(kiroPoll.data);
 

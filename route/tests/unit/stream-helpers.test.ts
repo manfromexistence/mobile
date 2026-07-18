@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { toStreamingToolCallDelta, toResponsesFunctionCallItem } =
-  await import("../../open-sse/utils/stream.ts");
+const { toStreamingToolCallDelta, toResponsesFunctionCallItem } = await import(
+  "../../open-sse/utils/stream.ts"
+);
 
 type StreamingToolCallInput = Parameters<typeof toStreamingToolCallDelta>[0];
 type ResponsesToolCallInput = Parameters<typeof toResponsesFunctionCallItem>[0];

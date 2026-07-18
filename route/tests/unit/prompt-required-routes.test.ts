@@ -24,7 +24,7 @@ test("v1 video generation POST rejects requests without a prompt", async () => {
       body: JSON.stringify({
         model: "comfyui/animatediff",
       }),
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -40,7 +40,7 @@ test("v1 music generation POST rejects requests without a prompt", async () => {
       body: JSON.stringify({
         model: "comfyui/musicgen-medium",
       }),
-    })
+    }),
   );
   const body = (await response.json()) as any;
 

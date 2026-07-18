@@ -1,8 +1,8 @@
-import code from '@content/Backgrounds/PrismaticBurst/PrismaticBurst.jsx?raw';
-import css from '@content/Backgrounds/PrismaticBurst/PrismaticBurst.css?raw';
-import tailwind from '@tailwind/Backgrounds/PrismaticBurst/PrismaticBurst.jsx?raw';
-import tsCode from '@ts-default/Backgrounds/PrismaticBurst/PrismaticBurst.tsx?raw';
-import tsTailwind from '@ts-tailwind/Backgrounds/PrismaticBurst/PrismaticBurst.tsx?raw';
+import code from "@content/Backgrounds/PrismaticBurst/PrismaticBurst.jsx?raw";
+import css from "@content/Backgrounds/PrismaticBurst/PrismaticBurst.css?raw";
+import tailwind from "@tailwind/Backgrounds/PrismaticBurst/PrismaticBurst.jsx?raw";
+import tsCode from "@ts-default/Backgrounds/PrismaticBurst/PrismaticBurst.tsx?raw";
+import tsTailwind from "@ts-tailwind/Backgrounds/PrismaticBurst/PrismaticBurst.tsx?raw";
 
 export const prismaticBurst = {
   dependencies: `ogl`,
@@ -26,5 +26,5 @@ export const prismaticBurst = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

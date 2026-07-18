@@ -29,11 +29,7 @@ describe("Primitive", () => {
 
   it("merges props when using asChild", () => {
     render(
-      <Primitive.div
-        className="primitive-class"
-        data-testid="primitive"
-        asChild
-      >
+      <Primitive.div className="primitive-class" data-testid="primitive" asChild>
         <button className="button-class" data-testid="button">
           Click me
         </button>
@@ -84,18 +80,12 @@ describe("Primitive", () => {
       </Primitive.div>,
     );
 
-    expect(screen.getByTestId("outer")).toContainElement(
-      screen.getByTestId("inner"),
-    );
+    expect(screen.getByTestId("outer")).toContainElement(screen.getByTestId("inner"));
   });
 
   it("handles custom data attributes", () => {
     render(
-      <Primitive.div
-        data-testid="test-div"
-        data-custom="value"
-        aria-label="test label"
-      >
+      <Primitive.div data-testid="test-div" data-custom="value" aria-label="test label">
         Content
       </Primitive.div>,
     );

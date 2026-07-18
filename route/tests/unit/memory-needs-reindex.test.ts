@@ -25,7 +25,7 @@ function insertTestMemory(
   db: ReturnType<typeof core.getDbInstance>,
   id: string,
   content: string,
-  key: string
+  key: string,
 ): void {
   db.prepare(`
     INSERT INTO memories (id, api_key_id, type, key, content, created_at, updated_at)

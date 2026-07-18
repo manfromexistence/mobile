@@ -57,7 +57,7 @@ test("openai-compatible validation accepts rate-limited /models responses", asyn
   assert.match(result.warning, /Rate limited/i);
   assert.deepEqual(
     calls.map((call) => call.url),
-    ["https://api.example.com/v1/models"]
+    ["https://api.example.com/v1/models"],
   );
   assert.equal(calls[0].headers.Authorization, "Bearer sk-test");
 });
@@ -271,7 +271,7 @@ test("gemini validation rejects invalid API keys (400 with API_KEY_INVALID)", as
           details: [{ reason: "API_KEY_INVALID" }],
         },
       }),
-      { status: 400 }
+      { status: 400 },
     );
   };
 
@@ -295,7 +295,7 @@ test("gemini validation rejects expired API keys (400 with API_KEY_EXPIRED)", as
           details: [{ reason: "API_KEY_EXPIRED" }],
         },
       }),
-      { status: 400 }
+      { status: 400 },
     );
   };
 
@@ -319,7 +319,7 @@ test("gemini validation rejects invalid keys via PERMISSION_DENIED status", asyn
           details: [],
         },
       }),
-      { status: 400 }
+      { status: 400 },
     );
   };
 
@@ -340,7 +340,7 @@ test("gemini validation accepts valid API key (200)", async () => {
           { name: "models/gemini-2.5-flash", supportedGenerationMethods: ["generateContent"] },
         ],
       }),
-      { status: 200 }
+      { status: 200 },
     );
   };
 
@@ -377,7 +377,7 @@ test("gemini validation treats 429 rate limit as valid key", async () => {
           status: "RESOURCE_EXHAUSTED",
         },
       }),
-      { status: 429 }
+      { status: 429 },
     );
   };
 
@@ -401,7 +401,7 @@ test("gemini validation rejects invalid keys via UNAUTHENTICATED status", async 
           details: [],
         },
       }),
-      { status: 401 }
+      { status: 401 },
     );
   };
 

@@ -18,11 +18,7 @@ import {
   CommandList,
 } from "@/registry/bases/radix/ui/command";
 import { Input } from "@/registry/bases/radix/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/registry/bases/radix/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/registry/bases/radix/ui/popover";
 
 const ROOT_NAME = "PhoneInput";
 const COUNTRY_SELECT_NAME = "PhoneInputCountrySelect";
@@ -310,18 +306,13 @@ function getCountries(): Country[] {
   }).sort((a, b) => a.name.localeCompare(b.name));
 }
 
-function detectCountryFromNumber(
-  value: string,
-  countries: Country[],
-): Country | undefined {
+function detectCountryFromNumber(value: string, countries: Country[]): Country | undefined {
   if (!value?.startsWith("+")) return undefined;
 
   const digits = value.slice(1).replace(/\D/g, "");
   if (!digits) return undefined;
 
-  const sorted = [...countries].sort(
-    (a, b) => b.dialCode.length - a.dialCode.length,
-  );
+  const sorted = [...countries].sort((a, b) => b.dialCode.length - a.dialCode.length);
 
   const matches: Country[] = [];
   for (const country of sorted) {
@@ -350,9 +341,7 @@ function formatPhoneNumber(value: string, countries: Country[]): string {
   if (!digits) return "+";
 
   const detected = detectCountryFromNumber(`+${digits}`, countries);
-  const dialCodeLength = detected
-    ? detected.dialCode.slice(1).length
-    : Math.min(digits.length, 3);
+  const dialCodeLength = detected ? detected.dialCode.slice(1).length : Math.min(digits.length, 3);
 
   const countryCode = digits.slice(0, dialCodeLength);
   const rest = digits.slice(dialCodeLength);
@@ -398,10 +387,7 @@ function useStoreContext(consumerName: string) {
   return context;
 }
 
-function useStore<T>(
-  selector: (state: StoreState) => T,
-  ogStore?: Store | null,
-): T {
+function useStore<T>(selector: (state: StoreState) => T, ogStore?: Store | null): T {
   const contextStore = React.useContext(StoreContext);
 
   const store = ogStore ?? contextStore;
@@ -410,10 +396,7 @@ function useStore<T>(
     throw new Error(`\`useStore\` must be used within \`${ROOT_NAME}\``);
   }
 
-  const getSnapshot = React.useCallback(
-    () => selector(store.getState()),
-    [store, selector],
-  );
+  const getSnapshot = React.useCallback(() => selector(store.getState()), [store, selector]);
 
   return React.useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
@@ -430,9 +413,7 @@ interface PhoneInputContextValue {
   inputRef: React.RefObject<HTMLInputElement | null>;
 }
 
-const PhoneInputContext = React.createContext<PhoneInputContextValue | null>(
-  null,
-);
+const PhoneInputContext = React.createContext<PhoneInputContextValue | null>(null);
 
 function usePhoneInputContext(consumerName: string) {
   const context = React.useContext(PhoneInputContext);
@@ -488,9 +469,7 @@ function PhoneInput(props: PhoneInputProps) {
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const [formTrigger, setFormTrigger] = React.useState<RootElement | null>(
-    null,
-  );
+  const [formTrigger, setFormTrigger] = React.useState<RootElement | null>(null);
   const composedRef = useComposedRefs(ref, (node) => setFormTrigger(node));
   const isFormControl = formTrigger ? !!formTrigger.closest("form") : true;
 
@@ -585,16 +564,7 @@ function PhoneInput(props: PhoneInputProps) {
       showFlag,
       inputRef,
     }),
-    [
-      rootId,
-      countries,
-      placeholder,
-      disabled,
-      required,
-      readOnly,
-      invalid,
-      showFlag,
-    ],
+    [rootId, countries, placeholder, disabled, required, readOnly, invalid, showFlag],
   );
 
   const RootPrimitive = asChild ? SlotPrimitive.Slot : "div";
@@ -634,10 +604,7 @@ function PhoneInput(props: PhoneInputProps) {
 
 interface PhoneInputCountrySelectProps
   extends React.ComponentProps<typeof Popover>,
-    Pick<
-      React.ComponentProps<typeof PopoverTrigger>,
-      "disabled" | "className"
-    > {}
+    Pick<React.ComponentProps<typeof PopoverTrigger>, "disabled" | "className"> {}
 
 function PhoneInputCountrySelect(props: PhoneInputCountrySelectProps) {
   const {
@@ -648,8 +615,7 @@ function PhoneInputCountrySelect(props: PhoneInputCountrySelectProps) {
     ...popoverProps
   } = props;
 
-  const { countries, inputRef, disabled, showFlag } =
-    usePhoneInputContext(COUNTRY_SELECT_NAME);
+  const { countries, inputRef, disabled, showFlag } = usePhoneInputContext(COUNTRY_SELECT_NAME);
   const store = useStoreContext(COUNTRY_SELECT_NAME);
   const country = useStore((state) => state.country);
   const open = useStore((state) => state.open);
@@ -682,9 +648,7 @@ function PhoneInputCountrySelect(props: PhoneInputCountrySelectProps) {
         ) : (
           showFlag &&
           countryContext.flag && (
-            <div className="w-6 text-lg leading-none">
-              {countryContext.flag}
-            </div>
+            <div className="w-6 text-lg leading-none">{countryContext.flag}</div>
           )
         )}
         <ChevronDown className="size-4 opacity-50" />
@@ -707,16 +671,11 @@ function PhoneInputCountrySelect(props: PhoneInputCountrySelectProps) {
                     });
                   }}
                 >
-                  {showFlag && c.flag && (
-                    <span className="text-lg">{c.flag}</span>
-                  )}
+                  {showFlag && c.flag && <span className="text-lg">{c.flag}</span>}
                   <span className="flex-1">{c.name}</span>
                   <span className="text-muted-foreground">{c.dialCode}</span>
                   <Check
-                    className={cn(
-                      "size-4",
-                      country === c.code ? "opacity-100" : "opacity-0",
-                    )}
+                    className={cn("size-4", country === c.code ? "opacity-100" : "opacity-0")}
                   />
                 </CommandItem>
               ))}
@@ -739,15 +698,8 @@ function PhoneInputField(props: React.ComponentProps<"input">) {
     ...inputProps
   } = props;
 
-  const {
-    inputRef,
-    disabled,
-    invalid,
-    readOnly,
-    required,
-    placeholder,
-    countries,
-  } = usePhoneInputContext(FIELD_NAME);
+  const { inputRef, disabled, invalid, readOnly, required, placeholder, countries } =
+    usePhoneInputContext(FIELD_NAME);
   const store = useStoreContext(FIELD_NAME);
   const value = useStore((state) => state.value);
 

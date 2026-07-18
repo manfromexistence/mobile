@@ -1,13 +1,8 @@
 {
   "name": "masonry",
   "type": "registry:ui",
-  "dependencies": [
-    "@diceui/masonry",
-    "radix-ui"
-  ],
-  "registryDependencies": [
-    "@diceui/use-isomorphic-layout-effect"
-  ],
+  "dependencies": ["@diceui/masonry", "radix-ui"],
+  "registryDependencies": ["@diceui/use-isomorphic-layout-effect"],
   "files": [
     {
       "path": "ui/masonry.tsx",

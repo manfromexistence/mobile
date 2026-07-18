@@ -47,7 +47,7 @@ describe("EncoderComparisonTable", () => {
   it("mostra TOON como n/a quando indisponível", () => {
     act(() => {
       root.render(
-        <EncoderComparisonTable comparison={{ ...cmp, toonAvailable: false, winner: "gcf" }} />
+        <EncoderComparisonTable comparison={{ ...cmp, toonAvailable: false, winner: "gcf" }} />,
       );
     });
     expect(container.querySelector('[data-testid="encoder-toon-na"]')).toBeTruthy();

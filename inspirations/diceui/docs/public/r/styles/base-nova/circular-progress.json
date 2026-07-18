@@ -9,9 +9,7 @@
       "target": ""
     }
   ],
-  "dependencies": [
-    "@base-ui/react"
-  ],
+  "dependencies": ["@base-ui/react"],
   "cssVars": {
     "theme": {
       "--animate-spin-around": "spin-around 0.8s linear infinite"

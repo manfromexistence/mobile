@@ -8,8 +8,9 @@ const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-stream-recovery-
 process.env.DATA_DIR = tmpDir;
 
 const core = await import("../../src/lib/db/core.ts");
-const { setFeatureFlagOverride, clearAllFeatureFlagOverrides } =
-  await import("../../src/lib/db/featureFlags.ts");
+const { setFeatureFlagOverride, clearAllFeatureFlagOverrides } = await import(
+  "../../src/lib/db/featureFlags.ts"
+);
 const { resolveResilienceSettings } = await import("../../src/lib/resilience/settings.ts");
 
 after(() => {

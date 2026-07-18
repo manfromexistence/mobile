@@ -11,13 +11,10 @@ vi.mock("next-intl", () => ({
 }));
 
 // Lazy import of MarkdownMessage via ScrapeResult's dynamic import — mock it
-vi.mock(
-  "../../../src/app/(dashboard)/dashboard/playground/components/MarkdownMessage",
-  () => ({
-    default: ({ content }: { content: string }) =>
-      React.createElement("div", { "data-testid": "markdown-render" }, content),
-  }),
-);
+vi.mock("../../../src/app/(dashboard)/dashboard/playground/components/MarkdownMessage", () => ({
+  default: ({ content }: { content: string }) =>
+    React.createElement("div", { "data-testid": "markdown-render" }, content),
+}));
 
 // ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -63,7 +60,9 @@ function renderScrapeResult(content: string, latencyMs?: number): HTMLDivElement
 
 describe("ScrapeResult", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {
@@ -178,7 +177,9 @@ describe("ScrapeResult", () => {
     act(() => {
       viewRawBtn.click();
     });
-    const rawModalContent = el.querySelector("[data-testid='raw-modal-content']") as HTMLTextAreaElement;
+    const rawModalContent = el.querySelector(
+      "[data-testid='raw-modal-content']",
+    ) as HTMLTextAreaElement;
     expect(rawModalContent).toBeTruthy();
     // Full content is in the modal
     expect(rawModalContent.value.length).toBe(longContent.length);

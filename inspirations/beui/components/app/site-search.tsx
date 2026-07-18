@@ -4,10 +4,7 @@ import { CircleDashed, FileText, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
-import {
-  CommandPalette,
-  type CommandItem,
-} from "@/components/motion/command-palette";
+import { CommandPalette, type CommandItem } from "@/components/motion/command-palette";
 import { NewBadge } from "@/components/app/new-badge";
 import { registry } from "@/lib/registry";
 

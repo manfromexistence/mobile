@@ -42,9 +42,7 @@ export default function MarqueeRtlDemo() {
         {features.map((feature) => (
           <MarqueeItem key={feature.title} asChild>
             <div className="flex w-[280px] flex-col gap-1 rounded-md border bg-card p-4 text-card-foreground shadow-sm">
-              <div className="font-medium text-sm leading-tight sm:text-base">
-                {feature.title}
-              </div>
+              <div className="font-medium text-sm leading-tight sm:text-base">{feature.title}</div>
               <span className="line-clamp-2 text-muted-foreground text-sm">
                 {feature.description}
               </span>

@@ -29,7 +29,7 @@ test("A: custom alias gpt-5.6-sol → cx/gpt-5.6-sol resolves to codex, not open
   assert.strictEqual(
     result.provider,
     "codex",
-    `Expected provider "codex" but got "${result.provider}" — alias was overridden by provider inference`
+    `Expected provider "codex" but got "${result.provider}" — alias was overridden by provider inference`,
   );
   assert.strictEqual(result.model, "gpt-5.6-sol");
 });

@@ -13,20 +13,11 @@ export type RootProps<Multiple extends boolean = false> = Omit<
   keyof ControlledProps<"div">
 >;
 
-export type GroupProps = Omit<
-  ListboxGroupProps,
-  keyof React.ComponentProps<"div">
->;
+export type GroupProps = Omit<ListboxGroupProps, keyof React.ComponentProps<"div">>;
 
-export type GroupLabelProps = Omit<
-  ListboxGroupLabelProps,
-  keyof React.ComponentProps<"div">
->;
+export type GroupLabelProps = Omit<ListboxGroupLabelProps, keyof React.ComponentProps<"div">>;
 
-export type ItemProps = Omit<
-  ListboxItemProps,
-  keyof Omit<React.ComponentProps<"div">, "onSelect">
->;
+export type ItemProps = Omit<ListboxItemProps, keyof Omit<React.ComponentProps<"div">, "onSelect">>;
 
 export type ItemIndicatorProps = Omit<
   ListboxItemIndicatorProps,

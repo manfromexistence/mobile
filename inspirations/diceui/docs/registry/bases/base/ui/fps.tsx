@@ -63,9 +63,7 @@ function Fps(props: FpsProps) {
   const frameCountRef = React.useRef(0);
   const lastTimeRef = React.useRef(performance.now());
   const animationFrameRef = React.useRef<number | null>(null);
-  const updateTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(
-    null,
-  );
+  const updateTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   React.useLayoutEffect(() => setMounted(true), []);
 

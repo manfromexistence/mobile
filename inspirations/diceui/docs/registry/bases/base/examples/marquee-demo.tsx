@@ -37,23 +37,15 @@ const tricks = [
 
 export default function MarqueeDemo() {
   return (
-    <Marquee
-      aria-label="Skateboard tricks showcase"
-      pauseOnHover
-      pauseOnKeyboard
-    >
+    <Marquee aria-label="Skateboard tricks showcase" pauseOnHover pauseOnKeyboard>
       <MarqueeContent>
         {tricks.map((trick) => (
           <MarqueeItem
             key={trick.title}
             className="flex w-[260px] flex-col gap-1 rounded-md border bg-card p-4 text-card-foreground shadow-sm"
           >
-            <div className="font-medium text-sm leading-tight sm:text-base">
-              {trick.title}
-            </div>
-            <span className="line-clamp-2 text-muted-foreground text-sm">
-              {trick.description}
-            </span>
+            <div className="font-medium text-sm leading-tight sm:text-base">{trick.title}</div>
+            <span className="line-clamp-2 text-muted-foreground text-sm">{trick.description}</span>
           </MarqueeItem>
         ))}
       </MarqueeContent>

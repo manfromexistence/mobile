@@ -1,1 +1,1 @@
-export * from "./toc-minimap"
+export * from "./toc-minimap";

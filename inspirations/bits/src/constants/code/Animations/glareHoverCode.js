@@ -1,8 +1,8 @@
-import code from '@content/Animations/GlareHover/GlareHover.jsx?raw';
-import css from '@content/Animations/GlareHover/GlareHover.css?raw';
-import tailwind from '@tailwind/Animations/GlareHover/GlareHover.jsx?raw';
-import tsCode from '@ts-default/Animations/GlareHover/GlareHover.tsx?raw';
-import tsTailwind from '@ts-tailwind/Animations/GlareHover/GlareHover.tsx?raw';
+import code from "@content/Animations/GlareHover/GlareHover.jsx?raw";
+import css from "@content/Animations/GlareHover/GlareHover.css?raw";
+import tailwind from "@tailwind/Animations/GlareHover/GlareHover.jsx?raw";
+import tsCode from "@ts-default/Animations/GlareHover/GlareHover.tsx?raw";
+import tsTailwind from "@ts-tailwind/Animations/GlareHover/GlareHover.tsx?raw";
 
 export const glareHover = {
   usage: `import GlareHover from './GlareHover'
@@ -25,5 +25,5 @@ export const glareHover = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

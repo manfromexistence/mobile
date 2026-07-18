@@ -1,21 +1,21 @@
-import { useMemo } from 'react';
-import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
-import { Box } from '@chakra-ui/react';
+import { useMemo } from "react";
+import { CodeTab, PreviewTab, TabsLayout } from "../../components/common/TabsLayout";
+import { Box } from "@chakra-ui/react";
 
-import useComponentProps from '../../hooks/useComponentProps';
-import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
-import Customize from '../../components/common/Preview/Customize';
-import PreviewSlider from '../../components/common/Preview/PreviewSlider';
-import PreviewColorPickerCustom from '../../components/common/Preview/PreviewColorPickerCustom';
-import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
-import logo from '../../assets/logos/react-bits-logo-small-black.svg';
-import CodeExample from '../../components/code/CodeExample';
-import useForceRerender from '../../hooks/useForceRerender';
+import useComponentProps from "../../hooks/useComponentProps";
+import { ComponentPropsProvider } from "../../components/context/ComponentPropsContext";
+import Customize from "../../components/common/Preview/Customize";
+import PreviewSlider from "../../components/common/Preview/PreviewSlider";
+import PreviewColorPickerCustom from "../../components/common/Preview/PreviewColorPickerCustom";
+import PreviewSwitch from "../../components/common/Preview/PreviewSwitch";
+import logo from "../../assets/logos/react-bits-logo-small-black.svg";
+import CodeExample from "../../components/code/CodeExample";
+import useForceRerender from "../../hooks/useForceRerender";
 
-import PropTable from '../../components/common/Preview/PropTable';
+import PropTable from "../../components/common/Preview/PropTable";
 
-import MetallicPaint from '../../content/Animations/MetallicPaint/MetallicPaint';
-import { metallicPaint } from '../../constants/code/Animations/metallicPaintCode';
+import MetallicPaint from "../../content/Animations/MetallicPaint/MetallicPaint";
+import { metallicPaint } from "../../constants/code/Animations/metallicPaintCode";
 
 const DEFAULT_PROPS = {
   seed: 42,
@@ -28,8 +28,8 @@ const DEFAULT_PROPS = {
   contrast: 0.5,
   angle: 0,
   fresnel: 1,
-  lightColor: '#ffffff',
-  darkColor: '#000000',
+  lightColor: "#ffffff",
+  darkColor: "#000000",
   patternSharpness: 1,
   waveAmplitude: 1,
   noiseScale: 0.5,
@@ -37,7 +37,7 @@ const DEFAULT_PROPS = {
   mouseAnimation: false,
   distortion: 1,
   contour: 0.2,
-  tintColor: '#feb3ff'
+  tintColor: "#feb3ff",
 };
 
 const MetallicPaintDemo = () => {
@@ -62,7 +62,7 @@ const MetallicPaintDemo = () => {
     mouseAnimation,
     distortion,
     contour,
-    tintColor
+    tintColor,
   } = props;
 
   const [key, forceRerender] = useForceRerender();
@@ -70,137 +70,149 @@ const MetallicPaintDemo = () => {
   const propData = useMemo(
     () => [
       {
-        name: 'imageSrc',
-        type: 'string',
-        default: 'none (required)',
-        description: 'URL or path to the image used for the metallic paint effect. The image is processed internally.'
+        name: "imageSrc",
+        type: "string",
+        default: "none (required)",
+        description:
+          "URL or path to the image used for the metallic paint effect. The image is processed internally.",
       },
       {
-        name: 'seed',
-        type: 'number',
-        default: '42',
-        description: 'Random seed for pattern generation. Different values create different pattern variations.'
+        name: "seed",
+        type: "number",
+        default: "42",
+        description:
+          "Random seed for pattern generation. Different values create different pattern variations.",
       },
       {
-        name: 'scale',
-        type: 'number',
-        default: '2',
-        description: 'Scale of the metallic pattern. Higher values create more repetitions.'
+        name: "scale",
+        type: "number",
+        default: "2",
+        description: "Scale of the metallic pattern. Higher values create more repetitions.",
       },
       {
-        name: 'refraction',
-        type: 'number',
-        default: '0.015',
-        description: 'Amount of chromatic aberration (color separation). Creates the rainbow edge effect.'
+        name: "refraction",
+        type: "number",
+        default: "0.015",
+        description:
+          "Amount of chromatic aberration (color separation). Creates the rainbow edge effect.",
       },
       {
-        name: 'blur',
-        type: 'number',
-        default: '0.005',
-        description: 'Blur amount for the pattern transitions. Higher values create softer gradients.'
+        name: "blur",
+        type: "number",
+        default: "0.005",
+        description:
+          "Blur amount for the pattern transitions. Higher values create softer gradients.",
       },
       {
-        name: 'liquid',
-        type: 'number',
-        default: '0.07',
-        description: 'Amount of liquid/wavy animation applied to the pattern.'
+        name: "liquid",
+        type: "number",
+        default: "0.07",
+        description: "Amount of liquid/wavy animation applied to the pattern.",
       },
       {
-        name: 'speed',
-        type: 'number',
-        default: '0.3',
-        description: 'Animation speed multiplier. Set to 0 to disable animation.'
+        name: "speed",
+        type: "number",
+        default: "0.3",
+        description: "Animation speed multiplier. Set to 0 to disable animation.",
       },
       {
-        name: 'brightness',
-        type: 'number',
-        default: '1',
-        description: 'Overall brightness of the metallic effect. Values above 1 increase brightness.'
+        name: "brightness",
+        type: "number",
+        default: "1",
+        description:
+          "Overall brightness of the metallic effect. Values above 1 increase brightness.",
       },
       {
-        name: 'contrast',
-        type: 'number',
-        default: '1',
-        description: 'Color contrast of the effect. Higher values create more distinct light/dark areas.'
+        name: "contrast",
+        type: "number",
+        default: "1",
+        description:
+          "Color contrast of the effect. Higher values create more distinct light/dark areas.",
       },
       {
-        name: 'angle',
-        type: 'number',
-        default: '0',
-        description: 'Rotation angle of the pattern in degrees.'
+        name: "angle",
+        type: "number",
+        default: "0",
+        description: "Rotation angle of the pattern in degrees.",
       },
       {
-        name: 'fresnel',
-        type: 'number',
-        default: '1',
-        description: 'Fresnel effect intensity. Controls edge highlighting based on viewing angle.'
+        name: "fresnel",
+        type: "number",
+        default: "1",
+        description: "Fresnel effect intensity. Controls edge highlighting based on viewing angle.",
       },
       {
-        name: 'lightColor',
-        type: 'string',
-        default: '#ffffff',
-        description: 'Hex color for the bright/highlight areas of the metallic effect.'
+        name: "lightColor",
+        type: "string",
+        default: "#ffffff",
+        description: "Hex color for the bright/highlight areas of the metallic effect.",
       },
       {
-        name: 'darkColor',
-        type: 'string',
-        default: '#111111',
-        description: 'Hex color for the dark/shadow areas of the metallic effect.'
+        name: "darkColor",
+        type: "string",
+        default: "#111111",
+        description: "Hex color for the dark/shadow areas of the metallic effect.",
       },
       {
-        name: 'patternSharpness',
-        type: 'number',
-        default: '1',
-        description: 'Controls the sharpness of metallic band transitions. Higher = sharper edges.'
+        name: "patternSharpness",
+        type: "number",
+        default: "1",
+        description: "Controls the sharpness of metallic band transitions. Higher = sharper edges.",
       },
       {
-        name: 'waveAmplitude',
-        type: 'number',
-        default: '1',
-        description: 'Intensity of the wave distortion effect.'
+        name: "waveAmplitude",
+        type: "number",
+        default: "1",
+        description: "Intensity of the wave distortion effect.",
       },
       {
-        name: 'noiseScale',
-        type: 'number',
-        default: '1',
-        description: 'Scale of the noise pattern. Higher = more detailed noise.'
+        name: "noiseScale",
+        type: "number",
+        default: "1",
+        description: "Scale of the noise pattern. Higher = more detailed noise.",
       },
       {
-        name: 'chromaticSpread',
-        type: 'number',
-        default: '1',
-        description: 'Multiplier for chromatic aberration spread between RGB channels.'
+        name: "chromaticSpread",
+        type: "number",
+        default: "1",
+        description: "Multiplier for chromatic aberration spread between RGB channels.",
       },
       {
-        name: 'mouseAnimation',
-        type: 'boolean',
-        default: 'false',
-        description: 'When true, mouse position controls wave animation instead of auto-loop.'
+        name: "mouseAnimation",
+        type: "boolean",
+        default: "false",
+        description: "When true, mouse position controls wave animation instead of auto-loop.",
       },
       {
-        name: 'distortion',
-        type: 'number',
-        default: '0',
-        description: 'Amount of noise-based distortion applied to the pattern flow (0-1).'
+        name: "distortion",
+        type: "number",
+        default: "0",
+        description: "Amount of noise-based distortion applied to the pattern flow (0-1).",
       },
       {
-        name: 'contour',
-        type: 'number',
-        default: '0',
-        description: 'Intensity of edge contour effect that warps the pattern along shape boundaries (0-1).'
+        name: "contour",
+        type: "number",
+        default: "0",
+        description:
+          "Intensity of edge contour effect that warps the pattern along shape boundaries (0-1).",
       },
       {
-        name: 'tintColor',
-        type: 'string',
-        default: '#ffffff',
-        description: 'Hex color for color burn tint effect. White = no tint.'
-      }
+        name: "tintColor",
+        type: "string",
+        default: "#ffffff",
+        description: "Hex color for color burn tint effect. White = no tint.",
+      },
     ],
-    []
+    [],
   );
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+    >
       <TabsLayout>
         <PreviewTab>
           <Box position="relative" className="demo-container" h={400} overflow="hidden">
@@ -234,24 +246,24 @@ const MetallicPaintDemo = () => {
             <PreviewColorPickerCustom
               title="Tint Color"
               color={tintColor}
-              onChange={val => {
-                updateProp('tintColor', val);
+              onChange={(val) => {
+                updateProp("tintColor", val);
                 forceRerender();
               }}
             />
             <PreviewColorPickerCustom
               title="Dark Color"
               color={darkColor}
-              onChange={val => {
-                updateProp('darkColor', val);
+              onChange={(val) => {
+                updateProp("darkColor", val);
                 forceRerender();
               }}
             />
             <PreviewColorPickerCustom
               title="Light Color"
               color={lightColor}
-              onChange={val => {
-                updateProp('lightColor', val);
+              onChange={(val) => {
+                updateProp("lightColor", val);
                 forceRerender();
               }}
             />
@@ -262,8 +274,8 @@ const MetallicPaintDemo = () => {
               max={200}
               step={0.01}
               value={seed}
-              onChange={val => {
-                updateProp('seed', val);
+              onChange={(val) => {
+                updateProp("seed", val);
                 forceRerender();
               }}
             />
@@ -273,8 +285,8 @@ const MetallicPaintDemo = () => {
               max={5}
               step={0.1}
               value={scale}
-              onChange={val => {
-                updateProp('scale', val);
+              onChange={(val) => {
+                updateProp("scale", val);
                 forceRerender();
               }}
             />
@@ -284,8 +296,8 @@ const MetallicPaintDemo = () => {
               max={0.1}
               step={0.001}
               value={refraction}
-              onChange={val => {
-                updateProp('refraction', val);
+              onChange={(val) => {
+                updateProp("refraction", val);
                 forceRerender();
               }}
             />
@@ -295,8 +307,8 @@ const MetallicPaintDemo = () => {
               max={0.1}
               step={0.001}
               value={blur}
-              onChange={val => {
-                updateProp('blur', val);
+              onChange={(val) => {
+                updateProp("blur", val);
                 forceRerender();
               }}
             />
@@ -306,8 +318,8 @@ const MetallicPaintDemo = () => {
               max={1}
               step={0.01}
               value={speed}
-              onChange={val => {
-                updateProp('speed', val);
+              onChange={(val) => {
+                updateProp("speed", val);
                 forceRerender();
               }}
             />
@@ -317,8 +329,8 @@ const MetallicPaintDemo = () => {
               max={2}
               step={0.05}
               value={brightness}
-              onChange={val => {
-                updateProp('brightness', val);
+              onChange={(val) => {
+                updateProp("brightness", val);
                 forceRerender();
               }}
             />
@@ -328,8 +340,8 @@ const MetallicPaintDemo = () => {
               max={2}
               step={0.05}
               value={contrast}
-              onChange={val => {
-                updateProp('contrast', val);
+              onChange={(val) => {
+                updateProp("contrast", val);
                 forceRerender();
               }}
             />
@@ -339,8 +351,8 @@ const MetallicPaintDemo = () => {
               max={180}
               step={1}
               value={angle}
-              onChange={val => {
-                updateProp('angle', val);
+              onChange={(val) => {
+                updateProp("angle", val);
                 forceRerender();
               }}
             />
@@ -350,8 +362,8 @@ const MetallicPaintDemo = () => {
               max={3}
               step={0.1}
               value={fresnel}
-              onChange={val => {
-                updateProp('fresnel', val);
+              onChange={(val) => {
+                updateProp("fresnel", val);
                 forceRerender();
               }}
             />
@@ -361,8 +373,8 @@ const MetallicPaintDemo = () => {
               max={2}
               step={0.1}
               value={patternSharpness}
-              onChange={val => {
-                updateProp('patternSharpness', val);
+              onChange={(val) => {
+                updateProp("patternSharpness", val);
                 forceRerender();
               }}
             />
@@ -372,8 +384,8 @@ const MetallicPaintDemo = () => {
               max={3}
               step={0.1}
               value={waveAmplitude}
-              onChange={val => {
-                updateProp('waveAmplitude', val);
+              onChange={(val) => {
+                updateProp("waveAmplitude", val);
                 forceRerender();
               }}
             />
@@ -383,8 +395,8 @@ const MetallicPaintDemo = () => {
               max={1}
               step={0.01}
               value={liquid}
-              onChange={val => {
-                updateProp('liquid', val);
+              onChange={(val) => {
+                updateProp("liquid", val);
                 forceRerender();
               }}
             />
@@ -394,8 +406,8 @@ const MetallicPaintDemo = () => {
               max={3}
               step={0.1}
               value={noiseScale}
-              onChange={val => {
-                updateProp('noiseScale', val);
+              onChange={(val) => {
+                updateProp("noiseScale", val);
                 forceRerender();
               }}
             />
@@ -405,8 +417,8 @@ const MetallicPaintDemo = () => {
               max={3}
               step={0.1}
               value={chromaticSpread}
-              onChange={val => {
-                updateProp('chromaticSpread', val);
+              onChange={(val) => {
+                updateProp("chromaticSpread", val);
                 forceRerender();
               }}
             />
@@ -416,8 +428,8 @@ const MetallicPaintDemo = () => {
               max={1}
               step={0.05}
               value={distortion}
-              onChange={val => {
-                updateProp('distortion', val);
+              onChange={(val) => {
+                updateProp("distortion", val);
                 forceRerender();
               }}
             />
@@ -427,8 +439,8 @@ const MetallicPaintDemo = () => {
               max={1}
               step={0.05}
               value={contour}
-              onChange={val => {
-                updateProp('contour', val);
+              onChange={(val) => {
+                updateProp("contour", val);
                 forceRerender();
               }}
             />
@@ -436,8 +448,8 @@ const MetallicPaintDemo = () => {
             <PreviewSwitch
               title="Mouse Animation"
               isChecked={mouseAnimation}
-              onChange={val => {
-                updateProp('mouseAnimation', val);
+              onChange={(val) => {
+                updateProp("mouseAnimation", val);
                 forceRerender();
               }}
             />

@@ -56,7 +56,7 @@ function claudeUsageResponse() {
         resets_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
       },
     }),
-    { status: 200, headers: { "content-type": "application/json" } }
+    { status: 200, headers: { "content-type": "application/json" } },
   );
 }
 
@@ -72,7 +72,7 @@ function claudeBootstrapResponse() {
         organization_rate_limit_tier: "pro",
       },
     }),
-    { status: 200, headers: { "content-type": "application/json" } }
+    { status: 200, headers: { "content-type": "application/json" } },
   );
 }
 
@@ -106,9 +106,9 @@ test("Claude provider limits fail closed when an account proxy is unreachable", 
     async () => {
       await assert.rejects(
         () => providerLimits.fetchAndPersistProviderLimits(connectionId, "manual"),
-        /Proxy unreachable|fetch failed|ECONNREFUSED|UND_ERR_CONNECT_TIMEOUT/i
+        /Proxy unreachable|fetch failed|ECONNREFUSED|UND_ERR_CONNECT_TIMEOUT/i,
       );
-    }
+    },
   );
 
   assert.deepEqual(directFetchUrls, [], "account-proxied Claude usage must not retry direct");
@@ -142,15 +142,15 @@ test("non-Claude OAuth provider limits fail closed when an account proxy is unre
           monthly_quotas: { chat: 500 },
           limited_user_quotas: { chat: 500 },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }) as typeof fetch,
     async () => {
       await assert.rejects(
         () => providerLimits.fetchAndPersistProviderLimits(connectionId, "manual"),
-        /Proxy unreachable|fetch failed|ECONNREFUSED|UND_ERR_CONNECT_TIMEOUT/i
+        /Proxy unreachable|fetch failed|ECONNREFUSED|UND_ERR_CONNECT_TIMEOUT/i,
       );
-    }
+    },
   );
 
   assert.deepEqual(directFetchUrls, [], "account-proxied OAuth usage must not retry direct");
@@ -184,12 +184,12 @@ test("Claude provider limits preserve direct retry for non-account proxy failure
       assert.equal(result.connection.id, connectionId);
       assert.ok(result.usage.quotas);
       assert.equal(result.cache.source, "manual");
-    }
+    },
   );
 
   assert.equal(
     directFetchUrls.some((url) => url.includes("/api/oauth/usage")),
     true,
-    "provider-level proxy failures should retain the existing direct retry behavior"
+    "provider-level proxy failures should retain the existing direct retry behavior",
   );
 });

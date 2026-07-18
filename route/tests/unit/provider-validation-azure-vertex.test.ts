@@ -13,7 +13,7 @@ test("azure-openai validation accepts a successful deployments probe", async () 
   globalThis.fetch = async (url, init = {}) => {
     assert.equal(
       String(url),
-      "https://my-resource.openai.azure.com/openai/deployments?api-version=2024-12-01-preview"
+      "https://my-resource.openai.azure.com/openai/deployments?api-version=2024-12-01-preview",
     );
     assert.equal((init.headers as Record<string, string>)["api-key"], "azure-key");
     return new Response(JSON.stringify({ data: [] }), { status: 200 });

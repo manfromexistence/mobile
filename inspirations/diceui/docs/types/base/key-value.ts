@@ -162,10 +162,7 @@ export interface KeyValueProps extends RenderProps {
    * }}
    * ```
    */
-  onKeyValidate?: (
-    key: string,
-    value: KeyValueItemData[],
-  ) => string | undefined;
+  onKeyValidate?: (key: string, value: KeyValueItemData[]) => string | undefined;
 
   /**
    * Validator function for values.
@@ -178,11 +175,7 @@ export interface KeyValueProps extends RenderProps {
    * }}
    * ```
    */
-  onValueValidate?: (
-    value: string,
-    key: string,
-    items: KeyValueItemData[],
-  ) => string | undefined;
+  onValueValidate?: (value: string, key: string, items: KeyValueItemData[]) => string | undefined;
 
   /**
    * Whether to trim whitespace from keys and values.
@@ -239,8 +232,7 @@ export interface KeyValueValueInputProps extends EmptyProps<"textarea"> {
 export interface KeyValueRemoveProps
   extends Omit<ButtonProps, keyof React.ComponentProps<"button">> {}
 
-export interface KeyValueAddProps
-  extends Omit<ButtonProps, keyof React.ComponentProps<"button">> {}
+export interface KeyValueAddProps extends Omit<ButtonProps, keyof React.ComponentProps<"button">> {}
 
 export interface KeyValueErrorProps extends RenderProps {
   /**

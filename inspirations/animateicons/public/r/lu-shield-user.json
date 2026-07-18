@@ -4,9 +4,7 @@
   "type": "registry:ui",
   "addGlobalCss": false,
   "registryDependencies": [],
-  "dependencies": [
-    "motion"
-  ],
+  "dependencies": ["motion"],
   "devDependencies": [],
   "files": [
     {

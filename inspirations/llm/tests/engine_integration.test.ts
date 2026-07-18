@@ -23,9 +23,9 @@ type TVMInstance = import("@mlc-ai/web-runtime").Instance;
 type Tokenizer = import("@mlc-ai/web-tokenizers").Tokenizer;
 
 jest.mock("../src/llm_chat", () => {
-  const { getConversation } = jest.requireActual(
+  const { getConversation } = jest.requireActual("../src/conversation") as typeof import(
     "../src/conversation",
-  ) as typeof import("../src/conversation");
+  );
 
   class MockLLMChatPipeline {
     public decodeLimit = 2;
@@ -53,10 +53,7 @@ jest.mock("../src/llm_chat", () => {
     private curRoundGrammarPerTokenTotalTime = 0;
 
     constructor(_tvm: TVMInstance, _tokenizer: Tokenizer, config: ChatConfig) {
-      this.conversation = getConversation(
-        config.conv_template,
-        config.conv_config,
-      );
+      this.conversation = getConversation(config.conv_template, config.conv_config);
     }
 
     async asyncLoadWebGPUPipelines() {}
@@ -77,11 +74,7 @@ jest.mock("../src/llm_chat", () => {
       this.decodeCallCount = 0;
     }
 
-    async prefillStep(
-      inp: string,
-      msgRole: string,
-      roleName?: string,
-    ): Promise<void> {
+    async prefillStep(inp: string, msgRole: string, roleName?: string): Promise<void> {
       this.prefillCallCount++;
       const roleSuffix = roleName ? `(${roleName})` : "";
       this.message = `${msgRole}${roleSuffix}:${inp}`;
@@ -101,8 +94,7 @@ jest.mock("../src/llm_chat", () => {
       this.message += `|token${this.decodeCallCount}|`;
       this.curRoundDecodingTotalTokens = this.decodeCallCount;
       this.curRoundDecodingTotalTime = this.curRoundDecodingTotalTokens * 0.02;
-      this.curRoundGrammarPerTokenTotalTime =
-        this.curRoundDecodingTotalTokens * 0.001;
+      this.curRoundGrammarPerTokenTotalTime = this.curRoundDecodingTotalTokens * 0.001;
       if (
         this.decodeCallCount >= this.decodeLimit ||
         (genConfig?.max_tokens !== null &&
@@ -404,12 +396,8 @@ describe("MLCEngine deterministic integration", () => {
 
   test("forwardTokensAndSample and runtimeStatsText use mock pipeline", async () => {
     const { engine } = createEngineWithPipeline();
-    await expect(
-      engine.forwardTokensAndSample([9, 4, 2], true, MODEL_ID),
-    ).resolves.toBe(9);
-    await expect(engine.runtimeStatsText(MODEL_ID)).resolves.toContain(
-      "prefills=",
-    );
+    await expect(engine.forwardTokensAndSample([9, 4, 2], true, MODEL_ID)).resolves.toBe(9);
+    await expect(engine.runtimeStatsText(MODEL_ID)).resolves.toContain("prefills=");
   });
 
   test("chatCompletion streaming yields chunks, final delta, and usage data", async () => {
@@ -424,18 +412,14 @@ describe("MLCEngine deterministic integration", () => {
       stream: true,
       stream_options: { include_usage: true },
     };
-    const iterable = (await engine.chatCompletion(
-      request,
-    )) as AsyncIterable<ChatCompletionChunk>;
+    const iterable = (await engine.chatCompletion(request)) as AsyncIterable<ChatCompletionChunk>;
     const chunks: ChatCompletionChunk[] = [];
     for await (const chunk of iterable) {
       chunks.push(chunk);
     }
     expect(chunks.length).toBeGreaterThanOrEqual(3);
     expect(chunks[0].choices[0].delta?.content).toContain("Stream please");
-    expect(
-      chunks.every((chunk) => chunk.created === FIXED_CREATED_SECONDS),
-    ).toBe(true);
+    expect(chunks.every((chunk) => chunk.created === FIXED_CREATED_SECONDS)).toBe(true);
     const finalChunk = chunks[chunks.length - 2];
     expect(finalChunk.choices[0].finish_reason).toEqual("stop");
     const usageChunk = chunks[chunks.length - 1];

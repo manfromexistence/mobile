@@ -79,12 +79,12 @@ test("#4165 queue-timeout surfaces a clear OmniRoute error, not the raw upstream
   assert.match(
     caught.message,
     /not an upstream/i,
-    "message should explicitly disclaim an upstream timeout"
+    "message should explicitly disclaim an upstream timeout",
   );
   assert.doesNotMatch(
     caught.message,
     /This job timed out/,
-    "raw Bottleneck/upstream-looking string must not leak into the surfaced message"
+    "raw Bottleneck/upstream-looking string must not leak into the surfaced message",
   );
 
   // The original Bottleneck error is preserved for debugging.
@@ -107,7 +107,7 @@ test("#4165 a job that completes within maxWaitMs is unaffected", async () => {
     "openai",
     "conn-fast",
     "gpt-4o",
-    async () => "ok"
+    async () => "ok",
   );
   assert.equal(result, "ok");
 });

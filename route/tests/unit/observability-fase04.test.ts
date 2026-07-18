@@ -57,7 +57,7 @@ test("CircuitBreaker: rejects requests when open", async () => {
 
   await assert.rejects(
     () => cb.execute(async () => "should not run"),
-    (err) => err instanceof CircuitBreakerOpenError
+    (err) => err instanceof CircuitBreakerOpenError,
   );
 });
 
@@ -153,7 +153,7 @@ test("requestTimeout: withTimeout resolves before timeout", async () => {
 test("requestTimeout: withTimeout rejects on timeout", async () => {
   await assert.rejects(
     () => withTimeout(() => new Promise((r) => setTimeout(r, 500)), 10, "slow-op"),
-    (err) => (err as any).name === "TimeoutError"
+    (err) => (err as any).name === "TimeoutError",
   );
 });
 

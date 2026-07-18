@@ -1,9 +1,4 @@
-import {
-  DocsBody,
-  DocsDescription,
-  DocsPage,
-  DocsTitle,
-} from "fumadocs-ui/page";
+import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BaseSwitcher } from "@/components/base-switcher";
@@ -26,9 +21,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata(
-  props: DocPageParams,
-): Promise<Metadata> {
+export async function generateMetadata(props: DocPageParams): Promise<Metadata> {
   const params = await props.params;
   const page = source.getPage(params.slug);
 
@@ -52,8 +45,7 @@ export default async function DocPage(props: DocPageParams) {
 
   const showBaseSwitcher = getHasBothBases({ url: page.url, base });
 
-  const toc =
-    page.url === "/docs/changelog" ? getChangelogToc() : page.data.toc;
+  const toc = page.url === "/docs/changelog" ? getChangelogToc() : page.data.toc;
 
   return (
     <DocsPage
@@ -65,9 +57,7 @@ export default async function DocPage(props: DocPageParams) {
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1.5">
           <DocsTitle>{page.data.title}</DocsTitle>
-          <DocsDescription className="mb-2.5">
-            {page.data.description}
-          </DocsDescription>
+          <DocsDescription className="mb-2.5">{page.data.description}</DocsDescription>
         </div>
         <div className="flex shrink-0 items-center gap-2 pt-1.5">
           {docLink ? <DynamicLink href={docLink}>Docs</DynamicLink> : null}
@@ -75,9 +65,7 @@ export default async function DocPage(props: DocPageParams) {
           <DocActions url={page.url} path={page.path} />
         </div>
       </div>
-      {showBaseSwitcher && base ? (
-        <BaseSwitcher base={base} pathname={page.url} />
-      ) : null}
+      {showBaseSwitcher && base ? <BaseSwitcher base={base} pathname={page.url} /> : null}
       <DocsBody className="pt-2">
         <Mdx page={page} />
       </DocsBody>

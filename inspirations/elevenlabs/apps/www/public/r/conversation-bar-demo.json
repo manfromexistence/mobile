@@ -1,9 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "conversation-bar-demo",
-  "registryDependencies": [
-    "https://ui.elevenlabs.io/r/conversation-bar.json"
-  ],
+  "registryDependencies": ["https://ui.elevenlabs.io/r/conversation-bar.json"],
   "files": [
     {
       "path": "examples/conversation-bar-demo.tsx",

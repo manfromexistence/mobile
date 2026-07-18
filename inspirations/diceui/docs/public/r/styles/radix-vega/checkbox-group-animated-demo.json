@@ -1,13 +1,8 @@
 {
   "name": "checkbox-group-animated-demo",
   "type": "registry:example",
-  "dependencies": [
-    "@diceui/checkbox-group",
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "checkbox-group"
-  ],
+  "dependencies": ["@diceui/checkbox-group", "lucide-react"],
+  "registryDependencies": ["checkbox-group"],
   "files": [
     {
       "path": "examples/checkbox-group-animated-demo.tsx",

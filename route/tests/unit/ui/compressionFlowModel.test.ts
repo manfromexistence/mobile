@@ -128,12 +128,12 @@ describe("compressionRunToFlow", () => {
       assert.equal(
         flow.edges[i].source,
         flow.nodes[i].id,
-        `edge ${i} source should be node[${i}].id`
+        `edge ${i} source should be node[${i}].id`,
       );
       assert.equal(
         flow.edges[i].target,
         flow.nodes[i + 1].id,
-        `edge ${i} target should be node[${i + 1}].id`
+        `edge ${i} target should be node[${i + 1}].id`,
       );
     }
   });

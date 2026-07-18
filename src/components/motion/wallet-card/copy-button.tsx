@@ -42,11 +42,7 @@ export function CopyButton({
         className,
       )}
     >
-      <ActionSwapIcon
-        value={copied ? "check" : "copy"}
-        animation="cascade"
-        className="h-3.5 w-3.5"
-      >
+      <ActionSwapIcon value={copied ? "check" : "copy"} animation="cascade" className="h-3.5 w-3.5">
         {copied ? (
           <Check className="h-3.5 w-3.5 text-emerald-500" />
         ) : (

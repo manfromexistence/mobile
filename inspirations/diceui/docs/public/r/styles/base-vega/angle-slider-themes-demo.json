@@ -1,9 +1,7 @@
 {
   "name": "angle-slider-themes-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "angle-slider"
-  ],
+  "registryDependencies": ["angle-slider"],
   "files": [
     {
       "path": "examples/angle-slider-themes-demo.tsx",

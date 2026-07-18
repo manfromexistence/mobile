@@ -1,31 +1,31 @@
-"use client"
+"use client";
 
-import { toast } from "sonner"
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { IconPlaceholder } from "@/registry/icons/icon-placeholder"
+} from "@/components/ui/dropdown-menu";
+import { IconPlaceholder } from "@/registry/icons/icon-placeholder";
 
 export type ShareMenuProps = {
   /** Title passed to the native share sheet. */
-  title: string
+  title: string;
   /** URL to share. Relative URLs are resolved against the current origin. */
-  url: string
-}
+  url: string;
+};
 
 export function ShareMenu({ title, url }: ShareMenuProps) {
   const absoluteUrl = url.startsWith("http")
     ? url
     : typeof window !== "undefined"
       ? new URL(url, window.location.origin).toString()
-      : url
+      : url;
 
-  const urlEncoded = encodeURIComponent(absoluteUrl)
+  const urlEncoded = encodeURIComponent(absoluteUrl);
 
   return (
     <DropdownMenu>
@@ -50,8 +50,8 @@ export function ShareMenu({ title, url }: ShareMenuProps) {
       >
         <DropdownMenuItem
           onClick={() => {
-            copyText(absoluteUrl)
-            toast.success("Link copied")
+            copyText(absoluteUrl);
+            toast.success("Link copied");
           }}
         >
           <IconPlaceholder
@@ -65,11 +65,7 @@ export function ShareMenu({ title, url }: ShareMenuProps) {
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <a
-            href={`https://x.com/intent/tweet?url=${urlEncoded}`}
-            target="_blank"
-            rel="noopener"
-          >
+          <a href={`https://x.com/intent/tweet?url=${urlEncoded}`} target="_blank" rel="noopener">
             <XIcon />
             Share on X
           </a>
@@ -89,8 +85,8 @@ export function ShareMenu({ title, url }: ShareMenuProps) {
         {typeof navigator !== "undefined" && "share" in navigator && (
           <DropdownMenuItem
             onClick={(e) => {
-              e.preventDefault() // Prevent the menu from closing
-              navigator.share({ title, url: absoluteUrl }).catch(() => {})
+              e.preventDefault(); // Prevent the menu from closing
+              navigator.share({ title, url: absoluteUrl }).catch(() => {});
             }}
           >
             <IconPlaceholder
@@ -105,19 +101,19 @@ export function ShareMenu({ title, url }: ShareMenuProps) {
         )}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
 
 const copyText = async (text: string) => {
   try {
-    await navigator.clipboard.writeText(text)
-    return true
+    await navigator.clipboard.writeText(text);
+    return true;
   } catch {
-    return false
+    return false;
   }
-}
+};
 
-type IconProps = React.ComponentProps<"svg">
+type IconProps = React.ComponentProps<"svg">;
 
 function XIcon(props: IconProps) {
   return (
@@ -127,7 +123,7 @@ function XIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 function LinkedInIcon(props: IconProps) {
@@ -138,5 +134,5 @@ function LinkedInIcon(props: IconProps) {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }

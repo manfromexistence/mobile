@@ -15,7 +15,7 @@ test("resolveAccountProxies preserves relayAuth for relay-type (vercel/deno/clou
 
   const resolved = await resolveAccountProxies(
     [{ fingerprint: "acct-1", proxyId: "proxy-1" }],
-    async (id) => (id === "proxy-1" ? fakeVercelProxyRow : null)
+    async (id) => (id === "proxy-1" ? fakeVercelProxyRow : null),
   );
 
   const proxy = resolved[0].proxy as unknown as { type?: string; relayAuth?: string };
@@ -23,7 +23,7 @@ test("resolveAccountProxies preserves relayAuth for relay-type (vercel/deno/clou
   assert.equal(
     proxy?.relayAuth,
     "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
-    "relayAuth must survive resolveAccountProxies() for relay-type (vercel/deno/cloudflare) proxies"
+    "relayAuth must survive resolveAccountProxies() for relay-type (vercel/deno/cloudflare) proxies",
   );
 });
 
@@ -40,7 +40,7 @@ test("resolveAccountProxies leaves relayAuth absent for plain non-relay (socks5/
 
   const resolved = await resolveAccountProxies(
     [{ fingerprint: "acct-2", proxyId: "proxy-2" }],
-    async (id) => (id === "proxy-2" ? fakeSocksProxyRow : null)
+    async (id) => (id === "proxy-2" ? fakeSocksProxyRow : null),
   );
 
   const proxy = resolved[0].proxy as unknown as { type?: string; relayAuth?: string };

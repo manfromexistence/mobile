@@ -31,13 +31,13 @@ test("#1368: a property named 'pattern' survives Gemini schema sanitization", ()
   // string-validation constraint on the object schema itself).
   assert.ok(
     cleaned.properties && Object.prototype.hasOwnProperty.call(cleaned.properties, "pattern"),
-    "expected `properties.pattern` to be preserved"
+    "expected `properties.pattern` to be preserved",
   );
   assert.equal((cleaned.properties.pattern as { type?: string }).type, "string");
   // And it must remain in `required` (cleanupRequired drops names with no property).
   assert.ok(
     Array.isArray(cleaned.required) && cleaned.required.includes("pattern"),
-    "expected `required` to still include `pattern`"
+    "expected `required` to still include `pattern`",
   );
 });
 
@@ -61,6 +61,6 @@ test("#1368: a string-level `pattern` CONSTRAINT is preserved for antigravity", 
   assert.equal(
     (cleaned.properties.code as { pattern?: string }).pattern,
     "^[A-Z]{3}$",
-    "the string `pattern` constraint must be preserved for antigravity"
+    "the string `pattern` constraint must be preserved for antigravity",
   );
 });

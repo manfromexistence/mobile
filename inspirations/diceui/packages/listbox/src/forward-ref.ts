@@ -18,12 +18,9 @@ interface ForwardRefComponent<T, P = {}>
 function forwardRef<T, P = {}>(
   render: React.ForwardRefRenderFunction<T, React.PropsWithoutRef<P>>,
 ): ForwardRefComponent<T, P> {
-  return Object.assign(
-    React.forwardRef(render) as unknown as ForwardRefComponent<T, P>,
-    {
-      displayName: render.displayName ?? render.name,
-    },
-  );
+  return Object.assign(React.forwardRef(render) as unknown as ForwardRefComponent<T, P>, {
+    displayName: render.displayName ?? render.name,
+  });
 }
 
 export type { ForwardRefComponent, WithDisplayName, WithForwardedRef };

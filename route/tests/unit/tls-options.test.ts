@@ -34,7 +34,10 @@ test("both cert+key provided and readable → returns TLS options", () => {
   const warnings: string[] = [];
   const opts = resolveTlsOptions(
     { OMNIROUTE_TLS_CERT: "/c/server.crt", OMNIROUTE_TLS_KEY: "/c/server.key" },
-    { readFileSync: makeReader({ "/c/server.crt": "CERT", "/c/server.key": "KEY" }), warn: (m) => warnings.push(m) }
+    {
+      readFileSync: makeReader({ "/c/server.crt": "CERT", "/c/server.key": "KEY" }),
+      warn: (m) => warnings.push(m),
+    },
   );
   assert.ok(opts, "expected non-null TLS options");
   assert.equal(opts.cert.toString(), "CERT");
@@ -54,7 +57,7 @@ test("only cert provided → null + warning (never half-enable TLS)", () => {
   const warnings: string[] = [];
   const opts = resolveTlsOptions(
     { OMNIROUTE_TLS_CERT: "/c/server.crt" },
-    { warn: (m) => warnings.push(m) }
+    { warn: (m) => warnings.push(m) },
   );
   assert.equal(opts, null);
   assert.equal(warnings.length, 1);
@@ -65,7 +68,7 @@ test("only key provided → null + warning", () => {
   const warnings: string[] = [];
   const opts = resolveTlsOptions(
     { OMNIROUTE_TLS_KEY: "/c/server.key" },
-    { warn: (m) => warnings.push(m) }
+    { warn: (m) => warnings.push(m) },
   );
   assert.equal(opts, null);
   assert.equal(warnings.length, 1);
@@ -76,7 +79,7 @@ test("unreadable path → null + warning, falls back to HTTP (never crash)", () 
   const warnings: string[] = [];
   const opts = resolveTlsOptions(
     { OMNIROUTE_TLS_CERT: "/missing.crt", OMNIROUTE_TLS_KEY: "/missing.key" },
-    { readFileSync: makeReader({}), warn: (m) => warnings.push(m) }
+    { readFileSync: makeReader({}), warn: (m) => warnings.push(m) },
   );
   assert.equal(opts, null);
   assert.equal(warnings.length, 1);
@@ -86,7 +89,7 @@ test("unreadable path → null + warning, falls back to HTTP (never crash)", () 
 test("whitespace-only env values are treated as absent", () => {
   const opts = resolveTlsOptions(
     { OMNIROUTE_TLS_CERT: "   ", OMNIROUTE_TLS_KEY: "  " },
-    { warn: () => {} }
+    { warn: () => {} },
   );
   assert.equal(opts, null);
 });
@@ -113,33 +116,41 @@ test("createServerListener: null tlsOptions → http server (unchanged)", () => 
 test("createServerListener: tlsOptions → https server with merged cert/key + listener", () => {
   let httpCalled = false;
   const listener = () => {};
-  const result = createServerListener([listener], { cert: "CERT", key: "KEY" }, {
-    createHttp: () => {
-      httpCalled = true;
-      return "HTTP_SERVER";
+  const result = createServerListener(
+    [listener],
+    { cert: "CERT", key: "KEY" },
+    {
+      createHttp: () => {
+        httpCalled = true;
+        return "HTTP_SERVER";
+      },
+      createHttps: (opts: { cert: string; key: string }, fn: unknown) => {
+        assert.equal(opts.cert, "CERT");
+        assert.equal(opts.key, "KEY");
+        assert.equal(fn, listener);
+        return "HTTPS_SERVER";
+      },
     },
-    createHttps: (opts: { cert: string; key: string }, fn: unknown) => {
-      assert.equal(opts.cert, "CERT");
-      assert.equal(opts.key, "KEY");
-      assert.equal(fn, listener);
-      return "HTTPS_SERVER";
-    },
-  });
+  );
   assert.equal(result, "HTTPS_SERVER");
   assert.ok(!httpCalled);
 });
 
 test("createServerListener: merges a leading options object with cert/key", () => {
   const listener = () => {};
-  createServerListener([{ keepAlive: true }, listener], { cert: "C", key: "K" }, {
-    createHttps: (opts: Record<string, unknown>, fn: unknown) => {
-      assert.equal(opts.keepAlive, true);
-      assert.equal(opts.cert, "C");
-      assert.equal(opts.key, "K");
-      assert.equal(fn, listener);
-      return "HTTPS_SERVER";
+  createServerListener(
+    [{ keepAlive: true }, listener],
+    { cert: "C", key: "K" },
+    {
+      createHttps: (opts: Record<string, unknown>, fn: unknown) => {
+        assert.equal(opts.keepAlive, true);
+        assert.equal(opts.cert, "C");
+        assert.equal(opts.key, "K");
+        assert.equal(fn, listener);
+        return "HTTPS_SERVER";
+      },
     },
-  });
+  );
 });
 
 test("createServerListener: real default (no TLS) returns an http.Server", () => {

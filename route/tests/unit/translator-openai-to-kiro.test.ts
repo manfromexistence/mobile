@@ -52,7 +52,7 @@ function buildSamplePayload() {
       max_tokens: 2048,
     },
     false,
-    { providerSpecificData: { profileArn: "arn:aws:demo" } }
+    { providerSpecificData: { profileArn: "arn:aws:demo" } },
   );
 }
 
@@ -71,7 +71,7 @@ test("OpenAI -> Kiro builds a conversation payload with deterministic structure"
   assert.equal(result.conversationState.currentMessage.userInputMessage.origin, "AI_EDITOR");
   assert.match(
     result.conversationState.currentMessage.userInputMessage.content,
-    /^\[Context: Current time is .*Z\]\n\nThanks$/
+    /^\[Context: Current time is .*Z\]\n\nThanks$/,
   );
 });
 
@@ -140,12 +140,12 @@ test("OpenAI -> Kiro maps invalid or empty assistant tool call arguments to empt
       ],
     },
     false,
-    null
+    null,
   );
 
   assert.deepEqual(
     (invalidResult.conversationState.history[1] as any).assistantResponseMessage.toolUses[0].input,
-    {}
+    {},
   );
 
   const emptyResult = buildKiroPayload(
@@ -167,12 +167,12 @@ test("OpenAI -> Kiro maps invalid or empty assistant tool call arguments to empt
       ],
     },
     false,
-    null
+    null,
   );
 
   assert.deepEqual(
     (emptyResult.conversationState.history[1] as any).assistantResponseMessage.toolUses[0].input,
-    {}
+    {},
   );
 
   const toolUseResult = buildKiroPayload(
@@ -195,12 +195,12 @@ test("OpenAI -> Kiro maps invalid or empty assistant tool call arguments to empt
       ],
     },
     false,
-    null
+    null,
   );
 
   assert.deepEqual(
     (toolUseResult.conversationState.history[1] as any).assistantResponseMessage.toolUses[0].input,
-    {}
+    {},
   );
 });
 
@@ -214,12 +214,12 @@ test("OpenAI -> Kiro uses a neutral filler currentMessage when the request ends 
       ],
     },
     false,
-    null
+    null,
   );
 
   assert.match(
     result.conversationState.currentMessage.userInputMessage.content,
-    /^\[Context: Current time is .*Z\]\n\n\.\.\.$/
+    /^\[Context: Current time is .*Z\]\n\n\.\.\.$/,
   );
   assert.deepEqual(result.conversationState.history, [
     {
@@ -235,11 +235,11 @@ test("OpenAI -> Kiro derives a stable conversationId for the same first history 
 
   assert.equal(
     (first.conversationState as any).history[0].userInputMessage.content,
-    "<system-reminder>\nRules\n</system-reminder>\n\nHello"
+    "<system-reminder>\nRules\n</system-reminder>\n\nHello",
   );
   assert.equal(
     (second as any).conversationState.history[0].userInputMessage.content,
-    "<system-reminder>\nRules\n</system-reminder>\n\nHello"
+    "<system-reminder>\nRules\n</system-reminder>\n\nHello",
   );
   assert.equal(first.conversationState.conversationId, second.conversationState.conversationId);
 });
@@ -251,13 +251,13 @@ test("OpenAI -> Kiro still returns a valid payload for minimal requests", () => 
       messages: [{ role: "user", content: "Hi" }],
     },
     false,
-    null
+    null,
   );
 
   assert.equal(result.conversationState.history.length, 0);
   assert.match(
     result.conversationState.currentMessage.userInputMessage.content,
-    /^\[Context: Current time is .*Z\]\n\nHi$/
+    /^\[Context: Current time is .*Z\]\n\nHi$/,
   );
   assert.equal(result.conversationState.currentMessage.userInputMessage.modelId, "claude-sonnet-4");
 });
@@ -275,7 +275,7 @@ test("OpenAI -> Kiro merges adjacent user history turns after role normalization
       ],
     },
     false,
-    null
+    null,
   );
 
   const history = result.conversationState.history as Array<{
@@ -287,7 +287,7 @@ test("OpenAI -> Kiro merges adjacent user history turns after role normalization
     assert.equal(
       Boolean(history[i - 1].userInputMessage) && Boolean(history[i].userInputMessage),
       false,
-      "history should not contain adjacent userInputMessage turns"
+      "history should not contain adjacent userInputMessage turns",
     );
   }
 
@@ -295,7 +295,7 @@ test("OpenAI -> Kiro merges adjacent user history turns after role normalization
   assert.ok(firstUser, "first history turn should be a user turn");
   assert.equal(
     firstUser.content,
-    "<system-reminder>\nSystem rules\n</system-reminder>\n\nFirst question"
+    "<system-reminder>\nSystem rules\n</system-reminder>\n\nFirst question",
   );
   assert.equal(history[1].assistantResponseMessage?.content, "Answer 1");
 });
@@ -332,7 +332,7 @@ test("OpenAI -> Kiro synthesizes tools schema when body.tools is omitted but his
       ],
     },
     false,
-    null
+    null,
   );
 
   const ctx = result.conversationState.currentMessage.userInputMessage.userInputMessageContext as {
@@ -375,7 +375,7 @@ test("OpenAI -> Kiro does not override body.tools when caller already provides a
       ],
     },
     false,
-    null
+    null,
   );
 
   const ctx = result.conversationState.currentMessage.userInputMessage.userInputMessageContext as {
@@ -412,7 +412,7 @@ test("OpenAI -> Kiro synthesizes tools from Anthropic-style tool_use content blo
       ],
     },
     false,
-    null
+    null,
   );
 
   const ctx = result.conversationState.currentMessage.userInputMessage.userInputMessageContext as {
@@ -438,7 +438,7 @@ test("OpenAI -> Kiro attaches tools to currentMessage when history has no user t
       ],
     },
     false,
-    null
+    null,
   );
 
   const cm = result.conversationState.currentMessage.userInputMessage;
@@ -479,7 +479,7 @@ test("OpenAI -> Kiro strips additionalProperties and empty required from tool sc
       ],
     },
     false,
-    null
+    null,
   );
 
   const schema = result.conversationState.currentMessage.userInputMessage.userInputMessageContext
@@ -489,18 +489,18 @@ test("OpenAI -> Kiro strips additionalProperties and empty required from tool sc
   assert.equal(
     schema.additionalProperties,
     undefined,
-    "top-level additionalProperties should be stripped"
+    "top-level additionalProperties should be stripped",
   );
   assert.equal(schema.required, undefined, "empty required should be omitted");
   assert.equal(
     schema.properties.path.additionalProperties,
     undefined,
-    "nested additionalProperties should be stripped"
+    "nested additionalProperties should be stripped",
   );
   assert.equal(
     schema.properties.nested.additionalProperties,
     undefined,
-    "deep nested additionalProperties should be stripped"
+    "deep nested additionalProperties should be stripped",
   );
 });
 
@@ -516,7 +516,7 @@ test("OpenAI -> Kiro merges consecutive assistant messages", () => {
       ],
     },
     false,
-    null
+    null,
   );
 
   const history = result.conversationState.history as any[];
@@ -535,7 +535,7 @@ test("OpenAI -> Kiro prepends synthetic user when conversation starts with assis
       ],
     },
     false,
-    null
+    null,
   );
 
   const history = result.conversationState.history as any[];
@@ -557,7 +557,7 @@ test("OpenAI -> Kiro converts orphaned tool results to text", () => {
       ],
     },
     false,
-    null
+    null,
   );
 
   const currentMsg = result.conversationState.currentMessage.userInputMessage;
@@ -565,7 +565,7 @@ test("OpenAI -> Kiro converts orphaned tool results to text", () => {
   assert.equal(
     currentMsg.userInputMessageContext,
     undefined,
-    "orphaned toolResults should be removed from context"
+    "orphaned toolResults should be removed from context",
   );
 });
 
@@ -580,7 +580,7 @@ test("OpenAI -> Kiro includes origin on all history user messages", () => {
       ],
     },
     false,
-    null
+    null,
   );
 
   const history = result.conversationState.history as any[];
@@ -617,7 +617,7 @@ test("OpenAI -> Kiro maps tool_result is_error:true to status:'error'", () => {
       ],
     },
     false,
-    null
+    null,
   );
 
   const ctx = result.conversationState.currentMessage.userInputMessage.userInputMessageContext as {
@@ -655,7 +655,7 @@ test("OpenAI -> Kiro maps tool_result is_error:false to status:'success'", () =>
       ],
     },
     false,
-    null
+    null,
   );
 
   const ctx = result.conversationState.currentMessage.userInputMessage.userInputMessageContext as {
@@ -697,7 +697,7 @@ test("OpenAI -> Kiro serializes image tool_result content to non-empty text", ()
       ],
     },
     false,
-    null
+    null,
   );
 
   const ctx = result.conversationState.currentMessage.userInputMessage.userInputMessageContext as {
@@ -735,7 +735,7 @@ test("OpenAI -> Kiro serializes JSON-object tool_result content to non-empty tex
       ],
     },
     false,
-    null
+    null,
   );
 
   const ctx = result.conversationState.currentMessage.userInputMessage.userInputMessageContext as {
@@ -771,7 +771,7 @@ test("OpenAI -> Kiro uses placeholder text when tool_result content is empty arr
       ],
     },
     false,
-    null
+    null,
   );
 
   const ctx = result.conversationState.currentMessage.userInputMessage.userInputMessageContext as {
@@ -818,11 +818,11 @@ test("OpenAI -> Kiro toolUseId round-trips between tool_use and tool_result in 2
       ],
     },
     false,
-    null
+    null,
   );
 
   const historyAssistant = (result.conversationState.history as any[]).find(
-    (h) => h.assistantResponseMessage?.toolUses
+    (h) => h.assistantResponseMessage?.toolUses,
   );
   assert.ok(historyAssistant, "assistant turn with toolUses must be in history");
   const toolUse = historyAssistant.assistantResponseMessage.toolUses[0];
@@ -861,7 +861,7 @@ test("OpenAI -> Kiro does not inject the '(empty)' placeholder on a trailing too
       ],
     },
     false,
-    null
+    null,
   );
 
   const current = result.conversationState.currentMessage.userInputMessage;
@@ -901,15 +901,15 @@ test("OpenAI -> Kiro generates stable non-random toolUseId when tool_call has no
         ],
       },
       false,
-      null
+      null,
     );
 
   const id1 = (makePayload().conversationState.history as any[]).find(
-    (h) => h.assistantResponseMessage?.toolUses
+    (h) => h.assistantResponseMessage?.toolUses,
   )?.assistantResponseMessage?.toolUses?.[0]?.toolUseId;
 
   const id2 = (makePayload().conversationState.history as any[]).find(
-    (h) => h.assistantResponseMessage?.toolUses
+    (h) => h.assistantResponseMessage?.toolUses,
   )?.assistantResponseMessage?.toolUses?.[0]?.toolUseId;
 
   assert.ok(id1, "toolUseId must be set even when id is absent");
@@ -947,7 +947,7 @@ test("OpenAI -> Kiro serializes non-string role:tool content to non-empty text (
       ],
     },
     true,
-    null
+    null,
   );
 
   const cs = result.conversationState as any;
@@ -987,7 +987,7 @@ function buildImageRequest(model: string) {
       ],
     },
     false,
-    null
+    null,
   );
 }
 
@@ -1006,13 +1006,13 @@ test("OpenAI -> Kiro drops images for non-Claude models (deepseek)", () => {
   const images = result.conversationState.currentMessage.userInputMessage.images;
   assert.ok(
     images === undefined || images.length === 0,
-    `non-Claude Kiro models must NOT receive image attachments, got: ${JSON.stringify(images)}`
+    `non-Claude Kiro models must NOT receive image attachments, got: ${JSON.stringify(images)}`,
   );
   // The accompanying text must still survive.
   assert.match(
     result.conversationState.currentMessage.userInputMessage.content,
     /Describe this picture/,
-    "text content is preserved even when images are dropped"
+    "text content is preserved even when images are dropped",
   );
 });
 
@@ -1022,7 +1022,7 @@ test("OpenAI -> Kiro drops images for non-Claude models (glm / auto-kiro)", () =
     const images = result.conversationState.currentMessage.userInputMessage.images;
     assert.ok(
       images === undefined || images.length === 0,
-      `${model} must NOT receive image attachments, got: ${JSON.stringify(images)}`
+      `${model} must NOT receive image attachments, got: ${JSON.stringify(images)}`,
     );
   }
 });
@@ -1033,7 +1033,7 @@ test("buildKiroPayload rejects the Anthropic-only [1m] context suffix before Bed
   assert.throws(
     () => buildKiroPayload("claude-opus-4.7-thinking-agentic[1m]", body, true, {}),
     /\[1m\]' suffix is not supported by Kiro upstream/,
-    "kr/* model ids carrying [1m] must be rejected, not forwarded to AWS Bedrock"
+    "kr/* model ids carrying [1m] must be rejected, not forwarded to AWS Bedrock",
   );
 });
 
@@ -1042,7 +1042,7 @@ test("buildKiroPayload accepts kr/* model ids without the [1m] suffix", () => {
 
   assert.doesNotThrow(
     () => buildKiroPayload("claude-sonnet-4.5", body, true, {}),
-    "model ids without [1m] must continue to build normally"
+    "model ids without [1m] must continue to build normally",
   );
 });
 
@@ -1053,12 +1053,12 @@ test("buildKiroPayload strips local Kiro selector suffixes before upstream", () 
   assert.equal(
     result.conversationState.currentMessage.userInputMessage.modelId,
     "claude-sonnet-5",
-    "local -thinking/-agentic aliases must not be forwarded to Kiro"
+    "local -thinking/-agentic aliases must not be forwarded to Kiro",
   );
   assert.equal(
     result.additionalModelRequestFields?.output_config?.effort,
     "high",
-    "the -thinking selector should still request Kiro adaptive thinking"
+    "the -thinking selector should still request Kiro adaptive thinking",
   );
 });
 
@@ -1081,14 +1081,14 @@ test("buildKiroPayload normalizes short dash-suffixed minor versions to dots", (
   assert.equal(
     opus.conversationState.currentMessage.userInputMessage.modelId,
     "claude-opus-4.8",
-    "1-digit minor version should normalize dash to dot"
+    "1-digit minor version should normalize dash to dot",
   );
 
   const sonnet = buildKiroPayload("claude-sonnet-4-6", body, false, null);
   assert.equal(
     sonnet.conversationState.currentMessage.userInputMessage.modelId,
     "claude-sonnet-4.6",
-    "1-digit minor version should normalize dash to dot (sonnet)"
+    "1-digit minor version should normalize dash to dot (sonnet)",
   );
 });
 
@@ -1099,7 +1099,7 @@ test("buildKiroPayload does not corrupt date-suffixed Claude model ids (#2270)",
   assert.equal(
     result.conversationState.currentMessage.userInputMessage.modelId,
     "claude-opus-4-20250514",
-    "date-suffixed model ids (3+ digit trailing group) must NOT be dash->dot normalized"
+    "date-suffixed model ids (3+ digit trailing group) must NOT be dash->dot normalized",
   );
 });
 
@@ -1110,7 +1110,7 @@ test("buildKiroPayload leaves already-two-dash Claude ids unchanged (#2270)", ()
   assert.equal(
     result.conversationState.currentMessage.userInputMessage.modelId,
     "claude-opus-4-1-20250805",
-    "two-dash form (patch + date) must remain unchanged"
+    "two-dash form (patch + date) must remain unchanged",
   );
 });
 
@@ -1133,12 +1133,12 @@ test("buildKiroPayload enables thinking mode for Claude models via reasoning_eff
   assert.match(
     result.conversationState.currentMessage.userInputMessage.content,
     /<thinking_mode>enabled<\/thinking_mode>/,
-    "thinking_mode directive must be injected into user content"
+    "thinking_mode directive must be injected into user content",
   );
   assert.match(
     result.conversationState.currentMessage.userInputMessage.content,
     /<max_thinking_length>\d+<\/max_thinking_length>/,
-    "max_thinking_length directive must be injected into user content"
+    "max_thinking_length directive must be injected into user content",
   );
 });
 
@@ -1155,7 +1155,7 @@ test("buildKiroPayload drops temperature when thinking is enabled", () => {
   assert.equal(
     result.inferenceConfig?.temperature,
     undefined,
-    "temperature must be dropped when adaptive thinking is active"
+    "temperature must be dropped when adaptive thinking is active",
   );
 });
 
@@ -1170,7 +1170,7 @@ test("buildKiroPayload ignores thinking request for unsupported effort levels", 
   assert.equal(
     result.additionalModelRequestFields,
     undefined,
-    "invalid effort must not enable thinking"
+    "invalid effort must not enable thinking",
   );
 });
 
@@ -1195,7 +1195,7 @@ test("buildKiroPayload leaves thinking off when no reasoning is requested", () =
   assert.doesNotMatch(
     result.conversationState.currentMessage.userInputMessage.content,
     /<thinking_mode>/,
-    "no directive injected by default"
+    "no directive injected by default",
   );
 });
 
@@ -1204,7 +1204,7 @@ test("buildKiroPayload maps reasoning_effort to the same Kiro effort level (no +
     "claude-sonnet-5",
     { messages: [{ role: "user", content: "hard" }], reasoning_effort: "medium" },
     false,
-    null
+    null,
   );
 
   assert.equal(result.additionalModelRequestFields.output_config.effort, "medium");
@@ -1215,7 +1215,7 @@ test("buildKiroPayload reads effort from Anthropic output_config.effort", () => 
     "claude-sonnet-5",
     { messages: [{ role: "user", content: "hard" }], output_config: { effort: "xhigh" } },
     false,
-    null
+    null,
   );
 
   assert.ok(result.additionalModelRequestFields, "output_config.effort must enable thinking");
@@ -1227,13 +1227,13 @@ test("buildKiroPayload defaults adaptive thinking (no effort) to high", () => {
     "claude-sonnet-5",
     { messages: [{ role: "user", content: "hard" }], thinking: { type: "adaptive" } },
     false,
-    null
+    null,
   );
 
   assert.equal(
     result.additionalModelRequestFields.output_config.effort,
     "high",
-    "adaptive with no explicit effort defaults to Anthropic's documented default (high)"
+    "adaptive with no explicit effort defaults to Anthropic's documented default (high)",
   );
 });
 
@@ -1247,7 +1247,7 @@ test("buildKiroPayload drops both temperature and top_p when thinking is enabled
       top_p: 0.9,
     },
     false,
-    null
+    null,
   );
 
   assert.ok(result.additionalModelRequestFields, "thinking must be enabled");

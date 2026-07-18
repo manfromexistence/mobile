@@ -1,9 +1,7 @@
 {
   "name": "timeline-rtl-demo",
   "type": "registry:example",
-  "registryDependencies": [
-    "timeline"
-  ],
+  "registryDependencies": ["timeline"],
   "files": [
     {
       "path": "examples/timeline-rtl-demo.tsx",

@@ -1,6 +1,14 @@
 "use client";
 
-import { forwardRef, useState, useCallback, useRef, useEffect, useId, type HTMLAttributes } from "react";
+import {
+  forwardRef,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  useId,
+  type HTMLAttributes,
+} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useIcon } from "@/lib/icon-context";
@@ -28,7 +36,10 @@ interface InputCopyProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"
 }
 
 const InputCopy = forwardRef<HTMLDivElement, InputCopyProps>(
-  ({ value, label, onCopy, disabled, variant = "icon", align = "right", className, ...props }, ref) => {
+  (
+    { value, label, onCopy, disabled, variant = "icon", align = "right", className, ...props },
+    ref,
+  ) => {
     const CopyIcon = useIcon("copy");
     // "copied" and "error" both occupy the same animation slot on the button
     const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
@@ -102,11 +113,11 @@ const InputCopy = forwardRef<HTMLDivElement, InputCopyProps>(
     }, []);
 
     const handleMouseEnter = useCallback(() => {
-      setTooltipState((prev) => prev === "suppressed" ? "idle" : prev);
+      setTooltipState((prev) => (prev === "suppressed" ? "idle" : prev));
     }, []);
 
     const handleMouseLeave = useCallback(() => {
-      setTooltipState((prev) => prev === "copied" ? "suppressed" : prev);
+      setTooltipState((prev) => (prev === "copied" ? "suppressed" : prev));
     }, []);
 
     const iconSwitch = (
@@ -176,127 +187,142 @@ const InputCopy = forwardRef<HTMLDivElement, InputCopyProps>(
             transition={spring.fast}
             className="flex items-center justify-center"
           >
-            <CopyIcon size={14} strokeWidth={1.5} className="transition-[stroke-width] duration-80 group-hover:stroke-[2]" />
+            <CopyIcon
+              size={14}
+              strokeWidth={1.5}
+              className="transition-[stroke-width] duration-80 group-hover:stroke-[2]"
+            />
           </motion.span>
         )}
       </AnimatePresence>
     );
 
-    const actionElement = variant === "button" ? (
-      <span
-        className={cn(
-          "shrink-0 flex items-center gap-1.5 px-1.5 py-2 text-[13px] transition-colors duration-80",
-          "text-muted-foreground group-hover:text-foreground",
-        )}
-        style={{ fontVariationSettings: fontWeights.normal }}
-      >
-        <AnimatePresence mode="wait" initial={false}>
-          {status === "error" ? (
-            <motion.span
-              key={`error-label-${copyCount}`}
-              className="flex items-center gap-1.5 text-destructive"
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={spring.fast}
-            >
-              <span className="flex items-center justify-center">
-                <svg
-                  width={14}
-                  height={14}
-                  viewBox="2 4 20 16"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <motion.path
-                    d="M9 9L15 15M15 9L9 15"
-                    initial={{ pathLength: 0 }}
-                    animate={{
-                      pathLength: 1,
-                      transition: { duration: 0.08, ease: "easeOut" },
-                    }}
-                  />
-                </svg>
-              </span>
-              <span className="select-none inline-grid text-left">
-                <span className="col-start-1 row-start-1 invisible" aria-hidden="true">Copied</span>
-                <span className="col-start-1 row-start-1">Failed</span>
-              </span>
-            </motion.span>
-          ) : status === "copied" ? (
-            <motion.span
-              key={`check-label-${copyCount}`}
-              className="flex items-center gap-1.5"
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={spring.fast}
-            >
-              <span className="flex items-center justify-center">
-                <svg
-                  width={14}
-                  height={14}
-                  viewBox="2 4 20 16"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <motion.path
-                    d="M6 12L10 16L18 8"
-                    initial={{ pathLength: 0 }}
-                    animate={{
-                      pathLength: 1,
-                      transition: { duration: 0.08, ease: "easeOut" },
-                    }}
-                  />
-                </svg>
-              </span>
-              <span className="select-none inline-grid text-left">
-                <span className="col-start-1 row-start-1 invisible" aria-hidden="true">Copied</span>
-                <span className="col-start-1 row-start-1">Copied</span>
-              </span>
-            </motion.span>
-          ) : (
-            <motion.span
-              key="copy-label"
-              className="flex items-center gap-1.5"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={spring.fast}
-            >
-              <span className="flex items-center justify-center">
-                <CopyIcon size={14} strokeWidth={1.5} className="transition-[stroke-width] duration-80 group-hover:stroke-[2]" />
-              </span>
-              <span className="select-none inline-grid text-left">
-                <span className="col-start-1 row-start-1 invisible" aria-hidden="true">Copied</span>
-                <span className="col-start-1 row-start-1">Copy</span>
-              </span>
-            </motion.span>
+    const actionElement =
+      variant === "button" ? (
+        <span
+          className={cn(
+            "shrink-0 flex items-center gap-1.5 px-1.5 py-2 text-[13px] transition-colors duration-80",
+            "text-muted-foreground group-hover:text-foreground",
           )}
-        </AnimatePresence>
-      </span>
-    ) : (
-      <span
-        className={cn(
-          "shrink-0 px-1.5 py-2 transition-colors duration-80",
-          "text-muted-foreground group-hover:text-foreground",
-        )}
-      >
-        {iconSwitch}
-      </span>
-    );
+          style={{ fontVariationSettings: fontWeights.normal }}
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            {status === "error" ? (
+              <motion.span
+                key={`error-label-${copyCount}`}
+                className="flex items-center gap-1.5 text-destructive"
+                initial={{ opacity: 0, scale: 0.6 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={spring.fast}
+              >
+                <span className="flex items-center justify-center">
+                  <svg
+                    width={14}
+                    height={14}
+                    viewBox="2 4 20 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <motion.path
+                      d="M9 9L15 15M15 9L9 15"
+                      initial={{ pathLength: 0 }}
+                      animate={{
+                        pathLength: 1,
+                        transition: { duration: 0.08, ease: "easeOut" },
+                      }}
+                    />
+                  </svg>
+                </span>
+                <span className="select-none inline-grid text-left">
+                  <span className="col-start-1 row-start-1 invisible" aria-hidden="true">
+                    Copied
+                  </span>
+                  <span className="col-start-1 row-start-1">Failed</span>
+                </span>
+              </motion.span>
+            ) : status === "copied" ? (
+              <motion.span
+                key={`check-label-${copyCount}`}
+                className="flex items-center gap-1.5"
+                initial={{ opacity: 0, scale: 0.6 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={spring.fast}
+              >
+                <span className="flex items-center justify-center">
+                  <svg
+                    width={14}
+                    height={14}
+                    viewBox="2 4 20 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <motion.path
+                      d="M6 12L10 16L18 8"
+                      initial={{ pathLength: 0 }}
+                      animate={{
+                        pathLength: 1,
+                        transition: { duration: 0.08, ease: "easeOut" },
+                      }}
+                    />
+                  </svg>
+                </span>
+                <span className="select-none inline-grid text-left">
+                  <span className="col-start-1 row-start-1 invisible" aria-hidden="true">
+                    Copied
+                  </span>
+                  <span className="col-start-1 row-start-1">Copied</span>
+                </span>
+              </motion.span>
+            ) : (
+              <motion.span
+                key="copy-label"
+                className="flex items-center gap-1.5"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={spring.fast}
+              >
+                <span className="flex items-center justify-center">
+                  <CopyIcon
+                    size={14}
+                    strokeWidth={1.5}
+                    className="transition-[stroke-width] duration-80 group-hover:stroke-[2]"
+                  />
+                </span>
+                <span className="select-none inline-grid text-left">
+                  <span className="col-start-1 row-start-1 invisible" aria-hidden="true">
+                    Copied
+                  </span>
+                  <span className="col-start-1 row-start-1">Copy</span>
+                </span>
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </span>
+      ) : (
+        <span
+          className={cn(
+            "shrink-0 px-1.5 py-2 transition-colors duration-80",
+            "text-muted-foreground group-hover:text-foreground",
+          )}
+        >
+          {iconSwitch}
+        </span>
+      );
 
     const valueElement = (
       <span
         className={cn(
           "flex-1 min-w-0 text-left text-[13px] text-foreground font-mono py-2 select-none truncate",
-          align === "left" ? "pl-1" : "pl-0"
+          align === "left" ? "pl-1" : "pl-0",
         )}
         style={{ fontVariationSettings: fontWeights.normal }}
       >
@@ -306,11 +332,18 @@ const InputCopy = forwardRef<HTMLDivElement, InputCopyProps>(
       </span>
     );
 
-    const buttonContent = align === "left" ? (
-      <>{actionElement}{valueElement}</>
-    ) : (
-      <>{valueElement}{actionElement}</>
-    );
+    const buttonContent =
+      align === "left" ? (
+        <>
+          {actionElement}
+          {valueElement}
+        </>
+      ) : (
+        <>
+          {valueElement}
+          {actionElement}
+        </>
+      );
 
     const button = (
       <button
@@ -332,7 +365,7 @@ const InputCopy = forwardRef<HTMLDivElement, InputCopyProps>(
         className={cn(
           "group flex items-center w-full cursor-pointer outline-none transition-all duration-80",
           "focus-visible:ring-1 focus-visible:ring-[#6B97FF]",
-          shape.input
+          shape.input,
         )}
       >
         {buttonContent}
@@ -345,7 +378,7 @@ const InputCopy = forwardRef<HTMLDivElement, InputCopyProps>(
         className={cn(
           "flex flex-col gap-0.5",
           disabled && "opacity-50 pointer-events-none",
-          className
+          className,
         )}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -361,7 +394,21 @@ const InputCopy = forwardRef<HTMLDivElement, InputCopyProps>(
           </span>
         )}
         {variant === "icon" ? (
-          <Tooltip content={tooltipState === "idle" ? "Copy to clipboard" : status === "error" ? "Copy failed" : "Copied"} delayDuration={500} sideOffset={2} forceOpen={tooltipState === "copied" ? true : tooltipState === "suppressed" ? false : undefined} onOpenChange={handleTooltipOpenChange}>
+          <Tooltip
+            content={
+              tooltipState === "idle"
+                ? "Copy to clipboard"
+                : status === "error"
+                  ? "Copy failed"
+                  : "Copied"
+            }
+            delayDuration={500}
+            sideOffset={2}
+            forceOpen={
+              tooltipState === "copied" ? true : tooltipState === "suppressed" ? false : undefined
+            }
+            onOpenChange={handleTooltipOpenChange}
+          >
             {button}
           </Tooltip>
         ) : (
@@ -369,7 +416,7 @@ const InputCopy = forwardRef<HTMLDivElement, InputCopyProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 InputCopy.displayName = "InputCopy";

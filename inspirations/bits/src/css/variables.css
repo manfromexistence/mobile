@@ -1,19 +1,19 @@
 :root {
   /* Background colors */
-  --bg-body: #120F17;
-  --bg-card: #1B1722;
-  --bg-elevated: #1B1722;
+  --bg-body: #120f17;
+  --bg-card: #1b1722;
+  --bg-elevated: #1b1722;
   --bg-hover: #373044;
 
   /* Border colors */
-  --border-primary: #2F293A;
-  --border-secondary: #2F293A;
-  --border-subtle: #2F293A;
+  --border-primary: #2f293a;
+  --border-secondary: #2f293a;
+  --border-subtle: #2f293a;
 
   /* Brand colors */
-  --color-primary: #A855F7;
-  --color-accent: #B497CF;
-  --color-accent-muted: #B497CF;
+  --color-primary: #a855f7;
+  --color-accent: #b497cf;
+  --color-accent-muted: #b497cf;
 
   /* Text colors */
   --text-primary: #fff;
@@ -39,7 +39,15 @@
   --transition-slow: 0.3s ease;
 
   /* Shared gradient for section titles */
-  --gradient-title: linear-gradient(135deg, #fff 0%, #8660fa 20%, #a855f7 40%, #8400ff 60%, #a855f7 80%, #fff 100%);
+  --gradient-title: linear-gradient(
+    135deg,
+    #fff 0%,
+    #8660fa 20%,
+    #a855f7 40%,
+    #8400ff 60%,
+    #a855f7 80%,
+    #fff 100%
+  );
 }
 
 /* Shared keyframes — used by section titles across multiple components */

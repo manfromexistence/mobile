@@ -28,31 +28,31 @@ test("playground compare: tab is not lazy-loaded behind a click-time chunk", () 
   const src = read("src/app/(dashboard)/dashboard/playground/PlaygroundStudio.tsx");
   assert.ok(
     src.includes('import CompareTab from "./components/tabs/CompareTab"'),
-    "CompareTab is statically imported"
+    "CompareTab is statically imported",
   );
   assert.ok(
     !src.includes('dynamic(() => import("./components/tabs/CompareTab")'),
-    "CompareTab is not loaded with next/dynamic"
+    "CompareTab is not loaded with next/dynamic",
   );
 });
 
 test("playground build: wizard with 3 modes reusing editors; BuildTab keeps handlers", () => {
   const wiz = read(
-    "src/app/(dashboard)/dashboard/playground/components/tabs/build/BuildWizard.tsx"
+    "src/app/(dashboard)/dashboard/playground/components/tabs/build/BuildWizard.tsx",
   );
   assert.ok(
     wiz.includes('"tools"') && wiz.includes('"json"') && wiz.includes('"both"'),
-    "three modes"
+    "three modes",
   );
   assert.ok(
     wiz.includes("ToolsBuilder") && wiz.includes("StructuredOutputEditor"),
-    "reuses both editors"
+    "reuses both editors",
   );
   const tab = read("src/app/(dashboard)/dashboard/playground/components/tabs/BuildTab.tsx");
   assert.ok(tab.includes("<BuildWizard"), "BuildTab mounts BuildWizard");
   assert.ok(
     tab.includes("runRequest") && tab.includes("sendToolResult"),
-    "BuildTab preserves run/tool handlers"
+    "BuildTab preserves run/tool handlers",
   );
 });
 

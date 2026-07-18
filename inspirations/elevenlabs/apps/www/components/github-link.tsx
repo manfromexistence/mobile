@@ -1,10 +1,10 @@
-import { Suspense } from "react"
-import Link from "next/link"
+import { Suspense } from "react";
+import Link from "next/link";
 
-import { siteConfig } from "@/lib/config"
-import { Icons } from "@/components/icons"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
-import { Skeleton } from "@/registry/elevenlabs-ui/ui/skeleton"
+import { siteConfig } from "@/lib/config";
+import { Icons } from "@/components/icons";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
+import { Skeleton } from "@/registry/elevenlabs-ui/ui/skeleton";
 
 export function GitHubLink() {
   return (
@@ -16,14 +16,14 @@ export function GitHubLink() {
         </Suspense>
       </Link>
     </Button>
-  )
+  );
 }
 
 export async function StarsCount() {
   const data = await fetch("https://api.github.com/repos/elevenlabs/ui", {
     next: { revalidate: 86400 }, // Cache for 1 day (86400 seconds)
-  })
-  const json = await data.json()
+  });
+  const json = await data.json();
 
   return (
     <span className="text-muted-foreground w-8 text-xs tabular-nums">
@@ -31,5 +31,5 @@ export async function StarsCount() {
         ? `${(json.stargazers_count / 1000).toFixed(1)}k`
         : json.stargazers_count.toLocaleString()}
     </span>
-  )
+  );
 }

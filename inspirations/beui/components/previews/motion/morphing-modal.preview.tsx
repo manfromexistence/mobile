@@ -18,7 +18,9 @@ export function MorphingModalPreview() {
       >
         Open wallet options
       </button>
-      <p className="text-xs text-muted-foreground">Click a row. The modal morphs height to match new content.</p>
+      <p className="text-xs text-muted-foreground">
+        Click a row. The modal morphs height to match new content.
+      </p>
 
       <MorphingModal viewId={view} onClose={() => setView(null)}>
         {view === "options" ? (
@@ -117,13 +119,20 @@ function PrivateKey({ onBack }: { onBack: () => void }) {
       </div>
       <h2 className="text-xl font-semibold tracking-tight text-foreground">Private Key</h2>
       <p className="mt-2 text-sm text-muted-foreground">
-        Your Private Key is the key used to back up your wallet. Keep it secret and secure at all times.
+        Your Private Key is the key used to back up your wallet. Keep it secret and secure at all
+        times.
       </p>
       <hr className="my-4 border-border" />
       <ul className="flex flex-col gap-2.5 text-sm text-muted-foreground">
-        <li className="flex items-center gap-2.5"><ShieldCheck className="h-4 w-4" /> Keep your private key safe</li>
-        <li className="flex items-center gap-2.5"><ScrollText className="h-4 w-4" /> Don&apos;t share it with anyone else</li>
-        <li className="flex items-center gap-2.5"><Ban className="h-4 w-4" /> If you lose it, we can&apos;t recover it</li>
+        <li className="flex items-center gap-2.5">
+          <ShieldCheck className="h-4 w-4" /> Keep your private key safe
+        </li>
+        <li className="flex items-center gap-2.5">
+          <ScrollText className="h-4 w-4" /> Don&apos;t share it with anyone else
+        </li>
+        <li className="flex items-center gap-2.5">
+          <Ban className="h-4 w-4" /> If you lose it, we can&apos;t recover it
+        </li>
       </ul>
       <div className="mt-5 flex gap-2">
         <button
@@ -165,8 +174,24 @@ function Recovery({ onBack }: { onBack: () => void }) {
         12 words you can use to restore your wallet on any device. Write them down somewhere safe.
       </p>
       <div className="mt-4 grid grid-cols-3 gap-2">
-        {["mountain", "river", "candle", "harbor", "amber", "violet", "spring", "ocean", "marble", "thunder", "willow", "crystal"].map((w, i) => (
-          <div key={w} className="rounded-lg border border-border bg-background/40 px-2 py-1.5 text-xs text-foreground">
+        {[
+          "mountain",
+          "river",
+          "candle",
+          "harbor",
+          "amber",
+          "violet",
+          "spring",
+          "ocean",
+          "marble",
+          "thunder",
+          "willow",
+          "crystal",
+        ].map((w, i) => (
+          <div
+            key={w}
+            className="rounded-lg border border-border bg-background/40 px-2 py-1.5 text-xs text-foreground"
+          >
             <span className="mr-1 text-muted-foreground">{i + 1}.</span>
             {w}
           </div>

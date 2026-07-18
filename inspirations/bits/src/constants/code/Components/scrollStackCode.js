@@ -1,8 +1,8 @@
-import code from '@content/Components/ScrollStack/ScrollStack.jsx?raw';
-import css from '@content/Components/ScrollStack/ScrollStack.css?raw';
-import tailwind from '@tailwind/Components/ScrollStack/ScrollStack.jsx?raw';
-import tsCode from '@ts-default/Components/ScrollStack/ScrollStack.tsx?raw';
-import tsTailwind from '@ts-tailwind/Components/ScrollStack/ScrollStack.tsx?raw';
+import code from "@content/Components/ScrollStack/ScrollStack.jsx?raw";
+import css from "@content/Components/ScrollStack/ScrollStack.css?raw";
+import tailwind from "@tailwind/Components/ScrollStack/ScrollStack.jsx?raw";
+import tsCode from "@ts-default/Components/ScrollStack/ScrollStack.tsx?raw";
+import tsTailwind from "@ts-tailwind/Components/ScrollStack/ScrollStack.tsx?raw";
 
 export const scrollStack = {
   dependencies: `lenis`,
@@ -26,5 +26,5 @@ export const scrollStack = {
   css,
   tailwind,
   tsCode,
-  tsTailwind
+  tsTailwind,
 };

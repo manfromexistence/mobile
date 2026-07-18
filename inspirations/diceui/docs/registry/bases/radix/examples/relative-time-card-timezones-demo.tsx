@@ -17,12 +17,7 @@ export default function RelativeTimeCardTimezonesDemo() {
       />
       <RelativeTimeCard
         date={now}
-        timezones={[
-          "America/Chicago",
-          "Europe/Paris",
-          "Asia/Dubai",
-          "Australia/Sydney",
-        ]}
+        timezones={["America/Chicago", "Europe/Paris", "Asia/Dubai", "Australia/Sydney"]}
       />
       <RelativeTimeCard date={now} timezones={["UTC"]} />
     </div>

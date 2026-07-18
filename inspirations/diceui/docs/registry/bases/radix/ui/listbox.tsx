@@ -14,8 +14,7 @@ const Listbox = (({
       orientation={orientation}
       className={cn(
         "flex gap-2 focus-visible:outline-none",
-        orientation === "vertical" &&
-          "flex-col *:data-[slot=listbox-group]:flex-col",
+        orientation === "vertical" && "flex-col *:data-[slot=listbox-group]:flex-col",
         className,
       )}
       {...props}
@@ -43,19 +42,13 @@ function ListboxGroupLabel({
   return (
     <ListboxPrimitive.GroupLabel
       data-slot="listbox-group-label"
-      className={cn(
-        "px-2 pt-1 font-medium text-muted-foreground text-sm",
-        className,
-      )}
+      className={cn("px-2 pt-1 font-medium text-muted-foreground text-sm", className)}
       {...props}
     />
   );
 }
 
-function ListboxItem({
-  className,
-  ...props
-}: React.ComponentProps<typeof ListboxPrimitive.Item>) {
+function ListboxItem({ className, ...props }: React.ComponentProps<typeof ListboxPrimitive.Item>) {
   return (
     <ListboxPrimitive.Item
       data-slot="listbox-item"
@@ -72,19 +65,10 @@ function ListboxItemIndicator({
   ...props
 }: React.ComponentProps<typeof ListboxPrimitive.ItemIndicator>) {
   return (
-    <ListboxPrimitive.ItemIndicator
-      data-slot="listbox-item-indicator"
-      {...props}
-    >
+    <ListboxPrimitive.ItemIndicator data-slot="listbox-item-indicator" {...props}>
       <Check className="size-4" />
     </ListboxPrimitive.ItemIndicator>
   );
 }
 
-export {
-  Listbox,
-  ListboxGroup,
-  ListboxGroupLabel,
-  ListboxItem,
-  ListboxItemIndicator,
-};
+export { Listbox, ListboxGroup, ListboxGroupLabel, ListboxItem, ListboxItemIndicator };

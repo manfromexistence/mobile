@@ -10,11 +10,8 @@ export function KeyboardShortcuts() {
     function onKeyDown(e: KeyboardEvent) {
       if (!e.shiftKey || e.key !== "D" || e.metaKey || e.ctrlKey || e.altKey) return;
       const target = e.target as HTMLElement;
-      if (
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable
-      ) return;
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)
+        return;
       toggle();
     }
     document.addEventListener("keydown", onKeyDown);

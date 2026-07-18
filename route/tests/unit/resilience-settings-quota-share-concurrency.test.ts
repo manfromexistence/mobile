@@ -24,7 +24,7 @@ test("resolveResilienceSettings returns the default block when nothing is stored
   const resolved = resolveResilienceSettings({});
   assert.deepEqual(
     resolved.quotaShareConcurrencyLimit,
-    DEFAULT_RESILIENCE_SETTINGS.quotaShareConcurrencyLimit
+    DEFAULT_RESILIENCE_SETTINGS.quotaShareConcurrencyLimit,
   );
 });
 

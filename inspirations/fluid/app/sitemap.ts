@@ -24,9 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const appDir = join(process.cwd(), "app");
   const lastModified = new Date();
 
-  const routes = ["/", ...collectRoutes(appDir)].filter(
-    (route) => !EXCLUDE.has(route),
-  );
+  const routes = ["/", ...collectRoutes(appDir)].filter((route) => !EXCLUDE.has(route));
 
   return routes.map((route) => ({
     url: `${SITE_URL}${route}`,

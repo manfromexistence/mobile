@@ -48,9 +48,7 @@ export interface KanbanProps<T> extends DndContextProps {
    *
    * Overrides default reordering behavior.
    */
-  onMove?: (
-    event: DragEndEvent & { activeIndex: number; overIndex: number },
-  ) => void;
+  onMove?: (event: DragEndEvent & { activeIndex: number; overIndex: number }) => void;
 
   /**
    * The array of modifiers that will be used to modify the behavior of the kanban component.
@@ -179,9 +177,7 @@ export interface KanbanColumnProps extends EmptyProps<"div">, CompositionProps {
   asHandle?: boolean;
 }
 
-export interface KanbanColumnHandleProps
-  extends EmptyProps<"button">,
-    CompositionProps {}
+export interface KanbanColumnHandleProps extends EmptyProps<"button">, CompositionProps {}
 
 export interface KanbanItemProps extends EmptyProps<"div">, CompositionProps {
   /**
@@ -206,15 +202,10 @@ export interface KanbanItemProps extends EmptyProps<"div">, CompositionProps {
   asHandle?: boolean;
 }
 
-export interface KanbanItemHandleProps
-  extends EmptyProps<"button">,
-    CompositionProps {}
+export interface KanbanItemHandleProps extends EmptyProps<"button">, CompositionProps {}
 
 export interface KanbanOverlayProps
-  extends Omit<
-    React.ComponentProps<typeof DragOverlay>,
-    keyof React.ComponentProps<"div">
-  > {
+  extends Omit<React.ComponentProps<typeof DragOverlay>, keyof React.ComponentProps<"div">> {
   /**
    * The container to render the overlay in.
    *

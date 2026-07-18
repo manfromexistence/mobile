@@ -23,14 +23,9 @@ function getServerSnapshot() {
 function Portal(props: PortalProps) {
   const { container: containerProp, render, ...portalProps } = props;
 
-  const mounted = React.useSyncExternalStore(
-    subscribe,
-    getSnapshot,
-    getServerSnapshot,
-  );
+  const mounted = React.useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  const container =
-    containerProp ?? (mounted ? globalThis.document?.body : null);
+  const container = containerProp ?? (mounted ? globalThis.document?.body : null);
 
   const element = useRender({
     props: portalProps,

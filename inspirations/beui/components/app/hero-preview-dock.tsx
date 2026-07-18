@@ -17,7 +17,6 @@ export function HeroPreviewDock() {
       transition={{ duration: 0.6, ease: EASE_OUT, delay: 0.15 }}
       className="relative"
     >
-
       <div className="overflow-hidden rounded-3xl glass-strong">
         <div className="flex items-center gap-2 border-b border-border px-4 py-2.5">
           <div className="flex items-center gap-1.5">
@@ -132,10 +131,16 @@ function MainPanel() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button type="button" className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border bg-card text-muted-foreground press hover:text-foreground">
+          <button
+            type="button"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border bg-card text-muted-foreground press hover:text-foreground"
+          >
             <Bell className="h-3.5 w-3.5" />
           </button>
-          <button type="button" className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-card px-2.5 text-xs text-foreground press">
+          <button
+            type="button"
+            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-card px-2.5 text-xs text-foreground press"
+          >
             <Search className="h-3.5 w-3.5 text-muted-foreground" />
             Search
           </button>
@@ -238,7 +243,12 @@ function Spark() {
         <p className="text-xs text-muted-foreground">Last 14 days</p>
         <p className="text-xs font-medium text-foreground">+24%</p>
       </div>
-      <svg viewBox={`0 0 ${w} ${h}`} className="mt-3 h-16 w-full" preserveAspectRatio="none" aria-hidden="true">
+      <svg
+        viewBox={`0 0 ${w} ${h}`}
+        className="mt-3 h-16 w-full"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
         <defs>
           <linearGradient id="spark" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor="var(--foreground)" stopOpacity="0.25" />
@@ -246,7 +256,13 @@ function Spark() {
           </linearGradient>
         </defs>
         <path d={area} fill="url(#spark)" />
-        <path d={path} fill="none" stroke="var(--foreground)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+        <path
+          d={path}
+          fill="none"
+          stroke="var(--foreground)"
+          strokeWidth="1.5"
+          vectorEffect="non-scaling-stroke"
+        />
       </svg>
     </div>
   );

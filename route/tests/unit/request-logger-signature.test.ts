@@ -30,7 +30,7 @@ test("shouldTriggerInfiniteScroll: does NOT fire on mount before the user scroll
       loading: false,
       hasScrolled: false,
     }),
-    false
+    false,
   );
 });
 
@@ -42,7 +42,7 @@ test("shouldTriggerInfiniteScroll: fires once the user has actually scrolled", (
       loading: false,
       hasScrolled: true,
     }),
-    true
+    true,
   );
 });
 
@@ -86,10 +86,7 @@ test("computeLogsSignature: non-array input collapses to empty", () => {
 });
 
 test("computeLogsSignature: missing tokens defaults out to 0", () => {
-  assert.equal(
-    computeLogsSignature([{ id: "a", status: 200, duration: 5 }]),
-    "a:200:5:0"
-  );
+  assert.equal(computeLogsSignature([{ id: "a", status: 200, duration: 5 }]), "a:200:5:0");
 });
 
 test("resolveInitialVisibility: visible by default when document is absent (SSR)", () => {

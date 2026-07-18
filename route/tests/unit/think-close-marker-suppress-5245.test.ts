@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { claudeToOpenAIResponse } =
-  await import("../../open-sse/translator/response/claude-to-openai.ts");
+const { claudeToOpenAIResponse } = await import(
+  "../../open-sse/translator/response/claude-to-openai.ts"
+);
 const {
   shouldSuppressThinkCloseMarker,
   thinkingMarkerHeaderSignal,
@@ -31,8 +32,8 @@ function runThinkThenText(state: Record<string, unknown>) {
   push(
     claudeToOpenAIResponse(
       { type: "content_block_start", index: 0, content_block: { type: "thinking" } },
-      state
-    )
+      state,
+    ),
   );
   push(
     claudeToOpenAIResponse(
@@ -41,21 +42,21 @@ function runThinkThenText(state: Record<string, unknown>) {
         index: 0,
         delta: { type: "thinking_delta", thinking: "plan" },
       },
-      state
-    )
+      state,
+    ),
   );
   push(claudeToOpenAIResponse({ type: "content_block_stop", index: 0 }, state));
   push(
     claudeToOpenAIResponse(
       { type: "content_block_start", index: 1, content_block: { type: "text" } },
-      state
-    )
+      state,
+    ),
   );
   push(
     claudeToOpenAIResponse(
       { type: "content_block_delta", index: 1, delta: { type: "text_delta", text: "169" } },
-      state
-    )
+      state,
+    ),
   );
   return out;
 }
@@ -73,8 +74,8 @@ function runThinkOnlyThenFinish(state: Record<string, unknown>) {
   push(
     claudeToOpenAIResponse(
       { type: "content_block_start", index: 0, content_block: { type: "thinking" } },
-      state
-    )
+      state,
+    ),
   );
   push(
     claudeToOpenAIResponse(
@@ -83,15 +84,15 @@ function runThinkOnlyThenFinish(state: Record<string, unknown>) {
         index: 0,
         delta: { type: "thinking_delta", thinking: "plan" },
       },
-      state
-    )
+      state,
+    ),
   );
   push(claudeToOpenAIResponse({ type: "content_block_stop", index: 0 }, state));
   push(
     claudeToOpenAIResponse(
       { type: "message_delta", delta: { stop_reason: "end_turn" }, usage: { output_tokens: 5 } },
-      state
-    )
+      state,
+    ),
   );
   return out;
 }
@@ -100,7 +101,7 @@ function contentChunks(chunks: unknown[]): string[] {
   return chunks
     .map(
       (c) =>
-        (c as { choices?: Array<{ delta?: { content?: unknown } }> })?.choices?.[0]?.delta?.content
+        (c as { choices?: Array<{ delta?: { content?: unknown } }> })?.choices?.[0]?.delta?.content,
     )
     .filter((v): v is string => typeof v === "string");
 }
@@ -171,12 +172,12 @@ test("resolveSuppressThinkClose: header opts in (Cursor) and overrides the UA al
   // …but `off` opts in to suppression regardless of UA.
   assert.equal(
     resolveSuppressThinkClose({ userAgent: "cursor-agent/0.5", thinkingMarkerHeader: "off" }),
-    true
+    true,
   );
   // `on` force-keeps even for an allowlisted (OpenCode) UA.
   assert.equal(
     resolveSuppressThinkClose({ userAgent: "opencode/1.0", thinkingMarkerHeader: "on" }),
-    false
+    false,
   );
   // No header → defers to UA policy (OpenCode suppressed, unknown kept).
   assert.equal(resolveSuppressThinkClose({ userAgent: "opencode/1.0" }), true);

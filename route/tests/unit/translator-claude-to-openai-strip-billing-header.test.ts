@@ -28,7 +28,7 @@ test("Claude -> OpenAI strips x-anthropic-billing-header from array system entri
       ],
       messages: [{ role: "user", content: [{ type: "text", text: "hi" }] }],
     },
-    true
+    true,
   ) as { messages: Array<{ role: string; content: string }> };
 
   const sys = result.messages.find((m) => m.role === "system");
@@ -36,18 +36,10 @@ test("Claude -> OpenAI strips x-anthropic-billing-header from array system entri
   assert.equal(
     sys!.content.includes("x-anthropic-billing-header"),
     false,
-    "billing header line must be stripped"
+    "billing header line must be stripped",
   );
-  assert.equal(
-    sys!.content.includes("Real system rule A"),
-    true,
-    "real rule must survive"
-  );
-  assert.equal(
-    sys!.content.includes("Real system rule B"),
-    true,
-    "second block must survive"
-  );
+  assert.equal(sys!.content.includes("Real system rule A"), true, "real rule must survive");
+  assert.equal(sys!.content.includes("Real system rule B"), true, "second block must survive");
 });
 
 test("Claude -> OpenAI strips x-anthropic-billing-header from a string system field", () => {
@@ -57,7 +49,7 @@ test("Claude -> OpenAI strips x-anthropic-billing-header from a string system fi
       system: "x-anthropic-billing-header: zzz\nFollow these rules.",
       messages: [{ role: "user", content: [{ type: "text", text: "hi" }] }],
     },
-    true
+    true,
   ) as { messages: Array<{ role: string; content: string }> };
 
   const sys = result.messages.find((m) => m.role === "system");
@@ -72,7 +64,7 @@ test("Claude -> OpenAI leaves unrelated system content intact (no false positive
       system: "Normal system prompt with no billing header.",
       messages: [{ role: "user", content: [{ type: "text", text: "hi" }] }],
     },
-    true
+    true,
   ) as { messages: Array<{ role: string; content: string }> };
 
   const sys = result.messages.find((m) => m.role === "system");

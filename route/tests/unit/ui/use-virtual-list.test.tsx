@@ -11,7 +11,7 @@ function computeVirtualItems(
   items: string[],
   heights: Map<number, number>,
   scrollTop: number,
-  containerHeight: number
+  containerHeight: number,
 ) {
   // Compute cumulative offsets
   const offsets: number[] = [];
@@ -61,7 +61,7 @@ describe("useVirtualList logic", () => {
       items,
       heights,
       scrollTop,
-      containerHeight
+      containerHeight,
     );
 
     // Total height is all items at estimated height
@@ -71,9 +71,12 @@ describe("useVirtualList logic", () => {
     const expectedVisible = Math.ceil(containerHeight / ESTIMATED_ROW_HEIGHT) + OVERSCAN;
     assert.ok(
       virtualItems.length <= expectedVisible + OVERSCAN + 2,
-      `Expected ~${expectedVisible} visible items, got ${virtualItems.length}`
+      `Expected ~${expectedVisible} visible items, got ${virtualItems.length}`,
     );
-    assert.ok(virtualItems.length < 100, `Should not render all 1000 items, got ${virtualItems.length}`);
+    assert.ok(
+      virtualItems.length < 100,
+      `Should not render all 1000 items, got ${virtualItems.length}`,
+    );
   });
 
   it("renders items starting from correct offset when scrolled", () => {
@@ -89,14 +92,21 @@ describe("useVirtualList logic", () => {
     const expectedFirstVisible = Math.floor(scrollTop / ESTIMATED_ROW_HEIGHT) - OVERSCAN;
     assert.ok(
       firstIndex >= Math.max(0, expectedFirstVisible),
-      `Expected first index >= ${Math.max(0, expectedFirstVisible)}, got ${firstIndex}`
+      `Expected first index >= ${Math.max(0, expectedFirstVisible)}, got ${firstIndex}`,
     );
-    assert.ok(firstIndex < 30, `Expected first index < 30 (scrolled to row ~20), got ${firstIndex}`);
+    assert.ok(
+      firstIndex < 30,
+      `Expected first index < 30 (scrolled to row ~20), got ${firstIndex}`,
+    );
   });
 
   it("uses custom heights when provided", () => {
     const items = Array.from({ length: 10 }, (_, i) => `req-${i}`);
-    const heights = new Map<number, number>([[0, 100], [1, 100], [2, 100]]);
+    const heights = new Map<number, number>([
+      [0, 100],
+      [1, 100],
+      [2, 100],
+    ]);
     const scrollTop = 0;
     const containerHeight = 150;
 
@@ -104,7 +114,7 @@ describe("useVirtualList logic", () => {
       items,
       heights,
       scrollTop,
-      containerHeight
+      containerHeight,
     );
 
     // First 3 rows have height 100 each, rest default 48

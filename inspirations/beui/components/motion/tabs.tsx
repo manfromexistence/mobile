@@ -114,13 +114,10 @@ export function TabsTrigger({
       >
         {children}
         {active ? (
-        <motion.span
-          layoutId={layoutId}
-          className={cn(
-            "absolute -bottom-px left-0 right-0 h-px bg-primary",
-            indicatorClassName,
-          )}
-        />
+          <motion.span
+            layoutId={layoutId}
+            className={cn("absolute -bottom-px left-0 right-0 h-px bg-primary", indicatorClassName)}
+          />
         ) : null}
       </button>
     );
@@ -136,11 +133,7 @@ export function TabsTrigger({
         <motion.span
           layoutId={layoutId}
           style={{ borderRadius: variant === "pill" ? 9999 : 8 }}
-          className={cn(
-            "absolute inset-0 bg-primary",
-            radius,
-            indicatorClassName,
-          )}
+          className={cn("absolute inset-0 bg-primary", radius, indicatorClassName)}
         />
       ) : null}
       <button
@@ -161,7 +154,11 @@ export function TabsTrigger({
   );
 }
 
-export function TabsContent({ value, children, className }: { value: string; children: ReactNode; className?: string }) {
+export function TabsContent({
+  value,
+  children,
+  className,
+}: { value: string; children: ReactNode; className?: string }) {
   const { value: current } = useTabs();
   const reduce = useReducedMotion();
   const active = current === value;

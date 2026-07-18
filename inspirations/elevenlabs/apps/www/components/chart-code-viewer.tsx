@@ -1,12 +1,12 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { ChartCopyButton } from "@/components/chart-copy-button"
-import { Chart } from "@/components/chart-display"
-import { getIconForLanguageExtension } from "@/components/icons"
-import { OpenInV0Button } from "@/components/open-in-v0-button"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
+import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { ChartCopyButton } from "@/components/chart-copy-button";
+import { Chart } from "@/components/chart-display";
+import { getIconForLanguageExtension } from "@/components/icons";
+import { OpenInV0Button } from "@/components/open-in-v0-button";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
 import {
   Drawer,
   DrawerContent,
@@ -14,7 +14,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/registry/elevenlabs-ui/ui/drawer"
+} from "@/registry/elevenlabs-ui/ui/drawer";
 import {
   Sheet,
   SheetContent,
@@ -22,16 +22,16 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/registry/elevenlabs-ui/ui/sheet"
+} from "@/registry/elevenlabs-ui/ui/sheet";
 
 export function ChartCodeViewer({
   chart,
   className,
   children,
 }: {
-  chart: Chart
+  chart: Chart;
 } & React.ComponentProps<"div">) {
-  const isDesktop = useMediaQuery("(min-width: 768px)")
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const button = (
     <Button
@@ -41,7 +41,7 @@ export function ChartCodeViewer({
     >
       View Code
     </Button>
-  )
+  );
 
   const content = (
     <div className="flex min-h-0 flex-1 flex-col gap-0">
@@ -77,7 +77,7 @@ export function ChartCodeViewer({
         </figure>
       </div>
     </div>
-  )
+  );
 
   if (!isDesktop) {
     return (
@@ -86,7 +86,7 @@ export function ChartCodeViewer({
         <DrawerContent
           className={cn(
             "flex max-h-[80vh] flex-col sm:max-h-[90vh] [&>div.bg-muted]:shrink-0",
-            className
+            className,
           )}
         >
           <DrawerHeader className="sr-only">
@@ -96,7 +96,7 @@ export function ChartCodeViewer({
           <div className="flex h-full flex-col overflow-auto">{content}</div>
         </DrawerContent>
       </Drawer>
-    )
+    );
   }
 
   return (
@@ -106,7 +106,7 @@ export function ChartCodeViewer({
         side="right"
         className={cn(
           "flex flex-col gap-0 border-l-0 p-0 sm:max-w-sm md:w-[700px] md:max-w-[700px] dark:border-l",
-          className
+          className,
         )}
       >
         <SheetHeader className="sr-only">
@@ -116,5 +116,5 @@ export function ChartCodeViewer({
         {content}
       </SheetContent>
     </Sheet>
-  )
+  );
 }

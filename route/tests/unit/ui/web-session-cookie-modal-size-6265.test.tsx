@@ -18,8 +18,9 @@ vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => key,
 }));
 
-const { default: AddApiKeyModal } =
-  await import("../../../src/app/(dashboard)/dashboard/providers/[id]/components/modals/AddApiKeyModal");
+const { default: AddApiKeyModal } = await import(
+  "../../../src/app/(dashboard)/dashboard/providers/[id]/components/modals/AddApiKeyModal"
+);
 
 const containers: Array<{ root: ReturnType<typeof createRoot>; el: HTMLDivElement }> = [];
 
@@ -34,7 +35,7 @@ function render(props: Record<string, unknown>) {
         onSave={async () => undefined}
         onClose={() => {}}
         {...(props as any)}
-      />
+      />,
     );
   });
   containers.push({ root, el });
@@ -74,7 +75,7 @@ describe("AddApiKeyModal — cookie modal sizing (#6265)", () => {
     // (this modal renders the full guide + form Save/Cancel inline in the body).
     expect(el.textContent).toContain("How to get the session credential");
     const saveBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "save"
+      (b) => b.textContent?.trim() === "save",
     );
     expect(saveBtn).toBeTruthy();
   });

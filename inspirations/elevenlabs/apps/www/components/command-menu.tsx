@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
-import { type DialogProps } from "@radix-ui/react-dialog"
-import { IconArrowRight } from "@tabler/icons-react"
-import { CornerDownLeftIcon, SquareDashedIcon } from "lucide-react"
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import { type DialogProps } from "@radix-ui/react-dialog";
+import { IconArrowRight } from "@tabler/icons-react";
+import { CornerDownLeftIcon, SquareDashedIcon } from "lucide-react";
 
-import { source } from "@/lib/source"
-import { cn } from "@/lib/utils"
-import { useConfig } from "@/hooks/use-config"
-import { useIsMac } from "@/hooks/use-is-mac"
-import { useMutationObserver } from "@/hooks/use-mutation-observer"
-import { copyToClipboardWithMeta } from "@/components/copy-button"
-import { Button } from "@/registry/elevenlabs-ui/ui/button"
+import { source } from "@/lib/source";
+import { cn } from "@/lib/utils";
+import { useConfig } from "@/hooks/use-config";
+import { useIsMac } from "@/hooks/use-is-mac";
+import { useMutationObserver } from "@/hooks/use-mutation-observer";
+import { copyToClipboardWithMeta } from "@/components/copy-button";
+import { Button } from "@/registry/elevenlabs-ui/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -20,7 +20,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/registry/elevenlabs-ui/ui/command"
+} from "@/registry/elevenlabs-ui/ui/command";
 import {
   Dialog,
   DialogContent,
@@ -28,8 +28,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/registry/elevenlabs-ui/ui/dialog"
-import { Separator } from "@/registry/elevenlabs-ui/ui/separator"
+} from "@/registry/elevenlabs-ui/ui/dialog";
+import { Separator } from "@/registry/elevenlabs-ui/ui/separator";
 
 export function CommandMenu({
   tree,
@@ -37,50 +37,46 @@ export function CommandMenu({
   navItems,
   ...props
 }: DialogProps & {
-  tree: typeof source.pageTree
-  blocks?: { name: string; description: string; categories: string[] }[]
-  navItems?: { href: string; label: string }[]
+  tree: typeof source.pageTree;
+  blocks?: { name: string; description: string; categories: string[] }[];
+  navItems?: { href: string; label: string }[];
 }) {
-  const router = useRouter()
-  const isMac = useIsMac()
-  const [config] = useConfig()
-  const [open, setOpen] = React.useState(false)
-  const [selectedType, setSelectedType] = React.useState<
-    "page" | "component" | "block" | null
-  >(null)
-  const [copyPayload, setCopyPayload] = React.useState("")
-  const packageManager = config.packageManager || "pnpm"
+  const router = useRouter();
+  const isMac = useIsMac();
+  const [config] = useConfig();
+  const [open, setOpen] = React.useState(false);
+  const [selectedType, setSelectedType] = React.useState<"page" | "component" | "block" | null>(
+    null,
+  );
+  const [copyPayload, setCopyPayload] = React.useState("");
+  const packageManager = config.packageManager || "pnpm";
 
   const handlePageHighlight = React.useCallback(
     (isComponent: boolean, item: { url: string; name?: React.ReactNode }) => {
       if (isComponent) {
-        const componentName = item.url.split("/").pop()
-        setSelectedType("component")
-        setCopyPayload(
-          `${packageManager} dlx @elevenlabs/cli@latest add ${componentName}`
-        )
+        const componentName = item.url.split("/").pop();
+        setSelectedType("component");
+        setCopyPayload(`${packageManager} dlx @elevenlabs/cli@latest add ${componentName}`);
       } else {
-        setSelectedType("page")
-        setCopyPayload("")
+        setSelectedType("page");
+        setCopyPayload("");
       }
     },
-    [packageManager, setSelectedType, setCopyPayload]
-  )
+    [packageManager, setSelectedType, setCopyPayload],
+  );
 
   const handleBlockHighlight = React.useCallback(
     (block: { name: string; description: string; categories: string[] }) => {
-      setSelectedType("block")
-      setCopyPayload(
-        `${packageManager} dlx @elevenlabs/cli@latest add ${block.name}`
-      )
+      setSelectedType("block");
+      setCopyPayload(`${packageManager} dlx @elevenlabs/cli@latest add ${block.name}`);
     },
-    [setSelectedType, setCopyPayload, packageManager]
-  )
+    [setSelectedType, setCopyPayload, packageManager],
+  );
 
   const runCommand = React.useCallback((command: () => unknown) => {
-    setOpen(false)
-    command()
-  }, [])
+    setOpen(false);
+    command();
+  }, []);
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -91,11 +87,11 @@ export function CommandMenu({
           e.target instanceof HTMLTextAreaElement ||
           e.target instanceof HTMLSelectElement
         ) {
-          return
+          return;
         }
 
-        e.preventDefault()
-        setOpen((open) => !open)
+        e.preventDefault();
+        setOpen((open) => !open);
       }
 
       if (e.key === "c" && (e.metaKey || e.ctrlKey)) {
@@ -104,22 +100,22 @@ export function CommandMenu({
             copyToClipboardWithMeta(copyPayload, {
               name: "copy_npm_command",
               properties: { command: copyPayload, pm: packageManager },
-            })
+            });
           }
 
           if (selectedType === "page" || selectedType === "component") {
             copyToClipboardWithMeta(copyPayload, {
               name: "copy_npm_command",
               properties: { command: copyPayload, pm: packageManager },
-            })
+            });
           }
-        })
+        });
       }
-    }
+    };
 
-    document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
-  }, [copyPayload, runCommand, selectedType, packageManager])
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, [copyPayload, runCommand, selectedType, packageManager]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -127,7 +123,7 @@ export function CommandMenu({
         <Button
           variant="secondary"
           className={cn(
-            "bg-surface text-surface-foreground/60 dark:bg-card relative h-8 w-full justify-start pl-2.5 font-normal shadow-none sm:pr-12 md:w-40 lg:w-56 xl:w-64"
+            "bg-surface text-surface-foreground/60 dark:bg-card relative h-8 w-full justify-start pl-2.5 font-normal shadow-none sm:pr-12 md:w-40 lg:w-56 xl:w-64",
           )}
           onClick={() => setOpen(true)}
           {...props}
@@ -151,11 +147,11 @@ export function CommandMenu({
         <Command
           className="**:data-[slot=command-input-wrapper]:bg-input/50 **:data-[slot=command-input-wrapper]:border-input rounded-none bg-transparent **:data-[slot=command-input]:!h-9 **:data-[slot=command-input]:py-0 **:data-[slot=command-input-wrapper]:mb-0 **:data-[slot=command-input-wrapper]:!h-9 **:data-[slot=command-input-wrapper]:rounded-md **:data-[slot=command-input-wrapper]:border"
           filter={(value, search, keywords) => {
-            const extendValue = value + " " + (keywords?.join(" ") || "")
+            const extendValue = value + " " + (keywords?.join(" ") || "");
             if (extendValue.toLowerCase().includes(search.toLowerCase())) {
-              return 1
+              return 1;
             }
-            return 0
+            return 0;
           }}
         >
           <CommandInput placeholder="Search documentation..." />
@@ -174,11 +170,11 @@ export function CommandMenu({
                     value={`Navigation ${item.label}`}
                     keywords={["nav", "navigation", item.label.toLowerCase()]}
                     onHighlight={() => {
-                      setSelectedType("page")
-                      setCopyPayload("")
+                      setSelectedType("page");
+                      setCopyPayload("");
                     }}
                     onSelect={() => {
-                      runCommand(() => router.push(item.href))
+                      runCommand(() => router.push(item.href));
                     }}
                   >
                     <IconArrowRight />
@@ -196,22 +192,16 @@ export function CommandMenu({
                 {group.type === "folder" &&
                   group.children.map((item) => {
                     if (item.type === "page") {
-                      const isComponent = item.url.includes("/components/")
+                      const isComponent = item.url.includes("/components/");
 
                       return (
                         <CommandMenuItem
                           key={item.url}
-                          value={
-                            item.name?.toString()
-                              ? `${group.name} ${item.name}`
-                              : ""
-                          }
+                          value={item.name?.toString() ? `${group.name} ${item.name}` : ""}
                           keywords={isComponent ? ["component"] : undefined}
-                          onHighlight={() =>
-                            handlePageHighlight(isComponent, item)
-                          }
+                          onHighlight={() => handlePageHighlight(isComponent, item)}
                           onSelect={() => {
-                            runCommand(() => router.push(item.url))
+                            runCommand(() => router.push(item.url));
                           }}
                         >
                           {isComponent ? (
@@ -221,37 +211,25 @@ export function CommandMenu({
                           )}
                           {item.name}
                         </CommandMenuItem>
-                      )
+                      );
                     }
-                    return null
+                    return null;
                   })}
               </CommandGroup>
             ))}
 
             {blocks?.length ? (
-              <CommandGroup
-                heading="Examples"
-                className="!p-0 [&_[cmdk-group-heading]]:!p-3"
-              >
+              <CommandGroup heading="Examples" className="!p-0 [&_[cmdk-group-heading]]:!p-3">
                 {blocks.map((block) => (
                   <CommandMenuItem
                     key={block.name}
                     value={block.name}
                     onHighlight={() => {
-                      handleBlockHighlight(block)
+                      handleBlockHighlight(block);
                     }}
-                    keywords={[
-                      "block",
-                      block.name,
-                      block.description,
-                      ...block.categories,
-                    ]}
+                    keywords={["block", block.name, block.description, ...block.categories]}
                     onSelect={() => {
-                      runCommand(() =>
-                        router.push(
-                          `/blocks/${block.categories[0]}#${block.name}`
-                        )
-                      )
+                      runCommand(() => router.push(`/blocks/${block.categories[0]}#${block.name}`));
                     }}
                   >
                     <SquareDashedIcon />
@@ -270,9 +248,7 @@ export function CommandMenu({
             <CommandMenuKbd>
               <CornerDownLeftIcon />
             </CommandMenuKbd>{" "}
-            {selectedType === "page" || selectedType === "component"
-              ? "Go to Page"
-              : null}
+            {selectedType === "page" || selectedType === "component" ? "Go to Page" : null}
           </div>
           {copyPayload && (
             <>
@@ -287,7 +263,7 @@ export function CommandMenu({
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
 function CommandMenuItem({
@@ -296,11 +272,11 @@ function CommandMenuItem({
   onHighlight,
   ...props
 }: React.ComponentProps<typeof CommandItem> & {
-  onHighlight?: () => void
-  "data-selected"?: string
-  "aria-selected"?: string
+  onHighlight?: () => void;
+  "data-selected"?: string;
+  "aria-selected"?: string;
 }) {
-  const ref = React.useRef<HTMLDivElement>(null)
+  const ref = React.useRef<HTMLDivElement>(null);
 
   useMutationObserver(ref, (mutations) => {
     mutations.forEach((mutation) => {
@@ -309,23 +285,23 @@ function CommandMenuItem({
         mutation.attributeName === "aria-selected" &&
         ref.current?.getAttribute("aria-selected") === "true"
       ) {
-        onHighlight?.()
+        onHighlight?.();
       }
-    })
-  })
+    });
+  });
 
   return (
     <CommandItem
       ref={ref}
       className={cn(
         "data-[selected=true]:border-input data-[selected=true]:bg-input/50 h-9 rounded-md border border-transparent !px-3 font-medium",
-        className
+        className,
       )}
       {...props}
     >
       {children}
     </CommandItem>
-  )
+  );
 }
 
 function CommandMenuKbd({ className, ...props }: React.ComponentProps<"kbd">) {
@@ -333,9 +309,9 @@ function CommandMenuKbd({ className, ...props }: React.ComponentProps<"kbd">) {
     <kbd
       className={cn(
         "bg-background text-muted-foreground pointer-events-none flex h-5 items-center justify-center gap-1 rounded border px-1 font-sans text-[0.7rem] font-medium select-none [&_svg:not([class*='size-'])]:size-3",
-        className
+        className,
       )}
       {...props}
     />
-  )
+  );
 }

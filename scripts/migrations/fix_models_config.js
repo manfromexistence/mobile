@@ -1,6 +1,6 @@
-const fs = require("fs")
+const fs = require("fs");
 
-let content = fs.readFileSync("src/lib/ai/models-config.ts", "utf8")
+let content = fs.readFileSync("src/lib/ai/models-config.ts", "utf8");
 
 const opencodeModels = `
   "opencode-low": {
@@ -87,20 +87,20 @@ const opencodeModels = `
     repetitionPenalty: 1.0,
     status: "available",
   },
-`
+`;
 
 if (!content.includes("opencode-high")) {
   content = content.replace(
     "export const MODEL_OPTIONS: Record<ModelId, ExtendedModelOption> = {",
     "export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {\n" +
-      opencodeModels
-  )
+      opencodeModels,
+  );
 
   // also fix type error: Record<ModelId, ...> to Record<string, ...>
   // content = content.replace('Record<ModelId, ExtendedModelOption>', 'Record<string, ExtendedModelOption>');
 
-  fs.writeFileSync("src/lib/ai/models-config.ts", content)
-  console.log("Added opencode models to models-config.ts")
+  fs.writeFileSync("src/lib/ai/models-config.ts", content);
+  console.log("Added opencode models to models-config.ts");
 } else {
-  console.log("Models already added")
+  console.log("Models already added");
 }

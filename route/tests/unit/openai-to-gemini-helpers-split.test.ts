@@ -24,7 +24,7 @@ test("buildChangedToolNameMap keeps only renamed entries, else null", () => {
     new Map([
       ["a", "a"],
       ["b_sanitized", "b"],
-    ])
+    ]),
   );
   assert.deepEqual([...(changed ?? new Map()).entries()], [["b_sanitized", "b"]]);
   assert.equal(h.buildChangedToolNameMap(new Map([["a", "a"]])), null);
@@ -59,11 +59,11 @@ test("historical-tool-context builders stringify and escape as expected", () => 
   assert.equal(h.stringifyHistoricalToolArguments(undefined), "{}");
   assert.equal(
     h.buildInertHistoricalToolCallText("foo", { a: 1 }),
-    '[tool_history_call: foo] {"a":1}'
+    '[tool_history_call: foo] {"a":1}',
   );
   assert.equal(
     h.buildInertHistoricalToolResponseText("bar", "ok"),
-    "[tool_history_result: bar] ok"
+    "[tool_history_result: bar] ok",
   );
   // Attribute escaping includes quotes; content escaping does not.
   assert.equal(h.escapeHistoricalContextAttribute('<t>"&'), "&lt;t&gt;&quot;&amp;");
@@ -73,14 +73,14 @@ test("historical-tool-context builders stringify and escape as expected", () => 
 test("buildHistoricalToolResultContext wraps escaped source + result in the context tag", () => {
   assert.equal(
     h.buildHistoricalToolResultContext("myTool", { r: 1 }),
-    '<previous_tool_result_context source="myTool">\n{"r":1}\n</previous_tool_result_context>'
+    '<previous_tool_result_context source="myTool">\n{"r":1}\n</previous_tool_result_context>',
   );
 });
 
 test("host imports the helpers leaf and no longer defines them inline", () => {
   const host = fs.readFileSync(
     path.join("open-sse", "translator", "request", "openai-to-gemini.ts"),
-    "utf-8"
+    "utf-8",
   );
   assert.match(host, /from "\.\/openai-to-gemini\/helpers\.ts"/);
   assert.doesNotMatch(host, /^function deepCleanUndefined\(/m);

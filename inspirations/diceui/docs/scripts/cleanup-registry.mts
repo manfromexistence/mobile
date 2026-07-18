@@ -37,19 +37,13 @@ async function cleanupRegistry() {
 
     // Get all directories in styles/
     const styleDirs = await fs.readdir(STYLES_PATH, { withFileTypes: true });
-    const existingDirs = styleDirs
-      .filter((d) => d.isDirectory())
-      .map((d) => d.name);
+    const existingDirs = styleDirs.filter((d) => d.isDirectory()).map((d) => d.name);
 
     // Find orphaned style directories
-    const orphanedDirs = existingDirs.filter(
-      (dir) => !expectedStyleDirs.has(dir),
-    );
+    const orphanedDirs = existingDirs.filter((dir) => !expectedStyleDirs.has(dir));
 
     if (orphanedDirs.length > 0) {
-      console.log(
-        `\n🗑️  Removing ${orphanedDirs.length} orphaned style directories...`,
-      );
+      console.log(`\n🗑️  Removing ${orphanedDirs.length} orphaned style directories...`);
       for (const dir of orphanedDirs) {
         const dirPath = path.join(STYLES_PATH, dir);
         await rimraf(dirPath);
@@ -130,10 +124,7 @@ async function cleanupRegistry() {
 }
 
 // Run the cleanup if this script is executed directly
-if (
-  process.argv[1] &&
-  fileURLToPath(import.meta.url) === path.resolve(process.argv[1])
-) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
   cleanupRegistry();
 }
 

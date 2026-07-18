@@ -26,13 +26,13 @@ test("gemma-4 model: reasoning_effort does NOT produce a thinkingConfig", () => 
       reasoning_effort: "high",
       stream: false,
     },
-    false
+    false,
   ) as GeminiRequestResult;
 
   assert.equal(
     result.generationConfig?.thinkingConfig,
     undefined,
-    "gemma-4 models must never receive thinkingConfig (Vertex returns 400)"
+    "gemma-4 models must never receive thinkingConfig (Vertex returns 400)",
   );
 });
 
@@ -45,13 +45,13 @@ test("gemma-4 model: Claude-style thinking.budget_tokens does NOT produce a thin
       thinking: { type: "enabled", budget_tokens: 4096 },
       stream: false,
     },
-    false
+    false,
   ) as GeminiRequestResult;
 
   assert.equal(
     result.generationConfig?.thinkingConfig,
     undefined,
-    "gemma-4 models must never receive thinkingConfig even via the Claude-shape thinking field"
+    "gemma-4 models must never receive thinkingConfig even via the Claude-shape thinking field",
   );
 });
 
@@ -64,11 +64,11 @@ test("non-gemma gemini model: reasoning_effort STILL produces a thinkingConfig (
       reasoning_effort: "high",
       stream: false,
     },
-    false
+    false,
   ) as GeminiRequestResult;
 
   assert.ok(
     result.generationConfig?.thinkingConfig,
-    "non-gemma Gemini models must keep receiving thinkingConfig"
+    "non-gemma Gemini models must keep receiving thinkingConfig",
   );
 });

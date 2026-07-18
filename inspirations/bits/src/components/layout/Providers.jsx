@@ -1,9 +1,9 @@
-import { SearchProvider } from '../../components/context/SearchContext/SearchContext';
-import { OptionsProvider } from '../../components/context/OptionsContext/OptionsContext';
-import { TransitionProvider } from '../../components/context/TransitionContext/TransitionContext';
-import { InstallationProvider } from '../../components/context/InstallationContext/InstallationContext';
-import { Toaster } from 'sonner';
-import { toastStyles } from '../../utils/customTheme';
+import { SearchProvider } from "../../components/context/SearchContext/SearchContext";
+import { OptionsProvider } from "../../components/context/OptionsContext/OptionsContext";
+import { TransitionProvider } from "../../components/context/TransitionContext/TransitionContext";
+import { InstallationProvider } from "../../components/context/InstallationContext/InstallationContext";
+import { Toaster } from "sonner";
+import { toastStyles } from "../../utils/customTheme";
 
 export default function Providers({ children }) {
   return (

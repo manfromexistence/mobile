@@ -24,24 +24,21 @@ test("usage endpoint wraps the snapshot as { usage: snapshot }", () => {
   const src = read("src/app/api/quota/pools/[id]/usage/route.ts");
   assert.ok(
     /NextResponse\.json\(\s*\{\s*usage:/.test(src),
-    "endpoint must return { usage: snapshot }"
+    "endpoint must return { usage: snapshot }",
   );
 });
 
 test("usePoolUsage unwraps data.usage (not the whole response)", () => {
   const src = read(HOOK);
   assert.ok(src.includes("data?.usage"), "hook must unwrap data.usage");
-  assert.ok(
-    !/setUsage\(\s*data\s*\)/.test(src),
-    "hook must NOT store the raw wrapper as usage"
-  );
+  assert.ok(!/setUsage\(\s*data\s*\)/.test(src), "hook must NOT store the raw wrapper as usage");
 });
 
 test("StackedAllocationBar guards usage.dimensions + dim.perKey", () => {
   const src = read(BAR);
   assert.ok(
     src.includes("usage.dimensions?.[") || src.includes("usage.dimensions ?? []"),
-    "must optional-chain usage.dimensions access"
+    "must optional-chain usage.dimensions access",
   );
   assert.ok(src.includes("dim.perKey ?? []"), "must guard dim.perKey iteration");
 });

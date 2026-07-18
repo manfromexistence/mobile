@@ -1,9 +1,7 @@
 {
   "name": "time-picker",
   "type": "registry:ui",
-  "dependencies": [
-    "radix-ui"
-  ],
+  "dependencies": ["radix-ui"],
   "registryDependencies": [
     "popover",
     "@diceui/use-as-ref",

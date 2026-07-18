@@ -88,7 +88,7 @@ test("an error in one refresh does not deadlock the group queue", async () => {
     serializeRefresh("codex", async () => {
       throw new Error("boom");
     }),
-    /boom/
+    /boom/,
   );
   const recovered = await serializeRefresh("codex", async () => "ok");
   assert.equal(recovered, "ok", "queue must keep flowing after a failed refresh");

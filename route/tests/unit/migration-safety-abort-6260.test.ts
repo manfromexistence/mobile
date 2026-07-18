@@ -48,7 +48,7 @@ function withMockedMigrationFs<T>(files: Record<string, string>, fn: () => T): T
     if (Object.hasOwn(files, fileName)) return files[fileName];
     return (originalReadFileSync as (t: fs.PathOrFileDescriptor, o?: unknown) => unknown)(
       target,
-      options
+      options,
     );
   }) as typeof fs.readFileSync;
 
@@ -98,7 +98,7 @@ function seedExistingDbWithoutPhysicalBaseline(db: InstanceType<typeof Database>
   `);
   db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
     "001",
-    "initial_schema"
+    "initial_schema",
   );
 }
 
@@ -133,8 +133,8 @@ test(
         try {
           withNonTestEnvironment(() =>
             withMockedMigrationFs(buildMockMigrationFiles(1, 60, "bypass_hint"), () =>
-              runner.runMigrations(db)
-            )
+              runner.runMigrations(db),
+            ),
           );
         } catch (err) {
           thrown = err;
@@ -146,7 +146,7 @@ test(
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -161,8 +161,8 @@ test(
       const runOnce = () =>
         withNonTestEnvironment(() =>
           withMockedMigrationFs(buildMockMigrationFiles(1, 60, "cascade"), () =>
-            runner.runMigrations(db)
-          )
+            runner.runMigrations(db),
+          ),
         );
 
       let first: unknown;
@@ -190,5 +190,5 @@ test(
     } finally {
       db.close();
     }
-  }
+  },
 );

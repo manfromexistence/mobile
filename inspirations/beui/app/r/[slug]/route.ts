@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
-import { allRegistryTargets, allShadcnTargets, buildEntry, buildShadcnItem, findCategoryBySlug } from "@/lib/registry-server";
+import {
+  allRegistryTargets,
+  allShadcnTargets,
+  buildEntry,
+  buildShadcnItem,
+  findCategoryBySlug,
+} from "@/lib/registry-server";
 
 export const dynamic = "force-static";
 
@@ -10,10 +16,7 @@ export function generateStaticParams() {
   ];
 }
 
-export async function GET(
-  _req: Request,
-  ctx: { params: Promise<{ slug: string }> },
-) {
+export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }> }) {
   const { slug } = await ctx.params;
   const isShadcnItem = slug.endsWith(".json");
   const componentSlug = isShadcnItem ? slug.replace(/\.json$/, "") : slug;
@@ -28,7 +31,7 @@ export async function GET(
         "cache-control": "public, max-age=300, s-maxage=3600",
         "access-control-allow-origin": "*",
         "access-control-allow-methods": "GET, OPTIONS",
-        "link": '</r/registry.json>; rel="collection"; type="application/json"',
+        link: '</r/registry.json>; rel="collection"; type="application/json"',
       },
     });
   }
@@ -40,7 +43,7 @@ export async function GET(
       "cache-control": "public, max-age=300, s-maxage=3600",
       "access-control-allow-origin": "*",
       "access-control-allow-methods": "GET, OPTIONS",
-      "link": `</r/${slug}/raw>; rel="alternate"; type="text/plain", </llms.txt>; rel="describedby"; type="text/plain"`,
+      link: `</r/${slug}/raw>; rel="alternate"; type="text/plain", </llms.txt>; rel="describedby"; type="text/plain"`,
     },
   });
 }

@@ -17,7 +17,9 @@ const core = await import("../../../src/lib/db/core.ts");
 const settingsDb = await import("../../../src/lib/db/settings.ts");
 const providersDb = await import("../../../src/lib/db/providers.ts");
 const autopilot = await import("../../../src/lib/monitoring/providerHealthAutopilot.ts");
-const actionsRoute = await import("../../../src/app/api/providers/health-autopilot/actions/route.ts");
+const actionsRoute = await import(
+  "../../../src/app/api/providers/health-autopilot/actions/route.ts"
+);
 const reportRoute = await import("../../../src/app/api/providers/health-autopilot/route.ts");
 const routeGuard = await import("../../../src/server/authz/routeGuard.ts");
 const authzPipeline = await import("../../../src/server/authz/pipeline.ts");
@@ -89,7 +91,7 @@ test("provider health autopilot reports actionable cooldown and model lockout is
     "locked-model",
     "quota_exhausted",
     60_000,
-    {}
+    {},
   );
 
   try {
@@ -132,7 +134,7 @@ test("provider health autopilot action clears cooldown with stale-state protecti
         preconditionsHash: action.preconditionsHash,
         confirm: true,
       }),
-    })
+    }),
   );
   assert.equal(unauthenticated.status, 401);
 
@@ -145,7 +147,7 @@ test("provider health autopilot action clears cooldown with stale-state protecti
         preconditionsHash: "stale-hash",
         confirm: true,
       },
-    })
+    }),
   );
   assert.equal(stale.status, 409);
 
@@ -159,7 +161,7 @@ test("provider health autopilot action clears cooldown with stale-state protecti
         preconditionsHash: action.preconditionsHash,
         confirm: true,
       },
-    })
+    }),
   );
   assert.equal(applied.status, 200);
   const body = await applied.json();
@@ -201,7 +203,7 @@ test("provider health autopilot action rejects cross-site mutations", async () =
         preconditionsHash: action.preconditionsHash,
         confirm: true,
       },
-    }
+    },
   );
   const response = await authzPipeline.runAuthzPipeline(new NextRequest(rawRequest), {
     enforce: true,
@@ -249,7 +251,7 @@ test("provider health autopilot action accepts LAN dashboard requests (#6277)", 
         preconditionsHash: action.preconditionsHash,
         confirm: true,
       },
-    }
+    },
   );
   assert.equal(request.headers.get("x-omniroute-peer-ip"), null);
 
@@ -266,7 +268,7 @@ test("provider health autopilot action rejects malformed JSON", async () => {
     await makeManagementSessionRequest("http://localhost/api/providers/health-autopilot/actions", {
       method: "POST",
       body: "{not-json",
-    })
+    }),
   );
 
   assert.equal(response.status, 400);
@@ -283,14 +285,14 @@ test("provider health autopilot report route requires management auth", async ()
   await createCooldownConnection();
 
   const unauthenticated = await reportRoute.GET(
-    new Request("http://localhost/api/providers/health-autopilot")
+    new Request("http://localhost/api/providers/health-autopilot"),
   );
   assert.equal(unauthenticated.status, 401);
 
   const authenticated = await reportRoute.GET(
     await makeManagementSessionRequest(
-      "http://localhost/api/providers/health-autopilot?includeHealthy=true"
-    )
+      "http://localhost/api/providers/health-autopilot?includeHealthy=true",
+    ),
   );
   assert.equal(authenticated.status, 200);
   const body = await authenticated.json();

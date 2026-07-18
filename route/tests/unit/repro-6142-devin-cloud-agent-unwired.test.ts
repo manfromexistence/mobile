@@ -13,7 +13,7 @@ test("#6142 (fixed): saving a Devin cloud-agent API key should not be 'unsupport
   assert.notEqual(
     result.error,
     "Provider validation not supported",
-    "devin should have a specialty validator wired (like jules), not fall through to 'not supported'"
+    "devin should have a specialty validator wired (like jules), not fall through to 'not supported'",
   );
   assert.notEqual(result.unsupported, true);
 });
@@ -22,6 +22,6 @@ test("#6142 (fixed): the 'Available Models' UI should have a usable static catal
   const devinStaticModels = getStaticModelsForProvider("devin");
   assert.ok(
     Array.isArray(devinStaticModels) && devinStaticModels.length > 0,
-    "devin should expose a static model catalog like jules does"
+    "devin should expose a static model catalog like jules does",
   );
 });

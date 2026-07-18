@@ -105,7 +105,7 @@ test("createVirtualAutoCombo excludes web-session providers with empty required 
   assert.equal(
     combo.models.some((model) => model.providerId === "qwen-web"),
     false,
-    "web-session providers with empty required token data must not be auto-combo candidates"
+    "web-session providers with empty required token data must not be auto-combo candidates",
   );
   assert.equal(combo.autoConfig.candidatePool.includes("qwen-web"), false);
 });
@@ -124,7 +124,7 @@ test("createVirtualAutoCombo excludes web-session providers with irrelevant prov
   assert.equal(
     combo.models.some((model) => model.providerId === "chatgpt-web"),
     false,
-    "web-session providers with irrelevant providerSpecificData must not be auto-combo candidates"
+    "web-session providers with irrelevant providerSpecificData must not be auto-combo candidates",
   );
   assert.equal(combo.autoConfig.candidatePool.includes("chatgpt-web"), false);
 });
@@ -151,18 +151,18 @@ test("createVirtualAutoCombo preserves multiple same-provider web-session candid
   assert.equal(
     qwenWebModels.length,
     2,
-    "same-provider web sessions must not collapse to one target"
+    "same-provider web sessions must not collapse to one target",
   );
   assert.deepEqual(
     new Set(qwenWebModels.map((model) => model.connectionId)),
     new Set([connA.id, connB.id]),
-    "same-provider web sessions should map back to their exact provider_connection rows"
+    "same-provider web sessions should map back to their exact provider_connection rows",
   );
   assert.ok(qwenWebModels.every((model) => model.model === "qwen-web/qwen3-coder-plus"));
   assert.equal(
     combo.autoConfig.candidatePool.filter((provider) => provider === "qwen-web").length,
     1,
-    "provider pool remains provider-scoped while model entries preserve connection identity"
+    "provider pool remains provider-scoped while model entries preserve connection identity",
   );
 });
 
@@ -180,7 +180,7 @@ test("createVirtualAutoCombo includes cookie web-session providers with required
   const chatgptWeb = combo.models.find((model) => model.providerId === "chatgpt-web");
   assert.ok(
     chatgptWeb,
-    "cookie web-session providers with required cookie data should be candidates"
+    "cookie web-session providers with required cookie data should be candidates",
   );
   assert.equal(chatgptWeb.model, "chatgpt-web/gpt-4o");
   assert.ok(combo.autoConfig.candidatePool.includes("chatgpt-web"));
@@ -192,7 +192,7 @@ test("createVirtualAutoCombo includes no-auth OpenCode Free without provider_con
   const opencode = combo.models.find((model) => model.providerId === "opencode");
   assert.ok(
     opencode,
-    "OpenCode Free should appear in auto/* even when it has no provider_connections row"
+    "OpenCode Free should appear in auto/* even when it has no provider_connections row",
   );
   assert.equal(opencode.connectionId, "noauth");
   assert.equal(opencode.model, "oc/big-pickle");
@@ -205,22 +205,37 @@ test("createVirtualAutoCombo includes all chat-capable no-auth providers without
   // Each noAuth provider should have multiple models (not just the first)
   const ddgwModels = combo.models.filter((m) => m.providerId === "duckduckgo-web");
   assert.ok(ddgwModels.length >= 1, "duckduckgo-web should have at least one model");
-  assert.ok(ddgwModels.every((m) => m.connectionId === "noauth"), "all ddgw models should use noauth connection");
-  assert.ok(ddgwModels.some((m) => m.model.startsWith("ddgw/")), "ddgw models should have correct prefix");
+  assert.ok(
+    ddgwModels.every((m) => m.connectionId === "noauth"),
+    "all ddgw models should use noauth connection",
+  );
+  assert.ok(
+    ddgwModels.some((m) => m.model.startsWith("ddgw/")),
+    "ddgw models should have correct prefix",
+  );
 
   const tllmModels = combo.models.filter((m) => m.providerId === "theoldllm");
   assert.ok(tllmModels.length >= 1, "theoldllm should have at least one model");
-  assert.ok(tllmModels.every((m) => m.connectionId === "noauth"), "all tllm models should use noauth connection");
-  assert.ok(tllmModels.some((m) => m.model === "tllm/GPT_5_4"), "tllm should include GPT_5_4");
+  assert.ok(
+    tllmModels.every((m) => m.connectionId === "noauth"),
+    "all tllm models should use noauth connection",
+  );
+  assert.ok(
+    tllmModels.some((m) => m.model === "tllm/GPT_5_4"),
+    "tllm should include GPT_5_4",
+  );
 
   const chipotleModels = combo.models.filter((m) => m.providerId === "chipotle");
   assert.ok(chipotleModels.length >= 1, "chipotle should have at least one model");
-  assert.ok(chipotleModels.every((m) => m.connectionId === "noauth"), "all chipotle models should use noauth connection");
+  assert.ok(
+    chipotleModels.every((m) => m.connectionId === "noauth"),
+    "all chipotle models should use noauth connection",
+  );
 
   assert.equal(
     combo.models.some((model) => model.providerId === "veoaifree-web"),
     false,
-    "video-only no-auth providers must not be inserted into chat auto-combos"
+    "video-only no-auth providers must not be inserted into chat auto-combos",
   );
 });
 
@@ -230,6 +245,6 @@ test("createVirtualAutoCombo keeps credential-required providers out when discon
   assert.equal(
     combo.models.some((model) => model.providerId === "openai"),
     false,
-    "OpenAI should still require a real active connection"
+    "OpenAI should still require a real active connection",
   );
 });

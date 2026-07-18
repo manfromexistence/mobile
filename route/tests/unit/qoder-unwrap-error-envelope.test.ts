@@ -16,7 +16,7 @@ test("unwrapQoderEnvelope: surfaces an embedded non-200 statusCodeValue as a rea
   // Qoder wraps an upstream 429 inside a 200 SSE envelope. Before the fix this
   // passed straight through as a 200, so combo/account fallback never fired.
   const wrapped = sseResponse(
-    'data: {"statusCodeValue":429,"body":"rate limit exceeded"}\n\ndata: [DONE]\n\n'
+    'data: {"statusCodeValue":429,"body":"rate limit exceeded"}\n\ndata: [DONE]\n\n',
   );
 
   const result = await unwrapQoderEnvelope(wrapped);
@@ -47,7 +47,7 @@ test("unwrapQoderEnvelope: classifies embedded 401 as an authentication_error", 
 
 test("unwrapQoderEnvelope: passes a successful stream through with the first chunk intact", async () => {
   const wrapped = sseResponse(
-    'data: {"choices":[{"delta":{"content":"O"}}]}\n\ndata: {"choices":[{"delta":{"content":"K"}}]}\n\ndata: [DONE]\n\n'
+    'data: {"choices":[{"delta":{"content":"O"}}]}\n\ndata: {"choices":[{"delta":{"content":"K"}}]}\n\ndata: [DONE]\n\n',
   );
 
   const result = await unwrapQoderEnvelope(wrapped);

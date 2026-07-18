@@ -9,12 +9,6 @@
       "target": ""
     }
   ],
-  "registryDependencies": [
-    "direction",
-    "@diceui/use-as-ref",
-    "@diceui/use-lazy-ref"
-  ],
-  "dependencies": [
-    "@base-ui/react"
-  ]
+  "registryDependencies": ["direction", "@diceui/use-as-ref", "@diceui/use-lazy-ref"],
+  "dependencies": ["@base-ui/react"]
 }

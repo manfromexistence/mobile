@@ -1,105 +1,32 @@
-import type { ModelId, ModelOption } from "@/features/dx/types"
+import { DEFAULT_MODEL_ID, DEFAULT_PROVIDER_ID, GENERATED_PROVIDERS } from "./providers.generated";
 
-export type ExtendedModelOption = ModelOption & {
-  wllamaRepo?: string
-  wllamaFile?: string
-  mlcModelId?: string
-}
+export type ExtendedModelOption = {
+  id: string;
+  name: string;
+  provider: string;
+  modelName: string;
+  contextLength: number;
+  maxTokens: number;
+  temperature: number;
+  topP: number;
+  repetitionPenalty: number;
+  status: "available" | "downloading" | "unavailable";
+  mlcModelId?: string;
+  wllamaRepo?: string;
+  wllamaFile?: string;
+};
 
-export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
-  "opencode-low": {
-    id: "opencode-low",
-    name: "MiniMax M3 Free",
-    provider: "openai-compatible",
-    modelName: "minimax-m3-free",
-    quantization: "api",
-    contextLength: 8192,
-    description: "Free Tier",
-    maxTokens: 2048,
-    temperature: 0.7,
-    topP: 0.9,
-    repetitionPenalty: 1.0,
-    status: "available",
-  },
-  "opencode-high": {
-    id: "opencode-high",
-    name: "BigPickle",
-    provider: "openai-compatible",
-    modelName: "bigpickle",
-    quantization: "api",
-    contextLength: 8192,
-    description: "Free Tier",
-    maxTokens: 2048,
-    temperature: 0.7,
-    topP: 0.9,
-    repetitionPenalty: 1.0,
-    status: "available",
-  },
-  "opencode-xhigh": {
-    id: "opencode-xhigh",
-    name: "DeepSeek V4 Flash Free",
-    provider: "openai-compatible",
-    modelName: "deepseek-v4-flash-free",
-    quantization: "api",
-    contextLength: 8192,
-    description: "Free Tier",
-    maxTokens: 2048,
-    temperature: 0.7,
-    topP: 0.9,
-    repetitionPenalty: 1.0,
-    status: "available",
-  },
-  "opencode-default": {
-    id: "opencode-default",
-    name: "Mimo V2.5 Free",
-    provider: "openai-compatible",
-    modelName: "mimo-v2.5-free",
-    quantization: "api",
-    contextLength: 8192,
-    description: "Free Tier",
-    maxTokens: 2048,
-    temperature: 0.7,
-    topP: 0.9,
-    repetitionPenalty: 1.0,
-    status: "available",
-  },
-  "opencode-medium": {
-    id: "opencode-medium",
-    name: "Nemotron 3 Super Free",
-    provider: "openai-compatible",
-    modelName: "nemotron-3-super-free",
-    quantization: "api",
-    contextLength: 8192,
-    description: "Free Tier",
-    maxTokens: 2048,
-    temperature: 0.7,
-    topP: 0.9,
-    repetitionPenalty: 1.0,
-    status: "available",
-  },
-  "opencode-xlow": {
-    id: "opencode-xlow",
-    name: "Nemotron 3 Ultra Free",
-    provider: "openai-compatible",
-    modelName: "nemotron-3-ultra-free",
-    quantization: "api",
-    contextLength: 8192,
-    description: "Free Tier",
-    maxTokens: 2048,
-    temperature: 0.7,
-    topP: 0.9,
-    repetitionPenalty: 1.0,
-    status: "available",
-  },
+export const DEFAULT_MODEL_ID_VALUE = DEFAULT_MODEL_ID;
+export const DEFAULT_PROVIDER_ID_VALUE = DEFAULT_PROVIDER_ID;
 
+export const MODEL_OPTIONS: Record<string, ExtendedModelOption> = {
+  // Local browser-inference models (WebGPU/Wllama)
   "qwen-0.5b": {
     id: "qwen-0.5b",
     name: "Qwen3 0.6B",
     provider: "huggingface",
     modelName: "onnx-community/Qwen3-0.6B-ONNX",
-    quantization: "q4",
     contextLength: 2048,
-    description: "Fast, browser-optimized 0.6B model",
     maxTokens: 2048,
     temperature: 0.7,
     topP: 0.9,
@@ -114,9 +41,7 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
     name: "TinyLlama 1.1B",
     provider: "huggingface",
     modelName: "onnx-community/TinyLlama-1.1B-Chat-v1.0",
-    quantization: "q4",
     contextLength: 2048,
-    description: "Compact 1.1B chat model, good for most tasks",
     maxTokens: 2048,
     temperature: 0.7,
     topP: 0.9,
@@ -131,22 +56,38 @@ export const MODEL_OPTIONS: Record<ModelId | string, ExtendedModelOption> = {
     name: "MiniCPM 1B",
     provider: "huggingface",
     modelName: "openbmb/MiniCPM-1B",
-    quantization: "q4",
     contextLength: 4096,
-    description: "1B instruct model",
     maxTokens: 2048,
     temperature: 0.7,
     topP: 0.9,
     repetitionPenalty: 1.1,
     status: "available",
-    mlcModelId: "Llama-3.2-1B-Instruct-q4f16_1-MLC", // fallback string, adjust if specific 1B model is in MLC
+    mlcModelId: "Llama-3.2-1B-Instruct-q4f16_1-MLC",
     wllamaRepo: "openbmb/MiniCPM-S-1B-sft-gguf",
     wllamaFile: "MiniCPM-S-1B-sft.gguf",
   },
+};
+
+// Populate from generated provider data (for contextLength lookups)
+for (const provider of Object.values(GENERATED_PROVIDERS)) {
+  for (const model of provider.models) {
+    if (!MODEL_OPTIONS[model.id]) {
+      MODEL_OPTIONS[model.id] = {
+        id: model.id,
+        name: model.name,
+        provider: provider.id,
+        modelName: model.id,
+        contextLength: model.contextLength || 8192,
+        maxTokens: Math.min(model.contextLength || 8192, 4096),
+        temperature: 0.7,
+        topP: 0.9,
+        repetitionPenalty: 1.0,
+        status: "available",
+      };
+    }
+  }
 }
 
-export const DEFAULT_MODEL_ID: ModelId = "opencode-default"
-
-export function getModelConfig(id: ModelId): ExtendedModelOption {
-  return MODEL_OPTIONS[id]
+export function getModelConfig(id: string): ExtendedModelOption {
+  return MODEL_OPTIONS[id] || MODEL_OPTIONS[DEFAULT_MODEL_ID] || Object.values(MODEL_OPTIONS)[0];
 }

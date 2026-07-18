@@ -35,11 +35,7 @@ export default function CropperVideoDemo() {
 
   return (
     <div className="flex size-full flex-col gap-4">
-      <Button
-        size="sm"
-        className="w-fit [&_svg]:fill-current"
-        onClick={onPlayToggle}
-      >
+      <Button size="sm" className="w-fit [&_svg]:fill-current" onClick={onPlayToggle}>
         {isPlaying ? (
           <>
             <PauseIcon />

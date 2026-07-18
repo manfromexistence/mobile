@@ -9,11 +9,6 @@
       "target": ""
     }
   ],
-  "registryDependencies": [
-    "input",
-    "direction"
-  ],
-  "dependencies": [
-    "@base-ui/react"
-  ]
+  "registryDependencies": ["input", "direction"],
+  "dependencies": ["@base-ui/react"]
 }

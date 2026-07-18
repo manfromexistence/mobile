@@ -31,14 +31,11 @@ async function main() {
       },
     ],
   };
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    {
-      appConfig: appConfig,
-      initProgressCallback: initProgressCallback,
-      logLevel: "INFO",
-    },
-  );
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    appConfig: appConfig,
+    initProgressCallback: initProgressCallback,
+    logLevel: "INFO",
+  });
 
   const reply0 = await engine.completions.create({
     prompt: "List 3 US states: ",

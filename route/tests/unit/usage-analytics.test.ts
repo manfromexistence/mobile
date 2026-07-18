@@ -15,8 +15,9 @@ const usageHistory = await import("../../src/lib/usage/usageHistory.ts");
 const usageStats = await import("../../src/lib/usage/usageStats.ts");
 const legacyUsageAnalytics = await import("../../src/lib/usageAnalytics.ts");
 const callLogs = await import("../../src/lib/usage/callLogs.ts");
-const { calculateCost, getCodexFastCostMultiplier } =
-  await import("../../src/lib/usage/costCalculator.ts");
+const { calculateCost, getCodexFastCostMultiplier } = await import(
+  "../../src/lib/usage/costCalculator.ts"
+);
 
 // Use the official clearPendingRequests export instead of manual cleanup
 const clearPendingRequests = usageHistory.clearPendingRequests;
@@ -248,19 +249,19 @@ test("getUsageStats aggregates totals, buckets, pending requests, and cost break
     "pricing-model",
     "pricing-provider",
     (connection as any).id,
-    true
+    true,
   );
   usageHistory.trackPendingRequest(
     "pricing-model",
     "pricing-provider" as any,
     (connection as any).id,
-    true
+    true,
   );
   usageHistory.trackPendingRequest(
     "pricing-model",
     "pricing-provider" as any,
     (connection as any).id,
-    false
+    false,
   );
 
   const stats = await usageStats.getUsageStats();
@@ -320,7 +321,7 @@ test("getUsageStats groups renamed API key usage by stable ID", async () => {
   const now = new Date().toISOString();
   db.prepare(
     `INSERT INTO api_keys (id, name, key, machine_id, allowed_models, no_log, created_at, key_prefix)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     "api-key-rename",
     "Current Name",
@@ -329,7 +330,7 @@ test("getUsageStats groups renamed API key usage by stable ID", async () => {
     "[]",
     0,
     now,
-    "omni-test-ke"
+    "omni-test-ke",
   );
 
   await usageHistory.saveRequestUsage({
@@ -384,7 +385,7 @@ test("computeAnalytics groups renamed API key usage by stable ID", async () => {
         tokens: { input: 20, output: 10 },
       },
     ],
-    "all"
+    "all",
   );
 
   assert.equal(analytics.summary.uniqueApiKeys, 1);
@@ -414,7 +415,7 @@ test("Codex Fast service tier applies GPT-5.5 and GPT-5.6 credit multipliers", a
   assert.equal(await calculateCost("codex", "gpt-5.5", tokens, { serviceTier: "flex" }), 0.01);
   assert.equal(
     await calculateCost("codex", "gpt-5.6-sol-high", tokens, { serviceTier: "fast" }),
-    0.03
+    0.03,
   );
   assert.equal(getCodexFastCostMultiplier("cx", "gpt-5.6-terra-ultra", "fast"), 1.5);
   assert.equal(getCodexFastCostMultiplier("codex", "gpt-5.6-luna-max", "priority"), 1.5);

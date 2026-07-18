@@ -2,12 +2,7 @@
 // beui.dev/components/motion/select
 
 import { Check, ChevronDown } from "lucide-react";
-import {
-  motion,
-  type Transition,
-  useReducedMotion,
-  type Variants,
-} from "motion/react";
+import { motion, type Transition, useReducedMotion, type Variants } from "motion/react";
 import {
   createContext,
   type ReactNode,
@@ -116,8 +111,7 @@ export function Select({
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     const onPointer = (e: PointerEvent) => {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node))
-        setOpen(false);
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
     };
     window.addEventListener("keydown", onKey);
     window.addEventListener("pointerdown", onPointer);
@@ -143,18 +137,7 @@ export function Select({
       placement,
       setPlacement,
     }),
-    [
-      current,
-      open,
-      select,
-      register,
-      unregister,
-      labels,
-      reduce,
-      baseId,
-      disabled,
-      placement,
-    ],
+    [current, open, select, register, unregister, labels, reduce, baseId, disabled, placement],
   );
 
   return (
@@ -236,9 +219,7 @@ export function SelectValue({ placeholder, className }: SelectValueProps) {
   const ctx = useSelectContext("SelectValue");
   const label = ctx.labelFor(ctx.value);
   return (
-    <span
-      className={cn(label ? "text-foreground" : "text-muted-foreground", className)}
-    >
+    <span className={cn(label ? "text-foreground" : "text-muted-foreground", className)}>
       {label ?? placeholder ?? "Select"}
     </span>
   );
@@ -325,9 +306,7 @@ export function SelectContent({ className, children }: SelectContentProps) {
         ctx.reduce
           ? { duration: 0.12 }
           : {
-              opacity: open
-                ? { duration: 0.18 }
-                : { duration: 0.16, delay: 0.12 },
+              opacity: open ? { duration: 0.18 } : { duration: 0.16, delay: 0.12 },
               height: open
                 ? { type: "spring", duration: 0.42, bounce: 0.14 }
                 : { duration: 0.26, ease: EASE_OUT, delay: 0.14 },
@@ -372,12 +351,7 @@ export interface SelectItemProps {
   children: ReactNode;
 }
 
-export function SelectItem({
-  value,
-  disabled = false,
-  className,
-  children,
-}: SelectItemProps) {
+export function SelectItem({ value, disabled = false, className, children }: SelectItemProps) {
   const ctx = useSelectContext("SelectItem");
   const selected = ctx.value === value;
   const label = typeof children === "string" ? children : value;

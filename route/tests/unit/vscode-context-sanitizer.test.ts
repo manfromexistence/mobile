@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { sanitizeVscodeRequestBody, sanitizeVscodeRequest } =
-  await import("../../src/app/api/v1/vscode/contextSanitizer.ts");
+const { sanitizeVscodeRequestBody, sanitizeVscodeRequest } = await import(
+  "../../src/app/api/v1/vscode/contextSanitizer.ts"
+);
 
 delete process.env.OMNIROUTE_VSCODE_SANITIZE_CONTEXT;
 
@@ -146,7 +147,9 @@ test("vscode sanitizer still redacts sensitive file paths referenced in object c
   // The object-level path+content redaction must keep working after the text-scan
   // narrowing — a structured attachment whose path matches a keyword pattern is redacted.
   const result = sanitizeVscodeRequestBody({
-    attachments: [{ filePath: "/home/user/.aws/credentials", content: "aws_secret_access_key=..." }],
+    attachments: [
+      { filePath: "/home/user/.aws/credentials", content: "aws_secret_access_key=..." },
+    ],
   });
 
   assert.equal(result.changed, true);

@@ -21,7 +21,7 @@ vi.mock("next/navigation", () => ({
 vi.mock("next/dynamic", () => ({
   default: (
     fn: () => Promise<{ default: React.ComponentType<Record<string, unknown>> }>,
-    _opts?: unknown
+    _opts?: unknown,
   ) => {
     // Eagerly resolve the dynamic import in tests
     let Component: React.ComponentType<Record<string, unknown>> | null = null;
@@ -141,8 +141,9 @@ function renderStudio(): HTMLDivElement {
 
 describe("PlaygroundStudio", () => {
   beforeEach(() => {
-    (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean })
-      .IS_REACT_ACT_ENVIRONMENT = true;
+    (
+      globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+    ).IS_REACT_ACT_ENVIRONMENT = true;
   });
 
   afterEach(() => {
@@ -182,7 +183,9 @@ describe("PlaygroundStudio", () => {
   it("switches to API tab when clicked", () => {
     const el = renderStudio();
     const tabButtons = el.querySelectorAll("[role='tab']");
-    const apiTab = Array.from(tabButtons).find((b) => b.textContent?.includes("tabApi")) as HTMLButtonElement | undefined;
+    const apiTab = Array.from(tabButtons).find((b) => b.textContent?.includes("tabApi")) as
+      | HTMLButtonElement
+      | undefined;
 
     expect(apiTab).toBeTruthy();
     act(() => {
@@ -196,9 +199,9 @@ describe("PlaygroundStudio", () => {
   it("switches to Compare tab and marks it active", () => {
     const el = renderStudio();
     const tabButtons = el.querySelectorAll("[role='tab']");
-    const compareTab = Array.from(tabButtons).find((b) =>
-      b.textContent?.includes("tabCompare")
-    ) as HTMLButtonElement | undefined;
+    const compareTab = Array.from(tabButtons).find((b) => b.textContent?.includes("tabCompare")) as
+      | HTMLButtonElement
+      | undefined;
 
     act(() => {
       compareTab?.click();
@@ -212,9 +215,9 @@ describe("PlaygroundStudio", () => {
   it("switches to Build tab and marks it active", () => {
     const el = renderStudio();
     const tabButtons = el.querySelectorAll("[role='tab']");
-    const buildTab = Array.from(tabButtons).find((b) =>
-      b.textContent?.includes("tabBuild")
-    ) as HTMLButtonElement | undefined;
+    const buildTab = Array.from(tabButtons).find((b) => b.textContent?.includes("tabBuild")) as
+      | HTMLButtonElement
+      | undefined;
 
     act(() => {
       buildTab?.click();
@@ -234,9 +237,9 @@ describe("PlaygroundStudio", () => {
 
     // Switch to API tab
     const tabButtons = el.querySelectorAll("[role='tab']");
-    const apiTab = Array.from(tabButtons).find((b) =>
-      b.textContent?.includes("API")
-    ) as HTMLButtonElement | undefined;
+    const apiTab = Array.from(tabButtons).find((b) => b.textContent?.includes("API")) as
+      | HTMLButtonElement
+      | undefined;
     act(() => {
       apiTab?.click();
     });
@@ -254,7 +257,9 @@ describe("PlaygroundStudio", () => {
 
   it("opens export modal when export button is clicked", () => {
     const el = renderStudio();
-    const exportBtn = el.querySelector("button[aria-label='exportCode']") as HTMLButtonElement | null;
+    const exportBtn = el.querySelector(
+      "button[aria-label='exportCode']",
+    ) as HTMLButtonElement | null;
 
     act(() => {
       exportBtn?.click();

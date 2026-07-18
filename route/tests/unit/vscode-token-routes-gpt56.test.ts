@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 
 const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-vscode-token-routes-gpt56-")
+  path.join(os.tmpdir(), "omniroute-vscode-token-routes-gpt56-"),
 );
 process.env.DATA_DIR = TEST_DATA_DIR;
 process.env.API_KEY_SECRET = process.env.API_KEY_SECRET || "vscode-token-routes-gpt56-secret";
@@ -14,8 +14,9 @@ const core = await import("../../src/lib/db/core.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 const settingsDb = await import("../../src/lib/db/settings.ts");
 const apiKeysDb = await import("../../src/lib/db/apiKeys.ts");
-const vscodeRawModelsRoute =
-  await import("../../src/app/api/v1/vscode/raw/[token]/models/route.ts");
+const vscodeRawModelsRoute = await import(
+  "../../src/app/api/v1/vscode/raw/[token]/models/route.ts"
+);
 
 interface RawModel {
   id: string;
@@ -56,11 +57,11 @@ test("vscode raw models route exposes native GPT-5.6 IDs and effort tiers", asyn
   });
   const key = await apiKeysDb.createApiKey(
     "vscode-raw-models-codex",
-    "machine-vscode-raw-models-codex"
+    "machine-vscode-raw-models-codex",
   );
 
   const response = await vscodeRawModelsRoute.GET(
-    new Request(`http://localhost/api/v1/vscode/raw/${encodeURIComponent(key.key)}/models`)
+    new Request(`http://localhost/api/v1/vscode/raw/${encodeURIComponent(key.key)}/models`),
   );
   const body = (await response.json()) as { data?: RawModel[] };
   const models = body.data ?? [];
@@ -121,11 +122,11 @@ test("vscode raw models route exposes native GPT-5.6 IDs and effort tiers", asyn
   assert.ok(lowFastModel, "missing cx/gpt-5.6-sol-low__tier_priority in raw VS Code models route");
   assert.ok(
     mediumFastModel,
-    "missing cx/gpt-5.6-sol-medium__tier_priority in raw VS Code models route"
+    "missing cx/gpt-5.6-sol-medium__tier_priority in raw VS Code models route",
   );
   assert.ok(
     highFastModel,
-    "missing cx/gpt-5.6-sol-high__tier_priority in raw VS Code models route"
+    "missing cx/gpt-5.6-sol-high__tier_priority in raw VS Code models route",
   );
   assert.equal(lowModel.name, "Codex GPT 5.6 Sol (Low)");
   assert.equal(lowFastModel.name, "Codex GPT 5.6 Sol (Low) (Fast)");

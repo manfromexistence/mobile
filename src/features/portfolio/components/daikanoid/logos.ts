@@ -5,18 +5,18 @@
  * smaller width yields a finer grid for more detailed logos.
  */
 export interface LogoDef {
-  name: string
+  name: string;
   /** Brick width in px (canvas is 800 wide → `800 / brickWidth` columns). */
-  brickWidth: number
-  pattern: string[]
+  brickWidth: number;
+  pattern: string[];
   /** Bricks per pixel horizontally (default 1). */
-  colScale?: number
+  colScale?: number;
   /** Bricks per pixel vertically (default 1). */
-  rowScale?: number
+  rowScale?: number;
   /** Left offset in bricks (default 0). */
-  colOffset?: number
+  colOffset?: number;
   /** Top offset in bricks (default 0). */
-  rowOffset?: number
+  rowOffset?: number;
 }
 
 const chanhdai: LogoDef = {
@@ -26,7 +26,7 @@ const chanhdai: LogoDef = {
   colOffset: 1,
   rowOffset: 0,
   pattern: [".XX.XXX.", "X...X..X", "X...X..X", ".XX.XXX."],
-}
+};
 
 const eve: LogoDef = {
   name: "eve",
@@ -43,7 +43,7 @@ const eve: LogoDef = {
     "XXXX...X....XXXX",
     "XXXX...X....XXXX",
   ],
-}
+};
 
 const vercel: LogoDef = {
   name: "Vercel",
@@ -64,14 +64,12 @@ const vercel: LogoDef = {
     "XXXXXXXXXXXX",
     "XXXXXXXXXXXX",
   ],
-}
+};
 
-export const LOGOS: LogoDef[] = [chanhdai, eve, vercel]
+export const LOGOS: LogoDef[] = [chanhdai, eve, vercel];
 
 export function getLogoIndex(name?: string | null): number {
-  if (!name) return 0
-  const index = LOGOS.findIndex(
-    (logo) => logo.name.toLowerCase() === name.toLowerCase()
-  )
-  return index === -1 ? 0 : index
+  if (!name) return 0;
+  const index = LOGOS.findIndex((logo) => logo.name.toLowerCase() === name.toLowerCase());
+  return index === -1 ? 0 : index;
 }

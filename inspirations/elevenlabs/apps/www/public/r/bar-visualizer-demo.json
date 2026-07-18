@@ -1,10 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "bar-visualizer-demo",
-  "registryDependencies": [
-    "https://ui.elevenlabs.io/r/bar-visualizer.json",
-    "button"
-  ],
+  "registryDependencies": ["https://ui.elevenlabs.io/r/bar-visualizer.json", "button"],
   "files": [
     {
       "path": "examples/bar-visualizer-demo.tsx",

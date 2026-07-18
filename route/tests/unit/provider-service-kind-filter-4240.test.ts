@@ -9,8 +9,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { filterConfiguredProviderEntries } =
-  await import("../../src/app/(dashboard)/dashboard/providers/providerPageUtils.ts");
+const { filterConfiguredProviderEntries } = await import(
+  "../../src/app/(dashboard)/dashboard/providers/providerPageUtils.ts"
+);
 const { getProviderServiceKinds } = await import("../../src/lib/providers/serviceKindIndex.ts");
 
 type Entry = {

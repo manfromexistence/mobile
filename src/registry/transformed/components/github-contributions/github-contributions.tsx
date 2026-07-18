@@ -1,16 +1,12 @@
-"use client"
+"use client";
 
-import { use } from "react"
-import { format } from "date-fns"
+import { use } from "react";
+import { format } from "date-fns";
 
-import { cn } from "@/lib/utils"
-import { Spinner } from "@/components/ui/spinner"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import type { Activity } from "@/registry/transformed/components/contribution-graph"
+import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/ui/spinner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import type { Activity } from "@/registry/transformed/components/contribution-graph";
 import {
   ContributionGraph,
   ContributionGraphBlock,
@@ -18,18 +14,18 @@ import {
   ContributionGraphFooter,
   ContributionGraphLegend,
   ContributionGraphTotalCount,
-} from "@/registry/transformed/components/contribution-graph"
+} from "@/registry/transformed/components/contribution-graph";
 
 export function GitHubContributions({
   contributions,
   githubProfileUrl,
   className,
 }: {
-  contributions: Promise<Activity[]>
-  githubProfileUrl: string
-  className?: string
+  contributions: Promise<Activity[]>;
+  githubProfileUrl: string;
+  className?: string;
 }) {
-  const data = use(contributions)
+  const data = use(contributions);
 
   return (
     <ContributionGraph
@@ -39,10 +35,7 @@ export function GitHubContributions({
       blockMargin={3}
       blockRadius={2}
     >
-      <ContributionGraphCalendar
-        className="no-scrollbar px-2"
-        title="GitHub Contributions"
-      >
+      <ContributionGraphCalendar className="no-scrollbar px-2" title="GitHub Contributions">
         {({ activity, dayIndex, weekIndex }) => (
           <Tooltip>
             <TooltipTrigger asChild>
@@ -56,8 +49,8 @@ export function GitHubContributions({
             </TooltipTrigger>
             <TooltipContent className="font-sans">
               <p>
-                {activity.count} contribution{activity.count > 1 ? "s" : null}{" "}
-                on {format(new Date(activity.date), "dd.MM.yyyy")}
+                {activity.count} contribution{activity.count > 1 ? "s" : null} on{" "}
+                {format(new Date(activity.date), "dd.MM.yyyy")}
               </p>
             </TooltipContent>
           </Tooltip>
@@ -85,7 +78,7 @@ export function GitHubContributions({
         <ContributionGraphLegend />
       </ContributionGraphFooter>
     </ContributionGraph>
-  )
+  );
 }
 
 export function GitHubContributionsFallback() {
@@ -93,5 +86,5 @@ export function GitHubContributionsFallback() {
     <div className="flex h-40.5 w-full items-center justify-center">
       <Spinner className="text-muted-foreground" />
     </div>
-  )
+  );
 }

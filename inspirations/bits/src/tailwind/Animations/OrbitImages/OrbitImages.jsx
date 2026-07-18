@@ -1,8 +1,8 @@
 // Component created by Dominik Koch
 // https://x.com/dominikkoch
 
-import { useMemo, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { motion, useMotionValue, useTransform, animate } from 'motion/react';
+import { useMemo, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useTransform, animate } from "motion/react";
 
 function generateEllipsePath(cx, cy, rx, ry) {
   return `M ${cx - rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx + rx} ${cy} A ${rx} ${ry} 0 1 0 ${cx - rx} ${cy}`;
@@ -31,7 +31,7 @@ function generateTrianglePath(cx, cy, size) {
 
 function generateStarPath(cx, cy, outerR, innerR, points) {
   const step = Math.PI / points;
-  let path = '';
+  let path = "";
   for (let i = 0; i < 2 * points; i++) {
     const r = i % 2 === 0 ? outerR : innerR;
     const angle = i * step - Math.PI / 2;
@@ -39,7 +39,7 @@ function generateStarPath(cx, cy, outerR, innerR, points) {
     const y = cy + r * Math.sin(angle);
     path += i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`;
   }
-  return path + ' Z';
+  return path + " Z";
 }
 
 function generateHeartPath(cx, cy, size) {
@@ -67,7 +67,7 @@ function generateWavePath(cx, cy, w, amplitude, waves) {
     const y = cy - Math.sin((i / segs) * waves * 2 * Math.PI) * amplitude;
     pts.push(`L ${x} ${y}`);
   }
-  return pts.join(' ') + ' Z';
+  return pts.join(" ") + " Z";
 }
 
 function OrbitItem({ item, index, totalItems, path, itemSize, rotation, progress, fill }) {
@@ -85,8 +85,8 @@ function OrbitItem({ item, index, totalItems, path, itemSize, rotation, progress
         width: itemSize,
         height: itemSize,
         offsetPath: `path("${path}")`,
-        offsetRotate: '0deg',
-        offsetAnchor: 'center center',
+        offsetRotate: "0deg",
+        offsetAnchor: "center center",
         offsetDistance,
       }}
     >
@@ -97,8 +97,8 @@ function OrbitItem({ item, index, totalItems, path, itemSize, rotation, progress
 
 export default function OrbitImages({
   images = [],
-  altPrefix = 'Orbiting image',
-  shape = 'ellipse',
+  altPrefix = "Orbiting image",
+  shape = "ellipse",
   customPath,
   baseWidth = 1400,
   radiusX = 700,
@@ -109,15 +109,15 @@ export default function OrbitImages({
   rotation = -8,
   duration = 40,
   itemSize = 64,
-  direction = 'normal',
+  direction = "normal",
   fill = true,
   width = 100,
   height = 100,
-  className = '',
+  className = "",
   showPath = false,
-  pathColor = 'rgba(0,0,0,0.1)',
+  pathColor = "rgba(0,0,0,0.1)",
   pathWidth = 2,
-  easing = 'linear',
+  easing = "linear",
   paused = false,
   centerContent,
   responsive = false,
@@ -130,30 +130,46 @@ export default function OrbitImages({
 
   const path = useMemo(() => {
     switch (shape) {
-      case 'circle':
+      case "circle":
         return generateCirclePath(designCenterX, designCenterY, radius);
-      case 'ellipse':
+      case "ellipse":
         return generateEllipsePath(designCenterX, designCenterY, radiusX, radiusY);
-      case 'square':
+      case "square":
         return generateSquarePath(designCenterX, designCenterY, radius * 2);
-      case 'rectangle':
+      case "rectangle":
         return generateRectanglePath(designCenterX, designCenterY, radiusX * 2, radiusY * 2);
-      case 'triangle':
+      case "triangle":
         return generateTrianglePath(designCenterX, designCenterY, radius * 2);
-      case 'star':
-        return generateStarPath(designCenterX, designCenterY, radius, radius * starInnerRatio, starPoints);
-      case 'heart':
+      case "star":
+        return generateStarPath(
+          designCenterX,
+          designCenterY,
+          radius,
+          radius * starInnerRatio,
+          starPoints,
+        );
+      case "heart":
         return generateHeartPath(designCenterX, designCenterY, radius * 2);
-      case 'infinity':
+      case "infinity":
         return generateInfinityPath(designCenterX, designCenterY, radiusX * 2, radiusY * 2);
-      case 'wave':
+      case "wave":
         return generateWavePath(designCenterX, designCenterY, radiusX * 2, radiusY, 3);
-      case 'custom':
+      case "custom":
         return customPath || generateCirclePath(designCenterX, designCenterY, radius);
       default:
         return generateEllipsePath(designCenterX, designCenterY, radiusX, radiusY);
     }
-  }, [shape, customPath, designCenterX, designCenterY, radiusX, radiusY, radius, starPoints, starInnerRatio]);
+  }, [
+    shape,
+    customPath,
+    designCenterX,
+    designCenterY,
+    radiusX,
+    radiusY,
+    radius,
+    starPoints,
+    starInnerRatio,
+  ]);
 
   useLayoutEffect(() => {
     if (!responsive || !containerRef.current) return;
@@ -171,17 +187,23 @@ export default function OrbitImages({
 
   useEffect(() => {
     if (paused) return;
-    const controls = animate(progress, direction === 'reverse' ? -100 : 100, {
+    const controls = animate(progress, direction === "reverse" ? -100 : 100, {
       duration,
       ease: easing,
       repeat: Infinity,
-      repeatType: 'loop',
+      repeatType: "loop",
     });
     return () => controls.stop();
   }, [progress, duration, easing, direction, paused]);
 
-  const containerWidth = responsive ? '100%' : (typeof width === 'number' ? width : '100%');
-  const containerHeight = responsive ? 'auto' : (typeof height === 'number' ? height : (typeof width === 'number' ? width : 'auto'));
+  const containerWidth = responsive ? "100%" : typeof width === "number" ? width : "100%";
+  const containerHeight = responsive
+    ? "auto"
+    : typeof height === "number"
+      ? height
+      : typeof width === "number"
+        ? width
+        : "auto";
 
   const items = images.map((src, index) => (
     <img
@@ -200,25 +222,26 @@ export default function OrbitImages({
       style={{
         width: containerWidth,
         height: containerHeight,
-        aspectRatio: responsive ? '1 / 1' : undefined,
+        aspectRatio: responsive ? "1 / 1" : undefined,
       }}
       aria-hidden="true"
     >
       <div
-        className={responsive ? 'absolute left-1/2 top-1/2' : 'relative w-full h-full'}
+        className={responsive ? "absolute left-1/2 top-1/2" : "relative w-full h-full"}
         style={{
-          width: responsive ? baseWidth : '100%',
-          height: responsive ? baseWidth : '100%',
-          transform: responsive && scale !== null ? `translate(-50%, -50%) scale(${scale})` : undefined,
-          visibility: responsive && scale === null ? 'hidden' : undefined,
-          transformOrigin: 'center center',
+          width: responsive ? baseWidth : "100%",
+          height: responsive ? baseWidth : "100%",
+          transform:
+            responsive && scale !== null ? `translate(-50%, -50%) scale(${scale})` : undefined,
+          visibility: responsive && scale === null ? "hidden" : undefined,
+          transformOrigin: "center center",
         }}
       >
         <div
           className="relative w-full h-full"
           style={{
             transform: `rotate(${rotation}deg)`,
-            transformOrigin: 'center center',
+            transformOrigin: "center center",
           }}
         >
           {showPath && (
@@ -228,7 +251,12 @@ export default function OrbitImages({
               viewBox={`0 0 ${baseWidth} ${baseWidth}`}
               className="absolute inset-0 pointer-events-none"
             >
-              <path d={path} fill="none" stroke={pathColor} strokeWidth={pathWidth / (scale ?? 1)} />
+              <path
+                d={path}
+                fill="none"
+                stroke={pathColor}
+                strokeWidth={pathWidth / (scale ?? 1)}
+              />
             </svg>
           )}
 

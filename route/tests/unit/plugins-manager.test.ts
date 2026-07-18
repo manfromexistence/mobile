@@ -38,7 +38,7 @@ test("pluginManager.install throws for invalid directory", async () => {
     (err: Error) => {
       assert.ok(err.message.includes("No valid plugin found"));
       return true;
-    }
+    },
   );
 });
 

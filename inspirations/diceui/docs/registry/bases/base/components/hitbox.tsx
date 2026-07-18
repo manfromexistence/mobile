@@ -60,16 +60,7 @@ interface HitboxProps
 }
 
 function Hitbox(props: HitboxProps) {
-  const {
-    className,
-    style,
-    size,
-    position,
-    radius,
-    debug = false,
-    render,
-    ...hitboxProps
-  } = props;
+  const { className, style, size, position, radius, debug = false, render, ...hitboxProps } = props;
 
   const isDynamicSize = size && !sizes.includes(size);
 

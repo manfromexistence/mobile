@@ -52,11 +52,11 @@ function insertMemory(
   db: ReturnType<typeof core.getDbInstance>,
   id: string,
   content: string,
-  key?: string
+  key?: string,
 ) {
   db.prepare(
     `INSERT INTO memories (id, api_key_id, session_id, type, key, content, metadata, created_at, updated_at, expires_at)
-     VALUES (?, ?, ?, 'factual', ?, ?, '{}', datetime('now'), datetime('now'), NULL)`
+     VALUES (?, ?, ?, 'factual', ?, ?, '{}', datetime('now'), datetime('now'), NULL)`,
   ).run(id, "test-api-key", "", key ?? `key-${id}`, content);
 }
 

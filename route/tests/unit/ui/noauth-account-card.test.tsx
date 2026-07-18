@@ -55,7 +55,7 @@ function renderCard() {
         providerId={PROVIDER_ID}
         providerName="MiMoCode"
         generateAccountId={() => `gen-${counter++}`}
-      />
+      />,
     );
   });
   containers.push({ root, el });
@@ -213,17 +213,15 @@ describe("NoAuthAccountCard proxy pool dropdown (#5217 Gap 1)", () => {
     await waitForCondition(() => el.querySelector("select") !== null);
 
     const select = el.querySelector<HTMLSelectElement>("select")!;
-    const setter = Object.getOwnPropertyDescriptor(
-      window.HTMLSelectElement.prototype,
-      "value"
-    )!.set!;
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLSelectElement.prototype, "value")!
+      .set!;
     act(() => {
       setter.call(select, "pool-2");
       select.dispatchEvent(new Event("change", { bubbles: true }));
     });
 
     const saveBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === "Save"
+      (b) => b.textContent?.trim() === "Save",
     )!;
     act(() => saveBtn.dispatchEvent(new MouseEvent("click", { bubbles: true })));
 

@@ -9,10 +9,7 @@ import {
 
 export default function CompareSliderCustomDemo() {
   return (
-    <CompareSlider
-      defaultValue={50}
-      className="h-[300px] overflow-hidden rounded-lg border"
-    >
+    <CompareSlider defaultValue={50} className="h-[300px] overflow-hidden rounded-lg border">
       <CompareSliderBefore className="flex size-full items-center justify-center bg-muted text-center">
         <div className="font-bold text-2xl">Kickflip</div>
       </CompareSliderBefore>

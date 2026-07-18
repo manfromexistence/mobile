@@ -1,14 +1,8 @@
 {
   "name": "tags-input-validation-demo",
   "type": "registry:example",
-  "dependencies": [
-    "@diceui/tags-input",
-    "lucide-react"
-  ],
-  "registryDependencies": [
-    "button",
-    "tags-input"
-  ],
+  "dependencies": ["@diceui/tags-input", "lucide-react"],
+  "registryDependencies": ["button", "tags-input"],
   "files": [
     {
       "path": "examples/tags-input-validation-demo.tsx",

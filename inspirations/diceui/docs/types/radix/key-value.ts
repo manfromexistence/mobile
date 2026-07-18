@@ -162,10 +162,7 @@ export interface KeyValueProps extends EmptyProps<"div">, CompositionProps {
    * }}
    * ```
    */
-  onKeyValidate?: (
-    key: string,
-    value: KeyValueItemData[],
-  ) => string | undefined;
+  onKeyValidate?: (key: string, value: KeyValueItemData[]) => string | undefined;
 
   /**
    * Validator function for values.
@@ -178,11 +175,7 @@ export interface KeyValueProps extends EmptyProps<"div">, CompositionProps {
    * }}
    * ```
    */
-  onValueValidate?: (
-    value: string,
-    key: string,
-    items: KeyValueItemData[],
-  ) => string | undefined;
+  onValueValidate?: (value: string, key: string, items: KeyValueItemData[]) => string | undefined;
 
   /**
    * Whether to trim whitespace from keys and values.
@@ -209,13 +202,9 @@ export interface KeyValueListProps extends EmptyProps<"div">, CompositionProps {
   orientation?: "vertical" | "horizontal";
 }
 
-export interface KeyValueItemProps
-  extends EmptyProps<"div">,
-    CompositionProps {}
+export interface KeyValueItemProps extends EmptyProps<"div">, CompositionProps {}
 
-export interface KeyValueKeyInputProps
-  extends EmptyProps<"input">,
-    CompositionProps {
+export interface KeyValueKeyInputProps extends EmptyProps<"input">, CompositionProps {
   /**
    * The item data for this input.
    *
@@ -230,9 +219,7 @@ export interface KeyValueKeyInputProps
   item: KeyValueItemData;
 }
 
-export interface KeyValueValueInputProps
-  extends EmptyProps<"textarea">,
-    CompositionProps {
+export interface KeyValueValueInputProps extends EmptyProps<"textarea">, CompositionProps {
   /**
    * Maximum number of rows before the textarea starts scrolling.
    * Without it, the textarea expands infinitely with content.
@@ -250,9 +237,7 @@ export interface KeyValueAddProps
   extends Omit<ButtonProps, keyof React.ComponentProps<"button">>,
     CompositionProps {}
 
-export interface KeyValueErrorProps
-  extends EmptyProps<"div">,
-    CompositionProps {
+export interface KeyValueErrorProps extends EmptyProps<"div">, CompositionProps {
   /**
    * The field that has the error.
    *

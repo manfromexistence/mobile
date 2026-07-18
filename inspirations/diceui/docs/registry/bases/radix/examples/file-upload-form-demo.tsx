@@ -55,9 +55,7 @@ export default function FileUploadFormDemo() {
           <code>
             {JSON.stringify(
               data.files.map((file) =>
-                file.name.length > 25
-                  ? `${file.name.slice(0, 25)}...`
-                  : file.name,
+                file.name.length > 25 ? `${file.name.slice(0, 25)}...` : file.name,
               ),
               null,
               2,
@@ -107,11 +105,7 @@ export default function FileUploadFormDemo() {
                         <FileUploadItemPreview />
                         <FileUploadItemMetadata />
                         <FileUploadItemDelete asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="size-7"
-                          >
+                          <Button variant="ghost" size="icon" className="size-7">
                             <X />
                             <span className="sr-only">Delete</span>
                           </Button>
@@ -121,9 +115,7 @@ export default function FileUploadFormDemo() {
                   </FileUploadList>
                 </FileUpload>
               </FormControl>
-              <FormDescription>
-                Upload up to 2 images up to 5MB each.
-              </FormDescription>
+              <FormDescription>Upload up to 2 images up to 5MB each.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

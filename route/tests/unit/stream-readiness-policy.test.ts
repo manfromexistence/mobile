@@ -77,7 +77,7 @@ test("gives high-reasoning Codex GPT-5.x extra readiness budget even for SMALL r
 
   assert.ok(
     result.timeoutMs >= 110_000,
-    `expected >= 110000ms for small high-reasoning codex, got ${result.timeoutMs}`
+    `expected >= 110000ms for small high-reasoning codex, got ${result.timeoutMs}`,
   );
   assert.ok(result.reasons.includes("codex_gpt_5_5_high_reasoning"));
 });

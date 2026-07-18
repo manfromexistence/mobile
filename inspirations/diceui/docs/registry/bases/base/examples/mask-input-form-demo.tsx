@@ -44,10 +44,7 @@ export default function MaskInputFormDemo() {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="grid gap-6 md:grid-cols-2"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6 md:grid-cols-2">
         <FormField
           control={form.control}
           name="phone"
@@ -88,9 +85,7 @@ export default function MaskInputFormDemo() {
                   invalid={!!form.formState.errors.ssn}
                 />
               </FormControl>
-              <FormDescription>
-                Enter your social security number
-              </FormDescription>
+              <FormDescription>Enter your social security number</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -136,9 +131,7 @@ export default function MaskInputFormDemo() {
                   invalid={!!form.formState.errors.emergencyContact}
                 />
               </FormControl>
-              <FormDescription>
-                Enter emergency contact phone number
-              </FormDescription>
+              <FormDescription>Enter emergency contact phone number</FormDescription>
               <FormMessage />
             </FormItem>
           )}

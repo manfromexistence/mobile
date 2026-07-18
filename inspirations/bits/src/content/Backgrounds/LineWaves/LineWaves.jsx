@@ -1,14 +1,14 @@
-import { Renderer, Program, Mesh, Triangle } from 'ogl';
-import { useEffect, useRef } from 'react';
+import { Renderer, Program, Mesh, Triangle } from "ogl";
+import { useEffect, useRef } from "react";
 
-import './LineWaves.css';
+import "./LineWaves.css";
 
 function hexToVec3(hex) {
-  const h = hex.replace('#', '');
+  const h = hex.replace("#", "");
   return [
     parseInt(h.slice(0, 2), 16) / 255,
     parseInt(h.slice(2, 4), 16) / 255,
-    parseInt(h.slice(4, 6), 16) / 255
+    parseInt(h.slice(4, 6), 16) / 255,
   ];
 }
 
@@ -140,11 +140,11 @@ export default function LineWaves({
   edgeFadeWidth = 0.0,
   colorCycleSpeed = 1.0,
   brightness = 0.2,
-  color1 = '#ffffff',
-  color2 = '#ffffff',
-  color3 = '#ffffff',
+  color1 = "#ffffff",
+  color2 = "#ffffff",
+  color3 = "#ffffff",
   enableMouseInteraction = true,
-  mouseInfluence = 2.0
+  mouseInfluence = 2.0,
 }) {
   const containerRef = useRef(null);
 
@@ -163,7 +163,7 @@ export default function LineWaves({
       const rect = gl.canvas.getBoundingClientRect();
       targetMouse = [
         (e.clientX - rect.left) / rect.width,
-        1.0 - (e.clientY - rect.top) / rect.height
+        1.0 - (e.clientY - rect.top) / rect.height,
       ];
     }
 
@@ -174,10 +174,14 @@ export default function LineWaves({
     function resize() {
       renderer.setSize(container.offsetWidth, container.offsetHeight);
       if (program) {
-        program.uniforms.uResolution.value = [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height];
+        program.uniforms.uResolution.value = [
+          gl.canvas.width,
+          gl.canvas.height,
+          gl.canvas.width / gl.canvas.height,
+        ];
       }
     }
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
     resize();
 
     const geometry = new Triangle(gl);
@@ -187,7 +191,9 @@ export default function LineWaves({
       fragment: fragmentShader,
       uniforms: {
         uTime: { value: 0 },
-        uResolution: { value: [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height] },
+        uResolution: {
+          value: [gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height],
+        },
         uSpeed: { value: speed },
         uInnerLines: { value: innerLineCount },
         uOuterLines: { value: outerLineCount },
@@ -201,16 +207,16 @@ export default function LineWaves({
         uColor3: { value: hexToVec3(color3) },
         uMouse: { value: new Float32Array([0.5, 0.5]) },
         uMouseInfluence: { value: mouseInfluence },
-        uEnableMouse: { value: enableMouseInteraction }
-      }
+        uEnableMouse: { value: enableMouseInteraction },
+      },
     });
 
     const mesh = new Mesh(gl, { geometry, program });
     container.appendChild(gl.canvas);
 
     if (enableMouseInteraction) {
-      gl.canvas.addEventListener('mousemove', handleMouseMove);
-      gl.canvas.addEventListener('mouseleave', handleMouseLeave);
+      gl.canvas.addEventListener("mousemove", handleMouseMove);
+      gl.canvas.addEventListener("mouseleave", handleMouseLeave);
     }
 
     let animationFrameId;
@@ -235,15 +241,29 @@ export default function LineWaves({
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', resize);
+      window.removeEventListener("resize", resize);
       if (enableMouseInteraction) {
-        gl.canvas.removeEventListener('mousemove', handleMouseMove);
-        gl.canvas.removeEventListener('mouseleave', handleMouseLeave);
+        gl.canvas.removeEventListener("mousemove", handleMouseMove);
+        gl.canvas.removeEventListener("mouseleave", handleMouseLeave);
       }
       container.removeChild(gl.canvas);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
-  }, [speed, innerLineCount, outerLineCount, warpIntensity, rotation, edgeFadeWidth, colorCycleSpeed, brightness, color1, color2, color3, enableMouseInteraction, mouseInfluence]);
+  }, [
+    speed,
+    innerLineCount,
+    outerLineCount,
+    warpIntensity,
+    rotation,
+    edgeFadeWidth,
+    colorCycleSpeed,
+    brightness,
+    color1,
+    color2,
+    color3,
+    enableMouseInteraction,
+    mouseInfluence,
+  ]);
 
   return <div ref={containerRef} className="line-waves-container" />;
 }

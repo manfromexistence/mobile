@@ -89,7 +89,7 @@ test("saveRequestUsage: duplicate entry (same key fields) inserts only ONE row",
   assert.equal(
     afterSecond,
     afterFirst,
-    "Duplicate insert must not create a second row (dedup guard)"
+    "Duplicate insert must not create a second row (dedup guard)",
   );
 });
 
@@ -122,7 +122,7 @@ test("saveRequestUsage: two entries with different timestamps are both inserted"
   assert.equal(
     countRows(db),
     before + 2,
-    "Two distinct entries (different timestamps) should both be inserted"
+    "Two distinct entries (different timestamps) should both be inserted",
   );
 });
 
@@ -137,6 +137,6 @@ test("saveRequestUsage: two entries with different providers are both inserted",
   assert.equal(
     countRows(db),
     before + 2,
-    "Two entries with different providers should both be inserted"
+    "Two entries with different providers should both be inserted",
   );
 });

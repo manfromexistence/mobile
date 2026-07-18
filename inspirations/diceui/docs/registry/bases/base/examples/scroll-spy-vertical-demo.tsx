@@ -10,8 +10,7 @@ import {
 } from "@/registry/bases/base/ui/scroll-spy";
 
 export default function ScrollSpyVerticalDemo() {
-  const [scrollContainer, setScrollContainer] =
-    React.useState<HTMLDivElement | null>(null);
+  const [scrollContainer, setScrollContainer] = React.useState<HTMLDivElement | null>(null);
 
   return (
     <ScrollSpy
@@ -28,10 +27,7 @@ export default function ScrollSpyVerticalDemo() {
         <ScrollSpyLink value="api">API</ScrollSpyLink>
       </ScrollSpyNav>
 
-      <ScrollSpyViewport
-        ref={setScrollContainer}
-        className="overflow-y-auto p-4"
-      >
+      <ScrollSpyViewport ref={setScrollContainer} className="overflow-y-auto p-4">
         <ScrollSpySection value="overview" className="min-w-[400px]">
           <h2 className="font-bold text-2xl">Overview</h2>
           <p className="mt-2 text-muted-foreground">
@@ -50,9 +46,7 @@ export default function ScrollSpyVerticalDemo() {
 
         <ScrollSpySection value="installation" className="min-w-[400px]">
           <h2 className="font-bold text-2xl">Installation</h2>
-          <p className="mt-2 text-muted-foreground">
-            How to install and set up the component.
-          </p>
+          <p className="mt-2 text-muted-foreground">How to install and set up the component.</p>
           <div className="mt-4 h-64 rounded-lg bg-accent" />
         </ScrollSpySection>
 
